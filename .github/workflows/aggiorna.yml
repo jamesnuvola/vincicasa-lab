@@ -1,0 +1,52 @@
+name: Aggiornamento estrazioni
+
+on:
+  schedule:
+    # estrazione alle 20:00 italiane; due tentativi per coprire ritardi e ora legale
+    - cron: '45 19 * * *'
+    - cron: '30 21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  aggiorna:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Installa dipendenze
+        run: pip install numpy
+
+      - name: Scarica nuove estrazioni
+        run: python scripts/aggiorna_estrazioni.py
+
+      - name: Rigenera i dati dell'app
+        run: python scripts/rigenera_dati.py
+
+      - name: Commit se ci sono novita
+        id: commit
+        run: |
+          git config user.name "vincicasa-bot"
+          git config user.email "actions@users.noreply.github.com"
+          if git diff --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Nessuna modifica da salvare."
+          else
+            git add data/storico_daily.csv src/data.json
+            git commit -m "Estrazione aggiornata automaticamente"
+            git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Avvia il deploy su Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main
