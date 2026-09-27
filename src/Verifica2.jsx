@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import RAW from "./data.json";
 
 const VALID_LO = [1, 2, 3, 4, 5];
-const VALID_HI = [5, 15, 18, 36, 40];
+const VALID_HI = [36, 37, 38, 39, 40];
 const POS_LABELS = ["P1", "P2", "P3", "P4", "P5"];
 const POS_COLORS = ["#ff4d6d", "#4fc46a", "#6a8bff", "#ffa040", "#c07ef5"];
 
