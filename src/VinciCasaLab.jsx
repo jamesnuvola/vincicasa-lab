@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import RAW from "./data.json";
 import Verifica2 from "./Verifica2";
+import TrendEngine from "./TrendEngine";
 
 /* ============ COSTANTI ============ */
 const POS_COLORS = ["#ff4d6d", "#4fc46a", "#6a8bff", "#ffa040", "#c07ef5"];
@@ -345,6 +346,7 @@ export default function VinciCasaLab() {
         <TabBtn id="rank" label="RANK" />
         <TabBtn id="gioca" label="GIOCA" />
         <TabBtn id="verifica" label="VERIFICA 2.0" />
+        <TabBtn id="trend" label="TREND" />
         <TabBtn id="matrice" label="GRIGLIA" />
       </div>
 
@@ -531,6 +533,8 @@ export default function VinciCasaLab() {
         )}
 
         {tab === "verifica" && <Verifica2 draws={draws} />}
+
+        {tab === "trend" && <TrendEngine draws={draws} />}
 
         {tab === "matrice" && (() => {
           const rankBg = (r) => (r <= 3 ? "#12512b" : r <= 8 ? "#16412a" : r <= 12 ? "#1a2a2a" : r <= 18 ? "#1a2138" : "#12172a");
