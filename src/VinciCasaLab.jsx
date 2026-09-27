@@ -1,12 +1,12 @@
 import { useState, useMemo, useEffect } from "react";
 import RAW from "./data.json";
+import Verifica2 from "./Verifica2";
 
 /* ============ COSTANTI ============ */
 const POS_COLORS = ["#ff4d6d", "#4fc46a", "#6a8bff", "#ffa040", "#c07ef5"];
 const POS_LABELS = ["P1", "P2", "P3", "P4", "P5"];
 const VALID_LO = [1, 2, 3, 4, 5];
 const VALID_HI = [36, 37, 38, 39, 40];
-const CAP = [10, 15, 15, 15, 10];
 const SMORFIA = [1, 8, 13, 17, 25, 33];
 const T = {
   bg: "#0b1020", card: "#141b2e", edge: "#26304c", ink: "#e9edf7",
@@ -14,7 +14,7 @@ const T = {
 };
 
 /* ============ HELPERS PURI ============ */
-const mk = (d) => d.slice(0, 7); // '2026-08'
+const mk = (d) => d.slice(0, 7);
 const prevMonth = (m) => {
   const [y, mo] = m.split("-").map(Number);
   const nm = mo === 1 ? [y - 1, 12] : [y, mo - 1];
@@ -76,7 +76,6 @@ export default function VinciCasaLab() {
   const curMonth = mk(lastDraw.d);
   const drawsMese = draws.filter((dr) => mk(dr.d) === curMonth).length;
 
-  /* conteggio uscite nel mese corrente (si azzera da solo al cambio mese) */
   const monthCounts = useMemo(() => {
     const out = Array.from({ length: 5 }, () => ({}));
     for (const dr of draws) {
@@ -87,7 +86,6 @@ export default function VinciCasaLab() {
     return out;
   }, [draws, curMonth]);
 
-  /* occorrenze per (posizione, numero) -> lista di indici in draws */
   const occ = useMemo(() => {
     const o = Array.from({ length: 5 }, () => ({}));
     draws.forEach((dr, i) => {
@@ -107,7 +105,6 @@ export default function VinciCasaLab() {
     return r;
   };
 
-  /* nucleo di targetMonth = numeri usciti in TUTTI i k mesi precedenti (se coperti dai dati) */
   const monthsAvailable = useMemo(() => new Set(draws.map((d) => mk(d.d))), [draws]);
   const firstMonth = mk(draws[0].d);
   const nucleoOf = (p, targetMonth, k) => {
@@ -124,7 +121,6 @@ export default function VinciCasaLab() {
     return out;
   };
 
-  /* attesi al giorno i (esclusa l'estrazione i): nucleo del mese di i meno gli usciti prima nel mese */
   const attesiAt = (p, i) => {
     const ref = i < draws.length ? draws[i] : draws[draws.length - 1];
     const m = mk(ref.d);
@@ -137,7 +133,6 @@ export default function VinciCasaLab() {
     return out;
   };
 
-  /* score e rank alla vigilia dell'estrazione i (usa solo dati < i) */
   const maxFreq = useMemo(
     () => Array.from({ length: 5 }, (_, p) => Math.max(...Object.values(RAW.freq[p]))),
     []
@@ -161,7 +156,7 @@ export default function VinciCasaLab() {
 
   const ranksNow = useMemo(
     () => Array.from({ length: 5 }, (_, p) => scoresAt(p, draws.length)),
-    [draws, wRit, wAtt, nucMesi] // eslint-disable-line
+    [draws, wRit, wAtt, nucMesi]
   );
 
   const rankLookup = useMemo(
@@ -173,41 +168,15 @@ export default function VinciCasaLab() {
     [ranksNow]
   );
 
-  /* nucleo & attesi correnti (per il mese in corso) */
   const nucleoNow = useMemo(
     () => Array.from({ length: 5 }, (_, p) => nucleoOf(p, curMonth, nucMesi)),
-    [draws, nucMesi] // eslint-disable-line
+    [draws, nucMesi]
   );
   const attesiNow = useMemo(
     () => Array.from({ length: 5 }, (_, p) => attesiAt(p, draws.length)),
-    [draws, nucMesi] // eslint-disable-line
+    [draws, nucMesi]
   );
 
-  /* verifica prospettica: rank del numero uscito, calcolato coi soli dati precedenti */
-  const verifica = useMemo(() => {
-    const out = [];
-    for (let i = 0; i < draws.length; i++) {
-      const m = mk(draws[i].d);
-      if (nucleoOf(0, m, nucMesi) === null) continue; // servono i mesi precedenti nei dati
-      const rk = [];
-      for (let p = 0; p < 5; p++) {
-        const rows = scoresAt(p, i);
-        const hit = rows.find((r) => r.n === draws[i].n[p]);
-        rk.push(hit ? hit.rank : null);
-      }
-      out.push({ d: draws[i].d, n: draws[i].n, rk });
-    }
-    return out;
-  }, [draws, wRit, wAtt, nucMesi]); // eslint-disable-line
-
-  const distrib = useMemo(() => {
-    const bands = [[1, 5], [6, 10], [11, 18], [19, 36]];
-    return Array.from({ length: 5 }, (_, p) =>
-      bands.map(([a, b]) => verifica.filter((v) => v.rk[p] >= a && v.rk[p] <= b).length)
-    );
-  }, [verifica]);
-
-  /* gioca ora: greedy top-score con vincolo crescente stretto */
   const giocaOra = useMemo(() => {
     const pick = [];
     let prev = 0;
@@ -247,7 +216,6 @@ export default function VinciCasaLab() {
     }
   };
 
-  /* aggiungi estrazione */
   const addDraw = () => {
     setInErr("");
     const d = inD || nextDate(lastDraw.d);
@@ -263,13 +231,11 @@ export default function VinciCasaLab() {
     setInD("");
   };
 
-  /* grafico: ultime 15 */
   const last15 = draws.slice(-15);
   const W = 740, H = 330, PADX = 26, PADT = 26, PADB = 40;
   const x = (i) => PADX + (i * (W - 2 * PADX)) / 14;
   const y = (v) => PADT + ((40 - v) * (H - PADT - PADB)) / 40;
 
-  /* fascia/spostamento */
   const fascia = (p, v) => {
     const idx = Object.keys(RAW.freq[p])
       .map(Number)
@@ -281,21 +247,17 @@ export default function VinciCasaLab() {
   };
 
   const Chip = ({ n, color, ring, dim, badge }) => (
-    <span
-      style={{
-        display: "inline-flex", alignItems: "center", justifyContent: "center",
-        minWidth: 30, height: 30, borderRadius: 8, margin: 3, padding: "0 5px",
-        background: dim ? "transparent" : "#1c2540",
-        border: "1px solid " + (ring ? T.amber : T.edge),
-        color: color || T.ink, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-        fontSize: 14, fontWeight: 600, opacity: dim ? 0.35 : 1,
-        boxShadow: ring ? "0 0 0 1px " + T.amber : "none",
-      }}
-    >
+    <span style={{
+      display: "inline-flex", alignItems: "center", justifyContent: "center",
+      minWidth: 30, height: 30, borderRadius: 8, margin: 3, padding: "0 5px",
+      background: dim ? "transparent" : "#1c2540",
+      border: "1px solid " + (ring ? T.amber : T.edge),
+      color: color || T.ink, fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+      fontSize: 14, fontWeight: 600, opacity: dim ? 0.35 : 1,
+      boxShadow: ring ? "0 0 0 1px " + T.amber : "none",
+    }}>
       {n}
-      {badge > 0 && (
-        <span style={{ fontSize: 9, marginLeft: 3, color: T.ok, fontWeight: 800 }}>×{badge}</span>
-      )}
+      {badge > 0 && <span style={{ fontSize: 9, marginLeft: 3, color: T.ok, fontWeight: 800 }}>×{badge}</span>}
     </span>
   );
 
@@ -325,7 +287,6 @@ export default function VinciCasaLab() {
     </div>
   );
 
-  /* etichette grafico: sopra il punto, sotto se un altro valore è vicino e maggiore */
   const labelDy = (col, p) => {
     const v = last15[col].n[p];
     for (let q = 0; q < 5; q++) {
@@ -339,7 +300,6 @@ export default function VinciCasaLab() {
 
   return (
     <div style={{ minHeight: "100vh", background: T.bg, color: T.ink, fontFamily: "-apple-system, system-ui, sans-serif", paddingBottom: 40 }}>
-      {/* header */}
       <div style={{ padding: "18px 16px 10px" }}>
         <div style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: 20, fontWeight: 800, letterSpacing: 3 }}>
           VINCICASA<span style={{ color: T.amber }}> · LAB</span>
@@ -349,7 +309,6 @@ export default function VinciCasaLab() {
         </div>
       </div>
 
-      {/* aggiungi estrazione */}
       <div style={{ padding: "0 16px" }}>
         <Card title="Aggiungi estrazione" sub="di norma ci pensa l'aggiornamento automatico; qui puoi inserirla a mano se serve">
           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
@@ -380,18 +339,16 @@ export default function VinciCasaLab() {
         </Card>
       </div>
 
-      {/* tabs */}
       <div style={{ display: "flex", position: "sticky", top: 0, background: T.bg, zIndex: 5, borderBottom: "1px solid " + T.edge, margin: "0 0 14px", overflowX: "auto" }}>
         <TabBtn id="andamento" label="ANDAMENTO" />
         <TabBtn id="nucleo" label="NUCLEO" />
         <TabBtn id="rank" label="RANK" />
         <TabBtn id="gioca" label="GIOCA" />
-        <TabBtn id="verifica" label="VERIFICA" />
+        <TabBtn id="verifica" label="VERIFICA 2.0" />
         <TabBtn id="matrice" label="GRIGLIA" />
       </div>
 
       <div style={{ padding: "0 16px" }}>
-        {/* ============ ANDAMENTO ============ */}
         {tab === "andamento" && (
           <>
             <Card title="Ultime 15 estrazioni" sub="una linea per posizione, numero estratto su ogni punto">
@@ -405,18 +362,13 @@ export default function VinciCasaLab() {
                   ))}
                   {Array.from({ length: 5 }, (_, p) => (
                     <g key={p}>
-                      <polyline
-                        fill="none" stroke={POS_COLORS[p]} strokeWidth="1.6" strokeDasharray="5 4"
-                        points={last15.map((dr, i) => x(i) + "," + y(dr.n[p])).join(" ")}
-                      />
+                      <polyline fill="none" stroke={POS_COLORS[p]} strokeWidth="1.6" strokeDasharray="5 4"
+                        points={last15.map((dr, i) => x(i) + "," + y(dr.n[p])).join(" ")} />
                       {last15.map((dr, i) => (
                         <g key={i}>
                           <circle cx={x(i)} cy={y(dr.n[p])} r="3.4" fill={POS_COLORS[p]} />
-                          <text
-                            x={x(i)} y={y(dr.n[p]) + labelDy(i, p)} textAnchor="middle"
-                            fontSize="10.5" fontWeight="700" fill={POS_COLORS[p]}
-                            fontFamily="ui-monospace, monospace"
-                          >
+                          <text x={x(i)} y={y(dr.n[p]) + labelDy(i, p)} textAnchor="middle"
+                            fontSize="10.5" fontWeight="700" fill={POS_COLORS[p]} fontFamily="ui-monospace, monospace">
                             {dr.n[p]}
                           </text>
                         </g>
@@ -432,12 +384,9 @@ export default function VinciCasaLab() {
                 </svg>
               </div>
               <div style={{ display: "flex", gap: 12, marginTop: 6, flexWrap: "wrap" }}>
-                {POS_LABELS.map((l, p) => (
-                  <span key={p} style={{ fontSize: 11, color: POS_COLORS[p], fontWeight: 700 }}>● {l}</span>
-                ))}
+                {POS_LABELS.map((l, p) => <span key={p} style={{ fontSize: 11, color: POS_COLORS[p], fontWeight: 700 }}>● {l}</span>)}
               </div>
             </Card>
-
             <Card title="Spostamento vs estrazione precedente" sub={fmtD(prevDraw.d) + " → " + fmtD(lastDraw.d) + " · delta per posizione"}>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                 {Array.from({ length: 5 }, (_, p) => {
@@ -445,9 +394,7 @@ export default function VinciCasaLab() {
                   return (
                     <div key={p} style={{ flex: "1 1 110px", background: "#101830", border: "1px solid " + T.edge, borderRadius: 10, padding: 10 }}>
                       <div style={{ fontSize: 11, color: POS_COLORS[p], fontWeight: 800 }}>{POS_LABELS[p]}</div>
-                      <div style={{ fontFamily: "ui-monospace, monospace", fontSize: 20, fontWeight: 800 }}>
-                        {prevDraw.n[p]} → {lastDraw.n[p]}
-                      </div>
+                      <div style={{ fontFamily: "ui-monospace, monospace", fontSize: 20, fontWeight: 800 }}>{prevDraw.n[p]} → {lastDraw.n[p]}</div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: dv > 0 ? T.ok : dv < 0 ? T.warn : T.dim }}>
                         {dv > 0 ? "▲ +" + dv : dv < 0 ? "▼ " + dv : "= 0"}
                       </div>
@@ -462,25 +409,20 @@ export default function VinciCasaLab() {
               <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {[0, 4].map((p) => {
                   const [lbl, col] = fascia(p, lastDraw.n[p]);
-                  return (
-                    <div key={p} style={{ fontSize: 12.5 }}>
-                      <span style={{ color: POS_COLORS[p], fontWeight: 800 }}>{POS_LABELS[p]}={lastDraw.n[p]}</span>{" "}
-                      <span style={{ color: col, fontWeight: 700 }}>{lbl}</span>
-                    </div>
-                  );
+                  return <div key={p} style={{ fontSize: 12.5 }}>
+                    <span style={{ color: POS_COLORS[p], fontWeight: 800 }}>{POS_LABELS[p]}={lastDraw.n[p]}</span>{" "}
+                    <span style={{ color: col, fontWeight: 700 }}>{lbl}</span>
+                  </div>;
                 })}
               </div>
             </Card>
           </>
         )}
 
-        {/* ============ NUCLEO ============ */}
         {tab === "nucleo" && (
           <>
-            <Card
-              title={"Nucleo (" + nucMesi + " mesi) — mese " + curMonth}
-              sub={drawsMese + " estrazioni nel mese · ×n = uscite del mese (conteggio azzerato a inizio mese) · bordo ambra = atteso"}
-            >
+            <Card title={"Nucleo (" + nucMesi + " mesi) — mese " + curMonth}
+              sub={drawsMese + " estrazioni nel mese · ×n = uscite del mese (conteggio azzerato a inizio mese) · bordo ambra = atteso"}>
               <div style={{ marginBottom: 10 }}>
                 {[2, 3].map((k) => (
                   <button key={k} onClick={() => setNucMesi(k)}
@@ -494,32 +436,26 @@ export default function VinciCasaLab() {
                 <div key={p} style={{ marginBottom: 8 }}>
                   <div style={{ fontSize: 12, fontWeight: 800, color: POS_COLORS[p], marginBottom: 2 }}>{POS_LABELS[p]}</div>
                   <div>
-                    {(nucleoNow[p] || []).map((n) => (
-                      <Chip key={n} n={n} color={POS_COLORS[p]} ring={attesiNow[p] && attesiNow[p].has(n)} badge={monthCounts[p][n] || 0} />
-                    ))}
+                    {(nucleoNow[p] || []).map((n) => <Chip key={n} n={n} color={POS_COLORS[p]} ring={attesiNow[p] && attesiNow[p].has(n)} badge={monthCounts[p][n] || 0} />)}
                     {nucleoNow[p] === null && <span style={{ fontSize: 12, color: T.dim }}>servono più mesi di dati</span>}
                   </div>
                   {(() => {
                     const fuori = Object.keys(monthCounts[p]).map(Number).filter((x) => !(nucleoNow[p] || []).includes(x)).sort((a, b) => a - b);
-                    return fuori.length > 0 ? (
-                      <div style={{ fontSize: 11.5, color: T.dim, marginTop: 2 }}>
-                        fuori nucleo questo mese: {fuori.map((x) => x + "\u00d7" + monthCounts[p][x]).join(", ")}
-                      </div>
-                    ) : null;
+                    return fuori.length > 0 ? <div style={{ fontSize: 11.5, color: T.dim, marginTop: 2 }}>
+                      fuori nucleo questo mese: {fuori.map((x) => x + "\u00d7" + monthCounts[p][x]).join(", ")}
+                    </div> : null;
                   })()}
                 </div>
               ))}
             </Card>
-            <Card title="Attesi — timing" sub="dal backtest su 105 mesi">
+            <Card title="Attesi — timing" sub="nota storica del vecchio modello">
               <div style={{ fontSize: 13, lineHeight: 1.55, color: T.ink }}>
-                Il pool degli attesi rende di più nei <b style={{ color: T.amber }}>primi 5–10 giorni del mese</b> (efficienza 0,055 → 0,044 a fine mese).
-                Nell'ultima settimana i mancanti escono a 0,85–0,95x del loro ritmo: il pool ridotto contiene i deboli del mese, non gli imminenti.
+                Questa nota appartiene al modello precedente. Per le verifiche metodologiche usare la scheda <b style={{ color: T.amber }}>VERIFICA 2.0</b>, che ricostruisce i punteggi senza usare statistiche future.
               </div>
             </Card>
           </>
         )}
 
-        {/* ============ RANK ============ */}
         {tab === "rank" && (
           <>
             <Card title="Pesi degli indicatori" sub="pavimento (0–100 per posizione) + ritorno + bonus attesi">
@@ -553,16 +489,13 @@ export default function VinciCasaLab() {
           </>
         )}
 
-        {/* ============ GIOCA ============ */}
         {tab === "gioca" && (
           <>
             <Card title="Gioca ora" sub={"top rank per posizione, con vincolo d'ordine · pesi correnti · " + curMonth}>
               {giocaOra && (
                 <>
                   <div style={{ textAlign: "center", margin: "6px 0 10px" }}>
-                    {giocaOra.map((r, p) => (
-                      <Chip key={p} n={r.n} color={POS_COLORS[p]} ring={r.at} />
-                    ))}
+                    {giocaOra.map((r, p) => <Chip key={p} n={r.n} color={POS_COLORS[p]} ring={r.at} />)}
                   </div>
                   <div style={{ fontSize: 12, color: T.dim, textAlign: "center" }}>
                     {isCrowded(giocaOra.map((r) => r.n)) ? "⚠ pattern affollato: " + isCrowded(giocaOra.map((r) => r.n)) : "✓ combinazione fuori dai pattern affollati"}
@@ -597,99 +530,7 @@ export default function VinciCasaLab() {
           </>
         )}
 
-        {/* ============ VERIFICA ============ */}
-        {tab === "verifica" && (
-          <>
-            <Card title="Frequenza dei rank per posizione" sub="quanto spesso esce il numero di ciascun rank, sui casi verificati">
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 12, fontFamily: "ui-monospace, monospace" }}>
-                  <thead>
-                    <tr style={{ color: T.dim }}>
-                      <th style={{ textAlign: "left", padding: "3px 5px" }}></th>
-                      {["r1", "r2-3", "r4-5", "r6-10", "r11+", "med"].map((h) => (
-                        <th key={h} style={{ padding: "3px 5px", textAlign: "right" }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.from({ length: 5 }, (_, p) => {
-                      const rs = verifica.map((v) => v.rk[p]).filter((x) => x != null).sort((a, b) => a - b);
-                      const nn = rs.length || 1;
-                      const pc = (f) => ((100 * rs.filter(f).length) / nn).toFixed(0) + "%";
-                      const med = rs.length ? rs[Math.floor(rs.length / 2)] : "–";
-                      const cells = [
-                        pc((r) => r === 1), pc((r) => r >= 2 && r <= 3), pc((r) => r >= 4 && r <= 5),
-                        pc((r) => r >= 6 && r <= 10), pc((r) => r > 10),
-                      ];
-                      return (
-                        <tr key={p} style={{ borderTop: "1px solid #1b2340" }}>
-                          <td style={{ padding: "3px 5px", color: POS_COLORS[p], fontWeight: 800 }}>{POS_LABELS[p]}</td>
-                          {cells.map((c, ci) => (
-                            <td key={ci} style={{ padding: "3px 5px", textAlign: "right", color: ci <= 1 ? T.ok : ci === 4 ? T.dim : T.ink }}>{c}</td>
-                          ))}
-                          <td style={{ padding: "3px 5px", textAlign: "right", color: T.amber, fontWeight: 700 }}>{med}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-              <div style={{ fontSize: 11, color: T.dim, marginTop: 6 }}>
-                P1/P5 concentrate (rank basso frequente); P2/P3/P4 piatte (spesso rank alto, per struttura).
-                I rank non si susseguono a onde: giorno per giorno sono indipendenti.
-              </div>
-            </Card>
-            <Card title="Verifica prospettica" sub="rank che il numero uscito aveva PRIMA dell'estrazione, con i pesi correnti e i soli dati precedenti">
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ borderCollapse: "collapse", width: "100%", fontSize: 12.5, fontFamily: "ui-monospace, monospace" }}>
-                  <thead>
-                    <tr style={{ color: T.dim }}>
-                      <th style={{ textAlign: "left", padding: "4px 6px" }}>data</th>
-                      {POS_LABELS.map((l, p) => (
-                        <th key={p} style={{ padding: "4px 6px", color: POS_COLORS[p] }}>{l}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[...verifica].reverse().map((v, i) => (
-                      <tr key={i} style={{ borderTop: "1px solid #1b2340" }}>
-                        <td style={{ padding: "4px 6px", color: T.dim }}>{fmtD(v.d)}</td>
-                        {v.rk.map((r, p) => (
-                          <td key={p} style={{ padding: "4px 6px", textAlign: "center" }}>
-                            <span style={{
-                              fontWeight: 800,
-                              color: r <= 5 ? T.ok : r <= 10 ? T.amber : T.dim,
-                            }}>
-                              {v.n[p]}<span style={{ fontSize: 10, opacity: 0.8 }}> r{r}</span>
-                            </span>
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-            <Card title="Distribuzione dei rank" sub="per posizione, caso per caso — quante estrazioni in ciascuna fascia">
-              {Array.from({ length: 5 }, (_, p) => (
-                <div key={p} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, fontSize: 12.5 }}>
-                  <span style={{ width: 26, fontWeight: 800, color: POS_COLORS[p] }}>{POS_LABELS[p]}</span>
-                  {["r1–5", "r6–10", "r11–18", "r19+"].map((b, bi) => (
-                    <span key={bi} style={{ flex: 1, textAlign: "center", background: "#101830", borderRadius: 6, padding: "5px 0", border: "1px solid " + T.edge }}>
-                      <span style={{ color: bi === 0 ? T.ok : bi === 1 ? T.amber : T.dim, fontWeight: 800, fontFamily: "ui-monospace, monospace" }}>
-                        {distrib[p][bi]}
-                      </span>
-                      <div style={{ fontSize: 9.5, color: T.dim }}>{b}</div>
-                    </span>
-                  ))}
-                </div>
-              ))}
-              <div style={{ fontSize: 11.5, color: T.dim, marginTop: 4 }}>
-                Verifica disponibile dalle estrazioni con {nucMesi} mesi precedenti nei dati (da luglio 2026).
-              </div>
-            </Card>
-          </>
-        )}
+        {tab === "verifica" && <Verifica2 draws={draws} />}
 
         {tab === "matrice" && (() => {
           const rankBg = (r) => (r <= 3 ? "#12512b" : r <= 8 ? "#16412a" : r <= 12 ? "#1a2a2a" : r <= 18 ? "#1a2138" : "#12172a");
@@ -708,9 +549,7 @@ export default function VinciCasaLab() {
                     <thead>
                       <tr>
                         <th style={{ position: "sticky", left: 0, background: T.bg, padding: "4px 6px", color: T.dim, fontSize: 11 }}>n</th>
-                        {POS_LABELS.map((l, p) => (
-                          <th key={p} style={{ padding: "4px 8px", color: POS_COLORS[p], fontSize: 12 }}>{l}</th>
-                        ))}
+                        {POS_LABELS.map((l, p) => <th key={p} style={{ padding: "4px 8px", color: POS_COLORS[p], fontSize: 12 }}>{l}</th>)}
                       </tr>
                     </thead>
                     <tbody>
@@ -729,9 +568,7 @@ export default function VinciCasaLab() {
                               return (
                                 <td key={p} style={{ position: "relative", background: rankBg(rank), color: rankInk(rank), textAlign: "center", padding: "3px 8px", minWidth: 30, border: at ? "1px solid " + T.amber : "1px solid #0e1526", fontWeight: rank <= 8 ? 700 : 400 }}>
                                   {rank}
-                                  {cnt > 0 && (
-                                    <span style={{ position: "absolute", top: 1, right: 2, width: 6, height: 6, borderRadius: 6, background: T.ok }} title={"uscito " + cnt + "x"} />
-                                  )}
+                                  {cnt > 0 && <span style={{ position: "absolute", top: 1, right: 2, width: 6, height: 6, borderRadius: 6, background: T.ok }} title={"uscito " + cnt + "x"} />}
                                 </td>
                               );
                             })}
