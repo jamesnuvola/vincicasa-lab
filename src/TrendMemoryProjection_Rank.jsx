@@ -315,11 +315,17 @@ function OverlayGraph({ draws, ticket }) {
 
   if (!rows.length) return null;
 
-  const W = 740, H = 350, PADX = 30, PADT = 28, PADB = 48;
-  const x = i => rows.length === 1
+  const W = 820, H = 380, PADL = 34, PADR = 34, PADT = 28, PADB = 52;
+  const plotW = W - PADL - PADR;
+  const plotH = H - PADT - PADB;
+
+  // L'ultima estrazione reale è il punto di partenza.
+  // Il punto successivo è la data futura e contiene la cinquina selezionata.
+  const totalPoints = rows.length + (selected.length === 5 ? 1 : 0);
+  const x = i => totalPoints <= 1
     ? W / 2
-    : PADX + (i * (W - 2 * PADX)) / (rows.length - 1);
-  const y = v => PADT + ((40 - v) * (H - PADT - PADB)) / 40;
+    : PADL + (i * plotW) / (totalPoints - 1);
+  const y = v => PADT + ((40 - v) * plotH) / 40;
 
   const labelDy = (i, p) => {
     const v = rows[i].n[p];
@@ -329,37 +335,69 @@ function OverlayGraph({ draws, ticket }) {
     return -8;
   };
 
+  // Curva di transizione finale: collega l'ultimo dato reale
+  // al nuovo numero senza introdurre un punto "falso".
+  const projectionPath = (p) => {
+    if (selected.length !== 5) return "";
+    const x0 = x(rows.length - 1);
+    const x1 = x(rows.length);
+    const y0 = y(rows[rows.length - 1].n[p]);
+    const y1 = y(selected[p]);
+
+    // Controllo centrale: produce una piccola "onda" visiva,
+    // mantenendo però esattamente i due valori osservato -> previsto.
+    const xm = (x0 + x1) / 2;
+    const delta = y1 - y0;
+    const yc = y0 + delta * 0.50;
+
+    return `M ${x0} ${y0} Q ${xm} ${yc} ${x1} ${y1}`;
+  };
+
   return (
     <div style={card}>
       <div style={{ fontSize: 13, fontWeight: 900 }}>
-        ANDAMENTO + CINQUINA SELEZIONATA
+        ANDAMENTO + ONDA DI PROIEZIONE
       </div>
       <div style={{ color: C.dim, fontSize: 10.5, margin: "4px 0 10px" }}>
-        Ultime {rows.length} estrazioni · continuo = storico reale · tratteggiato = proiezione selezionata
+        Storico reale fino all'ultima estrazione · tratto finale = passaggio verso la prossima data
       </div>
 
       <div style={{ overflowX: "auto" }}>
-        <svg viewBox={`0 0 ${W} ${H}`} style={{ minWidth: 560, width: "100%", display: "block" }}>
-          {[10, 20, 30, 40].map(g => (
+        <svg viewBox={`0 0 ${W} ${H}`} style={{ minWidth: 620, width: "100%", display: "block" }}>
+          {[5, 10, 20, 30, 40].map(g => (
             <g key={g}>
-              <line x1={PADX} x2={W - PADX} y1={y(g)} y2={y(g)}
-                stroke="#1b2340" strokeWidth="1" />
+              <line
+                x1={PADL}
+                x2={W - PADR}
+                y1={y(g)}
+                y2={y(g)}
+                stroke="#1b2340"
+                strokeWidth="1"
+              />
               <text x={7} y={y(g) + 3} fontSize="9" fill={C.dim}>{g}</text>
             </g>
           ))}
 
+          {/* Storico reale */}
           {Array.from({ length: 5 }, (_, p) => (
             <g key={p}>
               <polyline
                 fill="none"
                 stroke={POS_COLORS[p]}
-                strokeWidth="1.7"
+                strokeWidth="1.8"
                 opacity="0.72"
                 points={rows.map((dr, i) => `${x(i)},${y(dr.n[p])}`).join(" ")}
               />
+
               {rows.map((dr, i) => (
                 <g key={i}>
-                  <circle cx={x(i)} cy={y(dr.n[p])} r="3.2" fill={POS_COLORS[p]} opacity="0.85" />
+                  <circle
+                    cx={x(i)}
+                    cy={y(dr.n[p])}
+                    r="3.1"
+                    fill={POS_COLORS[p]}
+                    opacity="0.88"
+                  />
                   <text
                     x={x(i)}
                     y={y(dr.n[p]) + labelDy(i, p)}
@@ -373,32 +411,52 @@ function OverlayGraph({ draws, ticket }) {
                   </text>
                 </g>
               ))}
+
+              {/* Onda: ultimo valore reale -> valore previsto */}
+              {selected.length === 5 && (
+                <path
+                  d={projectionPath(p)}
+                  fill="none"
+                  stroke={POS_COLORS[p]}
+                  strokeWidth="3"
+                  strokeDasharray="8 5"
+                  strokeLinecap="round"
+                  opacity="1"
+                />
+              )}
             </g>
           ))}
 
+          {/* Separatore tra reale e futuro */}
+          {selected.length === 5 && (
+            <line
+              x1={x(rows.length - 1)}
+              x2={x(rows.length - 1)}
+              y1={PADT}
+              y2={H - PADB}
+              stroke="#59627d"
+              strokeWidth="1"
+              strokeDasharray="3 5"
+              opacity="0.65"
+            />
+          )}
+
+          {/* Punto previsto sulla data successiva */}
           {selected.length === 5 && selected.map((n, p) => (
             <g key={`projection-${p}`}>
-              <line
-                x1={PADX} x2={W - PADX}
-                y1={y(n)} y2={y(n)}
-                stroke={POS_COLORS[p]}
-                strokeWidth="2.2"
-                strokeDasharray="7 5"
-                opacity="0.95"
-              />
               <circle
-                cx={W - PADX + 1}
+                cx={x(rows.length)}
                 cy={y(n)}
-                r="5"
+                r="6"
                 fill={POS_COLORS[p]}
                 stroke={C.ink}
-                strokeWidth="1.2"
+                strokeWidth="1.5"
               />
               <text
-                x={W - PADX - 7}
-                y={y(n) - 7}
+                x={x(rows.length) - 8}
+                y={y(n) - 9}
                 textAnchor="end"
-                fontSize="10"
+                fontSize="10.5"
                 fontWeight="900"
                 fill={POS_COLORS[p]}
                 fontFamily="ui-monospace, monospace"
@@ -408,6 +466,7 @@ function OverlayGraph({ draws, ticket }) {
             </g>
           ))}
 
+          {/* Etichette date */}
           {rows.map((dr, i) => (
             <text
               key={i}
@@ -421,13 +480,26 @@ function OverlayGraph({ draws, ticket }) {
               {dr.d.split("-").slice(1).reverse().join("/")}
             </text>
           ))}
+
+          {selected.length === 5 && (
+            <text
+              x={x(rows.length)}
+              y={H - 9}
+              textAnchor="middle"
+              fontSize="9.5"
+              fontWeight="900"
+              fill={C.ink}
+            >
+              PROSSIMA
+            </text>
+          )}
         </svg>
       </div>
 
       <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 7 }}>
         {POS_LABELS.map((label, p) => (
           <span key={label} style={{ fontSize: 10.5, color: POS_COLORS[p], fontWeight: 800 }}>
-            ● {label}{selected[p] ? ` = ${selected[p]}` : ""}
+            ● {label}{selected[p] ? ` ${rows.length ? `${rows[rows.length - 1].n[p]} → ${selected[p]}` : `= ${selected[p]}`}` : ""}
           </span>
         ))}
       </div>
