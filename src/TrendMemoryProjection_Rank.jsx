@@ -1,25 +1,5 @@
 import { useMemo, useState } from "react";
 
-/*
-  TrendMemoryProjection.jsx
-  Modulo grafico per SONAR / vincicasa-lab.
-
-  Uso:
-    import TrendMemoryProjection from "./TrendMemoryProjection";
-    <TrendMemoryProjection draws={draws} />
-
-  Il modulo:
-  - calcola Trend Top 5;
-  - calcola Memory Top 5/8 tramite analoghi storici (overlap >= 2, peso overlap^2);
-  - propone alcune combinazioni sperimentali;
-  - permette di modificare manualmente le cinquine;
-  - mostra la proiezione su griglia 1..40 e per posizione P1..P5.
-
-  Nota metodologica:
-  le proposte sono sperimentali/descriptive e non costituiscono una previsione certa
-  dell'estrazione successiva.
-*/
-
 const VALID = 40;
 
 const C = {
@@ -34,6 +14,9 @@ const C = {
   blue: "#6a8bff",
   violet: "#c07ef5",
 };
+
+const POS_COLORS = ["#ff4d6d", "#4fc46a", "#6a8bff", "#ffa040", "#c07ef5"];
+const POS_LABELS = ["P1", "P2", "P3", "P4", "P5"];
 
 const clamp = (x, lo = 0, hi = 1) => Math.max(lo, Math.min(hi, x));
 const mean = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : 0;
@@ -84,8 +67,6 @@ function memoryRank(draws, end) {
   const score = Array(VALID + 1).fill(0);
   const support = Array(VALID + 1).fill(0);
 
-  // Ogni stato storico simile (>=2 numeri in comune) vota
-  // i numeri apparsi nell'estrazione immediatamente successiva.
   for (let j = 0; j < end - 1; j++) {
     const overlap = current.filter(x => draws[j].n.includes(x)).length;
     if (overlap < 2 || !draws[j + 1]) continue;
@@ -135,25 +116,44 @@ function makeProposals(draws) {
     pairs[b] - pairs[a] || a - b
   );
 
-  const unique = xs => [...new Set(xs)].slice(0, 5);
+  // Tutte le proposte devono essere vere cinquine:
+  // 5 numeri distinti, ordinati.
+  const unique5 = xs => {
+    const out = [];
+    for (const n of xs) {
+      if (!out.includes(n) && Number.isInteger(n) && n >= 1 && n <= 40) {
+        out.push(n);
+        if (out.length === 5) break;
+      }
+    }
+    return out.sort((a, b) => a - b);
+  };
+
+  const fill5 = (base, fallback) => {
+    const out = unique5(base);
+    for (const n of fallback) {
+      if (out.length >= 5) break;
+      if (!out.includes(n)) out.push(n);
+    }
+    return out.sort((a, b) => a - b).slice(0, 5);
+  };
 
   return {
-    trend: unique(T.slice(0, 5)),
-    memory: unique(M.slice(0, 5)),
-    memory8: unique(M.slice(0, 8)),
-    hybrid2: unique([
-      ...T.slice(0, 2),
-      ...M.filter(n => !T.slice(0, 2).includes(n))
-    ]),
-    hybrid4: unique([
-      ...T.slice(0, 4),
-      ...M.filter(n => !T.slice(0, 4).includes(n))
-    ]),
-    fusion: unique([
-      T[0], T[1],
-      M[0], M[1],
-      relation[0]
-    ]),
+    trend: unique5(T.slice(0, 5)),
+    memory: unique5(M.slice(0, 5)),
+    memory8: unique5(M.slice(0, 8)),
+    hybrid2: fill5(
+      [...T.slice(0, 2), ...M],
+      T
+    ),
+    hybrid4: fill5(
+      [...T.slice(0, 4), ...M],
+      T
+    ),
+    fusion: fill5(
+      [T[0], T[1], M[0], M[1], relation[0]],
+      [...T, ...M, ...relation]
+    ),
   };
 }
 
@@ -164,14 +164,6 @@ function sortTicket(ticket) {
     .slice(0, 5);
 }
 
-function ticketPositions(ticket) {
-  return sortTicket(ticket);
-}
-
-// Rank storico per posizione P1..P5.
-// Per la proiezione corrente usa tutte le estrazioni disponibili.
-// Per lo storico usa sempre il prefisso precedente alla singola estrazione,
-// così il rank della riga non incorpora il proprio risultato.
 function positionRankMap(draws, end) {
   const counts = Array.from({ length: 5 }, () => Array(VALID + 1).fill(0));
 
@@ -180,9 +172,14 @@ function positionRankMap(draws, end) {
     nums.forEach((n, p) => { counts[p][n]++; });
   }
 
-  return counts.map(row => {
-    const ordered = Array.from({ length: VALID }, (_, i) => i + 1)
-      .sort((a, b) => row[b] - row[a] || a - b);
+  return counts.map((row, p) => {
+    const lo = p + 1;
+    const hi = 36 + p;
+
+    const ordered = Array.from(
+      { length: hi - lo + 1 },
+      (_, i) => lo + i
+    ).sort((a, b) => row[b] - row[a] || a - b);
 
     const rank = {};
     ordered.forEach((n, i) => { rank[n] = i + 1; });
@@ -204,8 +201,6 @@ function positionalRanksForTicket(draws, ticket, end = draws.length) {
 function historicalPositionalRows(draws, limit = 20) {
   const rows = [];
 
-  // Una riga per estrazione: il rank viene calcolato soltanto con il prefisso
-  // precedente, quindi è veramente walk-forward.
   for (let i = 1; i < draws.length; i++) {
     const nums = sortTicket(draws[i].n);
     const ranks = positionalRanksForTicket(draws, nums, i);
@@ -221,6 +216,67 @@ function historicalPositionalRows(draws, limit = 20) {
   }
 
   return rows.slice(-limit).reverse();
+}
+
+function repeatStats(draws, p, w) {
+  if (draws.length < 2) return { same: 0, total: 0, rate: 0 };
+
+  const start = Math.max(1, draws.length - w);
+  let same = 0;
+
+  for (let i = start; i < draws.length; i++) {
+    if (draws[i].n[p] === draws[i - 1].n[p]) same++;
+  }
+
+  const total = Math.max(0, draws.length - start);
+  return { same, total, rate: total ? same / total : 0 };
+}
+
+function candidateRun(draws, p, n) {
+  let run = 0;
+  for (let i = draws.length - 1; i >= 0; i--) {
+    if (draws[i].n[p] !== n) break;
+    run++;
+  }
+  return run;
+}
+
+function persistenceState(draws, p) {
+  const r30 = repeatStats(draws, p, 30).rate;
+  const r60 = repeatStats(draws, p, 60).rate;
+  const r90 = repeatStats(draws, p, 90).rate;
+  const threshold = 0.02;
+
+  if (r30 > r60 + threshold && r30 > r90 + threshold) {
+    return "PERSISTENTE";
+  }
+
+  if (r30 < r60 - threshold && r30 < r90 - threshold) {
+    return "IN ESAURIMENTO";
+  }
+
+  return "NORMALE";
+}
+
+function projectionPersistence(draws, ticket) {
+  const nums = sortTicket(ticket);
+
+  return nums.map((n, p) => {
+    const r30 = repeatStats(draws, p, 30);
+    const r60 = repeatStats(draws, p, 60);
+    const r90 = repeatStats(draws, p, 90);
+    const run = candidateRun(draws, p, n);
+
+    return {
+      p,
+      n,
+      run,
+      r30,
+      r60,
+      r90,
+      state: persistenceState(draws, p),
+    };
+  });
 }
 
 const card = {
@@ -253,6 +309,132 @@ function Chip({ n, active = false, color = C.amber, onClick }) {
   );
 }
 
+function OverlayGraph({ draws, ticket }) {
+  const rows = draws.slice(-15);
+  const selected = sortTicket(ticket);
+
+  if (!rows.length) return null;
+
+  const W = 740, H = 350, PADX = 30, PADT = 28, PADB = 48;
+  const x = i => rows.length === 1
+    ? W / 2
+    : PADX + (i * (W - 2 * PADX)) / (rows.length - 1);
+  const y = v => PADT + ((40 - v) * (H - PADT - PADB)) / 40;
+
+  const labelDy = (i, p) => {
+    const v = rows[i].n[p];
+    for (let q = 0; q < 5; q++) {
+      if (q !== p && rows[i].n[q] > v && rows[i].n[q] - v <= 3) return 15;
+    }
+    return -8;
+  };
+
+  return (
+    <div style={card}>
+      <div style={{ fontSize: 13, fontWeight: 900 }}>
+        ANDAMENTO + CINQUINA SELEZIONATA
+      </div>
+      <div style={{ color: C.dim, fontSize: 10.5, margin: "4px 0 10px" }}>
+        Ultime {rows.length} estrazioni · continuo = storico reale · tratteggiato = proiezione selezionata
+      </div>
+
+      <div style={{ overflowX: "auto" }}>
+        <svg viewBox={`0 0 ${W} ${H}`} style={{ minWidth: 560, width: "100%", display: "block" }}>
+          {[10, 20, 30, 40].map(g => (
+            <g key={g}>
+              <line x1={PADX} x2={W - PADX} y1={y(g)} y2={y(g)}
+                stroke="#1b2340" strokeWidth="1" />
+              <text x={7} y={y(g) + 3} fontSize="9" fill={C.dim}>{g}</text>
+            </g>
+          ))}
+
+          {Array.from({ length: 5 }, (_, p) => (
+            <g key={p}>
+              <polyline
+                fill="none"
+                stroke={POS_COLORS[p]}
+                strokeWidth="1.7"
+                opacity="0.72"
+                points={rows.map((dr, i) => `${x(i)},${y(dr.n[p])}`).join(" ")}
+              />
+              {rows.map((dr, i) => (
+                <g key={i}>
+                  <circle cx={x(i)} cy={y(dr.n[p])} r="3.2" fill={POS_COLORS[p]} opacity="0.85" />
+                  <text
+                    x={x(i)}
+                    y={y(dr.n[p]) + labelDy(i, p)}
+                    textAnchor="middle"
+                    fontSize="9.5"
+                    fontWeight="700"
+                    fill={POS_COLORS[p]}
+                    fontFamily="ui-monospace, monospace"
+                  >
+                    {dr.n[p]}
+                  </text>
+                </g>
+              ))}
+            </g>
+          ))}
+
+          {selected.length === 5 && selected.map((n, p) => (
+            <g key={`projection-${p}`}>
+              <line
+                x1={PADX} x2={W - PADX}
+                y1={y(n)} y2={y(n)}
+                stroke={POS_COLORS[p]}
+                strokeWidth="2.2"
+                strokeDasharray="7 5"
+                opacity="0.95"
+              />
+              <circle
+                cx={W - PADX + 1}
+                cy={y(n)}
+                r="5"
+                fill={POS_COLORS[p]}
+                stroke={C.ink}
+                strokeWidth="1.2"
+              />
+              <text
+                x={W - PADX - 7}
+                y={y(n) - 7}
+                textAnchor="end"
+                fontSize="10"
+                fontWeight="900"
+                fill={POS_COLORS[p]}
+                fontFamily="ui-monospace, monospace"
+              >
+                {POS_LABELS[p]} = {n}
+              </text>
+            </g>
+          ))}
+
+          {rows.map((dr, i) => (
+            <text
+              key={i}
+              x={x(i)}
+              y={H - 9}
+              textAnchor="middle"
+              fontSize="9"
+              fill={C.dim}
+              transform={`rotate(-45 ${x(i)} ${H - 9})`}
+            >
+              {dr.d.split("-").slice(1).reverse().join("/")}
+            </text>
+          ))}
+        </svg>
+      </div>
+
+      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 7 }}>
+        {POS_LABELS.map((label, p) => (
+          <span key={label} style={{ fontSize: 10.5, color: POS_COLORS[p], fontWeight: 800 }}>
+            ● {label}{selected[p] ? ` = ${selected[p]}` : ""}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function TrendMemoryProjection({ draws = [] }) {
   const proposals = useMemo(
     () => draws.length ? makeProposals(draws) : null,
@@ -262,9 +444,9 @@ export default function TrendMemoryProjection({ draws = [] }) {
   const [tickets, setTickets] = useState([]);
   const [activeTicket, setActiveTicket] = useState(0);
 
-  const currentTickets = tickets.length ? tickets : (
-    proposals ? [proposals.trend] : []
-  );
+  const currentTickets = tickets.length
+    ? tickets
+    : (proposals ? [{ label: "TREND", nums: proposals.trend }] : []);
 
   const addProposal = (ticket, label) => {
     const clean = sortTicket(ticket);
@@ -288,13 +470,15 @@ export default function TrendMemoryProjection({ draws = [] }) {
   };
 
   const toggleNumber = n => {
-    if (!tickets.length) addManual();
+    if (!tickets.length) {
+      addManual();
+      return;
+    }
 
     const idx = Math.min(activeTicket, tickets.length - 1);
-    if (tickets.length === 0) return;
-
     const t = tickets[idx];
     const exists = t.nums.includes(n);
+
     if (exists) {
       updateTicket(idx, t.nums.filter(x => x !== n));
     } else if (t.nums.length < 5) {
@@ -307,36 +491,31 @@ export default function TrendMemoryProjection({ draws = [] }) {
     setActiveTicket(0);
   };
 
-  const graphTickets = currentTickets.filter(t => {
-    const nums = Array.isArray(t) ? t : t.nums;
-    return sortTicket(nums).length;
-  });
-
-  const selected = graphTickets.flatMap(t =>
-    Array.isArray(t) ? t : t.nums
-  );
-
-  const selectedSet = new Set(selected);
+  const selectedTicket = currentTickets[activeTicket] || currentTickets[0] || { nums: [] };
+  const selectedNums = sortTicket(Array.isArray(selectedTicket) ? selectedTicket : selectedTicket.nums);
 
   const currentTrend = proposals?.trend || [];
   const currentMemory = proposals?.memory8 || [];
 
   const currentPositionRanks = useMemo(() => {
     if (!draws.length) return {};
-    const maps = positionRankMap(draws, draws.length);
     return {
       trend: positionalRanksForTicket(draws, currentTrend),
       memory: positionalRanksForTicket(draws, proposals?.memory || [], draws.length),
       hybrid2: positionalRanksForTicket(draws, proposals?.hybrid2 || [], draws.length),
       hybrid4: positionalRanksForTicket(draws, proposals?.hybrid4 || [], draws.length),
       fusion: positionalRanksForTicket(draws, proposals?.fusion || [], draws.length),
-      maps,
     };
   }, [draws, currentTrend.join(","), currentMemory.join(","), proposals]);
 
   const historyRows = useMemo(
     () => historicalPositionalRows(draws, 20),
     [draws]
+  );
+
+  const persistenceRows = useMemo(
+    () => projectionPersistence(draws, selectedNums),
+    [draws, selectedNums.join(",")]
   );
 
   const titleDate = draws.length ? draws[draws.length - 1].d : "—";
@@ -395,11 +574,9 @@ export default function TrendMemoryProjection({ draws = [] }) {
       <div style={card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
-            <div style={{ fontSize: 13, fontWeight: 900 }}>
-              CINQUINE SELEZIONATE
-            </div>
+            <div style={{ fontSize: 13, fontWeight: 900 }}>CINQUINE SELEZIONATE</div>
             <div style={{ color: C.dim, fontSize: 10.5, marginTop: 3 }}>
-              Aggiungi una proposta oppure crea una cinquina manuale.
+              La cinquina attiva viene usata nel grafico e nella diagnostica P1→P5.
             </div>
           </div>
 
@@ -421,7 +598,7 @@ export default function TrendMemoryProjection({ draws = [] }) {
 
         {!tickets.length && (
           <div style={{ marginTop: 12, color: C.dim, fontSize: 11 }}>
-            Nessuna cinquina selezionata: usa uno dei pulsanti sopra.
+            Nessuna cinquina manuale: il grafico usa la TREND come cinquina attiva.
           </div>
         )}
 
@@ -451,7 +628,10 @@ export default function TrendMemoryProjection({ draws = [] }) {
               </button>
 
               <button
-                onClick={() => setTickets(prev => prev.filter((_, j) => j !== i))}
+                onClick={() => {
+                  setTickets(prev => prev.filter((_, j) => j !== i));
+                  setActiveTicket(Math.max(0, Math.min(activeTicket, tickets.length - 2)));
+                }}
                 style={{
                   border: 0,
                   background: "transparent",
@@ -471,7 +651,6 @@ export default function TrendMemoryProjection({ draws = [] }) {
                   n={t.nums[j] ?? "—"}
                   color={activeTicket === i ? C.amber : C.blue}
                   active={!!t.nums[j]}
-                  onClick={undefined}
                 />
               ))}
             </div>
@@ -501,26 +680,82 @@ export default function TrendMemoryProjection({ draws = [] }) {
           EDITOR RAPIDO · CINQUINA ATTIVA
         </div>
         <div style={{ color: C.dim, fontSize: 10.5, margin: "4px 0 9px" }}>
-          Seleziona fino a 5 numeri. Il grafico sotto si aggiorna immediatamente.
+          Seleziona fino a 5 numeri. Il grafico si aggiorna immediatamente.
         </div>
 
-        {tickets.length === 0 ? (
-          <div style={{ color: C.dim, fontSize: 11 }}>
-            Prima crea una cinquina.
-          </div>
-        ) : (
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {Array.from({ length: 40 }, (_, i) => i + 1).map(n => (
-              <Chip
-                key={n}
-                n={n}
-                active={tickets[activeTicket]?.nums.includes(n)}
-                color={C.amber}
-                onClick={() => toggleNumber(n)}
-              />
-            ))}
-          </div>
-        )}
+        <div style={{ display: "flex", flexWrap: "wrap" }}>
+          {Array.from({ length: 40 }, (_, i) => i + 1).map(n => (
+            <Chip
+              key={n}
+              n={n}
+              active={selectedNums.includes(n)}
+              color={C.amber}
+              onClick={() => toggleNumber(n)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <OverlayGraph draws={draws} ticket={selectedNums} />
+
+      <div style={card}>
+        <div style={{ fontSize: 13, fontWeight: 900 }}>
+          PERSISTENZA PER POSIZIONE · DIAGNOSTICA
+        </div>
+        <div style={{ color: C.dim, fontSize: 10.5, margin: "4px 0 10px" }}>
+          RUN = quante estrazioni consecutive hanno mantenuto lo stesso numero
+          nella posizione. Il dato è diagnostico: non esclude automaticamente il candidato.
+        </div>
+
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 10.5 }}>
+            <thead>
+              <tr>
+                <th style={{ textAlign: "left", padding: 6 }}>pos.</th>
+                <th style={{ padding: 6 }}>n.</th>
+                <th style={{ padding: 6 }}>RUN</th>
+                <th style={{ padding: 6 }}>30g</th>
+                <th style={{ padding: 6 }}>60g</th>
+                <th style={{ padding: 6 }}>90g</th>
+                <th style={{ padding: 6 }}>stato</th>
+              </tr>
+            </thead>
+            <tbody>
+              {persistenceRows.map(r => {
+                const stateColor =
+                  r.state === "PERSISTENTE" ? C.amber :
+                  r.state === "IN ESAURIMENTO" ? C.ok :
+                  C.dim;
+
+                return (
+                  <tr key={r.p} style={{ borderTop: `1px solid ${C.edge}` }}>
+                    <td style={{ padding: 7, color: POS_COLORS[r.p], fontWeight: 900 }}>
+                      {POS_LABELS[r.p]}
+                    </td>
+                    <td style={{ textAlign: "center", padding: 7, fontWeight: 900 }}>
+                      {r.n ?? "—"}
+                    </td>
+                    <td style={{ textAlign: "center", padding: 7, fontWeight: 900 }}>
+                      {r.run}
+                    </td>
+                    <td style={{ textAlign: "center", padding: 7 }}>
+                      {(r.r30.rate * 100).toFixed(1)}%
+                    </td>
+                    <td style={{ textAlign: "center", padding: 7 }}>
+                      {(r.r60.rate * 100).toFixed(1)}%
+                    </td>
+                    <td style={{ textAlign: "center", padding: 7 }}>
+                      {(r.r90.rate * 100).toFixed(1)}%
+                    </td>
+                    <td style={{ textAlign: "center", padding: 7, color: stateColor, fontWeight: 900 }}>
+                      {r.state}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div style={card}>
@@ -528,9 +763,8 @@ export default function TrendMemoryProjection({ draws = [] }) {
           NUMERO + RANK PER POSIZIONE
         </div>
         <div style={{ color: C.dim, fontSize: 10.5, margin: "4px 0 11px" }}>
-          Per ogni cinquina vedi il numero nella posizione P1→P5 e il suo rank
-          storico specifico di quella posizione. Rank 1 = posizione più frequente.
-          Il rank medio riassume la cinquina.
+          Rank storico specifico della posizione. Il dominio è corretto per P1→P5:
+          P1 1–36, P2 2–37, P3 3–38, P4 4–39, P5 5–40.
         </div>
 
         {!proposals ? (
@@ -598,18 +832,6 @@ export default function TrendMemoryProjection({ draws = [] }) {
             </table>
           </div>
         )}
-
-        <div style={{
-          marginTop: 10,
-          padding: 9,
-          borderRadius: 9,
-          background: "#101830",
-          color: C.dim,
-          fontSize: 10.5
-        }}>
-          Il rank è calcolato separatamente per P1, P2, P3, P4 e P5.
-          Non è il rank Trend globale del numero.
-        </div>
       </div>
 
       <div style={card}>
@@ -617,9 +839,7 @@ export default function TrendMemoryProjection({ draws = [] }) {
           STORICO RANK PER POSIZIONE
         </div>
         <div style={{ color: C.dim, fontSize: 10.5, margin: "4px 0 10px" }}>
-          Ultime 20 estrazioni. Sotto ogni numero compare il rank che quel numero
-          aveva nella propria posizione, calcolato usando solo le estrazioni precedenti.
-          A destra il rank medio della cinquina.
+          Ultime 20 estrazioni, con rank calcolato usando solo il prefisso precedente.
         </div>
 
         <div style={{ overflowX: "auto" }}>
@@ -670,161 +890,6 @@ export default function TrendMemoryProjection({ draws = [] }) {
             </tbody>
           </table>
         </div>
-
-        <div style={{ marginTop: 9, color: C.dim, fontSize: 10 }}>
-          Esempio di lettura: <b style={{ color: C.ink }}>16 / 7</b> significa
-          numero 16 nella posizione indicata e rank storico 7 per quella posizione.
-          Un rank basso indica una presenza storica più alta in quella specifica posizione.
-        </div>
-      </div>
-
-      <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 900 }}>
-          PROIEZIONE GRAFICA · 1 → 40
-        </div>
-        <div style={{ color: C.dim, fontSize: 10.5, margin: "4px 0 12px" }}>
-          Ogni riga rappresenta una cinquina selezionata. La posizione orizzontale
-          corrisponde al numero.
-        </div>
-
-        {!graphTickets.length ? (
-          <div style={{ color: C.dim, fontSize: 11 }}>
-            Seleziona almeno una cinquina.
-          </div>
-        ) : (
-          <div style={{ overflowX: "auto" }}>
-            <div style={{ minWidth: 760 }}>
-              <div style={{
-                display: "grid",
-                gridTemplateColumns: "100px repeat(40, 1fr)",
-                gap: 2,
-                marginBottom: 5,
-              }}>
-                <div />
-                {Array.from({ length: 40 }, (_, i) => (
-                  <div key={i} style={{
-                    textAlign: "center",
-                    fontSize: 8,
-                    color: C.dim,
-                  }}>
-                    {i + 1}
-                  </div>
-                ))}
-              </div>
-
-              {graphTickets.map((ticket, row) => {
-                const nums = sortTicket(Array.isArray(ticket) ? ticket : ticket.nums);
-                const label = Array.isArray(ticket)
-                  ? `CINQUINA ${row + 1}`
-                  : ticket.label;
-
-                return (
-                  <div
-                    key={row}
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "100px repeat(40, 1fr)",
-                      gap: 2,
-                      marginBottom: 6,
-                      alignItems: "center",
-                    }}
-                  >
-                    <div style={{
-                      fontSize: 9.5,
-                      color: C.ink,
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    }}>
-                      {label}
-                    </div>
-
-                    {Array.from({ length: 40 }, (_, i) => {
-                      const n = i + 1;
-                      const hit = nums.includes(n);
-
-                      return (
-                        <div
-                          key={n}
-                          style={{
-                            height: 24,
-                            borderRadius: 4,
-                            background: hit ? C.amber : "#0f1526",
-                            border: `1px solid ${hit ? C.amber : "#1b2340"}`,
-                            boxSizing: "border-box",
-                          }}
-                        />
-                      );
-                    })}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {selectedSet.size > 0 && (
-          <div style={{ marginTop: 12, fontSize: 11 }}>
-            <span style={{ color: C.dim }}>Numeri coperti dall'insieme selezionato:</span>
-            <b style={{ marginLeft: 6 }}>
-              {[...selectedSet].sort((a, b) => a - b).join(" · ")}
-            </b>
-            <span style={{ color: C.dim, marginLeft: 8 }}>
-              ({selectedSet.size} distinti)
-            </span>
-          </div>
-        )}
-      </div>
-
-      <div style={card}>
-        <div style={{ fontSize: 13, fontWeight: 900 }}>
-          PROIEZIONE PER POSIZIONE P1 → P5
-        </div>
-        <div style={{ color: C.dim, fontSize: 10.5, margin: "4px 0 10px" }}>
-          Le cinquine vengono ordinate numericamente: P1 è il minimo, P5 il massimo.
-          Non sono posizioni fisiche indipendenti.
-        </div>
-
-        {!graphTickets.length ? (
-          <div style={{ color: C.dim, fontSize: 11 }}>Nessuna cinquina.</div>
-        ) : (
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(5, 1fr)",
-            gap: 8,
-          }}>
-            {Array.from({ length: 5 }, (_, p) => (
-              <div
-                key={p}
-                style={{
-                  background: "#101830",
-                  border: `1px solid ${C.edge}`,
-                  borderRadius: 10,
-                  padding: 9,
-                }}
-              >
-                <div style={{ color: C.dim, fontSize: 10 }}>P{p + 1}</div>
-
-                {graphTickets.map((ticket, i) => {
-                  const nums = sortTicket(Array.isArray(ticket) ? ticket : ticket.nums);
-                  return (
-                    <div
-                      key={i}
-                      style={{
-                        marginTop: 6,
-                        fontFamily: "ui-monospace, monospace",
-                        fontWeight: 800,
-                        fontSize: 13,
-                      }}
-                    >
-                      {nums[p] ?? "—"}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
       <div style={{
@@ -835,9 +900,8 @@ export default function TrendMemoryProjection({ draws = [] }) {
       }}>
         <b style={{ color: C.ink }}>Nota metodologica.</b>{" "}
         Trend e Memory sono rappresentazioni sperimentali dello stato storico.
-        La proiezione grafica serve a confrontare e organizzare le cinquine scelte;
-        non attribuisce una probabilità individuale ai numeri e non implica che
-        una cinquina sia "più probabile" in senso matematico.
+        Il grafico confronta visivamente la cinquina selezionata con l'andamento
+        reale; la diagnostica RUN/persistenza non costituisce un'esclusione automatica.
       </div>
     </div>
   );
