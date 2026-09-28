@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from "react";
 import RAW from "./data.json";
 import Verifica2 from "./Verifica2";
 import TrendEngine from "./TrendEngine";
+import TrendMemoryProjectionRank from "./TrendMemoryProjection_Rank";
 
 /* ============ COSTANTI ============ */
 const POS_COLORS = ["#ff4d6d", "#4fc46a", "#6a8bff", "#ffa040", "#c07ef5"];
@@ -321,7 +322,7 @@ export default function VinciCasaLab() {
             {inN.map((v, i) => (
               <input
                 key={i} inputMode="numeric" value={v}
-                onChange={(e) => setInN((a) => a.map((x, j) => (j === i ? e.target.value.replace(/\D/g, "").slice(0, 2) : x)))}
+                onChange={(e) => setInN((a) => a.map((x, j) => (j === i ? e.target.value.replace(/\D/g, "").slice(0, 2) : x))}
                 placeholder={POS_LABELS[i]}
                 style={{ width: 44, background: "#0f1526", border: "1px solid " + T.edge, color: POS_COLORS[i], borderRadius: 8, padding: "8px 4px", fontSize: 14, textAlign: "center", fontFamily: "ui-monospace, monospace", fontWeight: 700 }}
               />
@@ -347,6 +348,7 @@ export default function VinciCasaLab() {
         <TabBtn id="gioca" label="GIOCA" />
         <TabBtn id="verifica" label="VERIFICA 2.0" />
         <TabBtn id="trend" label="TREND" />
+        <TabBtn id="proiezione" label="PROIEZIONE" />
         <TabBtn id="matrice" label="GRIGLIA" />
       </div>
 
@@ -444,7 +446,7 @@ export default function VinciCasaLab() {
                   {(() => {
                     const fuori = Object.keys(monthCounts[p]).map(Number).filter((x) => !(nucleoNow[p] || []).includes(x)).sort((a, b) => a - b);
                     return fuori.length > 0 ? <div style={{ fontSize: 11.5, color: T.dim, marginTop: 2 }}>
-                      fuori nucleo questo mese: {fuori.map((x) => x + "\u00d7" + monthCounts[p][x]).join(", ")}
+                      fuori nucleo questo mese: {fuori.map((x) => x + "×" + monthCounts[p][x]).join(", ")}
                     </div> : null;
                   })()}
                 </div>
@@ -535,6 +537,8 @@ export default function VinciCasaLab() {
         {tab === "verifica" && <Verifica2 draws={draws} />}
 
         {tab === "trend" && <TrendEngine draws={draws} />}
+
+        {tab === "proiezione" && <TrendMemoryProjectionRank draws={draws} />}
 
         {tab === "matrice" && (() => {
           const rankBg = (r) => (r <= 3 ? "#12512b" : r <= 8 ? "#16412a" : r <= 12 ? "#1a2a2a" : r <= 18 ? "#1a2138" : "#12172a");
