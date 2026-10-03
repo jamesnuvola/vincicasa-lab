@@ -185,6 +185,18 @@ function sonarAnalogCore(draws) {
   };
 }
 
+const Card = ({ title, children, sub }) => (
+  <div style={{ background: T.card, border: "1px solid " + T.edge, borderRadius: 14, padding: 14, marginBottom: 14 }}>
+    {title && (
+      <div style={{ marginBottom: 10 }}>
+        <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: T.ink }}>{title}</div>
+        {sub && <div style={{ fontSize: 11.5, color: T.dim, marginTop: 2 }}>{sub}</div>}
+      </div>
+    )}
+    {children}
+  </div>
+);
+
 function SonarOverlayGraph({ draws, ticket }) {
   const rows = draws.slice(-15);
   const selected = [...new Set(ticket || [])].filter((n) => Number.isInteger(n)).sort((a, b) => a - b);
@@ -458,17 +470,7 @@ export default function VinciCasaLab() {
     </button>
   );
 
-  const Card = ({ title, children, sub }) => (
-    <div style={{ background: T.card, border: "1px solid " + T.edge, borderRadius: 14, padding: 14, marginBottom: 14 }}>
-      {title && (
-        <div style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: T.ink }}>{title}</div>
-          {sub && <div style={{ fontSize: 11.5, color: T.dim, marginTop: 2 }}>{sub}</div>}
-        </div>
-      )}
-      {children}
-    </div>
-  );
+
 
   const labelDy = (col, p) => {
     const v = last15[col].n[p];
@@ -503,7 +505,7 @@ export default function VinciCasaLab() {
             {inN.map((v, i) => (
               <input
                 key={i} inputMode="numeric" value={v}
-                onChange={(e) => setInN((a) => a.map((x, j) => (j === i ? e.target.value.replace(/\D/g, "").slice(0, 2) : x))}
+                onChange={(e) => setInN((a) => a.map((x, j) => (j === i ? e.target.value.replace(/\D/g, "").slice(0, 2) : x)))}
                 placeholder={POS_LABELS[i]}
                 style={{ width: 44, background: "#0f1526", border: "1px solid " + T.edge, color: POS_COLORS[i], borderRadius: 8, padding: "8px 4px", fontSize: 14, textAlign: "center", fontFamily: "ui-monospace, monospace", fontWeight: 700 }}
               />
