@@ -503,7 +503,7 @@ export default function VinciCasaLab() {
             {inN.map((v, i) => (
               <input
                 key={i} inputMode="numeric" value={v}
-                onChange={(e) => setInN((a) => a.map((x, j) => (j === i ? e.target.value.replace(/\D/g, "").slice(0, 2) : x)))}
+                onChange={(e) => setInN((a) => a.map((x, j) => (j === i ? e.target.value.replace(/\D/g, "").slice(0, 2) : x))}
                 placeholder={POS_LABELS[i]}
                 style={{ width: 44, background: "#0f1526", border: "1px solid " + T.edge, color: POS_COLORS[i], borderRadius: 8, padding: "8px 4px", fontSize: 14, textAlign: "center", fontFamily: "ui-monospace, monospace", fontWeight: 700 }}
               />
