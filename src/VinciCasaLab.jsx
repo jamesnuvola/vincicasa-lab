@@ -51,6 +51,224 @@ function ritornoPremio(p, n, k) {
   return base + (prof.h.includes(k) ? 3 : 0);
 }
 
+/* ============ SONAR DECISION ENGINE ============ */
+function overlapCount(a, b) {
+  const sb = new Set(b);
+  return a.reduce((n, x) => n + (sb.has(x) ? 1 : 0), 0);
+}
+
+function sonarTransitionProfile(draws, current) {
+  const last = draws.length - 1;
+  const recent = draws.slice(Math.max(0, last - 4), last + 1);
+  const freq = {};
+  for (const d of recent) for (const n of d.n) freq[n] = (freq[n] || 0) + 1;
+
+  const transition = {};
+  for (let i = 0; i < draws.length - 1; i++) {
+    const a = new Set(draws[i].n);
+    const b = new Set(draws[i + 1].n);
+    for (const n of a) {
+      if (!transition[n]) transition[n] = { stay: 0, out: 0, next: {} };
+      if (b.has(n)) transition[n].stay += 1;
+      else transition[n].out += 1;
+    }
+    for (const n of b) {
+      if (!transition[n]) transition[n] = { stay: 0, out: 0, next: {} };
+      transition[n].next[n] = (transition[n].next[n] || 0) + 1;
+    }
+  }
+
+  const rows = Array.from({ length: 40 }, (_, i) => i + 1).map((n) => {
+    const t = transition[n] || { stay: 0, out: 0 };
+    const total = t.stay + t.out;
+    const persistence = total ? t.stay / total : 0;
+    const recentPresence = freq[n] || 0;
+    const inCurrent = current.includes(n);
+    return { n, persistence, recentPresence, inCurrent };
+  });
+  return rows;
+}
+
+function sonarAnalogCore(draws) {
+  if (draws.length < 8) return {
+    regime: "DATI INSUFFICIENTI",
+    current: draws[draws.length - 1]?.n || [],
+    analogs: [], core: [], completion: [], ticket: [], trajectory: [],
+  };
+
+  const current = draws[draws.length - 1].n;
+  const candidates = [];
+  for (let i = 0; i < draws.length - 1; i++) {
+    const ov = overlapCount(current, draws[i].n);
+    if (ov >= 3) {
+      const successor = draws[i + 1];
+      candidates.push({
+        index: i,
+        date: draws[i].d,
+        overlap: ov,
+        successor: successor.n,
+        successorDate: successor.d,
+        weight: Math.pow(ov, 3),
+      });
+    }
+  }
+
+  const votes = {};
+  for (const a of candidates) {
+    for (const n of a.successor) {
+      votes[n] = (votes[n] || 0) + a.weight;
+    }
+  }
+  const analogRank = Object.keys(votes).map(Number).sort((a, b) => votes[b] - votes[a] || a - b);
+  const maxOverlap = candidates.length ? Math.max(...candidates.map((x) => x.overlap)) : 0;
+  const best = candidates.filter((x) => x.overlap === maxOverlap).slice(-6).reverse();
+
+  const trajectory = sonarTransitionProfile(draws, current);
+  const trajMap = Object.fromEntries(trajectory.map((x) => [x.n, x]));
+
+  // CORE: preserve the strongest successor signal from historical 3+ overlap analogs.
+  const core = analogRank
+    .slice(0, 12)
+    .sort((a, b) => {
+      const va = votes[a] * (1 + 0.15 * trajMap[a].recentPresence);
+      const vb = votes[b] * (1 + 0.15 * trajMap[b].recentPresence);
+      return vb - va || a - b;
+    })
+    .slice(0, 3);
+
+  // Completion layers: independent signals, used only after the analog core.
+  const recent14 = draws.slice(-14);
+  const rel = {};
+  for (const d of recent14) for (const n of d.n) rel[n] = (rel[n] || 0) + 1;
+  const completionPool = Array.from({ length: 40 }, (_, i) => i + 1)
+    .filter((n) => !core.includes(n))
+    .map((n) => ({
+      n,
+      analog: votes[n] || 0,
+      relation: rel[n] || 0,
+      persistence: trajMap[n].persistence,
+      recent: trajMap[n].recentPresence,
+    }))
+    .sort((a, b) => {
+      const sa = 0.55 * a.analog + 1.8 * a.relation + 2.2 * a.persistence + 0.7 * a.recent;
+      const sb = 0.55 * b.analog + 1.8 * b.relation + 2.2 * b.persistence + 0.7 * b.recent;
+      return sb - sa || a.n - b.n;
+    });
+
+  const completion = completionPool.slice(0, 2).map((x) => x.n);
+  let ticket = [...core, ...completion].sort((a, b) => a - b);
+
+  // Keep the ticket structurally distinct: if completion duplicates a very strong
+  // analog successor, replace only the weaker completion slot with the next candidate.
+  if (new Set(ticket).size < 5) {
+    for (const x of completionPool) {
+      if (!ticket.includes(x.n)) { ticket.push(x.n); ticket = [...new Set(ticket)].sort((a, b) => a - b); }
+      if (ticket.length === 5) break;
+    }
+  }
+
+  const regime = maxOverlap >= 3 && candidates.length >= 1
+    ? (maxOverlap >= 4 ? "ANALOG CORE · FORTE" : "ANALOG CORE · ATTIVO")
+    : "MIXED / COMPLETION";
+
+  return {
+    regime,
+    current,
+    analogs: best,
+    core,
+    completion,
+    ticket: ticket.slice(0, 5),
+    trajectory: trajectory.filter((x) => x.inCurrent).sort((a, b) => b.recentPresence - a.recentPresence),
+    votes,
+    maxOverlap,
+    candidateCount: candidates.length,
+  };
+}
+
+function SonarOverlayGraph({ draws, ticket }) {
+  const rows = draws.slice(-15);
+  const selected = [...new Set(ticket || [])].filter((n) => Number.isInteger(n)).sort((a, b) => a - b);
+  if (!rows.length || selected.length !== 5) return null;
+
+  const W = 820, H = 380, PADL = 34, PADR = 34, PADT = 28, PADB = 52;
+  const plotW = W - PADL - PADR;
+  const plotH = H - PADT - PADB;
+  const totalPoints = rows.length + 1;
+  const x = (i) => PADL + (i * plotW) / (totalPoints - 1);
+  const y = (v) => PADT + ((40 - v) * plotH) / 40;
+  const labelDy = (i, p) => {
+    const v = rows[i].n[p];
+    for (let q = 0; q < 5; q++) {
+      if (q !== p && rows[i].n[q] > v && rows[i].n[q] - v <= 3) return 15;
+    }
+    return -8;
+  };
+  const projectionPath = (p) => {
+    const x0 = x(rows.length - 1);
+    const x1 = x(rows.length);
+    const y0 = y(rows[rows.length - 1].n[p]);
+    const y1 = y(selected[p]);
+    const xm = (x0 + x1) / 2;
+    const yc = y0 + (y1 - y0) * 0.50;
+    return `M ${x0} ${y0} Q ${xm} ${yc} ${x1} ${y1}`;
+  };
+
+  return (
+    <Card title="Andamento + onda di proiezione" sub="15 estrazioni reali · tratto finale = cinquina SONAR proposta">
+      <div style={{ overflowX: "auto" }}>
+        <svg viewBox={`0 0 ${W} ${H}`} style={{ minWidth: 620, width: "100%", display: "block" }}>
+          {[5, 10, 20, 30, 40].map((g) => (
+            <g key={g}>
+              <line x1={PADL} x2={W - PADR} y1={y(g)} y2={y(g)} stroke="#1b2340" strokeWidth="1" />
+              <text x={7} y={y(g) + 3} fontSize="9" fill={T.dim}>{g}</text>
+            </g>
+          ))}
+
+          {Array.from({ length: 5 }, (_, p) => (
+            <g key={p}>
+              <polyline
+                fill="none"
+                stroke={POS_COLORS[p]}
+                strokeWidth="1.8"
+                opacity="0.72"
+                points={rows.map((dr, i) => `${x(i)},${y(dr.n[p])}`).join(" ")}
+              />
+              {rows.map((dr, i) => (
+                <g key={i}>
+                  <circle cx={x(i)} cy={y(dr.n[p])} r="3.1" fill={POS_COLORS[p]} opacity="0.88" />
+                  <text x={x(i)} y={y(dr.n[p]) + labelDy(i, p)} textAnchor="middle" fontSize="9.5" fontWeight="700" fill={POS_COLORS[p]} fontFamily="ui-monospace, monospace">
+                    {dr.n[p]}
+                  </text>
+                </g>
+              ))}
+
+              <path d={projectionPath(p)} fill="none" stroke={POS_COLORS[p]} strokeWidth="3" strokeDasharray="7 5" opacity="0.98" />
+              <circle cx={x(rows.length)} cy={y(selected[p])} r="5" fill={POS_COLORS[p]} />
+              <text x={x(rows.length)} y={y(selected[p]) - 10} textAnchor="middle" fontSize="11" fontWeight="900" fill={POS_COLORS[p]} fontFamily="ui-monospace, monospace">
+                {selected[p]}
+              </text>
+            </g>
+          ))}
+
+          {rows.map((dr, i) => (
+            <text key={i} x={x(i)} y={H - 10} textAnchor="middle" fontSize="8.5" fill={T.dim}
+              transform={`rotate(-45 ${x(i)} ${H - 10})`}>
+              {fmtD(dr.d)}
+            </text>
+          ))}
+          <text x={x(rows.length)} y={H - 10} textAnchor="middle" fontSize="9" fontWeight="800" fill={T.amber}
+            transform={`rotate(-45 ${x(rows.length)} ${H - 10})`}>
+            {fmtD(nextDate(rows[rows.length - 1].d))}
+          </text>
+        </svg>
+      </div>
+      <div style={{ display: "flex", gap: 12, marginTop: 5, flexWrap: "wrap" }}>
+        {POS_LABELS.map((l, p) => <span key={p} style={{ fontSize: 11, color: POS_COLORS[p], fontWeight: 700 }}>● {l} → {selected[p]}</span>)}
+      </div>
+    </Card>
+  );
+}
+
 /* ============ COMPONENTE ============ */
 export default function VinciCasaLab() {
   const [tab, setTab] = useState("andamento");
@@ -62,7 +280,6 @@ export default function VinciCasaLab() {
   const [wRit, setWRit] = useState(10);
   const [wAtt, setWAtt] = useState(10);
   const [nucMesi, setNucMesi] = useState(3);
-  const [gen, setGen] = useState([]);
   const [inD, setInD] = useState("");
   const [inN, setInN] = useState(["", "", "", "", ""]);
   const [inErr, setInErr] = useState("");
@@ -179,44 +396,8 @@ export default function VinciCasaLab() {
     [draws, nucMesi]
   );
 
-  const giocaOra = useMemo(() => {
-    const pick = [];
-    let prev = 0;
-    for (let p = 0; p < 5; p++) {
-      const maxAllowed = 40 - (4 - p);
-      const cand = ranksNow[p].filter((r) => r.n > prev && r.n <= maxAllowed);
-      if (!cand.length) return null;
-      pick.push(cand[0]);
-      prev = cand[0].n;
-    }
-    return pick;
-  }, [ranksNow]);
-
-  const generaCinquina = () => {
-    for (let tent = 0; tent < 80; tent++) {
-      const c = [];
-      let prev = 0, okAll = true;
-      for (let p = 0; p < 5; p++) {
-        const maxAllowed = 40 - (4 - p);
-        const cand = ranksNow[p].filter((r) => r.n > prev && r.n <= maxAllowed).slice(0, 12);
-        if (!cand.length) { okAll = false; break; }
-        const ws = cand.map((r) => Math.exp(r.sc / 25));
-        const tot = ws.reduce((a, b) => a + b, 0);
-        let x = Math.random() * tot, idx = 0;
-        for (; idx < ws.length - 1 && x > ws[idx]; idx++) x -= ws[idx];
-        c.push(cand[idx].n);
-        prev = cand[idx].n;
-      }
-      if (!okAll) continue;
-      if (isCrowded(c)) continue;
-      const key = c.join("-");
-      if (gen.some((g) => g.c.join("-") === key)) continue;
-      if (draws.slice(-90).some((dr) => dr.n.join("-") === key)) continue;
-      const rk = c.map((n, p) => ranksNow[p].find((r) => r.n === n).rank);
-      setGen((g) => [{ c, rk }, ...g].slice(0, 8));
-      return;
-    }
-  };
+  const [sonarTick, setSonarTick] = useState(0);
+  const sonar = useMemo(() => sonarAnalogCore(draws), [draws, sonarTick]);
 
   const addDraw = () => {
     setInErr("");
@@ -322,7 +503,7 @@ export default function VinciCasaLab() {
             {inN.map((v, i) => (
               <input
                 key={i} inputMode="numeric" value={v}
-                onChange={(e) => setInN((a) => a.map((x, j) => (j === i ? e.target.value.replace(/\D/g, "").slice(0, 2) : x)))}
+                onChange={(e) => setInN((a) => a.map((x, j) => (j === i ? e.target.value.replace(/\D/g, "").slice(0, 2) : x))}
                 placeholder={POS_LABELS[i]}
                 style={{ width: 44, background: "#0f1526", border: "1px solid " + T.edge, color: POS_COLORS[i], borderRadius: 8, padding: "8px 4px", fontSize: 14, textAlign: "center", fontFamily: "ui-monospace, monospace", fontWeight: 700 }}
               />
@@ -345,7 +526,7 @@ export default function VinciCasaLab() {
         <TabBtn id="andamento" label="ANDAMENTO" />
         <TabBtn id="nucleo" label="NUCLEO" />
         <TabBtn id="rank" label="RANK" />
-        <TabBtn id="gioca" label="GIOCA" />
+        <TabBtn id="gioca" label="SONAR" />
         <TabBtn id="verifica" label="VERIFICA 2.0" />
         <TabBtn id="trend" label="TREND" />
         <TabBtn id="proiezione" label="PROIEZIONE" />
@@ -495,41 +676,66 @@ export default function VinciCasaLab() {
 
         {tab === "gioca" && (
           <>
-            <Card title="Gioca ora" sub={"top rank per posizione, con vincolo d'ordine · pesi correnti · " + curMonth}>
-              {giocaOra && (
-                <>
-                  <div style={{ textAlign: "center", margin: "6px 0 10px" }}>
-                    {giocaOra.map((r, p) => <Chip key={p} n={r.n} color={POS_COLORS[p]} ring={r.at} />)}
-                  </div>
-                  <div style={{ fontSize: 12, color: T.dim, textAlign: "center" }}>
-                    {isCrowded(giocaOra.map((r) => r.n)) ? "⚠ pattern affollato: " + isCrowded(giocaOra.map((r) => r.n)) : "✓ combinazione fuori dai pattern affollati"}
-                    {" · bordo ambra = numero atteso"}
-                  </div>
-                </>
-              )}
-            </Card>
-            <Card title="Crea cinquina" sub="campiona dai rank (top 12 per posizione), scarta pattern affollati e duplicati recenti">
-              <button onClick={generaCinquina}
-                style={{ background: T.amber, color: "#1a1405", border: "none", borderRadius: 10, padding: "10px 16px", fontWeight: 800, fontSize: 14, cursor: "pointer", width: "100%" }}>
-                Genera
+            <Card title="SONAR — Decision Engine" sub="Analog Core → traiettoria → completamento · calcolo deterministico">
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 10 }}>
+                <span style={{ fontSize: 11, color: T.dim }}>REGIME</span>
+                <span style={{ fontSize: 12, fontWeight: 800, color: T.amber }}>{sonar.regime}</span>
+                <span style={{ fontSize: 11, color: T.dim }}>· analoghi ≥3: {sonar.candidateCount || 0}</span>
+                <span style={{ fontSize: 11, color: T.dim }}>· overlap max: {sonar.maxOverlap || 0}</span>
+              </div>
+              <div style={{ textAlign: "center", margin: "8px 0 12px" }}>
+                {sonar.ticket.map((n) => <Chip key={n} n={n} color={T.amber} />)}
+              </div>
+              <div style={{ textAlign: "center", fontSize: 11.5, color: T.dim, lineHeight: 1.45 }}>
+                Cinquina SONAR calcolata senza casualità. Il blocco CORE viene dall'analogia storica; i numeri di completamento entrano solo dopo il CORE.
+              </div>
+              <button onClick={() => setSonarTick((x) => x + 1)}
+                style={{ marginTop: 10, background: T.amber, color: "#1a1405", border: "none", borderRadius: 9, padding: "8px 14px", fontWeight: 800, fontSize: 12, cursor: "pointer", width: "100%" }}>
+                Ricalcola SONAR
               </button>
-              {gen.map((g, i) => (
-                <div key={i} style={{ marginTop: 10, paddingTop: 8, borderTop: i > 0 ? "1px solid #1b2340" : "none", opacity: i === 0 ? 1 : 0.75 }}>
-                  <div style={{ display: "flex", justifyContent: "center", gap: 2 }}>
-                    {g.c.map((n, p) => (
-                      <div key={p} style={{ textAlign: "center" }}>
-                        <Chip n={n} color={POS_COLORS[p]} />
-                        <div style={{ fontSize: 9.5, fontFamily: "ui-monospace, monospace", color: g.rk[p] <= 5 ? T.ok : g.rk[p] <= 10 ? T.amber : T.dim }}>
-                          r{g.rk[p]}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ textAlign: "center", fontSize: 10.5, color: T.dim, marginTop: 3 }}>
-                    somma rank {g.rk.reduce((a, b) => a + b, 0)} · {g.rk.filter((r) => r <= 10).length}/5 in top-10
-                  </div>
+            </Card>
+
+            <SonarOverlayGraph draws={draws} ticket={sonar.ticket} />
+
+            <Card title="Analog Core" sub="successori dei precedenti con sovrapposizione ≥3; peso = overlap³">
+              {sonar.analogs.length === 0 ? (
+                <div style={{ color: T.dim, fontSize: 12.5 }}>Nessun analogo storico con sovrapposizione sufficiente.</div>
+              ) : sonar.analogs.map((a, i) => (
+                <div key={a.index} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 7 }}>
+                  <span style={{ width: 18, color: T.dim, fontSize: 11 }}>{i + 1}</span>
+                  <span style={{ width: 70, fontSize: 11, color: T.dim }}>{fmtD(a.date)}</span>
+                  <span style={{ width: 38, fontSize: 11, fontWeight: 800, color: T.amber }}>ov{a.overlap}</span>
+                  <span style={{ flex: 1, fontFamily: "ui-monospace, monospace", fontSize: 12 }}>{a.successor.join(" · ")}</span>
+                  <span style={{ fontSize: 10, color: T.dim }}>{fmtD(a.successorDate)}</span>
                 </div>
               ))}
+              <div style={{ marginTop: 9, fontSize: 12, color: T.dim }}>
+                <b style={{ color: T.ink }}>CORE:</b>{" "}{sonar.core.join(" · ") || "—"}
+              </div>
+            </Card>
+
+            <Card title="Traiettoria" sub="lettura della persistenza recente dei numeri dell'ultima estrazione">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {sonar.trajectory.map((r) => (
+                  <div key={r.n} style={{ background: "#101830", border: "1px solid " + T.edge, borderRadius: 9, padding: "7px 9px", minWidth: 70, textAlign: "center" }}>
+                    <div style={{ fontSize: 17, fontWeight: 800, fontFamily: "ui-monospace, monospace" }}>{r.n}</div>
+                    <div style={{ fontSize: 10, color: T.dim }}>{r.recentPresence}/5 recenti</div>
+                    <div style={{ fontSize: 10, color: r.persistence >= 0.5 ? T.ok : T.warn }}>stay {(100 * r.persistence).toFixed(0)}%</div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card title="Completamento" sub="Relation + persistenza + segnale analogico, applicati solo dopo il CORE">
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                {sonar.completion.map((n) => <Chip key={n} n={n} color={T.ok} />)}
+              </div>
+            </Card>
+
+            <Card title="Nota metodologica" sub="uso corretto del motore">
+              <div style={{ fontSize: 12.5, color: T.dim, lineHeight: 1.55 }}>
+                SONAR tratta l'analogia storica come segnale principale quando esiste un precedente con almeno 3 numeri in comune. Trend, relazione e persistenza non possono sostituire il CORE: servono a completare la cinquina. Il risultato è esplorativo e non costituisce una previsione garantita dell'estrazione successiva.
+              </div>
             </Card>
           </>
         )}
