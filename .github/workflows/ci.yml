@@ -1,0 +1,32 @@
+name: Test VinciCasa Lab
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install data-generation dependency
+        run: pip install numpy
+      - name: Audit canonical historical archive
+        run: python scripts/audit_dataset.py
+      - name: Rebuild generated app data
+        run: python scripts/rigenera_dati.py
+      - name: Audit generated app data
+        run: python scripts/audit_dataset.py --check-json
+      - name: Build web application
+        run: npm install && npm run build
