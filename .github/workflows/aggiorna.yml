@@ -27,8 +27,14 @@ jobs:
       - name: Scarica nuove estrazioni
         run: python scripts/aggiorna_estrazioni.py
 
+      - name: Verifica integrità archivio
+        run: python scripts/audit_dataset.py
+
       - name: Rigenera i dati dell'app
         run: python scripts/rigenera_dati.py
+
+      - name: Verifica coerenza dati generati
+        run: python scripts/audit_dataset.py --check-json
 
       - name: Commit se ci sono novita
         id: commit
