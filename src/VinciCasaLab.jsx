@@ -528,7 +528,7 @@ export default function VinciCasaLab() {
         <TabBtn id="andamento" label="ANDAMENTO" />
         <TabBtn id="nucleo" label="NUCLEO" />
         <TabBtn id="rank" label="RANK" />
-        <TabBtn id="gioca" label="SONAR" />
+        <TabBtn id="gioca" label="GIOCA" />
         <TabBtn id="verifica" label="VERIFICA 2.0" />
         <TabBtn id="trend" label="TREND" />
         <TabBtn id="proiezione" label="PROIEZIONE" />

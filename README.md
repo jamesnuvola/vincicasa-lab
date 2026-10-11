@@ -1,62 +1,68 @@
-# VinciCasa Lab
+# VinciCasa Lab · SONAR
 
-Laboratorio di verifica della strategia nucleo per VinciCasa (5 numeri da 40, un'estrazione al giorno).
+Laboratorio statistico per VinciCasa (5 numeri distinti e crescenti da 1 a 40). L'obiettivo è verificare metodi e segnali su estrazioni successive, evitando di usare informazioni future durante i test. **Le analisi sono esplorative: non garantiscono né dimostrano la previsione delle estrazioni future.**
 
-Non prevede le estrazioni: mostra la struttura reale del gioco, costruisce un rank per posizione
-con gli indicatori scelti, e **registra il rank che ogni numero aveva prima di uscire** — così la
-strategia si verifica sulle estrazioni future, non a posteriori sullo storico.
-
-## Cosa mostra
+## Schede dell'app
 
 | Scheda | Contenuto |
 |---|---|
-| **Andamento** | Ultime 15 estrazioni, una linea tratteggiata per posizione con il numero stampato su ogni punto. Sotto: delta di ogni posizione rispetto all'estrazione precedente e fascia di P1/P5 (zona forte / media / fuori zona). |
-| **Nucleo** | Nucleo per posizione (numeri usciti in tutti i 2 o 3 mesi precedenti). Bordo ambra = numero del nucleo non ancora uscito nel mese in corso. |
-| **Rank** | Classifica per posizione: pavimento (frequenza storica, normalizzata 0–100) + premio RITORNO + bonus attesi. I due pesi si regolano con gli slider. |
-| **Gioca** | "Gioca ora": cinquina dai top rank con vincolo d'ordine e controllo anti-affollamento. Generatore che campiona dai rank scartando pattern affollati e duplicati recenti. |
-| **Verifica** | Per ogni estrazione, il rank che il numero uscito aveva **prima** dell'estrazione, calcolato con i soli dati precedenti. Verde = era in top-5, ambra = top-10. Sotto, la distribuzione per fasce di rank. |
+| **ANDAMENTO** | Ultime 15 estrazioni, grafico per posizione P1–P5, numeri annotati, variazioni rispetto all'estrazione precedente e fasce storiche. |
+| **NUCLEO** | Numeri comparsi in ciascuno dei 2 o 3 mesi precedenti, per posizione. Il bordo ambra segnala gli attesi ancora non usciti nel mese corrente. |
+| **RANK** | Classifiche P1–P5 con frequenza storica, ritorno e bonus attesi; i pesi sono regolabili. |
+| **GIOCA** | Motore SONAR: analoghi storici, core, traiettoria e completamento. Mostra la cinquina e gli analoghi usati, con grafico delle ultime 15 estrazioni e tratto di proiezione. |
+| **VERIFICA 2.0** | Walk-forward dei metodi Frequency, Return, Nucleus e Combo. Ogni target è valutato usando solo il prefisso storico disponibile prima di quell'estrazione, con benchmark Monte Carlo e statistiche per posizione e mese. |
+| **TREND** | Finestre 7/14/21/30, accelerazione, persistenza, coppie, regimi e validazione walk-forward su diversi orizzonti. |
+| **PROIEZIONE** | Confronto Trend + Memory, cinquina selezionata, grafico storico e rank per posizione. |
+| **GRIGLIA** | Matrice dei rank per numero e posizione, con colori per fasce e indicatori del nucleo. |
 
-## Aggiornamento automatico delle estrazioni
+## Dati e aggiornamento automatico
 
-Il workflow `aggiorna.yml` gira ogni sera (19:45 e 21:30 UTC, due tentativi per coprire
-ritardi e ora legale): scarica l'estrazione del giorno da vincicasa.it
-(`scripts/aggiorna_estrazioni.py`), la appende a `data/storico_daily.csv`, rigenera
-`src/data.json` e, se c'è una novità, fa commit e avvia il deploy su Pages. L'app si
-aggiorna da sola, con nucleo, attesi e conteggi mensili ricalcolati (i conteggi si
-azzerano automaticamente al cambio mese).
+- Archivio canonico: `data/storico_daily.csv`, con una riga per data.
+- Dati consumati dal frontend: `src/data.json`, rigenerati da `scripts/rigenera_dati.py`.
+- Aggiornamento programmato: `.github/workflows/aggiorna.yml`, con due tentativi serali.
+- Pubblicazione: `.github/workflows/deploy.yml` su GitHub Pages.
+- Controllo qualità: `scripts/audit_dataset.py`, eseguito prima e dopo la rigenerazione dei dati.
 
-Al primo utilizzo conviene lanciarlo una volta a mano da **Actions → Aggiornamento
-estrazioni → Run workflow** e controllare il log. Se in futuro il sito cambia layout,
-lo script esce con un errore chiaro senza toccare il CSV: in quel caso va ritoccata la
-regex in `aggiorna_estrazioni.py`.
+L'audit verifica intestazione e struttura del CSV, date ISO univoche e in ordine cronologico, cinque numeri distinti e crescenti, intervalli validi per ogni posizione e coerenza fra CSV e JSON generato. Se trova dati non validi, il workflow si interrompe prima del commit automatico.
 
-## Inserimento manuale
+Il workflow può essere avviato anche manualmente da **Actions → Aggiornamento estrazioni → Run workflow**. Se il sito ufficiale cambia layout e il parsing non riconosce i risultati, lo script di aggiornamento termina con errore anziché aggiungere record non verificati.
 
-Se l'automatismo non è ancora passato, puoi inserire data e 5 numeri in alto e premere
-**Aggiungi**: l'estrazione resta salvata nel browser del dispositivo e viene ignorata
-automaticamente quando la stessa data arriva dal repository (3.311 estrazioni al 09/08/2026).
+## Controlli automatici
 
-## Pubblicare su GitHub Pages
+Il workflow `Test VinciCasa Lab` controlla ogni push e pull request:
 
-1. Crea un repository nuovo e carica questi file mantenendo le cartelle
-   (`src/`, `scripts/`, `data/`, `.github/workflows/`).
-2. Settings → Pages → **Source: GitHub Actions**.
-3. Al primo push il workflow `deploy.yml` compila con Vite e pubblica.
+1. audit dell'archivio canonico;
+2. rigenerazione riproducibile di `src/data.json`;
+3. audit del JSON generato;
+4. build frontend con Vite.
 
-Non serve nulla di installato in locale: la build gira su GitHub Actions.
+## Metodo e limiti
 
-## Come sono calcolati i due indicatori
+**Pavimento / frequenza.** Frequenza storica di ciascun numero nella sua posizione, normalizzata rispetto al massimo della posizione. I domini posizionali validi sono P1: 1–36, P2: 2–37, P3: 3–38, P4: 4–39, P5: 5–40.
 
-**Pavimento** — frequenza storica di ciascun numero nella sua posizione, su tutte le estrazioni.
-Ogni posizione ha solo 36 valori possibili, non 40 (P1: 1–36, P2: 2–37, P3: 3–38, P4: 4–39, P5: 5–40):
-gli altri sono impossibili per costruzione dell'ordinamento.
+**Ritorno.** Premio decrescente dopo un'uscita, parametrizzato con il profilo storico delle distanze di ritorno. Il profilo è descrittivo: non implica che un numero sia dovuto a una certa distanza.
 
-**Ritorno** — quando un numero esce, riceve un premio decrescente nei giorni successivi.
-La finestra è la terza distanza di ritorno più frequente del suo profilo storico, tagliata a 10 giorni
-per P1/P5 e 15 per P2/P3/P4. La base scende da 15 a 0 lungo la finestra, con intensità maggiore se la
-finestra è corta, e riceve +3 sulle distanze a cui quel numero è storicamente rientrato almeno 3 volte.
-Il premio si ricarica a ogni nuova uscita; sotto le 5 uscite storiche il numero non lo riceve.
+**Attesi / nucleo.** Numeri comparsi in ciascuno dei mesi precedenti configurati e non ancora usciti nel mese corrente. La composizione del nucleo dipende dal calendario e dallo storico disponibile.
 
-**Attesi** — numeri del nucleo non ancora usciti nel mese in corso. Dal backtest su 105 mesi il pool
-rende di più nei primi 5–10 giorni del mese (0,055 colpi per numero giocato) e cala fino a 0,044
-nell'ultima settimana, quando contiene soprattutto i numeri deboli del mese.
+**SONAR.** Il core viene costruito da analoghi storici con sovrapposizione di almeno tre numeri; i livelli di completamento combinano segnali di relazione, persistenza e presenza recente. È un algoritmo deterministico e sperimentale, non una probabilità calibrata.
+
+**Validazione.** I test walk-forward ricostruiscono il punteggio usando soltanto le estrazioni precedenti al target. I risultati vanno letti insieme al benchmark casuale, alla numerosità del campione e alla variabilità fra periodi; un buon risultato storico non dimostra un vantaggio futuro.
+
+## Sviluppo locale
+
+Richiede Node.js 20 e Python 3.12:
+
+```bash
+pip install numpy
+python scripts/audit_dataset.py
+python scripts/rigenera_dati.py
+python scripts/audit_dataset.py --check-json
+npm install
+npm run dev
+```
+
+Per una build di produzione:
+
+```bash
+npm run build
+```
