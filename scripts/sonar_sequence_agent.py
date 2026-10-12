@@ -153,23 +153,28 @@ def feature_scores(history):
     """Return deterministic number scores derived strictly from prior draws."""
     hlen = len(history)
     scores = {name: {} for name in BASE_RULES}
-    counts = {n: sum(n in d["nums"] for d in history) for n in NUMBERS}
     positions_by_number = {n: [] for n in NUMBERS}
     for draw_index, draw in enumerate(history):
         for number in draw["nums"]:
             positions_by_number[number].append(draw_index)
+    counts = {n: len(positions_by_number[n]) for n in NUMBERS}
     for w in WINDOWS:
         window = history[-min(w, hlen):]
+        window_counts = Counter(number for draw in window for number in draw["nums"])
         for n in NUMBERS:
-            scores[f"freq_{w}"][n] = sum(n in d["nums"] for d in window)
+            scores[f"freq_{w}"][n] = window_counts[n]
     for half in HALF_LIVES:
+        decay_scores = Counter()
+        for age, draw in enumerate(reversed(history[-200:])):
+            weight = math.exp(-age / half)
+            for number in draw["nums"]:
+                decay_scores[number] += weight
         for n in NUMBERS:
-            scores[f"decay_{half}"][n] = sum(
-                math.exp(-age / half)
-                for age, draw in enumerate(reversed(history[-200:]))
-                if n in draw["nums"]
-            )
-    ages = {n: last_seen_age(history, n) for n in NUMBERS}
+            scores[f"decay_{half}"][n] = decay_scores[n]
+    ages = {
+        n: (hlen - 1 - positions_by_number[n][-1]) if positions_by_number[n] else hlen + 1
+        for n in NUMBERS
+    }
     for n in NUMBERS:
         scores["gap_age"][n] = ages[n]
         positions = positions_by_number[n]
