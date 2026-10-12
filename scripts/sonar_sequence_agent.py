@@ -415,7 +415,14 @@ def shadow_update(draws):
         target = today
     else:
         target = max(today + timedelta(days=1), latest + timedelta(days=1))
-    target_s = target.isoformat()
+    # Never create a forecast for a later draw while an earlier frozen
+    # forecast is still awaiting its official result in the canonical archive.
+    pending_dates = sorted(
+        target_date for target_date, entries in by_target.items()
+        if target_date not in actual_by_date
+        and any(entry.get("status") == "FROZEN_PENDING" for entry in entries)
+    )
+    target_s = pending_dates[0] if pending_dates else target.isoformat()
     if target_s not in by_target:
         history = draws
         base = feature_scores(history)
