@@ -347,6 +347,10 @@ def binomial_z(observed, n, p):
     return (observed - expected) / sd
 
 
+def normal_upper_tail(z):
+    return 0.5 * math.erfc(z / math.sqrt(2.0))
+
+
 def build_metrics(draws, aggregate, signature_rows):
     n = len(signature_rows)
     configs = []
@@ -366,6 +370,9 @@ def build_metrics(draws, aggregate, signature_rows):
             "top20_5of5_random_baseline_rate": round(RNG_TOP20_P, 8),
             "top20_5of5_random_expected_count": round(tested * RNG_TOP20_P, 4),
             "top20_5of5_baseline_z_approx": round(binomial_z(observed, tested, RNG_TOP20_P), 4) if tested else None,
+            "top20_5of5_p_approx_one_sided": round(normal_upper_tail(binomial_z(observed, tested, RNG_TOP20_P)), 8) if tested else None,
+            "top20_5of5_p_bonferroni_approx": round(min(1.0, normal_upper_tail(binomial_z(observed, tested, RNG_TOP20_P)) * len(CONFIGS)), 8) if tested else None,
+            "multiple_testing_family_size": len(CONFIGS),
             "top10_5of5_count": int(s["top10_all5"]),
             "top10_5of5_random_baseline_rate": round(RNG_TOP10_P, 8),
             "top5_5of5_count": int(s["top5_all5"]),
@@ -491,7 +498,7 @@ def shadow_update(draws):
 def build_wave_events(ledger):
     successes = defaultdict(list)
     for row in ledger:
-        if row["all5_top20"] == "1":
+        if int(row["all5_top20"]) == 1:
             successes[row["config_id"]].append(row)
     events = []
     for config_id, rows in successes.items():
