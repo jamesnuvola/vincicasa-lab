@@ -225,7 +225,7 @@ def feature_scores(history):
 def combine_scores(base_scores, family_sequence):
     # Convert each stage to ordinal rank points before combining, preventing
     # arbitrary units (counts vs decay vs gaps) from dominating a chain.
-    ranks = {name: rank_numbers(score)[1] for name, score in base_scores.items()}
+    ranks = {name: rank_numbers(base_scores[name])[1] for name in set(family_sequence)}
     weights = list(range(len(family_sequence), 0, -1))
     result = {}
     for n in NUMBERS:
@@ -234,6 +234,25 @@ def combine_scores(base_scores, family_sequence):
             total += weight * (41 - ranks[name][n]) / 40.0
         result[n] = total / sum(weights)
     return result
+
+
+def cascade_rank(base_scores, family_sequence):
+    """A literal ordered cascade: each stage narrows the surviving candidate set."""
+    candidates = list(NUMBERS)
+    keep_sizes = {3: (30, 25, 20), 2: (30, 20)}
+    sizes = keep_sizes.get(len(family_sequence), tuple(
+        max(20, 40 - round(20 * (i + 1) / len(family_sequence)))
+        for i in range(len(family_sequence))
+    ))
+    for stage_index, family in enumerate(family_sequence):
+        ordered = sorted(candidates, key=lambda n: (-float(base_scores[family][n]), n))
+        keep = sizes[min(stage_index, len(sizes) - 1)]
+        candidates = ordered[:keep]
+    # Return the survivors first, followed by the excluded numbers in a stable
+    # order. This gives Top20 the cascade semantics while preserving Top10/Top5.
+    survivor_order = list(candidates)
+    excluded = [n for n in NUMBERS if n not in set(survivor_order)]
+    return survivor_order + excluded
 
 
 def describe_draw(draw, previous_draws):
@@ -270,11 +289,11 @@ def evaluate(draws):
         base = feature_scores(history)
         predictions = {}
         for config_id, config_type, sequence in CONFIGS:
-            if len(sequence) == 1:
-                rule_scores = base[sequence[0]]
+            if config_type == "chain":
+                ranked = cascade_rank(base, sequence)
             else:
-                rule_scores = combine_scores(base, sequence)
-            ranked, _ = rank_numbers(rule_scores)
+                rule_scores = base[sequence[0]] if len(sequence) == 1 else combine_scores(base, sequence)
+                ranked, _ = rank_numbers(rule_scores)
             top20 = ranked[:20]
             hits = sorted(set(top20) & set(target["nums"]))
             top10_hits = len(set(ranked[:10]) & set(target["nums"]))
@@ -409,9 +428,10 @@ def shadow_update(draws):
     latest = draws[-1]["date"]
     # Forecast today's draw only if the latest archive ends yesterday and it is
     # still before the nominal draw time; otherwise freeze the next calendar day.
+    before_cutoff = (now.hour, now.minute) < (20, 30)
     if latest >= today:
         target = latest + timedelta(days=1)
-    elif latest == today - timedelta(days=1) and now.time() < time(20, 30):
+    elif latest == today - timedelta(days=1) and before_cutoff:
         target = today
     else:
         target = max(today + timedelta(days=1), latest + timedelta(days=1))
@@ -428,8 +448,11 @@ def shadow_update(draws):
         base = feature_scores(history)
         created_at = now.isoformat(timespec="seconds")
         for config_id, config_type, sequence in CONFIGS:
-            rule_scores = base[sequence[0]] if len(sequence) == 1 else combine_scores(base, sequence)
-            ranked, _ = rank_numbers(rule_scores)
+            if config_type == "chain":
+                ranked = cascade_rank(base, sequence)
+            else:
+                rule_scores = base[sequence[0]] if len(sequence) == 1 else combine_scores(base, sequence)
+                ranked, _ = rank_numbers(rule_scores)
             rows.append({
                 "target_date": target_s,
                 "frozen_at": created_at,
@@ -446,7 +469,7 @@ def shadow_update(draws):
                 "hit_count": "",
                 "all5_top20": "",
                 "evaluated_at_data_through": "",
-                "timeliness_note": "Frozen before nominal draw time" if target == today and now.time() < time(20, 30) else "Frozen for next target date; verify timing against official draw schedule",
+                "timeliness_note": "Frozen before nominal draw time" if target == today and before_cutoff else "Frozen for next target date; verify timing against official draw schedule",
             })
         changed = True
     # Keep every frozen forecast, including misses; never replace a forecast for
