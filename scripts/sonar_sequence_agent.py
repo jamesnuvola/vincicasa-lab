@@ -154,6 +154,10 @@ def feature_scores(history):
     hlen = len(history)
     scores = {name: {} for name in BASE_RULES}
     counts = {n: sum(n in d["nums"] for d in history) for n in NUMBERS}
+    positions_by_number = {n: [] for n in NUMBERS}
+    for draw_index, draw in enumerate(history):
+        for number in draw["nums"]:
+            positions_by_number[number].append(draw_index)
     for w in WINDOWS:
         window = history[-min(w, hlen):]
         for n in NUMBERS:
@@ -168,7 +172,7 @@ def feature_scores(history):
     ages = {n: last_seen_age(history, n) for n in NUMBERS}
     for n in NUMBERS:
         scores["gap_age"][n] = ages[n]
-        positions = [i for i, d in enumerate(history) if n in d["nums"]]
+        positions = positions_by_number[n]
         gaps = [b - a for a, b in zip(positions, positions[1:])]
         typical = statistics.median(gaps) if gaps else max(1.0, hlen / (counts[n] + 1))
         scores["return_fit"][n] = -abs(ages[n] - typical)
@@ -182,23 +186,24 @@ def feature_scores(history):
         p100 = sum(n in d["nums"] for d in prev100) / max(1, len(prev100))
         scores["momentum_10_50"][n] = r10 - p50
         scores["momentum_20_100"][n] = r20 - p100
-        pos_count = sum(1 for d in history[-200:] for value in d["nums"] if value == n)
-        # Position-normalized support: compare the number's frequency across P1..P5.
-        per_position = []
-        for p in range(5):
-            denom = max(1, len(history[-200:]))
-            per_position.append(sum(d["nums"][p] == n for d in history[-200:]) / denom)
-        scores["position_global"][n] = sum(per_position)
+        # Expected rank-position from the number's location in the 1..40 range.
+        # Score frequency in that rank, not the number's global count.
+        expected_pos = min(4, max(0, round((n - 1) * 4 / 39)))
+        recent200 = history[-200:]
+        scores["position_global"][n] = sum(
+            d["nums"][expected_pos] == n for d in recent200
+        ) / max(1, len(recent200))
         scores["prev_1"][n] = float(n in history[-1]["nums"])
         scores["prev_3"][n] = sum((1.0 / (lag + 1)) for lag, d in enumerate(reversed(history[-3:])) if n in d["nums"])
         scores["prev_5"][n] = sum((1.0 / (lag + 1)) for lag, d in enumerate(reversed(history[-5:])) if n in d["nums"])
         scores["complement_1"][n] = float(41 - n in history[-1]["nums"])
         # Position transition: support in the same position in the latest 5 draws,
         # discounted by lag. This remains a global number score for Top20 evaluation.
+        expected_pos = min(4, max(0, round((n - 1) * 4 / 39)))
         scores["transition_position"][n] = sum(
-            1.0 / (lag + 1)
+            (1.0 / (lag + 1)) * math.exp(-abs(pos - expected_pos) / 1.5)
             for lag, d in enumerate(reversed(history[-5:]))
-            if n in d["nums"]
+            for pos, value in enumerate(d["nums"]) if value == n
         )
     for k in (1, 3, 5):
         support = arithmetic_support(history, k)
