@@ -1,0 +1,51 @@
+name: SONAR Sequence Discovery Agent
+
+on:
+  # Continuous audit: re-run the fixed rule grammar every hour against the
+  # canonical archive. New results are committed only when files actually change.
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+  push:
+    branches: ["main"]
+    paths:
+      - "scripts/sonar_sequence_agent.py"
+      - ".github/workflows/sonar-sequence-agent.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sonar-sequence-discovery-agent
+  cancel-in-progress: false
+
+jobs:
+  sequence-discovery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout canonical repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Check agent syntax
+        run: python -m py_compile scripts/sonar_sequence_agent.py
+
+      - name: Reconstruct fixed rules walk-forward and update shadow forecasts
+        run: python scripts/sonar_sequence_agent.py
+
+      - name: Persist ledger, signatures, wave candidates and frozen forecasts
+        run: |
+          git config user.name "sonar-sequence-agent"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/sequence_agent/
+          if git diff --cached --quiet; then
+            echo "No report or forecast changes. The hourly audit completed."
+          else
+            git commit -m "SONAR sequence agent: refresh historical audit"
+            git push
+          fi
