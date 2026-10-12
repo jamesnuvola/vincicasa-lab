@@ -66,3 +66,19 @@ Per una build di produzione:
 ```bash
 npm run build
 ```
+
+## SONAR Sequence Discovery Agent (hourly)
+
+The workflow `.github/workflows/sonar-sequence-agent.yml` runs hourly and can also be started manually from **Actions → SONAR Sequence Discovery Agent → Run workflow**. It is a dedicated research process for reconstructing sequential mathematical rules that could have narrowed each historical VinciCasa draw.
+
+Outputs are stored in `reports/sequence_agent/`:
+
+- `historical_rule_ledger.csv`: fixed rule/configuration × target draw; each row records the history cutoff, Top20/Top10/Top5, hit counts and whether all five target numbers were inside each candidate set.
+- `draw_signatures.csv`: descriptive arithmetic signature of each target (sum, product, range, gaps, parity, modular residues, decades and overlap with recent draws).
+- `wave_events.csv`: isolated and consecutive Top20 5/5 events for each fixed rule.
+- `latest_metrics.json`: rule-level results compared with exact random-combination baselines.
+- `shadow_forecasts.csv`: prospective forecasts frozen before the target whenever possible; a forecast is never replaced for the same target date, and outcomes are filled only when the target appears in the canonical archive.
+
+The first rule grammar includes historical frequency windows (5–200), recency decay, time-since-last-appearance, return-gap fit, momentum, positional rank, recent-draw carryover, arithmetic transformations (sums/differences/modular folding), complements, pair affinity, pairwise mixes and explicitly ordered three-stage chains. Rules are fixed before evaluating each target and use only the preceding archive prefix. The retrospective ledger is reconstructed now and **must not be represented as forecasts that were actually issued at the time**.
+
+The exact random baseline for a fixed Top20 set containing all five drawn numbers is `C(20,5)/C(40,5)`. Since many rules are tested, isolated historical 5/5 matches are expected and are not proof of a predictive signal. A candidate must survive multiple-testing awareness and the untouched prospective shadow test before it can be described as validated. The agent reports no guarantee of winning and does not claim to exhaust every possible mathematical formula.
