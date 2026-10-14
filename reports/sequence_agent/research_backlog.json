@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "purpose": "Sequenced research backlog for the 40→20→10→5 reconstruction hypothesis. Registration is not evidence of completion.",
+  "policy": {
+    "no_target_leakage": true,
+    "preserve_frozen_forecasts": true,
+    "chronological_validation_required": true,
+    "minimum_complete_oos_cases": 100,
+    "preferred_complete_oos_cases": 200,
+    "status_rules": "A task is complete only when its declared evidence artifact exists and validates; absent evidence is never inferred as success."
+  },
+  "tasks": [
+    {
+      "id": "Q00",
+      "priority": 0,
+      "title": "Validate canonical archive and current run evidence",
+      "depends_on": [],
+      "evidence": [
+        "data/storico_daily.csv",
+        "reports/sequence_agent/latest_metrics.json"
+      ],
+      "acceptance": [
+        "dates unique and chronological",
+        "each draw contains five distinct integers 1..40",
+        "latest metrics cutoff matches archive"
+      ],
+      "kind": "integrity"
+    },
+    {
+      "id": "Q10",
+      "priority": 10,
+      "title": "Locate where the 40→20→10→5 cascade loses actual numbers",
+      "depends_on": [
+        "Q00"
+      ],
+      "evidence": [
+        "reports/sequence_agent/stage_loss_analysis.json"
+      ],
+      "acceptance": [
+        "per-target Top20/Top10/Top5 hit counts",
+        "conditional Top10 given Top20 5/5",
+        "conditional Top5 given Top10 5/5",
+        "chronological discovery/validation/OOS split"
+      ],
+      "kind": "analysis"
+    },
+    {
+      "id": "Q20",
+      "priority": 20,
+      "title": "Build complete ex-ante residual ledger",
+      "depends_on": [
+        "Q10"
+      ],
+      "evidence": [
+        "reports/sequence_agent/residual_error_ledger.csv"
+      ],
+      "acceptance": [
+        "all misses logged only from pre-target forecasts",
+        "frequency/recency/rank/gap/co-occurrence/position/structure features",
+        "no retrospective substitution of selected numbers"
+      ],
+      "kind": "analysis"
+    },
+    {
+      "id": "Q30",
+      "priority": 30,
+      "title": "Test frozen mixes inside the same legacy Top20",
+      "depends_on": [
+        "Q20"
+      ],
+      "evidence": [
+        "reports/sequence_agent/top20_mix_walkforward.json"
+      ],
+      "acceptance": [
+        "uniform/random and individual strategy baselines",
+        "frozen mixes only, no target leakage",
+        "multiple-testing correction",
+        "metrics by chronological split"
+      ],
+      "kind": "analysis"
+    },
+    {
+      "id": "Q40",
+      "priority": 40,
+      "title": "Compare global and positional candidate pipelines",
+      "depends_on": [
+        "Q10"
+      ],
+      "evidence": [
+        "reports/sequence_agent/global_vs_positional_walkforward.json"
+      ],
+      "acceptance": [
+        "raw positional union size reported",
+        "completion-to-20 rule frozen",
+        "identical targets and splits for fair comparison"
+      ],
+      "kind": "analysis"
+    },
+    {
+      "id": "Q50",
+      "priority": 50,
+      "title": "Re-test structural recurrence and hazard as a separate branch",
+      "depends_on": [
+        "Q20"
+      ],
+      "evidence": [
+        "reports/sequence_agent/structural_hazard_oos.json"
+      ],
+      "acceptance": [
+        "frequency baseline vs age/hazard",
+        "Brier and log loss",
+        "permutation/null and multiple-testing correction"
+      ],
+      "kind": "analysis"
+    },
+    {
+      "id": "Q60",
+      "priority": 60,
+      "title": "Prospective shadow evaluation and promotion gate",
+      "depends_on": [
+        "Q30",
+        "Q40",
+        "Q50"
+      ],
+      "evidence": [
+        "reports/sequence_agent/prospective_promotion_gate.json"
+      ],
+      "acceptance": [
+        "at least 100 complete prospective OOS cases; preferably 200+",
+        "frozen Top20/Top10/Top5 and target date",
+        "explicit VALIDATED/EXPLORATORY/NULL/INSUFFICIENT status"
+      ],
+      "kind": "promotion"
+    }
+  ]
+}
