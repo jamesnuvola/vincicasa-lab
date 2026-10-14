@@ -10,6 +10,8 @@ on:
     branches: ["main"]
     paths:
       - "scripts/sonar_sequence_agent.py"
+      - "scripts/sonar_research_queue.py"
+      - "reports/sequence_agent/research_backlog.json"
       - ".github/workflows/sonar-sequence-agent.yml"
 
 permissions:
@@ -38,7 +40,12 @@ jobs:
       - name: Reconstruct fixed rules walk-forward and update shadow forecasts
         run: python scripts/sonar_sequence_agent.py
 
-      - name: Persist ledger, signatures, wave candidates and frozen forecasts
+      - name: Validate and sequence the registered research backlog
+        run: |
+          python -m py_compile scripts/sonar_research_queue.py
+          python scripts/sonar_research_queue.py
+
+      - name: Persist ledger, signatures, wave candidates, frozen forecasts and queue status
         run: |
           git config user.name "sonar-sequence-agent"
           git config user.email "actions@users.noreply.github.com"
