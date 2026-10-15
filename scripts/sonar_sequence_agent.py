@@ -454,7 +454,11 @@ def shadow_update(draws):
         if target_date not in actual_by_date
         and any(entry.get("status") == "FROZEN_PENDING" for entry in entries)
     )
-    target_s = pending_dates[0] if pending_dates else target.isoformat()
+    # Only an unresolved freeze for an earlier/missed target blocks a new target.
+    # A stale forecast for a later date must never cause the pipeline to skip today's draw.
+    target_iso = target.isoformat()
+    earlier_pending = [d for d in pending_dates if d < target_iso]
+    target_s = earlier_pending[0] if earlier_pending else target_iso
     if target_s not in by_target:
         history = draws
         base = feature_scores(history)
