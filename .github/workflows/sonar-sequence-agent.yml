@@ -53,9 +53,29 @@ jobs:
           git config user.name "sonar-sequence-agent"
           git config user.email "actions@users.noreply.github.com"
           git add reports/sequence_agent/
-          if git diff --cached --quiet; then
-            echo "No report or forecast changes. The hourly audit completed."
-          else
+          pushed=false
+          for attempt in 1 2 3; do
+            if git diff --cached --quiet; then
+              echo "No report or forecast changes; outputs already match this checkout."
+              pushed=true
+              break
+            fi
             git commit -m "SONAR sequence agent: refresh historical audit"
-            git push
+            if git push origin HEAD:main; then
+              pushed=true
+              break
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              echo "Remote main advanced during analysis; reloading latest history and recomputing (attempt $((attempt + 1))/3)."
+              git fetch origin main
+              git reset --hard origin/main
+              python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_research_queue.py
+              python scripts/sonar_sequence_agent.py
+              python scripts/sonar_research_queue.py
+              git add reports/sequence_agent/
+            fi
+          done
+          if [ "$pushed" != "true" ]; then
+            echo "Persistence failed after three attempts; outputs were not reported as saved."
+            exit 1
           fi
