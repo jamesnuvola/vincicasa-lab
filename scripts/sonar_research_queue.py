@@ -48,8 +48,8 @@ def main():
             data = ROOT / "data" / "storico_daily.csv"
             with data.open(newline="", encoding="utf-8") as f:
                 rows = list(csv.reader(f))
-            if not rows or rows[0][:6] != ["date", "n1", "n2", "n3", "n4", "n5"]:
-                raise SystemExit("QUEUE_BLOCKED: canonical CSV header invalid")
+            if not rows or rows[0][:6] not in (["data", "n1", "n2", "n3", "n4", "n5"], ["date", "n1", "n2", "n3", "n4", "n5"]):
+                raise SystemExit(f"QUEUE_BLOCKED: canonical CSV header invalid: {rows[0][:6] if rows else 'EMPTY'}")
             seen, previous, count = set(), "", 0
             for row in rows[1:]:
                 if not row:
