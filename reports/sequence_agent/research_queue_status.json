@@ -1,0 +1,132 @@
+{
+  "generated_at_utc": "2026-10-15T22:05:42.502169+00:00",
+  "project": "VinciCasa SONAR",
+  "queue_status": "QUEUE_VALID",
+  "task_count": 7,
+  "complete_count": 1,
+  "ready_count": 1,
+  "active_next_task": "Q10",
+  "active_next_task_title": "Locate where the 40→20→10→5 cascade loses actual numbers",
+  "tasks": [
+    {
+      "id": "Q00",
+      "priority": 0,
+      "title": "Validate canonical archive and current run evidence",
+      "status": "COMPLETE",
+      "depends_on": [],
+      "missing_evidence": [],
+      "acceptance_criteria": [
+        "dates unique and chronological",
+        "each draw contains five distinct integers 1..40",
+        "latest metrics cutoff matches archive"
+      ]
+    },
+    {
+      "id": "Q10",
+      "priority": 10,
+      "title": "Locate where the 40→20→10→5 cascade loses actual numbers",
+      "status": "READY",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/stage_loss_analysis.json"
+      ],
+      "acceptance_criteria": [
+        "per-target Top20/Top10/Top5 hit counts",
+        "conditional Top10 given Top20 5/5",
+        "conditional Top5 given Top10 5/5",
+        "chronological discovery/validation/OOS split"
+      ]
+    },
+    {
+      "id": "Q20",
+      "priority": 20,
+      "title": "Build complete ex-ante residual ledger",
+      "status": "BLOCKED_BY_DEPENDENCY",
+      "depends_on": [
+        "Q10"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/residual_error_ledger.csv"
+      ],
+      "acceptance_criteria": [
+        "all misses logged only from pre-target forecasts",
+        "frequency/recency/rank/gap/co-occurrence/position/structure features",
+        "no retrospective substitution of selected numbers"
+      ]
+    },
+    {
+      "id": "Q30",
+      "priority": 30,
+      "title": "Test frozen mixes inside the same legacy Top20",
+      "status": "BLOCKED_BY_DEPENDENCY",
+      "depends_on": [
+        "Q20"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/top20_mix_walkforward.json"
+      ],
+      "acceptance_criteria": [
+        "uniform/random and individual strategy baselines",
+        "frozen mixes only, no target leakage",
+        "multiple-testing correction",
+        "metrics by chronological split"
+      ]
+    },
+    {
+      "id": "Q40",
+      "priority": 40,
+      "title": "Compare global and positional candidate pipelines",
+      "status": "BLOCKED_BY_DEPENDENCY",
+      "depends_on": [
+        "Q10"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/global_vs_positional_walkforward.json"
+      ],
+      "acceptance_criteria": [
+        "raw positional union size reported",
+        "completion-to-20 rule frozen",
+        "identical targets and splits for fair comparison"
+      ]
+    },
+    {
+      "id": "Q50",
+      "priority": 50,
+      "title": "Re-test structural recurrence and hazard as a separate branch",
+      "status": "BLOCKED_BY_DEPENDENCY",
+      "depends_on": [
+        "Q20"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/structural_hazard_oos.json"
+      ],
+      "acceptance_criteria": [
+        "frequency baseline vs age/hazard",
+        "Brier and log loss",
+        "permutation/null and multiple-testing correction"
+      ]
+    },
+    {
+      "id": "Q60",
+      "priority": 60,
+      "title": "Prospective shadow evaluation and promotion gate",
+      "status": "BLOCKED_BY_DEPENDENCY",
+      "depends_on": [
+        "Q30",
+        "Q40",
+        "Q50"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/prospective_promotion_gate.json"
+      ],
+      "acceptance_criteria": [
+        "at least 100 complete prospective OOS cases; preferably 200+",
+        "frozen Top20/Top10/Top5 and target date",
+        "explicit VALIDATED/EXPLORATORY/NULL/INSUFFICIENT status"
+      ]
+    }
+  ],
+  "guardrail": "Queue registration and evidence-file presence are not proof of a successful statistical result. Analyses remain incomplete until implementation, validation and OOS criteria pass."
+}
