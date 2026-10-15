@@ -20,7 +20,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: sonar-sequence-discovery-agent
+  # Serialize all workflows that commit to main; prevents stale-checkout push races.
+  group: vincicasa-main-data-writers
   cancel-in-progress: false
 
 jobs:
