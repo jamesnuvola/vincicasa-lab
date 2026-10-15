@@ -17,6 +17,11 @@ permissions:
   contents: write
   actions: write
 
+concurrency:
+  # Share the lock with SONAR; only one workflow may commit to main at a time.
+  group: vincicasa-main-data-writers
+  cancel-in-progress: false
+
 jobs:
   aggiorna:
     runs-on: ubuntu-latest
