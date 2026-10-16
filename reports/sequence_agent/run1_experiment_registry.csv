@@ -1,0 +1,19 @@
+variant_id,branch,rule,status
+legacy_position_global,legacy Top20 proxy,Expected-position frequency over preceding 200 draws,TESTED
+global_freq,global-vs-positional,Global frequency rank over preceding prefix,TESTED
+positional_union_top4,global-vs-positional,Top four numbers for each valid ordered position; variable-size union,TESTED
+positional_completed20,global-vs-positional,Positional union completed to 20 using global frequency,TESTED
+recent20,baseline,Frequency over previous 20 draws,TESTED
+decay60,baseline,"Exponential frequency, half-life 60, previous 200 draws",TESTED
+swap3_recent50,residual correction,Replace three weakest legacy candidates with three highest outsiders by recent-50 frequency,TESTED
+swap3_decay60,residual correction,Same fixed three-swap rule using decay60 score,TESTED
+swap3_global_freq,residual correction,Same fixed three-swap rule using global frequency,TESTED
+swap3_gapfit,residual correction,Same fixed three-swap rule using number gap-age vs historical median interval,TESTED
+hazard_sum_bin,structural hazard,Walk-forward Brier/log-loss and Top1/Top2 vs marginal frequency,TESTED
+hazard_range_bin,structural hazard,Walk-forward Brier/log-loss and Top1/Top2 vs marginal frequency,TESTED
+hazard_odd_count,structural hazard,Walk-forward Brier/log-loss and Top1/Top2 vs marginal frequency,TESTED
+hazard_low_count,structural hazard,Walk-forward Brier/log-loss and Top1/Top2 vs marginal frequency,TESTED
+hazard_overlap_cat,structural hazard,Walk-forward Brier/log-loss and Top1/Top2 vs marginal frequency,TESTED
+hazard_gap1_bin,structural hazard,Walk-forward Brier/log-loss and Top1/Top2 vs marginal frequency,TESTED
+hazard_permutation_null,structural hazard,19 seeded permutations on 159 sampled targets for five coarse dimensions,CALCULATED_NOT_PERSISTED
+mix_global_recency_novelty_gap_overlap_regime_hazard,structural ticket mix,Full prefix-only candidate ranking/backtest and multi-comparison report,INCOMPLETE_NOT_PROMOTED
