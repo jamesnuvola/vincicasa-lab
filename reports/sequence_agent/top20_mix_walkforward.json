@@ -1,0 +1,257 @@
+{
+  "status": "COMPLETE_RETROSPECTIVE_DIAGNOSTIC",
+  "targets": 3179,
+  "splits": {
+    "discovery": 1907,
+    "validation": 636,
+    "oos": 636
+  },
+  "baseline": 0.02356202356202356,
+  "mixes": {
+    "momentum_freq": {
+      "models": [
+        "momentum_20_100",
+        "freq_20"
+      ],
+      "method": "fixed Borda fusion; within each target uses only prior-only rankings",
+      "splits": {
+        "discovery": {
+          "targets": 1907,
+          "top20_hit_distribution": {
+            "0": 49,
+            "1": 289,
+            "2": 563,
+            "3": 670,
+            "4": 278,
+            "5": 58
+          },
+          "top20_all5": 58,
+          "top20_rate": 0.030414263240692185,
+          "mean_top20_hits": 2.5312008390141583,
+          "top10_all5": 0,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        },
+        "validation": {
+          "targets": 636,
+          "top20_hit_distribution": {
+            "0": 13,
+            "1": 98,
+            "2": 209,
+            "3": 215,
+            "4": 90,
+            "5": 11
+          },
+          "top20_all5": 11,
+          "top20_rate": 0.01729559748427673,
+          "mean_top20_hits": 2.4779874213836477,
+          "top10_all5": 1,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        },
+        "oos": {
+          "targets": 636,
+          "top20_hit_distribution": {
+            "0": 17,
+            "1": 105,
+            "2": 215,
+            "3": 194,
+            "4": 77,
+            "5": 28
+          },
+          "top20_all5": 28,
+          "top20_rate": 0.0440251572327044,
+          "mean_top20_hits": 2.460691823899371,
+          "top10_all5": 0,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        }
+      }
+    },
+    "momentum_freq_position": {
+      "models": [
+        "momentum_20_100",
+        "freq_20",
+        "PAIR::freq_20>position_global"
+      ],
+      "method": "fixed Borda fusion; within each target uses only prior-only rankings",
+      "splits": {
+        "discovery": {
+          "targets": 1907,
+          "top20_hit_distribution": {
+            "0": 50,
+            "1": 289,
+            "2": 578,
+            "3": 669,
+            "4": 260,
+            "5": 61
+          },
+          "top20_all5": 61,
+          "top20_rate": 0.03198741478762454,
+          "mean_top20_hits": 2.515469323544835,
+          "top10_all5": 1,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        },
+        "validation": {
+          "targets": 636,
+          "top20_hit_distribution": {
+            "0": 12,
+            "1": 94,
+            "2": 222,
+            "3": 204,
+            "4": 96,
+            "5": 8
+          },
+          "top20_all5": 8,
+          "top20_rate": 0.012578616352201259,
+          "mean_top20_hits": 2.4748427672955975,
+          "top10_all5": 0,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        },
+        "oos": {
+          "targets": 636,
+          "top20_hit_distribution": {
+            "0": 16,
+            "1": 98,
+            "2": 227,
+            "3": 196,
+            "4": 74,
+            "5": 25
+          },
+          "top20_all5": 25,
+          "top20_rate": 0.03930817610062893,
+          "mean_top20_hits": 2.4544025157232703,
+          "top10_all5": 1,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        }
+      }
+    },
+    "momentum_freq_transition": {
+      "models": [
+        "momentum_20_100",
+        "freq_20",
+        "CHAIN::prev_1>transition_position>gap_age"
+      ],
+      "method": "fixed Borda fusion; within each target uses only prior-only rankings",
+      "splits": {
+        "discovery": {
+          "targets": 1907,
+          "top20_hit_distribution": {
+            "0": 39,
+            "1": 272,
+            "2": 628,
+            "3": 638,
+            "4": 282,
+            "5": 48
+          },
+          "top20_all5": 48,
+          "top20_rate": 0.025170424750917672,
+          "mean_top20_hits": 2.522286313581542,
+          "top10_all5": 0,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        },
+        "validation": {
+          "targets": 636,
+          "top20_hit_distribution": {
+            "0": 14,
+            "1": 82,
+            "2": 215,
+            "3": 231,
+            "4": 81,
+            "5": 13
+          },
+          "top20_all5": 13,
+          "top20_rate": 0.020440251572327043,
+          "mean_top20_hits": 2.506289308176101,
+          "top10_all5": 0,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        },
+        "oos": {
+          "targets": 636,
+          "top20_hit_distribution": {
+            "0": 15,
+            "1": 91,
+            "2": 234,
+            "3": 192,
+            "4": 89,
+            "5": 15
+          },
+          "top20_all5": 15,
+          "top20_rate": 0.02358490566037736,
+          "mean_top20_hits": 2.4622641509433962,
+          "top10_all5": 1,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        }
+      }
+    },
+    "four_signal": {
+      "models": [
+        "momentum_20_100",
+        "freq_20",
+        "PAIR::freq_20>momentum_10_50",
+        "PAIR::freq_20>position_global"
+      ],
+      "method": "fixed Borda fusion; within each target uses only prior-only rankings",
+      "splits": {
+        "discovery": {
+          "targets": 1907,
+          "top20_hit_distribution": {
+            "0": 52,
+            "1": 281,
+            "2": 573,
+            "3": 675,
+            "4": 263,
+            "5": 63
+          },
+          "top20_all5": 63,
+          "top20_rate": 0.03303618248557944,
+          "mean_top20_hits": 2.5270057682223386,
+          "top10_all5": 0,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        },
+        "validation": {
+          "targets": 636,
+          "top20_hit_distribution": {
+            "0": 12,
+            "1": 85,
+            "2": 224,
+            "3": 211,
+            "4": 94,
+            "5": 10
+          },
+          "top20_all5": 10,
+          "top20_rate": 0.015723270440251572,
+          "mean_top20_hits": 2.50314465408805,
+          "top10_all5": 0,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        },
+        "oos": {
+          "targets": 636,
+          "top20_hit_distribution": {
+            "0": 19,
+            "1": 98,
+            "2": 230,
+            "3": 190,
+            "4": 75,
+            "5": 24
+          },
+          "top20_all5": 24,
+          "top20_rate": 0.03773584905660377,
+          "mean_top20_hits": 2.4339622641509435,
+          "top10_all5": 1,
+          "top5_all5": 0,
+          "random_top20_baseline_rate": 0.02356202356202356
+        }
+      }
+    }
+  },
+  "guardrail": "Exploratory only. Historical walk-forward predictions are not prospective Shadow; fusion choices must be frozen and independently validated. No model is promoted by this report."
+}

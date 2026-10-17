@@ -1,12 +1,12 @@
 {
-  "generated_at_utc": "2026-10-17T17:12:10.028380+00:00",
+  "generated_at_utc": "2026-10-17T17:20:29.441543+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "task_count": 7,
   "complete_count": 1,
-  "ready_count": 1,
-  "active_next_task": "Q10",
-  "active_next_task_title": "Locate where the 40→20→10→5 cascade loses actual numbers",
+  "ready_count": 0,
+  "active_next_task": null,
+  "active_next_task_title": null,
   "tasks": [
     {
       "id": "Q00",
@@ -25,13 +25,11 @@
       "id": "Q10",
       "priority": 10,
       "title": "Locate where the 40→20→10→5 cascade loses actual numbers",
-      "status": "READY",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/stage_loss_analysis.json"
-      ],
+      "missing_evidence": [],
       "acceptance_criteria": [
         "per-target Top20/Top10/Top5 hit counts",
         "conditional Top10 given Top20 5/5",
@@ -60,13 +58,11 @@
       "id": "Q30",
       "priority": 30,
       "title": "Test frozen mixes inside the same legacy Top20",
-      "status": "BLOCKED_BY_DEPENDENCY",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q20"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/top20_mix_walkforward.json"
-      ],
+      "missing_evidence": [],
       "acceptance_criteria": [
         "uniform/random and individual strategy baselines",
         "frozen mixes only, no target leakage",
