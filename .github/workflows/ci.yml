@@ -12,6 +12,7 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -28,5 +29,9 @@ jobs:
         run: python scripts/rigenera_dati.py
       - name: Audit generated app data
         run: python scripts/audit_dataset.py --check-json
+      - name: Test evolutionary lab syntax and run
+        run: |
+          python -m py_compile scripts/sonar_evolutionary_lab.py
+          python scripts/sonar_evolutionary_lab.py
       - name: Build web application
         run: npm install && npm run build
