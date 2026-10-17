@@ -11,6 +11,7 @@ on:
     paths:
       - "scripts/sonar_sequence_agent.py"
       - "scripts/sonar_research_queue.py"
+      - "scripts/sonar_fast_improvements.py"
       - "reports/sequence_agent/research_backlog.json"
       - "data/storico_daily.csv"
       - "src/data.json"
@@ -42,6 +43,11 @@ jobs:
 
       - name: Reconstruct fixed rules walk-forward and update shadow forecasts
         run: python scripts/sonar_sequence_agent.py
+
+      - name: Run cascade-loss and fixed fusion diagnostics
+        run: |
+          python -m py_compile scripts/sonar_fast_improvements.py
+          python scripts/sonar_fast_improvements.py
 
       - name: Validate and sequence the registered research backlog
         run: |
