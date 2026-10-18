@@ -555,7 +555,12 @@ def main():
                       "position_top1_holm_p_vs_mode": {p: round(v["p_holm_5_positions_vs_theory_mode"], 5) for p,v in pos_eval.items()},
                       "global_mean_hits": round(global_summary["mean_hits"], 5),
                       "position_mix_mean_hits": round(mix_summary["mean_hits"], 5),
+                      "position_mix_split_5of5": {k: {"global": v["global_top20"]["top20_5of5"],
+                                                       "mix": v["position_seed_mix_top20"]["top20_5of5"],
+                                                       "targets": v["targets"]}
+                                                  for k, v in position_report["global_top20_vs_position_seed_mix"]["chronological_splits"].items()},
                       "hazard_brier_improvement": round(hazard_report["overall"]["brier_improvement"], 7),
+                      "hazard_brier_improvement_by_split": {k: round(v["brier_improvement"], 7) for k, v in hazard_split.items()},
                       "position_shadow": shadow_status,
                       "outputs": ["reports/sequence_agent/position_regime_residual_lab.json",
                                   "reports/sequence_agent/residual_error_ledger.csv",
