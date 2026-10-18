@@ -14,6 +14,8 @@
       "hits": 6959,
       "brier_model": 6095.842012990048,
       "brier_base": 6095.765625,
+      "p_two_sided_vs_0_125": 0.5022459464799287,
+      "p_holm_across_4_gap_buckets": 0.9637085326229236,
       "hit_rate": 0.12405297966023139,
       "mean_brier_model": 0.1086660964577437,
       "mean_brier_baseline": 0.10866473474517353
@@ -23,6 +25,8 @@
       "hits": 3688,
       "brier_model": 3215.3975118249023,
       "brier_base": 3215.515625,
+      "p_two_sided_vs_0_125": 0.10409620943930409,
+      "p_holm_across_4_gap_buckets": 0.41638483775721635,
       "hit_rate": 0.12819354165942506,
       "mean_brier_model": 0.11176605067346457,
       "mean_brier_baseline": 0.1117701562445688
@@ -32,6 +36,8 @@
       "hits": 2743,
       "brier_model": 2407.6182293198344,
       "brier_base": 2407.609375,
+      "p_two_sided_vs_0_125": 0.2301133613396198,
+      "p_holm_across_4_gap_buckets": 0.6903400840188594,
       "hit_rate": 0.12232975070240378,
       "mean_brier_model": 0.10737270790348456,
       "mean_brier_baseline": 0.10737231302680283
@@ -41,10 +47,27 @@
       "hits": 1010,
       "brier_model": 881.575509042604,
       "brier_base": 881.109375,
+      "p_two_sided_vs_0_125": 0.4818542663114618,
+      "p_holm_across_4_gap_buckets": 0.9637085326229236,
       "hit_rate": 0.12767033244848944,
       "mean_brier_model": 0.1114366716018966,
       "mean_brier_baseline": 0.11137774933636709
     }
+  },
+  "permutation_null_test": {
+    "method": "per-target conditional randomization; shuffle five hit labels among 40 numbers while holding prior-only probabilities fixed",
+    "permutations": 199,
+    "seed": 20261018,
+    "observed_brier_improvement": -3.7609650790513015e-06,
+    "null_2_5_percentile": -2.1047157597359323e-05,
+    "null_97_5_percentile": 1.1685733705569924e-06,
+    "p_one_sided_improvement": 0.125,
+    "interpretation": "exploratory; not a prospective validation"
+  },
+  "gap_bucket_tests": {
+    "family_size": 4,
+    "adjustment": "Holm",
+    "null_probability": 0.125
   },
   "overall": {
     "model_brier": 0.10937876096507905,
@@ -86,5 +109,5 @@
       "log_loss_improvement": 8.094056904421147e-07
     }
   },
-  "guardrail": "All gap ages and hazard estimates use prior draws only. Historical score improvement is exploratory; no prospective promotion."
+  "guardrail": "All gap ages and hazard estimates use prior draws only. Conditional randomization preserves five hits per target; Holm corrects the four bucket tests. Historical scores remain exploratory; no prospective promotion."
 }

@@ -1699,7 +1699,7 @@
   },
   "guardrail": "All predictions use only data available before target. Full-history position frequency tests are descriptive only. Holm correction is applied across five position tests.",
   "prospective_shadow": {
-    "status": "FROZEN_PENDING_CREATED",
+    "status": "EXISTING_FREEZE_PRESERVED",
     "file": "reports/sequence_agent/position_mix_shadow.csv",
     "rows": 1,
     "pending": 1,
@@ -1711,6 +1711,25 @@
       "status": "FROZEN_PENDING",
       "top20": "5 16 26 15 37 38 29 12 19 34 39 2 3 23 22 10 28 36 24 25"
     },
-    "policy": "Append-only; never reconstruct a missing freeze; frozen top20/top10/top5 and cutoff are immutable."
+    "policy": "Append-only; never reconstruct a missing freeze; frozen top20/top10/top5 and cutoff are immutable.",
+    "promotion_gate": {
+      "status": "INSUFFICIENT_PROSPECTIVE_CASES",
+      "model": "position_seed_mix_top20_v1",
+      "valid_complete_prospective_targets": 0,
+      "minimum_required": 100,
+      "preferred_required": 200,
+      "top20_5of5": 0,
+      "top20_5of5_rate": null,
+      "top20_5of5_random_baseline_rate": 0.02356202356202356,
+      "top20_5of5_random_baseline_expected_count": 0.0,
+      "top20_5of5_binomial_p_vs_random": null,
+      "top20_4plus": 0,
+      "mean_top20_hits": null,
+      "evaluated_shadow_rows_total": 0,
+      "excluded_evaluated_rows": 0,
+      "missing_freezes_reconstructed": 0,
+      "promotion_allowed": false,
+      "rule": "Only an existing pre-target freeze with previous-day cutoff and matching canonical outcome is eligible; 100 cases minimum, 200 preferred, manual review required."
+    }
   }
 }

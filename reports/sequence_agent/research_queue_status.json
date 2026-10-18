@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-18T06:33:11.687791+00:00",
+  "generated_at_utc": "2026-10-18T06:41:01.137471+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "task_count": 7,
@@ -48,7 +48,8 @@
       "missing_evidence": [],
       "acceptance_criteria": [
         "all misses logged only from pre-target forecasts",
-        "frequency/recency/rank/gap/co-occurrence/position/structure features",
+        "per-number frequency/recency/rank/gap/co-occurrence/position/structure features",
+        "cutoff date and both global/positional miss flags are explicit",
         "no retrospective substitution of selected numbers"
       ]
     },
@@ -72,13 +73,11 @@
       "id": "Q40",
       "priority": 40,
       "title": "Compare global and positional candidate pipelines",
-      "status": "BLOCKED_BY_DEPENDENCY",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q10"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/global_vs_positional_walkforward.json"
-      ],
+      "missing_evidence": [],
       "acceptance_criteria": [
         "raw positional union size reported",
         "completion-to-20 rule frozen",
@@ -97,22 +96,21 @@
       "acceptance_criteria": [
         "frequency baseline vs age/hazard",
         "Brier and log loss",
-        "permutation/null and multiple-testing correction"
+        "conditional randomization null preserving five hits per target",
+        "Holm correction across gap-bucket tests"
       ]
     },
     {
       "id": "Q60",
       "priority": 60,
       "title": "Prospective shadow evaluation and promotion gate",
-      "status": "BLOCKED_BY_DEPENDENCY",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q30",
         "Q40",
         "Q50"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/prospective_promotion_gate.json"
-      ],
+      "missing_evidence": [],
       "acceptance_criteria": [
         "at least 100 complete prospective OOS cases; preferably 200+",
         "frozen Top20/Top10/Top5 and target date",
