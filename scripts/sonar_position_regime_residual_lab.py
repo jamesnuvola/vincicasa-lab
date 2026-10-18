@@ -564,7 +564,8 @@ def main():
                       "position_shadow": shadow_status,
                       "outputs": ["reports/sequence_agent/position_regime_residual_lab.json",
                                   "reports/sequence_agent/residual_error_ledger.csv",
-                                  "reports/sequence_agent/structural_hazard_oos.json"],
+                                  "reports/sequence_agent/structural_hazard_oos.json",
+                                  "reports/sequence_agent/position_mix_shadow.csv"],
                       "guardrail": "No auto-promotion; historical OOS is exploratory; prospective shadow required"}, indent=2))
 
 if __name__ == "__main__":
