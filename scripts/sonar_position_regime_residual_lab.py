@@ -264,6 +264,7 @@ def main():
 
     # Finalize per-position tests and Holm correction for the 5 adaptive top-1 tests.
     pred_p = []
+    paired_p = []
     for pos in range(1, 6):
         rec = pos_eval[str(pos)]
         n = rec["n"]
@@ -282,13 +283,20 @@ def main():
         rec["adaptive_vs_theory_mode_discordant_wins_losses"] = {
             "wins": rec["adaptive_wins"], "losses": rec["adaptive_losses"]
         }
+        discordant = rec["adaptive_wins"] + rec["adaptive_losses"]
+        paired_pval = min(1.0, 2.0 * binom_tail_ge(max(rec["adaptive_wins"], rec["adaptive_losses"]),
+                                                   discordant, 0.5)) if discordant else 1.0
+        rec["p_adaptive_vs_theory_mode_exact_mcnemar"] = paired_pval
+        paired_p.append((str(pos), paired_pval))
         rec.pop("adaptive_null_variance", None)
         rec.pop("per_draw", None)
         pred_p.append((str(pos), pval))
     pred_adj = holm_adjust(pred_p)
+    paired_adj = holm_adjust(paired_p)
     for pos in pos_eval:
-        pos_eval[pos]["p_holm_5_positions"] = pred_adj[pos]
-        pos_eval[pos]["interpretation"] = "exploratory; overlapping temporal forecasts and model adaptation make this an approximate screen"
+        pos_eval[pos]["p_holm_5_positions_vs_theory_null"] = pred_adj[pos]
+        pos_eval[pos]["p_holm_5_positions_vs_theory_mode"] = paired_adj[pos]
+        pos_eval[pos]["interpretation"] = "exploratory; temporal dependence and adaptive estimation mean these are screening tests, not proof of predictability"
 
     # Regime summaries for global vs positional mix.
     regimes = {}
