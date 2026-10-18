@@ -1,8 +1,8 @@
 name: SONAR Sequence Discovery Agent
 
 on:
-  # Continuous audit: re-run the fixed rule grammar every hour against the
-  # canonical archive. New results are committed only when files actually change.
+  # Hourly autonomous research cycle. The evolutionary search expands the
+  # candidate family and records reproducible diagnostics without auto-promotion.
   schedule:
     - cron: '17 * * * *'
   workflow_dispatch:
@@ -12,6 +12,8 @@ on:
       - "scripts/sonar_sequence_agent.py"
       - "scripts/sonar_research_queue.py"
       - "scripts/sonar_fast_improvements.py"
+      - "scripts/sonar_evolutionary_lab.py"
+      - "scripts/sonar_position_regime_residual_lab.py"
       - "reports/sequence_agent/research_backlog.json"
       - "data/storico_daily.csv"
       - "src/data.json"
@@ -21,7 +23,6 @@ permissions:
   contents: write
 
 concurrency:
-  # Serialize all workflows that commit to main; prevents stale-checkout push races.
   group: vincicasa-main-data-writers
   cancel-in-progress: false
 
@@ -39,22 +40,29 @@ jobs:
           python-version: "3.12"
 
       - name: Check agent syntax
-        run: python -m py_compile scripts/sonar_sequence_agent.py
+        run: |
+          python -m py_compile scripts/sonar_sequence_agent.py
+          python -m py_compile scripts/sonar_fast_improvements.py
+          python -m py_compile scripts/sonar_evolutionary_lab.py
+          python -m py_compile scripts/sonar_position_regime_residual_lab.py
+          python -m py_compile scripts/sonar_research_queue.py
 
       - name: Reconstruct fixed rules walk-forward and update shadow forecasts
         run: python scripts/sonar_sequence_agent.py
 
       - name: Run cascade-loss and fixed fusion diagnostics
-        run: |
-          python -m py_compile scripts/sonar_fast_improvements.py
-          python scripts/sonar_fast_improvements.py
+        run: python scripts/sonar_fast_improvements.py
+
+      - name: Run evolutionary pairwise strategy search
+        run: python scripts/sonar_evolutionary_lab.py
+
+      - name: Run positional, regime, residual and structural hazard lab
+        run: python scripts/sonar_position_regime_residual_lab.py
 
       - name: Validate and sequence the registered research backlog
-        run: |
-          python -m py_compile scripts/sonar_research_queue.py
-          python scripts/sonar_research_queue.py
+        run: python scripts/sonar_research_queue.py
 
-      - name: Persist ledger, signatures, wave candidates, frozen forecasts and queue status
+      - name: Persist all research reports and frozen forecasts
         run: |
           git config user.name "sonar-sequence-agent"
           git config user.email "actions@users.noreply.github.com"
@@ -66,7 +74,7 @@ jobs:
               pushed=true
               break
             fi
-            git commit -m "SONAR sequence agent: refresh historical audit"
+            git commit -m "SONAR sequence agent: refresh research and strategy search"
             if git push origin HEAD:main; then
               pushed=true
               break
@@ -75,8 +83,11 @@ jobs:
               echo "Remote main advanced during analysis; reloading latest history and recomputing (attempt $((attempt + 1))/3)."
               git fetch origin main
               git reset --hard origin/main
-              python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_research_queue.py
+              python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_fast_improvements.py scripts/sonar_evolutionary_lab.py scripts/sonar_position_regime_residual_lab.py scripts/sonar_research_queue.py
               python scripts/sonar_sequence_agent.py
+              python scripts/sonar_fast_improvements.py
+              python scripts/sonar_evolutionary_lab.py
+              python scripts/sonar_position_regime_residual_lab.py
               python scripts/sonar_research_queue.py
               git add reports/sequence_agent/
             fi
