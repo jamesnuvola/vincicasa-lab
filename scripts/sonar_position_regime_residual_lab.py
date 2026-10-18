@@ -560,6 +560,12 @@ def main():
     with (OUT / "residual_error_ledger.csv").open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(residual_rows[0].keys()))
         writer.writeheader(); writer.writerows(residual_rows)
+    if residual_feature_rows:
+        with (OUT / "residual_number_feature_ledger.csv").open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=list(residual_feature_rows[0].keys()))
+            writer.writeheader(); writer.writerows(residual_feature_rows)
+    else:
+        raise SystemExit("PIPELINE BLOCKED: no residual-number feature rows were produced")
 
     # Global vs position-mix paired metrics; descriptive regime and overall comparison.
     def summary_hits(vals):
@@ -569,6 +575,39 @@ def main():
                 "top20_5of5": sum(v==5 for v in vals),
                 "top20_4plus": sum(v>=4 for v in vals)}
     global_summary, mix_summary = summary_hits(global_hits), summary_hits(mix_hits)
+    def union_summary(rows):
+        sizes = [int(row["position_seed_union_size"]) for row in rows]
+        return {"targets": len(sizes), "mean_raw_union_size": sum(sizes)/len(sizes) if sizes else None,
+                "minimum_raw_union_size": min(sizes) if sizes else None,
+                "maximum_raw_union_size": max(sizes) if sizes else None,
+                "size_distribution": {str(k): sizes.count(k) for k in sorted(set(sizes))}}
+    union_all = union_summary(residual_rows)
+    global_positional_report = {
+        "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
+        "source": "data/storico_daily.csv", "first_date": first, "last_date": last,
+        "draws": n_draws, "warmup_draws": WARMUP, "evaluated_targets": len(residual_rows),
+        "same_targets_and_splits": True,
+        "global_top20_definition": "Rank numbers by frequency in the previous 100 draws; deterministic ties resolve by smaller number.",
+        "raw_positional_union_definition": "Union the top 3 smoothed values for each of P1-P5 before any completion; report raw union size before deduplication (set union) and before filling.",
+        "completion_to_20_rule": "Keep the union seeds ranked by summed position-conditioned scores; fill remaining slots with the global trailing-100 frequency ranking until 20 distinct numbers are selected.",
+        "raw_positional_union_size": union_all,
+        "overall": {"global_top20": global_summary, "position_seed_mix_top20": mix_summary,
+                    "mean_hit_delta_mix_minus_global": mix_summary["mean_hits"]-global_summary["mean_hits"],
+                    "random_top20_5of5_baseline_rate": math.comb(20, 5) / math.comb(40, 5),
+                    "random_top20_5of5_expected_count": len(global_hits) * math.comb(20, 5) / math.comb(40, 5)},
+        "chronological_splits": {
+            split_name: {"targets": hi-lo, "raw_positional_union_size": union_summary(residual_rows[lo:hi]),
+                         "global_top20": summary_hits(global_hits[lo:hi]),
+                         "position_seed_mix_top20": summary_hits(mix_hits[lo:hi]),
+                         "random_top20_5of5_expected_count": (hi-lo) * math.comb(20, 5) / math.comb(40, 5)}
+            for split_name, (lo, hi) in split_bounds.items()
+        },
+        "per_target_paired": {"mix_better": sum(m>g for m,g in zip(mix_hits,global_hits)),
+                              "tie": sum(m==g for m,g in zip(mix_hits,global_hits)),
+                              "global_better": sum(g>m for m,g in zip(mix_hits,global_hits))},
+        "guardrail": "All forecasts are pre-target. Retrospective OOS is exploratory and does not authorize promotion."
+    }
+    (OUT / "global_vs_positional_walkforward.json").write_text(json.dumps(global_positional_report, indent=2) + "\n", encoding="utf-8")
     position_report = {
         "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
         "source": "data/storico_daily.csv", "first_date": first, "last_date": last,
@@ -621,6 +660,9 @@ def main():
                       "outputs": ["reports/sequence_agent/position_regime_residual_lab.json",
                                   "reports/sequence_agent/residual_error_ledger.csv",
                                   "reports/sequence_agent/structural_hazard_oos.json",
+                                  "reports/sequence_agent/residual_number_feature_ledger.csv",
+                                  "reports/sequence_agent/global_vs_positional_walkforward.json",
+                                  "reports/sequence_agent/prospective_promotion_gate.json",
                                   "reports/sequence_agent/position_mix_shadow.csv"],
                       "guardrail": "No auto-promotion; historical OOS is exploratory; prospective shadow required"}, indent=2))
 
