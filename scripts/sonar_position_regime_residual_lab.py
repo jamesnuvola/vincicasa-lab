@@ -332,6 +332,57 @@ def main():
                 "prior_20_sum_mean": round(cur_mean, 4), "sum_regime": sum_regime,
                 "prior_transition_overlap": overlap, "overlap_regime": overlap_regime
             })
+            # One row per actual number missed by either pre-target Top20, with features known at cutoff.
+            global_rank_map = {n: i + 1 for i, n in enumerate(global_rank)}
+            positional_score_rank = sorted(
+                NUMBERS,
+                key=lambda n: (-sum(p_scores.get((pos, n), 0.0) for pos in range(1, 6)),
+                               -global_counts[n], n))
+            positional_rank_map = {n: i + 1 for i, n in enumerate(positional_score_rank)}
+            freq20 = Counter(n for d in prior[-20:] for n in d)
+            freq50 = Counter(n for d in prior[-50:] for n in d)
+            last_seen_index, last_seen_position = {}, {}
+            for j in range(t - 1, -1, -1):
+                for p, value in enumerate(prior[j], 1):
+                    if value not in last_seen_index:
+                        last_seen_index[value] = j
+                        last_seen_position[value] = p
+                if len(last_seen_index) == 40:
+                    break
+            prev_numbers = set(prior[-1])
+            for value in sorted(set(residual) | set(mix_residual)):
+                last_idx = last_seen_index.get(value)
+                gap_age = t if last_idx is None else t - last_idx - 1
+                cooccur_prev1 = sum(
+                    sum(1 for prev_n in prev_numbers if prev_n != value and prev_n in draw)
+                    for draw in train if value in draw)
+                missed_global = value not in set(global20)
+                missed_mix = value not in set(mix20)
+                residual_feature_rows.append({
+                    "target_date": date, "cutoff_date": dates[t-1], "actual_number": value,
+                    "missed_global_top20": int(missed_global),
+                    "missed_position_mix_top20": int(missed_mix),
+                    "missed_by": "BOTH" if missed_global and missed_mix else ("GLOBAL_ONLY" if missed_global else "POSITION_MIX_ONLY"),
+                    "global_frequency_rank": global_rank_map[value],
+                    "position_score_rank": positional_rank_map[value],
+                    "position_score_rank_minus_global_rank": positional_rank_map[value] - global_rank_map[value],
+                    "frequency_last20": freq20[value], "frequency_last50": freq50[value],
+                    "frequency_last100": global_counts[value],
+                    "draws_since_last_seen": gap_age, "last_seen_position": last_seen_position.get(value, ""),
+                    "previous_draw_contains_number": int(value in prev_numbers),
+                    "previous5_draw_frequency": sum(value in draw for draw in prior[-5:]),
+                    "cooccurrence_with_previous_draw_numbers_last100": cooccur_prev1,
+                    "position_frequency_p1_last100": position_counts[1][value],
+                    "position_frequency_p2_last100": position_counts[2][value],
+                    "position_frequency_p3_last100": position_counts[3][value],
+                    "position_frequency_p4_last100": position_counts[4][value],
+                    "position_frequency_p5_last100": position_counts[5][value],
+                    "number_decade": (value - 1) // 10 + 1, "number_mod5": value % 5,
+                    "number_is_odd": value % 2,
+                    "prior_20_sum_mean": round(cur_mean, 4), "sum_regime": sum_regime,
+                    "prior_transition_overlap": overlap, "overlap_regime": overlap_regime,
+                    "position_seed_union_size": len(seeds)
+                })
             for pos in range(1, 6):
                 counts = Counter(d[pos - 1] for d in prior)
                 scores = {x: counts[x] + PRIOR_STRENGTH * THEORY[pos][x] for x in THEORY[pos]}
