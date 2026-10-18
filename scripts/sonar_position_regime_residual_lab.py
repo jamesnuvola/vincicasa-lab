@@ -235,10 +235,32 @@ def main():
                 if base_hit and not hit: rec["adaptive_losses"] += 1
                 rec["per_draw"].append({"date": date, "actual": actual[pos-1], "prediction": pred,
                                         "theory_mode": theory_mode, "hit": hit, "theory_mode_hit": base_hit,
-                                        "null_probability": p_null})
+                                        "top3_hit": int(actual[pos-1] in top3), "null_probability": p_null})
         # positional counts kept for auditability; no current target is used until after its forecast.
         for pos in range(1, 6):
             pos_counts[pos][actual[pos - 1]] += 1
+
+    # Chronological 60/20/20 splits over the scored targets; no target is used to create its own forecast.
+    eval_n = n_draws - WARMUP
+    split_bounds = {"discovery": (0, int(eval_n * 0.60)),
+                    "validation": (int(eval_n * 0.60), int(eval_n * 0.80)),
+                    "oos": (int(eval_n * 0.80), eval_n)}
+    position_split_metrics = {}
+    for pos in range(1, 6):
+        rows_for_pos = pos_eval[str(pos)]["per_draw"]
+        position_split_metrics[str(pos)] = {}
+        for split_name, (lo, hi) in split_bounds.items():
+            part = rows_for_pos[lo:hi]
+            n_part = len(part)
+            position_split_metrics[str(pos)][split_name] = {
+                "targets": n_part,
+                "adaptive_top1_hits": sum(r["hit"] for r in part),
+                "adaptive_top1_rate": sum(r["hit"] for r in part) / n_part if n_part else None,
+                "theory_mode_top1_hits": sum(r["theory_mode_hit"] for r in part),
+                "theory_mode_top1_rate": sum(r["theory_mode_hit"] for r in part) / n_part if n_part else None,
+                "adaptive_top3_hits": sum(r["top3_hit"] for r in part),
+                "adaptive_top3_rate": sum(r["top3_hit"] for r in part) / n_part if n_part else None
+            }
 
     # Finalize per-position tests and Holm correction for the 5 adaptive top-1 tests.
     pred_p = []
@@ -287,10 +309,15 @@ def main():
     bucket_total = Counter(); bucket_hits = Counter()
     hazard_brier = hazard_log = base_brier = base_log = 0.0
     hazard_n = 0
+    hazard_split = {name: {"targets": hi-lo, "opportunities": 0, "model_brier_sum": 0.0,
+                           "baseline_brier_sum": 0.0, "model_log_loss_sum": 0.0,
+                           "baseline_log_loss_sum": 0.0}
+                    for name, (lo, hi) in split_bounds.items()}
     hazard_bucket_eval = {label: {"n": 0, "hits": 0, "brier_model": 0.0, "brier_base": 0.0} for _, _, label in GAP_BUCKETS}
     for t, actual in enumerate(draws):
         actual_set = set(actual)
         if t >= WARMUP:
+            target_brier_model = target_brier_base = target_log_model = target_log_base = 0.0
             for n in NUMBERS:
                 age = t if last_seen[n] is None else t - last_seen[n] - 1
                 b = gap_bucket(age)
@@ -299,10 +326,22 @@ def main():
                 pclip = min(1 - 1e-12, max(1e-12, p))
                 brier = (p-y)**2
                 brier0 = (BASE_P-y)**2
+                log_model = -(y*math.log(pclip)+(1-y)*math.log1p(-pclip))
+                log_base = -(y*math.log(BASE_P)+(1-y)*math.log1p(-BASE_P))
                 hazard_brier += brier; base_brier += brier0
-                hazard_log += -(y*math.log(pclip)+(1-y)*math.log1p(-pclip))
-                base_log += -(y*math.log(BASE_P)+(1-y)*math.log1p(-BASE_P))
+                hazard_log += log_model; base_log += log_base
+                target_brier_model += brier; target_brier_base += brier0
+                target_log_model += log_model; target_log_base += log_base
                 hazard_n += 1
+            eidx = t - WARMUP
+            split_name = "discovery" if eidx < split_bounds["discovery"][1] else (
+                "validation" if eidx < split_bounds["validation"][1] else "oos")
+            hs = hazard_split[split_name]
+            hs["opportunities"] += len(NUMBERS)
+            hs["model_brier_sum"] += target_brier_model
+            hs["baseline_brier_sum"] += target_brier_base
+            hs["model_log_loss_sum"] += target_log_model
+            hs["baseline_log_loss_sum"] += target_log_base
                 cell = hazard_bucket_eval[b]; cell["n"] += 1; cell["hits"] += y
                 cell["brier_model"] += brier; cell["brier_base"] += brier0
         # Update hazard training only after scoring this draw.
@@ -316,6 +355,16 @@ def main():
         cell["hit_rate"] = cell["hits"] / cell["n"] if cell["n"] else None
         cell["mean_brier_model"] = cell["brier_model"] / cell["n"] if cell["n"] else None
         cell["mean_brier_baseline"] = cell["brier_base"] / cell["n"] if cell["n"] else None
+    for hs in hazard_split.values():
+        m = hs["opportunities"]
+        hs["model_brier"] = hs["model_brier_sum"] / m if m else None
+        hs["baseline_brier"] = hs["baseline_brier_sum"] / m if m else None
+        hs["brier_improvement"] = (hs["baseline_brier_sum"] - hs["model_brier_sum"]) / m if m else None
+        hs["model_log_loss"] = hs["model_log_loss_sum"] / m if m else None
+        hs["baseline_log_loss"] = hs["baseline_log_loss_sum"] / m if m else None
+        hs["log_loss_improvement"] = (hs["baseline_log_loss_sum"] - hs["model_log_loss_sum"]) / m if m else None
+        for key in ("model_brier_sum", "baseline_brier_sum", "model_log_loss_sum", "baseline_log_loss_sum"):
+            hs.pop(key, None)
     hazard_report = {
         "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
         "source": "data/storico_daily.csv", "first_date": first, "last_date": last,
@@ -326,6 +375,7 @@ def main():
                     "brier_improvement": (base_brier-hazard_brier)/hazard_n,
                     "model_log_loss": hazard_log/hazard_n, "baseline_log_loss": base_log/hazard_n,
                     "log_loss_improvement": (base_log-hazard_log)/hazard_n},
+        "chronological_splits": hazard_split,
         "guardrail": "All gap ages and hazard estimates use prior draws only. Historical score improvement is exploratory; no prospective promotion."
     }
     (OUT / "structural_hazard_oos.json").write_text(json.dumps(hazard_report, indent=2) + "\n", encoding="utf-8")
@@ -349,10 +399,23 @@ def main():
         "draws": n_draws, "warmup_draws": WARMUP, "evaluated_targets": n_draws-WARMUP,
         "theoretical_position_distributions": position_desc,
         "prequential_exact_position_prediction": pos_eval,
+        "position_prediction_by_chronological_split": position_split_metrics,
+        "walkforward_split_bounds": {k: {"start_index_in_scored_targets": lo, "end_index_exclusive": hi,
+                                         "targets": hi-lo} for k, (lo, hi) in split_bounds.items()},
         "global_top20_vs_position_seed_mix": {
             "definition": "Global Top20 = frequency ranking on prior 100 draws. Position-seed mix = union of top-3 smoothed values for each ordered position, completed to 20 using the same global frequency ranking.",
             "global_top20": global_summary, "position_seed_mix_top20": mix_summary,
+            "random_top20_5of5_baseline_rate": math.comb(20, 5) / math.comb(40, 5),
+            "random_top20_5of5_expected_count": len(global_hits) * math.comb(20, 5) / math.comb(40, 5),
             "mean_hit_delta_mix_minus_global": mix_summary["mean_hits"]-global_summary["mean_hits"],
+            "chronological_splits": {
+                split_name: {
+                    "targets": hi-lo,
+                    "global_top20": summary_hits(global_hits[lo:hi]),
+                    "position_seed_mix_top20": summary_hits(mix_hits[lo:hi]),
+                    "random_top20_5of5_expected_count": (hi-lo) * math.comb(20, 5) / math.comb(40, 5)
+                } for split_name, (lo, hi) in split_bounds.items()
+            },
             "per_target_paired": {"mix_better": sum(m>g for m,g in zip(mix_hits,global_hits)),
                                   "tie": sum(m==g for m,g in zip(mix_hits,global_hits)),
                                   "global_better": sum(g>m for m,g in zip(mix_hits,global_hits))},
