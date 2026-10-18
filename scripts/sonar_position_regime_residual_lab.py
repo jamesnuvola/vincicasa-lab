@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Leakage-safe VinciCasa positional, regime, residual and gap-hazard research."""
 from __future__ import annotations
-import csv, json, math, statistics
+import csv, json, math, random, statistics
 from collections import Counter
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
@@ -275,6 +275,7 @@ def main():
     pos_history = []
     global_hits, mix_hits = [], []
     residual_rows = []
+    residual_feature_rows = []
     sum_means_history = []
     global_rolling_counts = Counter()
     # Each target is forecast using only prior draws; first 500 are warmup.
@@ -287,8 +288,10 @@ def main():
             global20 = global_rank[:20]
             # Position-conditioned top-3 candidates per ordered slot, smoothed toward exact theory.
             p_scores = {}
+            position_counts = {}
             for pos in range(1, 6):
                 cnt = Counter(d[pos - 1] for d in train)
+                position_counts[pos] = cnt
                 for x in THEORY[pos]:
                     p_scores[(pos, x)] = cnt[x] + PRIOR_STRENGTH * THEORY[pos][x]
             seeds = set()
@@ -324,6 +327,8 @@ def main():
                 "global_residual_numbers": " ".join(map(str, residual)), "global_residual_count": len(residual),
                 "position_mix_top20": " ".join(map(str, mix20)), "position_mix_hits": mh,
                 "position_mix_residual_numbers": " ".join(map(str, mix_residual)),
+                "position_seed_union": " ".join(map(str, sorted(seeds))),
+                "position_seed_union_size": len(seeds),
                 "prior_20_sum_mean": round(cur_mean, 4), "sum_regime": sum_regime,
                 "prior_transition_overlap": overlap, "overlap_regime": overlap_regime
             })
