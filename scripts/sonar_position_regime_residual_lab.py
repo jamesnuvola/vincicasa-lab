@@ -3,7 +3,9 @@
 from __future__ import annotations
 import csv, json, math, statistics
 from collections import Counter
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data/storico_daily.csv"
@@ -14,6 +16,8 @@ NCOMB = math.comb(40, 5)
 BASE_P = 5 / 40
 WARMUP = 500
 PRIOR_STRENGTH = 30.0
+ROME = ZoneInfo("Europe/Rome")
+DRAW_TIME = time(20, 0)
 GAP_BUCKETS = ((0, 4, "0-4"), (5, 9, "5-9"), (10, 19, "10-19"), (20, 10**9, "20+"))
 
 def comb0(n, r):
@@ -113,6 +117,110 @@ def gap_bucket(age):
 
 def rank_values(scores, allowed=NUMBERS):
     return sorted(allowed, key=lambda n: (-scores.get(n, 0.0), n))
+
+def position_mix_forecast(history):
+    """Create a deterministic Top20 from prior-100 global ranks plus position-conditioned seeds."""
+    train = history[-100:]
+    global_counts = Counter(n for draw in train for n in draw)
+    global_rank = rank_values(global_counts)
+    scores = {}
+    for pos in range(1, 6):
+        counts = Counter(draw[pos - 1] for draw in train)
+        for value in THEORY[pos]:
+            scores[(pos, value)] = counts[value] + PRIOR_STRENGTH * THEORY[pos][value]
+    seeds = set()
+    for pos in range(1, 6):
+        order = sorted(THEORY[pos], key=lambda x: (-scores[(pos, x)], x))
+        seeds.update(order[:3])
+    ranked = sorted(seeds, key=lambda x: (-sum(scores.get((pos, x), 0.0) for pos in range(1, 6)), x))
+    for value in global_rank:
+        if len(ranked) >= 20:
+            break
+        if value not in ranked:
+            ranked.append(value)
+    return ranked[:20]
+
+def update_position_shadow(dates, draws):
+    """Append a pre-target freeze and evaluate only previously frozen forecasts; never reconstruct gaps."""
+    path = OUT / "position_mix_shadow.csv"
+    fields = ["target_date", "frozen_at", "history_cutoff", "config_id", "model_version",
+              "top20", "top10", "top5", "status", "actual_numbers", "hit_numbers",
+              "hit_count", "all5_top20", "evaluated_at", "evaluated_at_data_through", "timeliness_note"]
+    rows = []
+    if path.exists():
+        with path.open(newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            if reader.fieldnames != fields:
+                raise SystemExit("PIPELINE BLOCKED: position_mix_shadow.csv schema mismatch")
+            rows = list(reader)
+    now = datetime.now(ROME)
+    actual_by_date = {d: nums for d, nums in zip(dates, draws)}
+    changed = False
+    # Outcomes may be attached only to an existing freeze; frozen numbers/cutoff are never changed.
+    for row in rows:
+        if row["status"] == "FROZEN_PENDING" and row["target_date"] in actual_by_date:
+            actual = actual_by_date[row["target_date"]]
+            hits = sorted(set(parse(row["top20"])) & set(actual))
+            row["status"] = "EVALUATED"
+            row["actual_numbers"] = " ".join(map(str, actual))
+            row["hit_numbers"] = " ".join(map(str, hits))
+            row["hit_count"] = str(len(hits))
+            row["all5_top20"] = "1" if len(hits) == 5 else "0"
+            row["evaluated_at"] = now.isoformat(timespec="seconds")
+            row["evaluated_at_data_through"] = dates[-1]
+            changed = True
+
+    latest = date.fromisoformat(dates[-1])
+    today = now.date()
+    target = None
+    if latest == today:
+        target = today + timedelta(days=1)
+    elif latest == today - timedelta(days=1) and now.time() < DRAW_TIME:
+        target = today
+    elif latest < today - timedelta(days=1):
+        state = "PIPELINE_BLOCKED_STALE_ARCHIVE"
+    elif latest == today - timedelta(days=1) and now.time() >= DRAW_TIME:
+        state = "WAITING_FOR_TODAY_RESULT_AFTER_DRAW_CUTOFF"
+    else:
+        state = "NO_SAFE_TARGET_RESOLVED"
+
+    existing_dates = {row["target_date"] for row in rows}
+    if target is not None:
+        target_s = target.isoformat()
+        if target_s in existing_dates:
+            state = "EXISTING_FREEZE_PRESERVED"
+        else:
+            top20 = position_mix_forecast(draws)
+            rows.append({
+                "target_date": target_s, "frozen_at": now.isoformat(timespec="seconds"),
+                "history_cutoff": dates[-1], "config_id": "position_seed_mix_top20_v1",
+                "model_version": "position-seed-mix-v1",
+                "top20": " ".join(map(str, top20)), "top10": " ".join(map(str, top20[:10])),
+                "top5": " ".join(map(str, top20[:5])), "status": "FROZEN_PENDING",
+                "actual_numbers": "", "hit_numbers": "", "hit_count": "", "all5_top20": "",
+                "evaluated_at": "", "evaluated_at_data_through": "",
+                "timeliness_note": "Append-only freeze created before nominal draw time; cutoff is canonical latest date."
+            })
+            state = "FROZEN_PENDING_CREATED"
+            changed = True
+    if changed or not path.exists():
+        with path.open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
+    pending = sum(row["status"] == "FROZEN_PENDING" for row in rows)
+    evaluated = sum(row["status"] == "EVALUATED" for row in rows)
+    latest_row = max(rows, key=lambda row: row["target_date"]) if rows else None
+    return {
+        "status": state, "file": str(path.relative_to(ROOT)), "rows": len(rows),
+        "pending": pending, "evaluated": evaluated,
+        "latest_freeze": None if latest_row is None else {
+            "target_date": latest_row["target_date"], "frozen_at": latest_row["frozen_at"],
+            "history_cutoff": latest_row["history_cutoff"], "status": latest_row["status"],
+            "top20": latest_row["top20"]
+        },
+        "policy": "Append-only; never reconstruct a missing freeze; frozen top20/top10/top5 and cutoff are immutable."
+    }
 
 def binom_tail_ge(k, n, p):
     # Exact upper binomial tail; used only for small positional top-1 comparisons.
@@ -432,6 +540,8 @@ def main():
         "regime_slices": regimes,
         "guardrail": "All predictions use only data available before target. Full-history position frequency tests are descriptive only. Holm correction is applied across five position tests."
     }
+    shadow_status = update_position_shadow(dates, draws)
+    position_report["prospective_shadow"] = shadow_status
     (OUT / "position_regime_residual_lab.json").write_text(json.dumps(position_report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"status": "COMPLETE_RETROSPECTIVE_EXPLORATORY", "source": str(DATA.relative_to(ROOT)),
                       "draws": n_draws, "first_date": first, "last_date": last,
@@ -442,6 +552,7 @@ def main():
                       "global_mean_hits": round(global_summary["mean_hits"], 5),
                       "position_mix_mean_hits": round(mix_summary["mean_hits"], 5),
                       "hazard_brier_improvement": round(hazard_report["overall"]["brier_improvement"], 7),
+                      "position_shadow": shadow_status,
                       "outputs": ["reports/sequence_agent/position_regime_residual_lab.json",
                                   "reports/sequence_agent/residual_error_ledger.csv",
                                   "reports/sequence_agent/structural_hazard_oos.json"],
