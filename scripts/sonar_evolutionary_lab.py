@@ -66,9 +66,19 @@ def main():
         available = {k: score_row(rr[k]) for k in configs if k in rr}
         global_score = {x: sum(v[1][x] for v in available.values()) for x in NUMBERS}
         prepared.append((dt, available, global_score, next(iter(available.values()))[3]))
+    # Candidate-pool screening is performed on discovery only. Validation selects
+    # among these pairs; OOS is never used for either screening or ranking.
+    discovery_rows = splits["discovery"]
+    discovery_scores = []
+    for cfg in configs:
+        vals = [(parse(rr[cfg]["top20"]), set(parse(rr[cfg]["actual_numbers"])))
+                for _, rr in discovery_rows if cfg in rr]
+        m = metrics(vals)
+        discovery_scores.append((cfg, m["top20_5of5"], m["top20_4plus"], m["mean_top20_hits"] or 0.0))
+    search_configs = [r[0] for r in sorted(discovery_scores, key=lambda r: (-r[1], -r[2], -r[3], r[0]))[:24]]
     candidates = []
     methods = ("borda", "rrf", "agreement_bonus")
-    pairs = [(a,b) for a,b in combinations(configs,2)]
+    pairs = [(a,b) for a,b in combinations(search_configs,2)]
     for a,b in pairs:
         for method in methods:
             per_split = {}
@@ -114,8 +124,10 @@ def main():
         "source": "historical_rule_ledger.csv",
         "targets": n, "first_target": targets[0][0], "last_target": targets[-1][0],
         "split_sizes": {k: len(v) for k,v in splits.items()},
-        "configurations": len(configs), "pairs_tested": len(pairs),
+        "configurations": len(configs), "discovery_screened_pair_pool_size": len(search_configs),
+        "discovery_screened_pair_pool": search_configs, "pairs_tested": len(pairs),
         "fusion_candidates_tested": len(candidates), "methods": list(methods),
+        "candidate_pool_rule": "Top 24 individual configurations ranked on discovery only by 5/5, then 4+, then mean hits; pairs are evaluated on validation and OOS, with OOS excluded from selection.",
         "random_top20_5of5_baseline": BASELINE,
         "selection_rule": "Validation shortlist ordered by Top20 5/5 count, then Top20 4+ count, then mean hits; OOS is not used for ranking.",
         "individual_baselines": base_rows,
@@ -131,13 +143,14 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     (OUT / "evolutionary_strategy_lab.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     compact = {"status": report["status"], "targets": n, "configurations": len(configs),
+               "discovery_screened_pair_pool_size": len(search_configs),
                "pairs_tested": len(pairs), "fusion_candidates_tested": len(candidates),
                "validation_shortlist": [{"id": c["id"], "models": c["models"],
                    "validation": c["splits"]["validation"], "oos": c["splits"]["oos"]} for c in shortlist],
                "guardrails": report["guardrails"]}
     (OUT / "evolutionary_strategy_shortlist.json").write_text(json.dumps(compact, indent=2) + "\n", encoding="utf-8")
-    print(json.dumps({"status": report["status"], "targets": n, "pairs": len(pairs),
-                      "candidates": len(candidates), "shortlist": len(shortlist)}, ensure_ascii=False))
+    print(json.dumps({"status": report["status"], "targets": n, "discovery_pool": len(search_configs),
+                      "pairs": len(pairs), "candidates": len(candidates), "shortlist": len(shortlist)}, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()
