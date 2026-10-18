@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Leakage-safe VinciCasa positional, regime, residual and gap-hazard research."""
 from __future__ import annotations
-import csv, json, math, statistics
+import csv, json, math, random, statistics
 from collections import Counter
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
@@ -215,6 +215,40 @@ def update_position_shadow(dates, draws):
     pending = sum(row["status"] == "FROZEN_PENDING" for row in rows)
     evaluated = sum(row["status"] == "EVALUATED" for row in rows)
     latest_row = max(rows, key=lambda row: row["target_date"]) if rows else None
+    valid_evaluated = []
+    for row in rows:
+        if row["status"] != "EVALUATED" or row["target_date"] not in actual_by_date:
+            continue
+        target_date = date.fromisoformat(row["target_date"])
+        cutoff_date = date.fromisoformat(row["history_cutoff"])
+        frozen_at = datetime.fromisoformat(row["frozen_at"])
+        nominal_target = datetime.combine(target_date, DRAW_TIME, ROME)
+        if (cutoff_date == target_date - timedelta(days=1) and frozen_at < nominal_target
+                and parse(row["actual_numbers"]) == list(actual_by_date[row["target_date"]])):
+            valid_evaluated.append(row)
+    valid_n = len(valid_evaluated)
+    valid_hits = [int(row["hit_count"]) for row in valid_evaluated]
+    five_count = sum(row["all5_top20"] == "1" for row in valid_evaluated)
+    four_plus_count = sum(h >= 4 for h in valid_hits)
+    gate = {
+        "status": "INSUFFICIENT_PROSPECTIVE_CASES" if valid_n < 100 else "REVIEW_REQUIRED_NO_AUTO_PROMOTION",
+        "model": "position_seed_mix_top20_v1",
+        "valid_complete_prospective_targets": valid_n,
+        "minimum_required": 100, "preferred_required": 200,
+        "top20_5of5": five_count,
+        "top20_5of5_rate": five_count / valid_n if valid_n else None,
+        "top20_5of5_random_baseline_rate": math.comb(20, 5) / math.comb(40, 5),
+        "top20_5of5_random_baseline_expected_count": valid_n * math.comb(20, 5) / math.comb(40, 5),
+        "top20_5of5_binomial_p_vs_random": binom_tail_ge(five_count, valid_n, math.comb(20, 5) / math.comb(40, 5)) if valid_n else None,
+        "top20_4plus": four_plus_count,
+        "mean_top20_hits": sum(valid_hits) / valid_n if valid_n else None,
+        "evaluated_shadow_rows_total": evaluated,
+        "excluded_evaluated_rows": evaluated - valid_n,
+        "missing_freezes_reconstructed": 0,
+        "promotion_allowed": False,
+        "rule": "Only an existing pre-target freeze with previous-day cutoff and matching canonical outcome is eligible; 100 cases minimum, 200 preferred, manual review required."
+    }
+    (OUT / "prospective_promotion_gate.json").write_text(json.dumps(gate, indent=2) + "\n", encoding="utf-8")
     return {
         "status": state, "file": str(path.relative_to(ROOT)), "rows": len(rows),
         "pending": pending, "evaluated": evaluated,
@@ -223,7 +257,8 @@ def update_position_shadow(dates, draws):
             "history_cutoff": latest_row["history_cutoff"], "status": latest_row["status"],
             "top20": latest_row["top20"]
         },
-        "policy": "Append-only; never reconstruct a missing freeze; frozen top20/top10/top5 and cutoff are immutable."
+        "policy": "Append-only; never reconstruct a missing freeze; frozen top20/top10/top5 and cutoff are immutable.",
+        "promotion_gate": gate
     }
 
 def binom_tail_ge(k, n, p):
@@ -275,6 +310,7 @@ def main():
     pos_history = []
     global_hits, mix_hits = [], []
     residual_rows = []
+    residual_feature_rows = []
     sum_means_history = []
     global_rolling_counts = Counter()
     # Each target is forecast using only prior draws; first 500 are warmup.
@@ -287,8 +323,10 @@ def main():
             global20 = global_rank[:20]
             # Position-conditioned top-3 candidates per ordered slot, smoothed toward exact theory.
             p_scores = {}
+            position_counts = {}
             for pos in range(1, 6):
                 cnt = Counter(d[pos - 1] for d in train)
+                position_counts[pos] = cnt
                 for x in THEORY[pos]:
                     p_scores[(pos, x)] = cnt[x] + PRIOR_STRENGTH * THEORY[pos][x]
             seeds = set()
@@ -324,9 +362,62 @@ def main():
                 "global_residual_numbers": " ".join(map(str, residual)), "global_residual_count": len(residual),
                 "position_mix_top20": " ".join(map(str, mix20)), "position_mix_hits": mh,
                 "position_mix_residual_numbers": " ".join(map(str, mix_residual)),
+                "position_seed_union": " ".join(map(str, sorted(seeds))),
+                "position_seed_union_size": len(seeds),
                 "prior_20_sum_mean": round(cur_mean, 4), "sum_regime": sum_regime,
                 "prior_transition_overlap": overlap, "overlap_regime": overlap_regime
             })
+            # One row per actual number missed by either pre-target Top20, with features known at cutoff.
+            global_rank_map = {n: i + 1 for i, n in enumerate(global_rank)}
+            positional_score_rank = sorted(
+                NUMBERS,
+                key=lambda n: (-sum(p_scores.get((pos, n), 0.0) for pos in range(1, 6)),
+                               -global_counts[n], n))
+            positional_rank_map = {n: i + 1 for i, n in enumerate(positional_score_rank)}
+            freq20 = Counter(n for d in prior[-20:] for n in d)
+            freq50 = Counter(n for d in prior[-50:] for n in d)
+            last_seen_index, last_seen_position = {}, {}
+            for j in range(t - 1, -1, -1):
+                for p, value in enumerate(prior[j], 1):
+                    if value not in last_seen_index:
+                        last_seen_index[value] = j
+                        last_seen_position[value] = p
+                if len(last_seen_index) == 40:
+                    break
+            prev_numbers = set(prior[-1])
+            for value in sorted(set(residual) | set(mix_residual)):
+                last_idx = last_seen_index.get(value)
+                gap_age = t if last_idx is None else t - last_idx - 1
+                cooccur_prev1 = sum(
+                    sum(1 for prev_n in prev_numbers if prev_n != value and prev_n in draw)
+                    for draw in train if value in draw)
+                missed_global = value not in set(global20)
+                missed_mix = value not in set(mix20)
+                residual_feature_rows.append({
+                    "target_date": date, "cutoff_date": dates[t-1], "actual_number": value,
+                    "missed_global_top20": int(missed_global),
+                    "missed_position_mix_top20": int(missed_mix),
+                    "missed_by": "BOTH" if missed_global and missed_mix else ("GLOBAL_ONLY" if missed_global else "POSITION_MIX_ONLY"),
+                    "global_frequency_rank": global_rank_map[value],
+                    "position_score_rank": positional_rank_map[value],
+                    "position_score_rank_minus_global_rank": positional_rank_map[value] - global_rank_map[value],
+                    "frequency_last20": freq20[value], "frequency_last50": freq50[value],
+                    "frequency_last100": global_counts[value],
+                    "draws_since_last_seen": gap_age, "last_seen_position": last_seen_position.get(value, ""),
+                    "previous_draw_contains_number": int(value in prev_numbers),
+                    "previous5_draw_frequency": sum(value in draw for draw in prior[-5:]),
+                    "cooccurrence_with_previous_draw_numbers_last100": cooccur_prev1,
+                    "position_frequency_p1_last100": position_counts[1][value],
+                    "position_frequency_p2_last100": position_counts[2][value],
+                    "position_frequency_p3_last100": position_counts[3][value],
+                    "position_frequency_p4_last100": position_counts[4][value],
+                    "position_frequency_p5_last100": position_counts[5][value],
+                    "number_decade": (value - 1) // 10 + 1, "number_mod5": value % 5,
+                    "number_is_odd": value % 2,
+                    "prior_20_sum_mean": round(cur_mean, 4), "sum_regime": sum_regime,
+                    "prior_transition_overlap": overlap, "overlap_regime": overlap_regime,
+                    "position_seed_union_size": len(seeds)
+                })
             for pos in range(1, 6):
                 counts = Counter(d[pos - 1] for d in prior)
                 scores = {x: counts[x] + PRIOR_STRENGTH * THEORY[pos][x] for x in THEORY[pos]}
@@ -429,6 +520,7 @@ def main():
     bucket_total = Counter(); bucket_hits = Counter()
     hazard_brier = hazard_log = base_brier = base_log = 0.0
     hazard_n = 0
+    hazard_predictions = []
     hazard_split = {name: {"targets": hi-lo, "opportunities": 0, "model_brier_sum": 0.0,
                            "baseline_brier_sum": 0.0, "model_log_loss_sum": 0.0,
                            "baseline_log_loss_sum": 0.0}
@@ -438,10 +530,12 @@ def main():
         actual_set = set(actual)
         if t >= WARMUP:
             target_brier_model = target_brier_base = target_log_model = target_log_base = 0.0
+            target_probs = []
             for n in NUMBERS:
                 age = t if last_seen[n] is None else t - last_seen[n] - 1
                 b = gap_bucket(age)
                 p = (bucket_hits[b] + PRIOR_STRENGTH * BASE_P) / (bucket_total[b] + PRIOR_STRENGTH)
+                target_probs.append(p)
                 y = int(n in actual_set)
                 pclip = min(1 - 1e-12, max(1e-12, p))
                 brier = (p-y)**2
@@ -455,6 +549,7 @@ def main():
                 hazard_n += 1
                 cell = hazard_bucket_eval[b]; cell["n"] += 1; cell["hits"] += y
                 cell["brier_model"] += brier; cell["brier_base"] += brier0
+            hazard_predictions.append((target_probs, set(actual_set)))
             eidx = t - WARMUP
             split_name = "discovery" if eidx < split_bounds["discovery"][1] else (
                 "validation" if eidx < split_bounds["validation"][1] else "oos")
@@ -471,6 +566,42 @@ def main():
             bucket_total[b] += 1
             if n in actual_set: bucket_hits[b] += 1
         for n in actual_set: last_seen[n] = t
+    # Conditional randomization null: preserve exactly five hits per target and shuffle which
+    # numbers receive those hits, holding each pre-target probability vector fixed.
+    permutation_count = 199
+    permutation_rng = random.Random(20261018)
+    baseline_brier_per_draw = 5 * (1 - BASE_P) ** 2 + 35 * BASE_P ** 2
+    permutation_improvements = []
+    for _ in range(permutation_count):
+        model_sum = 0.0
+        for probs, _actual_set in hazard_predictions:
+            model_sum += sum(p * p for p in probs)
+            model_sum += sum(1 - 2 * probs[i] for i in permutation_rng.sample(range(40), 5))
+        baseline_sum = baseline_brier_per_draw * len(hazard_predictions)
+        permutation_improvements.append((baseline_sum - model_sum) / hazard_n)
+    observed_brier_improvement = (base_brier - hazard_brier) / hazard_n
+    permutation_improvements.sort()
+    permutation_p = (1 + sum(v >= observed_brier_improvement - 1e-15 for v in permutation_improvements)) / (permutation_count + 1)
+    permutation_test = {
+        "method": "per-target conditional randomization; shuffle five hit labels among 40 numbers while holding prior-only probabilities fixed",
+        "permutations": permutation_count, "seed": 20261018,
+        "observed_brier_improvement": observed_brier_improvement,
+        "null_2_5_percentile": permutation_improvements[int(0.025 * (permutation_count - 1))],
+        "null_97_5_percentile": permutation_improvements[int(0.975 * (permutation_count - 1))],
+        "p_one_sided_improvement": permutation_p,
+        "interpretation": "exploratory; not a prospective validation"
+    }
+    bucket_p_values = []
+    for label, cell in hazard_bucket_eval.items():
+        k, n = cell["hits"], cell["n"]
+        upper = binom_tail_ge(k, n, BASE_P)
+        lower = 1.0 - binom_tail_ge(k + 1, n, BASE_P)
+        p_two = min(1.0, 2.0 * min(upper, lower))
+        cell["p_two_sided_vs_0_125"] = p_two
+        bucket_p_values.append((label, p_two))
+    bucket_holm = holm_adjust(bucket_p_values)
+    for label, cell in hazard_bucket_eval.items():
+        cell["p_holm_across_4_gap_buckets"] = bucket_holm[label]
     for cell in hazard_bucket_eval.values():
         cell["hit_rate"] = cell["hits"] / cell["n"] if cell["n"] else None
         cell["mean_brier_model"] = cell["brier_model"] / cell["n"] if cell["n"] else None
@@ -491,12 +622,15 @@ def main():
         "draws": n_draws, "warmup_draws": WARMUP, "evaluated_draws": n_draws-WARMUP,
         "number_draw_opportunities": hazard_n, "baseline_probability": BASE_P,
         "gap_buckets": hazard_bucket_eval,
+        "permutation_null_test": permutation_test,
+        "gap_bucket_tests": {"family_size": len(bucket_p_values), "adjustment": "Holm",
+                             "null_probability": BASE_P},
         "overall": {"model_brier": hazard_brier/hazard_n, "baseline_brier": base_brier/hazard_n,
                     "brier_improvement": (base_brier-hazard_brier)/hazard_n,
                     "model_log_loss": hazard_log/hazard_n, "baseline_log_loss": base_log/hazard_n,
                     "log_loss_improvement": (base_log-hazard_log)/hazard_n},
         "chronological_splits": hazard_split,
-        "guardrail": "All gap ages and hazard estimates use prior draws only. Historical score improvement is exploratory; no prospective promotion."
+        "guardrail": "All gap ages and hazard estimates use prior draws only. Conditional randomization preserves five hits per target; Holm corrects the four bucket tests. Historical scores remain exploratory; no prospective promotion."
     }
     (OUT / "structural_hazard_oos.json").write_text(json.dumps(hazard_report, indent=2) + "\n", encoding="utf-8")
 
@@ -504,6 +638,12 @@ def main():
     with (OUT / "residual_error_ledger.csv").open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=list(residual_rows[0].keys()))
         writer.writeheader(); writer.writerows(residual_rows)
+    if residual_feature_rows:
+        with (OUT / "residual_number_feature_ledger.csv").open("w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=list(residual_feature_rows[0].keys()))
+            writer.writeheader(); writer.writerows(residual_feature_rows)
+    else:
+        raise SystemExit("PIPELINE BLOCKED: no residual-number feature rows were produced")
 
     # Global vs position-mix paired metrics; descriptive regime and overall comparison.
     def summary_hits(vals):
@@ -513,6 +653,39 @@ def main():
                 "top20_5of5": sum(v==5 for v in vals),
                 "top20_4plus": sum(v>=4 for v in vals)}
     global_summary, mix_summary = summary_hits(global_hits), summary_hits(mix_hits)
+    def union_summary(rows):
+        sizes = [int(row["position_seed_union_size"]) for row in rows]
+        return {"targets": len(sizes), "mean_raw_union_size": sum(sizes)/len(sizes) if sizes else None,
+                "minimum_raw_union_size": min(sizes) if sizes else None,
+                "maximum_raw_union_size": max(sizes) if sizes else None,
+                "size_distribution": {str(k): sizes.count(k) for k in sorted(set(sizes))}}
+    union_all = union_summary(residual_rows)
+    global_positional_report = {
+        "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
+        "source": "data/storico_daily.csv", "first_date": first, "last_date": last,
+        "draws": n_draws, "warmup_draws": WARMUP, "evaluated_targets": len(residual_rows),
+        "same_targets_and_splits": True,
+        "global_top20_definition": "Rank numbers by frequency in the previous 100 draws; deterministic ties resolve by smaller number.",
+        "raw_positional_union_definition": "Union the top 3 smoothed values for each of P1-P5 before any completion; report raw union size before deduplication (set union) and before filling.",
+        "completion_to_20_rule": "Keep the union seeds ranked by summed position-conditioned scores; fill remaining slots with the global trailing-100 frequency ranking until 20 distinct numbers are selected.",
+        "raw_positional_union_size": union_all,
+        "overall": {"global_top20": global_summary, "position_seed_mix_top20": mix_summary,
+                    "mean_hit_delta_mix_minus_global": mix_summary["mean_hits"]-global_summary["mean_hits"],
+                    "random_top20_5of5_baseline_rate": math.comb(20, 5) / math.comb(40, 5),
+                    "random_top20_5of5_expected_count": len(global_hits) * math.comb(20, 5) / math.comb(40, 5)},
+        "chronological_splits": {
+            split_name: {"targets": hi-lo, "raw_positional_union_size": union_summary(residual_rows[lo:hi]),
+                         "global_top20": summary_hits(global_hits[lo:hi]),
+                         "position_seed_mix_top20": summary_hits(mix_hits[lo:hi]),
+                         "random_top20_5of5_expected_count": (hi-lo) * math.comb(20, 5) / math.comb(40, 5)}
+            for split_name, (lo, hi) in split_bounds.items()
+        },
+        "per_target_paired": {"mix_better": sum(m>g for m,g in zip(mix_hits,global_hits)),
+                              "tie": sum(m==g for m,g in zip(mix_hits,global_hits)),
+                              "global_better": sum(g>m for m,g in zip(mix_hits,global_hits))},
+        "guardrail": "All forecasts are pre-target. Retrospective OOS is exploratory and does not authorize promotion."
+    }
+    (OUT / "global_vs_positional_walkforward.json").write_text(json.dumps(global_positional_report, indent=2) + "\n", encoding="utf-8")
     position_report = {
         "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
         "source": "data/storico_daily.csv", "first_date": first, "last_date": last,
@@ -559,12 +732,20 @@ def main():
                                                        "mix": v["position_seed_mix_top20"]["top20_5of5"],
                                                        "targets": v["targets"]}
                                                   for k, v in position_report["global_top20_vs_position_seed_mix"]["chronological_splits"].items()},
+                      "raw_positional_union_mean": round(union_all["mean_raw_union_size"], 4),
+                      "residual_feature_rows": len(residual_feature_rows),
                       "hazard_brier_improvement": round(hazard_report["overall"]["brier_improvement"], 7),
                       "hazard_brier_improvement_by_split": {k: round(v["brier_improvement"], 7) for k, v in hazard_split.items()},
+                      "hazard_permutation_p": round(permutation_test["p_one_sided_improvement"], 5),
+                      "hazard_bucket_p_holm": {k: round(v["p_holm_across_4_gap_buckets"], 5) for k, v in hazard_bucket_eval.items()},
+                      "promotion_gate_status": shadow_status["promotion_gate"]["status"],
                       "position_shadow": shadow_status,
                       "outputs": ["reports/sequence_agent/position_regime_residual_lab.json",
                                   "reports/sequence_agent/residual_error_ledger.csv",
                                   "reports/sequence_agent/structural_hazard_oos.json",
+                                  "reports/sequence_agent/residual_number_feature_ledger.csv",
+                                  "reports/sequence_agent/global_vs_positional_walkforward.json",
+                                  "reports/sequence_agent/prospective_promotion_gate.json",
                                   "reports/sequence_agent/position_mix_shadow.csv"],
                       "guardrail": "No auto-promotion; historical OOS is exploratory; prospective shadow required"}, indent=2))
 
