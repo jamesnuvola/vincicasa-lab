@@ -201,7 +201,8 @@ def main():
             q1 = ordered_means[int(0.33 * (len(ordered_means)-1))]
             q2 = ordered_means[int(0.66 * (len(ordered_means)-1))]
             sum_regime = "LOW" if cur_mean <= q1 else ("HIGH" if cur_mean >= q2 else "MID")
-            overlap = len(set(actual) & set(prior[-1]))
+            # Pre-target state only: overlap between the two most recent already-known draws.
+            overlap = len(set(prior[-1]) & set(prior[-2]))
             overlap_regime = "0" if overlap == 0 else ("1" if overlap == 1 else "2+")
             residual = sorted(set(actual) - set(global20))
             mix_residual = sorted(set(actual) - set(mix20))
@@ -212,7 +213,7 @@ def main():
                 "position_mix_top20": " ".join(map(str, mix20)), "position_mix_hits": mh,
                 "position_mix_residual_numbers": " ".join(map(str, mix_residual)),
                 "prior_20_sum_mean": round(cur_mean, 4), "sum_regime": sum_regime,
-                "previous_draw_overlap": overlap, "overlap_regime": overlap_regime
+                "prior_transition_overlap": overlap, "overlap_regime": overlap_regime
             })
             for pos in range(1, 6):
                 counts = Counter(d[pos - 1] for d in prior)
