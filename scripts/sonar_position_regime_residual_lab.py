@@ -187,7 +187,11 @@ def update_position_shadow(dates, draws):
     existing_dates = {row["target_date"] for row in rows}
     if target is not None:
         target_s = target.isoformat()
-        if target_s in existing_dates:
+        earlier_pending = [row for row in rows if row["status"] == "FROZEN_PENDING"
+                           and row["target_date"] < target_s and row["target_date"] not in actual_by_date]
+        if earlier_pending:
+            state = "BLOCKED_EARLIER_PENDING_TARGET"
+        elif target_s in existing_dates:
             state = "EXISTING_FREEZE_PRESERVED"
         else:
             top20 = position_mix_forecast(draws)
