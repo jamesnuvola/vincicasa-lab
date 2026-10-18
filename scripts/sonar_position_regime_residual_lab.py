@@ -333,6 +333,8 @@ def main():
                 target_brier_model += brier; target_brier_base += brier0
                 target_log_model += log_model; target_log_base += log_base
                 hazard_n += 1
+                cell = hazard_bucket_eval[b]; cell["n"] += 1; cell["hits"] += y
+                cell["brier_model"] += brier; cell["brier_base"] += brier0
             eidx = t - WARMUP
             split_name = "discovery" if eidx < split_bounds["discovery"][1] else (
                 "validation" if eidx < split_bounds["validation"][1] else "oos")
@@ -342,8 +344,6 @@ def main():
             hs["baseline_brier_sum"] += target_brier_base
             hs["model_log_loss_sum"] += target_log_model
             hs["baseline_log_loss_sum"] += target_log_base
-                cell = hazard_bucket_eval[b]; cell["n"] += 1; cell["hits"] += y
-                cell["brier_model"] += brier; cell["brier_base"] += brier0
         # Update hazard training only after scoring this draw.
         for n in NUMBERS:
             age = t if last_seen[n] is None else t - last_seen[n] - 1
