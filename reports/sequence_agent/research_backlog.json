@@ -53,11 +53,13 @@
         "Q10"
       ],
       "evidence": [
-        "reports/sequence_agent/residual_error_ledger.csv"
+        "reports/sequence_agent/residual_error_ledger.csv",
+        "reports/sequence_agent/residual_number_feature_ledger.csv"
       ],
       "acceptance": [
         "all misses logged only from pre-target forecasts",
-        "frequency/recency/rank/gap/co-occurrence/position/structure features",
+        "per-number frequency/recency/rank/gap/co-occurrence/position/structure features",
+        "cutoff date and both global/positional miss flags are explicit",
         "no retrospective substitution of selected numbers"
       ],
       "kind": "analysis"
@@ -110,7 +112,8 @@
       "acceptance": [
         "frequency baseline vs age/hazard",
         "Brier and log loss",
-        "permutation/null and multiple-testing correction"
+        "conditional randomization null preserving five hits per target",
+        "Holm correction across gap-bucket tests"
       ],
       "kind": "analysis"
     },
