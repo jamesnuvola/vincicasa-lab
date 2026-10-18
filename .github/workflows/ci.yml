@@ -9,6 +9,12 @@ on:
 permissions:
   contents: read
 
+# Cancel superseded research-branch runs so several expensive historical searches
+# do not compete after each incremental commit.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
     runs-on: ubuntu-latest
