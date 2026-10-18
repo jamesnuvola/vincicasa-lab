@@ -262,28 +262,6 @@ def main():
                 "adaptive_top3_rate": sum(r["top3_hit"] for r in part) / n_part if n_part else None
             }
 
-    # Chronological 60/20/20 splits over scored targets.
-    eval_n = n_draws - WARMUP
-    split_bounds = {"discovery": (0, int(eval_n * 0.60)),
-                    "validation": (int(eval_n * 0.60), int(eval_n * 0.80)),
-                    "oos": (int(eval_n * 0.80), eval_n)}
-    position_split_metrics = {}
-    for pos in range(1, 6):
-        rows_for_pos = pos_eval[str(pos)]["per_draw"]
-        position_split_metrics[str(pos)] = {}
-        for split_name, (lo, hi) in split_bounds.items():
-            part = rows_for_pos[lo:hi]
-            n_part = len(part)
-            position_split_metrics[str(pos)][split_name] = {
-                "targets": n_part,
-                "adaptive_top1_hits": sum(r["hit"] for r in part),
-                "adaptive_top1_rate": sum(r["hit"] for r in part) / n_part if n_part else None,
-                "theory_mode_top1_hits": sum(r["theory_mode_hit"] for r in part),
-                "theory_mode_top1_rate": sum(r["theory_mode_hit"] for r in part) / n_part if n_part else None,
-                "adaptive_top3_hits": sum(r["top3_hit"] for r in part),
-                "adaptive_top3_rate": sum(r["top3_hit"] for r in part) / n_part if n_part else None
-            }
-
     # Finalize per-position tests and Holm correction for the 5 adaptive top-1 tests.
     pred_p = []
     for pos in range(1, 6):
