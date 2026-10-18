@@ -35,6 +35,26 @@ def score_row(row):
     rrf = {n: (1.0/(60+ranks[n]) if ranks[n] <= 20 else 0.0) for n in NUMBERS}
     return ranks, borda, rrf, set(parse(row["actual_numbers"]))
 
+def binomial_upper_tail(k, n, p):
+    """Exact upper-tail binomial probability, evaluated in log space."""
+    if k <= 0:
+        return 1.0
+    if k > n:
+        return 0.0
+    terms = [math.lgamma(n + 1) - math.lgamma(j + 1) - math.lgamma(n - j + 1)
+             + j * math.log(p) + (n - j) * math.log1p(-p) for j in range(k, n + 1)]
+    peak = max(terms)
+    return min(1.0, math.exp(peak) * sum(math.exp(v - peak) for v in terms))
+
+def holm_adjust(items):
+    """Holm step-down adjusted p-values for a list of (key, p) pairs."""
+    ordered = sorted(items, key=lambda item: item[1])
+    adjusted, running, total = {}, 0.0, len(ordered)
+    for i, (key, p) in enumerate(ordered):
+        running = max(running, min(1.0, (total - i) * p))
+        adjusted[key] = running
+    return adjusted
+
 def metrics(predictions):
     n = len(predictions)
     dist = {str(k): 0 for k in range(6)}
@@ -108,6 +128,17 @@ def main():
         -(c["splits"]["validation"]["mean_top20_hits"] or 0),
         c["id"]))
     shortlist = ranked[:30]
+    # Correct the OOS-vs-random screens across the entire validation-selected shortlist.
+    # This remains exploratory because historical OOS has already been inspected in project work.
+    oos_p_values = []
+    for candidate in shortlist:
+        oos = candidate["splits"]["oos"]
+        p_value = binomial_upper_tail(oos["top20_5of5"], oos["targets"], BASELINE)
+        candidate["oos_top20_5of5_p_value_vs_random"] = p_value
+        oos_p_values.append((candidate["id"], p_value))
+    oos_p_holm = holm_adjust(oos_p_values)
+    for candidate in shortlist:
+        candidate["oos_top20_5of5_p_holm_30"] = oos_p_holm[candidate["id"]]
     base_rows = {}
     for cfg in configs:
         vals = {}
@@ -146,7 +177,9 @@ def main():
                "discovery_screened_pair_pool_size": len(search_configs),
                "pairs_tested": len(pairs), "fusion_candidates_tested": len(candidates),
                "validation_shortlist": [{"id": c["id"], "models": c["models"],
-                   "validation": c["splits"]["validation"], "oos": c["splits"]["oos"]} for c in shortlist],
+                   "validation": c["splits"]["validation"], "oos": c["splits"]["oos"],
+                   "oos_top20_5of5_p_value_vs_random": c["oos_top20_5of5_p_value_vs_random"],
+                   "oos_top20_5of5_p_holm_30": c["oos_top20_5of5_p_holm_30"]} for c in shortlist],
                "guardrails": report["guardrails"]}
     (OUT / "evolutionary_strategy_shortlist.json").write_text(json.dumps(compact, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({"status": report["status"], "targets": n, "discovery_pool": len(search_configs),
