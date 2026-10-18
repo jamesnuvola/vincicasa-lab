@@ -215,6 +215,40 @@ def update_position_shadow(dates, draws):
     pending = sum(row["status"] == "FROZEN_PENDING" for row in rows)
     evaluated = sum(row["status"] == "EVALUATED" for row in rows)
     latest_row = max(rows, key=lambda row: row["target_date"]) if rows else None
+    valid_evaluated = []
+    for row in rows:
+        if row["status"] != "EVALUATED" or row["target_date"] not in actual_by_date:
+            continue
+        target_date = date.fromisoformat(row["target_date"])
+        cutoff_date = date.fromisoformat(row["history_cutoff"])
+        frozen_at = datetime.fromisoformat(row["frozen_at"])
+        nominal_target = datetime.combine(target_date, DRAW_TIME, ROME)
+        if (cutoff_date == target_date - timedelta(days=1) and frozen_at < nominal_target
+                and parse(row["actual_numbers"]) == list(actual_by_date[row["target_date"]])):
+            valid_evaluated.append(row)
+    valid_n = len(valid_evaluated)
+    valid_hits = [int(row["hit_count"]) for row in valid_evaluated]
+    five_count = sum(row["all5_top20"] == "1" for row in valid_evaluated)
+    four_plus_count = sum(h >= 4 for h in valid_hits)
+    gate = {
+        "status": "INSUFFICIENT_PROSPECTIVE_CASES" if valid_n < 100 else "REVIEW_REQUIRED_NO_AUTO_PROMOTION",
+        "model": "position_seed_mix_top20_v1",
+        "valid_complete_prospective_targets": valid_n,
+        "minimum_required": 100, "preferred_required": 200,
+        "top20_5of5": five_count,
+        "top20_5of5_rate": five_count / valid_n if valid_n else None,
+        "top20_5of5_random_baseline_rate": math.comb(20, 5) / math.comb(40, 5),
+        "top20_5of5_random_baseline_expected_count": valid_n * math.comb(20, 5) / math.comb(40, 5),
+        "top20_5of5_binomial_p_vs_random": binom_tail_ge(five_count, valid_n, math.comb(20, 5) / math.comb(40, 5)) if valid_n else None,
+        "top20_4plus": four_plus_count,
+        "mean_top20_hits": sum(valid_hits) / valid_n if valid_n else None,
+        "evaluated_shadow_rows_total": evaluated,
+        "excluded_evaluated_rows": evaluated - valid_n,
+        "missing_freezes_reconstructed": 0,
+        "promotion_allowed": False,
+        "rule": "Only an existing pre-target freeze with previous-day cutoff and matching canonical outcome is eligible; 100 cases minimum, 200 preferred, manual review required."
+    }
+    (OUT / "prospective_promotion_gate.json").write_text(json.dumps(gate, indent=2) + "\n", encoding="utf-8")
     return {
         "status": state, "file": str(path.relative_to(ROOT)), "rows": len(rows),
         "pending": pending, "evaluated": evaluated,
@@ -223,7 +257,8 @@ def update_position_shadow(dates, draws):
             "history_cutoff": latest_row["history_cutoff"], "status": latest_row["status"],
             "top20": latest_row["top20"]
         },
-        "policy": "Append-only; never reconstruct a missing freeze; frozen top20/top10/top5 and cutoff are immutable."
+        "policy": "Append-only; never reconstruct a missing freeze; frozen top20/top10/top5 and cutoff are immutable.",
+        "promotion_gate": gate
     }
 
 def binom_tail_ge(k, n, p):
