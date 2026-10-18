@@ -150,6 +150,15 @@ def main():
                     selected.append((parse(r["top20"]), set(parse(r["actual_numbers"]))))
             vals[split_name] = metrics(selected)
         base_rows[cfg] = vals
+    base_oos_p = []
+    for cfg, vals in base_rows.items():
+        oos = vals["oos"]
+        p_value = binomial_upper_tail(oos["top20_5of5"], oos["targets"], BASELINE)
+        oos["top20_5of5_p_value_vs_random"] = p_value
+        base_oos_p.append((cfg, p_value))
+    base_oos_holm = holm_adjust(base_oos_p)
+    for cfg, vals in base_rows.items():
+        vals["oos"]["top20_5of5_p_holm_42"] = base_oos_holm[cfg]
     report = {
         "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY_SEARCH",
         "source": "historical_rule_ledger.csv",
