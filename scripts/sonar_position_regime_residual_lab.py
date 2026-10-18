@@ -520,6 +520,7 @@ def main():
     bucket_total = Counter(); bucket_hits = Counter()
     hazard_brier = hazard_log = base_brier = base_log = 0.0
     hazard_n = 0
+    hazard_predictions = []
     hazard_split = {name: {"targets": hi-lo, "opportunities": 0, "model_brier_sum": 0.0,
                            "baseline_brier_sum": 0.0, "model_log_loss_sum": 0.0,
                            "baseline_log_loss_sum": 0.0}
@@ -529,10 +530,12 @@ def main():
         actual_set = set(actual)
         if t >= WARMUP:
             target_brier_model = target_brier_base = target_log_model = target_log_base = 0.0
+            target_probs = []
             for n in NUMBERS:
                 age = t if last_seen[n] is None else t - last_seen[n] - 1
                 b = gap_bucket(age)
                 p = (bucket_hits[b] + PRIOR_STRENGTH * BASE_P) / (bucket_total[b] + PRIOR_STRENGTH)
+                target_probs.append(p)
                 y = int(n in actual_set)
                 pclip = min(1 - 1e-12, max(1e-12, p))
                 brier = (p-y)**2
@@ -546,6 +549,7 @@ def main():
                 hazard_n += 1
                 cell = hazard_bucket_eval[b]; cell["n"] += 1; cell["hits"] += y
                 cell["brier_model"] += brier; cell["brier_base"] += brier0
+            hazard_predictions.append((target_probs, set(actual_set)))
             eidx = t - WARMUP
             split_name = "discovery" if eidx < split_bounds["discovery"][1] else (
                 "validation" if eidx < split_bounds["validation"][1] else "oos")
@@ -562,6 +566,42 @@ def main():
             bucket_total[b] += 1
             if n in actual_set: bucket_hits[b] += 1
         for n in actual_set: last_seen[n] = t
+    # Conditional randomization null: preserve exactly five hits per target and shuffle which
+    # numbers receive those hits, holding each pre-target probability vector fixed.
+    permutation_count = 199
+    permutation_rng = random.Random(20261018)
+    baseline_brier_per_draw = 5 * (1 - BASE_P) ** 2 + 35 * BASE_P ** 2
+    permutation_improvements = []
+    for _ in range(permutation_count):
+        model_sum = 0.0
+        for probs, _actual_set in hazard_predictions:
+            model_sum += sum(p * p for p in probs)
+            model_sum += sum(1 - 2 * probs[i] for i in permutation_rng.sample(range(40), 5))
+        baseline_sum = baseline_brier_per_draw * len(hazard_predictions)
+        permutation_improvements.append((baseline_sum - model_sum) / hazard_n)
+    observed_brier_improvement = (base_brier - hazard_brier) / hazard_n
+    permutation_improvements.sort()
+    permutation_p = (1 + sum(v >= observed_brier_improvement - 1e-15 for v in permutation_improvements)) / (permutation_count + 1)
+    permutation_test = {
+        "method": "per-target conditional randomization; shuffle five hit labels among 40 numbers while holding prior-only probabilities fixed",
+        "permutations": permutation_count, "seed": 20261018,
+        "observed_brier_improvement": observed_brier_improvement,
+        "null_2_5_percentile": permutation_improvements[int(0.025 * (permutation_count - 1))],
+        "null_97_5_percentile": permutation_improvements[int(0.975 * (permutation_count - 1))],
+        "p_one_sided_improvement": permutation_p,
+        "interpretation": "exploratory; not a prospective validation"
+    }
+    bucket_p_values = []
+    for label, cell in hazard_bucket_eval.items():
+        k, n = cell["hits"], cell["n"]
+        upper = binom_tail_ge(k, n, BASE_P)
+        lower = 1.0 - binom_tail_ge(k + 1, n, BASE_P)
+        p_two = min(1.0, 2.0 * min(upper, lower))
+        cell["p_two_sided_vs_0_125"] = p_two
+        bucket_p_values.append((label, p_two))
+    bucket_holm = holm_adjust(bucket_p_values)
+    for label, cell in hazard_bucket_eval.items():
+        cell["p_holm_across_4_gap_buckets"] = bucket_holm[label]
     for cell in hazard_bucket_eval.values():
         cell["hit_rate"] = cell["hits"] / cell["n"] if cell["n"] else None
         cell["mean_brier_model"] = cell["brier_model"] / cell["n"] if cell["n"] else None
@@ -582,12 +622,15 @@ def main():
         "draws": n_draws, "warmup_draws": WARMUP, "evaluated_draws": n_draws-WARMUP,
         "number_draw_opportunities": hazard_n, "baseline_probability": BASE_P,
         "gap_buckets": hazard_bucket_eval,
+        "permutation_null_test": permutation_test,
+        "gap_bucket_tests": {"family_size": len(bucket_p_values), "adjustment": "Holm",
+                             "null_probability": BASE_P},
         "overall": {"model_brier": hazard_brier/hazard_n, "baseline_brier": base_brier/hazard_n,
                     "brier_improvement": (base_brier-hazard_brier)/hazard_n,
                     "model_log_loss": hazard_log/hazard_n, "baseline_log_loss": base_log/hazard_n,
                     "log_loss_improvement": (base_log-hazard_log)/hazard_n},
         "chronological_splits": hazard_split,
-        "guardrail": "All gap ages and hazard estimates use prior draws only. Historical score improvement is exploratory; no prospective promotion."
+        "guardrail": "All gap ages and hazard estimates use prior draws only. Conditional randomization preserves five hits per target; Holm corrects the four bucket tests. Historical scores remain exploratory; no prospective promotion."
     }
     (OUT / "structural_hazard_oos.json").write_text(json.dumps(hazard_report, indent=2) + "\n", encoding="utf-8")
 
