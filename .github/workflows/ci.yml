@@ -33,5 +33,9 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_evolutionary_lab.py
           python scripts/sonar_evolutionary_lab.py
+      - name: Test positional, regime, residual and hazard lab
+        run: |
+          python -m py_compile scripts/sonar_position_regime_residual_lab.py
+          python scripts/sonar_position_regime_residual_lab.py
       - name: Build web application
         run: npm install && npm run build
