@@ -732,8 +732,13 @@ def main():
                                                        "mix": v["position_seed_mix_top20"]["top20_5of5"],
                                                        "targets": v["targets"]}
                                                   for k, v in position_report["global_top20_vs_position_seed_mix"]["chronological_splits"].items()},
+                      "raw_positional_union_mean": round(union_all["mean_raw_union_size"], 4),
+                      "residual_feature_rows": len(residual_feature_rows),
                       "hazard_brier_improvement": round(hazard_report["overall"]["brier_improvement"], 7),
                       "hazard_brier_improvement_by_split": {k: round(v["brier_improvement"], 7) for k, v in hazard_split.items()},
+                      "hazard_permutation_p": round(permutation_test["p_one_sided_improvement"], 5),
+                      "hazard_bucket_p_holm": {k: round(v["p_holm_across_4_gap_buckets"], 5) for k, v in hazard_bucket_eval.items()},
+                      "promotion_gate_status": shadow_status["promotion_gate"]["status"],
                       "position_shadow": shadow_status,
                       "outputs": ["reports/sequence_agent/position_regime_residual_lab.json",
                                   "reports/sequence_agent/residual_error_ledger.csv",
