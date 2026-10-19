@@ -1,0 +1,42 @@
+{
+  "status": "INCOMPLETE",
+  "project": "VinciCasa SONAR",
+  "observed_on": "2026-10-19",
+  "canonical_archive": {
+    "path": "data/storico_daily.csv",
+    "first_date": "2017-07-17",
+    "cutoff": "2026-10-18",
+    "rows": 3381,
+    "blob_sha": "cc5712a1fd792e6b14fe0e69c0826a7ee9eb75a9"
+  },
+  "blockers": [
+    {
+      "id": "STRUCTURAL_SIGNATURES_STALE",
+      "evidence": "3376 signature rows; cutoff 2026-10-13 versus 3381 canonical rows through 2026-10-18.",
+      "root_cause": "The current sequence-agent workflow does not invoke a structural-signature rebuild and stages reports/sequence_agent/ only, not reports/daily_lab/."
+    },
+    {
+      "id": "STRUCTURAL_CATEGORY_TESTS_STALE",
+      "evidence": "structural_model_tests.json cutoff 2026-10-13.",
+      "root_cause": "No category-level walk-forward test generator is wired into the workflow; structural_hazard_oos.json is number-level and not a substitute."
+    },
+    {
+      "id": "QUEUE_STALLED",
+      "evidence": "1/7 tasks complete, ready_count=0.",
+      "root_cause": "Only Q00 is auto-completed; other evidence-present tasks lack task-specific validators."
+    }
+  ],
+  "attempts": [
+    "Added a signature-rebuild script on fix/structural-recurrence-autorepair.",
+    "Regression comparison found its transition thresholds do not match the legacy definitions; do not merge until corrected.",
+    "Workflow integration and category-test runner writes were blocked by tool safety checks; no workflow change was applied."
+  ],
+  "next_actions": [
+    "Correct sum transition bins: UP_BIG >=16, UP 6..15, FLAT -5..5, DOWN -15..-6, DOWN_BIG <=-16; range bins: EXPAND_BIG >=6, EXPAND 2..5, STABLE -1..1, CONTRACT -5..-2, CONTRACT_BIG <=-6.",
+    "Compare every regenerated signature through 2026-10-13 against the existing artifact before accepting new rows.",
+    "Implement and wire category-level walk-forward hazard tests: frequency baseline, Top1/Top2, Brier/log-loss, conditional null and Holm correction.",
+    "Update workflow persistence to stage reports/daily_lab/ and reports/sequence_agent/; verify actual Actions run and report cutoff.",
+    "Add task-specific queue validators so evidence presence alone is not completion and ready tasks have an executable action."
+  ],
+  "guardrail": "Recovery record only. No runX is complete; no strategy promotion or workflow fix may be claimed until tested and persisted."
+}
