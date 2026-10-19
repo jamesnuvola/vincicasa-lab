@@ -12,6 +12,12 @@ DATA = ROOT / "data/storico_daily.csv"
 OUT = ROOT / "reports/sequence_agent"
 NUMBERS = tuple(range(1, 41))
 K = 5
+
+def parse(value):
+    """Parse whitespace-separated integer values from persisted shadow CSV fields."""
+    if value is None or not str(value).strip():
+        return []
+    return [int(token) for token in str(value).split()]
 NCOMB = math.comb(40, 5)
 BASE_P = 5 / 40
 WARMUP = 500
