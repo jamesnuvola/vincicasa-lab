@@ -24,6 +24,8 @@ WARMUP = 500
 PRIOR_STRENGTH = 30.0
 ROME = ZoneInfo("Europe/Rome")
 DRAW_TIME = time(20, 0)
+# Prospective protocol excludes the start date itself.
+PROSPECTIVE_PROTOCOL_START = date(2026, 10, 18)
 GAP_BUCKETS = ((0, 4, "0-4"), (5, 9, "5-9"), (10, 19, "10-19"), (20, 10**9, "20+"))
 
 def comb0(n, r):
@@ -226,6 +228,8 @@ def update_position_shadow(dates, draws):
         if row["status"] != "EVALUATED" or row["target_date"] not in actual_by_date:
             continue
         target_date = date.fromisoformat(row["target_date"])
+        if target_date <= PROSPECTIVE_PROTOCOL_START:
+            continue
         cutoff_date = date.fromisoformat(row["history_cutoff"])
         frozen_at = datetime.fromisoformat(row["frozen_at"])
         nominal_target = datetime.combine(target_date, DRAW_TIME, ROME)
