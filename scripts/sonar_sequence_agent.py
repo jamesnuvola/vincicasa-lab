@@ -341,6 +341,24 @@ def evaluate(draws):
     return ledger, signature_rows, aggregate
 
 
+def binomial_tail_ge(k, n, p):
+    """Exact one-sided binomial upper tail, evaluated with log-sum-exp for numerical stability."""
+    if n < 0 or k < 0:
+        raise ValueError("n and k must be non-negative")
+    if k <= 0:
+        return 1.0
+    if k > n or p <= 0:
+        return 0.0
+    if p >= 1:
+        return 1.0
+    logs = []
+    for j in range(k, n + 1):
+        log_comb = math.lgamma(n + 1) - math.lgamma(j + 1) - math.lgamma(n - j + 1)
+        logs.append(log_comb + j * math.log(p) + (n - j) * math.log1p(-p))
+    peak = max(logs)
+    return min(1.0, math.exp(peak) * sum(math.exp(value - peak) for value in logs))
+
+
 def binomial_z(observed, n, p):
     expected = n * p
     sd = math.sqrt(max(1e-12, n * p * (1.0 - p)))
@@ -372,6 +390,8 @@ def build_metrics(draws, aggregate, signature_rows):
             "top20_5of5_baseline_z_approx": round(binomial_z(observed, tested, RNG_TOP20_P), 4) if tested else None,
             "top20_5of5_p_approx_one_sided": round(normal_upper_tail(binomial_z(observed, tested, RNG_TOP20_P)), 8) if tested else None,
             "top20_5of5_p_bonferroni_approx": round(min(1.0, normal_upper_tail(binomial_z(observed, tested, RNG_TOP20_P)) * len(CONFIGS)), 8) if tested else None,
+            "top20_5of5_p_exact_binomial_one_sided": round(binomial_tail_ge(observed, tested, RNG_TOP20_P), 10) if tested else None,
+            "top20_5of5_p_bonferroni_exact": round(min(1.0, binomial_tail_ge(observed, tested, RNG_TOP20_P) * len(CONFIGS)), 10) if tested else None,
             "multiple_testing_family_size": len(CONFIGS),
             "top10_5of5_count": int(s["top10_all5"]),
             "top10_5of5_random_baseline_rate": round(RNG_TOP10_P, 8),

@@ -6,6 +6,7 @@ from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.sonar_position_regime_residual_lab import prospective_row_is_eligible, paired_difference_exact_conservative_ci
+from scripts.sonar_sequence_agent import binomial_tail_ge
 
 
 class ProspectiveFreezeEligibilityTests(unittest.TestCase):
@@ -65,6 +66,11 @@ class ProspectiveFreezeEligibilityTests(unittest.TestCase):
         result = paired_difference_exact_conservative_ci([], [])
         self.assertIsNone(result["lower_95"])
         self.assertIsNone(result["upper_95"])
+
+    def test_exact_binomial_tail_matches_known_probability(self):
+        self.assertAlmostEqual(binomial_tail_ge(10, 10, 0.5), 1 / 1024, places=12)
+        self.assertEqual(binomial_tail_ge(0, 10, 0.5), 1.0)
+        self.assertEqual(binomial_tail_ge(11, 10, 0.5), 0.0)
 
 
 if __name__ == "__main__":
