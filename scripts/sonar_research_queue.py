@@ -543,6 +543,10 @@ def main():
         "validated_count", "failed_count", "missing_evidence_count", "ready_count",
         "active_next_task", "active_next_task_title", "active_next_task_action"
     )}, ensure_ascii=False))
+    if os.environ.get("SONAR_EMIT_REPORT") == "1":
+        print("SONAR_RESEARCH_QUEUE_REPORT_BEGIN")
+        print(json.dumps(output, indent=2, ensure_ascii=False))
+        print("SONAR_RESEARCH_QUEUE_REPORT_END")
 
 
 if __name__ == "__main__":
