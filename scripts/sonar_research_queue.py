@@ -6,11 +6,14 @@ import csv
 import json
 import math
 import os
+import sys
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 BACKLOG = ROOT / "reports" / "sequence_agent" / "research_backlog.json"
 STATUS = ROOT / "reports" / "sequence_agent" / "research_queue_status.json"
 ROME = ZoneInfo("Europe/Rome")
@@ -83,6 +86,36 @@ def validate_q00():
             errors.append("latest_metrics.json cutoff/count does not match the canonical archive")
         else:
             checks.append("latest metrics cutoff and draw count match the canonical archive")
+        # Structural signatures must be a one-to-one, ordered projection of the canonical archive.
+        sig_path = ROOT / "reports" / "daily_lab" / "structural_signatures.csv"
+        try:
+            with sig_path.open(newline="", encoding="utf-8-sig") as f:
+                raw_signatures = list(csv.reader(f))
+            if not raw_signatures or len(raw_signatures[0]) != 27:
+                errors.append("structural_signatures.csv is empty or does not have exactly 27 columns")
+            else:
+                signature_header = raw_signatures[0]
+                signature_rows = [dict(zip(signature_header, row)) for row in raw_signatures[1:] if len(row) == 27]
+                if len(signature_rows) != len(raw_signatures) - 1:
+                    errors.append("structural_signatures.csv contains rows with a width other than 27")
+                signature_dates = [row.get("date", "") for row in signature_rows]
+                if signature_dates != [d.isoformat() for d in dates]:
+                    errors.append("structural signature dates do not match the canonical archive one-to-one")
+                for row in signature_rows:
+                    target = row.get("date", "")
+                    if target in draws and row.get("numbers") != "-".join(str(n) for n in draws[target]):
+                        errors.append(f"structural signature numbers disagree with canonical draw {target}")
+                signature_report = read_json("reports/daily_lab/structural_recurrence_lab.json")
+                if (signature_report.get("status") != "COMPLETE_APPEND_ONLY"
+                        or int(signature_report.get("archive_rows", -1)) != len(dates)
+                        or int(signature_report.get("signature_rows", -1)) != len(signature_rows)
+                        or signature_report.get("last_signature_date") != dates[-1].isoformat()
+                        or int(signature_report.get("column_count", -1)) != 27):
+                    errors.append("structural recurrence report does not certify the current archive/signature cutoff")
+                if not any("structural signature" in c.lower() for c in checks):
+                    checks.append(f"{len(signature_rows)} structural signature rows align one-to-one with the canonical archive")
+        except Exception as exc:
+            errors.append(f"structural signature validation raised {type(exc).__name__}: {exc}")
         for shadow_name in ("position_mix_shadow.csv", "shadow_forecasts.csv"):
             shadow_path = ROOT / "reports" / "sequence_agent" / shadow_name
             if not shadow_path.is_file():
