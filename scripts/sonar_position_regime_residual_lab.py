@@ -221,38 +221,87 @@ def update_position_shadow(dates, draws):
     pending = sum(row["status"] == "FROZEN_PENDING" for row in rows)
     evaluated = sum(row["status"] == "EVALUATED" for row in rows)
     latest_row = max(rows, key=lambda row: row["target_date"]) if rows else None
-    valid_evaluated = []
-    for row in rows:
-        if row["status"] != "EVALUATED" or row["target_date"] not in actual_by_date:
-            continue
+    # Protocol registered on 2026-10-19: pre-registration targets are diagnostics only.
+    protocol_start = date(2026, 10, 19)
+
+    def is_eligible(row, required_config=None):
+        if row.get("status") != "EVALUATED" or row.get("target_date") not in actual_by_date:
+            return False
+        if required_config and row.get("config_id") != required_config:
+            return False
         target_date = date.fromisoformat(row["target_date"])
+        if target_date < protocol_start:
+            return False
         cutoff_date = date.fromisoformat(row["history_cutoff"])
         frozen_at = datetime.fromisoformat(row["frozen_at"])
         nominal_target = datetime.combine(target_date, DRAW_TIME, ROME)
-        if (cutoff_date == target_date - timedelta(days=1) and frozen_at < nominal_target
-                and parse(row["actual_numbers"]) == list(actual_by_date[row["target_date"]])):
-            valid_evaluated.append(row)
-    valid_n = len(valid_evaluated)
-    valid_hits = [int(row["hit_count"]) for row in valid_evaluated]
-    five_count = sum(row["all5_top20"] == "1" for row in valid_evaluated)
+        try:
+            actual_matches = parse(row["actual_numbers"]) == list(actual_by_date[row["target_date"]])
+        except (KeyError, ValueError, TypeError):
+            return False
+        return (cutoff_date == target_date - timedelta(days=1)
+                and frozen_at.tzinfo is not None and frozen_at < nominal_target and actual_matches)
+
+    valid_evaluated = [row for row in rows if is_eligible(row)]
+    valid_position_by_date = {row["target_date"]: row for row in valid_evaluated}
+
+    global_path = OUT / "shadow_forecasts.csv"
+    if not global_path.exists():
+        raise SystemExit("PIPELINE BLOCKED: global shadow_forecasts.csv is missing; paired gate cannot be computed")
+    with global_path.open(newline="", encoding="utf-8-sig") as f:
+        global_reader = csv.DictReader(f)
+        required_global_fields = {"target_date", "frozen_at", "history_cutoff", "config_id", "status",
+                                  "actual_numbers", "hit_count", "all5_top20"}
+        if not required_global_fields.issubset(set(global_reader.fieldnames or [])):
+            raise SystemExit("PIPELINE BLOCKED: global shadow_forecasts.csv schema mismatch")
+        global_rows = list(global_reader)
+    valid_global_by_date = {
+        row["target_date"]: row for row in global_rows
+        if is_eligible(row, required_config="freq_100")
+    }
+    paired_dates = sorted(set(valid_position_by_date) & set(valid_global_by_date))
+    paired_position = [valid_position_by_date[d] for d in paired_dates]
+    paired_global = [valid_global_by_date[d] for d in paired_dates]
+    valid_n = len(paired_dates)
+    valid_hits = [int(row["hit_count"]) for row in paired_position]
+    five_count = sum(row["all5_top20"] == "1" for row in paired_position)
+    global_five_count = sum(row["all5_top20"] == "1" for row in paired_global)
     four_plus_count = sum(h >= 4 for h in valid_hits)
+    discordant_b_wins = sum(p["all5_top20"] == "1" and g["all5_top20"] != "1"
+                            for p, g in zip(paired_position, paired_global))
+    discordant_a_wins = sum(g["all5_top20"] == "1" and p["all5_top20"] != "1"
+                            for p, g in zip(paired_position, paired_global))
+    discordant_n = discordant_a_wins + discordant_b_wins
+    mcnemar_p = (min(1.0, 2 * sum(math.comb(discordant_n, j) for j in range(0, min(discordant_a_wins, discordant_b_wins) + 1)) / (2 ** discordant_n))
+                 if discordant_n else 1.0)
     gate = {
-        "status": "INSUFFICIENT_PROSPECTIVE_CASES" if valid_n < 100 else "REVIEW_REQUIRED_NO_AUTO_PROMOTION",
+        "status": "INSUFFICIENT_PROSPECTIVE_CASES" if valid_n < 200 else "REVIEW_REQUIRED_NO_AUTO_PROMOTION",
+        "protocol_registered": "2026-10-19",
         "model": "position_seed_mix_top20_v1",
+        "comparator": "freq_100",
         "valid_complete_prospective_targets": valid_n,
-        "minimum_required": 100, "preferred_required": 200,
-        "top20_5of5": five_count,
-        "top20_5of5_rate": five_count / valid_n if valid_n else None,
+        "minimum_required": 200, "preferred_required": 200,
+        "paired_target_dates": paired_dates,
+        "position_top20_5of5": five_count,
+        "position_top20_5of5_rate": five_count / valid_n if valid_n else None,
+        "global_top20_5of5": global_five_count,
+        "global_top20_5of5_rate": global_five_count / valid_n if valid_n else None,
+        "paired_rate_difference_position_minus_global": (five_count - global_five_count) / valid_n if valid_n else None,
+        "mcnemar_discordant_position_wins": discordant_b_wins,
+        "mcnemar_discordant_global_wins": discordant_a_wins,
+        "mcnemar_exact_two_sided_p": mcnemar_p,
         "top20_5of5_random_baseline_rate": math.comb(20, 5) / math.comb(40, 5),
-        "top20_5of5_random_baseline_expected_count": valid_n * math.comb(20, 5) / math.comb(40, 5),
-        "top20_5of5_binomial_p_vs_random": binom_tail_ge(five_count, valid_n, math.comb(20, 5) / math.comb(40, 5)) if valid_n else None,
+        "position_random_baseline_expected_count": valid_n * math.comb(20, 5) / math.comb(40, 5),
+        "position_binomial_p_vs_random": binom_tail_ge(five_count, valid_n, math.comb(20, 5) / math.comb(40, 5)) if valid_n else None,
         "top20_4plus": four_plus_count,
-        "mean_top20_hits": sum(valid_hits) / valid_n if valid_n else None,
-        "evaluated_shadow_rows_total": evaluated,
-        "excluded_evaluated_rows": evaluated - valid_n,
+        "mean_position_top20_hits": sum(valid_hits) / valid_n if valid_n else None,
+        "evaluated_position_shadow_rows_total": evaluated,
+        "excluded_position_rows": evaluated - len(valid_evaluated),
+        "eligible_position_rows_without_global_pair": len(set(valid_position_by_date) - set(valid_global_by_date)),
+        "eligible_global_rows_without_position_pair": len(set(valid_global_by_date) - set(valid_position_by_date)),
         "missing_freezes_reconstructed": 0,
         "promotion_allowed": False,
-        "rule": "Only an existing pre-target freeze with previous-day cutoff and matching canonical outcome is eligible; 100 cases minimum, 200 preferred, manual review required."
+        "rule": "Only pre-existing, pre-target freezes on/after protocol registration with previous-day cutoff and matching canonical outcome qualify. Require 200 paired targets; no auto-promotion."
     }
     (OUT / "prospective_promotion_gate.json").write_text(json.dumps(gate, indent=2) + "\n", encoding="utf-8")
     return {
