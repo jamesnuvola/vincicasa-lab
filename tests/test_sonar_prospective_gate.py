@@ -1,7 +1,10 @@
+import sys
 import unittest
 from datetime import date, time
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.sonar_position_regime_residual_lab import prospective_row_is_eligible, paired_difference_bootstrap_ci
 
 
