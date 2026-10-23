@@ -35,6 +35,10 @@ jobs:
         run: python scripts/rigenera_dati.py
       - name: Audit generated app data
         run: python scripts/audit_dataset.py --check-json
+      - name: Rebuild fixed-rule walk-forward evidence
+        run: |
+          python -m py_compile scripts/sonar_sequence_agent.py
+          python scripts/sonar_sequence_agent.py
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
       - name: Test evolutionary lab syntax and run
@@ -45,5 +49,23 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Test Q30 fixed mixes and Holm correction
+        env:
+          SONAR_EMIT_REPORT: "1"
+        run: |
+          python -m py_compile scripts/sonar_fast_improvements.py
+          python scripts/sonar_fast_improvements.py
+      - name: Test structural age-versus-frequency OOS lab
+        env:
+          SONAR_EMIT_REPORT: "1"
+        run: |
+          python -m py_compile scripts/sonar_structural_category_lab.py
+          python scripts/sonar_structural_category_lab.py
+      - name: Validate SONAR task acceptance queue
+        env:
+          SONAR_EMIT_REPORT: "1"
+        run: |
+          python -m py_compile scripts/sonar_research_queue.py
+          python scripts/sonar_research_queue.py
       - name: Build web application
         run: npm install && npm run build
