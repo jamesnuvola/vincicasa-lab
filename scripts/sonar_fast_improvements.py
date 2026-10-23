@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Fast, leakage-safe cascade-loss and fixed-rank-fusion audit from SONAR walk-forward ledger."""
-import csv, json, math
+import csv, json, math, os
 from collections import defaultdict
 from pathlib import Path
 
@@ -25,6 +25,63 @@ def parse_nums(s):
 
 def hits(r, field="top20"):
     return len(set(parse_nums(r[field])) & set(parse_nums(r["actual_numbers"])))
+
+def exact_binomial_upper_tail(n, k, p):
+    """Exact one-sided binomial tail P[X >= k], evaluated with a stable recurrence."""
+    if k <= 0:
+        return 1.0
+    if k > n:
+        return 0.0
+    log_mass = (math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)
+                + k * math.log(p) + (n - k) * math.log1p(-p))
+    term = math.exp(log_mass)
+    total = term
+    for i in range(k, n):
+        term *= ((n - i) / (i + 1)) * (p / (1 - p))
+        total += term
+    return min(1.0, total)
+
+def holm_adjust(p_values):
+    """Holm step-down family-wise adjustment, keyed by test ID."""
+    ordered = sorted(p_values.items(), key=lambda item: item[1])
+    adjusted = {}
+    running = 0.0
+    m = len(ordered)
+    for i, (key, p_value) in enumerate(ordered):
+        running = max(running, min(1.0, (m - i) * p_value))
+        adjusted[key] = running
+    return adjusted
+
+def mix_multiple_testing(mix_results):
+    tests = []
+    for mix_name, mix in mix_results.items():
+        for split_name in ("discovery", "validation", "oos"):
+            metrics = mix["splits"][split_name]
+            n = int(metrics["targets"])
+            k = int(metrics["top20_all5"])
+            test_id = f"{mix_name}:{split_name}"
+            tests.append({
+                "test_id": test_id,
+                "mix": mix_name,
+                "split": split_name,
+                "targets": n,
+                "successes": k,
+                "raw_p_one_sided": exact_binomial_upper_tail(n, k, BASELINE),
+            })
+    adjusted = holm_adjust({row["test_id"]: row["raw_p_one_sided"] for row in tests})
+    for row in tests:
+        row["holm_adjusted_p"] = adjusted[row["test_id"]]
+        row["significant_at_0_05_after_holm"] = row["holm_adjusted_p"] < 0.05
+    return {
+        "method": "Holm-Bonferroni",
+        "test": "One-sided exact binomial test of Top20 5/5 count against the fixed random Top20 baseline",
+        "null_probability": BASELINE,
+        "alpha": 0.05,
+        "family_size": len(tests),
+        "family_definition": "All fixed mixes across discovery, validation, and OOS splits; 4 mixes × 3 splits.",
+        "tests": tests,
+        "interpretation_guardrail": "This correction covers only the reported mix-by-split comparisons; it does not erase selection bias from broader exploratory model search. Discovery is exploratory; prioritize validation and blind OOS.",
+    }
 
 def main():
     targets = read_ledger()
@@ -86,8 +143,19 @@ def main():
             "stage_loss_by_configuration":stage,"fixed_fusion_walkforward":mix_results,
             "guardrail":"Exploratory only. Historical walk-forward predictions are not prospective Shadow; fusion choices must be frozen and independently validated. No model is promoted by this report."}
     (OUT/"stage_loss_analysis.json").write_text(json.dumps(output,indent=2)+"\n",encoding="utf-8")
-    (OUT/"top20_mix_walkforward.json").write_text(json.dumps({"status":output["status"],"targets":n,"splits":output["split_sizes"],"baseline":BASELINE,"mixes":mix_results,"guardrail":output["guardrail"]},indent=2)+"\n",encoding="utf-8")
-    print(json.dumps({"status":output["status"],"targets":n,"first":targets[0][0],"last":targets[-1][0],"mixes":list(mix_results)},ensure_ascii=False))
+    mix_report = {
+        "status": output["status"], "targets": n, "splits": output["split_sizes"],
+        "baseline": BASELINE, "mixes": mix_results, "guardrail": output["guardrail"],
+        "multiple_testing_correction": mix_multiple_testing(mix_results),
+    }
+    (OUT/"top20_mix_walkforward.json").write_text(json.dumps(mix_report,indent=2)+"\n",encoding="utf-8")
+    summary = {"status":output["status"],"targets":n,"first":targets[0][0],"last":targets[-1][0],
+               "mixes":list(mix_results),"multiple_testing_family_size":mix_report["multiple_testing_correction"]["family_size"]}
+    if os.environ.get("SONAR_EMIT_REPORT") == "1":
+        print("SONAR_Q30_REPORT_BEGIN")
+        print(json.dumps(mix_report, indent=2, ensure_ascii=False))
+        print("SONAR_Q30_REPORT_END")
+    print(json.dumps(summary,ensure_ascii=False))
 
 if __name__=="__main__":
     main()
