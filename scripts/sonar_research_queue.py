@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
 from datetime import date, datetime, time, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -596,6 +597,8 @@ def main():
         print("SONAR_RESEARCH_QUEUE_REPORT_BEGIN")
         print(json.dumps(output, indent=2, ensure_ascii=False))
         print("SONAR_RESEARCH_QUEUE_REPORT_END")
+    if failed or missing:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
