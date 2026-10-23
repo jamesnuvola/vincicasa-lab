@@ -10,6 +10,7 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
 import random
 from pathlib import Path
 
@@ -301,15 +302,20 @@ def main():
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(json.dumps({
+    summary = {
         "status": report["status"],
         "draws": len(draws),
         "scored_targets": n,
         "last_date": dates[-1],
-        "oos_targets": split_records["oos"].__len__(),
+        "oos_targets": len(split_records["oos"]),
         "permutations": PERMUTATIONS,
         "holm_p": {model: round(adjusted_p[model], 5) for model in MODEL_NAMES},
-    }, ensure_ascii=False))
+    }
+    if os.environ.get("SONAR_EMIT_REPORT") == "1":
+        print("SONAR_STRUCTURAL_CATEGORY_REPORT_BEGIN")
+        print(json.dumps(report, indent=2, ensure_ascii=False))
+        print("SONAR_STRUCTURAL_CATEGORY_REPORT_END")
+    print(json.dumps(summary, ensure_ascii=False))
 
 
 if __name__ == "__main__":
