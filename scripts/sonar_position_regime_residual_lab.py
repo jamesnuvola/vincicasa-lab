@@ -20,6 +20,29 @@ def parse(value):
     return [int(token) for token in str(value).split()]
 NCOMB = math.comb(40, 5)
 BASE_P = 5 / 40
+
+def prospective_row_is_eligible(row, actual_by_date, protocol_start, draw_time=DRAW_TIME if "DRAW_TIME" in globals() else time(20, 0),
+                                timezone=ZoneInfo("Europe/Rome"), required_config=None):
+    """Eligibility contract for a pre-existing freeze; no backfill and no pre-registration targets."""
+    try:
+        if row.get("status") != "EVALUATED" or row.get("target_date") not in actual_by_date:
+            return False
+        if required_config is not None and row.get("config_id") != required_config:
+            return False
+        target_date = date.fromisoformat(row["target_date"])
+        if target_date < protocol_start:
+            return False
+        if date.fromisoformat(row["history_cutoff"]) != target_date - timedelta(days=1):
+            return False
+        frozen_at = datetime.fromisoformat(row["frozen_at"])
+        nominal_target = datetime.combine(target_date, draw_time, timezone)
+        if frozen_at.tzinfo is None or frozen_at >= nominal_target:
+            return False
+        if parse(row["actual_numbers"]) != list(actual_by_date[row["target_date"]]):
+            return False
+        return True
+    except (KeyError, ValueError, TypeError, OverflowError):
+        return False
 WARMUP = 500
 PRIOR_STRENGTH = 30.0
 ROME = ZoneInfo("Europe/Rome")
@@ -225,22 +248,7 @@ def update_position_shadow(dates, draws):
     protocol_start = date(2026, 10, 19)
 
     def is_eligible(row, required_config=None):
-        if row.get("status") != "EVALUATED" or row.get("target_date") not in actual_by_date:
-            return False
-        if required_config and row.get("config_id") != required_config:
-            return False
-        target_date = date.fromisoformat(row["target_date"])
-        if target_date < protocol_start:
-            return False
-        cutoff_date = date.fromisoformat(row["history_cutoff"])
-        frozen_at = datetime.fromisoformat(row["frozen_at"])
-        nominal_target = datetime.combine(target_date, DRAW_TIME, ROME)
-        try:
-            actual_matches = parse(row["actual_numbers"]) == list(actual_by_date[row["target_date"]])
-        except (KeyError, ValueError, TypeError):
-            return False
-        return (cutoff_date == target_date - timedelta(days=1)
-                and frozen_at.tzinfo is not None and frozen_at < nominal_target and actual_matches)
+        return prospective_row_is_eligible(row, actual_by_date, protocol_start, DRAW_TIME, ROME, required_config)
 
     valid_evaluated = [row for row in rows if is_eligible(row)]
     valid_position_by_date = {row["target_date"]: row for row in valid_evaluated}
