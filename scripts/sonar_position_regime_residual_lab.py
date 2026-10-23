@@ -148,6 +148,26 @@ def position_mix_forecast(history):
             ranked.append(value)
     return ranked[:20]
 
+def is_valid_prospective_shadow_row(row, actual_by_date):
+    """Return True only for a complete, pre-target freeze after the exclusive protocol start."""
+    if row.get("status") != "EVALUATED":
+        return False
+    target_s = row.get("target_date", "")
+    if target_s not in actual_by_date:
+        return False
+    target_date = date.fromisoformat(target_s)
+    if target_date <= PROSPECTIVE_PROTOCOL_START:
+        return False
+    cutoff_date = date.fromisoformat(row["history_cutoff"])
+    frozen_at = datetime.fromisoformat(row["frozen_at"])
+    nominal_target = datetime.combine(target_date, DRAW_TIME, ROME)
+    return (
+        cutoff_date == target_date - timedelta(days=1)
+        and frozen_at < nominal_target
+        and parse(row["actual_numbers"]) == list(actual_by_date[target_s])
+    )
+
+
 def update_position_shadow(dates, draws):
     """Append a pre-target freeze and evaluate only previously frozen forecasts; never reconstruct gaps."""
     path = OUT / "position_mix_shadow.csv"
@@ -223,19 +243,9 @@ def update_position_shadow(dates, draws):
     pending = sum(row["status"] == "FROZEN_PENDING" for row in rows)
     evaluated = sum(row["status"] == "EVALUATED" for row in rows)
     latest_row = max(rows, key=lambda row: row["target_date"]) if rows else None
-    valid_evaluated = []
-    for row in rows:
-        if row["status"] != "EVALUATED" or row["target_date"] not in actual_by_date:
-            continue
-        target_date = date.fromisoformat(row["target_date"])
-        if target_date <= PROSPECTIVE_PROTOCOL_START:
-            continue
-        cutoff_date = date.fromisoformat(row["history_cutoff"])
-        frozen_at = datetime.fromisoformat(row["frozen_at"])
-        nominal_target = datetime.combine(target_date, DRAW_TIME, ROME)
-        if (cutoff_date == target_date - timedelta(days=1) and frozen_at < nominal_target
-                and parse(row["actual_numbers"]) == list(actual_by_date[row["target_date"]])):
-            valid_evaluated.append(row)
+    valid_evaluated = [
+        row for row in rows if is_valid_prospective_shadow_row(row, actual_by_date)
+    ]
     valid_n = len(valid_evaluated)
     valid_hits = [int(row["hit_count"]) for row in valid_evaluated]
     five_count = sum(row["all5_top20"] == "1" for row in valid_evaluated)
