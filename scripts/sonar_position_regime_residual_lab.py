@@ -21,20 +21,49 @@ def parse(value):
 NCOMB = math.comb(40, 5)
 BASE_P = 5 / 40
 
-def paired_difference_bootstrap_ci(position_outcomes, global_outcomes, iterations=20000, seed=20261019):
-    """Deterministic percentile bootstrap CI for paired binary rate difference (position - global)."""
+def paired_difference_exact_conservative_ci(position_outcomes, global_outcomes):
+    """Conservative 95% CI for paired rate difference via simultaneous 97.5% exact binomial CIs
+    on the two discordant-pair probabilities (Bonferroni); remains informative with zero hits.
+    """
     if len(position_outcomes) != len(global_outcomes):
         raise ValueError("paired outcome arrays must have equal length")
     n = len(position_outcomes)
     if n == 0:
-        return {"lower_95": None, "upper_95": None, "method": "paired percentile bootstrap"}
-    deltas = [int(bool(p)) - int(bool(g)) for p, g in zip(position_outcomes, global_outcomes)]
-    rng = random.Random(seed)
-    estimates = sorted(sum(deltas[rng.randrange(n)] for _ in range(n)) / n for _ in range(iterations))
-    lo = estimates[int(0.025 * (iterations - 1))]
-    hi = estimates[int(0.975 * (iterations - 1))]
-    return {"lower_95": lo, "upper_95": hi, "method": "paired percentile bootstrap",
-            "iterations": iterations, "seed": seed}
+        return {"lower_95": None, "upper_95": None,
+                "method": "Bonferroni simultaneous exact Clopper-Pearson bounds on discordant pairs"}
+    p_wins = sum(bool(p) and not bool(g) for p, g in zip(position_outcomes, global_outcomes))
+    g_wins = sum(bool(g) and not bool(p) for p, g in zip(position_outcomes, global_outcomes))
+    alpha_tail = 0.0125  # two 97.5% intervals give >=95% simultaneous coverage
+    def cp_bounds(k):
+        if k == 0:
+            lower = 0.0
+        else:
+            lo, hi = 0.0, 1.0
+            for _ in range(70):
+                mid = (lo + hi) / 2
+                if binom_tail_ge(k, n, mid) < alpha_tail:
+                    lo = mid
+                else:
+                    hi = mid
+            lower = (lo + hi) / 2
+        if k == n:
+            upper = 1.0
+        else:
+            lo, hi = 0.0, 1.0
+            for _ in range(70):
+                mid = (lo + hi) / 2
+                if binom_tail_ge(k + 1, n, mid) < 1 - alpha_tail:
+                    lo = mid
+                else:
+                    hi = mid
+            upper = (lo + hi) / 2
+        return lower, upper
+    p_lo, p_hi = cp_bounds(p_wins)
+    g_lo, g_hi = cp_bounds(g_wins)
+    return {"lower_95": max(-1.0, p_lo - g_hi), "upper_95": min(1.0, p_hi - g_lo),
+            "method": "Bonferroni simultaneous exact Clopper-Pearson bounds on discordant pairs",
+            "position_only_wins": p_wins, "global_only_wins": g_wins,
+            "simultaneous_component_confidence": 0.975}
 
 def prospective_row_is_eligible(row, actual_by_date, protocol_start, draw_time=time(20, 0),
                                 timezone=ZoneInfo("Europe/Rome"), required_config=None):
@@ -297,7 +326,7 @@ def update_position_shadow(dates, draws):
     discordant_n = discordant_a_wins + discordant_b_wins
     mcnemar_p = (min(1.0, 2 * sum(math.comb(discordant_n, j) for j in range(0, min(discordant_a_wins, discordant_b_wins) + 1)) / (2 ** discordant_n))
                  if discordant_n else 1.0)
-    paired_ci = paired_difference_bootstrap_ci(
+    paired_ci = paired_difference_exact_conservative_ci(
         [row["all5_top20"] == "1" for row in paired_position],
         [row["all5_top20"] == "1" for row in paired_global]
     )

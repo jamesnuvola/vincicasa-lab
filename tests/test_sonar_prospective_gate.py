@@ -5,7 +5,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from scripts.sonar_position_regime_residual_lab import prospective_row_is_eligible, paired_difference_bootstrap_ci
+from scripts.sonar_position_regime_residual_lab import prospective_row_is_eligible, paired_difference_exact_conservative_ci
 
 
 class ProspectiveFreezeEligibilityTests(unittest.TestCase):
@@ -55,15 +55,14 @@ class ProspectiveFreezeEligibilityTests(unittest.TestCase):
         self.assertTrue(self.eligible(config="freq_100"))
         self.assertFalse(self.eligible(config="freq_50"))
 
-    def test_paired_bootstrap_ci_is_deterministic_and_contains_zero_for_ties(self):
-        first = paired_difference_bootstrap_ci([0, 1, 0, 1], [0, 1, 0, 1], iterations=1000)
-        second = paired_difference_bootstrap_ci([0, 1, 0, 1], [0, 1, 0, 1], iterations=1000)
-        self.assertEqual(first, second)
-        self.assertEqual(first["lower_95"], 0.0)
-        self.assertEqual(first["upper_95"], 0.0)
+    def test_paired_exact_ci_is_conservative_for_tied_zero_hit_sample(self):
+        result = paired_difference_exact_conservative_ci([0, 0, 0, 0], [0, 0, 0, 0])
+        self.assertLess(result["lower_95"], 0.0)
+        self.assertGreater(result["upper_95"], 0.0)
+        self.assertIn("Clopper-Pearson", result["method"])
 
-    def test_paired_bootstrap_ci_empty_sample(self):
-        result = paired_difference_bootstrap_ci([], [])
+    def test_paired_exact_ci_empty_sample(self):
+        result = paired_difference_exact_conservative_ci([], [])
         self.assertIsNone(result["lower_95"])
         self.assertIsNone(result["upper_95"])
 
