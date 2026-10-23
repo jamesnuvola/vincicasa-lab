@@ -253,5 +253,124 @@
       }
     }
   },
-  "guardrail": "Exploratory only. Historical walk-forward predictions are not prospective Shadow; fusion choices must be frozen and independently validated. No model is promoted by this report."
+  "guardrail": "Exploratory only. Historical walk-forward predictions are not prospective Shadow; fusion choices must be frozen and independently validated. No model is promoted by this report.",
+  "multiple_testing_correction": {
+    "method": "Holm-Bonferroni",
+    "test": "One-sided exact binomial test of Top20 5/5 count against the fixed random Top20 baseline",
+    "null_probability": 0.02356202356202356,
+    "alpha": 0.05,
+    "family_size": 12,
+    "family_definition": "All 4 fixed mixes across discovery, validation, and OOS splits (4 × 3 = 12 tests)",
+    "tests": [
+      {
+        "mix": "momentum_freq",
+        "split": "discovery",
+        "targets": 1911,
+        "successes": 58,
+        "raw_p_one_sided": 0.033785759469,
+        "holm_adjusted_p": 0.236500316284,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "momentum_freq",
+        "split": "validation",
+        "targets": 637,
+        "successes": 11,
+        "raw_p_one_sided": 0.884851910091,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "momentum_freq",
+        "split": "oos",
+        "targets": 637,
+        "successes": 28,
+        "raw_p_one_sided": 0.001511431391,
+        "holm_adjusted_p": 0.018137176686,
+        "significant_at_0_05": true
+      },
+      {
+        "mix": "momentum_freq_position",
+        "split": "discovery",
+        "targets": 1911,
+        "successes": 61,
+        "raw_p_one_sided": 0.0124907989,
+        "holm_adjusted_p": 0.112417190104,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "momentum_freq_position",
+        "split": "validation",
+        "targets": 637,
+        "successes": 8,
+        "raw_p_one_sided": 0.983056103418,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "momentum_freq_position",
+        "split": "oos",
+        "targets": 637,
+        "successes": 25,
+        "raw_p_one_sided": 0.01036692158,
+        "holm_adjusted_p": 0.103669215804,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "momentum_freq_transition",
+        "split": "discovery",
+        "targets": 1911,
+        "successes": 48,
+        "raw_p_one_sided": 0.346979783628,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "momentum_freq_transition",
+        "split": "validation",
+        "targets": 637,
+        "successes": 13,
+        "raw_p_one_sided": 0.736104514646,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "momentum_freq_transition",
+        "split": "oos",
+        "targets": 637,
+        "successes": 15,
+        "raw_p_one_sided": 0.536502540314,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "four_signal",
+        "split": "discovery",
+        "targets": 1911,
+        "successes": 63,
+        "raw_p_one_sided": 0.005971834875,
+        "holm_adjusted_p": 0.065690183623,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "four_signal",
+        "split": "validation",
+        "targets": 637,
+        "successes": 10,
+        "raw_p_one_sided": 0.932728854799,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05": false
+      },
+      {
+        "mix": "four_signal",
+        "split": "oos",
+        "targets": 637,
+        "successes": 24,
+        "raw_p_one_sided": 0.018335693835,
+        "holm_adjusted_p": 0.14668555068,
+        "significant_at_0_05": false
+      }
+    ],
+    "interpretation_guardrail": "This family-wise correction covers only the 12 reported mix-by-split comparisons; it does not erase selection bias from broader exploratory model search. Treat discovery as exploratory and prioritize validation/OOS."
+  }
 }
