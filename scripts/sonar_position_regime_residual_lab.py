@@ -36,7 +36,7 @@ def paired_difference_bootstrap_ci(position_outcomes, global_outcomes, iteration
     return {"lower_95": lo, "upper_95": hi, "method": "paired percentile bootstrap",
             "iterations": iterations, "seed": seed}
 
-def prospective_row_is_eligible(row, actual_by_date, protocol_start, draw_time=DRAW_TIME if "DRAW_TIME" in globals() else time(20, 0),
+def prospective_row_is_eligible(row, actual_by_date, protocol_start, draw_time=time(20, 0),
                                 timezone=ZoneInfo("Europe/Rome"), required_config=None):
     """Eligibility contract for a pre-existing freeze; no backfill and no pre-registration targets."""
     try:
