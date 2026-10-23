@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Fast, leakage-safe cascade-loss and fixed-rank-fusion audit from SONAR walk-forward ledger."""
-import csv, json, math
+import csv, json, math, os
 from collections import defaultdict
 from pathlib import Path
 
@@ -149,8 +149,13 @@ def main():
         "multiple_testing_correction": mix_multiple_testing(mix_results),
     }
     (OUT/"top20_mix_walkforward.json").write_text(json.dumps(mix_report,indent=2)+"\n",encoding="utf-8")
-    print(json.dumps({"status":output["status"],"targets":n,"first":targets[0][0],"last":targets[-1][0],
-                      "mixes":list(mix_results),"multiple_testing_family_size":mix_report["multiple_testing_correction"]["family_size"]},ensure_ascii=False))
+    summary = {"status":output["status"],"targets":n,"first":targets[0][0],"last":targets[-1][0],
+               "mixes":list(mix_results),"multiple_testing_family_size":mix_report["multiple_testing_correction"]["family_size"]}
+    if os.environ.get("SONAR_EMIT_REPORT") == "1":
+        print("SONAR_Q30_REPORT_BEGIN")
+        print(json.dumps(mix_report, indent=2, ensure_ascii=False))
+        print("SONAR_Q30_REPORT_END")
+    print(json.dumps(summary,ensure_ascii=False))
 
 if __name__=="__main__":
     main()
