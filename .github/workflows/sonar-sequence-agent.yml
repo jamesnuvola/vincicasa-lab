@@ -15,6 +15,7 @@ on:
       - "scripts/sonar_evolutionary_lab.py"
       - "scripts/sonar_position_regime_residual_lab.py"
       - "scripts/sonar_structural_category_lab.py"
+      - "tests/test_sonar_position_gate.py"
       - "reports/sequence_agent/research_backlog.json"
       - "data/storico_daily.csv"
       - "src/data.json"
@@ -48,6 +49,7 @@ jobs:
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python -m py_compile scripts/sonar_structural_category_lab.py
           python -m py_compile scripts/sonar_research_queue.py
+          python -m unittest discover -s tests -p 'test_*.py'
 
       - name: Reconstruct fixed rules walk-forward and update shadow forecasts
         run: python scripts/sonar_sequence_agent.py
@@ -89,6 +91,7 @@ jobs:
               git fetch origin main
               git reset --hard origin/main
               python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_fast_improvements.py scripts/sonar_evolutionary_lab.py scripts/sonar_position_regime_residual_lab.py scripts/sonar_structural_category_lab.py scripts/sonar_research_queue.py
+              python -m unittest discover -s tests -p 'test_*.py'
               python scripts/sonar_sequence_agent.py
               python scripts/sonar_fast_improvements.py
               python scripts/sonar_evolutionary_lab.py
