@@ -21,6 +21,21 @@ def parse(value):
 NCOMB = math.comb(40, 5)
 BASE_P = 5 / 40
 
+def paired_difference_bootstrap_ci(position_outcomes, global_outcomes, iterations=20000, seed=20261019):
+    """Deterministic percentile bootstrap CI for paired binary rate difference (position - global)."""
+    if len(position_outcomes) != len(global_outcomes):
+        raise ValueError("paired outcome arrays must have equal length")
+    n = len(position_outcomes)
+    if n == 0:
+        return {"lower_95": None, "upper_95": None, "method": "paired percentile bootstrap"}
+    deltas = [int(bool(p)) - int(bool(g)) for p, g in zip(position_outcomes, global_outcomes)]
+    rng = random.Random(seed)
+    estimates = sorted(sum(deltas[rng.randrange(n)] for _ in range(n)) / n for _ in range(iterations))
+    lo = estimates[int(0.025 * (iterations - 1))]
+    hi = estimates[int(0.975 * (iterations - 1))]
+    return {"lower_95": lo, "upper_95": hi, "method": "paired percentile bootstrap",
+            "iterations": iterations, "seed": seed}
+
 def prospective_row_is_eligible(row, actual_by_date, protocol_start, draw_time=DRAW_TIME if "DRAW_TIME" in globals() else time(20, 0),
                                 timezone=ZoneInfo("Europe/Rome"), required_config=None):
     """Eligibility contract for a pre-existing freeze; no backfill and no pre-registration targets."""
@@ -282,6 +297,10 @@ def update_position_shadow(dates, draws):
     discordant_n = discordant_a_wins + discordant_b_wins
     mcnemar_p = (min(1.0, 2 * sum(math.comb(discordant_n, j) for j in range(0, min(discordant_a_wins, discordant_b_wins) + 1)) / (2 ** discordant_n))
                  if discordant_n else 1.0)
+    paired_ci = paired_difference_bootstrap_ci(
+        [row["all5_top20"] == "1" for row in paired_position],
+        [row["all5_top20"] == "1" for row in paired_global]
+    )
     gate = {
         "status": "INSUFFICIENT_PROSPECTIVE_CASES" if valid_n < 200 else "REVIEW_REQUIRED_NO_AUTO_PROMOTION",
         "protocol_registered": "2026-10-19",
@@ -295,6 +314,7 @@ def update_position_shadow(dates, draws):
         "global_top20_5of5": global_five_count,
         "global_top20_5of5_rate": global_five_count / valid_n if valid_n else None,
         "paired_rate_difference_position_minus_global": (five_count - global_five_count) / valid_n if valid_n else None,
+        "paired_rate_difference_95_ci": paired_ci,
         "mcnemar_discordant_position_wins": discordant_b_wins,
         "mcnemar_discordant_global_wins": discordant_a_wins,
         "mcnemar_exact_two_sided_p": mcnemar_p,
