@@ -31,6 +31,8 @@ jobs:
         run: pip install numpy
       - name: Audit canonical historical archive
         run: python scripts/audit_dataset.py
+      - name: Test prospective shadow gate regressions
+        run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Rebuild generated app data
         run: python scripts/rigenera_dati.py
       - name: Audit generated app data
