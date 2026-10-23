@@ -39,6 +39,10 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_sequence_agent.py
           python scripts/sonar_sequence_agent.py
+      - name: Refresh append-only structural signatures
+        run: |
+          python -m py_compile scripts/sonar_structural_recurrence_lab.py
+          python scripts/sonar_structural_recurrence_lab.py
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
       - name: Test evolutionary lab syntax and run
