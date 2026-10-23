@@ -2,7 +2,7 @@ import unittest
 from datetime import date, time
 from zoneinfo import ZoneInfo
 
-from scripts.sonar_position_regime_residual_lab import prospective_row_is_eligible
+from scripts.sonar_position_regime_residual_lab import prospective_row_is_eligible, paired_difference_bootstrap_ci
 
 
 class ProspectiveFreezeEligibilityTests(unittest.TestCase):
@@ -51,6 +51,18 @@ class ProspectiveFreezeEligibilityTests(unittest.TestCase):
     def test_global_comparator_must_be_freq_100(self):
         self.assertTrue(self.eligible(config="freq_100"))
         self.assertFalse(self.eligible(config="freq_50"))
+
+    def test_paired_bootstrap_ci_is_deterministic_and_contains_zero_for_ties(self):
+        first = paired_difference_bootstrap_ci([0, 1, 0, 1], [0, 1, 0, 1], iterations=1000)
+        second = paired_difference_bootstrap_ci([0, 1, 0, 1], [0, 1, 0, 1], iterations=1000)
+        self.assertEqual(first, second)
+        self.assertEqual(first["lower_95"], 0.0)
+        self.assertEqual(first["upper_95"], 0.0)
+
+    def test_paired_bootstrap_ci_empty_sample(self):
+        result = paired_difference_bootstrap_ci([], [])
+        self.assertIsNone(result["lower_95"])
+        self.assertIsNone(result["upper_95"])
 
 
 if __name__ == "__main__":
