@@ -394,7 +394,7 @@ def validate_q60(archive_info):
     checks, errors = [], []
     override = None
     try:
-        from scripts.sonar_position_regime_residual_lab import prospective_row_is_eligible
+        from sonar_position_regime_residual_lab import prospective_row_is_eligible
         position_path = ROOT / "reports" / "sequence_agent" / "position_mix_shadow.csv"
         global_path = ROOT / "reports" / "sequence_agent" / "shadow_forecasts.csv"
         with position_path.open(newline="", encoding="utf-8-sig") as f:
