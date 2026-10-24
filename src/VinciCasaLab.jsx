@@ -100,88 +100,68 @@ function sonarAnalogCore(draws) {
   const candidates = [];
   for (let i = 0; i < draws.length - 1; i++) {
     const ov = overlapCount(current, draws[i].n);
-    if (ov >= 3) {
-      const successor = draws[i + 1];
-      candidates.push({
-        index: i,
-        date: draws[i].d,
-        overlap: ov,
-        successor: successor.n,
-        successorDate: successor.d,
-        weight: Math.pow(ov, 3),
-      });
-    }
-  }
-
-  const votes = {};
-  for (const a of candidates) {
-    for (const n of a.successor) {
-      votes[n] = (votes[n] || 0) + a.weight;
-    }
-  }
-  const analogRank = Object.keys(votes).map(Number).sort((a, b) => votes[b] - votes[a] || a - b);
-  const maxOverlap = candidates.length ? Math.max(...candidates.map((x) => x.overlap)) : 0;
-  const best = candidates.filter((x) => x.overlap === maxOverlap).slice(-6).reverse();
-
-  const trajectory = sonarTransitionProfile(draws, current);
-  const trajMap = Object.fromEntries(trajectory.map((x) => [x.n, x]));
-
-  // CORE: preserve the strongest successor signal from historical 3+ overlap analogs.
-  const core = analogRank
-    .slice(0, 12)
-    .sort((a, b) => {
-      const va = votes[a] * (1 + 0.15 * trajMap[a].recentPresence);
-      const vb = votes[b] * (1 + 0.15 * trajMap[b].recentPresence);
-      return vb - va || a - b;
-    })
-    .slice(0, 3);
-
-  // Completion layers: independent signals, used only after the analog core.
-  const recent14 = draws.slice(-14);
-  const rel = {};
-  for (const d of recent14) for (const n of d.n) rel[n] = (rel[n] || 0) + 1;
-  const completionPool = Array.from({ length: 40 }, (_, i) => i + 1)
-    .filter((n) => !core.includes(n))
-    .map((n) => ({
-      n,
-      analog: votes[n] || 0,
-      relation: rel[n] || 0,
-      persistence: trajMap[n].persistence,
-      recent: trajMap[n].recentPresence,
-    }))
-    .sort((a, b) => {
-      const sa = 0.55 * a.analog + 1.8 * a.relation + 2.2 * a.persistence + 0.7 * a.recent;
-      const sb = 0.55 * b.analog + 1.8 * b.relation + 2.2 * b.persistence + 0.7 * b.recent;
-      return sb - sa || a.n - b.n;
+    if (ov >= 3) candidates.push({
+      index: i, date: draws[i].d, overlap: ov,
+      successor: draws[i + 1].n, successorDate: draws[i + 1].d,
+      weight: Math.pow(ov, 3),
     });
-
-  const completion = completionPool.slice(0, 2).map((x) => x.n);
-  let ticket = [...core, ...completion].sort((a, b) => a - b);
-
-  // Keep the ticket structurally distinct: if completion duplicates a very strong
-  // analog successor, replace only the weaker completion slot with the next candidate.
-  if (new Set(ticket).size < 5) {
-    for (const x of completionPool) {
-      if (!ticket.includes(x.n)) { ticket.push(x.n); ticket = [...new Set(ticket)].sort((a, b) => a - b); }
-      if (ticket.length === 5) break;
-    }
   }
 
-  const regime = maxOverlap >= 3 && candidates.length >= 1
-    ? (maxOverlap >= 4 ? "ANALOG CORE · FORTE" : "ANALOG CORE · ATTIVO")
-    : "MIXED / COMPLETION";
+  const analogVotes = Array(41).fill(0);
+  for (const a of candidates) for (const n of a.successor) analogVotes[n] += a.weight;
+  const maxOverlap = candidates.length ? Math.max(...candidates.map(x => x.overlap)) : 0;
+  const best = candidates.filter(x => x.overlap === maxOverlap).slice(-6).reverse();
+  const trajectory = sonarTransitionProfile(draws, current);
+  const trajMap = Object.fromEntries(trajectory.map(x => [x.n, x]));
 
+  // Ranking ibrido deterministico: recency primaria, analogia/persistenza secondarie.
+  // Le feature usano esclusivamente le estrazioni già avvenute al momento del calcolo.
+  const countWindow = (windowSize) => {
+    const counts = Array(41).fill(0);
+    const from = Math.max(0, draws.length - windowSize);
+    for (let i = from; i < draws.length; i++) for (const n of draws[i].n) counts[n] += 1;
+    return counts;
+  };
+  const f20 = countWindow(20), f100 = countWindow(100), f500 = countWindow(500);
+  const fall = countWindow(draws.length);
+  const rawFeatures = Array.from({length: 7}, (_, j) =>
+    Array.from({length: 40}, (_, i) => {
+      const n = i + 1;
+      return [
+        f20[n] / Math.min(20, draws.length),
+        f100[n] / Math.min(100, draws.length),
+        f500[n] / Math.min(500, draws.length),
+        fall[n] / draws.length,
+        analogVotes[n],
+        trajMap[n]?.persistence || 0,
+        (trajMap[n]?.recentPresence || 0) / 5,
+      ][j];
+    })
+  );
+  const normalize = (arr) => {
+    const lo = Math.min(...arr), hi = Math.max(...arr);
+    return arr.map(v => hi > lo ? (v - lo) / (hi - lo) : 0);
+  };
+  const features = rawFeatures.map(normalize);
+  const scored = Array.from({length: 40}, (_, i) => {
+    const n = i + 1;
+    const score =
+      0.38 * features[0][i] + 0.22 * features[1][i] +
+      0.14 * features[2][i] + 0.06 * features[3][i] +
+      0.10 * features[4][i] + 0.06 * features[5][i] +
+      0.04 * features[6][i];
+    return { n, score, frequency20: f20[n], analog: analogVotes[n] };
+  }).sort((a,b) => b.score - a.score || a.n - b.n);
+
+  const ticket = scored.slice(0, 5).map(x => x.n).sort((a,b) => a-b);
+  const core = scored.slice(0, 3).map(x => x.n).sort((a,b) => a-b);
+  const completion = scored.slice(3, 5).map(x => x.n).sort((a,b) => a-b);
   return {
-    regime,
-    current,
-    analogs: best,
-    core,
-    completion,
-    ticket: ticket.slice(0, 5),
-    trajectory: trajectory.filter((x) => x.inCurrent).sort((a, b) => b.recentPresence - a.recentPresence),
-    votes,
-    maxOverlap,
-    candidateCount: candidates.length,
+    regime: candidates.length && maxOverlap >= 3 ? "HYBRID RECENCY + ANALOG" : "HYBRID RECENCY",
+    current, analogs: best, core, completion, ticket,
+    trajectory: trajectory.filter(x => x.inCurrent).sort((a,b) => b.recentPresence - a.recentPresence),
+    votes: Object.fromEntries(scored.map(x => [x.n, x.analog])),
+    scores: scored, maxOverlap, candidateCount: candidates.length,
   };
 }
 
