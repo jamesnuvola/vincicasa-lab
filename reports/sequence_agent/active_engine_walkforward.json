@@ -1,0 +1,156 @@
+{
+  "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
+  "validation_status": "EXPLORATORY_NOT_PROMOTABLE",
+  "model_id": "APP::SONAR_HYBRID_RECENCY_ANALOG_FULL_HISTORY",
+  "model_version": "hybrid-recency-analog-full-history-v2",
+  "implementation_commit": "9863701d335dfc04455ac71cd358d7bc779e1483",
+  "source": "data/storico_daily.csv",
+  "source_git_blob_sha": "7dab05ba49ace909fe8783eef729605049c65e50",
+  "generated_at_utc": "2026-10-25T07:17:33.744Z",
+  "data": {
+    "first_date": "2017-07-17",
+    "last_date": "2026-10-24",
+    "total_draws": 3387,
+    "min_history_before_target": 200,
+    "walk_forward_targets": 3187
+  },
+  "method": {
+    "weights": {
+      "frequency_last20": 0.38,
+      "frequency_last100": 0.22,
+      "frequency_last500": 0.14,
+      "frequency_full_history": 0.06,
+      "analog_successor_votes": 0.1,
+      "persistence": 0.06,
+      "recent_presence_last5": 0.04
+    },
+    "normalization": "Each feature min-max normalized across numbers 1..40 separately at each target; rank ties resolve by smaller number.",
+    "analog_rule": "Historical draw overlaps current known draw by at least 3 numbers; each successor number receives overlap^3 votes.",
+    "leakage_control": "For each target, all scores use only draws strictly before that target. The historical target is never included in its own feature prefix.",
+    "split_rule": "Chronological 60% discovery / 20% validation / 20% OOS after the 200-draw warm-up."
+  },
+  "baseline": {
+    "top5_mean_hits": 0.625,
+    "top10_mean_hits": 1.25,
+    "top20_mean_hits": 2.5,
+    "top20_5of5_probability": 0.02356202356202356,
+    "top10_5of5_probability": 0.0003829740671845935,
+    "top5_5of5_probability": 0.000001519738361843625
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1912,
+      "first_target": "2018-02-02",
+      "last_target": "2023-04-28",
+      "mean_hits_top5": 0.64278,
+      "mean_hits_top10": 1.25732,
+      "mean_hits_top20": 2.51726,
+      "top20_5of5": 44,
+      "top10_5of5": 0,
+      "top5_5of5": 0,
+      "top20_4plus": 331,
+      "top20_5of5_random_expected": 45.050589050589046,
+      "top20_5of5_binomial_p_unadjusted": 0.5835403065878929
+    },
+    "validation": {
+      "targets": 637,
+      "first_target": "2023-04-29",
+      "last_target": "2025-01-24",
+      "mean_hits_top5": 0.6044,
+      "mean_hits_top10": 1.19937,
+      "mean_hits_top20": 2.47567,
+      "top20_5of5": 12,
+      "top10_5of5": 0,
+      "top5_5of5": 0,
+      "top20_4plus": 108,
+      "top20_5of5_random_expected": 15.009009009009008,
+      "top20_5of5_binomial_p_unadjusted": 0.8189998740051567
+    },
+    "oos": {
+      "targets": 638,
+      "first_target": "2025-01-25",
+      "last_target": "2026-10-24",
+      "mean_hits_top5": 0.63166,
+      "mean_hits_top10": 1.29937,
+      "mean_hits_top20": 2.56113,
+      "top20_5of5": 18,
+      "top10_5of5": 1,
+      "top5_5of5": 0,
+      "top20_4plus": 120,
+      "top20_5of5_random_expected": 15.032571032571031,
+      "top20_5of5_binomial_p_unadjusted": 0.25189711374459334
+    }
+  },
+  "overall": {
+    "targets": 3187,
+    "mean_hits_top5": 0.63288,
+    "mean_hits_top10": 1.25416,
+    "mean_hits_top20": 2.51773,
+    "top20_5of5": 74,
+    "top10_5of5": 1,
+    "top5_5of5": 0,
+    "top20_4plus": 559,
+    "top20_5of5_random_expected": 75.09216909216909,
+    "top20_5of5_binomial_p_unadjusted": 0.566684311515214
+  },
+  "current_frozen_forecast": {
+    "target_date": "2026-10-25",
+    "frozen_at": "2026-10-25T08:13:45+01:00",
+    "history_cutoff": "2026-10-24",
+    "top20_ranked": [
+      26,
+      29,
+      35,
+      25,
+      9,
+      5,
+      2,
+      16,
+      36,
+      17,
+      4,
+      37,
+      38,
+      34,
+      19,
+      12,
+      7,
+      1,
+      32,
+      20
+    ],
+    "top10_ranked": [
+      26,
+      29,
+      35,
+      25,
+      9,
+      5,
+      2,
+      16,
+      36,
+      17
+    ],
+    "top5_ranked": [
+      26,
+      29,
+      35,
+      25,
+      9
+    ],
+    "visible_ticket_sorted": [
+      9,
+      25,
+      26,
+      29,
+      35
+    ],
+    "status": "FROZEN_PENDING"
+  },
+  "interpretation": {
+    "positive_signal": "OOS Top20 5/5 is 18/638 versus 15.03 expected by a fixed uniform random Top20; OOS mean Top20 hits is 2.561 versus 2.5 baseline.",
+    "limitation": "Validation Top20 5/5 is 12/637 versus 15.01 expected; overall 74/3187 is below 75.09 expected and unadjusted binomial p=0.567. Top10/Top5 cascade remains weak.",
+    "multiple_testing": "This model was developed after prior strategy exploration; reported binomial p-values are unadjusted screening values, not confirmatory evidence. No promotion authorized.",
+    "caveat": "Lottery draws may be independent and uniform; historical patterns do not guarantee future predictive advantage."
+  }
+}
