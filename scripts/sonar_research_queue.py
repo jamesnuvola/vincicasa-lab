@@ -226,7 +226,13 @@ def main():
         }
 
     ready = [s["id"] for s in states.values() if s["status"] == "READY"]
-    active = ready[0] if ready else None
+    actionable = [
+        s for s in states.values()
+        if s["status"] in ("READY", "EVIDENCE_PRESENT_REQUIRES_VALIDATION", "VALIDATION_FAILED")
+        and all(states[dep]["status"] == "COMPLETE" for dep in s["depends_on"])
+    ]
+    active_task = actionable[0] if actionable else None
+    active = active_task["id"] if active_task else None
     output = {
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "project": plan["project"],
@@ -235,8 +241,14 @@ def main():
         "task_count": len(tasks),
         "complete_count": sum(s["status"] == "COMPLETE" for s in states.values()),
         "ready_count": len(ready),
+        "actionable_count": len(actionable),
         "active_next_task": active,
-        "active_next_task_title": states[active]["title"] if active else None,
+        "active_next_task_title": active_task["title"] if active_task else None,
+        "active_next_task_action": (
+            "VALIDATE_EXISTING_EVIDENCE"
+            if active_task and active_task["status"] == "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
+            else ("COLLECT_MISSING_EVIDENCE" if active_task else None)
+        ),
         "tasks": list(states.values()),
         "guardrail": "Queue registration and evidence-file presence are not proof of a successful statistical result. Analyses remain incomplete until implementation, validation and OOS criteria pass."
     }
@@ -245,7 +257,7 @@ def main():
     print("SONAR_RESEARCH_QUEUE_REPORT_BEGIN")
     print(json.dumps(output, ensure_ascii=False, separators=(",", ":")))
     print("SONAR_RESEARCH_QUEUE_REPORT_END")
-    print(json.dumps({k: output[k] for k in ("queue_status","completion_gate","task_count","complete_count","ready_count","active_next_task","active_next_task_title")}, ensure_ascii=False))
+    print(json.dumps({k: output[k] for k in ("queue_status","completion_gate","task_count","complete_count","ready_count","actionable_count","active_next_task","active_next_task_title","active_next_task_action")}, ensure_ascii=False))
     failures = [s for s in states.values() if s["status"] == "VALIDATION_FAILED"]
     if failures:
         raise SystemExit("QUEUE_VALIDATION_FAILED: " + "; ".join(f"{s['id']}: {s['validation_errors']}" for s in failures))
