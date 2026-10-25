@@ -14,12 +14,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: sonar-exhaustive-walkforward-\${{ github.ref }}
+  group: sonar-exhaustive-walkforward-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   calculate:
-    name: Historical batch \${{ matrix.start }}
+    name: Historical batch ${{ matrix.start }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -30,18 +30,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: \${{ github.sha }}
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Install NumPy
         run: pip install numpy
       - name: Calculate exact prior-only ranks for all 1,023 formulas
-        run: python scripts/sonar_exhaustive_walkforward.py --start-index \${{ matrix.start }} --count 100
+        run: python scripts/sonar_exhaustive_walkforward.py --start-index ${{ matrix.start }} --count 100
       - name: Upload historical rank batch
         uses: actions/upload-artifact@v4
         with:
-          name: walkforward-\${{ matrix.start }}
+          name: walkforward-${{ matrix.start }}
           path: reports/sequence_agent/exhaustive_formula_walkforward/part_*.csv
           if-no-files-found: error
           retention-days: 7
@@ -56,7 +56,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: \${{ github.sha }}
+          ref: ${{ github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -74,7 +74,7 @@ jobs:
         run: python scripts/aggregate_sonar_exhaustive_walkforward.py
       - name: Persist validated rank matrix and metrics
         env:
-          GH_TOKEN: \${{ github.token }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -83,5 +83,5 @@ jobs:
             echo "No generated walk-forward changes to persist."
           else
             git commit -m "Persist SONAR exhaustive walk-forward results"
-            git push origin "HEAD:\${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
