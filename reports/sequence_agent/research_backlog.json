@@ -136,6 +136,42 @@
         "explicit VALIDATED/EXPLORATORY/NULL/INSUFFICIENT status"
       ],
       "kind": "promotion"
+    },
+    {
+      "id": "Q70",
+      "priority": 70,
+      "title": "Exhaustive finite-grammar formula catalog and historical walk-forward ranks",
+      "depends_on": [
+        "Q00"
+      ],
+      "evidence": [
+        "scripts/sonar_exhaustive_formula_lab.py",
+        "scripts/sonar_exhaustive_walkforward.py",
+        "scripts/aggregate_sonar_exhaustive_walkforward.py",
+        "tests/test_sonar_exhaustive_formula_lab.py",
+        ".github/workflows/sonar-exhaustive-walkforward.yml",
+        "reports/sequence_agent/exhaustive_formula_catalog_manifest.json",
+        "reports/sequence_agent/exhaustive_formula_catalog.json",
+        "reports/sequence_agent/exhaustive_formula_catalog/formulas_0001_0100.json",
+        "reports/sequence_agent/exhaustive_formula_catalog/formulas_1001_1023.json",
+        "reports/sequence_agent/exhaustive_formula_condition_ledger/part_001.csv",
+        "reports/sequence_agent/exhaustive_formula_condition_ledger/part_010.csv",
+        "reports/sequence_agent/exhaustive_formula_walkforward_manifest.json",
+        "reports/sequence_agent/exhaustive_formula_walkforward_metrics.json",
+        "reports/sequence_agent/exhaustive_formula_walkforward/parts/part_0000_0100.csv",
+        "reports/sequence_agent/exhaustive_formula_walkforward/parts/part_3300_3387.csv"
+      ],
+      "acceptance": [
+        "all 658,008 distinct 5-of-40 candidates are ranked under all 1,023 non-empty subsets of ten registered feature families",
+        "all formula masks are unique and each formula has 20 valid candidate quintets",
+        "one condition-ledger row per historical target, with every count reconstructed only from earlier draws and cutoff strictly before target",
+        "all 3,387 chronological targets have exact ranks under all 1,023 formulas; first target is explicitly INSUFFICIENT_HISTORY",
+        "all ranks are in 1..658,008 and each cutoff equals the previous canonical draw date",
+        "discovery/validation/blind OOS metrics persisted with exact top-20/top-100 hits and Holm-Bonferroni across 1,023 formulas × 3 splits",
+        "full batch reassembly and canonical reconciliation pass in the fail-closed validator",
+        "no formula output overwrites immutable position/global freezes; no automatic model promotion"
+      ],
+      "kind": "analysis"
     }
   ]
 }
