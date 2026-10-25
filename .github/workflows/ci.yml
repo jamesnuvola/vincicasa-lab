@@ -45,11 +45,13 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Test exhaustive SONAR formula catalog invariants
+        run: |
+          python -m py_compile scripts/sonar_exhaustive_formula_lab.py
+          python tests/test_sonar_exhaustive_formula_lab.py -v
       - name: Exhaustive SONAR formula catalog
         env:
           SONAR_EMIT_REPORTS: "1"
-        run: |
-          python -m py_compile scripts/sonar_exhaustive_formula_lab.py
-          python scripts/sonar_exhaustive_formula_lab.py
+        run: python scripts/sonar_exhaustive_formula_lab.py
       - name: Build web application
         run: npm install && npm run build
