@@ -101,6 +101,16 @@ def check_json(rows):
     if any(draws[i]["d"] >= draws[i + 1]["d"] for i in range(len(draws) - 1)):
         fail("src/data.json draws are not strictly chronological")
 
+    model_draws = payload.get("modelDraws")
+    if not isinstance(model_draws, list) or len(model_draws) != len(rows):
+        fail(f"src/data.json modelDraws length={len(model_draws) if isinstance(model_draws, list) else 'invalid'} but CSV has {len(rows)} rows")
+    for i, (model_draw, source_row) in enumerate(zip(model_draws, rows)):
+        expected_date = source_row["data"].strip()
+        expected_nums = [int(source_row[f"n{p}"]) for p in range(1, 6)]
+        if model_draw.get("d") != expected_date or model_draw.get("n") != expected_nums:
+            fail(f"src/data.json modelDraws[{i}] differs from canonical CSV row {i + 2}")
+
+
 
 def main():
     parser = argparse.ArgumentParser()

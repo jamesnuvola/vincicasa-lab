@@ -61,8 +61,20 @@ recent = [
     for t in range(N) if dates[t] >= RECENT_FROM
 ]
 
+model_draws = [
+    {"d": dates[t], "n": [int(x) for x in draws[t]]}
+    for t in range(N)
+]
+
 json.dump(
-    {"freq": freq, "prof": profiles, "draws": recent, "histN": N, "lastDate": dates[-1]},
+    {
+        "freq": freq,
+        "prof": profiles,
+        "draws": recent,
+        "modelDraws": model_draws,
+        "histN": N,
+        "lastDate": dates[-1],
+    },
     open(OUT, "w"), separators=(",", ":"),
 )
-print(f"{OUT}: {N} estrazioni storiche, {len(recent)} recenti, ultima {dates[-1]}")
+print(f"{OUT}: {N} estrazioni storiche, {len(recent)} recenti, {len(model_draws)} per SONAR, ultima {dates[-1]}")

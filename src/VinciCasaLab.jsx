@@ -276,8 +276,15 @@ export default function VinciCasaLab() {
   const [inN, setInN] = useState(["", "", "", "", ""]);
   const [inErr, setInErr] = useState("");
 
+  const canonicalModelDraws = Array.isArray(RAW.modelDraws) && RAW.modelDraws.length
+    ? RAW.modelDraws : RAW.draws;
+  const modelDraws = useMemo(() => {
+    const merged = new Map(canonicalModelDraws.map((x) => [x.d, x]));
+    for (const x of extra) if (!merged.has(x.d)) merged.set(x.d, x);
+    return [...merged.values()].sort((a, b) => a.d.localeCompare(b.d));
+  }, [extra]);
   const draws = useMemo(() => {
-    const seen = new Set(RAW.draws.map((x) => x.d));
+    const seen = new Set(canonicalModelDraws.map((x) => x.d));
     const extraOk = extra.filter((x) => !seen.has(x.d));
     return [...RAW.draws, ...extraOk].sort((a, b) => a.d.localeCompare(b.d));
   }, [extra]);
@@ -389,7 +396,7 @@ export default function VinciCasaLab() {
   );
 
   const [sonarTick, setSonarTick] = useState(0);
-  const sonar = useMemo(() => sonarAnalogCore(draws), [draws, sonarTick]);
+  const sonar = useMemo(() => sonarAnalogCore(modelDraws), [modelDraws, sonarTick]);
 
   const addDraw = () => {
     setInErr("");
@@ -400,7 +407,7 @@ export default function VinciCasaLab() {
       if (nums[i] < 1 || nums[i] > 40) return setInErr("Numeri tra 1 e 40.");
       if (i > 0 && nums[i] <= nums[i - 1]) return setInErr("Numeri in ordine crescente stretto.");
     }
-    if (draws.some((dr) => dr.d === d)) return setInErr("Data già presente.");
+    if (modelDraws.some((dr) => dr.d === d)) return setInErr("Data già presente nello storico completo.");
     setExtra((e) => [...e, { d, n: nums }]);
     setInN(["", "", "", "", ""]);
     setInD("");
