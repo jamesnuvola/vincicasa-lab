@@ -1,0 +1,87 @@
+name: SONAR Exhaustive Historical Walk-Forward
+
+on:
+  push:
+    branches:
+      - research/exhaustive-formula-catalog-20261025
+    paths:
+      - scripts/sonar_exhaustive_walkforward.py
+      - scripts/aggregate_sonar_exhaustive_walkforward.py
+      - .github/workflows/sonar-exhaustive-walkforward.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonar-exhaustive-walkforward-\${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  calculate:
+    name: Historical batch \${{ matrix.start }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        start: [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400, 2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200, 3300]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: \${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install NumPy
+        run: pip install numpy
+      - name: Calculate exact prior-only ranks for all 1,023 formulas
+        run: python scripts/sonar_exhaustive_walkforward.py --start-index \${{ matrix.start }} --count 100
+      - name: Upload historical rank batch
+        uses: actions/upload-artifact@v4
+        with:
+          name: walkforward-\${{ matrix.start }}
+          path: reports/sequence_agent/exhaustive_formula_walkforward/part_*.csv
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate-and-persist:
+    name: Aggregate, validate and persist all historical ranks
+    needs: calculate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: \${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Prepare artifact destination
+        run: |
+          rm -rf reports/sequence_agent/exhaustive_formula_walkforward/parts
+          mkdir -p reports/sequence_agent/exhaustive_formula_walkforward/parts
+      - name: Download all walk-forward batches
+        uses: actions/download-artifact@v4
+        with:
+          pattern: walkforward-*
+          path: reports/sequence_agent/exhaustive_formula_walkforward/parts
+          merge-multiple: true
+      - name: Validate chronology, all formula ranks and multiple-testing report
+        run: python scripts/aggregate_sonar_exhaustive_walkforward.py
+      - name: Persist validated rank matrix and metrics
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/exhaustive_formula_walkforward/parts reports/sequence_agent/exhaustive_formula_walkforward_metrics.json reports/sequence_agent/exhaustive_formula_walkforward_manifest.json
+          if git diff --cached --quiet; then
+            echo "No generated walk-forward changes to persist."
+          else
+            git commit -m "Persist SONAR exhaustive walk-forward results"
+            git push origin "HEAD:\${GITHUB_REF_NAME}"
+          fi
