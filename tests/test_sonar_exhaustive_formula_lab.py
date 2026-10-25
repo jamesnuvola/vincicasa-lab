@@ -15,6 +15,7 @@ import numpy as np
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import sonar_exhaustive_formula_lab as lab  # noqa: E402
+import sonar_exhaustive_walkforward as walkforward  # noqa: E402
 
 
 class ExhaustiveFormulaLabTests(unittest.TestCase):
@@ -28,6 +29,16 @@ class ExhaustiveFormulaLabTests(unittest.TestCase):
         self.assertEqual(len(set(ranks)), 658008)
         self.assertEqual(min(ranks), 0)
         self.assertEqual(max(ranks), 658007)
+
+    def test_lex_rank_is_unique_for_every_quintet(self):
+        ranks = [walkforward.lex_rank(combo) for combo in itertools.combinations(range(1, 41), 5)]
+        self.assertEqual(len(ranks), 658008)
+        self.assertEqual(len(set(ranks)), 658008)
+        self.assertEqual(min(ranks), 0)
+        self.assertEqual(max(ranks), 658007)
+        self.assertEqual(walkforward.lex_rank((1, 2, 3, 4, 5)), 0)
+        self.assertEqual(walkforward.lex_rank((1, 2, 3, 4, 6)), 1)
+        self.assertEqual(walkforward.lex_rank((36, 37, 38, 39, 40)), 658007)
 
     def test_gray_code_covers_every_nonempty_formula_mask(self):
         masks = [i ^ (i >> 1) for i in range(1, 1 << len(lab.FAMILY_NAMES))]
