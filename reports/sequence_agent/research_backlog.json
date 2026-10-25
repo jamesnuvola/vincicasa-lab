@@ -8,7 +8,7 @@
     "chronological_validation_required": true,
     "minimum_complete_oos_cases": 100,
     "preferred_complete_oos_cases": 200,
-    "status_rules": "A task is complete only when its declared evidence artifact exists and validates; absent evidence is never inferred as success."
+    "status_rules": "A task is complete only when its declared evidence artifact exists and all task-specific acceptance validators pass; evidence-file presence alone is never completion."
   },
   "tasks": [
     {
@@ -119,13 +119,34 @@
       "kind": "analysis"
     },
     {
+      "id": "Q55",
+      "priority": 55,
+      "title": "Compare structural age and frequency models on blind OOS",
+      "depends_on": [
+        "Q20"
+      ],
+      "evidence": [
+        "reports/sequence_agent/structural_category_oos.json"
+      ],
+      "acceptance": [
+        "fixed frequency, age-bucket hazard, and equal-weight fusion models scored prequentially with no target leakage",
+        "chronological discovery/validation/blind-OOS splits",
+        "Brier score, log-loss, Top-1 and Top-2 metrics against uniform baselines",
+        "independent uniform 5-of-40 sequence null with five hits per target preserved",
+        "permutation p-values corrected family-wise across the fixed OOS model family",
+        "no promotion without the configured prospective minimum and manual review"
+      ],
+      "kind": "analysis"
+    },
+    {
       "id": "Q60",
       "priority": 60,
       "title": "Prospective shadow evaluation and promotion gate",
       "depends_on": [
         "Q30",
         "Q40",
-        "Q50"
+        "Q50",
+        "Q55"
       ],
       "evidence": [
         "reports/sequence_agent/prospective_promotion_gate.json"
