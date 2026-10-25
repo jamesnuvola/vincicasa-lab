@@ -92,8 +92,7 @@ def build_candidate_space():
     return candidates, indices, gap_codes, sums, odd_counts, decade_codes
 
 
-def standardized_family_scores(prior_n, state, indices, gap_codes, sums, odd_values, decade_codes):
-    candidates_count = EXPECTED_CANDIDATES
+def standardized_family_scores(prior_n, state, candidates, indices, gap_codes, sums, odd_values, decade_codes):
     raw = []
     subset_counts = state["subset_counts"]
     for k in K_VALUES:
@@ -102,10 +101,7 @@ def standardized_family_scores(prior_n, state, indices, gap_codes, sums, odd_val
         raw.append(np.mean(log_prob[indices[k]], axis=1))
 
     position_log = np.log((state["position_counts"].astype(np.float64) + ALPHA) / (prior_n + ALPHA * 40))
-    # Rebuild candidate numbers in sorted-position order from rank-matrix source.
-    # The position feature is number-specific at each of the five sorted positions.
-    # Candidate quintets are the lexicographically ordered complete universe.
-    candidates = np.asarray(list(combinations(range(1, 41), 5)), dtype=np.int16)
+    # Candidate quintets are precomputed once in lexicographic order.
     raw.append(np.mean(np.column_stack([position_log[p, candidates[:, p] - 1] for p in range(5)]), axis=1))
 
     feasible_gap_patterns = math.comb(39, 4)
@@ -119,7 +115,7 @@ def standardized_family_scores(prior_n, state, indices, gap_codes, sums, odd_val
     return standardized
 
 
-def ranks_for_actual(standardized, actual_lex_index, candidate_indices):
+def ranks_for_actual(standardized, actual_lex_index):
     score = np.zeros(EXPECTED_CANDIDATES, dtype=np.float64)
     ranked_scores = np.empty(EXPECTED_CANDIDATES, dtype=np.float64)
     ranks = np.zeros(FORMULA_COUNT, dtype=np.int32)
@@ -151,7 +147,6 @@ def run_batch(start_index, count):
         raise SystemExit(f"WALKFORWARD_BLOCKED: invalid start index {start_index} for {total} targets")
     end_index = min(total, start_index + count)
     candidates, indices, gap_codes, sums, odd_values, decade_codes = build_candidate_space()
-    candidate_indices = np.arange(len(candidates), dtype=np.int32)
     state = empty_state()
     for draw in draws[:start_index]:
         add_draw(state, draw)
@@ -174,11 +169,11 @@ def run_batch(start_index, count):
             if i == 0:
                 row.update({column: "" for column in RANK_COLUMNS})
             else:
-                standardized = standardized_family_scores(i, state, indices, gap_codes, sums, odd_values, decade_codes)
+                standardized = standardized_family_scores(i, state, candidates, indices, gap_codes, sums, odd_values, decade_codes)
                 actual_index = lex_rank(draw)
                 if tuple(candidates[actual_index].tolist()) != tuple(draw):
                     raise SystemExit(f"WALKFORWARD_BLOCKED: lex rank mismatch at {dates[i]}")
-                ranks = ranks_for_actual(standardized, actual_index, candidate_indices)
+                ranks = ranks_for_actual(standardized, actual_index)
                 row.update({f"rank_mask_{mask:04d}": int(ranks[mask - 1]) for mask in range(1, FORMULA_COUNT + 1)})
             writer.writerow(row)
             add_draw(state, draw)
