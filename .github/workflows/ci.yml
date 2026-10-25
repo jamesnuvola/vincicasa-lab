@@ -47,8 +47,10 @@ jobs:
           python scripts/sonar_position_regime_residual_lab.py
       - name: Test exhaustive SONAR formula catalog invariants
         run: |
-          python -m py_compile scripts/sonar_exhaustive_formula_lab.py scripts/sonar_exhaustive_walkforward.py
+          python -m py_compile scripts/sonar_exhaustive_formula_lab.py scripts/sonar_exhaustive_walkforward.py scripts/aggregate_sonar_exhaustive_walkforward.py
           python tests/test_sonar_exhaustive_formula_lab.py -v
+      - name: Smoke-test one historical exhaustive rank
+        run: python scripts/sonar_exhaustive_walkforward.py --start-index 1 --count 1
       - name: Exhaustive SONAR formula catalog
         env:
           SONAR_EMIT_REPORTS: "1"
