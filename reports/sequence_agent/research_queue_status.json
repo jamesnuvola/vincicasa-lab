@@ -1,12 +1,15 @@
 {
-  "generated_at_utc": "2026-10-25T19:40:48.498426+00:00",
+  "generated_at_utc": "2026-10-25T20:22:11.203874+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
-  "task_count": 7,
-  "complete_count": 1,
+  "completion_gate": "OPEN",
+  "task_count": 8,
+  "complete_count": 2,
   "ready_count": 0,
-  "active_next_task": null,
-  "active_next_task_title": null,
+  "actionable_count": 1,
+  "active_next_task": "Q10",
+  "active_next_task_title": "Locate where the 40→20→10→5 cascade loses actual numbers",
+  "active_next_task_action": "VALIDATE_EXISTING_EVIDENCE",
   "tasks": [
     {
       "id": "Q00",
@@ -15,6 +18,9 @@
       "status": "COMPLETE",
       "depends_on": [],
       "missing_evidence": [],
+      "acceptance_validation": "NOT_RUN",
+      "validation_errors": [],
+      "validation_details": null,
       "acceptance_criteria": [
         "dates unique and chronological",
         "each draw contains five distinct integers 1..40",
@@ -31,6 +37,9 @@
         "Q00"
       ],
       "missing_evidence": [],
+      "acceptance_validation": "NOT_RUN",
+      "validation_errors": [],
+      "validation_details": null,
       "acceptance_criteria": [
         "per-target Top20/Top10/Top5 hit counts",
         "conditional Top10 given Top20 5/5",
@@ -47,6 +56,9 @@
         "Q10"
       ],
       "missing_evidence": [],
+      "acceptance_validation": "NOT_RUN",
+      "validation_errors": [],
+      "validation_details": null,
       "acceptance_criteria": [
         "all misses logged only from pre-target forecasts",
         "per-number frequency/recency/rank/gap/co-occurrence/position/structure features",
@@ -63,6 +75,9 @@
         "Q20"
       ],
       "missing_evidence": [],
+      "acceptance_validation": "NOT_RUN",
+      "validation_errors": [],
+      "validation_details": null,
       "acceptance_criteria": [
         "uniform/random and individual strategy baselines",
         "frozen mixes only, no target leakage",
@@ -79,6 +94,9 @@
         "Q10"
       ],
       "missing_evidence": [],
+      "acceptance_validation": "NOT_RUN",
+      "validation_errors": [],
+      "validation_details": null,
       "acceptance_criteria": [
         "raw positional union size reported",
         "completion-to-20 rule frozen",
@@ -94,6 +112,9 @@
         "Q20"
       ],
       "missing_evidence": [],
+      "acceptance_validation": "NOT_RUN",
+      "validation_errors": [],
+      "validation_details": null,
       "acceptance_criteria": [
         "frequency baseline vs age/hazard",
         "Brier and log loss",
@@ -112,10 +133,49 @@
         "Q50"
       ],
       "missing_evidence": [],
+      "acceptance_validation": "NOT_RUN",
+      "validation_errors": [],
+      "validation_details": null,
       "acceptance_criteria": [
         "at least 100 complete prospective OOS cases; preferably 200+",
         "frozen Top20/Top10/Top5 and target date",
         "explicit VALIDATED/EXPLORATORY/NULL/INSUFFICIENT status"
+      ]
+    },
+    {
+      "id": "Q70",
+      "priority": 70,
+      "title": "Exhaustive finite-grammar formula catalog and historical walk-forward ranks",
+      "status": "COMPLETE",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [],
+      "acceptance_validation": "PASS",
+      "validation_errors": [],
+      "validation_details": {
+        "status": "PASS",
+        "validation_errors": [],
+        "checks": {
+          "canonical_targets": 3387,
+          "formula_masks": 1023,
+          "candidate_universe": 658008,
+          "condition_ledger_rows_recomputed_and_matched": 3387,
+          "walkforward_rank_rows": 3386,
+          "walkforward_batch_parts": 34,
+          "holm_tests": 3069,
+          "current_catalog_target": "2026-10-25"
+        }
+      },
+      "acceptance_criteria": [
+        "all 658,008 distinct 5-of-40 candidates are ranked under all 1,023 non-empty subsets of ten registered feature families",
+        "all formula masks are unique and each formula has 20 valid candidate quintets",
+        "one condition-ledger row per historical target, with every count reconstructed only from earlier draws and cutoff strictly before target",
+        "all 3,387 chronological targets have exact ranks under all 1,023 formulas; first target is explicitly INSUFFICIENT_HISTORY",
+        "all ranks are in 1..658,008 and each cutoff equals the previous canonical draw date",
+        "discovery/validation/blind OOS metrics persisted with exact top-20/top-100 hits and Holm-Bonferroni across 1,023 formulas × 3 splits",
+        "full batch reassembly and canonical reconciliation pass in the fail-closed validator",
+        "no formula output overwrites immutable position/global freezes; no automatic model promotion"
       ]
     }
   ],
