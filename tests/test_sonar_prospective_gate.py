@@ -37,6 +37,19 @@ class ProspectiveFreezeEligibilityTests(unittest.TestCase):
             row, actual, date(2026, 10, 19), time(20, 0), ZoneInfo("Europe/Rome")
         ))
 
+    def test_accepts_protocol_registration_date_itself(self):
+        row = dict(self.row, target_date="2026-10-19",
+                   frozen_at="2026-10-19T15:00:00+02:00",
+                   history_cutoff="2026-10-18",
+                   actual_numbers="5 15 20 31 34")
+        actual = {"2026-10-19": (5, 15, 20, 31, 34)}
+        self.assertTrue(prospective_row_is_eligible(
+            row, actual, date(2026, 10, 19), time(20, 0), ZoneInfo("Europe/Rome")
+        ))
+
+    def test_rejects_pending_status(self):
+        self.assertFalse(self.eligible(dict(self.row, status="FROZEN_PENDING")))
+
     def test_rejects_wrong_cutoff(self):
         self.assertFalse(self.eligible(dict(self.row, history_cutoff="2026-10-18")))
 

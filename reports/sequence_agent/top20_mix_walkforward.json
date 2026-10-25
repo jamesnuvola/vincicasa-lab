@@ -253,5 +253,136 @@
       }
     }
   },
-  "guardrail": "Exploratory only. Historical walk-forward predictions are not prospective Shadow; fusion choices must be frozen and independently validated. No model is promoted by this report."
+  "guardrail": "Exploratory only. Historical walk-forward predictions are not prospective Shadow; fusion choices must be frozen and independently validated. No model is promoted by this report.",
+  "multiple_testing_correction": {
+    "method": "Holm-Bonferroni",
+    "test": "One-sided exact binomial test of Top20 5/5 count against the fixed random Top20 baseline",
+    "null_probability": 0.02356202356202356,
+    "alpha": 0.05,
+    "family_size": 12,
+    "family_definition": "All fixed mixes across discovery, validation, and OOS splits; 4 mixes × 3 splits.",
+    "tests": [
+      {
+        "test_id": "momentum_freq:discovery",
+        "mix": "momentum_freq",
+        "split": "discovery",
+        "targets": 1912,
+        "successes": 58,
+        "raw_p_one_sided": 0.03406585945919724,
+        "holm_adjusted_p": 0.23846101621438068,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "momentum_freq:validation",
+        "mix": "momentum_freq",
+        "split": "validation",
+        "targets": 637,
+        "successes": 11,
+        "raw_p_one_sided": 0.8848519100910689,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "momentum_freq:oos",
+        "mix": "momentum_freq",
+        "split": "oos",
+        "targets": 638,
+        "successes": 28,
+        "raw_p_one_sided": 0.0015458888900367746,
+        "holm_adjusted_p": 0.018550666680441294,
+        "significant_at_0_05_after_holm": true
+      },
+      {
+        "test_id": "momentum_freq_position:discovery",
+        "mix": "momentum_freq_position",
+        "split": "discovery",
+        "targets": 1912,
+        "successes": 61,
+        "raw_p_one_sided": 0.012612757306951227,
+        "holm_adjusted_p": 0.11351481576256105,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "momentum_freq_position:validation",
+        "mix": "momentum_freq_position",
+        "split": "validation",
+        "targets": 637,
+        "successes": 8,
+        "raw_p_one_sided": 0.9830561034181763,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "momentum_freq_position:oos",
+        "mix": "momentum_freq_position",
+        "split": "oos",
+        "targets": 638,
+        "successes": 25,
+        "raw_p_one_sided": 0.010554681979967197,
+        "holm_adjusted_p": 0.10554681979967198,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "momentum_freq_transition:discovery",
+        "mix": "momentum_freq_transition",
+        "split": "discovery",
+        "targets": 1912,
+        "successes": 48,
+        "raw_p_one_sided": 0.3483064241276093,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "momentum_freq_transition:validation",
+        "mix": "momentum_freq_transition",
+        "split": "validation",
+        "targets": 637,
+        "successes": 13,
+        "raw_p_one_sided": 0.7361045146457453,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "momentum_freq_transition:oos",
+        "mix": "momentum_freq_transition",
+        "split": "oos",
+        "targets": 638,
+        "successes": 15,
+        "raw_p_one_sided": 0.5389396320176898,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "four_signal:discovery",
+        "mix": "four_signal",
+        "split": "discovery",
+        "targets": 1912,
+        "successes": 63,
+        "raw_p_one_sided": 0.006036133873761057,
+        "holm_adjusted_p": 0.06639747261137163,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "four_signal:validation",
+        "mix": "four_signal",
+        "split": "validation",
+        "targets": 637,
+        "successes": 10,
+        "raw_p_one_sided": 0.9327288547989872,
+        "holm_adjusted_p": 1,
+        "significant_at_0_05_after_holm": false
+      },
+      {
+        "test_id": "four_signal:oos",
+        "mix": "four_signal",
+        "split": "oos",
+        "targets": 638,
+        "successes": 24,
+        "raw_p_one_sided": 0.018639837620856484,
+        "holm_adjusted_p": 0.14911870096685187,
+        "significant_at_0_05_after_holm": false
+      }
+    ],
+    "interpretation_guardrail": "This correction covers only the reported mix-by-split comparisons; it does not erase selection bias from broader exploratory model search. Discovery is exploratory; prioritize validation and blind OOS."
+  }
 }
