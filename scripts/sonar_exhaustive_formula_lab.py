@@ -81,7 +81,7 @@ def read_archive():
         previous = d
         dates.append(d)
         draws.append(nums)
-    if len(draws) != EXPECTED_CANDIDATES and len(draws) < 500:
+    if len(draws) < 500:
         raise SystemExit(f"EXHAUSTIVE_LAB_BLOCKED: too few verified draws: {len(draws)}")
     return dates, draws
 
@@ -213,15 +213,17 @@ def zscore(values):
 
 
 def top_indices(scores, limit=20):
+    """Rank by rounded score, then lexicographic candidate index for stable ties."""
     n = len(scores)
-    threshold = float(np.partition(scores, n - limit)[n - limit])
-    above = np.flatnonzero(scores > threshold)
-    equal = np.flatnonzero(scores == threshold)
+    ranked_scores = np.round(scores, 10)
+    threshold = float(np.partition(ranked_scores, n - limit)[n - limit])
+    above = np.flatnonzero(ranked_scores > threshold)
+    equal = np.flatnonzero(ranked_scores == threshold)
     if len(above) >= limit:
-        chosen = above[np.lexsort((above, -scores[above]))[:limit]]
+        chosen = above[np.lexsort((above, -ranked_scores[above]))[:limit]]
     else:
         chosen = np.concatenate((above, equal[:limit - len(above)]))
-        chosen = chosen[np.lexsort((chosen, -scores[chosen]))]
+        chosen = chosen[np.lexsort((chosen, -ranked_scores[chosen]))]
     return chosen[:limit]
 
 
@@ -318,6 +320,8 @@ def score_next_target(dates, draws, state):
             "top20": top,
         })
 
+    if len(formula_results) != EXPECTED_FORMULAS or len({item["formula_mask"] for item in formula_results}) != EXPECTED_FORMULAS:
+        raise SystemExit(f"EXHAUSTIVE_LAB_BLOCKED: expected {EXPECTED_FORMULAS} unique formulas, got {len(formula_results)}")
     # A consensus ranking is an additional explicitly defined formula, not a selection claim.
     top20_sets = [set(tuple(x["numbers"]) for x in item["top20"]) for item in formula_results]
     candidate_votes = Counter()
