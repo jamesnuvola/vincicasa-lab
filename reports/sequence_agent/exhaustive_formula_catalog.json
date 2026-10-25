@@ -1,0 +1,1225 @@
+{
+  "schema_version": "1.0",
+  "status": "EXHAUSTIVE_FINITE_GRAMMAR_COMPLETE",
+  "source_archive": "data/storico_daily.csv",
+  "history_draws": 3387,
+  "history_first_date": "2017-07-17",
+  "history_last_date": "2026-10-24",
+  "target_date": "2026-10-25",
+  "target_cutoff_date": "2026-10-24",
+  "target_note": "Research-only ranking. Does not replace or modify any pre-existing frozen forecast.",
+  "candidate_universe_size": 658008,
+  "candidate_universe_definition": "all sorted distinct 5-number subsets of 1..40",
+  "feature_families": [
+    {
+      "name": "number_frequency",
+      "definition": "mean smoothed log occurrence probability across all C(5,1) subsets of order 1"
+    },
+    {
+      "name": "pair_interaction",
+      "definition": "mean smoothed log occurrence probability across all C(5,2) subsets of order 2"
+    },
+    {
+      "name": "triple_interaction",
+      "definition": "mean smoothed log occurrence probability across all C(5,3) subsets of order 3"
+    },
+    {
+      "name": "quadruple_interaction",
+      "definition": "mean smoothed log occurrence probability across all C(5,4) subsets of order 4"
+    },
+    {
+      "name": "exact_quintet_recurrence",
+      "definition": "mean smoothed log occurrence probability across all C(5,5) subsets of order 5"
+    },
+    {
+      "name": "sorted_position_frequency",
+      "definition": "mean smoothed log frequency of each number at its sorted position"
+    },
+    {
+      "name": "gap_pattern",
+      "definition": "smoothed empirical likelihood of the exact four-gap vector"
+    },
+    {
+      "name": "sum_distribution",
+      "definition": "smoothed empirical likelihood of the exact sum (15..190)"
+    },
+    {
+      "name": "odd_count",
+      "definition": "smoothed empirical likelihood of the number of odd values"
+    },
+    {
+      "name": "decade_profile",
+      "definition": "smoothed empirical likelihood of counts in the four ten-number bands"
+    }
+  ],
+  "feature_score_normalization": "Each family score is z-normalized across all 658,008 candidate quintets; every selected family receives equal weight.",
+  "formula_count": 1023,
+  "formula_grammar": "Every non-empty subset of the 10 declared feature families; all 1,023 formulas enumerated by Gray-code traversal.",
+  "smoothing": {
+    "method": "additive",
+    "alpha": 0.5
+  },
+  "family_score_normalization": {
+    "number_frequency": {
+      "mean": -3.6899514008554104,
+      "std": 0.019780043843148014,
+      "constant": false
+    },
+    "pair_interaction": {
+      "mean": -6.670482687370259,
+      "std": 0.05638672697344475,
+      "constant": false
+    },
+    "triple_interaction": {
+      "mean": -9.336052686609875,
+      "std": 0.2066370147903126,
+      "constant": false
+    },
+    "quadruple_interaction": {
+      "mean": -11.544207319246423,
+      "std": 0.20436288964258376,
+      "constant": false
+    },
+    "exact_quintet_recurrence": {
+      "mean": -13.40156753970855,
+      "std": 0.0786328076380875,
+      "constant": false
+    },
+    "sorted_position_frequency": {
+      "mean": -3.1168572712667637,
+      "std": 0.336172432262648,
+      "constant": false
+    },
+    "gap_pattern": {
+      "mean": -11.32536877832531,
+      "std": 0.2738439479528315,
+      "constant": false
+    },
+    "sum_distribution": {
+      "mean": -4.635990204451289,
+      "std": 0.6574292198969035,
+      "constant": false
+    },
+    "odd_count": {
+      "mean": -1.4728151362009814,
+      "std": 0.6317962883095618,
+      "constant": false
+    },
+    "decade_profile": {
+      "mean": -3.606880424735754,
+      "std": 0.7911091481787313,
+      "constant": false
+    }
+  },
+  "consensus_top100_by_formula_top20_votes": [
+    {
+      "numbers": [
+        5,
+        6,
+        12,
+        29,
+        40
+      ],
+      "top20_votes": 898
+    },
+    {
+      "numbers": [
+        5,
+        13,
+        15,
+        21,
+        36
+      ],
+      "top20_votes": 805
+    },
+    {
+      "numbers": [
+        2,
+        11,
+        13,
+        25,
+        38
+      ],
+      "top20_votes": 781
+    },
+    {
+      "numbers": [
+        2,
+        11,
+        13,
+        34,
+        38
+      ],
+      "top20_votes": 763
+    },
+    {
+      "numbers": [
+        3,
+        10,
+        15,
+        34,
+        39
+      ],
+      "top20_votes": 707
+    },
+    {
+      "numbers": [
+        7,
+        9,
+        10,
+        22,
+        34
+      ],
+      "top20_votes": 701
+    },
+    {
+      "numbers": [
+        7,
+        8,
+        34,
+        35,
+        38
+      ],
+      "top20_votes": 615
+    },
+    {
+      "numbers": [
+        6,
+        10,
+        24,
+        26,
+        29
+      ],
+      "top20_votes": 598
+    },
+    {
+      "numbers": [
+        9,
+        15,
+        32,
+        39,
+        40
+      ],
+      "top20_votes": 589
+    },
+    {
+      "numbers": [
+        3,
+        7,
+        16,
+        27,
+        39
+      ],
+      "top20_votes": 586
+    },
+    {
+      "numbers": [
+        6,
+        26,
+        31,
+        36,
+        37
+      ],
+      "top20_votes": 549
+    },
+    {
+      "numbers": [
+        6,
+        12,
+        13,
+        29,
+        40
+      ],
+      "top20_votes": 532
+    },
+    {
+      "numbers": [
+        9,
+        11,
+        13,
+        32,
+        40
+      ],
+      "top20_votes": 457
+    },
+    {
+      "numbers": [
+        6,
+        17,
+        18,
+        22,
+        37
+      ],
+      "top20_votes": 229
+    },
+    {
+      "numbers": [
+        3,
+        12,
+        18,
+        27,
+        40
+      ],
+      "top20_votes": 217
+    },
+    {
+      "numbers": [
+        6,
+        10,
+        11,
+        13,
+        32
+      ],
+      "top20_votes": 215
+    },
+    {
+      "numbers": [
+        2,
+        18,
+        21,
+        27,
+        35
+      ],
+      "top20_votes": 211
+    },
+    {
+      "numbers": [
+        3,
+        5,
+        16,
+        26,
+        40
+      ],
+      "top20_votes": 203
+    },
+    {
+      "numbers": [
+        9,
+        10,
+        13,
+        22,
+        38
+      ],
+      "top20_votes": 185
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        19,
+        28,
+        31
+      ],
+      "top20_votes": 183
+    },
+    {
+      "numbers": [
+        4,
+        17,
+        25,
+        26,
+        40
+      ],
+      "top20_votes": 175
+    },
+    {
+      "numbers": [
+        8,
+        19,
+        26,
+        31,
+        34
+      ],
+      "top20_votes": 164
+    },
+    {
+      "numbers": [
+        2,
+        10,
+        18,
+        26,
+        37
+      ],
+      "top20_votes": 151
+    },
+    {
+      "numbers": [
+        9,
+        11,
+        13,
+        28,
+        40
+      ],
+      "top20_votes": 149
+    },
+    {
+      "numbers": [
+        2,
+        11,
+        13,
+        32,
+        38
+      ],
+      "top20_votes": 143
+    },
+    {
+      "numbers": [
+        3,
+        8,
+        24,
+        27,
+        39
+      ],
+      "top20_votes": 137
+    },
+    {
+      "numbers": [
+        2,
+        11,
+        13,
+        22,
+        38
+      ],
+      "top20_votes": 136
+    },
+    {
+      "numbers": [
+        10,
+        11,
+        15,
+        31,
+        32
+      ],
+      "top20_votes": 133
+    },
+    {
+      "numbers": [
+        8,
+        15,
+        19,
+        26,
+        34
+      ],
+      "top20_votes": 131
+    },
+    {
+      "numbers": [
+        10,
+        13,
+        15,
+        28,
+        29
+      ],
+      "top20_votes": 122
+    },
+    {
+      "numbers": [
+        9,
+        10,
+        13,
+        26,
+        40
+      ],
+      "top20_votes": 121
+    },
+    {
+      "numbers": [
+        1,
+        13,
+        15,
+        28,
+        36
+      ],
+      "top20_votes": 118
+    },
+    {
+      "numbers": [
+        9,
+        10,
+        13,
+        26,
+        38
+      ],
+      "top20_votes": 115
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        13,
+        28,
+        32
+      ],
+      "top20_votes": 114
+    },
+    {
+      "numbers": [
+        8,
+        14,
+        18,
+        27,
+        37
+      ],
+      "top20_votes": 113
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        32,
+        37,
+        40
+      ],
+      "top20_votes": 112
+    },
+    {
+      "numbers": [
+        3,
+        12,
+        18,
+        27,
+        31
+      ],
+      "top20_votes": 109
+    },
+    {
+      "numbers": [
+        5,
+        16,
+        19,
+        32,
+        37
+      ],
+      "top20_votes": 108
+    },
+    {
+      "numbers": [
+        2,
+        13,
+        27,
+        30,
+        38
+      ],
+      "top20_votes": 107
+    },
+    {
+      "numbers": [
+        8,
+        9,
+        13,
+        26,
+        37
+      ],
+      "top20_votes": 100
+    },
+    {
+      "numbers": [
+        14,
+        18,
+        19,
+        24,
+        26
+      ],
+      "top20_votes": 92
+    },
+    {
+      "numbers": [
+        5,
+        8,
+        29,
+        34,
+        40
+      ],
+      "top20_votes": 90
+    },
+    {
+      "numbers": [
+        11,
+        13,
+        22,
+        26,
+        38
+      ],
+      "top20_votes": 88
+    },
+    {
+      "numbers": [
+        8,
+        13,
+        28,
+        29,
+        32
+      ],
+      "top20_votes": 87
+    },
+    {
+      "numbers": [
+        11,
+        13,
+        23,
+        24,
+        38
+      ],
+      "top20_votes": 87
+    },
+    {
+      "numbers": [
+        9,
+        10,
+        13,
+        15,
+        26
+      ],
+      "top20_votes": 86
+    },
+    {
+      "numbers": [
+        3,
+        12,
+        18,
+        31,
+        40
+      ],
+      "top20_votes": 86
+    },
+    {
+      "numbers": [
+        10,
+        13,
+        15,
+        26,
+        36
+      ],
+      "top20_votes": 86
+    },
+    {
+      "numbers": [
+        2,
+        11,
+        13,
+        24,
+        38
+      ],
+      "top20_votes": 83
+    },
+    {
+      "numbers": [
+        11,
+        15,
+        24,
+        28,
+        32
+      ],
+      "top20_votes": 83
+    },
+    {
+      "numbers": [
+        5,
+        11,
+        13,
+        32,
+        40
+      ],
+      "top20_votes": 77
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        26,
+        32,
+        37
+      ],
+      "top20_votes": 76
+    },
+    {
+      "numbers": [
+        6,
+        11,
+        13,
+        26,
+        36
+      ],
+      "top20_votes": 75
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        26,
+        28,
+        32
+      ],
+      "top20_votes": 73
+    },
+    {
+      "numbers": [
+        2,
+        11,
+        13,
+        28,
+        38
+      ],
+      "top20_votes": 73
+    },
+    {
+      "numbers": [
+        2,
+        3,
+        9,
+        26,
+        37
+      ],
+      "top20_votes": 72
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        22,
+        26,
+        30
+      ],
+      "top20_votes": 72
+    },
+    {
+      "numbers": [
+        2,
+        7,
+        23,
+        26,
+        38
+      ],
+      "top20_votes": 70
+    },
+    {
+      "numbers": [
+        2,
+        19,
+        26,
+        37,
+        40
+      ],
+      "top20_votes": 66
+    },
+    {
+      "numbers": [
+        6,
+        9,
+        13,
+        26,
+        32
+      ],
+      "top20_votes": 66
+    },
+    {
+      "numbers": [
+        9,
+        10,
+        26,
+        32,
+        37
+      ],
+      "top20_votes": 65
+    },
+    {
+      "numbers": [
+        13,
+        14,
+        28,
+        37,
+        40
+      ],
+      "top20_votes": 63
+    },
+    {
+      "numbers": [
+        2,
+        10,
+        22,
+        32,
+        37
+      ],
+      "top20_votes": 61
+    },
+    {
+      "numbers": [
+        6,
+        10,
+        19,
+        23,
+        27
+      ],
+      "top20_votes": 60
+    },
+    {
+      "numbers": [
+        4,
+        11,
+        13,
+        30,
+        37
+      ],
+      "top20_votes": 60
+    },
+    {
+      "numbers": [
+        19,
+        23,
+        32,
+        36,
+        40
+      ],
+      "top20_votes": 58
+    },
+    {
+      "numbers": [
+        2,
+        9,
+        26,
+        37,
+        40
+      ],
+      "top20_votes": 57
+    },
+    {
+      "numbers": [
+        10,
+        17,
+        23,
+        28,
+        32
+      ],
+      "top20_votes": 57
+    },
+    {
+      "numbers": [
+        9,
+        10,
+        13,
+        26,
+        37
+      ],
+      "top20_votes": 56
+    },
+    {
+      "numbers": [
+        9,
+        10,
+        13,
+        26,
+        32
+      ],
+      "top20_votes": 54
+    },
+    {
+      "numbers": [
+        6,
+        9,
+        10,
+        26,
+        38
+      ],
+      "top20_votes": 54
+    },
+    {
+      "numbers": [
+        6,
+        10,
+        13,
+        32,
+        37
+      ],
+      "top20_votes": 53
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        26,
+        37,
+        40
+      ],
+      "top20_votes": 51
+    },
+    {
+      "numbers": [
+        2,
+        10,
+        13,
+        25,
+        38
+      ],
+      "top20_votes": 51
+    },
+    {
+      "numbers": [
+        6,
+        13,
+        14,
+        15,
+        36
+      ],
+      "top20_votes": 50
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        22,
+        28,
+        38
+      ],
+      "top20_votes": 50
+    },
+    {
+      "numbers": [
+        5,
+        13,
+        19,
+        28,
+        38
+      ],
+      "top20_votes": 49
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        25,
+        29,
+        38
+      ],
+      "top20_votes": 48
+    },
+    {
+      "numbers": [
+        1,
+        13,
+        22,
+        27,
+        40
+      ],
+      "top20_votes": 47
+    },
+    {
+      "numbers": [
+        8,
+        11,
+        18,
+        23,
+        37
+      ],
+      "top20_votes": 47
+    },
+    {
+      "numbers": [
+        10,
+        13,
+        17,
+        28,
+        32
+      ],
+      "top20_votes": 47
+    },
+    {
+      "numbers": [
+        6,
+        10,
+        11,
+        13,
+        24
+      ],
+      "top20_votes": 47
+    },
+    {
+      "numbers": [
+        2,
+        13,
+        18,
+        28,
+        38
+      ],
+      "top20_votes": 45
+    },
+    {
+      "numbers": [
+        8,
+        13,
+        26,
+        34,
+        40
+      ],
+      "top20_votes": 45
+    },
+    {
+      "numbers": [
+        6,
+        12,
+        29,
+        32,
+        40
+      ],
+      "top20_votes": 45
+    },
+    {
+      "numbers": [
+        4,
+        5,
+        11,
+        28,
+        39
+      ],
+      "top20_votes": 44
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        27,
+        29,
+        32
+      ],
+      "top20_votes": 44
+    },
+    {
+      "numbers": [
+        9,
+        11,
+        17,
+        32,
+        37
+      ],
+      "top20_votes": 43
+    },
+    {
+      "numbers": [
+        2,
+        11,
+        13,
+        38,
+        39
+      ],
+      "top20_votes": 43
+    },
+    {
+      "numbers": [
+        13,
+        14,
+        22,
+        30,
+        37
+      ],
+      "top20_votes": 43
+    },
+    {
+      "numbers": [
+        9,
+        13,
+        26,
+        32,
+        40
+      ],
+      "top20_votes": 42
+    },
+    {
+      "numbers": [
+        2,
+        10,
+        13,
+        27,
+        38
+      ],
+      "top20_votes": 42
+    },
+    {
+      "numbers": [
+        8,
+        10,
+        26,
+        28,
+        37
+      ],
+      "top20_votes": 41
+    },
+    {
+      "numbers": [
+        8,
+        9,
+        17,
+        32,
+        37
+      ],
+      "top20_votes": 41
+    },
+    {
+      "numbers": [
+        2,
+        10,
+        22,
+        26,
+        37
+      ],
+      "top20_votes": 39
+    },
+    {
+      "numbers": [
+        9,
+        17,
+        18,
+        22,
+        28
+      ],
+      "top20_votes": 38
+    },
+    {
+      "numbers": [
+        6,
+        19,
+        23,
+        36,
+        40
+      ],
+      "top20_votes": 38
+    },
+    {
+      "numbers": [
+        4,
+        11,
+        14,
+        17,
+        28
+      ],
+      "top20_votes": 37
+    },
+    {
+      "numbers": [
+        17,
+        23,
+        27,
+        29,
+        39
+      ],
+      "top20_votes": 37
+    },
+    {
+      "numbers": [
+        11,
+        13,
+        14,
+        26,
+        38
+      ],
+      "top20_votes": 37
+    }
+  ],
+  "guardrails": [
+    "Every historical condition-ledger row uses only draws strictly before its target date.",
+    "Every one of the 658,008 possible quintets is scored under each of the 1,023 formulas for the next target.",
+    "The grammar is exhaustive only within the declared 10-family finite grammar; the universe of all mathematical formulas is infinite.",
+    "Historical formula rankings are exploratory and require chronological walk-forward evaluation; no formula is promoted based on the next-target ranking alone.",
+    "The catalog is separate from immutable freeze records and must never overwrite them."
+  ],
+  "formulas_stored_separately": true,
+  "storage_layout": {
+    "formulas_stored_in_parts": [
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0001_0100.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0101_0200.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0201_0300.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0301_0400.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0401_0500.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0501_0600.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0601_0700.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0701_0800.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0801_0900.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_0901_1000.json",
+        "formula_count": 100
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_catalog/formulas_1001_1023.json",
+        "formula_count": 23
+      }
+    ],
+    "historical_condition_ledger_parts": [
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_001.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_002.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_003.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_004.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_005.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_006.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_007.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_008.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_009.csv",
+        "data_rows": 340,
+        "includes_header": true
+      },
+      {
+        "path": "reports/sequence_agent/exhaustive_formula_condition_ledger/part_010.csv",
+        "data_rows": 327,
+        "includes_header": true
+      }
+    ],
+    "reassembly": "To reconstruct the full JSON report, concatenate each formula part's formulas array in listed order into the formulas property. To reconstruct the CSV, use the first part's header and append data rows from later parts, skipping repeated headers."
+  }
+}
