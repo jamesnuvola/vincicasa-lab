@@ -54,5 +54,6 @@ jobs:
           python -m py_compile scripts/sonar_per_number_condition_grammar.py
           python tests/test_sonar_per_number_condition_grammar.py -v
           python scripts/sonar_per_number_condition_grammar.py
+          python scripts/sonar_research_queue.py
       - name: Build web application
         run: npm install && npm run build
