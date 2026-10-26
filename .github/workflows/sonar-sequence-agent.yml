@@ -14,6 +14,8 @@ on:
       - "scripts/sonar_fast_improvements.py"
       - "scripts/sonar_evolutionary_lab.py"
       - "scripts/sonar_position_regime_residual_lab.py"
+      - "scripts/sonar_active_engine_walkforward.mjs"
+      - "src/VinciCasaLab.jsx"
       - "reports/sequence_agent/research_backlog.json"
       - "data/storico_daily.csv"
       - "src/data.json"
@@ -46,9 +48,13 @@ jobs:
           python -m py_compile scripts/sonar_evolutionary_lab.py
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python -m py_compile scripts/sonar_research_queue.py
+          node --check scripts/sonar_active_engine_walkforward.mjs
 
       - name: Reconstruct fixed rules walk-forward and update shadow forecasts
         run: python scripts/sonar_sequence_agent.py
+
+      - name: Run exact-source active-engine walk-forward and prospective freeze
+        run: node scripts/sonar_active_engine_walkforward.mjs
 
       - name: Run cascade-loss and fixed fusion diagnostics
         run: python scripts/sonar_fast_improvements.py
@@ -85,6 +91,7 @@ jobs:
               git reset --hard origin/main
               python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_fast_improvements.py scripts/sonar_evolutionary_lab.py scripts/sonar_position_regime_residual_lab.py scripts/sonar_research_queue.py
               python scripts/sonar_sequence_agent.py
+              node scripts/sonar_active_engine_walkforward.mjs
               python scripts/sonar_fast_improvements.py
               python scripts/sonar_evolutionary_lab.py
               python scripts/sonar_position_regime_residual_lab.py
