@@ -1,12 +1,15 @@
 {
-  "generated_at_utc": "2026-10-26T08:08:12.565931+00:00",
+  "generated_at_utc": "2026-10-26T08:15:07.245991+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
+  "overall_cycle_status": "INCOMPLETE",
   "task_count": 7,
-  "complete_count": 1,
+  "complete_count": 3,
   "ready_count": 0,
   "active_next_task": null,
   "active_next_task_title": null,
+  "blocking_tasks": [],
+  "next_action": null,
   "tasks": [
     {
       "id": "Q00",
@@ -15,6 +18,7 @@
       "status": "COMPLETE",
       "depends_on": [],
       "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "dates unique and chronological",
         "each draw contains five distinct integers 1..40",
@@ -26,16 +30,18 @@
       "id": "Q10",
       "priority": 10,
       "title": "Locate where the 40→20→10→5 cascade loses actual numbers",
-      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
+      "status": "COMPLETE",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "per-target Top20/Top10/Top5 hit counts",
         "conditional Top10 given Top20 5/5",
         "conditional Top5 given Top10 5/5",
-        "chronological discovery/validation/OOS split"
+        "chronological discovery/validation/OOS split",
+        "per-target ledger contains prior-only cutoff and Top20/Top10/Top5 hit counts for every target/configuration"
       ]
     },
     {
@@ -47,6 +53,9 @@
         "Q10"
       ],
       "missing_evidence": [],
+      "validation_errors": [
+        "miss flags inconsistent at 2018-11-30 / 22"
+      ],
       "acceptance_criteria": [
         "all misses logged only from pre-target forecasts",
         "per-number frequency/recency/rank/gap/co-occurrence/position/structure features",
@@ -58,27 +67,32 @@
       "id": "Q30",
       "priority": 30,
       "title": "Test frozen mixes inside the same legacy Top20",
-      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
+      "status": "BLOCKED_BY_DEPENDENCY",
       "depends_on": [
         "Q20"
       ],
       "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "uniform/random and individual strategy baselines",
         "frozen mixes only, no target leakage",
         "multiple-testing correction",
-        "metrics by chronological split"
+        "metrics by chronological split",
+        "constrained mixes preserve the same legacy momentum_20_100 Top20 candidate set while changing only Top10/Top5 order",
+        "Top10/Top5 conditional cascade metrics and paired deltas versus the legacy ranking are reported",
+        "Holm within the constrained endpoint family and broader Bonferroni correction are reported"
       ]
     },
     {
       "id": "Q40",
       "priority": 40,
       "title": "Compare global and positional candidate pipelines",
-      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
+      "status": "COMPLETE",
       "depends_on": [
         "Q10"
       ],
       "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "raw positional union size reported",
         "completion-to-20 rule frozen",
@@ -89,11 +103,12 @@
       "id": "Q50",
       "priority": 50,
       "title": "Re-test structural recurrence and hazard as a separate branch",
-      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
+      "status": "BLOCKED_BY_DEPENDENCY",
       "depends_on": [
         "Q20"
       ],
       "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "frequency baseline vs age/hazard",
         "Brier and log loss",
@@ -105,13 +120,14 @@
       "id": "Q60",
       "priority": 60,
       "title": "Prospective shadow evaluation and promotion gate",
-      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
+      "status": "BLOCKED_BY_DEPENDENCY",
       "depends_on": [
         "Q30",
         "Q40",
         "Q50"
       ],
       "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "at least 100 complete prospective OOS cases; preferably 200+",
         "frozen Top20/Top10/Top5 and target date",
@@ -119,5 +135,5 @@
       ]
     }
   ],
-  "guardrail": "Queue registration and evidence-file presence are not proof of a successful statistical result. Analyses remain incomplete until implementation, validation and OOS criteria pass."
+  "guardrail": "Evidence presence is not validation. Valid exploratory/null results can complete analytical tasks; the cycle remains incomplete while the prospective gate lacks the registered minimum. No automatic model promotion."
 }
