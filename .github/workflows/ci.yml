@@ -37,6 +37,8 @@ jobs:
         run: python scripts/audit_dataset.py --check-json
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
+      - name: Check exact-source active SONAR engine diagnostic syntax
+        run: node --check scripts/sonar_active_engine_walkforward.mjs
       - name: Test evolutionary lab syntax and run
         run: |
           python -m py_compile scripts/sonar_evolutionary_lab.py
