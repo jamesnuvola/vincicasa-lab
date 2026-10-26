@@ -49,5 +49,10 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Test exhaustive per-number condition grammar (Q80)
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_grammar.py
+          python tests/test_sonar_per_number_condition_grammar.py -v
+          python scripts/sonar_per_number_condition_grammar.py
       - name: Build web application
         run: npm install && npm run build
