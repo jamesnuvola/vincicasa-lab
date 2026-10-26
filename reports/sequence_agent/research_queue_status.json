@@ -1,15 +1,17 @@
 {
-  "generated_at_utc": "2026-10-26T08:15:07.245991+00:00",
+  "generated_at_utc": "2026-10-26T08:18:54.978334+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
   "task_count": 7,
-  "complete_count": 3,
+  "complete_count": 6,
   "ready_count": 0,
   "active_next_task": null,
   "active_next_task_title": null,
-  "blocking_tasks": [],
-  "next_action": null,
+  "blocking_tasks": [
+    "Q60"
+  ],
+  "next_action": "Continue append-only prospective freezes; do not reconstruct historical freezes.",
   "tasks": [
     {
       "id": "Q00",
@@ -48,14 +50,12 @@
       "id": "Q20",
       "priority": 20,
       "title": "Build complete ex-ante residual ledger",
-      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
+      "status": "COMPLETE",
       "depends_on": [
         "Q10"
       ],
       "missing_evidence": [],
-      "validation_errors": [
-        "miss flags inconsistent at 2018-11-30 / 22"
-      ],
+      "validation_errors": [],
       "acceptance_criteria": [
         "all misses logged only from pre-target forecasts",
         "per-number frequency/recency/rank/gap/co-occurrence/position/structure features",
@@ -67,7 +67,7 @@
       "id": "Q30",
       "priority": 30,
       "title": "Test frozen mixes inside the same legacy Top20",
-      "status": "BLOCKED_BY_DEPENDENCY",
+      "status": "COMPLETE",
       "depends_on": [
         "Q20"
       ],
@@ -103,7 +103,7 @@
       "id": "Q50",
       "priority": 50,
       "title": "Re-test structural recurrence and hazard as a separate branch",
-      "status": "BLOCKED_BY_DEPENDENCY",
+      "status": "COMPLETE",
       "depends_on": [
         "Q20"
       ],
@@ -120,16 +120,18 @@
       "id": "Q60",
       "priority": 60,
       "title": "Prospective shadow evaluation and promotion gate",
-      "status": "BLOCKED_BY_DEPENDENCY",
+      "status": "INSUFFICIENT_PROSPECTIVE_CASES",
       "depends_on": [
         "Q30",
         "Q40",
         "Q50"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "7 complete prospective paired targets; minimum 200 (preferred 200). No missing historical freezes may be reconstructed."
+      ],
       "acceptance_criteria": [
-        "at least 100 complete prospective OOS cases; preferably 200+",
+        "At least 200 complete prospective paired OOS targets per the registered promotion gate; 100-case snapshots are descriptive only.",
         "frozen Top20/Top10/Top5 and target date",
         "explicit VALIDATED/EXPLORATORY/NULL/INSUFFICIENT status"
       ]
