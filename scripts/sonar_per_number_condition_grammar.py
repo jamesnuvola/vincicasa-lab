@@ -340,6 +340,14 @@ def main():
     print("SONAR_Q80_REPORT_BEGIN")
     print(REPORT.read_text(encoding="utf-8"),end="")
     print("SONAR_Q80_REPORT_END")
+    print("SONAR_Q80_METRICS_CSV_BEGIN")
+    with METRICS.open(encoding="utf-8") as handle:
+        print(handle.read(), end="")
+    print("SONAR_Q80_METRICS_CSV_END")
+    print("SONAR_Q80_TARGET_LEDGER_CSV_BEGIN")
+    with TARGET_LEDGER.open(encoding="utf-8") as handle:
+        print(handle.read(), end="")
+    print("SONAR_Q80_TARGET_LEDGER_CSV_END")
     if len(per_target_rows)!=n-MIN_HISTORY:
         raise SystemExit(f"Q80_BLOCKED: target ledger row count {len(per_target_rows)} != {n-MIN_HISTORY}")
     if formula_count!=3303:
