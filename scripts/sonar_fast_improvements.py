@@ -26,6 +26,31 @@ def parse_nums(s):
 def hits(r, field="top20"):
     return len(set(parse_nums(r[field])) & set(parse_nums(r["actual_numbers"])))
 
+def binomial_tail(n, p, k):
+    """Exact upper tail for Binomial(n,p), evaluated by stable recurrence."""
+    if k <= 0:
+        return 1.0
+    term = (1.0 - p) ** n
+    tail = 0.0
+    for i in range(n + 1):
+        if i >= k:
+            tail += term
+        if i < n:
+            term *= ((n - i) / (i + 1)) * (p / (1.0 - p))
+    return min(1.0, max(0.0, tail))
+
+
+def holm_adjust(items):
+    """Holm step-down adjusted p-values. items is a list of (key, p)."""
+    ordered = sorted(items, key=lambda item: item[1])
+    adjusted, running = {}, 0.0
+    m = len(ordered)
+    for i, (key, p_value) in enumerate(ordered):
+        running = max(running, min(1.0, (m - i) * p_value))
+        adjusted[key] = running
+    return adjusted
+
+
 def main():
     targets = read_ledger()
     n = len(targets)
@@ -79,14 +104,42 @@ def main():
                  "random_top20_baseline_rate":BASELINE}
         mix_results[mix]={"models":models,"method":"fixed Borda fusion; within each target uses only prior-only rankings",
                          "splits":per_split}
+    # Correct the fixed-fusion family separately in every chronological split.
+    # Also report a broader 42 individual rules + 4 fixed mixes Bonferroni screen.
+    fixed_family_size = len(model_sets)
+    broad_family_size = len(cfgs) + fixed_family_size
+    for splitname in split:
+        raw_p_values = []
+        for mix, result in mix_results.items():
+            stats = result["splits"][splitname]
+            stats["random_top20_5of5_expected_count"] = stats["targets"] * BASELINE
+            p_value = binomial_tail(stats["targets"], BASELINE, stats["top20_all5"])
+            raw_p_values.append((mix, p_value))
+        holm_values = holm_adjust(raw_p_values)
+        raw_by_mix = dict(raw_p_values)
+        for mix, result in mix_results.items():
+            stats = result["splits"][splitname]
+            p_value = raw_by_mix[mix]
+            stats["top20_5of5_p_unadjusted_one_sided"] = p_value
+            stats["top20_5of5_p_holm_within_4_fixed_mixes"] = holm_values[mix]
+            stats["top20_5of5_p_bonferroni_family_46"] = min(1.0, p_value * broad_family_size)
+
+    multiple_testing = {
+        "fixed_fusion_family_size": fixed_family_size,
+        "within_family_adjustment": "Holm step-down separately within discovery, validation and OOS",
+        "broader_family_size": broad_family_size,
+        "broader_adjustment": "Bonferroni across the 42 individual configurations and 4 fixed fusion candidates",
+        "interpretation": "Fixed-mix OOS results are exploratory. A within-four Holm result does not remove prior strategy-selection bias; the broader family correction is the conservative cross-candidate screen."
+    }
     output={"status":"COMPLETE_RETROSPECTIVE_DIAGNOSTIC","source":"historical_rule_ledger.csv",
             "targets":n,"first_target":targets[0][0],"last_target":targets[-1][0],
             "split_sizes":{k:len(v) for k,v in split.items()},
             "random_top20_5of5_baseline":BASELINE,
+            "multiple_testing":multiple_testing,
             "stage_loss_by_configuration":stage,"fixed_fusion_walkforward":mix_results,
             "guardrail":"Exploratory only. Historical walk-forward predictions are not prospective Shadow; fusion choices must be frozen and independently validated. No model is promoted by this report."}
     (OUT/"stage_loss_analysis.json").write_text(json.dumps(output,indent=2)+"\n",encoding="utf-8")
-    (OUT/"top20_mix_walkforward.json").write_text(json.dumps({"status":output["status"],"targets":n,"splits":output["split_sizes"],"baseline":BASELINE,"mixes":mix_results,"guardrail":output["guardrail"]},indent=2)+"\n",encoding="utf-8")
+    (OUT/"top20_mix_walkforward.json").write_text(json.dumps({"status":output["status"],"targets":n,"splits":output["split_sizes"],"baseline":BASELINE,"multiple_testing":multiple_testing,"mixes":mix_results,"guardrail":output["guardrail"]},indent=2)+"\n",encoding="utf-8")
     print(json.dumps({"status":output["status"],"targets":n,"first":targets[0][0],"last":targets[-1][0],"mixes":list(mix_results)},ensure_ascii=False))
 
 if __name__=="__main__":
