@@ -25,7 +25,7 @@ TARGET_LEDGER = OUT / "per_number_condition_target_ledger.csv"
 REPORT = OUT / "per_number_condition_grammar.json"
 MIN_HISTORY = 50
 WINDOWS = (5, 10, 20, 50, 100, 250, 500)
-EXPECTED_FEATURES = 25
+EXPECTED_FEATURES = 27
 
 
 def load_archive():
@@ -78,9 +78,9 @@ def feature_matrix(i, draws, prefix, position_prefix, pair_counts, occurrence_li
         out[:, col] = prefix[i] - prefix[start]
     out[:, 7] = prefix[i]
     # Short-vs-long rate differences put all frequency scales on a comparable basis.
-    out[:, 8] = out[:, 0] / min(i, 5) - out[:, 9-1] / max(1, min(i, 50))
-    out[:, 9] = out[:, 1] / min(i, 10) - out[:, 10-1] / max(1, min(i, 100))
-    out[:, 10] = out[:, 2] / min(i, 20) - out[:, 11-1] / max(1, min(i, 250))
+    out[:, 8] = out[:, 0] / max(1, min(i, 5)) - out[:, 5] / max(1, min(i, 50))
+    out[:, 9] = out[:, 1] / max(1, min(i, 10)) - out[:, 6] / max(1, min(i, 100))
+    out[:, 10] = out[:, 2] / max(1, min(i, 20)) - out[:, 6] / max(1, min(i, 250))
     ages = np.full(40, i + 1, dtype=np.float64)
     for n, occ in enumerate(occurrence_lists):
         if occ:
@@ -104,21 +104,15 @@ def feature_matrix(i, draws, prefix, position_prefix, pair_counts, occurrence_li
         last = np.asarray(draws[i - 1], dtype=int) - 1
         out[:, 16] = pair_counts[:, last].mean(axis=1)
     full_counts = prefix[i]
-    out[:, 17] = np.array([sum(full_counts[max(0,n-2):min(40,n+1)]) - full_counts[n] for n in range(40)], dtype=float)
-    out[:, 18] = np.array([sum(full_counts[max(0,n-3):min(40,n+2)]) - full_counts[n] for n in range(40)], dtype=float)
+    out[:, 17] = np.array([sum(full_counts[max(0,n-1):min(40,n+2)]) - full_counts[n] for n in range(40)], dtype=float)
+    out[:, 18] = np.array([sum(full_counts[max(0,n-2):min(40,n+3)]) - full_counts[n] for n in range(40)], dtype=float)
     for lag, col in ((1,19),(2,20),(3,21),(5,22),(10,23)):
         if i >= lag:
             drawset = set(draws[i-lag])
             out[:, col] = [1.0 if n+1 in drawset else 0.0 for n in range(40)]
     for w, col in ((3,24),(5,25),(10,26)):
         start = max(0, i-w)
-        out[:, col-1] = prefix[i, :] - prefix[start, :]
-    # The declared feature list has 25 entries; recent_3/5/10 are indices 22..24.
-    # Ensure each named feature maps to one column (the lag features occupy 19..23).
-    # Re-pack recent counts into the final three columns by replacing the last lag columns.
-    out[:, 22] = prefix[i] - prefix[max(0, i-3)]
-    out[:, 23] = prefix[i] - prefix[max(0, i-5)]
-    out[:, 24] = prefix[i] - prefix[max(0, i-10)]
+        out[:, col] = prefix[i, :] - prefix[start, :]
     return out
 
 
@@ -136,7 +130,7 @@ def make_formulas():
         formulas.append((i,))
     for k in (2, 3):
         formulas.extend(itertools.combinations(range(EXPECTED_FEATURES), k))
-    if len(formulas) != 25 + math.comb(25, 2) + math.comb(25, 3):
+    if len(formulas) != 27 + math.comb(27, 2) + math.comb(27, 3):
         raise RuntimeError("formula enumeration mismatch")
     return formulas
 
@@ -348,7 +342,7 @@ def main():
     print("SONAR_Q80_REPORT_END")
     if len(per_target_rows)!=n-MIN_HISTORY:
         raise SystemExit(f"Q80_BLOCKED: target ledger row count {len(per_target_rows)} != {n-MIN_HISTORY}")
-    if formula_count!=2625:
+    if formula_count!=3303:
         raise SystemExit(f"Q80_BLOCKED: formula count {formula_count} != 2625")
 
 
