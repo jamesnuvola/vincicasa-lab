@@ -315,7 +315,7 @@ def main():
         "minimum_prior_history":MIN_HISTORY,"scored_targets":len(per_target_rows),
         "feature_count":len(FEATURE_NAMES),"features":FEATURE_NAMES,
         "formula_count":formula_count,"formula_grammar":"all 1-, 2- and 3-feature equal-weight combinations",
-        "formula_count_check":25+math.comb(25,2)+math.comb(25,3),
+        "formula_count_check":27+math.comb(27,2)+math.comb(27,3),
         "metrics_rows":len(metric_rows),"target_ledger_rows":len(per_target_rows),
         "split_counts":{s:split_acc[s][0]["targets"] for s in split_acc},
         "feature_summary":{name:{**v,"mean_rank":v["rank_sum"]/(5*v["targets"]) if v["targets"] else None,
