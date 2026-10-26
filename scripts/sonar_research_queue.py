@@ -164,6 +164,7 @@ def validate_q20():
     add_error(errors, required_features.issubset(set(fh)), "residual feature ledger missing required columns")
     add_error(errors, bool(residuals) and bool(features), "residual ledgers are empty")
     by_date = {}
+    expected_feature_keys = set()
     for row in residuals:
         d, cutoff = row["target_date"], row["cutoff_date"]
         if cutoff >= d:
@@ -174,6 +175,10 @@ def validate_q20():
             break
         actual = nums(row["actual_numbers"])
         gtop, ptop = nums(row["global_top20"]), nums(row["position_mix_top20"])
+        gset, pset = set(gtop), set(ptop)
+        for number in actual:
+            if number not in gset or number not in pset:
+                expected_feature_keys.add((d, number))
         if len(actual) != 5 or len(set(actual)) != 5 or len(gtop) != 20 or len(set(gtop)) != 20 or len(ptop) != 20 or len(set(ptop)) != 20:
             errors.append("invalid actual/Top20 list in residual ledger at " + d)
             break
@@ -194,13 +199,19 @@ def validate_q20():
             errors.append("position seed union size inconsistent at " + d)
             break
         by_date[d] = row
-    allowed = {"GLOBAL_ONLY": (1, 0), "POSITION_ONLY": (0, 1), "BOTH": (1, 1)}
+    allowed = {"GLOBAL_ONLY": (1, 0), "POSITION_MIX_ONLY": (0, 1), "BOTH": (1, 1)}
+    feature_keys = set()
     for row in features:
         d, cutoff = row["target_date"], row["cutoff_date"]
         if cutoff >= d or d not in by_date or cutoff != by_date[d]["cutoff_date"]:
             errors.append("feature ledger cutoff/target mismatch at " + d)
             break
         number = int(row["actual_number"])
+        key = (d, number)
+        if key in feature_keys:
+            errors.append("duplicate residual feature row at " + d + " / " + str(number))
+            break
+        feature_keys.add(key)
         if number not in nums(by_date[d]["actual_numbers"]):
             errors.append("feature row number is not an actual target number at " + d)
             break
@@ -211,6 +222,10 @@ def validate_q20():
         if gmiss != int(number not in set(nums(by_date[d]["global_top20"]))) or pmiss != int(number not in set(nums(by_date[d]["position_mix_top20"]))):
             errors.append("miss flags do not match frozen Top20 lists at " + d + " / " + str(number))
             break
+    if not errors and feature_keys != expected_feature_keys:
+        missing = len(expected_feature_keys - feature_keys)
+        extra = len(feature_keys - expected_feature_keys)
+        errors.append("residual feature ledger coverage mismatch: missing=" + str(missing) + ", extra=" + str(extra))
     return errors
 
 

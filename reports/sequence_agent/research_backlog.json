@@ -8,7 +8,7 @@
     "chronological_validation_required": true,
     "minimum_complete_oos_cases": 100,
     "preferred_complete_oos_cases": 200,
-    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the prospective gate reaches at least 100 complete cases (200 preferred) and registered criteria are met."
+    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met."
   },
   "tasks": [
     {
@@ -136,7 +136,7 @@
         "reports/sequence_agent/prospective_promotion_gate.json"
       ],
       "acceptance": [
-        "at least 100 complete prospective OOS cases; preferably 200+",
+        "At least 200 complete prospective paired OOS targets per the registered promotion gate; 100-case snapshots are descriptive only.",
         "frozen Top20/Top10/Top5 and target date",
         "explicit VALIDATED/EXPLORATORY/NULL/INSUFFICIENT status"
       ],
