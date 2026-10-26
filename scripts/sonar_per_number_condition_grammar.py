@@ -78,9 +78,9 @@ def feature_matrix(i, draws, prefix, position_prefix, pair_counts, occurrence_li
         out[:, col] = prefix[i] - prefix[start]
     out[:, 7] = prefix[i]
     # Short-vs-long rate differences put all frequency scales on a comparable basis.
-    out[:, 8] = out[:, 0] / max(1, min(i, 5)) - out[:, 5] / max(1, min(i, 50))
-    out[:, 9] = out[:, 1] / max(1, min(i, 10)) - out[:, 6] / max(1, min(i, 100))
-    out[:, 10] = out[:, 2] / max(1, min(i, 20)) - out[:, 6] / max(1, min(i, 250))
+    out[:, 8] = out[:, 0] / max(1, min(i, 5)) - out[:, 3] / max(1, min(i, 50))
+    out[:, 9] = out[:, 1] / max(1, min(i, 10)) - out[:, 4] / max(1, min(i, 100))
+    out[:, 10] = out[:, 2] / max(1, min(i, 20)) - out[:, 5] / max(1, min(i, 250))
     ages = np.full(40, i + 1, dtype=np.float64)
     for n, occ in enumerate(occurrence_lists):
         if occ:
