@@ -3,6 +3,7 @@
 from __future__ import annotations
 import csv
 import json
+import math
 from collections import Counter
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -473,7 +474,9 @@ def main():
     }
     STATUS.parent.mkdir(parents=True, exist_ok=True)
     STATUS.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(json.dumps({k: output[k] for k in ("queue_status", "overall_cycle_status", "task_count", "complete_count", "ready_count", "active_next_task", "blocking_tasks")}, ensure_ascii=False))
+    print("SONAR_RESEARCH_QUEUE_REPORT_BEGIN")
+    print(json.dumps(output, indent=2, ensure_ascii=False))
+    print("SONAR_RESEARCH_QUEUE_REPORT_END")
 
 
 if __name__ == "__main__":
