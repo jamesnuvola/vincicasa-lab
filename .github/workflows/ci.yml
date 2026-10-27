@@ -156,4 +156,4 @@ jobs:
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -H "Content-Type: application/json" \
-            -d "{\\"ref\\":\\"$GITHUB_REF_NAME\\"}"
+            -d '{"ref":"'"$GITHUB_REF_NAME"'"}'
