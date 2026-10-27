@@ -26,6 +26,7 @@ Q80_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_formul
 Q80_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_target_ledger.csv"
 
 SPLITS = ("discovery", "validation", "oos")
+Q80_SPLITS = ("discovery", "validation", "blind_oos")
 
 
 def load_json(path):
@@ -322,6 +323,11 @@ def validate_q80():
     add_error(errors, report.get("formula_count") == expected_formulas == 3303, "Q80 formula universe count mismatch")
     add_error(errors, len(report.get("features", [])) == 27, "Q80 feature schema size mismatch")
     add_error(errors, report.get("formula_count_check") == expected_formulas, "Q80 formula count check mismatch")
+    split_counts = report.get("split_counts", {})
+    add_error(errors, set(split_counts) == set(Q80_SPLITS), "Q80 chronological split keys mismatch")
+    add_error(errors, sum(split_counts.values()) == expected_scored, "Q80 chronological split sizes do not sum to scored targets")
+    add_error(errors, report.get("multiple_testing", {}).get("test_count") == expected_formulas * len(Q80_SPLITS) * 3,
+              "Q80 multiple-testing family size mismatch")
     add_error(errors, len(metric_rows) == expected_formulas * len(SPLITS), "Q80 formula/split metrics row count mismatch")
     add_error(errors, {"split", "formula_id", "feature_count", "features", "targets", "mean_number_hits_top5",
                        "mean_number_hits_top10", "mean_number_hits_top20", "mean_rank_of_actual_numbers",
@@ -334,7 +340,7 @@ def validate_q80():
                 errors.append("duplicate Q80 formula/split metric " + str(key))
                 break
             seen.add(key)
-            if row["split"] not in SPLITS or int(row["feature_count"]) not in (1, 2, 3):
+            if row["split"] not in Q80_SPLITS or int(row["feature_count"]) not in (1, 2, 3):
                 errors.append("invalid Q80 split or feature count")
                 break
             for field in ("mean_number_hits_top5", "mean_number_hits_top10", "mean_number_hits_top20",
@@ -347,6 +353,12 @@ def validate_q80():
                 if not math.isfinite(value) or value < 0:
                     errors.append("invalid Q80 metric " + field)
                     break
+    for split in Q80_SPLITS:
+        split_rows = [row for row in metric_rows if row["split"] == split]
+        add_error(errors, len({row["formula_id"] for row in split_rows}) == expected_formulas,
+                  "Q80 formula uniqueness/coverage mismatch in " + split)
+        add_error(errors, all(int(row["targets"]) == int(split_counts.get(split, -1)) for row in split_rows),
+                  "Q80 split target count mismatch in " + split)
     required_ledger = {"target_date", "cutoff_date", "prior_draws", "actual_quintet", "status",
                        "formula_count_tested", "best_formula_id", "best_actual_number_ranks",
                        "single_feature_rank_ledger"}
@@ -445,6 +457,8 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
+            if task["id"] == "Q80" and not validation_errors:
+                status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],
             "status": status, "depends_on": task.get("depends_on", []),
@@ -472,6 +486,17 @@ def main():
         "tasks": list(states.values()),
         "guardrail": "Evidence presence is not validation. Valid exploratory/null results can complete analytical tasks; the cycle remains incomplete while the prospective gate lacks the registered minimum. No automatic model promotion."
     }
+    if STATUS.is_file():
+        try:
+            previous = load_json(STATUS)
+            previous_semantic = dict(previous)
+            current_semantic = dict(output)
+            previous_semantic.pop("generated_at_utc", None)
+            current_semantic.pop("generated_at_utc", None)
+            if previous_semantic == current_semantic and previous.get("generated_at_utc"):
+                output["generated_at_utc"] = previous["generated_at_utc"]
+        except (ValueError, OSError):
+            pass
     STATUS.parent.mkdir(parents=True, exist_ok=True)
     STATUS.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     print("SONAR_RESEARCH_QUEUE_REPORT_BEGIN")

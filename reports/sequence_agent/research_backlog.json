@@ -8,7 +8,7 @@
     "chronological_validation_required": true,
     "minimum_complete_oos_cases": 100,
     "preferred_complete_oos_cases": 200,
-    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met."
+    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80 is marked COMPLETE; passing automated validators alone leaves it VALIDATED_PENDING_HUMAN_REVIEW."
   },
   "tasks": [
     {
@@ -160,7 +160,8 @@
         "per-target ledger reconciles actual quintet and strict prior cutoff to canonical archive",
         "metrics cover discovery, validation and blind OOS and all formula×split×endpoint tests receive Holm correction",
         "uniform number-rank baseline is reported and null results remain exploratory",
-        "immutable freezes are not overwritten and no formula is promoted automatically"
+        "immutable freezes are not overwritten and no formula is promoted automatically",
+        "human review/integration is recorded before Q80 is marked COMPLETE"
       ],
       "kind": "analysis"
     }

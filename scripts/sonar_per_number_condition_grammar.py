@@ -3,7 +3,7 @@
 
 For every target draw, features are computed from strictly earlier draws only.
 Every number in 1..40 is ranked under all single-feature, pair-feature and
-triple-feature equal-weight formulas. The 2,625-formula grammar is exhaustive
+triple-feature equal-weight formulas. The 3,303-formula grammar is exhaustive
 within the declared feature set, not all mathematical formulas.
 """
 from __future__ import annotations
@@ -71,7 +71,7 @@ FEATURE_NAMES = make_feature_names()
 
 
 def feature_matrix(i, draws, prefix, position_prefix, pair_counts, occurrence_lists, gap_sum, gap_sq_sum, gap_n):
-    """Return 40 x 25 values based only on draws[:i]."""
+    """Return 40 x 27 values based only on draws[:i]."""
     out = np.zeros((40, EXPECTED_FEATURES), dtype=np.float64)
     for col, w in enumerate(WINDOWS):
         start = max(0, i - w)
@@ -311,6 +311,7 @@ def main():
         writer=csv.DictWriter(f,fieldnames=list(per_target_rows[0].keys()));writer.writeheader();writer.writerows(per_target_rows)
     summary={
         "schema_version":"1.0","task_id":"Q80","status":"VALIDATED_FINITE_GRAMMAR_COMPLETE",
+        "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION",
         "source_archive":"data/storico_daily.csv","target_count":n,"first_date":dates[0],"last_date":dates[-1],
         "minimum_prior_history":MIN_HISTORY,"scored_targets":len(per_target_rows),
         "feature_count":len(FEATURE_NAMES),"features":FEATURE_NAMES,
@@ -351,7 +352,7 @@ def main():
     if len(per_target_rows)!=n-MIN_HISTORY:
         raise SystemExit(f"Q80_BLOCKED: target ledger row count {len(per_target_rows)} != {n-MIN_HISTORY}")
     if formula_count!=3303:
-        raise SystemExit(f"Q80_BLOCKED: formula count {formula_count} != 2625")
+        raise SystemExit(f"Q80_BLOCKED: formula count {formula_count} != 3303")
 
 
 if __name__=="__main__":
