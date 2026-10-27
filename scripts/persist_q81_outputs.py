@@ -67,7 +67,7 @@ def validate_bundle():
     if any(dates[i] <= dates[i-1] for i in range(1, len(dates))):
         raise SystemExit("Q81_PERSIST_BLOCKED: archive dates are not strictly chronological")
     expected = math.comb(27, 4)
-    if report.get("task_id") != "Q81" or report.get("status") != "VALIDATED_FINITE_GRAMMAR_COMPLETE":
+    if report.get("task_id") != "Q81" or report.get("status") != "VALIDATED_PENDING_HUMAN_REVIEW":
         raise SystemExit("Q81_PERSIST_BLOCKED: report status/task mismatch")
     if report.get("review_status") != "PENDING_HUMAN_REVIEW_INTEGRATION":
         raise SystemExit("Q81_PERSIST_BLOCKED: human review gate not preserved")

@@ -266,7 +266,7 @@ def main():
     summary = {
         "schema_version": "1.0",
         "task_id": "Q81",
-        "status": "VALIDATED_FINITE_GRAMMAR_COMPLETE",
+        "status": "VALIDATED_PENDING_HUMAN_REVIEW",
         "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
         "source_archive": "data/storico_daily.csv",
         "target_count": n,
