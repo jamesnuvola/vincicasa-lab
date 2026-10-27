@@ -3,6 +3,7 @@
 from __future__ import annotations
 import csv
 import json
+import math
 from collections import Counter
 from datetime import date, datetime, timezone
 from pathlib import Path
@@ -20,8 +21,12 @@ MIX = ROOT / "reports" / "sequence_agent" / "top20_mix_walkforward.json"
 GLOBAL = ROOT / "reports" / "sequence_agent" / "global_vs_positional_walkforward.json"
 HAZARD = ROOT / "reports" / "sequence_agent" / "structural_hazard_oos.json"
 GATE = ROOT / "reports" / "sequence_agent" / "prospective_promotion_gate.json"
+Q80_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_grammar.json"
+Q80_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_formula_metrics.csv"
+Q80_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_target_ledger.csv"
 
 SPLITS = ("discovery", "validation", "oos")
+Q80_SPLITS = ("discovery", "validation", "blind_oos")
 
 
 def load_json(path):
@@ -301,6 +306,96 @@ def validate_q50():
     return errors
 
 
+def validate_q80():
+    errors = []
+    report = load_json(Q80_REPORT)
+    metrics, metric_rows = load_csv(Q80_METRICS)
+    ledger_fields, ledger_rows = load_csv(Q80_LEDGER)
+    with DATA.open(newline="", encoding="utf-8-sig") as handle:
+        archive_rows = list(csv.DictReader(handle))
+    expected_targets = len(archive_rows)
+    expected_scored = max(0, expected_targets - int(report.get("minimum_prior_history", 0)))
+    expected_formulas = 27 + 27 * 26 // 2 + 27 * 26 * 25 // 6
+    add_error(errors, report.get("status") == "VALIDATED_FINITE_GRAMMAR_COMPLETE", "Q80 report status not complete")
+    add_error(errors, report.get("task_id") == "Q80", "Q80 task id mismatch")
+    add_error(errors, report.get("target_count") == expected_targets, "Q80 target count does not match canonical archive")
+    add_error(errors, report.get("scored_targets") == expected_scored, "Q80 scored target count mismatch")
+    add_error(errors, report.get("formula_count") == expected_formulas == 3303, "Q80 formula universe count mismatch")
+    add_error(errors, len(report.get("features", [])) == 27, "Q80 feature schema size mismatch")
+    add_error(errors, report.get("formula_count_check") == expected_formulas, "Q80 formula count check mismatch")
+    split_counts = report.get("split_counts", {})
+    add_error(errors, set(split_counts) == set(Q80_SPLITS), "Q80 chronological split keys mismatch")
+    add_error(errors, sum(split_counts.values()) == expected_scored, "Q80 chronological split sizes do not sum to scored targets")
+    add_error(errors, report.get("multiple_testing", {}).get("test_count") == expected_formulas * len(Q80_SPLITS) * 3,
+              "Q80 multiple-testing family size mismatch")
+    add_error(errors, len(metric_rows) == expected_formulas * len(SPLITS), "Q80 formula/split metrics row count mismatch")
+    add_error(errors, {"split", "formula_id", "feature_count", "features", "targets", "mean_number_hits_top5",
+                       "mean_number_hits_top10", "mean_number_hits_top20", "mean_rank_of_actual_numbers",
+                       "holm_p_max_endpoint_family"}.issubset(set(metrics)), "Q80 metrics schema incomplete")
+    if len(metric_rows) == expected_formulas * len(SPLITS):
+        seen = set()
+        for row in metric_rows:
+            key = (row["split"], row["formula_id"])
+            if key in seen:
+                errors.append("duplicate Q80 formula/split metric " + str(key))
+                break
+            seen.add(key)
+            if row["split"] not in Q80_SPLITS or int(row["feature_count"]) not in (1, 2, 3):
+                errors.append("invalid Q80 split or feature count")
+                break
+            for field in ("mean_number_hits_top5", "mean_number_hits_top10", "mean_number_hits_top20",
+                          "mean_rank_of_actual_numbers", "holm_p_max_endpoint_family"):
+                try:
+                    value = float(row[field])
+                except Exception:
+                    errors.append("non-numeric Q80 metric " + field)
+                    break
+                if not math.isfinite(value) or value < 0:
+                    errors.append("invalid Q80 metric " + field)
+                    break
+    for split in Q80_SPLITS:
+        split_rows = [row for row in metric_rows if row["split"] == split]
+        add_error(errors, len({row["formula_id"] for row in split_rows}) == expected_formulas,
+                  "Q80 formula uniqueness/coverage mismatch in " + split)
+        add_error(errors, all(int(row["targets"]) == int(split_counts.get(split, -1)) for row in split_rows),
+                  "Q80 split target count mismatch in " + split)
+    required_ledger = {"target_date", "cutoff_date", "prior_draws", "actual_quintet", "status",
+                       "formula_count_tested", "best_formula_id", "best_actual_number_ranks",
+                       "single_feature_rank_ledger"}
+    add_error(errors, required_ledger.issubset(set(ledger_fields)), "Q80 target ledger schema incomplete")
+    add_error(errors, len(ledger_rows) == expected_scored, "Q80 target ledger row count mismatch")
+    archive_by_date = {r["data"]: " ".join(str(int(r["n" + str(i)])) for i in range(1, 6)) for r in archive_rows}
+    seen_dates = set()
+    for row in ledger_rows:
+        d = row.get("target_date", "")
+        if d in seen_dates:
+            errors.append("duplicate Q80 target date " + d)
+            break
+        seen_dates.add(d)
+        if row.get("cutoff_date", "") >= d or row.get("cutoff_date", "") not in archive_by_date:
+            errors.append("Q80 target cutoff is not strictly prior at " + d)
+            break
+        if archive_by_date.get(d) != row.get("actual_quintet"):
+            errors.append("Q80 actual quintet does not match canonical archive at " + d)
+            break
+        if row.get("status") != "SCORED" or int(row.get("formula_count_tested", 0)) != expected_formulas:
+            errors.append("Q80 target scoring status/formula count invalid at " + d)
+            break
+        try:
+            ranks = json.loads(row["best_actual_number_ranks"])
+            feature_ledger = json.loads(row["single_feature_rank_ledger"])
+            if len(ranks) != 5 or any(not isinstance(v, int) or v < 1 or v > 40 for v in ranks):
+                raise ValueError("invalid best formula ranks")
+            if len(feature_ledger) != 27:
+                raise ValueError("single-feature ledger must contain 27 features")
+        except Exception as exc:
+            errors.append("invalid Q80 per-target condition record at " + d + ": " + str(exc))
+            break
+    add_error(errors, report.get("first_date") == archive_rows[0]["data"], "Q80 first date mismatch")
+    add_error(errors, report.get("last_date") == archive_rows[-1]["data"], "Q80 last date mismatch")
+    return errors
+
+
 def main():
     plan = load_json(BACKLOG)
     tasks = plan.get("tasks", [])
@@ -326,7 +421,7 @@ def main():
         visit(task_id)
 
     validators = {"Q10": validate_q10, "Q20": validate_q20, "Q30": validate_q30,
-                  "Q40": validate_q40, "Q50": validate_q50}
+                  "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80}
     states = {}
     for task in sorted(tasks, key=lambda t: (t["priority"], t["id"])):
         missing_evidence = [p for p in task.get("evidence", []) if not (ROOT / p).is_file()]
@@ -362,6 +457,8 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
+            if task["id"] == "Q80" and not validation_errors:
+                status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],
             "status": status, "depends_on": task.get("depends_on", []),
@@ -389,9 +486,22 @@ def main():
         "tasks": list(states.values()),
         "guardrail": "Evidence presence is not validation. Valid exploratory/null results can complete analytical tasks; the cycle remains incomplete while the prospective gate lacks the registered minimum. No automatic model promotion."
     }
+    if STATUS.is_file():
+        try:
+            previous = load_json(STATUS)
+            previous_semantic = dict(previous)
+            current_semantic = dict(output)
+            previous_semantic.pop("generated_at_utc", None)
+            current_semantic.pop("generated_at_utc", None)
+            if previous_semantic == current_semantic and previous.get("generated_at_utc"):
+                output["generated_at_utc"] = previous["generated_at_utc"]
+        except (ValueError, OSError):
+            pass
     STATUS.parent.mkdir(parents=True, exist_ok=True)
     STATUS.write_text(json.dumps(output, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(json.dumps({k: output[k] for k in ("queue_status", "overall_cycle_status", "task_count", "complete_count", "ready_count", "active_next_task", "blocking_tasks")}, ensure_ascii=False))
+    print("SONAR_RESEARCH_QUEUE_REPORT_BEGIN")
+    print(json.dumps(output, indent=2, ensure_ascii=False))
+    print("SONAR_RESEARCH_QUEUE_REPORT_END")
 
 
 if __name__ == "__main__":
