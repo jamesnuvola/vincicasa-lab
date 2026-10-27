@@ -55,6 +55,11 @@ jobs:
           python tests/test_sonar_per_number_condition_grammar.py -v
           python scripts/sonar_per_number_condition_grammar.py
           python scripts/sonar_research_queue.py
+      - name: Test four-feature condition grammar (Q81)
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_four_feature.py scripts/persist_q81_outputs.py
+          python tests/test_sonar_per_number_condition_four_feature.py -v
+          python scripts/sonar_per_number_condition_four_feature.py
       - name: Build web application
         run: npm install && npm run build
 
@@ -67,6 +72,17 @@ jobs:
             reports/sequence_agent/per_number_condition_formula_metrics.csv
             reports/sequence_agent/per_number_condition_target_ledger.csv
             reports/sequence_agent/research_queue_status.json
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Upload validated Q81 persistence bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q81-persistence-bundle
+          path: |
+            reports/sequence_agent/per_number_condition_four_feature_grammar.json
+            reports/sequence_agent/per_number_condition_four_feature_metrics.csv
+            reports/sequence_agent/per_number_condition_four_feature_target_ledger.csv
           if-no-files-found: error
           retention-days: 1
 
@@ -105,3 +121,39 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -H "Content-Type: application/json" \
             -d "{\"ref\":\"$GITHUB_REF_NAME\"}"
+
+  persist-q81:
+    needs: validate
+    if: github.event_name == 'push' && github.ref == 'refs/heads/research/per-number-condition-grammar-q81-20261027'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download validated Q81 persistence bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: q81-persistence-bundle
+          path: .q81-persistence-bundle
+      - name: Restore validated Q81 outputs for Git Data API persistence
+        run: |
+          mkdir -p reports/sequence_agent
+          cp .q81-persistence-bundle/* reports/sequence_agent/
+      - name: Persist Q81 outputs with Git Data API
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q81_outputs.py
+      - name: Request CI on the persisted exact head
+        if: steps.persist.outputs.commit_created == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\\"ref\\":\\"$GITHUB_REF_NAME\\"}"
