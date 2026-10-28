@@ -81,7 +81,8 @@ def verify_outputs_at_ref(ref_sha: str):
         print("Q80_Q81_Q82_Q83_PERSIST_VERIFIED: " + path + " bytes=" + str(len(persisted_bytes)))
 
 def main():
-    if os.environ.get("GITHUB_REF_NAME") != BRANCH:
+    effective_ref = os.environ.get("GITHUB_HEAD_REF") or os.environ.get("GITHUB_REF_NAME")
+    if effective_ref != BRANCH:
         raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: refusing to write outside the registered research branch")
     head_result = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, check=True, stdout=subprocess.PIPE, text=True)
     head = head_result.stdout.strip()
