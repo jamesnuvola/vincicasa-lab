@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-10-28T17:08:53.976144+00:00",
+  "generated_at_utc": "2026-10-28T17:35:34.884208+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
-  "task_count": 11,
+  "task_count": 13,
   "complete_count": 6,
-  "ready_count": 1,
+  "ready_count": 3,
   "active_next_task": "Q83",
   "active_next_task_title": "Extend feature subsets to five and higher variables with bounded batch evaluation",
   "blocking_tasks": [
@@ -206,12 +206,10 @@
         "Q00"
       ],
       "missing_evidence": [
-        "reports/sequence_agent/per_number_condition_5plus_grammar.json",
         "reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
         "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
       ],
       "validation_errors": [
-        "missing evidence: reports/sequence_agent/per_number_condition_5plus_grammar.json",
         "missing evidence: reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
         "missing evidence: reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
       ],
@@ -222,6 +220,60 @@
         "chronological discovery/validation/blind OOS and Holm correction are maintained across the registered test family",
         "prior-only cutoffs and actual quintets reconcile to the canonical archive",
         "the finite grammar boundary is documented and no claim is made that all mathematical formulas are exhausted"
+      ]
+    },
+    {
+      "id": "Q84",
+      "priority": 84,
+      "title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
+      "status": "READY",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/strategy_atlas_catalog.jsonl",
+        "reports/sequence_agent/strategy_atlas_target_ledger.csv",
+        "reports/sequence_agent/strategy_atlas_lifecycle.json",
+        "reports/sequence_agent/strategy_atlas_report.json"
+      ],
+      "validation_errors": [
+        "missing evidence: reports/sequence_agent/strategy_atlas_catalog.jsonl",
+        "missing evidence: reports/sequence_agent/strategy_atlas_target_ledger.csv",
+        "missing evidence: reports/sequence_agent/strategy_atlas_lifecycle.json",
+        "missing evidence: reports/sequence_agent/strategy_atlas_report.json"
+      ],
+      "acceptance_criteria": [
+        "catalog preserves one-target, intermittent, conditional, complementary, antagonistic, retrospective and null strategies with stable IDs and formula provenance",
+        "all ex-ante target records use only prior draws and preserve the exact cutoff; retrospective strategies are flagged and never counted as ex-ante forecasts",
+        "rank all 40 numbers per eligible strategy/target and reconcile the actual five numbers to the canonical archive",
+        "record success/failure lifecycle, recurrence gaps, state conditions and whether conditions were detectable before the target",
+        "measure equivalence, redundancy, complementarity on paired misses, antagonism and marginal contribution across strategies",
+        "use chronological discovery/validation/blind OOS splits, registered multiple-testing correction and suitable conditional nulls",
+        "retain failed/null strategies; no automatic promotion; never overwrite immutable freezes",
+        "report latest canonical archive date/blob SHA and document the finite grammar boundary without claiming all mathematical formulas are exhausted"
+      ]
+    },
+    {
+      "id": "Q85",
+      "priority": 85,
+      "title": "Reconcile research branch with the latest canonical archive and rerun affected chronological evidence",
+      "status": "READY",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/per_number_condition_refresh_2026-10-28.json"
+      ],
+      "validation_errors": [
+        "missing evidence: reports/sequence_agent/per_number_condition_refresh_2026-10-28.json"
+      ],
+      "acceptance_criteria": [
+        "record the canonical archive blob SHA, draw count and last date from the current main archive",
+        "identify every Q80/Q81/Q82/Q83 output whose archive cutoff is stale and do not represent it as current",
+        "recompute affected targets only with prior-only features and preserve all existing immutable freezes",
+        "reconcile metrics, target ledgers, formula manifests and chronological split counts to the refreshed archive",
+        "run exact-head CI and persist/re-read outputs before reporting validated status",
+        "do not overwrite or reconstruct missing prospective freezes and do not merge any PR automatically"
       ]
     }
   ],
