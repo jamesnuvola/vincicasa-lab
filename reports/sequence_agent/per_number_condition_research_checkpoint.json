@@ -1,19 +1,19 @@
 {
   "schema_version": "1.0",
   "project": "VinciCasa SONAR",
-  "generated_at_utc": "2026-10-28T17:35:36.370044+00:00",
+  "generated_at_utc": "2026-10-28T18:05:00+00:00",
   "archive_snapshot": {
     "source_archive": "data/storico_daily.csv",
-    "source_blob_sha": "700d71ab1dc29e33199210336f3a717e5d76208e",
-    "draw_count": 3388,
+    "source_blob_sha": "90e040c26b72be46f37136bf3e992e154ec8495c",
+    "draw_count": 3390,
     "first_date": "2017-07-17",
-    "last_date": "2026-10-25",
+    "last_date": "2026-10-27",
     "latest_quintet": [
       1,
+      6,
       8,
-      12,
-      16,
-      21
+      28,
+      34
     ],
     "immutable_target_2026_10_25_freeze_overwritten": false
   },
@@ -143,14 +143,15 @@
     }
   ],
   "current_state": {
-    "queue_status": "QUEUE_VALID",
+    "queue_status": "QUEUE_RECOMPUTE_PENDING",
     "overall_cycle_status": "INCOMPLETE",
     "blocking_tasks": [
       "Q60"
     ],
-    "q80_status": "VALIDATED_PENDING_HUMAN_REVIEW",
-    "q81_status": "VALIDATED_PENDING_HUMAN_REVIEW",
-    "q82_status": "VALIDATED_PENDING_HUMAN_REVIEW",
+    "q80_status": "RECOMPUTE_PENDING_AFTER_ARCHIVE_SYNC",
+    "q81_status": "RECOMPUTE_PENDING_AFTER_ARCHIVE_SYNC",
+    "q82_status": "RECOMPUTE_PENDING_AFTER_ARCHIVE_SYNC",
+    "q83_status": "REGISTERED_NOT_EXECUTED",
     "human_review_required": true,
     "automatic_promotion": false
   },
@@ -169,5 +170,23 @@
     "human review/integration is required before Q80, Q81 or Q82 can be marked COMPLETE",
     "Q82 thresholds are estimated from discovery feature values only and frozen before validation/blind OOS",
     "no formula is promoted automatically"
-  ]
+  ],
+  "pending_refresh": {
+    "workflow": ".github/workflows/sonar-per-number-condition-refresh.yml",
+    "scope": [
+      "Q80",
+      "Q81",
+      "Q82",
+      "Q83"
+    ],
+    "status": "WORKFLOW_REGISTERED_EXECUTION_NOT_YET_VERIFIED",
+    "archive_sha": "90e040c26b72be46f37136bf3e992e154ec8495c",
+    "required_postconditions": [
+      "all reports and metrics cite the 3,390-draw archive through 2026-10-27",
+      "Q83 metrics contain 242,190 formula×split rows",
+      "Q83 target ledger contains 3,340 chronological targets",
+      "queue validator passes Q80-Q83",
+      "persistence helper rereads exact committed bytes"
+    ]
+  }
 }
