@@ -28,6 +28,9 @@ Q80_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_target_
 Q81_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_4plus_grammar.json"
 Q81_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_4plus_formula_metrics.csv"
 Q81_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_4plus_target_ledger.csv"
+Q82_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_conditional_grammar.json"
+Q82_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_conditional_metrics.csv"
+Q82_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_conditional_target_ledger.csv"
 
 SPLITS = ("discovery", "validation", "oos")
 Q80_SPLITS = ("discovery", "validation", "blind_oos")
@@ -400,6 +403,157 @@ def validate_q80():
     return errors
 
 
+
+def validate_q82():
+    errors = []
+    report = load_json(Q82_REPORT)
+    metric_fields, metric_rows = load_csv(Q82_METRICS)
+    ledger_fields, ledger_rows = load_csv(Q82_LEDGER)
+    with DATA.open(newline="", encoding="utf-8-sig") as handle:
+        archive_rows = list(csv.DictReader(handle))
+    minimum_history = int(report.get("minimum_prior_history", 0))
+    expected_targets = len(archive_rows)
+    expected_scored = max(0, expected_targets - minimum_history)
+    expected_formulas = 27 + 27 * 4 + math.comb(27, 2) + 27 * 26 * 3 * 2
+    expected_families = {"base": 27, "nonlinear": 108, "interaction": 351, "conditional": 4212}
+    add_error(errors, report.get("status") == "VALIDATED_FINITE_GRAMMAR_COMPLETE", "Q82 report status not complete")
+    add_error(errors, report.get("review_status") == "PENDING_HUMAN_REVIEW_INTEGRATION", "Q82 human-review gate missing")
+    add_error(errors, report.get("task_id") == "Q82", "Q82 task id mismatch")
+    add_error(errors, minimum_history >= 50, "Q82 minimum prior history is too small")
+    add_error(errors, report.get("target_count") == expected_targets, "Q82 target count does not match canonical archive")
+    add_error(errors, report.get("scored_targets") == expected_scored, "Q82 scored target count mismatch")
+    add_error(errors, report.get("formula_count") == expected_formulas == 4698, "Q82 formula universe count mismatch")
+    add_error(errors, report.get("formula_count_check") == expected_formulas, "Q82 formula count check mismatch")
+    add_error(errors, report.get("feature_count") == 27 and len(report.get("features", [])) == 27,
+              "Q82 feature schema size mismatch")
+    add_error(errors, report.get("formula_family_counts") == expected_families, "Q82 formula family counts mismatch")
+    add_error(errors, report.get("source_archive_sha256") == hashlib.sha256(DATA.read_bytes()).hexdigest(),
+              "Q82 source archive SHA-256 mismatch")
+    split_counts = report.get("split_counts", {})
+    add_error(errors, set(split_counts) == set(Q80_SPLITS), "Q82 chronological split keys mismatch")
+    add_error(errors, sum(split_counts.values()) == expected_scored, "Q82 split sizes do not sum to scored targets")
+    discovery_end = math.ceil(0.60 * expected_scored)
+    validation_end = math.ceil(0.80 * expected_scored)
+    expected_splits = {"discovery": discovery_end, "validation": validation_end-discovery_end,
+                       "blind_oos": expected_scored-validation_end}
+    add_error(errors, split_counts == expected_splits, "Q82 chronological split sizes mismatch")
+    threshold_selection = report.get("threshold_selection", {})
+    add_error(errors, threshold_selection.get("source_split") == "discovery", "Q82 thresholds are not discovery-only")
+    add_error(errors, threshold_selection.get("uses_target_outcomes") is False, "Q82 threshold selection may use target outcomes")
+    add_error(errors, threshold_selection.get("frozen_before_validation") is True, "Q82 thresholds are not frozen before validation")
+    add_error(errors, threshold_selection.get("discovery_targets") == split_counts.get("discovery"),
+              "Q82 threshold discovery target count mismatch")
+    add_error(errors, threshold_selection.get("quantile_labels") == ["q25", "q50", "q75"],
+              "Q82 threshold quantile labels mismatch")
+    thresholds = report.get("thresholds", {})
+    add_error(errors, set(thresholds) == set(report.get("features", [])), "Q82 thresholds do not cover every feature")
+    for feature, values in thresholds.items():
+        if set(values) != {"q25", "q50", "q75"}:
+            errors.append("Q82 threshold quantiles incomplete for " + feature)
+            break
+        try:
+            if any(not math.isfinite(float(values[label])) for label in ("q25", "q50", "q75")):
+                errors.append("Q82 non-finite threshold for " + feature)
+                break
+        except Exception:
+            errors.append("Q82 non-numeric threshold for " + feature)
+            break
+    multiple_testing = report.get("multiple_testing", {})
+    add_error(errors, multiple_testing.get("method") == "Holm-Bonferroni", "Q82 multiple-testing method mismatch")
+    add_error(errors, multiple_testing.get("test_count") == expected_formulas * len(Q80_SPLITS) * 3,
+              "Q82 multiple-testing family size mismatch")
+    add_error(errors, report.get("metrics_rows") == expected_formulas * len(Q80_SPLITS),
+              "Q82 report metrics row count mismatch")
+    add_error(errors, len(metric_rows) == expected_formulas * len(Q80_SPLITS), "Q82 formula/split metrics row count mismatch")
+    required_metrics = {"split", "formula_id", "formula_family", "feature_count", "features", "threshold_rule",
+        "targets", "mean_number_hits_top5", "mean_number_hits_top10", "mean_number_hits_top20",
+        "mean_rank_of_actual_numbers", "p_top5_normal_approx", "p_top10_normal_approx",
+        "p_top20_normal_approx", "holm_p_max_endpoint_family"}
+    add_error(errors, required_metrics.issubset(set(metric_fields)), "Q82 metrics schema incomplete")
+    ids_by_split = {}
+    if len(metric_rows) == expected_formulas * len(Q80_SPLITS):
+        for split in Q80_SPLITS:
+            rows = [row for row in metric_rows if row.get("split") == split]
+            ids = [row.get("formula_id", "") for row in rows]
+            ids_by_split[split] = set(ids)
+            add_error(errors, len(rows) == expected_formulas, "Q82 formula count mismatch in " + split)
+            add_error(errors, len(set(ids)) == expected_formulas, "Q82 formula uniqueness mismatch in " + split)
+            add_error(errors, Counter(row.get("formula_family") for row in rows) == Counter(expected_families),
+                      "Q82 formula family coverage mismatch in " + split)
+            add_error(errors, all(int(row.get("targets", -1)) == int(split_counts.get(split, -2)) for row in rows),
+                      "Q82 split target count mismatch in " + split)
+            for row in rows:
+                family = row.get("formula_family")
+                try:
+                    feature_count = int(row.get("feature_count", 0))
+                except Exception:
+                    errors.append("Q82 non-integer feature count")
+                    break
+                if family not in expected_families or feature_count not in (1, 2):
+                    errors.append("Q82 invalid formula family or feature count")
+                    break
+                if (family in ("base", "nonlinear") and feature_count != 1) or (family in ("interaction", "conditional") and feature_count != 2):
+                    errors.append("Q82 feature count inconsistent with formula family")
+                    break
+                for field in ("mean_number_hits_top5", "mean_number_hits_top10", "mean_number_hits_top20",
+                              "mean_rank_of_actual_numbers", "p_top5_normal_approx", "p_top10_normal_approx",
+                              "p_top20_normal_approx", "holm_p_max_endpoint_family"):
+                    try:
+                        value = float(row[field])
+                    except Exception:
+                        errors.append("Q82 non-numeric metric " + field)
+                        break
+                    if not math.isfinite(value) or value < 0 or (field.startswith("p_") or field == "holm_p_max_endpoint_family") and value > 1:
+                        errors.append("Q82 invalid metric " + field)
+                        break
+        if ids_by_split and any(ids_by_split[s] != ids_by_split[Q80_SPLITS[0]] for s in Q80_SPLITS[1:]):
+            errors.append("Q82 formula IDs differ across chronological splits")
+    required_ledger = {"target_date", "cutoff_date", "prior_draws", "actual_quintet", "status",
+        "formula_count_tested", "best_formula_id", "best_actual_number_ranks", "single_feature_rank_ledger"}
+    add_error(errors, required_ledger.issubset(set(ledger_fields)), "Q82 target ledger schema incomplete")
+    add_error(errors, report.get("target_ledger_rows") == expected_scored, "Q82 report target ledger row count mismatch")
+    add_error(errors, len(ledger_rows) == expected_scored, "Q82 target ledger row count mismatch")
+    archive_by_date = {row["data"]: " ".join(str(int(row["n" + str(i)])) for i in range(1, 6))
+                       for row in archive_rows}
+    archive_index = {row["data"]: i for i, row in enumerate(archive_rows)}
+    seen_dates = set()
+    for row in ledger_rows:
+        d = row.get("target_date", "")
+        if d in seen_dates:
+            errors.append("duplicate Q82 target date " + d)
+            break
+        seen_dates.add(d)
+        index = archive_index.get(d, -1)
+        if index < minimum_history or index < 1:
+            errors.append("Q82 target missing from scored archive range at " + d)
+            break
+        if row.get("cutoff_date", "") != archive_rows[index-1]["data"]:
+            errors.append("Q82 target cutoff is not the immediate prior draw at " + d)
+            break
+        if archive_by_date.get(d) != row.get("actual_quintet"):
+            errors.append("Q82 actual quintet does not match canonical archive at " + d)
+            break
+        if int(row.get("prior_draws", -1)) != index:
+            errors.append("Q82 prior draw count mismatch at " + d)
+            break
+        if row.get("status") != "SCORED" or int(row.get("formula_count_tested", 0)) != expected_formulas:
+            errors.append("Q82 target scoring status/formula count invalid at " + d)
+            break
+        try:
+            ranks = json.loads(row["best_actual_number_ranks"])
+            feature_ledger = json.loads(row["single_feature_rank_ledger"])
+            if len(ranks) != 5 or any(not isinstance(v, int) or v < 1 or v > 40 for v in ranks):
+                raise ValueError("invalid best formula ranks")
+            if len(feature_ledger) != 27:
+                raise ValueError("single-feature ledger must contain 27 features")
+        except Exception as exc:
+            errors.append("invalid Q82 per-target condition record at " + d + ": " + str(exc))
+            break
+    add_error(errors, report.get("first_date") == archive_rows[0]["data"], "Q82 first date mismatch")
+    add_error(errors, report.get("last_date") == archive_rows[-1]["data"], "Q82 last date mismatch")
+    return errors
+
+
 def validate_q81():
     errors=[]
     report=load_json(Q81_REPORT)
@@ -538,7 +692,7 @@ def main():
         visit(task_id)
 
     validators = {"Q10": validate_q10, "Q20": validate_q20, "Q30": validate_q30,
-                  "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80, "Q81": validate_q81}
+                  "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80, "Q81": validate_q81, "Q82": validate_q82}
     states = {}
     for task in sorted(tasks, key=lambda t: (t["priority"], t["id"])):
         missing_evidence = [p for p in task.get("evidence", []) if not (ROOT / p).is_file()]
@@ -574,7 +728,7 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
-            if task["id"] in ("Q80", "Q81") and not validation_errors:
+            if task["id"] in ("Q80", "Q81", "Q82") and not validation_errors:
                 status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],
