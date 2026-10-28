@@ -9,7 +9,8 @@
     "minimum_complete_oos_cases": 100,
     "preferred_complete_oos_cases": 200,
     "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80 or Q81 is marked COMPLETE; passing automated validators alone leaves each VALIDATED_PENDING_HUMAN_REVIEW.",
-    "strategy_catalog_policy": "Catalog occasional, intermittent, conditional, complementary, antagonistic, retrospective and null strategies; keep ex-ante and retrospective evidence separate. Formula-universe claims must name the finite grammar explored."
+    "strategy_catalog_policy": "Catalog occasional, intermittent, conditional, complementary, antagonistic, retrospective and null strategies; keep ex-ante and retrospective evidence separate. Formula-universe claims must name the finite grammar explored.",
+    "archive_freshness": "As of 2026-10-28, main archive contains draws through 2026-10-27, while the research branch's Q80/Q81/Q82 reports and archive are currently cut off at 2026-10-25. Reconcile and rerun before calling these reports current; immutable freezes remain append-only."
   },
   "tasks": [
     {
@@ -259,6 +260,27 @@
         "report latest canonical archive date/blob SHA and document the finite grammar boundary without claiming all mathematical formulas are exhausted"
       ],
       "kind": "analysis"
+    },
+    {
+      "id": "Q85",
+      "priority": 85,
+      "title": "Reconcile research branch with the latest canonical archive and rerun affected chronological evidence",
+      "depends_on": [
+        "Q00"
+      ],
+      "evidence": [
+        "reports/sequence_agent/archive_reconciliation_2026-10-28.json",
+        "reports/sequence_agent/per_number_condition_refresh_2026-10-28.json"
+      ],
+      "acceptance": [
+        "record the canonical archive blob SHA, draw count and last date from the current main archive",
+        "identify every Q80/Q81/Q82/Q83 output whose archive cutoff is stale and do not represent it as current",
+        "recompute affected targets only with prior-only features and preserve all existing immutable freezes",
+        "reconcile metrics, target ledgers, formula manifests and chronological split counts to the refreshed archive",
+        "run exact-head CI and persist/re-read outputs before reporting validated status",
+        "do not overwrite or reconstruct missing prospective freezes and do not merge any PR automatically"
+      ],
+      "kind": "integrity"
     }
   ]
 }
