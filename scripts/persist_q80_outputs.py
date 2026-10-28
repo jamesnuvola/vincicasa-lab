@@ -96,7 +96,7 @@ def main():
     report81 = json.loads((ROOT / OUTPUTS[3]).read_text(encoding="utf-8"))
     report82 = json.loads((ROOT / OUTPUTS[6]).read_text(encoding="utf-8"))
     report83 = json.loads((ROOT / OUTPUTS[9]).read_text(encoding="utf-8"))
-    queue = json.loads((ROOT / OUTPUTS[10]).read_text(encoding="utf-8"))
+    queue = json.loads((ROOT / OUTPUTS[13]).read_text(encoding="utf-8"))
     q80 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q80"), None)
     q81 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q81"), None)
     q82 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q82"), None)
