@@ -61,12 +61,13 @@ jobs:
           python scripts/sonar_per_number_condition_conditional_grammar.py
           python scripts/sonar_research_queue.py
           python scripts/validate_formula_outputs.py
-      - name: Validate persisted Q80/Q81 outputs on exact head
+      - name: Validate persisted Q80/Q81/Q82 outputs on exact head
         if: github.event_name == 'workflow_dispatch'
         run: |
-          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
+          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
           python tests/test_sonar_per_number_condition_grammar.py -v
           python tests/test_sonar_per_number_condition_4plus_grammar.py -v
+          python tests/test_sonar_per_number_condition_conditional_grammar.py -v
           python scripts/sonar_research_queue.py
           python scripts/validate_formula_outputs.py
       - name: Build web application
