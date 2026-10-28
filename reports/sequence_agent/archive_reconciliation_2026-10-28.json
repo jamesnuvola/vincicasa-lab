@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "Q85",
-  "status": "BLOCKED_RECOMPUTE_REQUIRED",
+  "status": "ARCHIVE_SYNCED_RECOMPUTE_PENDING",
   "observed_at_utc": "2026-10-28T17:16:00Z",
   "canonical_main_archive": {
     "path": "data/storico_daily.csv",
@@ -19,40 +19,23 @@
   },
   "research_branch_archive": {
     "path": "data/storico_daily.csv",
-    "git_blob_sha": "700d71ab1dc29e33199210336f3a717e5d76208e",
-    "draw_count": 3388,
+    "git_blob_sha": "90e040c26b72be46f37136bf3e992e154ec8495c",
+    "draw_count": 3390,
     "first_date": "2017-07-17",
-    "last_date": "2026-10-25",
+    "last_date": "2026-10-27",
     "last_draw": [
       1,
+      6,
       8,
-      12,
-      16,
-      21
+      28,
+      34
     ]
   },
   "delta": {
-    "new_draws_on_main_not_yet_in_research_branch": 2,
-    "dates": [
-      "2026-10-26",
-      "2026-10-27"
-    ],
-    "draws": [
-      [
-        25,
-        26,
-        35,
-        36,
-        37
-      ],
-      [
-        1,
-        6,
-        8,
-        28,
-        34
-      ]
-    ]
+    "new_draws_on_main_not_yet_in_research_branch": 0,
+    "dates": [],
+    "draws": [],
+    "resolution": "The research branch archive now byte-matches main; the two new draws are present."
   },
   "affected_outputs": [
     "Q80",
@@ -60,7 +43,8 @@
     "Q82",
     "Q83"
   ],
-  "required_action": "Refresh the research branch archive from canonical main, rerun affected chronological evaluations, reconcile all manifests/metrics/target ledgers, persist and reread outputs, then validate on exact current head.",
+  "required_action": "Recompute Q80/Q81/Q82 outputs against the synchronized archive, then execute Q83 and verify exact-head CI. Existing historical freeze artifacts remain immutable.",
   "freeze_policy": "Append-only; do not overwrite or reconstruct historical or prospective freezes.",
-  "verified_from": "GitHub main archive and research branch archive blobs and their final rows"
+  "verified_from": "GitHub main archive and research branch archive blobs and their final rows",
+  "synced_at_utc": "2026-10-28T17:25:00Z"
 }
