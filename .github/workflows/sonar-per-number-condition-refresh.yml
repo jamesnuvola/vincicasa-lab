@@ -10,8 +10,10 @@ on:
       - "scripts/sonar_per_number_condition_grammar.py"
       - "scripts/sonar_per_number_condition_4plus_grammar.py"
       - "scripts/sonar_per_number_condition_conditional_grammar.py"
+      - "scripts/sonar_per_number_condition_5plus_grammar.py"
       - "scripts/sonar_research_queue.py"
       - "scripts/persist_q80_outputs.py"
+      - "scripts/sonar_per_number_condition_5plus_grammar.py"
       - "reports/sequence_agent/research_backlog.json"
       - ".github/workflows/sonar-per-number-condition-refresh.yml"
 
@@ -46,6 +48,7 @@ jobs:
           python -m py_compile scripts/sonar_per_number_condition_grammar.py
           python -m py_compile scripts/sonar_per_number_condition_4plus_grammar.py
           python -m py_compile scripts/sonar_per_number_condition_conditional_grammar.py
+          python -m py_compile scripts/sonar_per_number_condition_5plus_grammar.py
           python -m py_compile scripts/sonar_research_queue.py
           python -m py_compile scripts/persist_q80_outputs.py
 
@@ -57,6 +60,9 @@ jobs:
 
       - name: Recompute Q82 conditional/nonlinear grammar
         run: python scripts/sonar_per_number_condition_conditional_grammar.py
+
+      - name: Evaluate all 80,730 five-feature formulas in bounded batches
+        run: python scripts/sonar_per_number_condition_5plus_grammar.py
 
       - name: Validate research queue
         run: python scripts/sonar_research_queue.py
