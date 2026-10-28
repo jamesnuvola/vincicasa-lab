@@ -83,10 +83,11 @@ def verify_outputs_at_ref(ref_sha: str):
 def main():
     if os.environ.get("GITHUB_REF_NAME") != BRANCH:
         raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: refusing to write outside the registered research branch")
-    head = os.environ.get("GITHUB_SHA", "")
+    head_result = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, check=True, stdout=subprocess.PIPE, text=True)
+    head = head_result.stdout.strip()
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     if not head or not repo:
-        raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: missing commit/repository context")
+        raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: missing checkout/repository context")
     sys.path.insert(0, str(ROOT / "scripts"))
     from sonar_research_queue import validate_q80, validate_q81, validate_q82, validate_q83
     errors = validate_q80() + validate_q81() + validate_q82() + validate_q83()
