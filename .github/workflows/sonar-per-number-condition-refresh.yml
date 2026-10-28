@@ -13,7 +13,6 @@ on:
       - "scripts/sonar_per_number_condition_5plus_grammar.py"
       - "scripts/sonar_research_queue.py"
       - "scripts/persist_q80_outputs.py"
-      - "scripts/sonar_per_number_condition_5plus_grammar.py"
       - "reports/sequence_agent/research_backlog.json"
       - ".github/workflows/sonar-per-number-condition-refresh.yml"
 
@@ -25,7 +24,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  refresh-q80-q82:
+  refresh-q80-q83:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -67,7 +66,7 @@ jobs:
       - name: Validate research queue
         run: python scripts/sonar_research_queue.py
 
-      - name: Persist and reread validated Q80-Q82 outputs
+      - name: Persist and reread validated Q80-Q83 outputs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/persist_q80_outputs.py
