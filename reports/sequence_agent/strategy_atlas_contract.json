@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q84",
+  "title": "Strategy atlas: event-level formula catalog, lifecycle, recurrence, complementarity and residual analysis",
+  "created_at_utc": "2026-10-28T17:14:00Z",
+  "status": "SPECIFICATION_REGISTERED_NOT_EXECUTED",
+  "objective": "Catalog every strategy in the registered and progressively expanded formula grammars, including one-target/retrospective explanatory rules, and evaluate each rule only with information available before each target whenever making an ex-ante claim.",
+  "non_goals": [
+    "Do not claim the infinite universe of mathematical algorithms is exhausted.",
+    "Do not promote a strategy because it fits a target retrospectively.",
+    "Do not infer intent or agency from apparent randomness.",
+    "Do not overwrite or reconstruct immutable historical target freezes."
+  ],
+  "strategy_classes": [
+    {
+      "id": "EX_ANTE_GENERAL",
+      "description": "Rule and parameters fixed without target outcome; evaluated chronologically."
+    },
+    {
+      "id": "EX_ANTE_CONDITIONAL",
+      "description": "Rule eligible only when prior-only state conditions are met."
+    },
+    {
+      "id": "INTERMITTENT",
+      "description": "Rule whose performance appears in separated time intervals; recurrence measured without assuming periodicity."
+    },
+    {
+      "id": "COMPLEMENTARY",
+      "description": "Rule that performs relatively better on targets or numbers missed by another rule."
+    },
+    {
+      "id": "ANTAGONISTIC",
+      "description": "Rule whose ranking is inversely associated with another rule's ranking; evaluate as a distinct candidate, not as evidence by itself."
+    },
+    {
+      "id": "RETROSPECTIVE_DESCRIPTIVE",
+      "description": "Rule selected after observing a target or target-specific outcome; stored for explanation only and excluded from ex-ante performance claims."
+    },
+    {
+      "id": "NULL_OR_NEGATIVE",
+      "description": "Rule with null or worse-than-baseline results; retain for exclusion, contrast, and future conditional analyses."
+    }
+  ],
+  "per_strategy_fields": [
+    "strategy_id",
+    "grammar_version",
+    "formula_ast",
+    "canonical_formula",
+    "feature_ids",
+    "operators",
+    "threshold_source_split",
+    "parameters_frozen_at",
+    "discovery_timestamp",
+    "information_cutoff_rule",
+    "strategy_class",
+    "target_selection_used_outcome",
+    "parent_strategy_ids",
+    "equivalence_cluster_id",
+    "hash"
+  ],
+  "per_target_fields": [
+    "target_date",
+    "prior_cutoff_date",
+    "prior_draw_count",
+    "strategy_id",
+    "eligible_ex_ante",
+    "eligibility_reason",
+    "rank_by_number_1_to_40",
+    "actual_quintet",
+    "actual_number_ranks",
+    "hits_top5",
+    "hits_top10",
+    "hits_top20",
+    "mean_actual_rank",
+    "split",
+    "state_features_prior_only",
+    "forecast_freeze_id"
+  ],
+  "lifecycle_fields": [
+    "active_or_inactive",
+    "first_ex_ante_success",
+    "last_success",
+    "success_streak",
+    "failure_streak",
+    "targets_since_success",
+    "success_intervals",
+    "recurrence_gaps",
+    "condition_state",
+    "pre_target_detectability",
+    "retrospective_only_flag"
+  ],
+  "relationship_analyses": [
+    "canonicalize formulas and cluster algebraically equivalent/near-equivalent rules",
+    "pairwise rank correlation and top-k overlap",
+    "complementarity on other strategies' misses, using paired target comparisons",
+    "antagonism and inversion analysis",
+    "family-level diversity and marginal contribution",
+    "state-conditioned transitions and changes in relative strategy performance"
+  ],
+  "chronology_and_validation": {
+    "archive_cutoff": "Use the latest verified canonical archive at run time; explicitly record its blob SHA and last date.",
+    "ex_ante_rule": "For target i, every feature and parameter must be computable from draws strictly earlier than i.",
+    "splits": [
+      "discovery",
+      "validation",
+      "blind_oos"
+    ],
+    "thresholds": "Fit on discovery only, freeze before validation and blind OOS.",
+    "multiple_testing": "Register the complete tested family before evaluating outcomes; use Holm-Bonferroni or an explicitly justified family-wise procedure.",
+    "nulls": [
+      "uniform random ranking baseline",
+      "conditional randomization preserving five distinct winning numbers per target",
+      "family-size-aware null/selection baseline"
+    ],
+    "freeze_policy": "Append-only; never reconstruct missing freezes or overwrite prior target freezes.",
+    "reporting": "Separate descriptive fit, ex-ante walk-forward results, blind OOS, and prospective shadow results."
+  },
+  "outputs": {
+    "catalog": "reports/sequence_agent/strategy_atlas_catalog.jsonl",
+    "strategy_target_ledger": "reports/sequence_agent/strategy_atlas_target_ledger.csv",
+    "lifecycle_and_relationships": "reports/sequence_agent/strategy_atlas_lifecycle.json",
+    "report": "reports/sequence_agent/strategy_atlas_report.json"
+  },
+  "guardrail": "Catalog breadth is not predictive evidence. Every strategy remains exploratory until its chronological and prospective acceptance criteria pass."
+}
