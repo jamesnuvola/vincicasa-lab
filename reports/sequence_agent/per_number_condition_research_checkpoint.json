@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "generated_at_utc": "2026-10-28T16:22:06+00:00",
+  "archive_snapshot": {
+    "source_archive": "data/storico_daily.csv",
+    "source_blob_sha": "700d71ab1dc29e33199210336f3a717e5d76208e",
+    "draw_count": 3388,
+    "first_date": "2017-07-17",
+    "last_date": "2026-10-25",
+    "latest_quintet": [
+      1,
+      8,
+      12,
+      16,
+      21
+    ],
+    "immutable_target_2026_10_25_freeze_overwritten": false
+  },
+  "verified_milestones": [
+    {
+      "id": "Q80",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "first_verified_at_utc": "2026-10-27T17:37:48+00:00",
+      "first_validation_run_id": 40550091715,
+      "first_validation_run_url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/40550091715",
+      "first_validated_head_sha": "bb128956b80b750db177bfe7ca833a8624df2103",
+      "archive_cutoff": "2026-10-25",
+      "target_count": 3388,
+      "scored_targets": 3338,
+      "feature_count": 27,
+      "formula_count": 3303,
+      "metrics_rows": 9909,
+      "target_ledger_rows": 3338,
+      "multiple_testing": {
+        "method": "Holm-Bonferroni",
+        "test_count": 29727
+      },
+      "holm_adjusted_formula_split_rows_below_0_05": 0,
+      "blind_oos_descriptive_best_mean_rank": 20.150824587706147,
+      "uniform_baseline_mean_rank": 20.5,
+      "outputs": {
+        "report_blob_sha": "2963dca9a13788c5965811212c60ddb3ba7733b9",
+        "metrics_blob_sha": "9ac72dbf783e12f1213f4ec48a0932a39481cb4b",
+        "target_ledger_blob_sha": "3322d9f4cc3d6cf8c6b25f583719e0b223bd1729",
+        "queue_blob_sha": "7b36e140dc44b74ce6492da100211f5a2f97be7b"
+      },
+      "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+      "conclusion": "Exploratory finite grammar passed structural and chronological validators; no formula was statistically promoted."
+    }
+  ],
+  "validation_history": [
+    {
+      "run_id": 40550091715,
+      "head_sha": "bb128956b80b750db177bfe7ca833a8624df2103",
+      "event_name": "workflow_dispatch",
+      "validated_at_utc": "2026-10-27T17:37:48+00:00",
+      "status": "PASS",
+      "tasks": [
+        "Q80"
+      ]
+    }
+  ],
+  "current_state": {
+    "queue_status": "QUEUE_VALID",
+    "overall_cycle_status": "INCOMPLETE",
+    "blocking_tasks": [
+      "Q60"
+    ],
+    "q80_status": "VALIDATED_PENDING_HUMAN_REVIEW",
+    "q81_status": "IN_PROGRESS",
+    "human_review_required": true,
+    "automatic_promotion": false
+  },
+  "next_stages": [
+    {
+      "id": "Q81",
+      "status": "IN_PROGRESS",
+      "scope": "all 17,550 four-feature equal-weight combinations"
+    },
+    {
+      "id": "Q82",
+      "status": "PLANNED",
+      "scope": "conditional thresholds, nonlinear transforms and feature interactions"
+    },
+    {
+      "id": "Q83",
+      "status": "PLANNED",
+      "scope": "five-plus feature subsets evaluated in bounded batches"
+    }
+  ],
+  "guardrails": [
+    "only the complete prefix strictly before each target may influence its features",
+    "formula universes are exhaustive only within their declared finite grammars",
+    "best-per-target formula is retrospective/descriptive and never a prospective forecast",
+    "immutable target freezes are append-only and are never overwritten",
+    "human review/integration is required before Q80 or Q81 can be marked COMPLETE",
+    "no formula is promoted automatically"
+  ]
+}

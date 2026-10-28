@@ -18,7 +18,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -49,16 +49,28 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
-      - name: Test exhaustive per-number condition grammar (Q80)
+      - name: Test exhaustive per-number condition grammars (Q80/Q81)
+        if: github.event_name != 'workflow_dispatch'
         run: |
-          python -m py_compile scripts/sonar_per_number_condition_grammar.py
+          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
           python tests/test_sonar_per_number_condition_grammar.py -v
+          python tests/test_sonar_per_number_condition_4plus_grammar.py -v
           python scripts/sonar_per_number_condition_grammar.py
+          python scripts/sonar_per_number_condition_4plus_grammar.py
           python scripts/sonar_research_queue.py
+          python scripts/validate_formula_outputs.py
+      - name: Validate persisted Q80/Q81 outputs on exact head
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
+          python tests/test_sonar_per_number_condition_grammar.py -v
+          python tests/test_sonar_per_number_condition_4plus_grammar.py -v
+          python scripts/sonar_research_queue.py
+          python scripts/validate_formula_outputs.py
       - name: Build web application
         run: npm install && npm run build
 
-      - name: Upload validated Q80 persistence bundle
+      - name: Upload validated formula persistence bundle
         uses: actions/upload-artifact@v4
         with:
           name: q80-persistence-bundle
@@ -66,6 +78,10 @@ jobs:
             reports/sequence_agent/per_number_condition_grammar.json
             reports/sequence_agent/per_number_condition_formula_metrics.csv
             reports/sequence_agent/per_number_condition_target_ledger.csv
+            reports/sequence_agent/per_number_condition_4plus_grammar.json
+            reports/sequence_agent/per_number_condition_4plus_formula_metrics.csv
+            reports/sequence_agent/per_number_condition_4plus_target_ledger.csv
+            reports/sequence_agent/per_number_condition_research_checkpoint.json
             reports/sequence_agent/research_queue_status.json
           if-no-files-found: error
           retention-days: 1

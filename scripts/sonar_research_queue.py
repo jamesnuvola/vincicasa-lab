@@ -2,6 +2,7 @@
 """Validate the SONAR research queue evidence; distinguish valid null results from promotion readiness."""
 from __future__ import annotations
 import csv
+import hashlib
 import json
 import math
 from collections import Counter
@@ -24,6 +25,9 @@ GATE = ROOT / "reports" / "sequence_agent" / "prospective_promotion_gate.json"
 Q80_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_grammar.json"
 Q80_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_formula_metrics.csv"
 Q80_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_target_ledger.csv"
+Q81_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_4plus_grammar.json"
+Q81_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_4plus_formula_metrics.csv"
+Q81_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_4plus_target_ledger.csv"
 
 SPLITS = ("discovery", "validation", "oos")
 Q80_SPLITS = ("discovery", "validation", "blind_oos")
@@ -396,6 +400,106 @@ def validate_q80():
     return errors
 
 
+def validate_q81():
+    errors=[]
+    report=load_json(Q81_REPORT)
+    metrics,metric_rows=load_csv(Q81_METRICS)
+    ledger_fields,ledger_rows=load_csv(Q81_LEDGER)
+    with DATA.open(newline="",encoding="utf-8-sig") as handle:
+        archive_rows=list(csv.DictReader(handle))
+    minimum_history=int(report.get("minimum_prior_history",0))
+    expected_targets=len(archive_rows)
+    expected_scored=max(0,expected_targets-minimum_history)
+    expected_formulas=math.comb(27,4)
+    expected_metric_rows=expected_formulas*len(Q80_SPLITS)
+    add_error(errors,report.get("status")=="VALIDATED_FINITE_GRAMMAR_COMPLETE","Q81 report status not complete")
+    add_error(errors,report.get("review_status")=="PENDING_HUMAN_REVIEW_INTEGRATION","Q81 human-review gate missing")
+    add_error(errors,report.get("task_id")=="Q81","Q81 task id mismatch")
+    add_error(errors,report.get("target_count")==expected_targets,"Q81 target count does not match canonical archive")
+    add_error(errors,report.get("scored_targets")==expected_scored,"Q81 scored target count mismatch")
+    add_error(errors,minimum_history>=50,"Q81 minimum prior history is too small")
+    add_error(errors,report.get("formula_count")==expected_formulas==17550,"Q81 formula universe count mismatch")
+    add_error(errors,report.get("formula_count_check")==expected_formulas,"Q81 formula count check mismatch")
+    add_error(errors,report.get("feature_count")==27 and len(report.get("features",[]))==27,"Q81 feature schema size mismatch")
+    add_error(errors,report.get("formula_grammar")=="all 4-feature equal-weight combinations","Q81 grammar label mismatch")
+    add_error(errors,report.get("source_archive_sha256")==hashlib.sha256(DATA.read_bytes()).hexdigest(),"Q81 source archive SHA-256 mismatch")
+    split_counts=report.get("split_counts",{})
+    add_error(errors,set(split_counts)==set(Q80_SPLITS),"Q81 chronological split keys mismatch")
+    add_error(errors,sum(split_counts.values())==expected_scored,"Q81 split sizes do not sum to scored targets")
+    discovery_end=math.ceil(0.60*expected_scored); validation_end=math.ceil(0.80*expected_scored)
+    expected_splits={"discovery":discovery_end,"validation":validation_end-discovery_end,"blind_oos":expected_scored-validation_end}
+    add_error(errors,split_counts==expected_splits,"Q81 chronological split sizes mismatch")
+    baseline=report.get("uniform_number_rank_baseline",{})
+    add_error(errors,baseline.get("mean_number_hits_top5")==0.125 and baseline.get("mean_number_hits_top10")==0.25 and baseline.get("mean_number_hits_top20")==0.5 and baseline.get("mean_rank_of_actual_numbers")==20.5,"Q81 uniform-rank baseline missing or incorrect")
+    add_error(errors,report.get("multiple_testing",{}).get("method")=="Holm-Bonferroni","Q81 multiple-testing method mismatch")
+    add_error(errors,report.get("multiple_testing",{}).get("test_count")==expected_formulas*len(Q80_SPLITS)*3,"Q81 multiple-testing family size mismatch")
+    add_error(errors,report.get("metrics_rows")==expected_metric_rows,"Q81 report metrics row count mismatch")
+    add_error(errors,report.get("target_ledger_rows")==expected_scored,"Q81 target ledger count mismatch")
+    required_metrics={"split","formula_id","feature_count","features","targets","mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","all5_top5_rate","all5_top10_rate","all5_top20_rate","mean_rank_of_actual_numbers","p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx","holm_p_max_endpoint_family"}
+    add_error(errors,required_metrics.issubset(set(metrics)),"Q81 metrics schema incomplete")
+    add_error(errors,len(metric_rows)==expected_metric_rows,"Q81 formula/split metrics row count mismatch")
+    valid_features=set(report.get("features",[])); formula_ids=set()
+    if len(metric_rows)==expected_metric_rows:
+        seen={split:set() for split in Q80_SPLITS}
+        for row in metric_rows:
+            split=row.get("split","")
+            try: feature_count=int(row.get("feature_count","0"))
+            except Exception: feature_count=0
+            if split not in Q80_SPLITS or feature_count!=4:
+                errors.append("invalid Q81 split or feature count"); break
+            parts=row.get("features","").split("+")
+            if len(parts)!=4 or len(set(parts))!=4 or not set(parts).issubset(valid_features):
+                errors.append("invalid Q81 formula feature list"); break
+            formula_id=row.get("formula_id","")
+            if formula_id in seen[split]:
+                errors.append("duplicate Q81 formula/split metric "+split+"/"+formula_id); break
+            seen[split].add(formula_id); formula_ids.add(formula_id)
+            for field in ("mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","all5_top5_rate","all5_top10_rate","all5_top20_rate","mean_rank_of_actual_numbers","p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx","holm_p_max_endpoint_family"):
+                try: value=float(row[field])
+                except Exception: errors.append("non-numeric Q81 metric "+field); break
+                if not math.isfinite(value): errors.append("non-finite Q81 metric "+field); break
+                if field=="mean_rank_of_actual_numbers":
+                    if value<1 or value>40: errors.append("out-of-range Q81 rank metric"); break
+                elif value<0 or value>1: errors.append("out-of-range Q81 metric "+field); break
+        for split in Q80_SPLITS:
+            subset=[row for row in metric_rows if row.get("split")==split]
+            add_error(errors,len(subset)==expected_formulas,"Q81 formula coverage mismatch in "+split)
+            add_error(errors,len({row.get("formula_id") for row in subset})==expected_formulas,"Q81 formula uniqueness mismatch in "+split)
+            add_error(errors,all(int(row["targets"])==int(split_counts.get(split,-1)) for row in subset),"Q81 split target count mismatch in "+split)
+    required_ledger={"target_date","cutoff_date","prior_draws","actual_quintet","status","formula_count_tested","best_formula_id","best_formula_features","best_actual_number_ranks","single_feature_rank_ledger"}
+    add_error(errors,required_ledger.issubset(set(ledger_fields)),"Q81 target ledger schema incomplete")
+    add_error(errors,len(ledger_rows)==expected_scored,"Q81 target ledger row count mismatch")
+    expected_dates=[row["data"] for row in archive_rows[minimum_history:]]
+    actual_dates=[row.get("target_date","") for row in ledger_rows]
+    add_error(errors,actual_dates==expected_dates,"Q81 target ledger coverage/order mismatch")
+    archive_by_date={row["data"]:" ".join(str(int(row["n"+str(i)])) for i in range(1,6)) for row in archive_rows}
+    archive_index={row["data"]:i for i,row in enumerate(archive_rows)}
+    for row in ledger_rows:
+        target=row.get("target_date",""); index=archive_index.get(target)
+        if index is None or index<minimum_history: errors.append("Q81 target date missing or too early: "+target); break
+        if row.get("cutoff_date","")!=archive_rows[index-1]["data"] or int(row.get("prior_draws",-1))!=index:
+            errors.append("Q81 target cutoff/prior count mismatch at "+target); break
+        if archive_by_date.get(target)!=row.get("actual_quintet",""): errors.append("Q81 actual quintet mismatch at "+target); break
+        if row.get("status")!="SCORED" or int(row.get("formula_count_tested",0))!=expected_formulas:
+            errors.append("Q81 target scoring status/formula count invalid at "+target); break
+        if row.get("best_formula_id","") not in formula_ids: errors.append("Q81 best formula id absent from formula metrics at "+target); break
+        parts=row.get("best_formula_features","").split("+")
+        if len(parts)!=4 or len(set(parts))!=4 or not set(parts).issubset(valid_features):
+            errors.append("Q81 best formula feature schema invalid at "+target); break
+        try:
+            ranks=json.loads(row["best_actual_number_ranks"]); feature_ledger=json.loads(row["single_feature_rank_ledger"])
+            if len(ranks)!=5 or any(not isinstance(v,int) or v<1 or v>40 for v in ranks): raise ValueError("invalid best formula ranks")
+            if len(feature_ledger)!=27 or {item.get("feature") for item in feature_ledger}!=valid_features: raise ValueError("single-feature ledger must contain 27 features")
+            for item in feature_ledger:
+                values=item.get("ranks",[])
+                if len(values)!=5 or any(not isinstance(v,int) or v<1 or v>40 for v in values): raise ValueError("invalid single-feature ranks")
+        except Exception as exc:
+            errors.append("invalid Q81 per-target condition record at "+target+": "+str(exc)); break
+    add_error(errors,report.get("first_date")==archive_rows[0]["data"],"Q81 first date mismatch")
+    add_error(errors,report.get("last_date")==archive_rows[-1]["data"],"Q81 last date mismatch")
+    return errors
+
+
 def main():
     plan = load_json(BACKLOG)
     tasks = plan.get("tasks", [])
@@ -421,7 +525,7 @@ def main():
         visit(task_id)
 
     validators = {"Q10": validate_q10, "Q20": validate_q20, "Q30": validate_q30,
-                  "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80}
+                  "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80, "Q81": validate_q81}
     states = {}
     for task in sorted(tasks, key=lambda t: (t["priority"], t["id"])):
         missing_evidence = [p for p in task.get("evidence", []) if not (ROOT / p).is_file()]
@@ -457,7 +561,7 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
-            if task["id"] == "Q80" and not validation_errors:
+            if task["id"] in ("Q80", "Q81") and not validation_errors:
                 status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],
