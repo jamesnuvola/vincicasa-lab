@@ -41,6 +41,15 @@ class Q81GrammarTests(unittest.TestCase):
         counts={s:sum(Q80.split_name(i,scored)==s for i in range(scored)) for s in ("discovery","validation","blind_oos")}
         self.assertEqual(counts,{"discovery":2003,"validation":668,"blind_oos":667})
         self.assertEqual(sum(counts.values()),scored)
+    def test_formula_batches_cover_the_universe_without_gaps(self):
+        batches=Q81.batch_ranges(17550,1024)
+        self.assertEqual(len(batches),18)
+        self.assertEqual(batches[0],(0,1024))
+        self.assertEqual(batches[-1],(17408,17550))
+        self.assertEqual(sum(end-start for start,end in batches),17550)
+        for previous,current in zip(batches,batches[1:]):
+            self.assertEqual(previous[1],current[0])
+
     def test_formula_weight_matrix_has_equal_weights_and_four_variables(self):
         formulas=Q81.make_formulas()[:3]; weights=Q81.build_formula_weight_matrix(formulas)
         self.assertEqual(weights.shape,(27,3))

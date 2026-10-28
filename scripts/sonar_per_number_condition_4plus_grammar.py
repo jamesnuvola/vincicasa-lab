@@ -17,6 +17,7 @@ MIN_HISTORY=q80.MIN_HISTORY
 FEATURE_NAMES=q80.FEATURE_NAMES
 FEATURE_COUNT=len(FEATURE_NAMES)
 FORMULA_SIZE=4
+FORMULA_BATCH_SIZE=1024
 SPLITS=("discovery","validation","blind_oos")
 
 def make_formulas():
@@ -27,6 +28,10 @@ def make_formulas():
 
 FORMULAS=make_formulas()
 FORMULA_IDS=["P4_"+"_".join(f"{i:02d}" for i in cols) for cols in FORMULAS]
+
+def batch_ranges(total,batch_size=FORMULA_BATCH_SIZE):
+    if batch_size<=0: raise ValueError("batch size must be positive")
+    return [(start,min(start+batch_size,total)) for start in range(0,total,batch_size)]
 
 def rank_matrix(scores):
     """Rank every column; stable sort gives lower number priority on exact ties."""
@@ -89,25 +94,34 @@ def main():
     fields=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
     accum={s:{f:np.zeros(formula_count,dtype=np.int64) for f in fields} for s in SPLITS}
     split_counts=Counter(); target_rows=[]
+    formula_batches=batch_ranges(formula_count)
     for target_offset,target_index in enumerate(range(MIN_HISTORY,n)):
         standardized=standardized_stack[target_offset]
-        ranks=rank_matrix(standardized@weights)
         actual_indices=np.asarray(draws[target_index],dtype=np.int64)-1
-        actual_ranks=ranks[actual_indices,:]
-        rank_sum=actual_ranks.sum(axis=0,dtype=np.int64)
-        hits5=np.sum(actual_ranks<=5,axis=0,dtype=np.int64)
-        hits10=np.sum(actual_ranks<=10,axis=0,dtype=np.int64)
-        hits20=np.sum(actual_ranks<=20,axis=0,dtype=np.int64)
-        split=q80.split_name(target_offset,scored_targets); split_counts[split]+=1
+        split=q80.split_name(target_offset,scored_targets)
+        split_counts[split]+=1
         bucket=accum[split]
-        bucket["number_hits_top5"]+=hits5; bucket["number_hits_top10"]+=hits10; bucket["number_hits_top20"]+=hits20
-        bucket["all5_top5"]+=np.all(actual_ranks<=5,axis=0)
-        bucket["all5_top10"]+=np.all(actual_ranks<=10,axis=0)
-        bucket["all5_top20"]+=np.all(actual_ranks<=20,axis=0)
-        bucket["rank_sum"]+=rank_sum
-        # Best-per-target is retrospective/descriptive, never a prospective forecast.
-        best=int(np.lexsort((-hits5,hits20,rank_sum))[0])
-        best_ranks=actual_ranks[:,best].astype(int).tolist()
+        best_key=None; best_index=None; best_ranks=None
+        # Bound memory and runtime with reproducible formula-index batches.
+        for batch_start,batch_end in formula_batches:
+            ranks=rank_matrix(standardized@weights[:,batch_start:batch_end])
+            actual_ranks=ranks[actual_indices,:]
+            rank_sum=actual_ranks.sum(axis=0,dtype=np.int64)
+            hits5=np.sum(actual_ranks<=5,axis=0,dtype=np.int64)
+            hits10=np.sum(actual_ranks<=10,axis=0,dtype=np.int64)
+            hits20=np.sum(actual_ranks<=20,axis=0,dtype=np.int64)
+            bucket["number_hits_top5"][batch_start:batch_end]+=hits5
+            bucket["number_hits_top10"][batch_start:batch_end]+=hits10
+            bucket["number_hits_top20"][batch_start:batch_end]+=hits20
+            bucket["all5_top5"][batch_start:batch_end]+=np.all(actual_ranks<=5,axis=0)
+            bucket["all5_top10"][batch_start:batch_end]+=np.all(actual_ranks<=10,axis=0)
+            bucket["all5_top20"][batch_start:batch_end]+=np.all(actual_ranks<=20,axis=0)
+            bucket["rank_sum"][batch_start:batch_end]+=rank_sum
+            local_best=int(np.lexsort((-hits5,hits20,rank_sum))[0])
+            candidate=(int(rank_sum[local_best]),int(hits20[local_best]),-int(hits5[local_best]),batch_start+local_best)
+            if best_key is None or candidate<best_key:
+                best_key=candidate; best_index=batch_start+local_best
+                best_ranks=actual_ranks[:,local_best].astype(int).tolist()
         single_ranks=rank_matrix(standardized)[actual_indices,:]
         single_ledger=[]
         for column,name in enumerate(FEATURE_NAMES):
@@ -116,8 +130,8 @@ def main():
                 "hits_top10":sum(v<=10 for v in values),"hits_top20":sum(v<=20 for v in values),"rank_sum":sum(values)})
         target_rows.append({"target_date":dates[target_index],"cutoff_date":dates[target_index-1],
             "prior_draws":target_index,"actual_quintet":" ".join(map(str,draws[target_index])),"status":"SCORED",
-            "formula_count_tested":formula_count,"best_formula_id":FORMULA_IDS[best],
-            "best_formula_features":"+".join(FEATURE_NAMES[c] for c in FORMULAS[best]),
+            "formula_count_tested":formula_count,"best_formula_id":FORMULA_IDS[best_index],
+            "best_formula_features":"+".join(FEATURE_NAMES[c] for c in FORMULAS[best_index]),
             "best_actual_number_ranks":json.dumps(best_ranks,separators=(",",":")),
             "best_number_hits_top5":sum(v<=5 for v in best_ranks),"best_number_hits_top10":sum(v<=10 for v in best_ranks),
             "best_number_hits_top20":sum(v<=20 for v in best_ranks),"best_rank_sum":sum(best_ranks),
@@ -163,6 +177,8 @@ def main():
         "first_date":dates[0],"last_date":dates[-1],"minimum_prior_history":MIN_HISTORY,
         "scored_targets":len(target_rows),"feature_count":FEATURE_COUNT,"features":FEATURE_NAMES,
         "formula_count":formula_count,"formula_count_check":math.comb(FEATURE_COUNT,FORMULA_SIZE),
+        "formula_batch_size":FORMULA_BATCH_SIZE,"formula_batch_count":len(formula_batches),
+        "batch_manifest":[{"batch_index":i,"formula_start_inclusive":a,"formula_end_exclusive":b,"formula_count":b-a,"formula_id_first":FORMULA_IDS[a],"formula_id_last":FORMULA_IDS[b-1]} for i,(a,b) in enumerate(formula_batches)],
         "formula_grammar":"all 4-feature equal-weight combinations",
         "scoring_rule":"per target, z-score each of the 27 features over numbers 1..40, then average each unordered 4-feature subset",
         "metrics_rows":len(metric_rows),"target_ledger_rows":len(target_rows),

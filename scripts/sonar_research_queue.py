@@ -420,6 +420,19 @@ def validate_q81():
     add_error(errors,minimum_history>=50,"Q81 minimum prior history is too small")
     add_error(errors,report.get("formula_count")==expected_formulas==17550,"Q81 formula universe count mismatch")
     add_error(errors,report.get("formula_count_check")==expected_formulas,"Q81 formula count check mismatch")
+    manifest=report.get("batch_manifest",[])
+    add_error(errors,report.get("formula_batch_size")==1024,"Q81 batch size mismatch")
+    add_error(errors,report.get("formula_batch_count")==len(manifest),"Q81 batch count mismatch")
+    cursor=0
+    discovery_rows=[row for row in metric_rows if row.get("split")=="discovery"]
+    for batch in manifest:
+        start=int(batch.get("formula_start_inclusive",-1)); end=int(batch.get("formula_end_exclusive",-1))
+        if start!=cursor or end<=start or end>expected_formulas or int(batch.get("formula_count",-1))!=end-start:
+            errors.append("Q81 formula batch manifest has a gap/overlap or invalid range"); break
+        if end<=len(discovery_rows) and (batch.get("formula_id_first")!=discovery_rows[start].get("formula_id") or batch.get("formula_id_last")!=discovery_rows[end-1].get("formula_id")):
+            errors.append("Q81 formula batch manifest IDs do not reconcile"); break
+        cursor=end
+    add_error(errors,cursor==expected_formulas,"Q81 formula batch manifest does not cover the full universe")
     add_error(errors,report.get("feature_count")==27 and len(report.get("features",[]))==27,"Q81 feature schema size mismatch")
     add_error(errors,report.get("formula_grammar")=="all 4-feature equal-weight combinations","Q81 grammar label mismatch")
     add_error(errors,report.get("source_archive_sha256")==hashlib.sha256(DATA.read_bytes()).hexdigest(),"Q81 source archive SHA-256 mismatch")
