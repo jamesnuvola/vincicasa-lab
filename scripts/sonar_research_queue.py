@@ -557,7 +557,7 @@ def validate_q82():
     return errors
 
 
-def validate_q83():
+def validate_q81():
     errors=[]
     report=load_json(Q81_REPORT)
     metrics,metric_rows=load_csv(Q81_METRICS)
@@ -618,7 +618,7 @@ def validate_q83():
             if split not in Q80_SPLITS or feature_count!=4:
                 errors.append("invalid Q81 split or feature count"); break
             parts=row.get("features","").split("+")
-            if len(parts)!=4 or len(set(parts))!=5 or not set(parts).issubset(valid_features):
+            if len(parts)!=4 or len(set(parts))!=4 or not set(parts).issubset(valid_features):
                 errors.append("invalid Q81 formula feature list"); break
             formula_id=row.get("formula_id","")
             if formula_id in seen[split]:
@@ -654,7 +654,7 @@ def validate_q83():
             errors.append("Q81 target scoring status/formula count invalid at "+target); break
         if row.get("best_formula_id","") not in formula_ids: errors.append("Q81 best formula id absent from formula metrics at "+target); break
         parts=row.get("best_formula_features","").split("+")
-        if len(parts)!=4 or len(set(parts))!=5 or not set(parts).issubset(valid_features):
+        if len(parts)!=4 or len(set(parts))!=4 or not set(parts).issubset(valid_features):
             errors.append("Q81 best formula feature schema invalid at "+target); break
         try:
             ranks=json.loads(row["best_actual_number_ranks"]); feature_ledger=json.loads(row["single_feature_rank_ledger"])
@@ -670,7 +670,7 @@ def validate_q83():
     return errors
 
 
-def validate_q81():
+def validate_q83():
     errors=[]
     report=load_json(Q83_REPORT)
     metrics,metric_rows=load_csv(Q83_METRICS)
@@ -767,7 +767,7 @@ def validate_q81():
             errors.append("Q83 target scoring status/formula count invalid at "+target); break
         if row.get("best_formula_id","") not in formula_ids: errors.append("Q83 best formula id absent from formula metrics at "+target); break
         parts=row.get("best_formula_features","").split("+")
-        if len(parts)!=4 or len(set(parts))!=5 or not set(parts).issubset(valid_features):
+        if len(parts)!=5 or len(set(parts))!=5 or not set(parts).issubset(valid_features):
             errors.append("Q83 best formula feature schema invalid at "+target); break
         try:
             ranks=json.loads(row["best_actual_number_ranks"]); feature_ledger=json.loads(row["single_feature_rank_ledger"])
