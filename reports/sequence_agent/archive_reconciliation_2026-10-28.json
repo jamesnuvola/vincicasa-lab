@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q85",
+  "status": "BLOCKED_RECOMPUTE_REQUIRED",
+  "observed_at_utc": "2026-10-28T17:16:00Z",
+  "canonical_main_archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "90e040c26b72be46f37136bf3e992e154ec8495c",
+    "draw_count": 3390,
+    "first_date": "2017-07-17",
+    "last_date": "2026-10-27",
+    "last_draw": [
+      1,
+      6,
+      8,
+      28,
+      34
+    ]
+  },
+  "research_branch_archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "700d71ab1dc29e33199210336f3a717e5d76208e",
+    "draw_count": 3388,
+    "first_date": "2017-07-17",
+    "last_date": "2026-10-25",
+    "last_draw": [
+      1,
+      8,
+      12,
+      16,
+      21
+    ]
+  },
+  "delta": {
+    "new_draws_on_main_not_yet_in_research_branch": 2,
+    "dates": [
+      "2026-10-26",
+      "2026-10-27"
+    ],
+    "draws": [
+      [
+        25,
+        26,
+        35,
+        36,
+        37
+      ],
+      [
+        1,
+        6,
+        8,
+        28,
+        34
+      ]
+    ]
+  },
+  "affected_outputs": [
+    "Q80",
+    "Q81",
+    "Q82",
+    "Q83"
+  ],
+  "required_action": "Refresh the research branch archive from canonical main, rerun affected chronological evaluations, reconcile all manifests/metrics/target ledgers, persist and reread outputs, then validate on exact current head.",
+  "freeze_policy": "Append-only; do not overwrite or reconstruct historical or prospective freezes.",
+  "verified_from": "GitHub main archive and research branch archive blobs and their final rows"
+}
