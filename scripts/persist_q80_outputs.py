@@ -46,9 +46,9 @@ def api(method: str, path: str, payload=None):
             raw = response.read()
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode("utf-8", errors="replace")[:2000]
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: GitHub API " + str(exc.code) + " " + detail) from exc
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: GitHub API " + str(exc.code) + " " + detail) from exc
     except Exception as exc:
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: GitHub API request failed: " + str(exc)) from exc
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: GitHub API request failed: " + str(exc)) from exc
     return json.loads(raw.decode("utf-8")) if raw else {}
 
 def git_head_file(path: str):
@@ -62,33 +62,33 @@ def verify_outputs_at_ref(ref_sha: str):
     commit_info = api("GET", "/git/commits/" + ref_sha)
     tree_info = api("GET", "/git/trees/" + commit_info["tree"]["sha"] + "?recursive=1")
     if tree_info.get("truncated"):
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: repository tree response was truncated")
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: repository tree response was truncated")
     entries = {item["path"]: item for item in tree_info.get("tree", []) if item.get("type") == "blob"}
     for path in OUTPUTS:
         entry = entries.get(path)
         if not entry:
-            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: persisted tree missing " + path)
+            raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: persisted tree missing " + path)
         blob = api("GET", "/git/blobs/" + entry["sha"])
         if blob.get("encoding") != "base64":
-            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: unexpected blob encoding for " + path)
+            raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: unexpected blob encoding for " + path)
         persisted_bytes = base64.b64decode(blob.get("content", ""))
         expected_bytes = (ROOT / path).read_bytes()
         if persisted_bytes != expected_bytes:
-            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: persisted bytes differ for " + path)
+            raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: persisted bytes differ for " + path)
         print("Q80_Q81_Q82_PERSIST_VERIFIED: " + path + " bytes=" + str(len(persisted_bytes)))
 
 def main():
     if os.environ.get("GITHUB_REF_NAME") != BRANCH:
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: refusing to write outside the registered research branch")
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: refusing to write outside the registered research branch")
     head = os.environ.get("GITHUB_SHA", "")
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     if not head or not repo:
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: missing commit/repository context")
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: missing commit/repository context")
     sys.path.insert(0, str(ROOT / "scripts"))
     from sonar_research_queue import validate_q80, validate_q81, validate_q82
     errors = validate_q80() + validate_q81() + validate_q82()
     if errors:
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: acceptance validation failed: " + "; ".join(errors))
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: acceptance validation failed: " + "; ".join(errors))
     report80 = json.loads((ROOT / OUTPUTS[0]).read_text(encoding="utf-8"))
     report81 = json.loads((ROOT / OUTPUTS[3]).read_text(encoding="utf-8"))
     report82 = json.loads((ROOT / OUTPUTS[6]).read_text(encoding="utf-8"))
@@ -98,12 +98,12 @@ def main():
     q82 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q82"), None)
     for task_id, report in (("Q80", report80), ("Q81", report81), ("Q82", report82)):
         if report.get("review_status") != "PENDING_HUMAN_REVIEW_INTEGRATION":
-            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: " + task_id + " report does not preserve human-review gate")
+            raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: " + task_id + " report does not preserve human-review gate")
     if (queue.get("queue_status") != "QUEUE_VALID" or
         not q80 or q80.get("status") != "VALIDATED_PENDING_HUMAN_REVIEW" or q80.get("validation_errors") or
         not q81 or q81.get("status") != "VALIDATED_PENDING_HUMAN_REVIEW" or q81.get("validation_errors") or
         not q82 or q82.get("status") != "VALIDATED_PENDING_HUMAN_REVIEW" or q82.get("validation_errors")):
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: queue status is not validated/pending review")
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: queue status is not validated/pending review")
     changed = []
     for path in OUTPUTS:
         content = (ROOT / path).read_bytes()
@@ -114,7 +114,7 @@ def main():
     if not changed:
         ref_now = api("GET", "/git/ref/heads/" + BRANCH)
         if ref_now.get("object", {}).get("sha") != head:
-            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: branch head moved before no-op verification")
+            raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: branch head moved before no-op verification")
         verify_outputs_at_ref(head)
         if output_path:
             with open(output_path, "a", encoding="utf-8") as handle:
@@ -123,7 +123,7 @@ def main():
         return
     ref = api("GET", "/git/ref/heads/" + BRANCH)
     if ref.get("object", {}).get("sha") != head:
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: branch head moved during validation; refusing stale write")
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: branch head moved during validation; refusing stale write")
     commit_data = api("GET", "/git/commits/" + head)
     tree_entries = []
     for path, content in changed:
@@ -139,7 +139,7 @@ def main():
     api("PATCH", "/git/refs/heads/" + BRANCH, {"sha": commit["sha"], "force": False})
     ref_after = api("GET", "/git/ref/heads/" + BRANCH)
     if ref_after.get("object", {}).get("sha") != commit["sha"]:
-        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: branch ref does not point to persisted commit")
+        raise SystemExit("Q80_Q81_Q82_PERSIST_BLOCKED: branch ref does not point to persisted commit")
     verify_outputs_at_ref(commit["sha"])
     if output_path:
         with open(output_path, "a", encoding="utf-8") as handle:
