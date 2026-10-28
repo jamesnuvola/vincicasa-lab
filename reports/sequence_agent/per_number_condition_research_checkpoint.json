@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "project": "VinciCasa SONAR",
-  "generated_at_utc": "2026-10-28T16:22:06+00:00",
+  "generated_at_utc": "2026-10-28T16:49:38.043923+00:00",
   "archive_snapshot": {
     "source_archive": "data/storico_daily.csv",
     "source_blob_sha": "700d71ab1dc29e33199210336f3a717e5d76208e",
@@ -34,7 +34,8 @@
       "target_ledger_rows": 3338,
       "multiple_testing": {
         "method": "Holm-Bonferroni",
-        "test_count": 29727
+        "test_count": 29727,
+        "p_value_method": "continuity-corrected normal approximation to number-level binomial hit counts; exploratory, not an exact test"
       },
       "holm_adjusted_formula_split_rows_below_0_05": 0,
       "blind_oos_descriptive_best_mean_rank": 20.150824587706147,
@@ -46,7 +47,31 @@
         "queue_blob_sha": "7b36e140dc44b74ce6492da100211f5a2f97be7b"
       },
       "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
-      "conclusion": "Exploratory finite grammar passed structural and chronological validators; no formula was statistically promoted."
+      "conclusion": "Exploratory finite grammar passed structural and chronological validators; no formula was statistically promoted.",
+      "last_validated_at_utc": "2026-10-28T16:49:38.043923+00:00",
+      "last_validation_run_id": "40728220428",
+      "last_validation_head_sha": "ccf168ae2830551b688495343f113dfb1dafbc46"
+    },
+    {
+      "id": "Q81",
+      "first_verified_at_utc": "2026-10-28T16:49:38.043923+00:00",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "archive_cutoff": "2026-10-25",
+      "target_count": 3388,
+      "scored_targets": 3338,
+      "feature_count": 27,
+      "formula_count": 17550,
+      "metrics_rows": 52650,
+      "target_ledger_rows": 3338,
+      "multiple_testing": {
+        "method": "Holm-Bonferroni",
+        "test_count": 157950,
+        "p_value_method": "continuity-corrected normal approximation to number-level binomial hit counts; exploratory, not an exact test"
+      },
+      "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+      "last_validated_at_utc": "2026-10-28T16:49:38.043923+00:00",
+      "last_validation_run_id": "40728220428",
+      "last_validation_head_sha": "ccf168ae2830551b688495343f113dfb1dafbc46"
     }
   ],
   "validation_history": [
@@ -59,6 +84,17 @@
       "tasks": [
         "Q80"
       ]
+    },
+    {
+      "run_id": "40728220428",
+      "head_sha": "ccf168ae2830551b688495343f113dfb1dafbc46",
+      "event_name": "push",
+      "validated_at_utc": "2026-10-28T16:49:38.043923+00:00",
+      "status": "PASS",
+      "tasks": [
+        "Q80",
+        "Q81"
+      ]
     }
   ],
   "current_state": {
@@ -68,24 +104,19 @@
       "Q60"
     ],
     "q80_status": "VALIDATED_PENDING_HUMAN_REVIEW",
-    "q81_status": "IN_PROGRESS",
+    "q81_status": "VALIDATED_PENDING_HUMAN_REVIEW",
     "human_review_required": true,
     "automatic_promotion": false
   },
   "next_stages": [
     {
-      "id": "Q81",
-      "status": "IN_PROGRESS",
-      "scope": "all 17,550 four-feature equal-weight combinations"
-    },
-    {
       "id": "Q82",
-      "status": "PLANNED",
+      "status": "READY",
       "scope": "conditional thresholds, nonlinear transforms and feature interactions"
     },
     {
       "id": "Q83",
-      "status": "PLANNED",
+      "status": "READY",
       "scope": "five-plus feature subsets evaluated in bounded batches"
     }
   ],

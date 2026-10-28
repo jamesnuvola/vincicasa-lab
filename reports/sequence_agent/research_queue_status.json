@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-10-27T17:22:39.869057+00:00",
+  "generated_at_utc": "2026-10-28T16:49:37.195598+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
-  "task_count": 8,
+  "task_count": 11,
   "complete_count": 6,
-  "ready_count": 0,
-  "active_next_task": null,
-  "active_next_task_title": null,
+  "ready_count": 2,
+  "active_next_task": "Q82",
+  "active_next_task_title": "Test conditional thresholds, nonlinear transforms and feature interactions",
   "blocking_tasks": [
     "Q60"
   ],
@@ -154,6 +154,81 @@
         "uniform number-rank baseline is reported and null results remain exploratory",
         "immutable freezes are not overwritten and no formula is promoted automatically",
         "human review/integration is recorded before Q80 is marked COMPLETE"
+      ]
+    },
+    {
+      "id": "Q81",
+      "priority": 81,
+      "title": "Exhaustively evaluate all 4-feature equal-weight combinations",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [],
+      "validation_errors": [],
+      "acceptance_criteria": [
+        "formula evaluation runs in explicit 1,024-formula batches with a contiguous manifest covering all 17,550 formulas",
+        "all 17,550 unique unordered 4-feature combinations from the registered 27 prior-only features are evaluated",
+        "all 40 numbers are ranked for every target with at least 50 prior draws and no target leakage",
+        "per-target ledger reconciles actual quintet, immediate prior cutoff and all 27 single-feature ranks",
+        "metrics cover discovery, validation and blind OOS with Holm correction across formula×split×endpoint tests",
+        "uniform number-rank baseline is reported and adjusted-null results remain exploratory",
+        "immutable freezes are not overwritten and no formula is promoted automatically",
+        "human review/integration is recorded before Q81 is marked COMPLETE"
+      ]
+    },
+    {
+      "id": "Q82",
+      "priority": 82,
+      "title": "Test conditional thresholds, nonlinear transforms and feature interactions",
+      "status": "READY",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/per_number_condition_conditional_grammar.json",
+        "reports/sequence_agent/per_number_condition_conditional_metrics.csv",
+        "reports/sequence_agent/per_number_condition_conditional_target_ledger.csv"
+      ],
+      "validation_errors": [
+        "missing evidence: reports/sequence_agent/per_number_condition_conditional_grammar.json",
+        "missing evidence: reports/sequence_agent/per_number_condition_conditional_metrics.csv",
+        "missing evidence: reports/sequence_agent/per_number_condition_conditional_target_ledger.csv"
+      ],
+      "acceptance_criteria": [
+        "thresholds are selected from discovery data only and frozen before validation/blind OOS",
+        "piecewise conditions, nonlinear transforms and pairwise interactions are evaluated without target leakage",
+        "threshold×formula×split×endpoint testing receives family-wise multiple-testing correction",
+        "per-target ranks and strict prior cutoffs reconcile to the canonical archive",
+        "no retrospective best-per-target rule is presented as a prospective forecast",
+        "null results remain exploratory and no formula is promoted automatically"
+      ]
+    },
+    {
+      "id": "Q83",
+      "priority": 83,
+      "title": "Extend feature subsets to five and higher variables with bounded batch evaluation",
+      "status": "READY",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/per_number_condition_5plus_grammar.json",
+        "reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
+        "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
+      ],
+      "validation_errors": [
+        "missing evidence: reports/sequence_agent/per_number_condition_5plus_grammar.json",
+        "missing evidence: reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
+        "missing evidence: reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
+      ],
+      "acceptance_criteria": [
+        "all 5-feature combinations are evaluated in reproducible batches with formula-range manifests",
+        "higher-order batches continue beyond five features under explicit compute budgets; no silent truncation is allowed",
+        "batch outputs reconcile to the full declared formula universe without duplicate or missing formula IDs",
+        "chronological discovery/validation/blind OOS and Holm correction are maintained across the registered test family",
+        "prior-only cutoffs and actual quintets reconcile to the canonical archive",
+        "the finite grammar boundary is documented and no claim is made that all mathematical formulas are exhausted"
       ]
     }
   ],
