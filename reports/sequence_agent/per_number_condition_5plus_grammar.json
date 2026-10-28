@@ -1,0 +1,705 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q83",
+  "status": "REGISTERED_NOT_EXECUTED",
+  "review_status": "NOT_APPLICABLE_NOT_EVALUATED",
+  "source_archive": "data/storico_daily.csv",
+  "canonical_main_archive_blob_sha": "90e040c26b72be46f37136bf3e992e154ec8495c",
+  "canonical_main_last_date": "2026-10-27",
+  "canonical_main_draw_count": 3390,
+  "research_branch_archive_blob_sha": "700d71ab1dc29e33199210336f3a717e5d76208e",
+  "research_branch_last_date": "2026-10-25",
+  "research_branch_draw_count": 3388,
+  "minimum_prior_history": 50,
+  "feature_count": 27,
+  "features": [
+    "freq_5",
+    "freq_10",
+    "freq_20",
+    "freq_50",
+    "freq_100",
+    "freq_250",
+    "freq_500",
+    "freq_all",
+    "trend_5_vs_50",
+    "trend_10_vs_100",
+    "trend_20_vs_250",
+    "age_since_hit",
+    "gap_mean",
+    "gap_sd",
+    "overdue_ratio",
+    "position_log_frequency",
+    "pair_count_with_last_draw",
+    "neighbor_pm1_history",
+    "neighbor_pm2_history",
+    "lag_1",
+    "lag_2",
+    "lag_3",
+    "lag_5",
+    "lag_10",
+    "recent_3",
+    "recent_5",
+    "recent_10"
+  ],
+  "formula_count": 80730,
+  "formula_count_check": 80730,
+  "formula_grammar": "all unique unordered 5-feature equal-weight combinations from the registered 27 prior-only features",
+  "formula_batch_size": 1024,
+  "formula_batch_count": 79,
+  "batch_manifest": [
+    {
+      "batch_index": 0,
+      "formula_start_inclusive": 0,
+      "formula_end_exclusive": 1024,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_01_02_03_04",
+      "formula_id_last": "P5_00_01_06_09_26"
+    },
+    {
+      "batch_index": 1,
+      "formula_start_inclusive": 1024,
+      "formula_end_exclusive": 2048,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_01_06_10_11",
+      "formula_id_last": "P5_00_01_14_18_22"
+    },
+    {
+      "batch_index": 2,
+      "formula_start_inclusive": 2048,
+      "formula_end_exclusive": 3072,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_01_14_18_23",
+      "formula_id_last": "P5_00_02_06_11_19"
+    },
+    {
+      "batch_index": 3,
+      "formula_start_inclusive": 3072,
+      "formula_end_exclusive": 4096,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_02_06_11_20",
+      "formula_id_last": "P5_00_02_14_22_24"
+    },
+    {
+      "batch_index": 4,
+      "formula_start_inclusive": 4096,
+      "formula_end_exclusive": 5120,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_02_14_22_25",
+      "formula_id_last": "P5_00_03_07_22_26"
+    },
+    {
+      "batch_index": 5,
+      "formula_start_inclusive": 5120,
+      "formula_end_exclusive": 6144,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_03_07_23_24",
+      "formula_id_last": "P5_00_04_05_08_18"
+    },
+    {
+      "batch_index": 6,
+      "formula_start_inclusive": 6144,
+      "formula_end_exclusive": 7168,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_04_05_08_19",
+      "formula_id_last": "P5_00_04_11_21_24"
+    },
+    {
+      "batch_index": 7,
+      "formula_start_inclusive": 7168,
+      "formula_end_exclusive": 8192,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_04_11_21_25",
+      "formula_id_last": "P5_00_05_09_12_24"
+    },
+    {
+      "batch_index": 8,
+      "formula_start_inclusive": 8192,
+      "formula_end_exclusive": 9216,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_05_09_12_25",
+      "formula_id_last": "P5_00_06_08_14_19"
+    },
+    {
+      "batch_index": 9,
+      "formula_start_inclusive": 9216,
+      "formula_end_exclusive": 10240,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_06_08_14_20",
+      "formula_id_last": "P5_00_07_08_20_23"
+    },
+    {
+      "batch_index": 10,
+      "formula_start_inclusive": 10240,
+      "formula_end_exclusive": 11264,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_07_08_20_24",
+      "formula_id_last": "P5_00_08_10_14_26"
+    },
+    {
+      "batch_index": 11,
+      "formula_start_inclusive": 11264,
+      "formula_end_exclusive": 12288,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_08_10_15_16",
+      "formula_id_last": "P5_00_09_14_15_19"
+    },
+    {
+      "batch_index": 12,
+      "formula_start_inclusive": 12288,
+      "formula_end_exclusive": 13312,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_09_14_15_20",
+      "formula_id_last": "P5_00_11_14_16_18"
+    },
+    {
+      "batch_index": 13,
+      "formula_start_inclusive": 13312,
+      "formula_end_exclusive": 14336,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_11_14_16_19",
+      "formula_id_last": "P5_00_14_17_18_19"
+    },
+    {
+      "batch_index": 14,
+      "formula_start_inclusive": 14336,
+      "formula_end_exclusive": 15360,
+      "formula_count": 1024,
+      "formula_id_first": "P5_00_14_17_18_20",
+      "formula_id_last": "P5_01_02_04_14_18"
+    },
+    {
+      "batch_index": 15,
+      "formula_start_inclusive": 15360,
+      "formula_end_exclusive": 16384,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_02_04_14_19",
+      "formula_id_last": "P5_01_02_10_18_24"
+    },
+    {
+      "batch_index": 16,
+      "formula_start_inclusive": 16384,
+      "formula_end_exclusive": 17408,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_02_10_18_25",
+      "formula_id_last": "P5_01_03_05_22_25"
+    },
+    {
+      "batch_index": 17,
+      "formula_start_inclusive": 17408,
+      "formula_end_exclusive": 18432,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_03_05_22_26",
+      "formula_id_last": "P5_01_03_13_19_20"
+    },
+    {
+      "batch_index": 18,
+      "formula_start_inclusive": 18432,
+      "formula_end_exclusive": 19456,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_03_13_19_21",
+      "formula_id_last": "P5_01_04_08_21_23"
+    },
+    {
+      "batch_index": 19,
+      "formula_start_inclusive": 19456,
+      "formula_end_exclusive": 20480,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_04_08_21_24",
+      "formula_id_last": "P5_01_05_07_08_13"
+    },
+    {
+      "batch_index": 20,
+      "formula_start_inclusive": 20480,
+      "formula_end_exclusive": 21504,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_05_07_08_14",
+      "formula_id_last": "P5_01_05_17_19_20"
+    },
+    {
+      "batch_index": 21,
+      "formula_start_inclusive": 21504,
+      "formula_end_exclusive": 22528,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_05_17_19_21",
+      "formula_id_last": "P5_01_06_14_22_25"
+    },
+    {
+      "batch_index": 22,
+      "formula_start_inclusive": 22528,
+      "formula_end_exclusive": 23552,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_06_14_22_26",
+      "formula_id_last": "P5_01_07_15_22_25"
+    },
+    {
+      "batch_index": 23,
+      "formula_start_inclusive": 23552,
+      "formula_end_exclusive": 24576,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_07_15_22_26",
+      "formula_id_last": "P5_01_09_10_13_20"
+    },
+    {
+      "batch_index": 24,
+      "formula_start_inclusive": 24576,
+      "formula_end_exclusive": 25600,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_09_10_13_21",
+      "formula_id_last": "P5_01_10_15_20_26"
+    },
+    {
+      "batch_index": 25,
+      "formula_start_inclusive": 25600,
+      "formula_end_exclusive": 26624,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_10_15_21_22",
+      "formula_id_last": "P5_01_13_14_17_21"
+    },
+    {
+      "batch_index": 26,
+      "formula_start_inclusive": 26624,
+      "formula_end_exclusive": 27648,
+      "formula_count": 1024,
+      "formula_id_first": "P5_01_13_14_17_22",
+      "formula_id_last": "P5_02_03_04_07_14"
+    },
+    {
+      "batch_index": 27,
+      "formula_start_inclusive": 27648,
+      "formula_end_exclusive": 28672,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_03_04_07_15",
+      "formula_id_last": "P5_02_03_09_20_22"
+    },
+    {
+      "batch_index": 28,
+      "formula_start_inclusive": 28672,
+      "formula_end_exclusive": 29696,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_03_09_20_23",
+      "formula_id_last": "P5_02_04_06_14_17"
+    },
+    {
+      "batch_index": 29,
+      "formula_start_inclusive": 29696,
+      "formula_end_exclusive": 30720,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_04_06_14_18",
+      "formula_id_last": "P5_02_04_15_19_21"
+    },
+    {
+      "batch_index": 30,
+      "formula_start_inclusive": 30720,
+      "formula_end_exclusive": 31744,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_04_15_19_22",
+      "formula_id_last": "P5_02_05_11_17_20"
+    },
+    {
+      "batch_index": 31,
+      "formula_start_inclusive": 31744,
+      "formula_end_exclusive": 32768,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_05_11_17_21",
+      "formula_id_last": "P5_02_06_10_16_18"
+    },
+    {
+      "batch_index": 32,
+      "formula_start_inclusive": 32768,
+      "formula_end_exclusive": 33792,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_06_10_16_19",
+      "formula_id_last": "P5_02_07_11_12_14"
+    },
+    {
+      "batch_index": 33,
+      "formula_start_inclusive": 33792,
+      "formula_end_exclusive": 34816,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_07_11_12_15",
+      "formula_id_last": "P5_02_08_13_15_17"
+    },
+    {
+      "batch_index": 34,
+      "formula_start_inclusive": 34816,
+      "formula_end_exclusive": 35840,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_08_13_15_18",
+      "formula_id_last": "P5_02_09_22_24_25"
+    },
+    {
+      "batch_index": 35,
+      "formula_start_inclusive": 35840,
+      "formula_end_exclusive": 36864,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_09_22_24_26",
+      "formula_id_last": "P5_02_12_13_14_17"
+    },
+    {
+      "batch_index": 36,
+      "formula_start_inclusive": 36864,
+      "formula_end_exclusive": 37888,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_12_13_14_18",
+      "formula_id_last": "P5_02_15_22_23_25"
+    },
+    {
+      "batch_index": 37,
+      "formula_start_inclusive": 37888,
+      "formula_end_exclusive": 38912,
+      "formula_count": 1024,
+      "formula_id_first": "P5_02_15_22_23_26",
+      "formula_id_last": "P5_03_04_08_17_24"
+    },
+    {
+      "batch_index": 38,
+      "formula_start_inclusive": 38912,
+      "formula_end_exclusive": 39936,
+      "formula_count": 1024,
+      "formula_id_first": "P5_03_04_08_17_25",
+      "formula_id_last": "P5_03_05_06_20_21"
+    },
+    {
+      "batch_index": 39,
+      "formula_start_inclusive": 39936,
+      "formula_end_exclusive": 40960,
+      "formula_count": 1024,
+      "formula_id_first": "P5_03_05_06_20_22",
+      "formula_id_last": "P5_03_05_16_20_25"
+    },
+    {
+      "batch_index": 40,
+      "formula_start_inclusive": 40960,
+      "formula_end_exclusive": 41984,
+      "formula_count": 1024,
+      "formula_id_first": "P5_03_05_16_20_26",
+      "formula_id_last": "P5_03_06_14_18_22"
+    },
+    {
+      "batch_index": 41,
+      "formula_start_inclusive": 41984,
+      "formula_end_exclusive": 43008,
+      "formula_count": 1024,
+      "formula_id_first": "P5_03_06_14_18_23",
+      "formula_id_last": "P5_03_07_15_18_22"
+    },
+    {
+      "batch_index": 42,
+      "formula_start_inclusive": 43008,
+      "formula_end_exclusive": 44032,
+      "formula_count": 1024,
+      "formula_id_first": "P5_03_07_15_18_23",
+      "formula_id_last": "P5_03_09_10_11_22"
+    },
+    {
+      "batch_index": 43,
+      "formula_start_inclusive": 44032,
+      "formula_end_exclusive": 45056,
+      "formula_count": 1024,
+      "formula_id_first": "P5_03_09_10_11_23",
+      "formula_id_last": "P5_03_10_15_17_22"
+    },
+    {
+      "batch_index": 44,
+      "formula_start_inclusive": 45056,
+      "formula_end_exclusive": 46080,
+      "formula_count": 1024,
+      "formula_id_first": "P5_03_10_15_17_23",
+      "formula_id_last": "P5_03_12_24_25_26"
+    },
+    {
+      "batch_index": 45,
+      "formula_start_inclusive": 46080,
+      "formula_end_exclusive": 47104,
+      "formula_count": 1024,
+      "formula_id_first": "P5_03_13_14_15_16",
+      "formula_id_last": "P5_04_05_06_08_12"
+    },
+    {
+      "batch_index": 46,
+      "formula_start_inclusive": 47104,
+      "formula_end_exclusive": 48128,
+      "formula_count": 1024,
+      "formula_id_first": "P5_04_05_06_08_13",
+      "formula_id_last": "P5_04_05_14_15_18"
+    },
+    {
+      "batch_index": 47,
+      "formula_start_inclusive": 48128,
+      "formula_end_exclusive": 49152,
+      "formula_count": 1024,
+      "formula_id_first": "P5_04_05_14_15_19",
+      "formula_id_last": "P5_04_06_12_18_19"
+    },
+    {
+      "batch_index": 48,
+      "formula_start_inclusive": 49152,
+      "formula_end_exclusive": 50176,
+      "formula_count": 1024,
+      "formula_id_first": "P5_04_06_12_18_20",
+      "formula_id_last": "P5_04_07_13_15_23"
+    },
+    {
+      "batch_index": 49,
+      "formula_start_inclusive": 50176,
+      "formula_end_exclusive": 51200,
+      "formula_count": 1024,
+      "formula_id_first": "P5_04_07_13_15_24",
+      "formula_id_last": "P5_04_08_16_20_25"
+    },
+    {
+      "batch_index": 50,
+      "formula_start_inclusive": 51200,
+      "formula_end_exclusive": 52224,
+      "formula_count": 1024,
+      "formula_id_first": "P5_04_08_16_20_26",
+      "formula_id_last": "P5_04_10_13_14_26"
+    },
+    {
+      "batch_index": 51,
+      "formula_start_inclusive": 52224,
+      "formula_end_exclusive": 53248,
+      "formula_count": 1024,
+      "formula_id_first": "P5_04_10_13_15_16",
+      "formula_id_last": "P5_04_12_16_19_20"
+    },
+    {
+      "batch_index": 52,
+      "formula_start_inclusive": 53248,
+      "formula_end_exclusive": 54272,
+      "formula_count": 1024,
+      "formula_id_first": "P5_04_12_16_19_21",
+      "formula_id_last": "P5_04_18_19_20_22"
+    },
+    {
+      "batch_index": 53,
+      "formula_start_inclusive": 54272,
+      "formula_end_exclusive": 55296,
+      "formula_count": 1024,
+      "formula_id_first": "P5_04_18_19_20_23",
+      "formula_id_last": "P5_05_06_14_20_21"
+    },
+    {
+      "batch_index": 54,
+      "formula_start_inclusive": 55296,
+      "formula_end_exclusive": 56320,
+      "formula_count": 1024,
+      "formula_id_first": "P5_05_06_14_20_22",
+      "formula_id_last": "P5_05_07_15_20_21"
+    },
+    {
+      "batch_index": 55,
+      "formula_start_inclusive": 56320,
+      "formula_end_exclusive": 57344,
+      "formula_count": 1024,
+      "formula_id_first": "P5_05_07_15_20_22",
+      "formula_id_last": "P5_05_09_10_12_20"
+    },
+    {
+      "batch_index": 56,
+      "formula_start_inclusive": 57344,
+      "formula_end_exclusive": 58368,
+      "formula_count": 1024,
+      "formula_id_first": "P5_05_09_10_12_21",
+      "formula_id_last": "P5_05_10_15_18_26"
+    },
+    {
+      "batch_index": 57,
+      "formula_start_inclusive": 58368,
+      "formula_end_exclusive": 59392,
+      "formula_count": 1024,
+      "formula_id_first": "P5_05_10_15_19_20",
+      "formula_id_last": "P5_05_13_14_16_17"
+    },
+    {
+      "batch_index": 58,
+      "formula_start_inclusive": 59392,
+      "formula_end_exclusive": 60416,
+      "formula_count": 1024,
+      "formula_id_first": "P5_05_13_14_16_18",
+      "formula_id_last": "P5_06_07_08_11_13"
+    },
+    {
+      "batch_index": 59,
+      "formula_start_inclusive": 60416,
+      "formula_end_exclusive": 61440,
+      "formula_count": 1024,
+      "formula_id_first": "P5_06_07_08_11_14",
+      "formula_id_last": "P5_06_08_09_16_25"
+    },
+    {
+      "batch_index": 60,
+      "formula_start_inclusive": 61440,
+      "formula_end_exclusive": 62464,
+      "formula_count": 1024,
+      "formula_id_first": "P5_06_08_09_16_26",
+      "formula_id_last": "P5_06_09_12_20_23"
+    },
+    {
+      "batch_index": 61,
+      "formula_start_inclusive": 62464,
+      "formula_end_exclusive": 63488,
+      "formula_count": 1024,
+      "formula_id_first": "P5_06_09_12_20_24",
+      "formula_id_last": "P5_06_11_12_22_23"
+    },
+    {
+      "batch_index": 62,
+      "formula_start_inclusive": 63488,
+      "formula_end_exclusive": 64512,
+      "formula_count": 1024,
+      "formula_id_first": "P5_06_11_12_22_24",
+      "formula_id_last": "P5_06_14_15_16_17"
+    },
+    {
+      "batch_index": 63,
+      "formula_start_inclusive": 64512,
+      "formula_end_exclusive": 65536,
+      "formula_count": 1024,
+      "formula_id_first": "P5_06_14_15_16_18",
+      "formula_id_last": "P5_07_08_11_16_20"
+    },
+    {
+      "batch_index": 64,
+      "formula_start_inclusive": 65536,
+      "formula_end_exclusive": 66560,
+      "formula_count": 1024,
+      "formula_id_first": "P5_07_08_11_16_21",
+      "formula_id_last": "P5_07_09_16_17_20"
+    },
+    {
+      "batch_index": 65,
+      "formula_start_inclusive": 66560,
+      "formula_end_exclusive": 67584,
+      "formula_count": 1024,
+      "formula_id_first": "P5_07_09_16_17_21",
+      "formula_id_last": "P5_07_11_16_18_21"
+    },
+    {
+      "batch_index": 66,
+      "formula_start_inclusive": 67584,
+      "formula_end_exclusive": 68608,
+      "formula_count": 1024,
+      "formula_id_first": "P5_07_11_16_18_22",
+      "formula_id_last": "P5_07_15_16_17_18"
+    },
+    {
+      "batch_index": 67,
+      "formula_start_inclusive": 68608,
+      "formula_end_exclusive": 69632,
+      "formula_count": 1024,
+      "formula_id_first": "P5_07_15_16_17_19",
+      "formula_id_last": "P5_08_09_16_18_24"
+    },
+    {
+      "batch_index": 68,
+      "formula_start_inclusive": 69632,
+      "formula_end_exclusive": 70656,
+      "formula_count": 1024,
+      "formula_id_first": "P5_08_09_16_18_25",
+      "formula_id_last": "P5_08_11_16_19_26"
+    },
+    {
+      "batch_index": 69,
+      "formula_start_inclusive": 70656,
+      "formula_end_exclusive": 71680,
+      "formula_count": 1024,
+      "formula_id_first": "P5_08_11_16_20_21",
+      "formula_id_last": "P5_08_15_16_18_22"
+    },
+    {
+      "batch_index": 70,
+      "formula_start_inclusive": 71680,
+      "formula_end_exclusive": 72704,
+      "formula_count": 1024,
+      "formula_id_first": "P5_08_15_16_18_23",
+      "formula_id_last": "P5_09_10_21_22_24"
+    },
+    {
+      "batch_index": 71,
+      "formula_start_inclusive": 72704,
+      "formula_end_exclusive": 73728,
+      "formula_count": 1024,
+      "formula_id_first": "P5_09_10_21_22_25",
+      "formula_id_last": "P5_09_13_17_20_26"
+    },
+    {
+      "batch_index": 72,
+      "formula_start_inclusive": 73728,
+      "formula_end_exclusive": 74752,
+      "formula_count": 1024,
+      "formula_id_first": "P5_09_13_17_21_22",
+      "formula_id_last": "P5_10_11_14_19_22"
+    },
+    {
+      "batch_index": 73,
+      "formula_start_inclusive": 74752,
+      "formula_end_exclusive": 75776,
+      "formula_count": 1024,
+      "formula_id_first": "P5_10_11_14_19_23",
+      "formula_id_last": "P5_10_14_17_22_25"
+    },
+    {
+      "batch_index": 74,
+      "formula_start_inclusive": 75776,
+      "formula_end_exclusive": 76800,
+      "formula_count": 1024,
+      "formula_id_first": "P5_10_14_17_22_26",
+      "formula_id_last": "P5_11_13_15_16_24"
+    },
+    {
+      "batch_index": 75,
+      "formula_start_inclusive": 76800,
+      "formula_end_exclusive": 77824,
+      "formula_count": 1024,
+      "formula_id_first": "P5_11_13_15_16_25",
+      "formula_id_last": "P5_12_13_15_19_23"
+    },
+    {
+      "batch_index": 76,
+      "formula_start_inclusive": 77824,
+      "formula_end_exclusive": 78848,
+      "formula_count": 1024,
+      "formula_id_first": "P5_12_13_15_19_24",
+      "formula_id_last": "P5_13_14_17_20_25"
+    },
+    {
+      "batch_index": 77,
+      "formula_start_inclusive": 78848,
+      "formula_end_exclusive": 79872,
+      "formula_count": 1024,
+      "formula_id_first": "P5_13_14_17_20_26",
+      "formula_id_last": "P5_14_19_20_21_25"
+    },
+    {
+      "batch_index": 78,
+      "formula_start_inclusive": 79872,
+      "formula_end_exclusive": 80730,
+      "formula_count": 858,
+      "formula_id_first": "P5_14_19_20_21_26",
+      "formula_id_last": "P5_22_23_24_25_26"
+    }
+  ],
+  "split_policy": {
+    "discovery": 2003,
+    "validation": 668,
+    "blind_oos": 667,
+    "source": "registered Q80/Q81/Q82 chronology; must be recomputed/reconciled against refreshed archive"
+  },
+  "execution_status": "No formulas evaluated by this registration artifact. Metrics and target ledger are intentionally absent until a real runner executes.",
+  "outputs": {
+    "metrics": "reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
+    "target_ledger": "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv",
+    "report": "reports/sequence_agent/per_number_condition_5plus_grammar.json"
+  },
+  "guardrails": [
+    "All 80,730 formula IDs are registered exactly once in contiguous reproducible batches.",
+    "Do not treat manifest registration as execution or validation.",
+    "For target i, use only draws with index less than i.",
+    "Record all 40 number ranks before evaluating the target quintet.",
+    "Recompute and reconcile target counts and chronological splits after archive refresh.",
+    "Continue beyond five features under explicit compute budgets; no silent truncation.",
+    "No retrospective best-per-target result is a prospective forecast.",
+    "Preserve immutable freezes and never claim the infinite mathematical formula universe is exhausted."
+  ]
+}
