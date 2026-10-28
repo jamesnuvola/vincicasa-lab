@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Persist validated Q80/Q81 formula artifacts with GitHub's Git Data API, then request exact-head CI."""
 from __future__ import annotations
+import base64
 import json
 import os
 import subprocess
@@ -51,6 +52,28 @@ def git_head_file(path: str):
     result = subprocess.run(["git", "show", "HEAD:" + path], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     return result.stdout if result.returncode == 0 else None
 
+
+
+def verify_outputs_at_ref(ref_sha: str):
+    # Re-read immutable Git objects by exact commit SHA, not mutable branch paths.
+    commit_info = api("GET", "/git/commits/" + ref_sha)
+    tree_info = api("GET", "/git/trees/" + commit_info["tree"]["sha"] + "?recursive=1")
+    if tree_info.get("truncated"):
+        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: repository tree response was truncated")
+    entries = {item["path"]: item for item in tree_info.get("tree", []) if item.get("type") == "blob"}
+    for path in OUTPUTS:
+        entry = entries.get(path)
+        if not entry:
+            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: persisted tree missing " + path)
+        blob = api("GET", "/git/blobs/" + entry["sha"])
+        if blob.get("encoding") != "base64":
+            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: unexpected blob encoding for " + path)
+        persisted_bytes = base64.b64decode(blob.get("content", ""))
+        expected_bytes = (ROOT / path).read_bytes()
+        if persisted_bytes != expected_bytes:
+            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: persisted bytes differ for " + path)
+        print("Q80_Q81_PERSIST_VERIFIED: " + path + " bytes=" + str(len(persisted_bytes)))
+
 def main():
     if os.environ.get("GITHUB_REF_NAME") != BRANCH:
         raise SystemExit("Q80_Q81_PERSIST_BLOCKED: refusing to write outside the registered research branch")
@@ -83,6 +106,10 @@ def main():
             changed.append((path, content.decode("utf-8")))
     output_path = os.environ.get("GITHUB_OUTPUT")
     if not changed:
+        ref_now = api("GET", "/git/ref/heads/" + BRANCH)
+        if ref_now.get("object", {}).get("sha") != head:
+            raise SystemExit("Q80_Q81_PERSIST_BLOCKED: branch head moved before no-op verification")
+        verify_outputs_at_ref(head)
         if output_path:
             with open(output_path, "a", encoding="utf-8") as handle:
                 handle.write("commit_created=false\nnew_sha=" + head + "\n")
@@ -96,7 +123,7 @@ def main():
     for path, content in changed:
         blob = api("POST", "/git/blobs", {"content": content, "encoding": "utf-8"})
         tree_entries.append({"path": path, "mode": "100644", "type": "blob", "sha": blob["sha"]})
-        print("Q80_PERSIST_BLOB: " + path + " bytes=" + str(len(content.encode("utf-8"))))
+        print("Q80_Q81_PERSIST_BLOB: " + path + " bytes=" + str(len(content.encode("utf-8"))))
     tree = api("POST", "/git/trees", {"base_tree": commit_data["tree"]["sha"], "tree": tree_entries})
     commit = api("POST", "/git/commits", {
         "message": "Persist validated Q80/Q81 formula outputs, checkpoint and research queue status",
@@ -104,10 +131,14 @@ def main():
         "parents": [head],
     })
     api("PATCH", "/git/refs/heads/" + BRANCH, {"sha": commit["sha"], "force": False})
+    ref_after = api("GET", "/git/ref/heads/" + BRANCH)
+    if ref_after.get("object", {}).get("sha") != commit["sha"]:
+        raise SystemExit("Q80_Q81_PERSIST_BLOCKED: branch ref does not point to persisted commit")
+    verify_outputs_at_ref(commit["sha"])
     if output_path:
         with open(output_path, "a", encoding="utf-8") as handle:
             handle.write("commit_created=true\nnew_sha=" + commit["sha"] + "\n")
-    print("Q80_PERSIST_COMMIT: " + commit["sha"])
+    print("Q80_Q81_PERSIST_COMMIT: " + commit["sha"])
 
 if __name__ == "__main__":
     main()
