@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-10-28T16:49:37.195598+00:00",
+  "generated_at_utc": "2026-10-28T17:08:53.976144+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
   "task_count": 11,
   "complete_count": 6,
-  "ready_count": 2,
-  "active_next_task": "Q82",
-  "active_next_task_title": "Test conditional thresholds, nonlinear transforms and feature interactions",
+  "ready_count": 1,
+  "active_next_task": "Q83",
+  "active_next_task_title": "Extend feature subsets to five and higher variables with bounded batch evaluation",
   "blocking_tasks": [
     "Q60"
   ],
@@ -181,27 +181,20 @@
       "id": "Q82",
       "priority": 82,
       "title": "Test conditional thresholds, nonlinear transforms and feature interactions",
-      "status": "READY",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
       "depends_on": [
         "Q00"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/per_number_condition_conditional_grammar.json",
-        "reports/sequence_agent/per_number_condition_conditional_metrics.csv",
-        "reports/sequence_agent/per_number_condition_conditional_target_ledger.csv"
-      ],
-      "validation_errors": [
-        "missing evidence: reports/sequence_agent/per_number_condition_conditional_grammar.json",
-        "missing evidence: reports/sequence_agent/per_number_condition_conditional_metrics.csv",
-        "missing evidence: reports/sequence_agent/per_number_condition_conditional_target_ledger.csv"
-      ],
+      "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
-        "thresholds are selected from discovery data only and frozen before validation/blind OOS",
-        "piecewise conditions, nonlinear transforms and pairwise interactions are evaluated without target leakage",
-        "threshold×formula×split×endpoint testing receives family-wise multiple-testing correction",
-        "per-target ranks and strict prior cutoffs reconcile to the canonical archive",
-        "no retrospective best-per-target rule is presented as a prospective forecast",
-        "null results remain exploratory and no formula is promoted automatically"
+        "the registered finite grammar contains 27 base terms, 108 nonlinear transforms, 351 pairwise products and 4,212 conditional interactions (4,698 terms total)",
+        "threshold cutpoints are quantiles of discovery-split feature values only, use no target outcomes, and are frozen before validation/blind OOS",
+        "all registered nonlinear, pairwise-interaction and piecewise threshold terms are evaluated walk-forward for every target with at least 50 prior draws",
+        "threshold×formula×split×endpoint tests receive Holm-Bonferroni correction across the complete registered family",
+        "per-target ranks, actual quintets and immediate prior cutoffs reconcile to the canonical archive",
+        "best-per-target results remain retrospective/descriptive; null results remain exploratory and no formula is promoted automatically",
+        "immutable target freezes are preserved and human review/integration is required before Q82 can be marked COMPLETE"
       ]
     },
     {

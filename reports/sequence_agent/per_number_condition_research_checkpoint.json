@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "project": "VinciCasa SONAR",
-  "generated_at_utc": "2026-10-28T16:49:38.043923+00:00",
+  "generated_at_utc": "2026-10-28T17:08:55.172336+00:00",
   "archive_snapshot": {
     "source_archive": "data/storico_daily.csv",
     "source_blob_sha": "700d71ab1dc29e33199210336f3a717e5d76208e",
@@ -48,9 +48,9 @@
       },
       "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
       "conclusion": "Exploratory finite grammar passed structural and chronological validators; no formula was statistically promoted.",
-      "last_validated_at_utc": "2026-10-28T16:49:38.043923+00:00",
-      "last_validation_run_id": "40728220428",
-      "last_validation_head_sha": "ccf168ae2830551b688495343f113dfb1dafbc46"
+      "last_validated_at_utc": "2026-10-28T17:08:55.172336+00:00",
+      "last_validation_run_id": "40731286735",
+      "last_validation_head_sha": "fd3b50083c27600fe6178834ff82a09c47d91f78"
     },
     {
       "id": "Q81",
@@ -69,9 +69,30 @@
         "p_value_method": "continuity-corrected normal approximation to number-level binomial hit counts; exploratory, not an exact test"
       },
       "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
-      "last_validated_at_utc": "2026-10-28T16:49:38.043923+00:00",
-      "last_validation_run_id": "40728220428",
-      "last_validation_head_sha": "ccf168ae2830551b688495343f113dfb1dafbc46"
+      "last_validated_at_utc": "2026-10-28T17:08:55.172336+00:00",
+      "last_validation_run_id": "40731286735",
+      "last_validation_head_sha": "fd3b50083c27600fe6178834ff82a09c47d91f78"
+    },
+    {
+      "id": "Q82",
+      "first_verified_at_utc": "2026-10-28T17:08:55.172336+00:00",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "archive_cutoff": "2026-10-25",
+      "target_count": 3388,
+      "scored_targets": 3338,
+      "feature_count": 27,
+      "formula_count": 4698,
+      "metrics_rows": 14094,
+      "target_ledger_rows": 3338,
+      "multiple_testing": {
+        "method": "Holm-Bonferroni",
+        "test_count": 42282,
+        "p_value_method": "continuity-corrected normal approximation to number-level binomial hit counts; exploratory, not an exact test"
+      },
+      "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+      "last_validated_at_utc": "2026-10-28T17:08:55.172336+00:00",
+      "last_validation_run_id": "40731286735",
+      "last_validation_head_sha": "fd3b50083c27600fe6178834ff82a09c47d91f78"
     }
   ],
   "validation_history": [
@@ -95,6 +116,18 @@
         "Q80",
         "Q81"
       ]
+    },
+    {
+      "run_id": "40731286735",
+      "head_sha": "fd3b50083c27600fe6178834ff82a09c47d91f78",
+      "event_name": "push",
+      "validated_at_utc": "2026-10-28T17:08:55.172336+00:00",
+      "status": "PASS",
+      "tasks": [
+        "Q80",
+        "Q81",
+        "Q82"
+      ]
     }
   ],
   "current_state": {
@@ -105,15 +138,11 @@
     ],
     "q80_status": "VALIDATED_PENDING_HUMAN_REVIEW",
     "q81_status": "VALIDATED_PENDING_HUMAN_REVIEW",
+    "q82_status": "VALIDATED_PENDING_HUMAN_REVIEW",
     "human_review_required": true,
     "automatic_promotion": false
   },
   "next_stages": [
-    {
-      "id": "Q82",
-      "status": "READY",
-      "scope": "conditional thresholds, nonlinear transforms and feature interactions"
-    },
     {
       "id": "Q83",
       "status": "READY",
@@ -125,7 +154,8 @@
     "formula universes are exhaustive only within their declared finite grammars",
     "best-per-target formula is retrospective/descriptive and never a prospective forecast",
     "immutable target freezes are append-only and are never overwritten",
-    "human review/integration is required before Q80 or Q81 can be marked COMPLETE",
+    "human review/integration is required before Q80, Q81 or Q82 can be marked COMPLETE",
+    "Q82 thresholds are estimated from discovery feature values only and frozen before validation/blind OOS",
     "no formula is promoted automatically"
   ]
 }
