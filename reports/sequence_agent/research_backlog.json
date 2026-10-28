@@ -8,7 +8,8 @@
     "chronological_validation_required": true,
     "minimum_complete_oos_cases": 100,
     "preferred_complete_oos_cases": 200,
-    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80 or Q81 is marked COMPLETE; passing automated validators alone leaves each VALIDATED_PENDING_HUMAN_REVIEW."
+    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80 or Q81 is marked COMPLETE; passing automated validators alone leaves each VALIDATED_PENDING_HUMAN_REVIEW.",
+    "strategy_catalog_policy": "Catalog occasional, intermittent, conditional, complementary, antagonistic, retrospective and null strategies; keep ex-ante and retrospective evidence separate. Formula-universe claims must name the finite grammar explored."
   },
   "tasks": [
     {
@@ -231,6 +232,31 @@
         "chronological discovery/validation/blind OOS and Holm correction are maintained across the registered test family",
         "prior-only cutoffs and actual quintets reconcile to the canonical archive",
         "the finite grammar boundary is documented and no claim is made that all mathematical formulas are exhausted"
+      ],
+      "kind": "analysis"
+    },
+    {
+      "id": "Q84",
+      "priority": 84,
+      "title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
+      "depends_on": [
+        "Q00"
+      ],
+      "evidence": [
+        "reports/sequence_agent/strategy_atlas_catalog.jsonl",
+        "reports/sequence_agent/strategy_atlas_target_ledger.csv",
+        "reports/sequence_agent/strategy_atlas_lifecycle.json",
+        "reports/sequence_agent/strategy_atlas_report.json"
+      ],
+      "acceptance": [
+        "catalog preserves one-target, intermittent, conditional, complementary, antagonistic, retrospective and null strategies with stable IDs and formula provenance",
+        "all ex-ante target records use only prior draws and preserve the exact cutoff; retrospective strategies are flagged and never counted as ex-ante forecasts",
+        "rank all 40 numbers per eligible strategy/target and reconcile the actual five numbers to the canonical archive",
+        "record success/failure lifecycle, recurrence gaps, state conditions and whether conditions were detectable before the target",
+        "measure equivalence, redundancy, complementarity on paired misses, antagonism and marginal contribution across strategies",
+        "use chronological discovery/validation/blind OOS splits, registered multiple-testing correction and suitable conditional nulls",
+        "retain failed/null strategies; no automatic promotion; never overwrite immutable freezes",
+        "report latest canonical archive date/blob SHA and document the finite grammar boundary without claiming all mathematical formulas are exhausted"
       ],
       "kind": "analysis"
     }
