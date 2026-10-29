@@ -24,7 +24,7 @@ def synthetic_draws(count):
 
 
 class Q86GrammarTests(unittest.TestCase):
-    def test_all_five_feature_combinations_are_unique(self):
+    def test_all_six_feature_combinations_are_unique(self):
         formulas = Q86.make_formulas()
         self.assertEqual(len(Q86.FEATURE_NAMES), 27)
         self.assertEqual(len(formulas), math.comb(27, 6))
@@ -37,7 +37,7 @@ class Q86GrammarTests(unittest.TestCase):
         a = synthetic_draws(55)
         b = list(a)
         b[-1] = tuple(sorted(((55 * 7 + j * 13 + 3) % 40) + 1 for j in range(5)))
-        self.assertEqual(len(set(b[-1])), 6)
+        self.assertEqual(len(set(b[-1])), 5)
         fa = Q86.build_feature_stack(a)
         fb = Q86.build_feature_stack(b)
         self.assertEqual(fa.shape, (5, 40, 27))
@@ -59,12 +59,12 @@ class Q86GrammarTests(unittest.TestCase):
         batches = Q86.batch_ranges(296010, 1024)
         self.assertEqual(len(batches), 290)
         self.assertEqual(batches[0], (0, 1024))
-        self.assertEqual(batches[-1], (79872, 296010))
+        self.assertEqual(batches[-1], (295936, 296010))
         self.assertEqual(sum(end - start for start, end in batches), 296010)
         for previous, current in zip(batches, batches[1:]):
             self.assertEqual(previous[1], current[0])
 
-    def test_formula_weight_matrix_has_equal_weights_and_five_variables(self):
+    def test_formula_weight_matrix_has_equal_weights_and_six_variables(self):
         formulas = Q86.make_formulas()[:3]
         weights = Q86.build_formula_weight_matrix(formulas)
         self.assertEqual(weights.shape, (27, 3))
