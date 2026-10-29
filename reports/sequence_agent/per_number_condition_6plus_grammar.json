@@ -1,0 +1,549 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q86",
+  "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+  "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+  "source_archive": "data/storico_daily.csv",
+  "source_archive_sha256": "0e53e2aa89c7f0b3e5714b9da7c9a4a1e86510b72132b27903fcf14d69046908",
+  "target_count": 3391,
+  "first_date": "2017-07-17",
+  "last_date": "2026-10-28",
+  "latest_quintet": [
+    9,
+    21,
+    25,
+    26,
+    30
+  ],
+  "minimum_prior_history": 50,
+  "scored_targets": 3341,
+  "feature_count": 27,
+  "features": [
+    "freq_5",
+    "freq_10",
+    "freq_20",
+    "freq_50",
+    "freq_100",
+    "freq_250",
+    "freq_500",
+    "freq_all",
+    "trend_5_vs_50",
+    "trend_10_vs_100",
+    "trend_20_vs_250",
+    "age_since_hit",
+    "gap_mean",
+    "gap_sd",
+    "overdue_ratio",
+    "position_log_frequency",
+    "pair_count_with_last_draw",
+    "neighbor_pm1_history",
+    "neighbor_pm2_history",
+    "lag_1",
+    "lag_2",
+    "lag_3",
+    "lag_5",
+    "lag_10",
+    "recent_3",
+    "recent_5",
+    "recent_10"
+  ],
+  "formula_count": 296010,
+  "formula_count_check": 296010,
+  "formula_grammar": "all unique unordered 6-feature equal-weight combinations from the 27 registered prior-only features",
+  "scoring_rule": "for each target, z-score each feature over numbers 1..40 using only prior draws, then average each 6-feature subset",
+  "shard_count": 16,
+  "shard_manifest": [
+    {
+      "shard_index": 0,
+      "formula_start_inclusive": 0,
+      "formula_end_exclusive": 18500,
+      "formula_count": 18500,
+      "formula_id_first": "P6_00_01_02_03_04_05",
+      "formula_id_last": "P6_00_02_07_08_13_20"
+    },
+    {
+      "shard_index": 1,
+      "formula_start_inclusive": 18500,
+      "formula_end_exclusive": 37001,
+      "formula_count": 18501,
+      "formula_id_first": "P6_00_02_07_08_13_21",
+      "formula_id_last": "P6_00_04_09_18_22_23"
+    },
+    {
+      "shard_index": 2,
+      "formula_start_inclusive": 37001,
+      "formula_end_exclusive": 55501,
+      "formula_count": 18500,
+      "formula_id_first": "P6_00_04_09_18_22_24",
+      "formula_id_last": "P6_00_08_11_13_15_21"
+    },
+    {
+      "shard_index": 3,
+      "formula_start_inclusive": 55501,
+      "formula_end_exclusive": 74002,
+      "formula_count": 18501,
+      "formula_id_first": "P6_00_08_11_13_15_22",
+      "formula_id_last": "P6_01_02_09_20_23_25"
+    },
+    {
+      "shard_index": 4,
+      "formula_start_inclusive": 74002,
+      "formula_end_exclusive": 92503,
+      "formula_count": 18501,
+      "formula_id_first": "P6_01_02_09_20_23_26",
+      "formula_id_last": "P6_01_04_18_23_24_25"
+    },
+    {
+      "shard_index": 5,
+      "formula_start_inclusive": 92503,
+      "formula_end_exclusive": 111003,
+      "formula_count": 18500,
+      "formula_id_first": "P6_01_04_18_23_24_26",
+      "formula_id_last": "P6_01_09_11_13_14_24"
+    },
+    {
+      "shard_index": 6,
+      "formula_start_inclusive": 111003,
+      "formula_end_exclusive": 129504,
+      "formula_count": 18501,
+      "formula_id_first": "P6_01_09_11_13_14_25",
+      "formula_id_last": "P6_02_04_06_09_16_20"
+    },
+    {
+      "shard_index": 7,
+      "formula_start_inclusive": 129504,
+      "formula_end_exclusive": 148005,
+      "formula_count": 18501,
+      "formula_id_first": "P6_02_04_06_09_16_21",
+      "formula_id_last": "P6_02_07_11_12_16_19"
+    },
+    {
+      "shard_index": 8,
+      "formula_start_inclusive": 148005,
+      "formula_end_exclusive": 166505,
+      "formula_count": 18500,
+      "formula_id_first": "P6_02_07_11_12_16_20",
+      "formula_id_last": "P6_03_04_10_12_17_22"
+    },
+    {
+      "shard_index": 9,
+      "formula_start_inclusive": 166505,
+      "formula_end_exclusive": 185006,
+      "formula_count": 18501,
+      "formula_id_first": "P6_03_04_10_12_17_23",
+      "formula_id_last": "P6_03_08_11_16_23_25"
+    },
+    {
+      "shard_index": 10,
+      "formula_start_inclusive": 185006,
+      "formula_end_exclusive": 203506,
+      "formula_count": 18500,
+      "formula_id_first": "P6_03_08_11_16_23_26",
+      "formula_id_last": "P6_04_06_09_22_23_26"
+    },
+    {
+      "shard_index": 11,
+      "formula_start_inclusive": 203506,
+      "formula_end_exclusive": 222007,
+      "formula_count": 18501,
+      "formula_id_first": "P6_04_06_09_22_24_25",
+      "formula_id_last": "P6_05_06_07_13_14_19"
+    },
+    {
+      "shard_index": 12,
+      "formula_start_inclusive": 222007,
+      "formula_end_exclusive": 240508,
+      "formula_count": 18501,
+      "formula_id_first": "P6_05_06_07_13_14_20",
+      "formula_id_last": "P6_05_14_15_17_18_22"
+    },
+    {
+      "shard_index": 13,
+      "formula_start_inclusive": 240508,
+      "formula_end_exclusive": 259008,
+      "formula_count": 18500,
+      "formula_id_first": "P6_05_14_15_17_18_23",
+      "formula_id_last": "P6_07_08_12_13_20_26"
+    },
+    {
+      "shard_index": 14,
+      "formula_start_inclusive": 259008,
+      "formula_end_exclusive": 277509,
+      "formula_count": 18501,
+      "formula_id_first": "P6_07_08_12_13_21_22",
+      "formula_id_last": "P6_09_10_11_12_18_26"
+    },
+    {
+      "shard_index": 15,
+      "formula_start_inclusive": 277509,
+      "formula_end_exclusive": 296010,
+      "formula_count": 18501,
+      "formula_id_first": "P6_09_10_11_12_19_20",
+      "formula_id_last": "P6_21_22_23_24_25_26"
+    }
+  ],
+  "metrics_rows": 888030,
+  "target_ledger_rows": 3341,
+  "split_counts": {
+    "discovery": 2005,
+    "validation": 668,
+    "blind_oos": 668
+  },
+  "uniform_number_rank_baseline": {
+    "mean_number_hits_top5": 0.125,
+    "mean_number_hits_top10": 0.25,
+    "mean_number_hits_top20": 0.5,
+    "mean_rank_of_actual_numbers": 20.5
+  },
+  "multiple_testing": {
+    "method": "Holm-Bonferroni",
+    "test_count": 2664090,
+    "p_value_method": "continuity-corrected normal approximation to number-level binomial hit counts; exploratory, not an exact test"
+  },
+  "holm_adjusted_formula_split_rows_below_0_05": 0,
+  "minimum_holm_p_max_endpoint_family": 1.0,
+  "best_blind_oos_by_mean_rank": [
+    {
+      "formula_id": "P6_04_07_13_16_17_18",
+      "features": "freq_100+freq_all+gap_sd+pair_count_with_last_draw+neighbor_pm1_history+neighbor_pm2_history",
+      "mean_number_hits_top5": 0.1311377245508982,
+      "mean_number_hits_top10": 0.2622754491017964,
+      "mean_number_hits_top20": 0.5149700598802395,
+      "mean_rank_of_actual_numbers": 20.186826347305388,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_04_07_13_17_20_22",
+      "features": "freq_100+freq_all+gap_sd+neighbor_pm1_history+lag_2+lag_5",
+      "mean_number_hits_top5": 0.11946107784431138,
+      "mean_number_hits_top10": 0.2592814371257485,
+      "mean_number_hits_top20": 0.5164670658682635,
+      "mean_rank_of_actual_numbers": 20.190718562874252,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_02_04_06_07_13_16",
+      "features": "freq_20+freq_100+freq_500+freq_all+gap_sd+pair_count_with_last_draw",
+      "mean_number_hits_top5": 0.13263473053892216,
+      "mean_number_hits_top10": 0.25748502994011974,
+      "mean_number_hits_top20": 0.51437125748503,
+      "mean_rank_of_actual_numbers": 20.19311377245509,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_04_07_13_16_18_22",
+      "features": "freq_100+freq_all+gap_sd+pair_count_with_last_draw+neighbor_pm2_history+lag_5",
+      "mean_number_hits_top5": 0.13233532934131736,
+      "mean_number_hits_top10": 0.26017964071856287,
+      "mean_number_hits_top20": 0.5191616766467065,
+      "mean_rank_of_actual_numbers": 20.194610778443113,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_04_06_07_13_16_18",
+      "features": "freq_100+freq_500+freq_all+gap_sd+pair_count_with_last_draw+neighbor_pm2_history",
+      "mean_number_hits_top5": 0.13293413173652693,
+      "mean_number_hits_top10": 0.2559880239520958,
+      "mean_number_hits_top20": 0.5155688622754491,
+      "mean_rank_of_actual_numbers": 20.19670658682635,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_04_07_13_17_18_22",
+      "features": "freq_100+freq_all+gap_sd+neighbor_pm1_history+neighbor_pm2_history+lag_5",
+      "mean_number_hits_top5": 0.13383233532934133,
+      "mean_number_hits_top10": 0.2697604790419162,
+      "mean_number_hits_top20": 0.5164670658682635,
+      "mean_rank_of_actual_numbers": 20.20059880239521,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_04_07_13_18_20_22",
+      "features": "freq_100+freq_all+gap_sd+neighbor_pm2_history+lag_2+lag_5",
+      "mean_number_hits_top5": 0.12125748502994012,
+      "mean_number_hits_top10": 0.2634730538922156,
+      "mean_number_hits_top20": 0.5134730538922155,
+      "mean_rank_of_actual_numbers": 20.201497005988024,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_04_06_07_13_16_22",
+      "features": "freq_100+freq_500+freq_all+gap_sd+pair_count_with_last_draw+lag_5",
+      "mean_number_hits_top5": 0.1308383233532934,
+      "mean_number_hits_top10": 0.26077844311377246,
+      "mean_number_hits_top20": 0.5098802395209581,
+      "mean_rank_of_actual_numbers": 20.205389221556885,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_06_07_13_16_18_22",
+      "features": "freq_500+freq_all+gap_sd+pair_count_with_last_draw+neighbor_pm2_history+lag_5",
+      "mean_number_hits_top5": 0.12455089820359282,
+      "mean_number_hits_top10": 0.2553892215568862,
+      "mean_number_hits_top20": 0.5137724550898204,
+      "mean_rank_of_actual_numbers": 20.207784431137725,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_02_04_06_07_13_22",
+      "features": "freq_20+freq_100+freq_500+freq_all+gap_sd+lag_5",
+      "mean_number_hits_top5": 0.12574850299401197,
+      "mean_number_hits_top10": 0.2631736526946108,
+      "mean_number_hits_top20": 0.5089820359281437,
+      "mean_rank_of_actual_numbers": 20.208982035928145,
+      "holm_p_max_endpoint_family": 1.0
+    }
+  ],
+  "best_blind_oos_by_mean_top5_hits": [
+    {
+      "formula_id": "P6_01_03_04_06_17_18",
+      "features": "freq_10+freq_50+freq_100+freq_500+neighbor_pm1_history+neighbor_pm2_history",
+      "mean_number_hits_top5": 0.14191616766467066,
+      "mean_number_hits_top10": 0.25958083832335327,
+      "mean_number_hits_top20": 0.5011976047904192,
+      "mean_rank_of_actual_numbers": 20.410179640718564,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_03_04_06_17_18_26",
+      "features": "freq_50+freq_100+freq_500+neighbor_pm1_history+neighbor_pm2_history+recent_10",
+      "mean_number_hits_top5": 0.14191616766467066,
+      "mean_number_hits_top10": 0.25958083832335327,
+      "mean_number_hits_top20": 0.5011976047904192,
+      "mean_rank_of_actual_numbers": 20.410179640718564,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_01_04_05_16_17_19",
+      "features": "freq_10+freq_100+freq_250+pair_count_with_last_draw+neighbor_pm1_history+lag_1",
+      "mean_number_hits_top5": 0.14191616766467066,
+      "mean_number_hits_top10": 0.26017964071856287,
+      "mean_number_hits_top20": 0.4991017964071856,
+      "mean_rank_of_actual_numbers": 20.424850299401196,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_04_05_16_17_19_26",
+      "features": "freq_100+freq_250+pair_count_with_last_draw+neighbor_pm1_history+lag_1+recent_10",
+      "mean_number_hits_top5": 0.14191616766467066,
+      "mean_number_hits_top10": 0.26017964071856287,
+      "mean_number_hits_top20": 0.4991017964071856,
+      "mean_rank_of_actual_numbers": 20.424850299401196,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_03_04_06_09_11_17",
+      "features": "freq_50+freq_100+freq_500+trend_10_vs_100+age_since_hit+neighbor_pm1_history",
+      "mean_number_hits_top5": 0.14191616766467066,
+      "mean_number_hits_top10": 0.2625748502994012,
+      "mean_number_hits_top20": 0.5020958083832335,
+      "mean_rank_of_actual_numbers": 20.461077844311376,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_04_05_07_09_12_18",
+      "features": "freq_100+freq_250+freq_all+trend_10_vs_100+gap_mean+neighbor_pm2_history",
+      "mean_number_hits_top5": 0.14161676646706586,
+      "mean_number_hits_top10": 0.25838323353293413,
+      "mean_number_hits_top20": 0.4946107784431138,
+      "mean_rank_of_actual_numbers": 20.499700598802395,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_03_04_06_09_18_23",
+      "features": "freq_50+freq_100+freq_500+trend_10_vs_100+neighbor_pm2_history+lag_10",
+      "mean_number_hits_top5": 0.14161676646706586,
+      "mean_number_hits_top10": 0.25838323353293413,
+      "mean_number_hits_top20": 0.49820359281437127,
+      "mean_rank_of_actual_numbers": 20.517365269461077,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_03_04_06_09_17_23",
+      "features": "freq_50+freq_100+freq_500+trend_10_vs_100+neighbor_pm1_history+lag_10",
+      "mean_number_hits_top5": 0.14161676646706586,
+      "mean_number_hits_top10": 0.257185628742515,
+      "mean_number_hits_top20": 0.49730538922155687,
+      "mean_rank_of_actual_numbers": 20.530239520958084,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_03_07_12_16_17_18",
+      "features": "freq_50+freq_all+gap_mean+pair_count_with_last_draw+neighbor_pm1_history+neighbor_pm2_history",
+      "mean_number_hits_top5": 0.14131736526946106,
+      "mean_number_hits_top10": 0.2682634730538922,
+      "mean_number_hits_top20": 0.5020958083832335,
+      "mean_rank_of_actual_numbers": 20.2874251497006,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P6_01_05_07_13_17_18",
+      "features": "freq_10+freq_250+freq_all+gap_sd+neighbor_pm1_history+neighbor_pm2_history",
+      "mean_number_hits_top5": 0.14131736526946106,
+      "mean_number_hits_top10": 0.26467065868263473,
+      "mean_number_hits_top20": 0.5008982035928143,
+      "mean_rank_of_actual_numbers": 20.33383233532934,
+      "holm_p_max_endpoint_family": 1.0
+    }
+  ],
+  "retrospective_best_per_target_summary": {
+    "targets": 3341,
+    "mean_number_hits_top5": 0.4387309188865609,
+    "mean_number_hits_top10": 0.7452858425621072,
+    "mean_number_hits_top20": 0.9520502843460041,
+    "mean_rank_of_actual_numbers": 7.9152349595929365,
+    "warning": "retrospective per-target optimum across 296,010 formulas; descriptive only and not an ex-ante forecast"
+  },
+  "immutable_target_2026_10_25_freeze_overwritten": false,
+  "human_review_required": true,
+  "automatic_promotion": false,
+  "outputs": {
+    "metrics_parts": [
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_00.csv",
+        "rows": 55500,
+        "bytes": 16183763,
+        "sha256": "8a73acc39af24274c00209e1df85dcd938c37b81c5908450cff03d4ab4850bda",
+        "formula_start_inclusive": 0,
+        "formula_end_exclusive": 18500
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_01.csv",
+        "rows": 55503,
+        "bytes": 16316199,
+        "sha256": "3c400407b67f0ff0c548d294d2cf69fd6cde7f2535061bab68fa6a4050e4daaa",
+        "formula_start_inclusive": 18500,
+        "formula_end_exclusive": 37001
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_02.csv",
+        "rows": 55500,
+        "bytes": 16404656,
+        "sha256": "cf60525a5fef8f8f8afc9904c0c164dca8f0af637ce6a54ec8fbf577345a56af",
+        "formula_start_inclusive": 37001,
+        "formula_end_exclusive": 55501
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_03.csv",
+        "rows": 55503,
+        "bytes": 16515199,
+        "sha256": "af78f9075d3fe47930f198f6dd42da1d65396988c9bbf34d041a13c5b9ba7ed3",
+        "formula_start_inclusive": 55501,
+        "formula_end_exclusive": 74002
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_04.csv",
+        "rows": 55503,
+        "bytes": 16430013,
+        "sha256": "316e0f15ecd078471589ab21265e60b89b23781f286695fc0447d4a623bea05e",
+        "formula_start_inclusive": 74002,
+        "formula_end_exclusive": 92503
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_05.csv",
+        "rows": 55500,
+        "bytes": 16617844,
+        "sha256": "713af7c9fe3798305f59f5269735c026263b761f0473b08118c83df82cb8369d",
+        "formula_start_inclusive": 92503,
+        "formula_end_exclusive": 111003
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_06.csv",
+        "rows": 55503,
+        "bytes": 16558528,
+        "sha256": "983ea3a5d8fedf6edfddb72e5df3271aaf42d5517e9028fa87d6a2a589d70357",
+        "formula_start_inclusive": 111003,
+        "formula_end_exclusive": 129504
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_07.csv",
+        "rows": 55503,
+        "bytes": 16547317,
+        "sha256": "7ea655530481aab8135c2710f6f24e0484163f533427f95770f5a4daaac92222",
+        "formula_start_inclusive": 129504,
+        "formula_end_exclusive": 148005
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_08.csv",
+        "rows": 55500,
+        "bytes": 16680384,
+        "sha256": "1d4c23a012c94d510ced08099df46c8138ab718f7c56a543188e10b7b702a298",
+        "formula_start_inclusive": 148005,
+        "formula_end_exclusive": 166505
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_09.csv",
+        "rows": 55503,
+        "bytes": 16583151,
+        "sha256": "5f668775fa7726bf84117b52e4f9c319ba9f6efd8ae8eb9d1d1ac850e1cb2696",
+        "formula_start_inclusive": 166505,
+        "formula_end_exclusive": 185006
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_10.csv",
+        "rows": 55500,
+        "bytes": 16660239,
+        "sha256": "98365c03af5e2d98a9b322d794ad6cc91e55fa3d1375d85210c815fbf1bec0bb",
+        "formula_start_inclusive": 185006,
+        "formula_end_exclusive": 203506
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_11.csv",
+        "rows": 55503,
+        "bytes": 16714142,
+        "sha256": "fc75a960f94b30cabc34653f77b46224f1459980bf2c625eff9ab9612cf9246d",
+        "formula_start_inclusive": 203506,
+        "formula_end_exclusive": 222007
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_12.csv",
+        "rows": 55503,
+        "bytes": 16725180,
+        "sha256": "983d7a7de3ce08a31d42d555376711c05be1cb4df0b96d7f70d83fc89181b57b",
+        "formula_start_inclusive": 222007,
+        "formula_end_exclusive": 240508
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_13.csv",
+        "rows": 55500,
+        "bytes": 16769511,
+        "sha256": "bb3f6391f26bf68932cbe89ca412a31b03d2fe1bc8a5cd1734b8c45b33580721",
+        "formula_start_inclusive": 240508,
+        "formula_end_exclusive": 259008
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_14.csv",
+        "rows": 55503,
+        "bytes": 16916355,
+        "sha256": "6610881e600100d916e82c394d6ed77740facdd18266bd1f05c5e1a9793ea1ca",
+        "formula_start_inclusive": 259008,
+        "formula_end_exclusive": 277509
+      },
+      {
+        "path": "reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_15.csv",
+        "rows": 55503,
+        "bytes": 17014993,
+        "sha256": "da4595da5ae2207f7bb9e48811097b37a21ccec1deb706b1da5c8e03d65c18ff",
+        "formula_start_inclusive": 277509,
+        "formula_end_exclusive": 296010
+      }
+    ],
+    "target_ledger": {
+      "path": "reports/sequence_agent/per_number_condition_6plus_target_ledger.csv",
+      "rows": 3341,
+      "bytes": 11607668,
+      "sha256": "11a457b88fbad6e60e553982a7ad248a48b2cb2eb8399fd5680c762f883d2c74"
+    },
+    "report": "reports/sequence_agent/per_number_condition_6plus_grammar.json",
+    "checkpoint": "reports/sequence_agent/per_number_condition_6plus_checkpoint.json"
+  },
+  "guardrails": [
+    "features for target i use only draws with index strictly less than i",
+    "all 40 numbers are ranked before the target quintet is evaluated",
+    "the formula universe is exhaustive only for the declared 6-feature equal-weight grammar",
+    "best-per-target formula is retrospective/descriptive and never a prospective forecast",
+    "immutable historical and prospective freezes are never overwritten or reconstructed",
+    "higher feature counts and other formula families remain open research; this is not the infinite formula universe",
+    "no formula is promoted automatically; human review/integration remains required"
+  ]
+}
