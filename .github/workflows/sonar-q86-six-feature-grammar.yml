@@ -1,0 +1,122 @@
+name: SONAR Q86 six-feature formula grammar
+
+on:
+  push:
+    branches: ["research/q86-six-feature-grammar-20261029"]
+
+permissions:
+  contents: read
+
+# Keep the expensive distributed search serialized with its persisted-head validation.
+concurrency:
+  group: q86-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  evaluate:
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[q86-persisted]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install evaluation dependency
+        run: pip install numpy
+      - name: Check Q86 implementation and acceptance tests
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py scripts/aggregate_sonar_per_number_condition_6plus.py scripts/validate_sonar_per_number_condition_6plus.py
+          python tests/test_sonar_per_number_condition_6plus_grammar.py -v
+      - name: Evaluate one exhaustive six-feature formula shard
+        run: python scripts/sonar_per_number_condition_6plus_grammar.py --shard-index ${{ matrix.shard }} --shard-count 16
+      - name: Upload Q86 shard
+        uses: actions/upload-artifact@v4
+        with:
+          name: q86-shard-${{ matrix.shard }}
+          path: |
+            reports/sequence_agent/q86_shards/q86_shard_*_metrics_raw.csv
+            reports/sequence_agent/q86_shards/q86_shard_*_target_candidates.csv
+            reports/sequence_agent/q86_shards/q86_shard_*_meta.json
+          if-no-files-found: error
+          retention-days: 1
+
+  aggregate:
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[q86-persisted]')
+    needs: evaluate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install aggregation dependency
+        run: pip install numpy
+      - name: Download all 16 Q86 shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: q86-shard-*
+          path: .q86-shards
+          merge-multiple: true
+      - name: Aggregate all formulas and apply global Holm correction
+        run: python scripts/aggregate_sonar_per_number_condition_6plus.py --shard-dir .q86-shards
+      - name: Independently validate aggregate outputs
+        run: |
+          python tests/test_sonar_per_number_condition_6plus_grammar.py -v
+          python scripts/validate_sonar_per_number_condition_6plus.py
+      - name: Upload validated Q86 output bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q86-output-bundle
+          path: |
+            reports/sequence_agent/per_number_condition_6plus_grammar.json
+            reports/sequence_agent/per_number_condition_6plus_checkpoint.json
+            reports/sequence_agent/per_number_condition_6plus_target_ledger.csv
+            reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_*.csv
+          if-no-files-found: error
+          retention-days: 1
+
+  persist:
+    if: github.event_name == 'push' && !contains(github.event.head_commit.message, '[q86-persisted]')
+    needs: aggregate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download validated Q86 outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: q86-output-bundle
+          path: .q86-output-bundle
+      - name: Restore output bundle
+        run: cp .q86-output-bundle/* reports/sequence_agent/
+      - name: Persist via Git Data API and verify exact bytes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q86_outputs.py
+
+  validate-persisted:
+    if: (github.event_name == 'push' && contains(github.event.head_commit.message, '[q86-persisted]'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install validation dependency
+        run: pip install numpy
+      - name: Validate persisted Q86 outputs on exact head
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py scripts/aggregate_sonar_per_number_condition_6plus.py scripts/validate_sonar_per_number_condition_6plus.py
+          python tests/test_sonar_per_number_condition_6plus_grammar.py -v
+          python scripts/validate_sonar_per_number_condition_6plus.py --require-persisted
