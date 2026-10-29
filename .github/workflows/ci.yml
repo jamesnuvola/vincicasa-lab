@@ -13,10 +13,11 @@ permissions:
 # do not compete after each incremental commit.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref_name != 'research/per-number-condition-grammar-20261026' || (github.event_name == 'push' && !contains(github.event.head_commit.message, '[q80-persisted]')) }}
 
 jobs:
   validate:
+    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[q80-reuse-artifact]')
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -114,7 +115,7 @@ jobs:
 
   persist-q80:
     needs: validate
-    if: github.event_name == 'push' && github.ref == 'refs/heads/research/per-number-condition-grammar-20261026'
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/research/per-number-condition-grammar-20261026' && (contains(github.event.head_commit.message, '[q80-reuse-artifact]') || needs.validate.result == 'success')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -126,6 +127,8 @@ jobs:
         with:
           name: q80-persistence-bundle
           path: .q80-persistence-bundle
+          run-id: ${{ contains(github.event.head_commit.message, '[q80-reuse-artifact]') && '40913390261' || github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Restore validated outputs for Git Data API persistence
         run: |
           mkdir -p reports/sequence_agent

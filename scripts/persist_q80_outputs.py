@@ -108,6 +108,7 @@ def main():
     q80 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q80"), None)
     q81 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q81"), None)
     q82 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q82"), None)
+    q83 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q83"), None)
     for task_id, report in (("Q80", report80), ("Q81", report81), ("Q82", report82), ("Q83", report83)):
         if report.get("review_status") != "PENDING_HUMAN_REVIEW_INTEGRATION":
             raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: " + task_id + " report does not preserve human-review gate")
