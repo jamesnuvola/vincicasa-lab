@@ -2,7 +2,7 @@ name: Test VinciCasa Lab
 
 on:
   push:
-    branches-ignore: ["research/q86-six-feature-grammar-20261029"]
+    branches: ["**"]
   pull_request:
   workflow_dispatch:
 
@@ -13,10 +13,11 @@ permissions:
 # do not compete after each incremental commit.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref_name != 'research/q86-six-feature-grammar-20261029' || !contains(github.event.head_commit.message, '[q86-persisted]') }}
 
 jobs:
   validate:
+    if: github.ref_name != 'research/q86-six-feature-grammar-20261029'
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -147,3 +148,111 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -H "Content-Type: application/json" \
             -d "{\"ref\":\"$GITHUB_REF_NAME\"}"
+
+  q86-evaluate:
+    if: github.ref_name == 'research/q86-six-feature-grammar-20261029' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[q86-persisted]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Q86 dependency
+        run: pip install numpy
+      - name: Compile Q86 runner
+        run: python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py
+      - name: Evaluate exhaustive six-feature shard
+        run: python scripts/sonar_per_number_condition_6plus_grammar.py --shard-index ${{ matrix.shard }} --shard-count 16
+      - name: Upload Q86 shard
+        uses: actions/upload-artifact@v4
+        with:
+          name: q86-shard-${{ matrix.shard }}
+          path: |
+            reports/sequence_agent/q86_shards/q86_shard_*_metrics_raw.csv
+            reports/sequence_agent/q86_shards/q86_shard_*_target_candidates.csv
+            reports/sequence_agent/q86_shards/q86_shard_*_meta.json
+          if-no-files-found: error
+          retention-days: 1
+
+  q86-aggregate:
+    if: github.ref_name == 'research/q86-six-feature-grammar-20261029' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[q86-persisted]')
+    needs: q86-evaluate
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Q86 aggregation dependency
+        run: pip install numpy
+      - name: Download all Q86 shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: q86-shard-*
+          path: .q86-shards
+          merge-multiple: true
+      - name: Aggregate formula metrics and global Holm correction
+        run: python scripts/aggregate_sonar_per_number_condition_6plus.py --shard-dir .q86-shards
+      - name: Run Q86 acceptance tests and validate outputs
+        run: |
+          python -m py_compile scripts/aggregate_sonar_per_number_condition_6plus.py scripts/validate_sonar_per_number_condition_6plus.py
+          python tests/test_sonar_per_number_condition_6plus_grammar.py -v
+          python scripts/validate_sonar_per_number_condition_6plus.py
+      - name: Upload validated Q86 output bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q86-output-bundle
+          path: |
+            reports/sequence_agent/per_number_condition_6plus_grammar.json
+            reports/sequence_agent/per_number_condition_6plus_checkpoint.json
+            reports/sequence_agent/per_number_condition_6plus_target_ledger.csv
+            reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_*.csv
+          if-no-files-found: error
+          retention-days: 1
+
+  q86-persist:
+    if: github.ref_name == 'research/q86-six-feature-grammar-20261029' && github.event_name == 'push' && !contains(github.event.head_commit.message, '[q86-persisted]')
+    needs: q86-aggregate
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download validated Q86 outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: q86-output-bundle
+          path: .q86-output-bundle
+      - name: Restore output bundle
+        run: cp .q86-output-bundle/* reports/sequence_agent/
+      - name: Persist with Git Data API and verify exact bytes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q86_outputs.py
+
+  q86-validate-persisted:
+    if: github.ref_name == 'research/q86-six-feature-grammar-20261029' && github.event_name == 'push' && contains(github.event.head_commit.message, '[q86-persisted]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Q86 validation dependency
+        run: pip install numpy
+      - name: Validate persisted Q86 outputs on exact head
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py scripts/aggregate_sonar_per_number_condition_6plus.py scripts/validate_sonar_per_number_condition_6plus.py
+          python tests/test_sonar_per_number_condition_6plus_grammar.py -v
+          python scripts/validate_sonar_per_number_condition_6plus.py --require-persisted
