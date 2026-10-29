@@ -1,37 +1,12 @@
 name: SONAR Per-Number Condition Refresh
 
-# Dispatch through a branch push so the latest research head is actually evaluated.
+# Manual full refresh; ordinary branch pushes are handled by the single-writer CI pipeline.
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "data/storico_daily.csv"
-      - "scripts/sonar_per_number_condition_grammar.py"
-      - "scripts/sonar_per_number_condition_4plus_grammar.py"
-      - "scripts/sonar_per_number_condition_conditional_grammar.py"
-      - "scripts/sonar_per_number_condition_5plus_grammar.py"
-      - "scripts/sonar_research_queue.py"
-      - "scripts/persist_q80_outputs.py"
-      - "reports/sequence_agent/research_backlog.json"
-      - ".github/workflows/sonar-per-number-condition-refresh.yml"
-  push:
-    branches:
-      - research/per-number-condition-grammar-20261026
-    paths:
-      - "data/storico_daily.csv"
-      - "scripts/sonar_per_number_condition_grammar.py"
-      - "scripts/sonar_per_number_condition_4plus_grammar.py"
-      - "scripts/sonar_per_number_condition_conditional_grammar.py"
-      - "scripts/sonar_per_number_condition_5plus_grammar.py"
-      - "scripts/sonar_research_queue.py"
-      - "scripts/persist_q80_outputs.py"
-      - "reports/sequence_agent/research_backlog.json"
-      - ".github/workflows/sonar-per-number-condition-refresh.yml"
 
 permissions:
   contents: write
+  actions: write
 
 concurrency:
   group: sonar-per-number-condition-refresh
@@ -40,7 +15,7 @@ concurrency:
 jobs:
   refresh-q80-q83:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     steps:
       - name: Checkout research branch
         uses: actions/checkout@v4
@@ -58,12 +33,17 @@ jobs:
 
       - name: Verify syntax
         run: |
+          python -m py_compile scripts/sonar_sequence_agent.py
           python -m py_compile scripts/sonar_per_number_condition_grammar.py
           python -m py_compile scripts/sonar_per_number_condition_4plus_grammar.py
           python -m py_compile scripts/sonar_per_number_condition_conditional_grammar.py
           python -m py_compile scripts/sonar_per_number_condition_5plus_grammar.py
           python -m py_compile scripts/sonar_research_queue.py
+          python -m py_compile scripts/validate_formula_outputs.py
           python -m py_compile scripts/persist_q80_outputs.py
+
+      - name: Refresh SONAR retrospective metrics and append-only shadow outcomes
+        run: python scripts/sonar_sequence_agent.py
 
       - name: Recompute Q80 prior-only single/pair/triple grammar
         run: python scripts/sonar_per_number_condition_grammar.py
@@ -80,7 +60,27 @@ jobs:
       - name: Validate research queue
         run: python scripts/sonar_research_queue.py
 
+      - name: Validate outputs and refresh the SONAR checkpoint
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_UPDATE_CHECKPOINT: "1"
+        run: python scripts/validate_formula_outputs.py
+
       - name: Persist and reread validated Q80-Q83 outputs
+        id: persist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/persist_q80_outputs.py
+
+      - name: Request CI on the persisted exact head
+        if: steps.persist.outputs.commit_created == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"research/per-number-condition-grammar-20261026\"}"

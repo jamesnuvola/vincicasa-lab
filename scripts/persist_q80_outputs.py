@@ -27,6 +27,12 @@ OUTPUTS = (
     "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv",
     "reports/sequence_agent/per_number_condition_research_checkpoint.json",
     "reports/sequence_agent/research_queue_status.json",
+    "reports/sequence_agent/latest_metrics.json",
+    "reports/sequence_agent/historical_rule_ledger.csv",
+    "reports/sequence_agent/draw_signatures.csv",
+    "reports/sequence_agent/wave_events.csv",
+    "reports/sequence_agent/shadow_forecasts.csv",
+    "reports/sequence_agent/archive_reconciliation_2026-10-28.json",
 )
 API = "https://api.github.com"
 

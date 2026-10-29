@@ -35,6 +35,10 @@ jobs:
         run: python scripts/rigenera_dati.py
       - name: Audit generated app data
         run: python scripts/audit_dataset.py --check-json
+
+      - name: Refresh SONAR retrospective metrics and append-only shadow outcomes
+        if: github.event_name != 'workflow_dispatch'
+        run: python scripts/sonar_sequence_agent.py
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
       - name: Check exact-source active SONAR engine diagnostic syntax
@@ -49,25 +53,32 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
-      - name: Test exhaustive per-number condition grammars (Q80/Q81/Q82)
+      - name: Test exhaustive per-number condition grammars (Q80/Q81/Q82/Q83)
         if: github.event_name != 'workflow_dispatch'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
+          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
           python tests/test_sonar_per_number_condition_grammar.py -v
           python tests/test_sonar_per_number_condition_4plus_grammar.py -v
           python tests/test_sonar_per_number_condition_conditional_grammar.py -v
+          python tests/test_sonar_per_number_condition_5plus_grammar.py -v
           python scripts/sonar_per_number_condition_grammar.py
           python scripts/sonar_per_number_condition_4plus_grammar.py
           python scripts/sonar_per_number_condition_conditional_grammar.py
+          python scripts/sonar_per_number_condition_5plus_grammar.py
           python scripts/sonar_research_queue.py
           python scripts/validate_formula_outputs.py
-      - name: Validate persisted Q80/Q81/Q82 outputs on exact head
+      - name: Validate persisted Q80/Q81/Q82/Q83 outputs on exact head
         if: github.event_name == 'workflow_dispatch'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m py_compile scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
+          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
           python tests/test_sonar_per_number_condition_grammar.py -v
           python tests/test_sonar_per_number_condition_4plus_grammar.py -v
           python tests/test_sonar_per_number_condition_conditional_grammar.py -v
+          python tests/test_sonar_per_number_condition_5plus_grammar.py -v
           python scripts/sonar_research_queue.py
           python scripts/validate_formula_outputs.py
       - name: Build web application
@@ -87,8 +98,17 @@ jobs:
             reports/sequence_agent/per_number_condition_conditional_grammar.json
             reports/sequence_agent/per_number_condition_conditional_metrics.csv
             reports/sequence_agent/per_number_condition_conditional_target_ledger.csv
+            reports/sequence_agent/per_number_condition_5plus_grammar.json
+            reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv
+            reports/sequence_agent/per_number_condition_5plus_target_ledger.csv
             reports/sequence_agent/per_number_condition_research_checkpoint.json
             reports/sequence_agent/research_queue_status.json
+            reports/sequence_agent/latest_metrics.json
+            reports/sequence_agent/historical_rule_ledger.csv
+            reports/sequence_agent/draw_signatures.csv
+            reports/sequence_agent/wave_events.csv
+            reports/sequence_agent/shadow_forecasts.csv
+            reports/sequence_agent/archive_reconciliation_2026-10-28.json
           if-no-files-found: error
           retention-days: 1
 
@@ -110,7 +130,7 @@ jobs:
         run: |
           mkdir -p reports/sequence_agent
           cp .q80-persistence-bundle/* reports/sequence_agent/
-      - name: Persist validated Q80/Q81/Q82 outputs with Git Data API
+      - name: Persist validated Q80/Q81/Q82/Q83 outputs, archive sync and checkpoint with Git Data API
         id: persist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
