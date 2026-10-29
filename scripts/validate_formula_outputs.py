@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from sonar_research_queue import validate_q80, validate_q81, validate_q82, validate_q83
+from sonar_research_queue import validate_q80, validate_q81, validate_q82, validate_q83, validate_q86
 
 DATA = ROOT / "data" / "storico_daily.csv"
 REPORTS = {
@@ -21,6 +21,7 @@ REPORTS = {
     "Q81": ROOT / "reports/sequence_agent/per_number_condition_4plus_grammar.json",
     "Q82": ROOT / "reports/sequence_agent/per_number_condition_conditional_grammar.json",
     "Q83": ROOT / "reports/sequence_agent/per_number_condition_5plus_grammar.json",
+    "Q86": ROOT / "reports/sequence_agent/per_number_condition_6plus_grammar.json",
 }
 OUTPUT_PATHS = {
     "Q80": ("reports/sequence_agent/per_number_condition_formula_metrics.csv",
@@ -31,6 +32,8 @@ OUTPUT_PATHS = {
             "reports/sequence_agent/per_number_condition_conditional_target_ledger.csv"),
     "Q83": ("reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
             "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"),
+    "Q86": ("reports/sequence_agent/per_number_condition_6plus_formula_metrics.csv",
+            "reports/sequence_agent/per_number_condition_6plus_target_ledger.csv"),
 }
 QUEUE = ROOT / "reports/sequence_agent/research_queue_status.json"
 CHECKPOINT = ROOT / "reports/sequence_agent/per_number_condition_research_checkpoint.json"
@@ -61,10 +64,10 @@ def main_archive_blob_sha() -> str:
 
 
 def main():
-    errors = validate_q80() + validate_q81() + validate_q82() + validate_q83()
+    errors = validate_q80() + validate_q81() + validate_q82() + validate_q83() + (validate_q86() if REPORTS["Q86"].is_file() else [])
     queue = json.loads(QUEUE.read_text(encoding="utf-8"))
     tasks = {item.get("id"): item for item in queue.get("tasks", [])}
-    for task_id in ("Q80", "Q81", "Q82", "Q83"):
+    for task_id in ("Q80", "Q81", "Q82", "Q83") + (("Q86",) if REPORTS["Q86"].is_file() else ()):
         item = tasks.get(task_id)
         if not item or item.get("status") != "VALIDATED_PENDING_HUMAN_REVIEW" or item.get("validation_errors"):
             errors.append(task_id + " is not validated/pending human review")
@@ -88,7 +91,7 @@ def main():
             main_blob_sha = ""
 
     if errors:
-        raise SystemExit("Q80_Q81_Q82_Q83_ACCEPTANCE_BLOCKED: " + "; ".join(errors))
+        raise SystemExit("Q80_Q86_ACCEPTANCE_BLOCKED: " + "; ".join(errors))
 
     event = os.environ.get("GITHUB_EVENT_NAME", "")
     update_checkpoint = event != "workflow_dispatch" or os.environ.get("SONAR_UPDATE_CHECKPOINT") == "1"
@@ -105,9 +108,11 @@ def main():
         cp = json.loads(CHECKPOINT.read_text(encoding="utf-8")) if CHECKPOINT.is_file() else {}
         milestones = {item["id"]: item for item in cp.get("verified_milestones", []) if item.get("id")}
         for task_id, report_path in REPORTS.items():
+            if not report_path.is_file():
+                continue
             report = json.loads(report_path.read_text(encoding="utf-8"))
             metrics_path, ledger_path = OUTPUT_PATHS[task_id]
-            if task_id == "Q83" and report.get("metrics_parts"):
+            if task_id in ("Q83", "Q86") and report.get("metrics_parts"):
                 manifest = report["metrics_parts"]
                 metrics_output = {
                     "metrics_parts": manifest,
@@ -164,13 +169,14 @@ def main():
                 "q81_status": tasks["Q81"].get("status"),
                 "q82_status": tasks["Q82"].get("status"),
                 "q83_status": tasks["Q83"].get("status"),
+                "q86_status": tasks.get("Q86", {}).get("status", "NOT_REGISTERED"),
                 "human_review_required": True,
                 "automatic_promotion": False,
                 "exact_head_ci_status": "PENDING",
             },
             "pending_refresh": {
                 "workflow": ".github/workflows/ci.yml",
-                "scope": ["Q80", "Q81", "Q82", "Q83"],
+                "scope": ["Q80", "Q81", "Q82", "Q83"] + (["Q86"] if REPORTS["Q86"].is_file() else []),
                 "status": "ARTIFACT_VALIDATORS_PASS_PENDING_PERSISTED_HEAD_CI",
                 "archive_sha": branch_blob_sha,
                 "draw_count": count,

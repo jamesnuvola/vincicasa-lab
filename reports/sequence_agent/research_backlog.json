@@ -8,9 +8,9 @@
     "chronological_validation_required": true,
     "minimum_complete_oos_cases": 100,
     "preferred_complete_oos_cases": 200,
-    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80 or Q81 is marked COMPLETE; passing automated validators alone leaves each VALIDATED_PENDING_HUMAN_REVIEW.",
+    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80-Q86 is marked COMPLETE; passing automated validators alone leaves each VALIDATED_PENDING_HUMAN_REVIEW.",
     "strategy_catalog_policy": "Catalog occasional, intermittent, conditional, complementary, antagonistic, retrospective and null strategies; keep ex-ante and retrospective evidence separate. Formula-universe claims must name the finite grammar explored.",
-    "archive_freshness": "As of 2026-10-28, main archive contains draws through 2026-10-27, while the research branch's Q80/Q81/Q82 reports and archive are currently cut off at 2026-10-25. Reconcile and rerun before calling these reports current; immutable freezes remain append-only."
+    "archive_freshness": "As of 2026-10-29, the canonical main archive and research branch are byte-aligned through 2026-10-28 (3,391 draws). Q80-Q83 were recomputed on that archive; refresh again if main advances. Immutable freezes remain append-only."
   },
   "tasks": [
     {
@@ -282,6 +282,29 @@
         "do not overwrite or reconstruct missing prospective freezes and do not merge any PR automatically"
       ],
       "kind": "integrity"
+    },
+    {
+      "id": "Q86",
+      "priority": 86,
+      "title": "Exhaustively evaluate all six-feature equal-weight combinations",
+      "depends_on": [
+        "Q00"
+      ],
+      "evidence": [
+        "reports/sequence_agent/per_number_condition_6plus_grammar.json",
+        "reports/sequence_agent/per_number_condition_6plus_formula_metrics_manifest.json",
+        "reports/sequence_agent/per_number_condition_6plus_target_ledger.csv"
+      ],
+      "acceptance": [
+        "all 296,010 unique unordered six-feature equal-weight combinations from the 27 registered prior-only features are evaluated",
+        "formula evaluation uses explicit 1,024-formula batches with a contiguous manifest and no gaps or overlaps",
+        "all 40 numbers are ranked for every target with at least 50 prior draws; features use only the strict prefix before target",
+        "per-target ledger reconciles actual quintet, immediate prior cutoff, all 27 single-feature ranks and best retrospective six-feature formula",
+        "metrics cover discovery, validation and blind OOS; Holm-Bonferroni covers formula×split×endpoint tests across the full six-feature family",
+        "uniform number-rank baseline and exploratory/null outcomes are reported; immutable freezes are not overwritten",
+        "human review/integration is required before Q86 is marked COMPLETE; higher-order and other formula grammars remain open"
+      ],
+      "kind": "analysis"
     }
   ]
 }
