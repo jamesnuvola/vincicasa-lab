@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 BRANCH = "research/per-number-condition-grammar-20261026"
 Q83_METRICS_REL = "reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv"
 Q83_REPORT_REL = "reports/sequence_agent/per_number_condition_5plus_grammar.json"
+Q83_MANIFEST_REL = "reports/sequence_agent/per_number_condition_5plus_formula_metrics_manifest.json"
 Q83_LEDGER_REL = "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
 Q83_PART_COUNT = 9
 Q83_CHUNK_ROWS = 30000
@@ -36,6 +37,7 @@ OUTPUTS = (
     "reports/sequence_agent/per_number_condition_conditional_metrics.csv",
     "reports/sequence_agent/per_number_condition_conditional_target_ledger.csv",
     Q83_REPORT_REL,
+    Q83_MANIFEST_REL,
     *Q83_PART_PATHS,
     Q83_LEDGER_REL,
     "reports/sequence_agent/per_number_condition_research_checkpoint.json",
@@ -88,6 +90,7 @@ def sha256_file(path: Path) -> str:
 def prepare_q83_metric_chunks():
     full_path = ROOT / Q83_METRICS_REL
     report_path = ROOT / Q83_REPORT_REL
+    manifest_path = ROOT / Q83_MANIFEST_REL
     checkpoint_path = ROOT / "reports/sequence_agent/per_number_condition_research_checkpoint.json"
     report = json.loads(report_path.read_text(encoding="utf-8"))
 
@@ -141,41 +144,66 @@ def prepare_q83_metric_chunks():
                 "sha256": sha256_file(path),
             })
             cursor += rows
-        report["metrics_storage"] = "chunked_csv_parts"
-        report["metrics_parts"] = manifest
-        report.setdefault("outputs", {})["metrics"] = None
-        report["outputs"]["metrics_parts"] = [item["path"] for item in manifest]
-        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         full_path.unlink()
     else:
         manifest = report.get("metrics_parts", [])
         if len(manifest) != Q83_PART_COUNT or report.get("metrics_storage") != "chunked_csv_parts":
             raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: neither source Q83 CSV nor valid chunk manifest exists")
+        cursor = 0
         for index, item in enumerate(manifest):
             path = ROOT / item.get("path", "")
-            if item.get("part_index") != index or not path.is_file():
+            if item.get("part_index") != index or int(item.get("row_start_inclusive", -1)) != cursor or not path.is_file():
                 raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: existing Q83 chunk manifest is incomplete")
             if path.stat().st_size != int(item.get("bytes", -1)) or sha256_file(path) != item.get("sha256"):
                 raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: existing Q83 chunk checksum mismatch")
+            cursor += int(item.get("rows", 0))
+        if cursor != int(report.get("metrics_rows", -1)):
+            raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: existing Q83 chunk row coverage mismatch")
+
+    manifest_list_sha = hashlib.sha256(json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    report["metrics_storage"] = "chunked_csv_parts"
+    report["metrics_parts"] = manifest
+    report.setdefault("outputs", {})["metrics"] = None
+    report["outputs"]["metrics_parts"] = [item["path"] for item in manifest]
+    report["outputs"]["metrics_manifest"] = Q83_MANIFEST_REL
+    report["outputs"]["metrics_parts_manifest_sha256"] = manifest_list_sha
+    manifest_document = {
+        "schema_version": "1.0",
+        "task_id": "Q83",
+        "storage_format": "chunked_csv_parts",
+        "source_archive_sha256": report.get("source_archive_sha256"),
+        "formula_count": report.get("formula_count"),
+        "metrics_rows": report.get("metrics_rows"),
+        "part_count": len(manifest),
+        "parts_manifest_sha256": manifest_list_sha,
+        "parts": manifest,
+    }
+    manifest_path.write_text(json.dumps(manifest_document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    manifest_file_sha = sha256_file(manifest_path)
+    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     if checkpoint_path.is_file():
         checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
-        manifest = report.get("metrics_parts", [])
-        manifest_sha = hashlib.sha256(json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+        manifest_blob_sha = subprocess.run(
+            ["git", "hash-object", str(manifest_path)], cwd=ROOT, check=True,
+            stdout=subprocess.PIPE, text=True
+        ).stdout.strip()
+        report_blob_sha = subprocess.run(
+            ["git", "hash-object", str(report_path)], cwd=ROOT, check=True,
+            stdout=subprocess.PIPE, text=True
+        ).stdout.strip()
         for milestone in checkpoint.get("verified_milestones", []):
             if milestone.get("id") == "Q83":
                 outputs = milestone.setdefault("outputs", {})
                 outputs.pop("metrics_blob_sha", None)
                 outputs["metrics_parts"] = manifest
-                outputs["metrics_manifest_sha256"] = manifest_sha
-                outputs["report_blob_sha"] = subprocess.run(
-                    ["git", "hash-object", str(report_path)], cwd=ROOT, check=True,
-                    stdout=subprocess.PIPE, text=True
-                ).stdout.strip()
+                outputs["metrics_manifest_sha256"] = manifest_list_sha
+                outputs["metrics_manifest_path"] = Q83_MANIFEST_REL
+                outputs["metrics_manifest_blob_sha"] = manifest_blob_sha
+                outputs["metrics_manifest_file_sha256"] = manifest_file_sha
+                outputs["report_blob_sha"] = report_blob_sha
                 milestone["metrics_storage"] = "chunked_csv_parts"
         checkpoint_path.write_text(json.dumps(checkpoint, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-
-
 
 def verify_outputs_at_ref(ref_sha: str):
     # Re-read immutable Git objects by exact commit SHA, not mutable branch paths.

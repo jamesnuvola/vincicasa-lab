@@ -223,11 +223,12 @@
       ],
       "evidence": [
         "reports/sequence_agent/per_number_condition_5plus_grammar.json",
-        "reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
+        "reports/sequence_agent/per_number_condition_5plus_formula_metrics_manifest.json",
         "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
       ],
       "acceptance": [
         "all 5-feature combinations are evaluated in reproducible batches with formula-range manifests",
+        "chunked metric parts are persisted with per-part SHA-256, byte count, row range, and a manifest; a monolithic CSV is not required when chunked storage is declared",
         "higher-order batches continue beyond five features under explicit compute budgets; no silent truncation is allowed",
         "batch outputs reconcile to the full declared formula universe without duplicate or missing formula IDs",
         "chronological discovery/validation/blind OOS and Holm correction are maintained across the registered test family",

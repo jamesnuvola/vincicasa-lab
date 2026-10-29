@@ -706,6 +706,24 @@ def validate_q83():
         add_error(errors, len(metric_rows)==report.get("metrics_rows"), "Q83 chunked metrics actual row count mismatch")
         metrics=metrics or []
         add_error(errors, report.get("outputs", {}).get("metrics") is None, "Q83 output metadata still points at a monolithic metrics CSV")
+        manifest_rel=report.get("outputs", {}).get("metrics_manifest")
+        add_error(errors, manifest_rel=="reports/sequence_agent/per_number_condition_5plus_formula_metrics_manifest.json", "Q83 metrics manifest path missing or unexpected")
+        if manifest_rel:
+            manifest_path=ROOT / str(manifest_rel)
+            if not manifest_path.is_file():
+                errors.append("Q83 metrics manifest missing: "+str(manifest_rel))
+            else:
+                manifest_doc=load_json(manifest_path)
+                add_error(errors, manifest_doc.get("task_id")=="Q83", "Q83 metrics manifest task id mismatch")
+                add_error(errors, manifest_doc.get("storage_format")=="chunked_csv_parts", "Q83 metrics manifest storage format mismatch")
+                add_error(errors, manifest_doc.get("source_archive_sha256")==report.get("source_archive_sha256"), "Q83 metrics manifest archive hash mismatch")
+                add_error(errors, manifest_doc.get("formula_count")==report.get("formula_count"), "Q83 metrics manifest formula count mismatch")
+                add_error(errors, manifest_doc.get("metrics_rows")==report.get("metrics_rows"), "Q83 metrics manifest row count mismatch")
+                add_error(errors, manifest_doc.get("parts")==metric_parts, "Q83 metrics manifest parts differ from report manifest")
+                add_error(errors, manifest_doc.get("part_count")==len(metric_parts), "Q83 metrics manifest part count mismatch")
+                manifest_list_sha=hashlib.sha256(json.dumps(metric_parts, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+                add_error(errors, manifest_doc.get("parts_manifest_sha256")==manifest_list_sha, "Q83 metrics manifest parts hash mismatch")
+                add_error(errors, report.get("outputs", {}).get("metrics_parts_manifest_sha256")==manifest_list_sha, "Q83 report parts-manifest hash mismatch")
     else:
         metrics,metric_rows=load_csv(Q83_METRICS)
     ledger_fields,ledger_rows=load_csv(Q83_LEDGER)

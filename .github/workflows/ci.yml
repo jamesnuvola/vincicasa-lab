@@ -38,7 +38,7 @@ jobs:
         run: python scripts/audit_dataset.py --check-json
 
       - name: Refresh SONAR retrospective metrics and append-only shadow outcomes
-        if: github.event_name != 'workflow_dispatch'
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         run: python scripts/sonar_sequence_agent.py
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
@@ -47,15 +47,17 @@ jobs:
       - name: Check SONAR analysis and queue scripts
         run: python -m py_compile scripts/sonar_fast_improvements.py scripts/sonar_research_queue.py
       - name: Test evolutionary lab syntax and run
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         run: |
           python -m py_compile scripts/sonar_evolutionary_lab.py
           python scripts/sonar_evolutionary_lab.py
       - name: Test positional, regime, residual and hazard lab
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
       - name: Test exhaustive per-number condition grammars (Q80/Q81/Q82/Q83)
-        if: github.event_name != 'workflow_dispatch'
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -71,7 +73,7 @@ jobs:
           python scripts/sonar_research_queue.py
           python scripts/validate_formula_outputs.py
       - name: Validate persisted Q80/Q81/Q82/Q83 outputs on exact head
-        if: github.event_name == 'workflow_dispatch'
+        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -86,6 +88,7 @@ jobs:
         run: npm install && npm run build
 
       - name: Upload validated Q80-Q83 formula persistence bundle
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         uses: actions/upload-artifact@v4
         with:
           name: q80-persistence-bundle
@@ -115,7 +118,7 @@ jobs:
 
   persist-q80:
     needs: validate
-    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/research/per-number-condition-grammar-20261026' && (contains(github.event.head_commit.message, '[q80-reuse-artifact]') || needs.validate.result == 'success')
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/research/per-number-condition-grammar-20261026' && !contains(github.event.head_commit.message, '[q80-validate-persisted]') && (contains(github.event.head_commit.message, '[q80-reuse-artifact]') || needs.validate.result == 'success')
     runs-on: ubuntu-latest
     permissions:
       contents: write
