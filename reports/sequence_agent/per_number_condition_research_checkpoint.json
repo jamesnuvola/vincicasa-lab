@@ -332,15 +332,24 @@
       "Q82",
       "Q83"
     ],
-    "status": "ARTIFACT_VALIDATORS_PASS_PENDING_PERSISTED_HEAD_CI",
+    "status": "PERSISTED_EXACT_HEAD_CI_PASS_PENDING_HUMAN_REVIEW",
     "archive_sha": "df63935910cd7ba2a220b1a4c2a165c6275144e6",
     "draw_count": 3391,
     "last_date": "2026-10-28",
     "required_postconditions": [
-      "Q80-Q83 reports, metrics, target ledgers and queue are committed via Git Data API",
-      "each persisted artifact is reread from the exact commit and byte-compared",
-      "workflow_dispatch CI passes on the persisted exact head",
       "human review/integration occurs before any Q80-Q83 task is marked COMPLETE"
+    ],
+    "persisted_artifacts_verified": true,
+    "exact_head_ci_passed": true,
+    "exact_head_ci_passed_head_sha": "866e914f89770964d2d7e56f1639d44b0bf78938",
+    "exact_head_ci_passed_run_id": 40919675562,
+    "exact_head_ci_passed_at_utc": "2026-10-29T17:16:57Z",
+    "human_review_required": true,
+    "automatic_promotion": false,
+    "completed_postconditions": [
+      "Q80-Q83 reports, ledgers, queue and chunked Q83 metrics are persisted through the Git Data API",
+      "every persisted output was reread from the exact commit and byte-compared",
+      "persisted-head CI passed on 2026-10-29 (run 40919675562)"
     ]
   }
 }
