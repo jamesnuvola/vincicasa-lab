@@ -91,7 +91,7 @@ def main():
     if formula_count!=math.comb(FEATURE_COUNT,FORMULA_SIZE): raise SystemExit("Q83_BLOCKED: formula count mismatch")
     standardized_stack=q81.build_feature_stack(draws)
     if standardized_stack.shape!=(scored_targets,40,FEATURE_COUNT): raise SystemExit("Q83_BLOCKED: feature stack dimensions mismatch")
-    weights=q81.build_formula_weight_matrix(FORMULAS)
+    weights=build_formula_weight_matrix(FORMULAS)
     fields=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
     accum={s:{f:np.zeros(formula_count,dtype=np.int64) for f in fields} for s in SPLITS}
     split_counts=Counter(); target_rows=[]
