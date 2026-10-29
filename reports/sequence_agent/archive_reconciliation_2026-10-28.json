@@ -1,50 +1,49 @@
 {
   "schema_version": "1.0",
   "task_id": "Q85",
-  "status": "ARCHIVE_SYNCED_RECOMPUTE_PENDING",
-  "observed_at_utc": "2026-10-28T17:16:00Z",
+  "status": "ARCHIVE_SYNCED_OUTPUTS_VALIDATED_PENDING_PERSISTED_HEAD_CI",
+  "observed_at_utc": "2026-10-29T17:03:52.581683+00:00",
   "canonical_main_archive": {
     "path": "data/storico_daily.csv",
-    "git_blob_sha": "90e040c26b72be46f37136bf3e992e154ec8495c",
-    "draw_count": 3390,
+    "git_blob_sha": "df63935910cd7ba2a220b1a4c2a165c6275144e6",
+    "draw_count": 3391,
     "first_date": "2017-07-17",
-    "last_date": "2026-10-27",
+    "last_date": "2026-10-28",
     "last_draw": [
-      1,
-      6,
-      8,
-      28,
-      34
+      9,
+      21,
+      25,
+      26,
+      30
     ]
   },
   "research_branch_archive": {
     "path": "data/storico_daily.csv",
-    "git_blob_sha": "90e040c26b72be46f37136bf3e992e154ec8495c",
-    "draw_count": 3390,
+    "git_blob_sha": "df63935910cd7ba2a220b1a4c2a165c6275144e6",
+    "draw_count": 3391,
     "first_date": "2017-07-17",
-    "last_date": "2026-10-27",
+    "last_date": "2026-10-28",
     "last_draw": [
-      1,
-      6,
-      8,
-      28,
-      34
+      9,
+      21,
+      25,
+      26,
+      30
     ]
   },
   "delta": {
     "new_draws_on_main_not_yet_in_research_branch": 0,
     "dates": [],
     "draws": [],
-    "resolution": "The research branch archive now byte-matches main; the two new draws are present."
+    "resolution": "Research branch archive byte-matches canonical main; Q80-Q83 were recomputed from the synchronized archive."
   },
   "affected_outputs": [
-    "Q80",
-    "Q81",
-    "Q82",
-    "Q83"
+    "Q80: reports/sequence_agent/per_number_condition_grammar.json",
+    "Q81: reports/sequence_agent/per_number_condition_4plus_grammar.json",
+    "Q82: reports/sequence_agent/per_number_condition_conditional_grammar.json",
+    "Q83: reports/sequence_agent/per_number_condition_5plus_grammar.json"
   ],
-  "required_action": "Recompute Q80/Q81/Q82 outputs against the synchronized archive, then execute Q83 and verify exact-head CI. Existing historical freeze artifacts remain immutable.",
+  "required_action": "Persist outputs via Git Data API, verify exact committed bytes, pass exact-head CI, then complete human review/integration. Do not auto-promote formulas.",
   "freeze_policy": "Append-only; do not overwrite or reconstruct historical or prospective freezes.",
-  "verified_from": "GitHub main archive and research branch archive blobs and their final rows",
-  "synced_at_utc": "2026-10-28T17:25:00Z"
+  "immutable_target_2026_10_25_freeze_overwritten": false
 }

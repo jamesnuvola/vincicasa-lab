@@ -1,17 +1,15 @@
 {
-  "generated_at_utc": "2026-10-28T17:35:34.884208+00:00",
+  "generated_at_utc": "2026-10-29T17:03:46.670513+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
   "task_count": 13,
-  "complete_count": 6,
-  "ready_count": 3,
-  "active_next_task": "Q83",
-  "active_next_task_title": "Extend feature subsets to five and higher variables with bounded batch evaluation",
-  "blocking_tasks": [
-    "Q60"
-  ],
-  "next_action": "Continue append-only prospective freezes; do not reconstruct historical freezes.",
+  "complete_count": 1,
+  "ready_count": 1,
+  "active_next_task": "Q84",
+  "active_next_task_title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
+  "blocking_tasks": [],
+  "next_action": null,
   "tasks": [
     {
       "id": "Q00",
@@ -32,12 +30,16 @@
       "id": "Q10",
       "priority": 10,
       "title": "Locate where the 40→20→10→5 cascade loses actual numbers",
-      "status": "COMPLETE",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "stage target count does not match latest metrics",
+        "per-target cascade ledger row count mismatch",
+        "cascade target coverage mismatch"
+      ],
       "acceptance_criteria": [
         "per-target Top20/Top10/Top5 hit counts",
         "conditional Top10 given Top20 5/5",
@@ -50,7 +52,7 @@
       "id": "Q20",
       "priority": 20,
       "title": "Build complete ex-ante residual ledger",
-      "status": "COMPLETE",
+      "status": "BLOCKED_BY_DEPENDENCY",
       "depends_on": [
         "Q10"
       ],
@@ -67,7 +69,7 @@
       "id": "Q30",
       "priority": 30,
       "title": "Test frozen mixes inside the same legacy Top20",
-      "status": "COMPLETE",
+      "status": "BLOCKED_BY_DEPENDENCY",
       "depends_on": [
         "Q20"
       ],
@@ -87,7 +89,7 @@
       "id": "Q40",
       "priority": 40,
       "title": "Compare global and positional candidate pipelines",
-      "status": "COMPLETE",
+      "status": "BLOCKED_BY_DEPENDENCY",
       "depends_on": [
         "Q10"
       ],
@@ -103,7 +105,7 @@
       "id": "Q50",
       "priority": 50,
       "title": "Re-test structural recurrence and hazard as a separate branch",
-      "status": "COMPLETE",
+      "status": "BLOCKED_BY_DEPENDENCY",
       "depends_on": [
         "Q20"
       ],
@@ -120,16 +122,14 @@
       "id": "Q60",
       "priority": 60,
       "title": "Prospective shadow evaluation and promotion gate",
-      "status": "INSUFFICIENT_PROSPECTIVE_CASES",
+      "status": "BLOCKED_BY_DEPENDENCY",
       "depends_on": [
         "Q30",
         "Q40",
         "Q50"
       ],
       "missing_evidence": [],
-      "validation_errors": [
-        "7 complete prospective paired targets; minimum 200 (preferred 200). No missing historical freezes may be reconstructed."
-      ],
+      "validation_errors": [],
       "acceptance_criteria": [
         "At least 200 complete prospective paired OOS targets per the registered promotion gate; 100-case snapshots are descriptive only.",
         "frozen Top20/Top10/Top5 and target date",
@@ -201,18 +201,12 @@
       "id": "Q83",
       "priority": 83,
       "title": "Extend feature subsets to five and higher variables with bounded batch evaluation",
-      "status": "READY",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
       "depends_on": [
         "Q00"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
-        "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
-      ],
-      "validation_errors": [
-        "missing evidence: reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
-        "missing evidence: reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
-      ],
+      "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "all 5-feature combinations are evaluated in reproducible batches with formula-range manifests",
         "higher-order batches continue beyond five features under explicit compute budgets; no silent truncation is allowed",
@@ -257,15 +251,13 @@
       "id": "Q85",
       "priority": 85,
       "title": "Reconcile research branch with the latest canonical archive and rerun affected chronological evidence",
-      "status": "READY",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/per_number_condition_refresh_2026-10-28.json"
-      ],
+      "missing_evidence": [],
       "validation_errors": [
-        "missing evidence: reports/sequence_agent/per_number_condition_refresh_2026-10-28.json"
+        "'Q85'"
       ],
       "acceptance_criteria": [
         "record the canonical archive blob SHA, draw count and last date from the current main archive",
