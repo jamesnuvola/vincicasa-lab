@@ -2,6 +2,7 @@
 """Fail-closed acceptance validation for persisted Q80-Q83 formula outputs."""
 from __future__ import annotations
 import csv
+import hashlib
 import json
 import os
 import subprocess
@@ -106,6 +107,16 @@ def main():
         for task_id, report_path in REPORTS.items():
             report = json.loads(report_path.read_text(encoding="utf-8"))
             metrics_path, ledger_path = OUTPUT_PATHS[task_id]
+            if task_id == "Q83" and report.get("metrics_parts"):
+                manifest = report["metrics_parts"]
+                metrics_output = {
+                    "metrics_parts": manifest,
+                    "metrics_manifest_sha256": hashlib.sha256(
+                        json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")
+                    ).hexdigest(),
+                }
+            else:
+                metrics_output = {"metrics_blob_sha": git_blob_sha(metrics_path)}
             item = milestones.get(task_id, {"id": task_id, "first_verified_at_utc": now})
             item.update({
                 "status": "VALIDATED_PENDING_HUMAN_REVIEW",
@@ -124,7 +135,7 @@ def main():
                 "exact_head_ci_status": "PENDING",
                 "outputs": {
                     "report_blob_sha": git_blob_sha(str(REPORTS[task_id].relative_to(ROOT))),
-                    "metrics_blob_sha": git_blob_sha(metrics_path),
+                    **metrics_output,
                     "target_ledger_blob_sha": git_blob_sha(ledger_path),
                 },
             })

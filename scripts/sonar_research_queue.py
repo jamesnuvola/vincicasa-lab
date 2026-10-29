@@ -673,7 +673,41 @@ def validate_q81():
 def validate_q83():
     errors=[]
     report=load_json(Q83_REPORT)
-    metrics,metric_rows=load_csv(Q83_METRICS)
+    metric_parts=report.get("metrics_parts", [])
+    if metric_parts:
+        metrics=None
+        metric_rows=[]
+        cursor=0
+        add_error(errors, report.get("metrics_storage")=="chunked_csv_parts", "Q83 chunked metrics storage label missing")
+        add_error(errors, len(metric_parts)==9, "Q83 chunked metrics part count mismatch")
+        add_error(errors, not Q83_METRICS.exists(), "Q83 monolithic metrics CSV must be absent when chunked parts are registered")
+        for part_index, part in enumerate(metric_parts):
+            part_path=ROOT / str(part.get("path", ""))
+            expected_rows=int(part.get("rows", -1))
+            add_error(errors, part.get("part_index")==part_index, "Q83 metrics part order/index mismatch")
+            add_error(errors, int(part.get("row_start_inclusive", -1))==cursor, "Q83 metrics part row ranges have a gap/overlap")
+            add_error(errors, expected_rows>0, "Q83 metrics part is empty or has invalid row count")
+            if not part_path.is_file():
+                errors.append("Q83 metrics part missing: "+str(part_path.relative_to(ROOT)))
+                cursor += max(0, expected_rows)
+                continue
+            fields, rows=load_csv(part_path)
+            if metrics is None:
+                metrics=fields
+            elif fields != metrics:
+                errors.append("Q83 metrics part schema mismatch: "+part_path.name)
+            add_error(errors, len(rows)==expected_rows, "Q83 metrics part row count mismatch: "+part_path.name)
+            add_error(errors, part.get("row_end_exclusive")==cursor+expected_rows, "Q83 metrics part end row mismatch")
+            add_error(errors, part_path.stat().st_size==int(part.get("bytes", -1)), "Q83 metrics part byte count mismatch: "+part_path.name)
+            add_error(errors, hashlib.sha256(part_path.read_bytes()).hexdigest()==part.get("sha256"), "Q83 metrics part SHA-256 mismatch: "+part_path.name)
+            metric_rows.extend(rows)
+            cursor += expected_rows
+        add_error(errors, cursor==report.get("metrics_rows"), "Q83 chunked metrics parts do not cover the declared row count")
+        add_error(errors, len(metric_rows)==report.get("metrics_rows"), "Q83 chunked metrics actual row count mismatch")
+        metrics=metrics or []
+        add_error(errors, report.get("outputs", {}).get("metrics") is None, "Q83 output metadata still points at a monolithic metrics CSV")
+    else:
+        metrics,metric_rows=load_csv(Q83_METRICS)
     ledger_fields,ledger_rows=load_csv(Q83_LEDGER)
     with DATA.open(newline="",encoding="utf-8-sig") as handle:
         archive_rows=list(csv.DictReader(handle))

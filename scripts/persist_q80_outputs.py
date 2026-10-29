@@ -2,7 +2,10 @@
 """Persist validated Q80/Q81/Q82/Q83 formula artifacts with GitHub Git Data API and verify exact-head bytes."""
 from __future__ import annotations
 import base64
+import csv
+import hashlib
 import json
+import math
 import os
 import subprocess
 import sys
@@ -12,6 +15,16 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BRANCH = "research/per-number-condition-grammar-20261026"
+Q83_METRICS_REL = "reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv"
+Q83_REPORT_REL = "reports/sequence_agent/per_number_condition_5plus_grammar.json"
+Q83_LEDGER_REL = "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv"
+Q83_PART_COUNT = 9
+Q83_CHUNK_ROWS = 30000
+Q83_PART_PATHS = tuple(
+    f"reports/sequence_agent/per_number_condition_5plus_formula_metrics_part_{index:02d}.csv"
+    for index in range(Q83_PART_COUNT)
+)
+DELETE_OUTPUTS = (Q83_METRICS_REL,)
 OUTPUTS = (
     "reports/sequence_agent/per_number_condition_grammar.json",
     "reports/sequence_agent/per_number_condition_formula_metrics.csv",
@@ -22,9 +35,9 @@ OUTPUTS = (
     "reports/sequence_agent/per_number_condition_conditional_grammar.json",
     "reports/sequence_agent/per_number_condition_conditional_metrics.csv",
     "reports/sequence_agent/per_number_condition_conditional_target_ledger.csv",
-    "reports/sequence_agent/per_number_condition_5plus_grammar.json",
-    "reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv",
-    "reports/sequence_agent/per_number_condition_5plus_target_ledger.csv",
+    Q83_REPORT_REL,
+    *Q83_PART_PATHS,
+    Q83_LEDGER_REL,
     "reports/sequence_agent/per_number_condition_research_checkpoint.json",
     "reports/sequence_agent/research_queue_status.json",
     "reports/sequence_agent/latest_metrics.json",
@@ -64,6 +77,104 @@ def git_head_file(path: str):
     result = subprocess.run(["git", "show", "HEAD:" + path], cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
     return result.stdout if result.returncode == 0 else None
 
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def prepare_q83_metric_chunks():
+    full_path = ROOT / Q83_METRICS_REL
+    report_path = ROOT / Q83_REPORT_REL
+    checkpoint_path = ROOT / "reports/sequence_agent/per_number_condition_research_checkpoint.json"
+    report = json.loads(report_path.read_text(encoding="utf-8"))
+
+    if full_path.is_file():
+        with full_path.open(newline="", encoding="utf-8-sig") as source:
+            reader = csv.DictReader(source)
+            fields = reader.fieldnames
+            if not fields:
+                raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: Q83 metrics CSV has no header")
+            part_rows = []
+            part_index = -1
+            part_handle = None
+            writer = None
+            total_rows = 0
+            try:
+                for row in reader:
+                    if total_rows % Q83_CHUNK_ROWS == 0:
+                        if part_handle:
+                            part_handle.close()
+                        part_index += 1
+                        if part_index >= Q83_PART_COUNT:
+                            raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: Q83 metrics exceed registered chunk capacity")
+                        part_path = ROOT / Q83_PART_PATHS[part_index]
+                        part_path.parent.mkdir(parents=True, exist_ok=True)
+                        part_handle = part_path.open("w", newline="", encoding="utf-8")
+                        writer = csv.DictWriter(part_handle, fieldnames=fields)
+                        writer.writeheader()
+                        part_rows.append(0)
+                    writer.writerow(row)
+                    part_rows[part_index] += 1
+                    total_rows += 1
+            finally:
+                if part_handle:
+                    part_handle.close()
+        expected_rows = int(report.get("metrics_rows", -1))
+        if total_rows != expected_rows:
+            raise SystemExit(f"Q80_Q81_Q82_Q83_PERSIST_BLOCKED: Q83 chunk row count {total_rows} != report {expected_rows}")
+        if part_index + 1 != Q83_PART_COUNT:
+            raise SystemExit(f"Q80_Q81_Q82_Q83_PERSIST_BLOCKED: Q83 chunk count {part_index + 1} != {Q83_PART_COUNT}")
+        manifest = []
+        cursor = 0
+        for index, rows in enumerate(part_rows):
+            path = ROOT / Q83_PART_PATHS[index]
+            manifest.append({
+                "part_index": index,
+                "path": Q83_PART_PATHS[index],
+                "rows": rows,
+                "row_start_inclusive": cursor,
+                "row_end_exclusive": cursor + rows,
+                "bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            })
+            cursor += rows
+        report["metrics_storage"] = "chunked_csv_parts"
+        report["metrics_parts"] = manifest
+        report.setdefault("outputs", {})["metrics"] = None
+        report["outputs"]["metrics_parts"] = [item["path"] for item in manifest]
+        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        full_path.unlink()
+    else:
+        manifest = report.get("metrics_parts", [])
+        if len(manifest) != Q83_PART_COUNT or report.get("metrics_storage") != "chunked_csv_parts":
+            raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: neither source Q83 CSV nor valid chunk manifest exists")
+        for index, item in enumerate(manifest):
+            path = ROOT / item.get("path", "")
+            if item.get("part_index") != index or not path.is_file():
+                raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: existing Q83 chunk manifest is incomplete")
+            if path.stat().st_size != int(item.get("bytes", -1)) or sha256_file(path) != item.get("sha256"):
+                raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: existing Q83 chunk checksum mismatch")
+
+    if checkpoint_path.is_file():
+        checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+        manifest = report.get("metrics_parts", [])
+        manifest_sha = hashlib.sha256(json.dumps(manifest, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+        for milestone in checkpoint.get("verified_milestones", []):
+            if milestone.get("id") == "Q83":
+                outputs = milestone.setdefault("outputs", {})
+                outputs.pop("metrics_blob_sha", None)
+                outputs["metrics_parts"] = manifest
+                outputs["metrics_manifest_sha256"] = manifest_sha
+                outputs["report_blob_sha"] = subprocess.run(
+                    ["git", "hash-object", str(report_path)], cwd=ROOT, check=True,
+                    stdout=subprocess.PIPE, text=True
+                ).stdout.strip()
+                milestone["metrics_storage"] = "chunked_csv_parts"
+        checkpoint_path.write_text(json.dumps(checkpoint, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
 
 
 def verify_outputs_at_ref(ref_sha: str):
@@ -85,6 +196,9 @@ def verify_outputs_at_ref(ref_sha: str):
         if persisted_bytes != expected_bytes:
             raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: persisted bytes differ for " + path)
         print("Q80_Q81_Q82_Q83_PERSIST_VERIFIED: " + path + " bytes=" + str(len(persisted_bytes)))
+    for path in DELETE_OUTPUTS:
+        if path in entries:
+            raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: oversized monolithic metrics CSV still present: " + path)
 
 def main():
     effective_ref = os.environ.get("GITHUB_HEAD_REF") or os.environ.get("GITHUB_REF_NAME")
@@ -95,16 +209,17 @@ def main():
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     if not head or not repo:
         raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: missing checkout/repository context")
+    prepare_q83_metric_chunks()
     sys.path.insert(0, str(ROOT / "scripts"))
     from sonar_research_queue import validate_q80, validate_q81, validate_q82, validate_q83
     errors = validate_q80() + validate_q81() + validate_q82() + validate_q83()
     if errors:
         raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: acceptance validation failed: " + "; ".join(errors))
-    report80 = json.loads((ROOT / OUTPUTS[0]).read_text(encoding="utf-8"))
-    report81 = json.loads((ROOT / OUTPUTS[3]).read_text(encoding="utf-8"))
-    report82 = json.loads((ROOT / OUTPUTS[6]).read_text(encoding="utf-8"))
-    report83 = json.loads((ROOT / OUTPUTS[9]).read_text(encoding="utf-8"))
-    queue = json.loads((ROOT / OUTPUTS[13]).read_text(encoding="utf-8"))
+    report80 = json.loads((ROOT / "reports/sequence_agent/per_number_condition_grammar.json").read_text(encoding="utf-8"))
+    report81 = json.loads((ROOT / "reports/sequence_agent/per_number_condition_4plus_grammar.json").read_text(encoding="utf-8"))
+    report82 = json.loads((ROOT / "reports/sequence_agent/per_number_condition_conditional_grammar.json").read_text(encoding="utf-8"))
+    report83 = json.loads((ROOT / Q83_REPORT_REL).read_text(encoding="utf-8"))
+    queue = json.loads((ROOT / "reports/sequence_agent/research_queue_status.json").read_text(encoding="utf-8"))
     q80 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q80"), None)
     q81 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q81"), None)
     q82 = next((item for item in queue.get("tasks", []) if item.get("id") == "Q82"), None)
@@ -124,8 +239,9 @@ def main():
         previous = git_head_file(path)
         if previous != content:
             changed.append((path, content.decode("utf-8")))
+    deleted = [path for path in DELETE_OUTPUTS if git_head_file(path) is not None]
     output_path = os.environ.get("GITHUB_OUTPUT")
-    if not changed:
+    if not changed and not deleted:
         ref_now = api("GET", "/git/ref/heads/" + BRANCH)
         if ref_now.get("object", {}).get("sha") != head:
             raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: branch head moved before no-op verification")
@@ -144,6 +260,7 @@ def main():
         blob = api("POST", "/git/blobs", {"content": content, "encoding": "utf-8"})
         tree_entries.append({"path": path, "mode": "100644", "type": "blob", "sha": blob["sha"]})
         print("Q80_Q81_Q82_Q83_PERSIST_BLOB: " + path + " bytes=" + str(len(content.encode("utf-8"))))
+    tree_entries.extend({"path": path, "mode": "100644", "type": "blob", "sha": None} for path in deleted)
     tree = api("POST", "/git/trees", {"base_tree": commit_data["tree"]["sha"], "tree": tree_entries})
     commit = api("POST", "/git/commits", {
         "message": "Persist validated Q80-Q83 formula outputs, archive sync, checkpoint and research queue status",
