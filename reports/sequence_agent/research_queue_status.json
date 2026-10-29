@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-10-29T17:03:46.670513+00:00",
+  "generated_at_utc": "2026-10-29T17:50:52.001074+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
-  "task_count": 13,
-  "complete_count": 1,
+  "task_count": 14,
+  "complete_count": 2,
   "ready_count": 1,
   "active_next_task": "Q84",
   "active_next_task_title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
@@ -209,6 +209,7 @@
       "validation_errors": [],
       "acceptance_criteria": [
         "all 5-feature combinations are evaluated in reproducible batches with formula-range manifests",
+        "chunked metric parts are persisted with per-part SHA-256, byte count, row range, and a manifest; a monolithic CSV is not required when chunked storage is declared",
         "higher-order batches continue beyond five features under explicit compute budgets; no silent truncation is allowed",
         "batch outputs reconcile to the full declared formula universe without duplicate or missing formula IDs",
         "chronological discovery/validation/blind OOS and Holm correction are maintained across the registered test family",
@@ -251,14 +252,12 @@
       "id": "Q85",
       "priority": 85,
       "title": "Reconcile research branch with the latest canonical archive and rerun affected chronological evidence",
-      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
+      "status": "COMPLETE",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [
-        "'Q85'"
-      ],
+      "validation_errors": [],
       "acceptance_criteria": [
         "record the canonical archive blob SHA, draw count and last date from the current main archive",
         "identify every Q80/Q81/Q82/Q83 output whose archive cutoff is stale and do not represent it as current",
@@ -266,6 +265,26 @@
         "reconcile metrics, target ledgers, formula manifests and chronological split counts to the refreshed archive",
         "run exact-head CI and persist/re-read outputs before reporting validated status",
         "do not overwrite or reconstruct missing prospective freezes and do not merge any PR automatically"
+      ]
+    },
+    {
+      "id": "Q86",
+      "priority": 86,
+      "title": "Exhaustively evaluate all six-feature equal-weight combinations",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [],
+      "validation_errors": [],
+      "acceptance_criteria": [
+        "all 296,010 unique unordered six-feature equal-weight combinations from the 27 registered prior-only features are evaluated",
+        "formula evaluation uses explicit 1,024-formula batches with a contiguous manifest and no gaps or overlaps",
+        "all 40 numbers are ranked for every target with at least 50 prior draws; features use only the strict prefix before target",
+        "per-target ledger reconciles actual quintet, immediate prior cutoff, all 27 single-feature ranks and best retrospective six-feature formula",
+        "metrics cover discovery, validation and blind OOS; Holm-Bonferroni covers formula×split×endpoint tests across the full six-feature family",
+        "uniform number-rank baseline and exploratory/null outcomes are reported; immutable freezes are not overwritten",
+        "human review/integration is required before Q86 is marked COMPLETE; higher-order and other formula grammars remain open"
       ]
     }
   ],
