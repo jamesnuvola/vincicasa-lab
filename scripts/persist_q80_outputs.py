@@ -145,7 +145,7 @@ def main():
         print("Q80_Q81_Q82_Q83_PERSIST_BLOB: " + path + " bytes=" + str(len(content.encode("utf-8"))))
     tree = api("POST", "/git/trees", {"base_tree": commit_data["tree"]["sha"], "tree": tree_entries})
     commit = api("POST", "/git/commits", {
-        "message": "Persist validated Q80/Q81/Q82 formula outputs, checkpoint and research queue status",
+        "message": "Persist validated Q80-Q83 formula outputs, archive sync, checkpoint and research queue status",
         "tree": tree["sha"],
         "parents": [head],
     })
