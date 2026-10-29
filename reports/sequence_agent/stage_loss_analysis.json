@@ -1,13 +1,13 @@
 {
   "status": "COMPLETE_RETROSPECTIVE_DIAGNOSTIC",
   "source": "historical_rule_ledger.csv",
-  "targets": 3190,
+  "targets": 3191,
   "first_target": "2018-02-02",
-  "last_target": "2026-10-27",
+  "last_target": "2026-10-28",
   "split_sizes": {
     "discovery": 1914,
     "validation": 638,
-    "oos": 638
+    "oos": 639
   },
   "random_top20_5of5_baseline": 0.02356202356202356,
   "multiple_testing": {
@@ -31,18 +31,18 @@
   "per_target_cascade_ledger": "reports/sequence_agent/cascade_target_hit_ledger.csv",
   "stage_loss_by_configuration": {
     "CHAIN::decay_30>prev_3>arith_3": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 76,
         "1": 455,
         "2": 1042,
-        "3": 1072,
+        "3": 1073,
         "4": 472,
         "5": 73
       },
       "top10_hit_distribution": {
         "0": 684,
-        "1": 1362,
+        "1": 1363,
         "2": 856,
         "3": 246,
         "4": 41,
@@ -50,26 +50,26 @@
       },
       "top5_hit_distribution": {
         "0": 1592,
-        "1": 1251,
+        "1": 1252,
         "2": 322,
         "3": 25,
         "4": 0,
         "5": 0
       },
       "top20_all5": 73,
-      "top20_rate": 0.022884012539184952,
+      "top20_rate": 0.02287684111563773,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0136986301369863,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 545,
-      "mean_top20_hits": 2.510344827586207,
-      "mean_top10_hits": 1.2479623824451411,
-      "mean_top5_hits": 0.6175548589341693,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.615606851159227,
+      "mean_top20_hits": 2.5104982764023815,
+      "mean_top10_hits": 1.2478846756502664,
+      "mean_top5_hits": 0.6176747101222188,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.6166513277221934,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -157,18 +157,18 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 95,
             "2": 210,
-            "3": 211,
+            "3": 212,
             "4": 90,
             "5": 17
           },
           "top10_hit_distribution": {
             "0": 144,
-            "1": 262,
+            "1": 263,
             "2": 176,
             "3": 45,
             "4": 10,
@@ -176,70 +176,70 @@
           },
           "top5_hit_distribution": {
             "0": 328,
-            "1": 241,
+            "1": 242,
             "2": 64,
             "3": 5,
             "4": 0,
             "5": 0
           },
           "top20_all5": 17,
-          "top20_rate": 0.02664576802507837,
+          "top20_rate": 0.026604068857589983,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.058823529411764705,
           "top5_given_top10_all5": 0.0,
           "top20_4plus": 107,
-          "mean_top20_hits": 2.4968652037617556,
-          "mean_top10_hits": 1.244514106583072,
-          "mean_top5_hits": 0.6018808777429467,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.33788685978097976,
+          "mean_top20_hits": 2.4976525821596245,
+          "mean_top10_hits": 1.244131455399061,
+          "mean_top5_hits": 0.6025039123630673,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.3401816863267053,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "CHAIN::freq_100>momentum_20_100>return_fit": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 80,
         "1": 472,
         "2": 1060,
         "3": 1007,
         "4": 499,
-        "5": 72
+        "5": 73
       },
       "top10_hit_distribution": {
         "0": 692,
         "1": 1345,
-        "2": 848,
+        "2": 849,
         "3": 267,
         "4": 36,
         "5": 2
       },
       "top5_hit_distribution": {
         "0": 1570,
-        "1": 1297,
+        "1": 1298,
         "2": 296,
         "3": 26,
         "4": 1,
         "5": 0
       },
-      "top20_all5": 72,
-      "top20_rate": 0.0225705329153605,
+      "top20_all5": 73,
+      "top20_rate": 0.02287684111563773,
       "top10_all5": 2,
       "top5_all5": 0,
-      "top10_given_top20_all5": 0.027777777777777776,
+      "top10_given_top20_all5": 0.0273972602739726,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 571,
-      "mean_top20_hits": 2.4981191222570533,
-      "mean_top10_hits": 1.2526645768025078,
-      "mean_top5_hits": 0.6178683385579937,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.6599356652874393,
+      "top20_4plus": 572,
+      "mean_top20_hits": 2.49890316515199,
+      "mean_top10_hits": 1.252898777812598,
+      "mean_top5_hits": 0.6179880915073644,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.6166513277221934,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -327,61 +327,61 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 14,
             "1": 91,
             "2": 199,
             "3": 215,
             "4": 106,
-            "5": 13
+            "5": 14
           },
           "top10_hit_distribution": {
             "0": 136,
             "1": 261,
-            "2": 177,
+            "2": 178,
             "3": 57,
             "4": 6,
             "5": 1
           },
           "top5_hit_distribution": {
             "0": 296,
-            "1": 280,
+            "1": 281,
             "2": 55,
             "3": 6,
             "4": 1,
             "5": 0
           },
-          "top20_all5": 13,
-          "top20_rate": 0.02037617554858934,
+          "top20_all5": 14,
+          "top20_rate": 0.02190923317683881,
           "top10_all5": 1,
           "top5_all5": 0,
-          "top10_given_top20_all5": 0.07692307692307693,
+          "top10_given_top20_all5": 0.07142857142857142,
           "top5_given_top10_all5": 0.0,
-          "top20_4plus": 119,
-          "mean_top20_hits": 2.543887147335423,
-          "mean_top10_hits": 1.2774294670846396,
-          "mean_top5_hits": 0.64576802507837,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.7380576970563487,
+          "top20_4plus": 120,
+          "mean_top20_hits": 2.54773082942097,
+          "mean_top10_hits": 1.2785602503912363,
+          "mean_top5_hits": 0.6463223787167449,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.6444600797860481,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "CHAIN::freq_20>momentum_10_50>arith_3": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 80,
         "1": 435,
-        "2": 1031,
+        "2": 1032,
         "3": 1102,
         "4": 478,
         "5": 64
       },
       "top10_hit_distribution": {
-        "0": 652,
+        "0": 653,
         "1": 1381,
         "2": 871,
         "3": 254,
@@ -389,7 +389,7 @@
         "5": 2
       },
       "top5_hit_distribution": {
-        "0": 1593,
+        "0": 1594,
         "1": 1271,
         "2": 294,
         "3": 32,
@@ -397,19 +397,19 @@
         "5": 0
       },
       "top20_all5": 64,
-      "top20_rate": 0.02006269592476489,
+      "top20_rate": 0.02005640864932623,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.03125,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 542,
-      "mean_top20_hits": 2.518808777429467,
-      "mean_top10_hits": 1.2586206896551724,
-      "mean_top5_hits": 0.6128526645768025,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.9160640190535742,
+      "mean_top20_hits": 2.5186461924161705,
+      "mean_top10_hits": 1.2582262613600752,
+      "mean_top5_hits": 0.6126606079598872,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.9164755474606452,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -497,17 +497,17 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 17,
             "1": 99,
-            "2": 203,
+            "2": 204,
             "3": 216,
             "4": 94,
             "5": 9
           },
           "top10_hit_distribution": {
-            "0": 144,
+            "0": 145,
             "1": 264,
             "2": 168,
             "3": 53,
@@ -515,7 +515,7 @@
             "5": 1
           },
           "top5_hit_distribution": {
-            "0": 334,
+            "0": 335,
             "1": 246,
             "2": 53,
             "3": 5,
@@ -523,43 +523,43 @@
             "5": 0
           },
           "top20_all5": 9,
-          "top20_rate": 0.014106583072100314,
+          "top20_rate": 0.014084507042253521,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.1111111111111111,
           "top5_given_top10_all5": 0.0,
           "top20_4plus": 103,
-          "mean_top20_hits": 2.4670846394984327,
-          "mean_top10_hits": 1.2476489028213167,
-          "mean_top5_hits": 0.5752351097178683,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.9647638393479492,
+          "mean_top20_hits": 2.4663536776212833,
+          "mean_top10_hits": 1.245696400625978,
+          "mean_top5_hits": 0.5743348982785602,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.9652003151558552,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "CHAIN::freq_20>pair_affinity_50>complement_1": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 92,
         "1": 449,
         "2": 1038,
         "3": 1050,
-        "4": 494,
+        "4": 495,
         "5": 67
       },
       "top10_hit_distribution": {
         "0": 671,
-        "1": 1334,
+        "1": 1335,
         "2": 909,
         "3": 246,
         "4": 28,
         "5": 2
       },
       "top5_hit_distribution": {
-        "0": 1595,
+        "0": 1596,
         "1": 1245,
         "2": 320,
         "3": 30,
@@ -567,19 +567,19 @@
         "5": 0
       },
       "top20_all5": 67,
-      "top20_rate": 0.021003134796238245,
+      "top20_rate": 0.020996552804763396,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.029850746268656716,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 561,
-      "mean_top20_hits": 2.503448275862069,
-      "mean_top10_hits": 1.257680250783699,
-      "mean_top5_hits": 0.6191222570532915,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.8442709825842856,
+      "top20_4plus": 562,
+      "mean_top20_hits": 2.5039172673143217,
+      "mean_top10_hits": 1.2575994985897838,
+      "mean_top5_hits": 0.6189282356628016,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.8449143116915518,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -667,25 +667,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 23,
             "1": 95,
             "2": 205,
             "3": 200,
-            "4": 100,
+            "4": 101,
             "5": 15
           },
           "top10_hit_distribution": {
             "0": 143,
-            "1": 246,
+            "1": 247,
             "2": 192,
             "3": 49,
             "4": 8,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 319,
+            "0": 320,
             "1": 250,
             "2": 62,
             "3": 7,
@@ -693,43 +693,43 @@
             "5": 0
           },
           "top20_all5": 15,
-          "top20_rate": 0.023510971786833857,
+          "top20_rate": 0.023474178403755867,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
-          "top20_4plus": 115,
-          "mean_top20_hits": 2.476489028213166,
-          "mean_top10_hits": 1.2680250783699059,
-          "mean_top5_hits": 0.6191222570532915,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.5389396320180753,
+          "top20_4plus": 116,
+          "mean_top20_hits": 2.4788732394366195,
+          "mean_top10_hits": 1.267605633802817,
+          "mean_top5_hits": 0.6181533646322379,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.541372690917826,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "CHAIN::freq_50>return_fit>position_global": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 76,
         "1": 467,
         "2": 1052,
-        "3": 1020,
+        "3": 1021,
         "4": 507,
         "5": 68
       },
       "top10_hit_distribution": {
         "0": 715,
-        "1": 1300,
+        "1": 1301,
         "2": 885,
         "3": 249,
         "4": 39,
         "5": 2
       },
       "top5_hit_distribution": {
-        "0": 1606,
+        "0": 1607,
         "1": 1237,
         "2": 318,
         "3": 26,
@@ -737,19 +737,19 @@
         "5": 0
       },
       "top20_all5": 68,
-      "top20_rate": 0.021316614420062698,
+      "top20_rate": 0.02130993418990912,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.029411764705882353,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 575,
-      "mean_top20_hits": 2.507523510971787,
-      "mean_top10_hits": 1.24858934169279,
-      "mean_top5_hits": 0.6153605015673981,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.8135507314358079,
+      "mean_top20_hits": 2.50767784393607,
+      "mean_top10_hits": 1.2485114384205578,
+      "mean_top5_hits": 0.615167659041053,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.814274562717201,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -837,25 +837,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 12,
             "1": 97,
             "2": 192,
-            "3": 216,
+            "3": 217,
             "4": 108,
             "5": 13
           },
           "top10_hit_distribution": {
             "0": 135,
-            "1": 263,
+            "1": 264,
             "2": 184,
             "3": 47,
             "4": 9,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 316,
+            "0": 317,
             "1": 262,
             "2": 55,
             "3": 5,
@@ -863,35 +863,35 @@
             "5": 0
           },
           "top20_all5": 13,
-          "top20_rate": 0.02037617554858934,
+          "top20_rate": 0.02034428794992175,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 121,
-          "mean_top20_hits": 2.54858934169279,
-          "mean_top10_hits": 1.2664576802507836,
-          "mean_top5_hits": 0.6065830721003135,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.7380576970563487,
+          "mean_top20_hits": 2.5492957746478875,
+          "mean_top10_hits": 1.2660406885759,
+          "mean_top5_hits": 0.6056338028169014,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.7400014175427925,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "CHAIN::prev_1>transition_position>gap_age": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 70,
         "1": 492,
         "2": 1034,
         "3": 1037,
-        "4": 468,
+        "4": 469,
         "5": 89
       },
       "top10_hit_distribution": {
-        "0": 674,
+        "0": 675,
         "1": 1323,
         "2": 892,
         "3": 273,
@@ -899,7 +899,7 @@
         "5": 2
       },
       "top5_hit_distribution": {
-        "0": 1565,
+        "0": 1566,
         "1": 1304,
         "2": 294,
         "3": 27,
@@ -907,19 +907,19 @@
         "5": 0
       },
       "top20_all5": 89,
-      "top20_rate": 0.027899686520376176,
+      "top20_rate": 0.027890943277969288,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.02247191011235955,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 557,
-      "mean_top20_hits": 2.5040752351097177,
-      "mean_top10_hits": 1.2664576802507836,
-      "mean_top5_hits": 0.6184952978056426,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.06264243417326838,
+      "top20_4plus": 558,
+      "mean_top20_hits": 2.504544030084613,
+      "mean_top10_hits": 1.2660607959887182,
+      "mean_top5_hits": 0.6183014728925101,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.06299234207430511,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -1007,17 +1007,17 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 16,
             "1": 93,
             "2": 219,
             "3": 205,
-            "4": 85,
+            "4": 86,
             "5": 20
           },
           "top10_hit_distribution": {
-            "0": 141,
+            "0": 142,
             "1": 262,
             "2": 166,
             "3": 65,
@@ -1025,7 +1025,7 @@
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 323,
+            "0": 324,
             "1": 253,
             "2": 56,
             "3": 6,
@@ -1033,28 +1033,28 @@
             "5": 0
           },
           "top20_all5": 20,
-          "top20_rate": 0.03134796238244514,
+          "top20_rate": 0.03129890453834116,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
-          "top20_4plus": 105,
-          "mean_top20_hits": 2.4858934169278997,
-          "mean_top10_hits": 1.261755485893417,
-          "mean_top5_hits": 0.6003134796238244,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.12394127456219106,
+          "top20_4plus": 106,
+          "mean_top20_hits": 2.488262910798122,
+          "mean_top10_hits": 1.2597809076682316,
+          "mean_top5_hits": 0.5993740219092332,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.12526944033368637,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::arith_3>gap_age": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 79,
-        "1": 456,
+        "1": 457,
         "2": 1039,
         "3": 1055,
         "4": 490,
@@ -1062,7 +1062,7 @@
       },
       "top10_hit_distribution": {
         "0": 706,
-        "1": 1305,
+        "1": 1306,
         "2": 898,
         "3": 253,
         "4": 26,
@@ -1070,26 +1070,26 @@
       },
       "top5_hit_distribution": {
         "0": 1563,
-        "1": 1247,
+        "1": 1248,
         "2": 352,
         "3": 28,
         "4": 0,
         "5": 0
       },
       "top20_all5": 71,
-      "top20_rate": 0.02225705329153605,
+      "top20_rate": 0.022250078345346286,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.028169014084507043,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 561,
-      "mean_top20_hits": 2.5122257053291537,
-      "mean_top10_hits": 1.2457680250783698,
-      "mean_top5_hits": 0.6379310344827587,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7023424466434441,
+      "mean_top20_hits": 2.5117518019429648,
+      "mean_top10_hits": 1.2456910059542463,
+      "mean_top5_hits": 0.6380445001566907,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7032847347895959,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -1177,10 +1177,10 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 18,
-            "1": 95,
+            "1": 96,
             "2": 211,
             "3": 200,
             "4": 97,
@@ -1188,7 +1188,7 @@
           },
           "top10_hit_distribution": {
             "0": 144,
-            "1": 262,
+            "1": 263,
             "2": 173,
             "3": 54,
             "4": 4,
@@ -1196,45 +1196,45 @@
           },
           "top5_hit_distribution": {
             "0": 313,
-            "1": 247,
+            "1": 248,
             "2": 73,
             "3": 5,
             "4": 0,
             "5": 0
           },
           "top20_all5": 17,
-          "top20_rate": 0.02664576802507837,
+          "top20_rate": 0.026604068857589983,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.058823529411764705,
           "top5_given_top10_all5": 0.0,
           "top20_4plus": 114,
-          "mean_top20_hits": 2.4921630094043885,
-          "mean_top10_hits": 1.2398119122257054,
-          "mean_top5_hits": 0.6394984326018809,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.33788685978097976,
+          "mean_top20_hits": 2.4898278560250393,
+          "mean_top10_hits": 1.2394366197183098,
+          "mean_top5_hits": 0.6400625978090767,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.3401816863267053,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::decay_30>return_fit": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 86,
         "1": 441,
         "2": 1050,
         "3": 1072,
-        "4": 477,
+        "4": 478,
         "5": 64
       },
       "top10_hit_distribution": {
         "0": 673,
         "1": 1327,
         "2": 910,
-        "3": 253,
+        "3": 254,
         "4": 27,
         "5": 0
       },
@@ -1242,24 +1242,24 @@
         "0": 1592,
         "1": 1283,
         "2": 290,
-        "3": 25,
+        "3": 26,
         "4": 0,
         "5": 0
       },
       "top20_all5": 64,
-      "top20_rate": 0.02006269592476489,
+      "top20_rate": 0.02005640864932623,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
-      "top20_4plus": 541,
-      "mean_top20_hits": 2.5031347962382444,
-      "mean_top10_hits": 1.258307210031348,
-      "mean_top5_hits": 0.6075235109717868,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.9160640190535742,
+      "top20_4plus": 542,
+      "mean_top20_hits": 2.503603885929176,
+      "mean_top10_hits": 1.2588530241303666,
+      "mean_top5_hits": 0.608273268567847,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.9164755474606452,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -1347,20 +1347,20 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 18,
             "1": 88,
             "2": 205,
             "3": 216,
-            "4": 99,
+            "4": 100,
             "5": 12
           },
           "top10_hit_distribution": {
             "0": 144,
             "1": 243,
             "2": 183,
-            "3": 60,
+            "3": 61,
             "4": 8,
             "5": 0
           },
@@ -1368,68 +1368,68 @@
             "0": 303,
             "1": 260,
             "2": 71,
-            "3": 4,
+            "3": 5,
             "4": 0,
             "5": 0
           },
           "top20_all5": 12,
-          "top20_rate": 0.018808777429467086,
+          "top20_rate": 0.018779342723004695,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
-          "top20_4plus": 111,
-          "mean_top20_hits": 2.510971786833856,
-          "mean_top10_hits": 1.286833855799373,
-          "mean_top5_hits": 0.6489028213166145,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.8205514812310135,
+          "top20_4plus": 112,
+          "mean_top20_hits": 2.513302034428795,
+          "mean_top10_hits": 1.2895148669796557,
+          "mean_top5_hits": 0.6525821596244131,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.822093109244185,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::decay_60>position_global": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 77,
         "1": 466,
         "2": 1032,
-        "3": 1053,
+        "3": 1054,
         "4": 479,
         "5": 83
       },
       "top10_hit_distribution": {
         "0": 706,
         "1": 1316,
-        "2": 877,
+        "2": 878,
         "3": 260,
         "4": 30,
         "5": 1
       },
       "top5_hit_distribution": {
         "0": 1628,
-        "1": 1208,
+        "1": 1209,
         "2": 320,
         "3": 34,
         "4": 0,
         "5": 0
       },
       "top20_all5": 83,
-      "top20_rate": 0.026018808777429465,
+      "top20_rate": 0.026010654967094954,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.012048192771084338,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 562,
-      "mean_top20_hits": 2.5141065830721003,
-      "mean_top10_hits": 1.2460815047021943,
-      "mean_top5_hits": 0.6112852664576802,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.19444210417825233,
+      "mean_top20_hits": 2.5142588530241303,
+      "mean_top10_hits": 1.2463177687245377,
+      "mean_top5_hits": 0.6114070824193043,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.1952130681409363,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -1517,63 +1517,63 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 18,
             "1": 86,
             "2": 200,
-            "3": 219,
+            "3": 220,
             "4": 100,
             "5": 15
           },
           "top10_hit_distribution": {
             "0": 144,
             "1": 249,
-            "2": 183,
+            "2": 184,
             "3": 57,
             "4": 5,
             "5": 0
           },
           "top5_hit_distribution": {
             "0": 324,
-            "1": 232,
+            "1": 233,
             "2": 73,
             "3": 9,
             "4": 0,
             "5": 0
           },
           "top20_all5": 15,
-          "top20_rate": 0.023510971786833857,
+          "top20_rate": 0.023474178403755867,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 115,
-          "mean_top20_hits": 2.5360501567398117,
-          "mean_top10_hits": 1.2633228840125392,
-          "mean_top5_hits": 0.6347962382445141,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.5389396320180753,
+          "mean_top20_hits": 2.536776212832551,
+          "mean_top10_hits": 1.2644757433489828,
+          "mean_top5_hits": 0.6353677621283255,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.541372690917826,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::freq_20>arith_3": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 81,
         "1": 472,
         "2": 1015,
-        "3": 1063,
+        "3": 1064,
         "4": 478,
         "5": 81
       },
       "top10_hit_distribution": {
         "0": 712,
         "1": 1305,
-        "2": 898,
+        "2": 899,
         "3": 247,
         "4": 27,
         "5": 1
@@ -1581,25 +1581,25 @@
       "top5_hit_distribution": {
         "0": 1598,
         "1": 1236,
-        "2": 332,
+        "2": 333,
         "3": 23,
         "4": 1,
         "5": 0
       },
       "top20_all5": 81,
-      "top20_rate": 0.025391849529780564,
+      "top20_rate": 0.02538389219680351,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.012345679012345678,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 559,
-      "mean_top20_hits": 2.510344827586207,
-      "mean_top10_hits": 1.2398119122257054,
-      "mean_top5_hits": 0.6184952978056426,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.2629267722073531,
+      "mean_top20_hits": 2.5104982764023815,
+      "mean_top10_hits": 1.2400501410216234,
+      "mean_top5_hits": 0.6189282356628016,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.26383630003372743,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -1687,19 +1687,19 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 23,
             "1": 86,
             "2": 225,
-            "3": 189,
+            "3": 190,
             "4": 95,
             "5": 20
           },
           "top10_hit_distribution": {
             "0": 147,
             "1": 259,
-            "2": 186,
+            "2": 187,
             "3": 36,
             "4": 10,
             "5": 0
@@ -1707,69 +1707,69 @@
           "top5_hit_distribution": {
             "0": 317,
             "1": 243,
-            "2": 73,
+            "2": 74,
             "3": 5,
             "4": 0,
             "5": 0
           },
           "top20_all5": 20,
-          "top20_rate": 0.03134796238244514,
+          "top20_rate": 0.03129890453834116,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 115,
-          "mean_top20_hits": 2.481191222570533,
-          "mean_top10_hits": 1.2210031347962382,
-          "mean_top5_hits": 0.6332288401253918,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.12394127456219106,
+          "mean_top20_hits": 2.4820031298904537,
+          "mean_top10_hits": 1.2222222222222223,
+          "mean_top5_hits": 0.6353677621283255,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.12526944033368637,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::freq_20>momentum_10_50": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 70,
         "1": 459,
         "2": 1041,
-        "3": 1068,
+        "3": 1069,
         "4": 464,
         "5": 88
       },
       "top10_hit_distribution": {
         "0": 693,
         "1": 1304,
-        "2": 941,
+        "2": 942,
         "3": 222,
         "4": 27,
         "5": 3
       },
       "top5_hit_distribution": {
         "0": 1621,
-        "1": 1222,
+        "1": 1223,
         "2": 319,
         "3": 26,
         "4": 2,
         "5": 0
       },
       "top20_all5": 88,
-      "top20_rate": 0.027586206896551724,
+      "top20_rate": 0.027577561892823566,
       "top10_all5": 3,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.03409090909090909,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 552,
-      "mean_top20_hits": 2.5206896551724136,
-      "mean_top10_hits": 1.2460815047021943,
-      "mean_top5_hits": 0.6100313479623825,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.0774929371496161,
+      "mean_top20_hits": 2.5208398621121906,
+      "mean_top10_hits": 1.2463177687245377,
+      "mean_top5_hits": 0.6101535568787214,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.07790416897901598,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -1857,62 +1857,62 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 17,
             "1": 97,
             "2": 229,
-            "3": 191,
+            "3": 192,
             "4": 84,
             "5": 20
           },
           "top10_hit_distribution": {
             "0": 132,
             "1": 278,
-            "2": 187,
+            "2": 188,
             "3": 35,
             "4": 4,
             "5": 2
           },
           "top5_hit_distribution": {
             "0": 325,
-            "1": 245,
+            "1": 246,
             "2": 61,
             "3": 7,
             "4": 0,
             "5": 0
           },
           "top20_all5": 20,
-          "top20_rate": 0.03134796238244514,
+          "top20_rate": 0.03129890453834116,
           "top10_all5": 2,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.1,
           "top5_given_top10_all5": 0.0,
           "top20_4plus": 104,
-          "mean_top20_hits": 2.45141065830721,
-          "mean_top10_hits": 1.2272727272727273,
-          "mean_top5_hits": 0.6081504702194357,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.12394127456219106,
+          "mean_top20_hits": 2.45226917057903,
+          "mean_top10_hits": 1.2284820031298904,
+          "mean_top5_hits": 0.6087636932707355,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.12526944033368637,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::freq_20>position_global": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 77,
         "1": 467,
         "2": 1026,
-        "3": 1080,
+        "3": 1081,
         "4": 453,
         "5": 87
       },
       "top10_hit_distribution": {
         "0": 689,
-        "1": 1297,
+        "1": 1298,
         "2": 918,
         "3": 249,
         "4": 36,
@@ -1920,26 +1920,26 @@
       },
       "top5_hit_distribution": {
         "0": 1627,
-        "1": 1219,
+        "1": 1220,
         "2": 314,
         "3": 28,
         "4": 2,
         "5": 0
       },
       "top20_all5": 87,
-      "top20_rate": 0.02727272727272727,
+      "top20_rate": 0.027264180507677843,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.011494252873563218,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 540,
-      "mean_top20_hits": 2.509717868338558,
-      "mean_top10_hits": 1.2630094043887148,
-      "mean_top5_hits": 0.6078369905956112,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.0949460997914931,
+      "mean_top20_hits": 2.50987151363209,
+      "mean_top10_hits": 1.262926982137261,
+      "mean_top5_hits": 0.6079598871827013,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.0954237570017657,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -2027,18 +2027,18 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 16,
             "1": 100,
             "2": 223,
-            "3": 204,
+            "3": 205,
             "4": 78,
             "5": 17
           },
           "top10_hit_distribution": {
             "0": 128,
-            "1": 271,
+            "1": 272,
             "2": 182,
             "3": 50,
             "4": 7,
@@ -2046,70 +2046,70 @@
           },
           "top5_hit_distribution": {
             "0": 322,
-            "1": 256,
+            "1": 257,
             "2": 51,
             "3": 9,
             "4": 0,
             "5": 0
           },
           "top20_all5": 17,
-          "top20_rate": 0.02664576802507837,
+          "top20_rate": 0.026604068857589983,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 95,
-          "mean_top20_hits": 2.43730407523511,
-          "mean_top10_hits": 1.274294670846395,
-          "mean_top5_hits": 0.603448275862069,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.33788685978097976,
+          "mean_top20_hits": 2.4381846635367763,
+          "mean_top10_hits": 1.273865414710485,
+          "mean_top5_hits": 0.6040688575899843,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.3401816863267053,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::freq_20>return_fit": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 80,
         "1": 449,
         "2": 1020,
         "3": 1105,
-        "4": 459,
+        "4": 460,
         "5": 77
       },
       "top10_hit_distribution": {
         "0": 677,
         "1": 1342,
         "2": 888,
-        "3": 254,
+        "3": 255,
         "4": 28,
         "5": 1
       },
       "top5_hit_distribution": {
         "0": 1579,
-        "1": 1278,
+        "1": 1279,
         "2": 309,
         "3": 23,
         "4": 1,
         "5": 0
       },
       "top20_all5": 77,
-      "top20_rate": 0.02413793103448276,
+      "top20_rate": 0.02413036665622062,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.012987012987012988,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 536,
-      "mean_top20_hits": 2.5156739811912225,
-      "mean_top10_hits": 1.2529780564263322,
-      "mean_top5_hits": 0.6172413793103448,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.43087613003268155,
+      "top20_4plus": 537,
+      "mean_top20_hits": 2.5161391413350045,
+      "mean_top10_hits": 1.2535255405828893,
+      "mean_top5_hits": 0.6173613287370731,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.43196107915447296,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -2197,69 +2197,69 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 20,
             "1": 91,
             "2": 206,
             "3": 221,
-            "4": 87,
+            "4": 88,
             "5": 13
           },
           "top10_hit_distribution": {
             "0": 138,
             "1": 274,
             "2": 167,
-            "3": 53,
+            "3": 54,
             "4": 5,
             "5": 1
           },
           "top5_hit_distribution": {
             "0": 308,
-            "1": 256,
+            "1": 257,
             "2": 67,
             "3": 6,
             "4": 1,
             "5": 0
           },
           "top20_all5": 13,
-          "top20_rate": 0.02037617554858934,
+          "top20_rate": 0.02034428794992175,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.07692307692307693,
           "top5_given_top10_all5": 0.0,
-          "top20_4plus": 100,
-          "mean_top20_hits": 2.4749216300940438,
-          "mean_top10_hits": 1.2413793103448276,
-          "mean_top5_hits": 0.64576802507837,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.7380576970563487,
+          "top20_4plus": 101,
+          "mean_top20_hits": 2.4773082942097027,
+          "mean_top10_hits": 1.244131455399061,
+          "mean_top5_hits": 0.6463223787167449,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.7400014175427925,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::freq_50>gap_age": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 87,
         "1": 453,
         "2": 1053,
-        "3": 1044,
+        "3": 1045,
         "4": 486,
         "5": 67
       },
       "top10_hit_distribution": {
         "0": 669,
         "1": 1352,
-        "2": 882,
+        "2": 883,
         "3": 256,
         "4": 29,
         "5": 2
       },
       "top5_hit_distribution": {
-        "0": 1577,
+        "0": 1578,
         "1": 1246,
         "2": 342,
         "3": 25,
@@ -2267,19 +2267,19 @@
         "5": 0
       },
       "top20_all5": 67,
-      "top20_rate": 0.021003134796238245,
+      "top20_rate": 0.020996552804763396,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.029850746268656716,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 553,
-      "mean_top20_hits": 2.498432601880878,
-      "mean_top10_hits": 1.2570532915360502,
-      "mean_top5_hits": 0.6285266457680251,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.8442709825842856,
+      "mean_top20_hits": 2.4985897837668443,
+      "mean_top10_hits": 1.2572861172046381,
+      "mean_top5_hits": 0.6283296772171733,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.8449143116915518,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -2367,25 +2367,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 13,
             "1": 93,
             "2": 195,
-            "3": 215,
+            "3": 216,
             "4": 108,
             "5": 14
           },
           "top10_hit_distribution": {
             "0": 118,
             "1": 271,
-            "2": 189,
+            "2": 190,
             "3": 56,
             "4": 3,
             "5": 1
           },
           "top5_hit_distribution": {
-            "0": 307,
+            "0": 308,
             "1": 249,
             "2": 78,
             "3": 4,
@@ -2393,30 +2393,30 @@
             "5": 0
           },
           "top20_all5": 14,
-          "top20_rate": 0.0219435736677116,
+          "top20_rate": 0.02190923317683881,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.07142857142857142,
           "top5_given_top10_all5": 0.0,
           "top20_4plus": 122,
-          "mean_top20_hits": 2.554858934169279,
-          "mean_top10_hits": 1.3072100313479624,
-          "mean_top5_hits": 0.6536050156739812,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.6422015141457429,
+          "mean_top20_hits": 2.5555555555555554,
+          "mean_top10_hits": 1.3082942097026604,
+          "mean_top5_hits": 0.6525821596244131,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.6444600797860481,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::freq_50>momentum_20_100": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 85,
         "1": 449,
         "2": 1042,
-        "3": 1045,
+        "3": 1046,
         "4": 499,
         "5": 70
       },
@@ -2424,32 +2424,32 @@
         "0": 663,
         "1": 1336,
         "2": 903,
-        "3": 258,
+        "3": 259,
         "4": 29,
         "5": 1
       },
       "top5_hit_distribution": {
         "0": 1600,
-        "1": 1250,
+        "1": 1251,
         "2": 308,
         "3": 31,
         "4": 1,
         "5": 0
       },
       "top20_all5": 70,
-      "top20_rate": 0.0219435736677116,
+      "top20_rate": 0.021936696960200563,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.014285714285714285,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 569,
-      "mean_top20_hits": 2.5122257053291537,
-      "mean_top10_hits": 1.2655172413793103,
-      "mean_top5_hits": 0.6153605015673981,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7423342641403651,
+      "mean_top20_hits": 2.512378564713256,
+      "mean_top10_hits": 1.2660607959887182,
+      "mean_top5_hits": 0.6154810404261987,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7432100946608897,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -2537,12 +2537,12 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 97,
             "2": 210,
-            "3": 204,
+            "3": 205,
             "4": 93,
             "5": 19
           },
@@ -2550,56 +2550,56 @@
             "0": 132,
             "1": 282,
             "2": 161,
-            "3": 52,
+            "3": 53,
             "4": 11,
             "5": 0
           },
           "top5_hit_distribution": {
             "0": 320,
-            "1": 257,
+            "1": 258,
             "2": 55,
             "3": 6,
             "4": 0,
             "5": 0
           },
           "top20_all5": 19,
-          "top20_rate": 0.029780564263322883,
+          "top20_rate": 0.0297339593114241,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 112,
-          "mean_top20_hits": 2.501567398119122,
-          "mean_top10_hits": 1.2601880877742946,
-          "mean_top5_hits": 0.603448275862069,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.1803101924524138,
+          "mean_top20_hits": 2.5023474178403755,
+          "mean_top10_hits": 1.2629107981220657,
+          "mean_top5_hits": 0.6040688575899843,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.1819969251786328,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::prev_3>arith_3": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 72,
         "1": 443,
         "2": 1056,
         "3": 1062,
-        "4": 484,
+        "4": 485,
         "5": 73
       },
       "top10_hit_distribution": {
         "0": 684,
-        "1": 1288,
+        "1": 1289,
         "2": 929,
         "3": 252,
         "4": 36,
         "5": 1
       },
       "top5_hit_distribution": {
-        "0": 1583,
+        "0": 1584,
         "1": 1260,
         "2": 319,
         "3": 27,
@@ -2607,19 +2607,19 @@
         "5": 0
       },
       "top20_all5": 73,
-      "top20_rate": 0.022884012539184952,
+      "top20_rate": 0.02287684111563773,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0136986301369863,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 557,
-      "mean_top20_hits": 2.521003134796238,
-      "mean_top10_hits": 1.2699059561128527,
-      "mean_top5_hits": 0.6216300940438871,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.615606851159227,
+      "top20_4plus": 558,
+      "mean_top20_hits": 2.521466624882482,
+      "mean_top10_hits": 1.269821372610467,
+      "mean_top5_hits": 0.6214352867439674,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.6166513277221934,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -2707,25 +2707,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 10,
             "1": 87,
             "2": 233,
             "3": 193,
-            "4": 101,
+            "4": 102,
             "5": 14
           },
           "top10_hit_distribution": {
             "0": 133,
-            "1": 273,
+            "1": 274,
             "2": 182,
             "3": 43,
             "4": 7,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 313,
+            "0": 314,
             "1": 263,
             "2": 59,
             "3": 3,
@@ -2733,43 +2733,43 @@
             "5": 0
           },
           "top20_all5": 14,
-          "top20_rate": 0.0219435736677116,
+          "top20_rate": 0.02190923317683881,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
-          "top20_4plus": 115,
-          "mean_top20_hits": 2.5172413793103448,
-          "mean_top10_hits": 1.244514106583072,
-          "mean_top5_hits": 0.6112852664576802,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.6422015141457429,
+          "top20_4plus": 116,
+          "mean_top20_hits": 2.519561815336463,
+          "mean_top10_hits": 1.244131455399061,
+          "mean_top5_hits": 0.6103286384976526,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.6444600797860481,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::prev_3>complement_1": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 67,
         "1": 465,
         "2": 1070,
         "3": 1046,
-        "4": 468,
+        "4": 469,
         "5": 74
       },
       "top10_hit_distribution": {
         "0": 699,
-        "1": 1302,
+        "1": 1303,
         "2": 891,
         "3": 270,
         "4": 28,
         "5": 0
       },
       "top5_hit_distribution": {
-        "0": 1556,
+        "0": 1557,
         "1": 1271,
         "2": 335,
         "3": 28,
@@ -2777,19 +2777,19 @@
         "5": 0
       },
       "top20_all5": 74,
-      "top20_rate": 0.023197492163009405,
+      "top20_rate": 0.023190222500783453,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
-      "top20_4plus": 542,
-      "mean_top20_hits": 2.5031347962382444,
-      "mean_top10_hits": 1.2557993730407524,
-      "mean_top5_hits": 0.6347962382445141,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.5699183103369198,
+      "top20_4plus": 543,
+      "mean_top20_hits": 2.503603885929176,
+      "mean_top10_hits": 1.2557192102789094,
+      "mean_top5_hits": 0.6345973049200877,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.5709948248122904,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -2877,25 +2877,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 12,
             "1": 95,
             "2": 222,
             "3": 194,
-            "4": 103,
+            "4": 104,
             "5": 12
           },
           "top10_hit_distribution": {
             "0": 135,
-            "1": 280,
+            "1": 281,
             "2": 166,
             "3": 48,
             "4": 9,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 314,
+            "0": 315,
             "1": 264,
             "2": 56,
             "3": 4,
@@ -2903,43 +2903,43 @@
             "5": 0
           },
           "top20_all5": 12,
-          "top20_rate": 0.018808777429467086,
+          "top20_rate": 0.018779342723004695,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
-          "top20_4plus": 115,
-          "mean_top20_hits": 2.4968652037617556,
-          "mean_top10_hits": 1.2413793103448276,
-          "mean_top5_hits": 0.6081504702194357,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.8205514812310135,
+          "top20_4plus": 116,
+          "mean_top20_hits": 2.4992175273865413,
+          "mean_top10_hits": 1.2410015649452268,
+          "mean_top5_hits": 0.6071987480438185,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.822093109244185,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "PAIR::transition_position>momentum_10_50": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 66,
         "1": 471,
         "2": 1086,
-        "3": 1026,
+        "3": 1027,
         "4": 471,
         "5": 70
       },
       "top10_hit_distribution": {
         "0": 668,
-        "1": 1349,
+        "1": 1350,
         "2": 913,
         "3": 226,
         "4": 32,
         "5": 2
       },
       "top5_hit_distribution": {
-        "0": 1569,
+        "0": 1570,
         "1": 1268,
         "2": 326,
         "3": 27,
@@ -2947,19 +2947,19 @@
         "5": 0
       },
       "top20_all5": 70,
-      "top20_rate": 0.0219435736677116,
+      "top20_rate": 0.021936696960200563,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.02857142857142857,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 541,
-      "mean_top20_hits": 2.493730407523511,
-      "mean_top10_hits": 1.2510971786833855,
-      "mean_top5_hits": 0.6272727272727273,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7423342641403651,
+      "mean_top20_hits": 2.4938890629896586,
+      "mean_top10_hits": 1.2510184895017236,
+      "mean_top5_hits": 0.6270761516765904,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7432100946608897,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -3047,25 +3047,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 10,
             "1": 104,
             "2": 232,
-            "3": 189,
+            "3": 190,
             "4": 86,
             "5": 17
           },
           "top10_hit_distribution": {
             "0": 140,
-            "1": 285,
+            "1": 286,
             "2": 170,
             "3": 41,
             "4": 2,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 311,
+            "0": 312,
             "1": 267,
             "2": 58,
             "3": 2,
@@ -3073,35 +3073,35 @@
             "5": 0
           },
           "top20_all5": 17,
-          "top20_rate": 0.02664576802507837,
+          "top20_rate": 0.026604068857589983,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 103,
-          "mean_top20_hits": 2.45141065830721,
-          "mean_top10_hits": 1.1849529780564263,
-          "mean_top5_hits": 0.609717868338558,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.33788685978097976,
+          "mean_top20_hits": 2.45226917057903,
+          "mean_top10_hits": 1.1846635367762128,
+          "mean_top5_hits": 0.6087636932707355,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.3401816863267053,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "arith_1": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 75,
         "1": 452,
-        "2": 1078,
+        "2": 1079,
         "3": 1043,
         "4": 473,
         "5": 69
       },
       "top10_hit_distribution": {
-        "0": 686,
+        "0": 687,
         "1": 1306,
         "2": 897,
         "3": 266,
@@ -3109,7 +3109,7 @@
         "5": 3
       },
       "top5_hit_distribution": {
-        "0": 1575,
+        "0": 1576,
         "1": 1248,
         "2": 334,
         "3": 33,
@@ -3117,19 +3117,19 @@
         "5": 0
       },
       "top20_all5": 69,
-      "top20_rate": 0.021630094043887146,
+      "top20_rate": 0.02162331557505484,
       "top10_all5": 3,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.043478260869565216,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 542,
-      "mean_top20_hits": 2.4996865203761756,
-      "mean_top10_hits": 1.266771159874608,
-      "mean_top5_hits": 0.6316614420062696,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7795055418202311,
+      "mean_top20_hits": 2.4995299279222816,
+      "mean_top10_hits": 1.266374177373864,
+      "mean_top5_hits": 0.6314634910686305,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7803077153801281,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -3217,17 +3217,17 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 20,
             "1": 99,
-            "2": 197,
+            "2": 198,
             "3": 208,
             "4": 108,
             "5": 6
           },
           "top10_hit_distribution": {
-            "0": 137,
+            "0": 138,
             "1": 254,
             "2": 185,
             "3": 57,
@@ -3235,7 +3235,7 @@
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 306,
+            "0": 307,
             "1": 257,
             "2": 72,
             "3": 3,
@@ -3243,36 +3243,36 @@
             "5": 0
           },
           "top20_all5": 6,
-          "top20_rate": 0.009404388714733543,
+          "top20_rate": 0.009389671361502348,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 114,
-          "mean_top20_hits": 2.4749216300940438,
-          "mean_top10_hits": 1.2774294670846396,
-          "mean_top5_hits": 0.6426332288401254,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.997488626580751,
+          "mean_top20_hits": 2.4741784037558685,
+          "mean_top10_hits": 1.2754303599374022,
+          "mean_top5_hits": 0.6416275430359938,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.9975299737265562,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "arith_3": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 80,
         "1": 455,
-        "2": 1069,
+        "2": 1070,
         "3": 1037,
         "4": 477,
         "5": 72
       },
       "top10_hit_distribution": {
         "0": 684,
-        "1": 1309,
+        "1": 1310,
         "2": 901,
         "3": 269,
         "4": 25,
@@ -3280,26 +3280,26 @@
       },
       "top5_hit_distribution": {
         "0": 1558,
-        "1": 1276,
+        "1": 1277,
         "2": 338,
         "3": 18,
         "4": 0,
         "5": 0
       },
       "top20_all5": 72,
-      "top20_rate": 0.0225705329153605,
+      "top20_rate": 0.022563459730492008,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.027777777777777776,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 549,
-      "mean_top20_hits": 2.4990595611285267,
-      "mean_top10_hits": 1.2626959247648903,
-      "mean_top5_hits": 0.6288401253918495,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.6599356652874393,
+      "mean_top20_hits": 2.49890316515199,
+      "mean_top10_hits": 1.2626136007521154,
+      "mean_top5_hits": 0.6289564399874648,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.6609348548689402,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -3387,18 +3387,18 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 18,
             "1": 92,
-            "2": 210,
+            "2": 211,
             "3": 203,
             "4": 101,
             "5": 14
           },
           "top10_hit_distribution": {
             "0": 155,
-            "1": 246,
+            "1": 247,
             "2": 182,
             "3": 49,
             "4": 5,
@@ -3406,35 +3406,35 @@
           },
           "top5_hit_distribution": {
             "0": 312,
-            "1": 254,
+            "1": 255,
             "2": 70,
             "3": 2,
             "4": 0,
             "5": 0
           },
           "top20_all5": 14,
-          "top20_rate": 0.0219435736677116,
+          "top20_rate": 0.02190923317683881,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.07142857142857142,
           "top5_given_top10_all5": 0.0,
           "top20_4plus": 115,
-          "mean_top20_hits": 2.5,
-          "mean_top10_hits": 1.225705329153605,
-          "mean_top5_hits": 0.6269592476489029,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.6422015141457429,
+          "mean_top20_hits": 2.4992175273865413,
+          "mean_top10_hits": 1.2253521126760563,
+          "mean_top5_hits": 0.6275430359937402,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.6444600797860481,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "arith_5": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 79,
-        "1": 453,
+        "1": 454,
         "2": 1059,
         "3": 1064,
         "4": 465,
@@ -3442,14 +3442,14 @@
       },
       "top10_hit_distribution": {
         "0": 659,
-        "1": 1338,
+        "1": 1339,
         "2": 902,
         "3": 261,
         "4": 30,
         "5": 0
       },
       "top5_hit_distribution": {
-        "0": 1556,
+        "0": 1557,
         "1": 1286,
         "2": 322,
         "3": 26,
@@ -3457,19 +3457,19 @@
         "5": 0
       },
       "top20_all5": 70,
-      "top20_rate": 0.0219435736677116,
+      "top20_rate": 0.021936696960200563,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
       "top20_4plus": 535,
-      "mean_top20_hits": 2.499373040752351,
-      "mean_top10_hits": 1.2680250783699059,
-      "mean_top5_hits": 0.6294670846394984,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7423342641403651,
+      "mean_top20_hits": 2.49890316515199,
+      "mean_top10_hits": 1.2679410842995926,
+      "mean_top5_hits": 0.6292698213726104,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7432100946608897,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -3557,10 +3557,10 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 22,
-            "1": 103,
+            "1": 104,
             "2": 198,
             "3": 203,
             "4": 97,
@@ -3568,14 +3568,14 @@
           },
           "top10_hit_distribution": {
             "0": 137,
-            "1": 270,
+            "1": 271,
             "2": 167,
             "3": 58,
             "4": 6,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 323,
+            "0": 324,
             "1": 244,
             "2": 65,
             "3": 6,
@@ -3583,35 +3583,35 @@
             "5": 0
           },
           "top20_all5": 15,
-          "top20_rate": 0.023510971786833857,
+          "top20_rate": 0.023474178403755867,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 112,
-          "mean_top20_hits": 2.4623824451410656,
-          "mean_top10_hits": 1.2570532915360502,
-          "mean_top5_hits": 0.6144200626959248,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.5389396320180753,
+          "mean_top20_hits": 2.460093896713615,
+          "mean_top10_hits": 1.2566510172143974,
+          "mean_top5_hits": 0.6134585289514867,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.541372690917826,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "complement_1": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 74,
-        "1": 446,
+        "1": 447,
         "2": 1065,
         "3": 1038,
         "4": 489,
         "5": 78
       },
       "top10_hit_distribution": {
-        "0": 660,
+        "0": 661,
         "1": 1368,
         "2": 894,
         "3": 240,
@@ -3619,7 +3619,7 @@
         "5": 1
       },
       "top5_hit_distribution": {
-        "0": 1550,
+        "0": 1551,
         "1": 1302,
         "2": 316,
         "3": 20,
@@ -3627,19 +3627,19 @@
         "5": 0
       },
       "top20_all5": 78,
-      "top20_rate": 0.02445141065830721,
+      "top20_rate": 0.024443748041366342,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.01282051282051282,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 567,
-      "mean_top20_hits": 2.5191222570532914,
-      "mean_top10_hits": 1.2504702194357367,
-      "mean_top5_hits": 0.6275862068965518,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.3859403180571083,
+      "mean_top20_hits": 2.5186461924161705,
+      "mean_top10_hits": 1.2500783453462865,
+      "mean_top5_hits": 0.6273895330617362,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.38699909671765587,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -3727,17 +3727,17 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 16,
-            "1": 97,
+            "1": 98,
             "2": 216,
             "3": 206,
             "4": 77,
             "5": 26
           },
           "top10_hit_distribution": {
-            "0": 138,
+            "0": 139,
             "1": 272,
             "2": 182,
             "3": 42,
@@ -3745,7 +3745,7 @@
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 325,
+            "0": 326,
             "1": 253,
             "2": 55,
             "3": 3,
@@ -3753,37 +3753,37 @@
             "5": 0
           },
           "top20_all5": 26,
-          "top20_rate": 0.04075235109717868,
+          "top20_rate": 0.0406885758998435,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 103,
-          "mean_top20_hits": 2.4843260188087775,
-          "mean_top10_hits": 1.219435736677116,
-          "mean_top5_hits": 0.5956112852664577,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.005763036581560683,
-          "top20_5of5_p_bonferroni_family_42": 0.2420475364255487
+          "mean_top20_hits": 2.4820031298904537,
+          "mean_top10_hits": 1.217527386541471,
+          "mean_top5_hits": 0.594679186228482,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.005875937443338958,
+          "top20_5of5_p_bonferroni_family_42": 0.24678937262023623
         }
       }
     },
     "decay_10": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 78,
         "1": 465,
         "2": 1044,
         "3": 1058,
-        "4": 476,
+        "4": 477,
         "5": 69
       },
       "top10_hit_distribution": {
         "0": 689,
         "1": 1319,
-        "2": 912,
+        "2": 913,
         "3": 243,
         "4": 26,
         "5": 1
@@ -3791,25 +3791,25 @@
       "top5_hit_distribution": {
         "0": 1598,
         "1": 1228,
-        "2": 339,
+        "2": 340,
         "3": 24,
         "4": 1,
         "5": 0
       },
       "top20_all5": 69,
-      "top20_rate": 0.021630094043887146,
+      "top20_rate": 0.02162331557505484,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.014492753623188406,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 545,
-      "mean_top20_hits": 2.5003134796238244,
-      "mean_top10_hits": 1.2479623824451411,
-      "mean_top5_hits": 0.6213166144200627,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7795055418202311,
+      "top20_4plus": 546,
+      "mean_top20_hits": 2.5007834534628643,
+      "mean_top10_hits": 1.248198057035412,
+      "mean_top5_hits": 0.6217486681291131,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7803077153801281,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -3897,19 +3897,19 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 13,
             "1": 94,
             "2": 222,
             "3": 190,
-            "4": 97,
+            "4": 98,
             "5": 22
           },
           "top10_hit_distribution": {
             "0": 132,
             "1": 283,
-            "2": 173,
+            "2": 174,
             "3": 45,
             "4": 4,
             "5": 1
@@ -3917,35 +3917,35 @@
           "top5_hit_distribution": {
             "0": 315,
             "1": 253,
-            "2": 68,
+            "2": 69,
             "3": 2,
             "4": 0,
             "5": 0
           },
           "top20_all5": 22,
-          "top20_rate": 0.034482758620689655,
+          "top20_rate": 0.03442879499217527,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.045454545454545456,
           "top5_given_top10_all5": 0.0,
-          "top20_4plus": 119,
-          "mean_top20_hits": 2.5172413793103448,
-          "mean_top10_hits": 1.2304075235109717,
-          "mean_top5_hits": 0.6191222570532915,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.05194714473554414,
+          "top20_4plus": 120,
+          "mean_top20_hits": 2.519561815336463,
+          "mean_top10_hits": 1.2316118935837246,
+          "mean_top5_hits": 0.621283255086072,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.05265154249404612,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "decay_120": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 81,
         "1": 460,
-        "2": 1044,
+        "2": 1045,
         "3": 1065,
         "4": 464,
         "5": 76
@@ -3953,7 +3953,7 @@
       "top10_hit_distribution": {
         "0": 705,
         "1": 1335,
-        "2": 846,
+        "2": 847,
         "3": 267,
         "4": 36,
         "5": 1
@@ -3961,25 +3961,25 @@
       "top5_hit_distribution": {
         "0": 1577,
         "1": 1243,
-        "2": 330,
+        "2": 331,
         "3": 39,
         "4": 1,
         "5": 0
       },
       "top20_all5": 76,
-      "top20_rate": 0.023824451410658306,
+      "top20_rate": 0.023816985271074897,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.013157894736842105,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 540,
-      "mean_top20_hits": 2.5012539184952978,
-      "mean_top10_hits": 1.2467084639498434,
-      "mean_top5_hits": 0.6344827586206897,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.4769226471722208,
+      "mean_top20_hits": 2.50109683484801,
+      "mean_top10_hits": 1.2469445314948293,
+      "mean_top5_hits": 0.6349106863052335,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.4780196228285132,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -4067,11 +4067,11 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 19,
             "1": 98,
-            "2": 192,
+            "2": 193,
             "3": 209,
             "4": 110,
             "5": 10
@@ -4079,7 +4079,7 @@
           "top10_hit_distribution": {
             "0": 143,
             "1": 261,
-            "2": 165,
+            "2": 166,
             "3": 62,
             "4": 7,
             "5": 0
@@ -4087,43 +4087,43 @@
           "top5_hit_distribution": {
             "0": 304,
             "1": 249,
-            "2": 76,
+            "2": 77,
             "3": 9,
             "4": 0,
             "5": 0
           },
           "top20_all5": 10,
-          "top20_rate": 0.01567398119122257,
+          "top20_rate": 0.01564945226917058,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 120,
-          "mean_top20_hits": 2.506269592476489,
-          "mean_top10_hits": 1.261755485893417,
-          "mean_top5_hits": 0.670846394984326,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.9334732635093258,
+          "mean_top20_hits": 2.5054773082942097,
+          "mean_top10_hits": 1.2629107981220657,
+          "mean_top5_hits": 0.672926447574335,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.9342105327945045,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "decay_30": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 88,
         "1": 448,
         "2": 1046,
-        "3": 1059,
+        "3": 1060,
         "4": 484,
         "5": 65
       },
       "top10_hit_distribution": {
         "0": 711,
         "1": 1310,
-        "2": 882,
+        "2": 883,
         "3": 258,
         "4": 29,
         "5": 0
@@ -4131,25 +4131,25 @@
       "top5_hit_distribution": {
         "0": 1601,
         "1": 1228,
-        "2": 330,
+        "2": 331,
         "3": 31,
         "4": 0,
         "5": 0
       },
       "top20_all5": 65,
-      "top20_rate": 0.02037617554858934,
+      "top20_rate": 0.020369790034471952,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
       "top20_4plus": 549,
-      "mean_top20_hits": 2.5009404388714733,
-      "mean_top10_hits": 1.2426332288401254,
-      "mean_top5_hits": 0.6210031347962383,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.895471804033927,
+      "mean_top20_hits": 2.50109683484801,
+      "mean_top10_hits": 1.2428705734879348,
+      "mean_top5_hits": 0.6214352867439674,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.8959569982894156,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -4237,19 +4237,19 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 98,
             "2": 210,
-            "3": 199,
+            "3": 200,
             "4": 101,
             "5": 15
           },
           "top10_hit_distribution": {
             "0": 143,
             "1": 267,
-            "2": 165,
+            "2": 166,
             "3": 55,
             "4": 8,
             "5": 0
@@ -4257,43 +4257,43 @@
           "top5_hit_distribution": {
             "0": 311,
             "1": 251,
-            "2": 67,
+            "2": 68,
             "3": 9,
             "4": 0,
             "5": 0
           },
           "top20_all5": 15,
-          "top20_rate": 0.023510971786833857,
+          "top20_rate": 0.023474178403755867,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 116,
-          "mean_top20_hits": 2.498432601880878,
-          "mean_top10_hits": 1.244514106583072,
-          "mean_top5_hits": 0.64576802507837,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.5389396320180753,
+          "mean_top20_hits": 2.4992175273865413,
+          "mean_top10_hits": 1.245696400625978,
+          "mean_top5_hits": 0.647887323943662,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.541372690917826,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "decay_60": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 70,
         "1": 462,
         "2": 1024,
-        "3": 1110,
+        "3": 1111,
         "4": 444,
         "5": 80
       },
       "top10_hit_distribution": {
         "0": 687,
         "1": 1333,
-        "2": 881,
+        "2": 882,
         "3": 255,
         "4": 33,
         "5": 1
@@ -4301,25 +4301,25 @@
       "top5_hit_distribution": {
         "0": 1598,
         "1": 1226,
-        "2": 337,
+        "2": 338,
         "3": 28,
         "4": 1,
         "5": 0
       },
       "top20_all5": 80,
-      "top20_rate": 0.025078369905956112,
+      "top20_rate": 0.025070510811657787,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0125,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 524,
-      "mean_top20_hits": 2.5128526645768026,
-      "mean_top10_hits": 1.2529780564263322,
-      "mean_top5_hits": 0.6231974921630095,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.3015282031914037,
+      "mean_top20_hits": 2.5130053274835475,
+      "mean_top10_hits": 1.2532121591977436,
+      "mean_top5_hits": 0.6236289564399875,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.30249745817456514,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -4407,19 +4407,19 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 16,
             "1": 95,
             "2": 205,
-            "3": 215,
+            "3": 216,
             "4": 92,
             "5": 15
           },
           "top10_hit_distribution": {
             "0": 131,
             "1": 271,
-            "2": 180,
+            "2": 181,
             "3": 49,
             "4": 7,
             "5": 0
@@ -4427,42 +4427,42 @@
           "top5_hit_distribution": {
             "0": 298,
             "1": 261,
-            "2": 71,
+            "2": 72,
             "3": 8,
             "4": 0,
             "5": 0
           },
           "top20_all5": 15,
-          "top20_rate": 0.023510971786833857,
+          "top20_rate": 0.023474178403755867,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 107,
-          "mean_top20_hits": 2.4968652037617556,
-          "mean_top10_hits": 1.2633228840125392,
-          "mean_top5_hits": 0.6692789968652038,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.5389396320180753,
+          "mean_top20_hits": 2.4976525821596245,
+          "mean_top10_hits": 1.2644757433489828,
+          "mean_top5_hits": 0.6713615023474179,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.541372690917826,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "freq_10": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 70,
         "1": 453,
         "2": 1048,
-        "3": 1072,
+        "3": 1073,
         "4": 473,
         "5": 74
       },
       "top10_hit_distribution": {
         "0": 689,
-        "1": 1313,
+        "1": 1314,
         "2": 906,
         "3": 250,
         "4": 30,
@@ -4470,26 +4470,26 @@
       },
       "top5_hit_distribution": {
         "0": 1614,
-        "1": 1242,
+        "1": 1243,
         "2": 309,
         "3": 22,
         "4": 3,
         "5": 0
       },
       "top20_all5": 74,
-      "top20_rate": 0.023197492163009405,
+      "top20_rate": 0.023190222500783453,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.02702702702702703,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 547,
-      "mean_top20_hits": 2.5163009404388714,
-      "mean_top10_hits": 1.255485893416928,
-      "mean_top5_hits": 0.6075235109717868,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.5699183103369198,
+      "mean_top20_hits": 2.5164525227201504,
+      "mean_top10_hits": 1.2554058288937637,
+      "mean_top5_hits": 0.6076465057975556,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.5709948248122904,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -4577,18 +4577,18 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 14,
             "1": 97,
             "2": 215,
-            "3": 211,
+            "3": 212,
             "4": 85,
             "5": 16
           },
           "top10_hit_distribution": {
             "0": 138,
-            "1": 284,
+            "1": 285,
             "2": 165,
             "3": 44,
             "4": 5,
@@ -4596,44 +4596,44 @@
           },
           "top5_hit_distribution": {
             "0": 324,
-            "1": 253,
+            "1": 254,
             "2": 54,
             "3": 5,
             "4": 2,
             "5": 0
           },
           "top20_all5": 16,
-          "top20_rate": 0.025078369905956112,
+          "top20_rate": 0.025039123630672927,
           "top10_all5": 2,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.125,
           "top5_given_top10_all5": 0.0,
           "top20_4plus": 101,
-          "mean_top20_hits": 2.476489028213166,
-          "mean_top10_hits": 1.2163009404388714,
-          "mean_top5_hits": 0.6018808777429467,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.4352819981774979,
+          "mean_top20_hits": 2.4773082942097027,
+          "mean_top10_hits": 1.215962441314554,
+          "mean_top5_hits": 0.6025039123630673,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.4377243817884334,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "freq_100": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 76,
         "1": 488,
         "2": 1004,
         "3": 1070,
-        "4": 477,
+        "4": 478,
         "5": 75
       },
       "top10_hit_distribution": {
         "0": 684,
         "1": 1303,
-        "2": 901,
+        "2": 902,
         "3": 257,
         "4": 43,
         "5": 2
@@ -4641,25 +4641,25 @@
       "top5_hit_distribution": {
         "0": 1570,
         "1": 1240,
-        "2": 340,
+        "2": 341,
         "3": 38,
         "4": 2,
         "5": 0
       },
       "top20_all5": 75,
-      "top20_rate": 0.023510971786833857,
+      "top20_rate": 0.023503603885929175,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.02666666666666667,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 552,
-      "mean_top20_hits": 2.504388714733542,
-      "mean_top10_hits": 1.2721003134796238,
-      "mean_top5_hits": 0.6401253918495298,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.5234795845848389,
+      "top20_4plus": 553,
+      "mean_top20_hits": 2.5048574114697586,
+      "mean_top10_hits": 1.2723284236916328,
+      "mean_top5_hits": 0.6405515512378565,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.5245737749352006,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -4747,19 +4747,19 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 18,
             "1": 102,
             "2": 185,
             "3": 217,
-            "4": 100,
+            "4": 101,
             "5": 16
           },
           "top10_hit_distribution": {
             "0": 134,
             "1": 247,
-            "2": 181,
+            "2": 182,
             "3": 65,
             "4": 10,
             "5": 1
@@ -4767,69 +4767,69 @@
           "top5_hit_distribution": {
             "0": 308,
             "1": 256,
-            "2": 63,
+            "2": 64,
             "3": 10,
             "4": 1,
             "5": 0
           },
           "top20_all5": 16,
-          "top20_rate": 0.025078369905956112,
+          "top20_rate": 0.025039123630672927,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0625,
           "top5_given_top10_all5": 0.0,
-          "top20_4plus": 116,
-          "mean_top20_hits": 2.512539184952978,
-          "mean_top10_hits": 1.3307210031347962,
-          "mean_top5_hits": 0.6520376175548589,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.4352819981774979,
+          "top20_4plus": 117,
+          "mean_top20_hits": 2.514866979655712,
+          "mean_top10_hits": 1.3317683881064162,
+          "mean_top5_hits": 0.6541471048513302,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.4377243817884334,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "freq_20": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 82,
         "1": 472,
         "2": 1023,
         "3": 1073,
-        "4": 449,
+        "4": 450,
         "5": 91
       },
       "top10_hit_distribution": {
         "0": 692,
         "1": 1288,
         "2": 940,
-        "3": 239,
+        "3": 240,
         "4": 30,
         "5": 1
       },
       "top5_hit_distribution": {
         "0": 1595,
         "1": 1240,
-        "2": 327,
+        "2": 328,
         "3": 26,
         "4": 2,
         "5": 0
       },
       "top20_all5": 91,
-      "top20_rate": 0.028526645768025077,
+      "top20_rate": 0.028517706048260733,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.01098901098901099,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 540,
-      "mean_top20_hits": 2.5040752351097177,
-      "mean_top10_hits": 1.2570532915360502,
-      "mean_top5_hits": 0.6206896551724138,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.039767920248596496,
+      "top20_4plus": 541,
+      "mean_top20_hits": 2.504544030084613,
+      "mean_top10_hits": 1.2575994985897838,
+      "mean_top5_hits": 0.6211219053588217,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.04001260147048161,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -4917,55 +4917,55 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 17,
             "1": 98,
             "2": 232,
             "3": 186,
-            "4": 84,
+            "4": 85,
             "5": 21
           },
           "top10_hit_distribution": {
             "0": 143,
             "1": 250,
             "2": 192,
-            "3": 47,
+            "3": 48,
             "4": 5,
             "5": 1
           },
           "top5_hit_distribution": {
             "0": 317,
             "1": 251,
-            "2": 66,
+            "2": 67,
             "3": 4,
             "4": 0,
             "5": 0
           },
           "top20_all5": 21,
-          "top20_rate": 0.032915360501567396,
+          "top20_rate": 0.03286384976525822,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.047619047619047616,
           "top5_given_top10_all5": 0.0,
-          "top20_4plus": 105,
-          "mean_top20_hits": 2.446708463949843,
-          "mean_top10_hits": 1.2539184952978057,
-          "mean_top5_hits": 0.6191222570532915,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.08184261430961388,
+          "top20_4plus": 106,
+          "mean_top20_hits": 2.4491392801251957,
+          "mean_top10_hits": 1.2566510172143974,
+          "mean_top5_hits": 0.621283255086072,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.08283454393441478,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "freq_200": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 79,
         "1": 476,
-        "2": 1056,
+        "2": 1057,
         "3": 1068,
         "4": 436,
         "5": 75
@@ -4973,7 +4973,7 @@
       "top10_hit_distribution": {
         "0": 715,
         "1": 1286,
-        "2": 892,
+        "2": 893,
         "3": 256,
         "4": 38,
         "5": 3
@@ -4981,25 +4981,25 @@
       "top5_hit_distribution": {
         "0": 1590,
         "1": 1253,
-        "2": 307,
+        "2": 308,
         "3": 39,
         "4": 1,
         "5": 0
       },
       "top20_all5": 75,
-      "top20_rate": 0.023510971786833857,
+      "top20_rate": 0.023503603885929175,
       "top10_all5": 3,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.04,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 511,
-      "mean_top20_hits": 2.4799373040752353,
-      "mean_top10_hits": 1.255485893416928,
-      "mean_top5_hits": 0.6231974921630095,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.5234795845848389,
+      "mean_top20_hits": 2.479786900658101,
+      "mean_top10_hits": 1.2557192102789094,
+      "mean_top5_hits": 0.6236289564399875,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.5245737749352006,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -5087,11 +5087,11 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 110,
-            "2": 188,
+            "2": 189,
             "3": 222,
             "4": 89,
             "5": 14
@@ -5099,7 +5099,7 @@
           "top10_hit_distribution": {
             "0": 155,
             "1": 241,
-            "2": 184,
+            "2": 185,
             "3": 52,
             "4": 6,
             "5": 0
@@ -5107,43 +5107,43 @@
           "top5_hit_distribution": {
             "0": 312,
             "1": 250,
-            "2": 66,
+            "2": 67,
             "3": 10,
             "4": 0,
             "5": 0
           },
           "top20_all5": 14,
-          "top20_rate": 0.0219435736677116,
+          "top20_rate": 0.02190923317683881,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 103,
-          "mean_top20_hits": 2.4733542319749215,
-          "mean_top10_hits": 1.2366771159874608,
-          "mean_top5_hits": 0.64576802507837,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.6422015141457429,
+          "mean_top20_hits": 2.4726134585289516,
+          "mean_top10_hits": 1.237871674491393,
+          "mean_top5_hits": 0.647887323943662,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.6444600797860481,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "freq_5": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 78,
         "1": 470,
         "2": 1053,
-        "3": 1066,
+        "3": 1067,
         "4": 459,
         "5": 64
       },
       "top10_hit_distribution": {
         "0": 687,
         "1": 1344,
-        "2": 866,
+        "2": 867,
         "3": 259,
         "4": 34,
         "5": 0
@@ -5151,25 +5151,25 @@
       "top5_hit_distribution": {
         "0": 1586,
         "1": 1240,
-        "2": 333,
+        "2": 334,
         "3": 31,
         "4": 0,
         "5": 0
       },
       "top20_all5": 64,
-      "top20_rate": 0.02006269592476489,
+      "top20_rate": 0.02005640864932623,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
       "top20_4plus": 523,
-      "mean_top20_hits": 2.4858934169278997,
-      "mean_top10_hits": 1.2504702194357367,
-      "mean_top5_hits": 0.6266457680250783,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.9160640190535742,
+      "mean_top20_hits": 2.486054528361015,
+      "mean_top10_hits": 1.2507051081165779,
+      "mean_top5_hits": 0.6270761516765904,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.9164755474606452,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -5257,19 +5257,19 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 10,
             "1": 105,
             "2": 215,
-            "3": 198,
+            "3": 199,
             "4": 95,
             "5": 15
           },
           "top10_hit_distribution": {
             "0": 147,
             "1": 273,
-            "2": 159,
+            "2": 160,
             "3": 54,
             "4": 5,
             "5": 0
@@ -5277,69 +5277,69 @@
           "top5_hit_distribution": {
             "0": 331,
             "1": 243,
-            "2": 58,
+            "2": 59,
             "3": 6,
             "4": 0,
             "5": 0
           },
           "top20_all5": 15,
-          "top20_rate": 0.023510971786833857,
+          "top20_rate": 0.023474178403755867,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 110,
-          "mean_top20_hits": 2.4827586206896552,
-          "mean_top10_hits": 1.2115987460815048,
-          "mean_top5_hits": 0.5909090909090909,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.5389396320180753,
+          "mean_top20_hits": 2.483568075117371,
+          "mean_top10_hits": 1.2128325508607198,
+          "mean_top5_hits": 0.593114241001565,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.541372690917826,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "freq_50": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 85,
         "1": 442,
         "2": 1057,
-        "3": 1037,
+        "3": 1038,
         "4": 510,
         "5": 59
       },
       "top10_hit_distribution": {
         "0": 692,
         "1": 1313,
-        "2": 901,
+        "2": 902,
         "3": 252,
         "4": 32,
         "5": 0
       },
       "top5_hit_distribution": {
         "0": 1606,
-        "1": 1213,
+        "1": 1214,
         "2": 339,
         "3": 32,
         "4": 0,
         "5": 0
       },
       "top20_all5": 59,
-      "top20_rate": 0.018495297805642633,
+      "top20_rate": 0.018489501723597618,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
       "top20_4plus": 569,
-      "mean_top20_hits": 2.5084639498432604,
-      "mean_top10_hits": 1.253605015673981,
-      "mean_top5_hits": 0.6228840125391849,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.9774235720437181,
+      "mean_top20_hits": 2.5086179880915074,
+      "mean_top10_hits": 1.253838921968035,
+      "mean_top5_hits": 0.623002193669696,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.9775647946003145,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -5427,61 +5427,61 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 17,
             "1": 81,
             "2": 217,
-            "3": 197,
+            "3": 198,
             "4": 114,
             "5": 12
           },
           "top10_hit_distribution": {
             "0": 134,
             "1": 269,
-            "2": 178,
+            "2": 179,
             "3": 50,
             "4": 7,
             "5": 0
           },
           "top5_hit_distribution": {
             "0": 322,
-            "1": 228,
+            "1": 229,
             "2": 80,
             "3": 8,
             "4": 0,
             "5": 0
           },
           "top20_all5": 12,
-          "top20_rate": 0.018808777429467086,
+          "top20_rate": 0.018779342723004695,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 126,
-          "mean_top20_hits": 2.542319749216301,
-          "mean_top10_hits": 1.2586206896551724,
-          "mean_top5_hits": 0.64576802507837,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.8205514812310135,
+          "mean_top20_hits": 2.543035993740219,
+          "mean_top10_hits": 1.2597809076682316,
+          "mean_top5_hits": 0.6463223787167449,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.822093109244185,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "gap_age": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 69,
-        "1": 466,
+        "1": 467,
         "2": 1018,
         "3": 1090,
         "4": 480,
         "5": 67
       },
       "top10_hit_distribution": {
-        "0": 673,
+        "0": 674,
         "1": 1342,
         "2": 921,
         "3": 222,
@@ -5489,7 +5489,7 @@
         "5": 0
       },
       "top5_hit_distribution": {
-        "0": 1573,
+        "0": 1574,
         "1": 1256,
         "2": 338,
         "3": 22,
@@ -5497,19 +5497,19 @@
         "5": 0
       },
       "top20_all5": 67,
-      "top20_rate": 0.021003134796238245,
+      "top20_rate": 0.020996552804763396,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
       "top20_4plus": 547,
-      "mean_top20_hits": 2.5163009404388714,
-      "mean_top10_hits": 1.2470219435736678,
-      "mean_top5_hits": 0.6275862068965518,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.8442709825842856,
+      "mean_top20_hits": 2.515825759949859,
+      "mean_top10_hits": 1.2466311501096834,
+      "mean_top5_hits": 0.6273895330617362,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.8449143116915518,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -5597,17 +5597,17 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 20,
-            "1": 84,
+            "1": 85,
             "2": 206,
             "3": 217,
             "4": 101,
             "5": 10
           },
           "top10_hit_distribution": {
-            "0": 137,
+            "0": 138,
             "1": 271,
             "2": 177,
             "3": 46,
@@ -5615,7 +5615,7 @@
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 323,
+            "0": 324,
             "1": 250,
             "2": 62,
             "3": 3,
@@ -5623,36 +5623,36 @@
             "5": 0
           },
           "top20_all5": 10,
-          "top20_rate": 0.01567398119122257,
+          "top20_rate": 0.01564945226917058,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 111,
-          "mean_top20_hits": 2.5094043887147337,
-          "mean_top10_hits": 1.2398119122257054,
-          "mean_top5_hits": 0.6003134796238244,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.9334732635093258,
+          "mean_top20_hits": 2.507042253521127,
+          "mean_top10_hits": 1.237871674491393,
+          "mean_top5_hits": 0.5993740219092332,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.9342105327945045,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "momentum_10_50": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 82,
         "1": 436,
         "2": 1043,
-        "3": 1099,
+        "3": 1100,
         "4": 449,
         "5": 81
       },
       "top10_hit_distribution": {
         "0": 730,
-        "1": 1281,
+        "1": 1282,
         "2": 922,
         "3": 232,
         "4": 22,
@@ -5660,26 +5660,26 @@
       },
       "top5_hit_distribution": {
         "0": 1570,
-        "1": 1272,
+        "1": 1273,
         "2": 322,
         "3": 25,
         "4": 1,
         "5": 0
       },
       "top20_all5": 81,
-      "top20_rate": 0.025391849529780564,
+      "top20_rate": 0.02538389219680351,
       "top10_all5": 3,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.037037037037037035,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 530,
-      "mean_top20_hits": 2.5141065830721003,
-      "mean_top10_hits": 1.2300940438871473,
-      "mean_top5_hits": 0.6253918495297806,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.2629267722073531,
+      "mean_top20_hits": 2.5142588530241303,
+      "mean_top10_hits": 1.2300219366969602,
+      "mean_top5_hits": 0.6255092447508618,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.26383630003372743,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -5767,18 +5767,18 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 13,
             "1": 96,
             "2": 220,
-            "3": 214,
+            "3": 215,
             "4": 83,
             "5": 12
           },
           "top10_hit_distribution": {
             "0": 153,
-            "1": 271,
+            "1": 272,
             "2": 167,
             "3": 43,
             "4": 3,
@@ -5786,71 +5786,71 @@
           },
           "top5_hit_distribution": {
             "0": 333,
-            "1": 241,
+            "1": 242,
             "2": 60,
             "3": 4,
             "4": 0,
             "5": 0
           },
           "top20_all5": 12,
-          "top20_rate": 0.018808777429467086,
+          "top20_rate": 0.018779342723004695,
           "top10_all5": 1,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.08333333333333333,
           "top5_given_top10_all5": 0.0,
           "top20_4plus": 95,
-          "mean_top20_hits": 2.4608150470219434,
-          "mean_top10_hits": 1.177115987460815,
-          "mean_top5_hits": 0.5846394984326019,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.8205514812310135,
+          "mean_top20_hits": 2.461658841940532,
+          "mean_top10_hits": 1.1768388106416277,
+          "mean_top5_hits": 0.5852895148669797,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.822093109244185,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "momentum_20_100": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 76,
         "1": 474,
         "2": 1018,
         "3": 1074,
-        "4": 446,
+        "4": 447,
         "5": 102
       },
       "top10_hit_distribution": {
         "0": 709,
         "1": 1289,
-        "2": 895,
+        "2": 896,
         "3": 263,
         "4": 33,
         "5": 1
       },
       "top5_hit_distribution": {
         "0": 1566,
-        "1": 1279,
+        "1": 1280,
         "2": 312,
         "3": 33,
         "4": 0,
         "5": 0
       },
       "top20_all5": 102,
-      "top20_rate": 0.03197492163009404,
+      "top20_rate": 0.03196490128486368,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.00980392156862745,
       "top5_given_top10_all5": 0.0,
-      "top20_4plus": 548,
-      "mean_top20_hits": 2.515987460815047,
-      "mean_top10_hits": 1.255485893416928,
-      "mean_top5_hits": 0.6275862068965518,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.0016502005422009748,
-      "top20_5of5_p_bonferroni_family_42": 0.06930842277244094,
+      "top20_4plus": 549,
+      "mean_top20_hits": 2.5164525227201504,
+      "mean_top10_hits": 1.2557192102789094,
+      "mean_top5_hits": 0.6277029144468819,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.00166575028674504,
+      "top20_5of5_p_bonferroni_family_42": 0.06996151204329168,
       "chronological_splits": {
         "discovery": {
           "targets": 1914,
@@ -5937,63 +5937,63 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 101,
             "2": 209,
             "3": 206,
-            "4": 85,
+            "4": 86,
             "5": 22
           },
           "top10_hit_distribution": {
             "0": 134,
             "1": 274,
-            "2": 180,
+            "2": 181,
             "3": 40,
             "4": 10,
             "5": 0
           },
           "top5_hit_distribution": {
             "0": 320,
-            "1": 254,
+            "1": 255,
             "2": 60,
             "3": 4,
             "4": 0,
             "5": 0
           },
           "top20_all5": 22,
-          "top20_rate": 0.034482758620689655,
+          "top20_rate": 0.03442879499217527,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
-          "top20_4plus": 107,
-          "mean_top20_hits": 2.487460815047022,
-          "mean_top10_hits": 1.244514106583072,
-          "mean_top5_hits": 0.6050156739811913,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.05194714473554414,
+          "top20_4plus": 108,
+          "mean_top20_hits": 2.4898278560250393,
+          "mean_top10_hits": 1.245696400625978,
+          "mean_top5_hits": 0.6056338028169014,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.05265154249404612,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "pair_affinity_50": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 71,
         "1": 481,
         "2": 1048,
-        "3": 1053,
+        "3": 1054,
         "4": 459,
         "5": 78
       },
       "top10_hit_distribution": {
         "0": 698,
         "1": 1300,
-        "2": 911,
+        "2": 912,
         "3": 253,
         "4": 27,
         "5": 1
@@ -6001,25 +6001,25 @@
       "top5_hit_distribution": {
         "0": 1563,
         "1": 1295,
-        "2": 310,
+        "2": 311,
         "3": 22,
         "4": 0,
         "5": 0
       },
       "top20_all5": 78,
-      "top20_rate": 0.02445141065830721,
+      "top20_rate": 0.024443748041366342,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.01282051282051282,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 537,
-      "mean_top20_hits": 2.4959247648902823,
-      "mean_top10_hits": 1.2520376175548589,
-      "mean_top5_hits": 0.6210031347962383,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.3859403180571083,
+      "mean_top20_hits": 2.4960827326856783,
+      "mean_top10_hits": 1.2522720150423066,
+      "mean_top5_hits": 0.6214352867439674,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.38699909671765587,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -6107,19 +6107,19 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 14,
             "1": 106,
             "2": 187,
-            "3": 212,
+            "3": 213,
             "4": 98,
             "5": 21
           },
           "top10_hit_distribution": {
             "0": 137,
             "1": 266,
-            "2": 177,
+            "2": 178,
             "3": 52,
             "4": 6,
             "5": 0
@@ -6127,41 +6127,41 @@
           "top5_hit_distribution": {
             "0": 305,
             "1": 264,
-            "2": 65,
+            "2": 66,
             "3": 4,
             "4": 0,
             "5": 0
           },
           "top20_all5": 21,
-          "top20_rate": 0.032915360501567396,
+          "top20_rate": 0.03286384976525822,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 119,
-          "mean_top20_hits": 2.5282131661442007,
-          "mean_top10_hits": 1.2539184952978057,
-          "mean_top5_hits": 0.6363636363636364,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.08184261430961388,
+          "mean_top20_hits": 2.5289514866979657,
+          "mean_top10_hits": 1.2550860719874803,
+          "mean_top5_hits": 0.6384976525821596,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.08283454393441478,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "position_global": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 80,
-        "1": 471,
+        "1": 472,
         "2": 1071,
         "3": 1036,
         "4": 461,
         "5": 71
       },
       "top10_hit_distribution": {
-        "0": 693,
+        "0": 694,
         "1": 1327,
         "2": 901,
         "3": 234,
@@ -6169,7 +6169,7 @@
         "5": 2
       },
       "top5_hit_distribution": {
-        "0": 1609,
+        "0": 1610,
         "1": 1238,
         "2": 319,
         "3": 23,
@@ -6177,19 +6177,19 @@
         "5": 0
       },
       "top20_all5": 71,
-      "top20_rate": 0.02225705329153605,
+      "top20_rate": 0.022250078345346286,
       "top10_all5": 2,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.028169014084507043,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 532,
-      "mean_top20_hits": 2.4827586206896552,
-      "mean_top10_hits": 1.2454545454545454,
-      "mean_top5_hits": 0.6109717868338558,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7023424466434441,
+      "mean_top20_hits": 2.482293951739267,
+      "mean_top10_hits": 1.245064243183955,
+      "mean_top5_hits": 0.6107803196490128,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7032847347895959,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -6277,17 +6277,17 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 18,
-            "1": 87,
+            "1": 88,
             "2": 223,
             "3": 206,
             "4": 91,
             "5": 13
           },
           "top10_hit_distribution": {
-            "0": 127,
+            "0": 128,
             "1": 284,
             "2": 175,
             "3": 47,
@@ -6295,7 +6295,7 @@
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 309,
+            "0": 310,
             "1": 262,
             "2": 61,
             "3": 6,
@@ -6303,35 +6303,35 @@
             "5": 0
           },
           "top20_all5": 13,
-          "top20_rate": 0.02037617554858934,
+          "top20_rate": 0.02034428794992175,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 104,
-          "mean_top20_hits": 2.476489028213166,
-          "mean_top10_hits": 1.2460815047021943,
-          "mean_top5_hits": 0.6300940438871473,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.7380576970563487,
+          "mean_top20_hits": 2.4741784037558685,
+          "mean_top10_hits": 1.244131455399061,
+          "mean_top5_hits": 0.6291079812206573,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.7400014175427925,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "prev_1": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 87,
-        "1": 434,
+        "1": 435,
         "2": 1051,
         "3": 1063,
         "4": 483,
         "5": 72
       },
       "top10_hit_distribution": {
-        "0": 688,
+        "0": 689,
         "1": 1338,
         "2": 884,
         "3": 252,
@@ -6339,7 +6339,7 @@
         "5": 0
       },
       "top5_hit_distribution": {
-        "0": 1556,
+        "0": 1557,
         "1": 1279,
         "2": 331,
         "3": 23,
@@ -6347,19 +6347,19 @@
         "5": 0
       },
       "top20_all5": 72,
-      "top20_rate": 0.0225705329153605,
+      "top20_rate": 0.022563459730492008,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
       "top20_4plus": 555,
-      "mean_top20_hits": 2.513166144200627,
-      "mean_top10_hits": 1.2457680250783698,
-      "mean_top5_hits": 0.6313479623824452,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.6599356652874393,
+      "mean_top20_hits": 2.5126919460984016,
+      "mean_top10_hits": 1.2453776245691006,
+      "mean_top5_hits": 0.6311501096834848,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.6609348548689402,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -6447,17 +6447,17 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 22,
-            "1": 87,
+            "1": 88,
             "2": 206,
             "3": 210,
             "4": 96,
             "5": 17
           },
           "top10_hit_distribution": {
-            "0": 141,
+            "0": 142,
             "1": 275,
             "2": 172,
             "3": 44,
@@ -6465,7 +6465,7 @@
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 316,
+            "0": 317,
             "1": 257,
             "2": 64,
             "3": 1,
@@ -6473,43 +6473,43 @@
             "5": 0
           },
           "top20_all5": 17,
-          "top20_rate": 0.02664576802507837,
+          "top20_rate": 0.026604068857589983,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 113,
-          "mean_top20_hits": 2.5047021943573666,
-          "mean_top10_hits": 1.2147335423197492,
-          "mean_top5_hits": 0.6081504702194357,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.33788685978097976,
+          "mean_top20_hits": 2.5023474178403755,
+          "mean_top10_hits": 1.2128325508607198,
+          "mean_top5_hits": 0.6071987480438185,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.3401816863267053,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "prev_3": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 74,
         "1": 459,
         "2": 1081,
         "3": 1042,
-        "4": 466,
+        "4": 467,
         "5": 68
       },
       "top10_hit_distribution": {
         "0": 689,
         "1": 1286,
-        "2": 924,
+        "2": 925,
         "3": 259,
         "4": 32,
         "5": 0
       },
       "top5_hit_distribution": {
-        "0": 1556,
+        "0": 1557,
         "1": 1279,
         "2": 331,
         "3": 23,
@@ -6517,19 +6517,19 @@
         "5": 0
       },
       "top20_all5": 68,
-      "top20_rate": 0.021316614420062698,
+      "top20_rate": 0.02130993418990912,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
-      "top20_4plus": 534,
-      "mean_top20_hits": 2.492476489028213,
-      "mean_top10_hits": 1.2661442006269592,
-      "mean_top5_hits": 0.6313479623824452,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.8135507314358079,
+      "top20_4plus": 535,
+      "mean_top20_hits": 2.4929489188342213,
+      "mean_top10_hits": 1.266374177373864,
+      "mean_top5_hits": 0.6311501096834848,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.814274562717201,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -6617,25 +6617,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 12,
             "1": 95,
             "2": 226,
             "3": 190,
-            "4": 100,
+            "4": 101,
             "5": 15
           },
           "top10_hit_distribution": {
             "0": 144,
             "1": 256,
-            "2": 193,
+            "2": 194,
             "3": 39,
             "4": 6,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 316,
+            "0": 317,
             "1": 257,
             "2": 64,
             "3": 1,
@@ -6643,43 +6643,43 @@
             "5": 0
           },
           "top20_all5": 15,
-          "top20_rate": 0.023510971786833857,
+          "top20_rate": 0.023474178403755867,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
-          "top20_4plus": 115,
-          "mean_top20_hits": 2.4952978056426334,
-          "mean_top10_hits": 1.2272727272727273,
-          "mean_top5_hits": 0.6081504702194357,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.5389396320180753,
+          "top20_4plus": 116,
+          "mean_top20_hits": 2.4976525821596245,
+          "mean_top10_hits": 1.2284820031298904,
+          "mean_top5_hits": 0.6071987480438185,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.541372690917826,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "prev_5": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 72,
         "1": 481,
         "2": 1045,
-        "3": 1075,
+        "3": 1076,
         "4": 447,
         "5": 70
       },
       "top10_hit_distribution": {
         "0": 677,
         "1": 1313,
-        "2": 930,
+        "2": 931,
         "3": 238,
         "4": 32,
         "5": 0
       },
       "top5_hit_distribution": {
-        "0": 1559,
+        "0": 1560,
         "1": 1276,
         "2": 330,
         "3": 24,
@@ -6687,19 +6687,19 @@
         "5": 0
       },
       "top20_all5": 70,
-      "top20_rate": 0.0219435736677116,
+      "top20_rate": 0.021936696960200563,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
       "top20_4plus": 517,
-      "mean_top20_hits": 2.4871473354231974,
-      "mean_top10_hits": 1.2586206896551724,
-      "mean_top5_hits": 0.6307210031347963,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7423342641403651,
+      "mean_top20_hits": 2.4873080539015984,
+      "mean_top10_hits": 1.2588530241303666,
+      "mean_top5_hits": 0.6305233469131933,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7432100946608897,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -6787,25 +6787,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 10,
             "1": 107,
             "2": 207,
-            "3": 208,
+            "3": 209,
             "4": 88,
             "5": 18
           },
           "top10_hit_distribution": {
             "0": 136,
             "1": 264,
-            "2": 196,
+            "2": 197,
             "3": 36,
             "4": 6,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 315,
+            "0": 316,
             "1": 261,
             "2": 61,
             "3": 1,
@@ -6813,63 +6813,63 @@
             "5": 0
           },
           "top20_all5": 18,
-          "top20_rate": 0.02821316614420063,
+          "top20_rate": 0.028169014084507043,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 106,
-          "mean_top20_hits": 2.487460815047022,
-          "mean_top10_hits": 1.2351097178683386,
-          "mean_top5_hits": 0.6050156739811913,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.2518971137445934,
+          "mean_top20_hits": 2.488262910798122,
+          "mean_top10_hits": 1.2363067292644758,
+          "mean_top5_hits": 0.6040688575899843,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.25392320616679526,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "return_fit": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 79,
         "1": 494,
         "2": 998,
-        "3": 1059,
+        "3": 1060,
         "4": 484,
         "5": 76
       },
       "top10_hit_distribution": {
         "0": 677,
         "1": 1352,
-        "2": 870,
+        "2": 871,
         "3": 260,
         "4": 31,
         "5": 0
       },
       "top5_hit_distribution": {
         "0": 1549,
-        "1": 1299,
+        "1": 1300,
         "2": 306,
         "3": 36,
         "4": 0,
         "5": 0
       },
       "top20_all5": 76,
-      "top20_rate": 0.023824451410658306,
+      "top20_rate": 0.023816985271074897,
       "top10_all5": 0,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.0,
       "top5_given_top10_all5": null,
       "top20_4plus": 560,
-      "mean_top20_hits": 2.5025078369905955,
-      "mean_top10_hits": 1.2526645768025078,
-      "mean_top5_hits": 0.6329153605015674,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.4769226471722208,
+      "mean_top20_hits": 2.5026637417737385,
+      "mean_top10_hits": 1.252898777812598,
+      "mean_top5_hits": 0.6330303979943591,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.4780196228285132,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -6957,69 +6957,69 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 12,
             "1": 100,
             "2": 203,
-            "3": 208,
+            "3": 209,
             "4": 101,
             "5": 14
           },
           "top10_hit_distribution": {
             "0": 127,
             "1": 275,
-            "2": 171,
+            "2": 172,
             "3": 55,
             "4": 10,
             "5": 0
           },
           "top5_hit_distribution": {
             "0": 308,
-            "1": 255,
+            "1": 256,
             "2": 65,
             "3": 10,
             "4": 0,
             "5": 0
           },
           "top20_all5": 14,
-          "top20_rate": 0.0219435736677116,
+          "top20_rate": 0.02190923317683881,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 115,
-          "mean_top20_hits": 2.5141065830721003,
-          "mean_top10_hits": 1.2884012539184952,
-          "mean_top5_hits": 0.6504702194357367,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.6422015141457429,
+          "mean_top20_hits": 2.514866979655712,
+          "mean_top10_hits": 1.2895148669796557,
+          "mean_top5_hits": 0.651017214397496,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.6444600797860481,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
     },
     "transition_position": {
-      "targets": 3190,
+      "targets": 3191,
       "top20_hit_distribution": {
         "0": 73,
         "1": 480,
         "2": 1049,
-        "3": 1075,
+        "3": 1076,
         "4": 444,
         "5": 69
       },
       "top10_hit_distribution": {
         "0": 665,
-        "1": 1344,
+        "1": 1345,
         "2": 921,
         "3": 228,
         "4": 31,
         "5": 1
       },
       "top5_hit_distribution": {
-        "0": 1562,
+        "0": 1563,
         "1": 1264,
         "2": 336,
         "3": 26,
@@ -7027,19 +7027,19 @@
         "5": 0
       },
       "top20_all5": 69,
-      "top20_rate": 0.021630094043887146,
+      "top20_rate": 0.02162331557505484,
       "top10_all5": 1,
       "top5_all5": 0,
       "top10_given_top20_all5": 0.014492753623188406,
       "top5_given_top10_all5": 0.0,
       "top20_4plus": 513,
-      "mean_top20_hits": 2.484012539184953,
-      "mean_top10_hits": 1.253605015673981,
-      "mean_top5_hits": 0.6338557993730407,
-      "random_top20_5of5_expected_count": 75.16285516285517,
-      "random_top10_5of5_expected_count": 1.2216872743188534,
-      "random_top5_5of5_expected_count": 0.004847965374281164,
-      "top20_5of5_p_unadjusted_one_sided": 0.7795055418202311,
+      "mean_top20_hits": 2.484174240050141,
+      "mean_top10_hits": 1.2535255405828893,
+      "mean_top5_hits": 0.6336571607646506,
+      "random_top20_5of5_expected_count": 75.18641718641719,
+      "random_top10_5of5_expected_count": 1.222070248386038,
+      "random_top5_5of5_expected_count": 0.0048494851126430075,
+      "top20_5of5_p_unadjusted_one_sided": 0.7803077153801281,
       "top20_5of5_p_bonferroni_family_42": 1.0,
       "chronological_splits": {
         "discovery": {
@@ -7127,25 +7127,25 @@
           "top20_5of5_p_bonferroni_family_42": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 13,
             "1": 100,
             "2": 211,
-            "3": 207,
+            "3": 208,
             "4": 88,
             "5": 19
           },
           "top10_hit_distribution": {
             "0": 132,
-            "1": 278,
+            "1": 279,
             "2": 180,
             "3": 45,
             "4": 3,
             "5": 0
           },
           "top5_hit_distribution": {
-            "0": 317,
+            "0": 318,
             "1": 268,
             "2": 51,
             "3": 2,
@@ -7153,19 +7153,19 @@
             "5": 0
           },
           "top20_all5": 19,
-          "top20_rate": 0.029780564263322883,
+          "top20_rate": 0.0297339593114241,
           "top10_all5": 0,
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
           "top20_4plus": 107,
-          "mean_top20_hits": 2.4921630094043885,
-          "mean_top10_hits": 1.2304075235109717,
-          "mean_top5_hits": 0.5893416927899686,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
-          "top20_5of5_p_unadjusted_one_sided": 0.1803101924524138,
+          "mean_top20_hits": 2.492957746478873,
+          "mean_top10_hits": 1.2300469483568075,
+          "mean_top5_hits": 0.5884194053208138,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
+          "top20_5of5_p_unadjusted_one_sided": 0.1819969251786328,
           "top20_5of5_p_bonferroni_family_42": 1.0
         }
       }
@@ -7222,25 +7222,25 @@
           "top20_5of5_p_bonferroni_family_46": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 17,
             "1": 105,
             "2": 216,
-            "3": 194,
+            "3": 195,
             "4": 78,
             "5": 28
           },
           "top20_all5": 28,
-          "top20_rate": 0.0438871473354232,
-          "mean_top20_hits": 2.4623824451410656,
+          "top20_rate": 0.04381846635367762,
+          "mean_top20_hits": 2.463223787167449,
           "top10_all5": 0,
           "top5_all5": 0,
           "random_top20_baseline_rate": 0.02356202356202356,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "top20_5of5_p_unadjusted_one_sided": 0.0015458888900377707,
-          "top20_5of5_p_holm_within_4_fixed_mixes": 0.006183555560151083,
-          "top20_5of5_p_bonferroni_family_46": 0.07111088894173745
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "top20_5of5_p_unadjusted_one_sided": 0.0015810212957458785,
+          "top20_5of5_p_holm_within_4_fixed_mixes": 0.006324085182983514,
+          "top20_5of5_p_bonferroni_family_46": 0.0727269796043104
         }
       }
     },
@@ -7295,25 +7295,25 @@
           "top20_5of5_p_bonferroni_family_46": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 16,
             "1": 97,
             "2": 229,
-            "3": 195,
+            "3": 196,
             "4": 76,
             "5": 25
           },
           "top20_all5": 25,
-          "top20_rate": 0.03918495297805643,
-          "mean_top20_hits": 2.459247648902821,
+          "top20_rate": 0.03912363067292645,
+          "mean_top20_hits": 2.460093896713615,
           "top10_all5": 1,
           "top5_all5": 0,
           "random_top20_baseline_rate": 0.02356202356202356,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "top20_5of5_p_unadjusted_one_sided": 0.01055468197997394,
-          "top20_5of5_p_holm_within_4_fixed_mixes": 0.03166404593992182,
-          "top20_5of5_p_bonferroni_family_46": 0.48551537107880127
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "top20_5of5_p_unadjusted_one_sided": 0.010745184607687093,
+          "top20_5of5_p_holm_within_4_fixed_mixes": 0.03223555382306128,
+          "top20_5of5_p_bonferroni_family_46": 0.4942784919536063
         }
       }
     },
@@ -7368,24 +7368,24 @@
           "top20_5of5_p_bonferroni_family_46": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 92,
             "2": 233,
-            "3": 192,
+            "3": 193,
             "4": 91,
             "5": 15
           },
           "top20_all5": 15,
-          "top20_rate": 0.023510971786833857,
-          "mean_top20_hits": 2.4655172413793105,
+          "top20_rate": 0.023474178403755867,
+          "mean_top20_hits": 2.4663536776212833,
           "top10_all5": 1,
           "top5_all5": 0,
           "random_top20_baseline_rate": 0.02356202356202356,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "top20_5of5_p_unadjusted_one_sided": 0.5389396320180753,
-          "top20_5of5_p_holm_within_4_fixed_mixes": 0.5389396320180753,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "top20_5of5_p_unadjusted_one_sided": 0.541372690917826,
+          "top20_5of5_p_holm_within_4_fixed_mixes": 0.541372690917826,
           "top20_5of5_p_bonferroni_family_46": 1.0
         }
       }
@@ -7442,25 +7442,25 @@
           "top20_5of5_p_bonferroni_family_46": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "top20_hit_distribution": {
             "0": 19,
             "1": 97,
             "2": 233,
-            "3": 190,
+            "3": 191,
             "4": 75,
             "5": 24
           },
           "top20_all5": 24,
-          "top20_rate": 0.03761755485893417,
-          "mean_top20_hits": 2.4341692789968654,
+          "top20_rate": 0.03755868544600939,
+          "mean_top20_hits": 2.435054773082942,
           "top10_all5": 1,
           "top5_all5": 0,
           "random_top20_baseline_rate": 0.02356202356202356,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "top20_5of5_p_unadjusted_one_sided": 0.018639837620858555,
-          "top20_5of5_p_holm_within_4_fixed_mixes": 0.03727967524171711,
-          "top20_5of5_p_bonferroni_family_46": 0.8574325305594935
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "top20_5of5_p_unadjusted_one_sided": 0.018947921640884775,
+          "top20_5of5_p_holm_within_4_fixed_mixes": 0.03789584328176955,
+          "top20_5of5_p_bonferroni_family_46": 0.8716043954806997
         }
       }
     }
@@ -7604,30 +7604,30 @@
           "top5_5of5_p_bonferroni_family_54": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "anchor_top20": "momentum_20_100",
           "candidate_set_invariant": true,
-          "top20_set_preserved_targets": 638,
+          "top20_set_preserved_targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 101,
             "2": 209,
             "3": 206,
-            "4": 85,
+            "4": 86,
             "5": 22
           },
           "top10_hit_distribution": {
             "0": 131,
             "1": 274,
             "2": 179,
-            "3": 46,
+            "3": 47,
             "4": 8,
             "5": 0
           },
           "top5_hit_distribution": {
             "0": 317,
             "1": 256,
-            "2": 63,
+            "2": 64,
             "3": 2,
             "4": 0,
             "5": 0
@@ -7637,27 +7637,27 @@
           "top5_all5": 0,
           "top10_given_top20_all5": 0.0,
           "top5_given_top10_all5": null,
-          "mean_top20_hits": 2.487460815047022,
-          "mean_top10_hits": 1.2570532915360502,
-          "mean_top5_hits": 0.6081504702194357,
+          "mean_top20_hits": 2.4898278560250393,
+          "mean_top10_hits": 1.2597809076682316,
+          "mean_top5_hits": 0.6103286384976526,
           "random_top20_5of5_baseline_rate": 0.02356202356202356,
           "random_top10_5of5_baseline_rate": 0.0003829740671845935,
           "random_top5_5of5_baseline_rate": 1.519738361843625e-06,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
           "paired_vs_anchor": {
             "top10": {
-              "mix_better": 84,
+              "mix_better": 85,
               "tie": 475,
               "anchor_better": 79,
-              "mean_hit_delta_mix_minus_anchor": 0.012539184952978056
+              "mean_hit_delta_mix_minus_anchor": 0.014084507042253521
             },
             "top5": {
-              "mix_better": 58,
+              "mix_better": 59,
               "tie": 526,
               "anchor_better": 54,
-              "mean_hit_delta_mix_minus_anchor": 0.003134796238244514
+              "mean_hit_delta_mix_minus_anchor": 0.004694835680751174
             }
           },
           "top10_5of5_p_unadjusted_one_sided": 1.0,
@@ -7808,29 +7808,29 @@
           "top5_5of5_p_bonferroni_family_54": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "anchor_top20": "momentum_20_100",
           "candidate_set_invariant": true,
-          "top20_set_preserved_targets": 638,
+          "top20_set_preserved_targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 101,
             "2": 209,
             "3": 206,
-            "4": 85,
+            "4": 86,
             "5": 22
           },
           "top10_hit_distribution": {
             "0": 135,
             "1": 257,
             "2": 191,
-            "3": 51,
+            "3": 52,
             "4": 3,
             "5": 1
           },
           "top5_hit_distribution": {
             "0": 318,
-            "1": 264,
+            "1": 265,
             "2": 53,
             "3": 3,
             "4": 0,
@@ -7841,30 +7841,30 @@
           "top5_all5": 0,
           "top10_given_top20_all5": 0.045454545454545456,
           "top5_given_top10_all5": 0.0,
-          "mean_top20_hits": 2.487460815047022,
-          "mean_top10_hits": 1.2680250783699059,
-          "mean_top5_hits": 0.5940438871473355,
+          "mean_top20_hits": 2.4898278560250393,
+          "mean_top10_hits": 1.270735524256651,
+          "mean_top5_hits": 0.594679186228482,
           "random_top20_5of5_baseline_rate": 0.02356202356202356,
           "random_top10_5of5_baseline_rate": 0.0003829740671845935,
           "random_top5_5of5_baseline_rate": 1.519738361843625e-06,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
           "paired_vs_anchor": {
             "top10": {
-              "mix_better": 109,
+              "mix_better": 110,
               "tie": 427,
               "anchor_better": 102,
-              "mean_hit_delta_mix_minus_anchor": 0.023510971786833857
+              "mean_hit_delta_mix_minus_anchor": 0.025039123630672927
             },
             "top5": {
               "mix_better": 84,
-              "tie": 466,
+              "tie": 467,
               "anchor_better": 88,
-              "mean_hit_delta_mix_minus_anchor": -0.0109717868338558
+              "mean_hit_delta_mix_minus_anchor": -0.010954616588419406
             }
           },
-          "top10_5of5_p_unadjusted_one_sided": 0.21681336636982623,
+          "top10_5of5_p_unadjusted_one_sided": 0.2171133065402721,
           "top10_5of5_p_holm_within_8_constrained_tests": 1.0,
           "top10_5of5_p_bonferroni_family_54": 1.0,
           "top5_5of5_p_unadjusted_one_sided": 1.0,
@@ -8012,30 +8012,30 @@
           "top5_5of5_p_bonferroni_family_54": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "anchor_top20": "momentum_20_100",
           "candidate_set_invariant": true,
-          "top20_set_preserved_targets": 638,
+          "top20_set_preserved_targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 101,
             "2": 209,
             "3": 206,
-            "4": 85,
+            "4": 86,
             "5": 22
           },
           "top10_hit_distribution": {
             "0": 140,
             "1": 263,
             "2": 181,
-            "3": 45,
+            "3": 46,
             "4": 8,
             "5": 1
           },
           "top5_hit_distribution": {
             "0": 321,
             "1": 247,
-            "2": 63,
+            "2": 64,
             "3": 7,
             "4": 0,
             "5": 0
@@ -8045,30 +8045,30 @@
           "top5_all5": 0,
           "top10_given_top20_all5": 0.045454545454545456,
           "top5_given_top10_all5": 0.0,
-          "mean_top20_hits": 2.487460815047022,
-          "mean_top10_hits": 1.249216300940439,
-          "mean_top5_hits": 0.6175548589341693,
+          "mean_top20_hits": 2.4898278560250393,
+          "mean_top10_hits": 1.2519561815336464,
+          "mean_top5_hits": 0.6197183098591549,
           "random_top20_5of5_baseline_rate": 0.02356202356202356,
           "random_top10_5of5_baseline_rate": 0.0003829740671845935,
           "random_top5_5of5_baseline_rate": 1.519738361843625e-06,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
           "paired_vs_anchor": {
             "top10": {
-              "mix_better": 106,
+              "mix_better": 107,
               "tie": 426,
               "anchor_better": 106,
-              "mean_hit_delta_mix_minus_anchor": 0.004702194357366771
+              "mean_hit_delta_mix_minus_anchor": 0.006259780907668232
             },
             "top5": {
-              "mix_better": 101,
+              "mix_better": 102,
               "tie": 440,
               "anchor_better": 97,
-              "mean_hit_delta_mix_minus_anchor": 0.012539184952978056
+              "mean_hit_delta_mix_minus_anchor": 0.014084507042253521
             }
           },
-          "top10_5of5_p_unadjusted_one_sided": 0.21681336636982623,
+          "top10_5of5_p_unadjusted_one_sided": 0.2171133065402721,
           "top10_5of5_p_holm_within_8_constrained_tests": 1.0,
           "top10_5of5_p_bonferroni_family_54": 1.0,
           "top5_5of5_p_unadjusted_one_sided": 1.0,
@@ -8217,29 +8217,29 @@
           "top5_5of5_p_bonferroni_family_54": 1.0
         },
         "oos": {
-          "targets": 638,
+          "targets": 639,
           "anchor_top20": "momentum_20_100",
           "candidate_set_invariant": true,
-          "top20_set_preserved_targets": 638,
+          "top20_set_preserved_targets": 639,
           "top20_hit_distribution": {
             "0": 15,
             "1": 101,
             "2": 209,
             "3": 206,
-            "4": 85,
+            "4": 86,
             "5": 22
           },
           "top10_hit_distribution": {
             "0": 135,
             "1": 264,
-            "2": 185,
+            "2": 186,
             "3": 48,
             "4": 5,
             "5": 1
           },
           "top5_hit_distribution": {
             "0": 311,
-            "1": 262,
+            "1": 263,
             "2": 61,
             "3": 4,
             "4": 0,
@@ -8250,30 +8250,30 @@
           "top5_all5": 0,
           "top10_given_top20_all5": 0.045454545454545456,
           "top5_given_top10_all5": 0.0,
-          "mean_top20_hits": 2.487460815047022,
-          "mean_top10_hits": 1.2586206896551724,
-          "mean_top5_hits": 0.6206896551724138,
+          "mean_top20_hits": 2.4898278560250393,
+          "mean_top10_hits": 1.2597809076682316,
+          "mean_top5_hits": 0.621283255086072,
           "random_top20_5of5_baseline_rate": 0.02356202356202356,
           "random_top10_5of5_baseline_rate": 0.0003829740671845935,
           "random_top5_5of5_baseline_rate": 1.519738361843625e-06,
-          "random_top20_5of5_expected_count": 15.032571032571031,
-          "random_top10_5of5_expected_count": 0.24433745486377065,
-          "random_top5_5of5_expected_count": 0.0009695930748562328,
+          "random_top20_5of5_expected_count": 15.056133056133055,
+          "random_top10_5of5_expected_count": 0.24472042893095525,
+          "random_top5_5of5_expected_count": 0.0009711128132180764,
           "paired_vs_anchor": {
             "top10": {
               "mix_better": 111,
-              "tie": 420,
+              "tie": 421,
               "anchor_better": 107,
-              "mean_hit_delta_mix_minus_anchor": 0.014106583072100314
+              "mean_hit_delta_mix_minus_anchor": 0.014084507042253521
             },
             "top5": {
               "mix_better": 92,
-              "tie": 467,
+              "tie": 468,
               "anchor_better": 79,
-              "mean_hit_delta_mix_minus_anchor": 0.01567398119122257
+              "mean_hit_delta_mix_minus_anchor": 0.01564945226917058
             }
           },
-          "top10_5of5_p_unadjusted_one_sided": 0.21681336636982623,
+          "top10_5of5_p_unadjusted_one_sided": 0.2171133065402721,
           "top10_5of5_p_holm_within_8_constrained_tests": 1.0,
           "top10_5of5_p_bonferroni_family_54": 1.0,
           "top5_5of5_p_unadjusted_one_sided": 1.0,
