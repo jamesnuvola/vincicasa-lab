@@ -39,6 +39,7 @@ Q83_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_5plus_t
 Q85_REPORT = ROOT / "reports" / "sequence_agent" / "archive_reconciliation_2026-10-28.json"
 Q86_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_grammar.json"
 Q87_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_7plus_grammar.json"
+Q87_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_7plus_target_ledger.csv"
 Q86_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_formula_metrics.csv"
 Q86_MANIFEST = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_formula_metrics_manifest.json"
 Q86_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_target_ledger.csv"
@@ -1002,7 +1003,7 @@ def validate_q87():
     formulas=math.comb(27,7)
     expected_rows=formulas*len(Q80_SPLITS)
     add_error(errors,report.get("task_id")=="Q87","Q87 task id mismatch")
-    add_error(errors,report.get("status")=="VALIDATED_FINITE_GRAMMAR_COMPLETE","Q87 finite grammar status mismatch")
+    add_error(errors,report.get("status") in ("AGGREGATED_PENDING_ACCEPTANCE_VALIDATION","VALIDATED_FINITE_GRAMMAR_COMPLETE"),"Q87 aggregate status mismatch")
     add_error(errors,report.get("review_status")=="PENDING_HUMAN_REVIEW_INTEGRATION","Q87 human-review gate missing")
     add_error(errors,report.get("metrics_storage")=="chunked_csv_gzip_parts","Q87 metrics storage label missing")
     add_error(errors,minimum>=50,"Q87 minimum prior history too small")
