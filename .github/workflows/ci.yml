@@ -137,7 +137,7 @@ jobs:
       - name: Download validated Q80-Q86 persistence bundle
         uses: actions/download-artifact@v4
         with:
-          name: q80-persistence-bundle
+          name: q80-q86-persistence-bundle
           path: .q80-persistence-bundle
           run-id: ${{ contains(github.event.head_commit.message, '[q80-reuse-artifact]') && '40913390261' || github.run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
