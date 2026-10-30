@@ -65,7 +65,7 @@ def main():
     formula_seen=set()
     # Pass 1: exact shard coverage and all unadjusted endpoint p-values.
     for shard in range(SHARDS):
-        path=SHARD_DIR/f"shard_{shard:02d}_metrics.csv"
+        path=SHARD_DIR/f"shard_{shard}_metrics.csv"
         if not path.is_file(): fail(f"missing metrics for shard {shard}")
         local_counts=Counter()
         with path.open(newline="",encoding="utf-8-sig") as h:
@@ -125,7 +125,7 @@ def main():
         writer=csv.DictWriter(part_handle,fieldnames=sample_fields); writer.writeheader()
     try:
         for shard in range(SHARDS):
-            path=SHARD_DIR/f"shard_{shard:02d}_metrics.csv"
+            path=SHARD_DIR/f"shard_{shard}_metrics.csv"
             with path.open(newline="",encoding="utf-8-sig") as h:
                 for row in csv.DictReader(h):
                     if part_handle is None or part_rows>=CHUNK_ROWS: open_part()
@@ -152,7 +152,7 @@ def main():
     # Merge the six local per-target winners into one globally best descriptive formula per target.
     best_by_date={}
     for shard in range(SHARDS):
-        path=SHARD_DIR/f"shard_{shard:02d}_target_ledger.csv"
+        path=SHARD_DIR/f"shard_{shard}_target_ledger.csv"
         if not path.is_file(): fail(f"missing target ledger for shard {shard}")
         with path.open(newline="",encoding="utf-8-sig") as h:
             for row in csv.DictReader(h):
