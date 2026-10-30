@@ -62,7 +62,7 @@ def main():
     split_counts=Counter()
     headers=None
     cursor=0
-    formula_seen=set()
+    formula_seen={name:set() for name in SPLITS}
     # Pass 1: exact shard coverage and all unadjusted endpoint p-values.
     for shard in range(SHARDS):
         path=SHARD_DIR/f"shard_{shard}_metrics.csv"
@@ -77,8 +77,8 @@ def main():
                 split=row.get("split")
                 if split not in SPLITS: fail("invalid split in shard")
                 fid=row.get("formula_id","")
-                if fid in formula_seen: fail("duplicate formula id across shards")
-                formula_seen.add(fid)
+                if fid in formula_seen[split]: fail("duplicate formula id within split/shard family")
+                formula_seen[split].add(fid)
                 # Validate formula ID and exact shard range.
                 try:
                     parts=[int(x) for x in fid.split("_")[1:]]
@@ -102,7 +102,7 @@ def main():
                     row_ids[rid*3+("p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx").index(k)]=rid
                 local_counts[split]+=1; split_counts[split]+=1; cursor+=1
         if local_counts!={s:SHARD_SIZE for s in SPLITS}: fail(f"shard {shard} formula/split coverage mismatch")
-    if cursor!=total_rows or len(formula_seen)!=TOTAL: fail("aggregate formula/metric row coverage mismatch")
+    if cursor!=total_rows or any(len(formula_seen[s])!=TOTAL for s in SPLITS): fail("aggregate formula/metric row coverage mismatch")
     if split_counts!={s:TOTAL for s in SPLITS}: fail("aggregate split counts mismatch")
     # Global Holm step-down across all 7,992,270 tests; max adjusted endpoint p is retained per row.
     order=np.argsort(pvals,kind="stable")
