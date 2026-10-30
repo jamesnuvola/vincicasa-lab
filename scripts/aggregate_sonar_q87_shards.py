@@ -39,8 +39,19 @@ def read_archive():
 def formula_id(cols):
     return "P7_"+"_".join(f"{x:02d}" for x in cols)
 
+def formula_rank(cols):
+    # Lexicographic rank of a 7-combination in itertools.combinations(range(27), 7).
+    rank=0
+    previous=-1
+    for position,value in enumerate(cols):
+        for candidate in range(previous+1,value):
+            rank += math.comb(27-candidate-1,7-position-1)
+        previous=value
+    return rank
+
 def main():
     dates,draws=read_archive()
+    date_index={d:i for i,d in enumerate(dates)}
     scored=len(draws)-q80.MIN_HISTORY
     if scored<=0: fail("no eligible targets")
     expected_split={"discovery":math.ceil(.60*scored),"validation":math.ceil(.80*scored)-math.ceil(.60*scored),"blind_oos":scored-math.ceil(.80*scored)}
@@ -70,11 +81,11 @@ def main():
                 formula_seen.add(fid)
                 # Validate formula ID and exact shard range.
                 try:
-                    idx=int(fid.split("_")[1])
-                    if not (shard*SHARD_SIZE <= idx < (shard+1)*SHARD_SIZE): fail("formula outside its declared shard")
                     parts=[int(x) for x in fid.split("_")[1:]]
                     if len(parts)!=7 or parts!=sorted(set(parts)) or parts[-1]>=27: fail("invalid seven-feature formula id")
                     if fid!=formula_id(parts): fail("non-canonical formula id")
+                    idx=formula_rank(parts)
+                    if not (shard*SHARD_SIZE <= idx < (shard+1)*SHARD_SIZE): fail("formula outside its declared shard")
                     if row.get("features")!=" + ".join(FEATURES[i] for i in parts) and row.get("features")!="+".join(FEATURES[i] for i in parts):
                         fail("formula feature names do not match formula id")
                 except Exception as exc:
@@ -147,7 +158,7 @@ def main():
             for row in csv.DictReader(h):
                 d=row["target_date"]
                 if d not in dates: fail("target ledger date not found in canonical archive")
-                ix=dates.index(d)
+                ix=date_index[d]
                 if row["cutoff_date"]!=dates[ix-1] or int(row["prior_draws"])!=ix: fail("target ledger prior cutoff mismatch")
                 actual=" ".join(map(str,draws[ix]))
                 if row["actual_quintet"]!=actual: fail("target ledger actual quintet mismatch")
