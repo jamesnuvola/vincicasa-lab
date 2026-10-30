@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-10-30T17:42:42.036693+00:00",
+  "generated_at_utc": "2026-10-30T18:35:22.564223+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
   "task_count": 15,
   "complete_count": 2,
-  "ready_count": 2,
-  "active_next_task": "Q87",
-  "active_next_task_title": "Exhaustively evaluate all seven-feature equal-weight combinations with distributed shards",
+  "ready_count": 1,
+  "active_next_task": "Q84",
+  "active_next_task_title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
   "blocking_tasks": [],
   "next_action": null,
   "tasks": [
@@ -221,20 +221,12 @@
       "id": "Q87",
       "priority": 84,
       "title": "Exhaustively evaluate all seven-feature equal-weight combinations with distributed shards",
-      "status": "READY",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
       "depends_on": [
         "Q00"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/per_number_condition_7plus_grammar.json",
-        "reports/sequence_agent/per_number_condition_7plus_formula_metrics_manifest.json",
-        "reports/sequence_agent/per_number_condition_7plus_target_ledger.csv"
-      ],
-      "validation_errors": [
-        "missing evidence: reports/sequence_agent/per_number_condition_7plus_grammar.json",
-        "missing evidence: reports/sequence_agent/per_number_condition_7plus_formula_metrics_manifest.json",
-        "missing evidence: reports/sequence_agent/per_number_condition_7plus_target_ledger.csv"
-      ],
+      "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "evaluate all 888,030 unique unordered seven-feature equal-weight combinations from the 27 registered prior-only features",
         "use six deterministic shards of 148,005 formulas each and 1,024-formula batches with contiguous manifests and no gaps or overlaps",
