@@ -199,7 +199,9 @@ def main():
             "global Holm applied across all six shards and all formula×split×endpoint tests",
             "finite seven-feature grammar only; higher-order and conditional formula families remain open",
             "immutable freezes preserved; no automatic strategy promotion"],
-        "outputs":{"metrics_parts":[x["path"] for x in part_manifest],"metrics_manifest":str(METRICS_MANIFEST.relative_to(ROOT)),
+        "outputs":{"metrics_parts":[x["path"] for x in part_manifest],
+            "metrics_parts_manifest_sha256":hashlib.sha256(json.dumps(part_manifest,sort_keys=True,separators=(",",":")).encode()).hexdigest(),
+            "metrics_manifest":str(METRICS_MANIFEST.relative_to(ROOT)),
             "target_ledger":str(LEDGER_PATH.relative_to(ROOT))}}
     manifest={"schema_version":"1.0","task_id":"Q87","storage_format":"chunked_csv_gzip_parts",
         "source_archive_sha256":source_sha,"formula_count":TOTAL,"metrics_rows":total_rows,
