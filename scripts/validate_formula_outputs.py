@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Fail-closed acceptance validation for persisted Q80-Q83 formula outputs."""
+"""Fail-closed acceptance validation for persisted Q80-Q86 formula outputs."""
 from __future__ import annotations
 import csv
 import hashlib
@@ -254,7 +254,7 @@ def main():
         }
         ARCHIVE_REPORT.write_text(json.dumps(archive_report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    print("Q80_Q81_Q82_Q83_ACCEPTANCE_VALIDATED: formula metrics, target cutoffs, archive reconciliation, queue and human-review gates passed")
+    print("Q80_Q81_Q82_Q83_Q86_ACCEPTANCE_VALIDATED: formula metrics, target cutoffs, archive reconciliation, queue and human-review gates passed")
 
 
 if __name__ == "__main__":

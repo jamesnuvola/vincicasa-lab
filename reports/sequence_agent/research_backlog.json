@@ -8,9 +8,9 @@
     "chronological_validation_required": true,
     "minimum_complete_oos_cases": 100,
     "preferred_complete_oos_cases": 200,
-    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80-Q86 is marked COMPLETE; passing automated validators alone leaves each VALIDATED_PENDING_HUMAN_REVIEW.",
+    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80-Q87 is marked COMPLETE; passing automated validators alone leaves each VALIDATED_PENDING_HUMAN_REVIEW.",
     "strategy_catalog_policy": "Catalog occasional, intermittent, conditional, complementary, antagonistic, retrospective and null strategies; keep ex-ante and retrospective evidence separate. Formula-universe claims must name the finite grammar explored.",
-    "archive_freshness": "As of 2026-10-29, the canonical main archive and research branch are byte-aligned through 2026-10-28 (3,391 draws). Q80-Q83 were recomputed on that archive; refresh again if main advances. Immutable freezes remain append-only."
+    "archive_freshness": "As of 2026-10-30, canonical main contains 3,392 verified draws through 2026-10-29 (latest 1,8,17,27,36). The research branch is synchronized to this exact archive; Q80-Q86 chronological outputs must be recomputed and revalidated on this cutoff before being treated as current. Immutable target-2026-10-25 freeze remains append-only."
   },
   "tasks": [
     {
@@ -239,7 +239,7 @@
     },
     {
       "id": "Q84",
-      "priority": 84,
+      "priority": 85,
       "title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
       "depends_on": [
         "Q00"
@@ -264,7 +264,7 @@
     },
     {
       "id": "Q85",
-      "priority": 85,
+      "priority": 86,
       "title": "Reconcile research branch with the latest canonical archive and rerun affected chronological evidence",
       "depends_on": [
         "Q00"
@@ -275,7 +275,7 @@
       ],
       "acceptance": [
         "record the canonical archive blob SHA, draw count and last date from the current main archive",
-        "identify every Q80/Q81/Q82/Q83 output whose archive cutoff is stale and do not represent it as current",
+        "identify every Q80/Q81/Q82/Q83/Q86 output whose archive cutoff is stale and do not represent it as current",
         "recompute affected targets only with prior-only features and preserve all existing immutable freezes",
         "reconcile metrics, target ledgers, formula manifests and chronological split counts to the refreshed archive",
         "run exact-head CI and persist/re-read outputs before reporting validated status",
@@ -285,7 +285,7 @@
     },
     {
       "id": "Q86",
-      "priority": 86,
+      "priority": 87,
       "title": "Exhaustively evaluate all six-feature equal-weight combinations",
       "depends_on": [
         "Q00"
@@ -303,6 +303,32 @@
         "metrics cover discovery, validation and blind OOS; Holm-Bonferroni covers formula×split×endpoint tests across the full six-feature family",
         "uniform number-rank baseline and exploratory/null outcomes are reported; immutable freezes are not overwritten",
         "human review/integration is required before Q86 is marked COMPLETE; higher-order and other formula grammars remain open"
+      ],
+      "kind": "analysis"
+    },
+    {
+      "id": "Q87",
+      "priority": 84,
+      "title": "Exhaustively evaluate all seven-feature equal-weight combinations with distributed shards",
+      "depends_on": [
+        "Q00"
+      ],
+      "evidence": [
+        "reports/sequence_agent/per_number_condition_7plus_grammar.json",
+        "reports/sequence_agent/per_number_condition_7plus_formula_metrics_manifest.json",
+        "reports/sequence_agent/per_number_condition_7plus_target_ledger.csv"
+      ],
+      "acceptance": [
+        "evaluate all 888,030 unique unordered seven-feature equal-weight combinations from the 27 registered prior-only features",
+        "use six deterministic shards of 148,005 formulas each and 1,024-formula batches with contiguous manifests and no gaps or overlaps",
+        "rank all 40 numbers for every target with at least 50 prior draws using only the strict prefix before that target",
+        "produce a per-target ledger reconciling actual quintet, immediate prior cutoff, all 27 single-feature ranks and the best retrospective seven-feature formula",
+        "produce 2,664,090 formula-by-split metric rows across chronological discovery, validation and blind OOS splits",
+        "apply Holm-Bonferroni across the complete 7,992,270 formula×split×endpoint test family",
+        "persist chunked metrics with per-part SHA-256, byte count, row range and a manifest; reconcile every shard without duplicate or missing formula IDs",
+        "report the uniform number-rank baseline and preserve exploratory/null results without automatic promotion",
+        "document the finite seven-feature grammar boundary; higher-order, conditional and other mathematical formula families remain open",
+        "preserve immutable freezes and require human review/integration before Q87 is marked COMPLETE"
       ],
       "kind": "analysis"
     }

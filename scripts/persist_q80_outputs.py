@@ -291,7 +291,7 @@ def main():
     tree_entries.extend({"path": path, "mode": "100644", "type": "blob", "sha": None} for path in deleted)
     tree = api("POST", "/git/trees", {"base_tree": commit_data["tree"]["sha"], "tree": tree_entries})
     commit = api("POST", "/git/commits", {
-        "message": "Persist validated Q80-Q83 formula outputs, archive sync, checkpoint and research queue status",
+        "message": "Persist validated Q80-Q83 formula outputs, archive sync, checkpoint and research queue status [q80-persisted] [q80-validate-persisted]",
         "tree": tree["sha"],
         "parents": [head],
     })

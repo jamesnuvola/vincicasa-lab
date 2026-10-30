@@ -19,7 +19,7 @@ jobs:
   validate:
     if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[q80-reuse-artifact]')
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -56,7 +56,7 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
-      - name: Test exhaustive per-number condition grammars (Q80/Q81/Q82/Q83)
+      - name: Test exhaustive per-number condition grammars (Q80/Q81/Q82/Q83/Q86)
         if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -71,28 +71,32 @@ jobs:
           python scripts/sonar_per_number_condition_4plus_grammar.py
           python scripts/sonar_per_number_condition_conditional_grammar.py
           python scripts/sonar_per_number_condition_5plus_grammar.py
+          python scripts/sonar_per_number_condition_6plus_grammar.py
+          python scripts/chunk_q86_outputs.py
           python scripts/sonar_research_queue.py
           python scripts/validate_formula_outputs.py
+          python scripts/sonar_research_queue.py
       - name: Validate persisted Q80/Q81/Q82/Q83/Q86 outputs on exact head
         if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
+          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py scripts/chunk_q86_outputs.py scripts/persist_q86_outputs.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
           python tests/test_sonar_per_number_condition_grammar.py -v
           python tests/test_sonar_per_number_condition_4plus_grammar.py -v
           python tests/test_sonar_per_number_condition_conditional_grammar.py -v
           python tests/test_sonar_per_number_condition_5plus_grammar.py -v
+          python tests/test_sonar_per_number_condition_6plus_grammar.py -v
           python scripts/sonar_research_queue.py
           python scripts/validate_formula_outputs.py
       - name: Build web application
         run: npm install && npm run build
 
-      - name: Upload validated Q80-Q83 formula persistence bundle
+      - name: Upload validated Q80-Q86 formula persistence bundle
         if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         uses: actions/upload-artifact@v4
         with:
-          name: q80-persistence-bundle
+          name: q80-q86-persistence-bundle
           path: |
             reports/sequence_agent/per_number_condition_grammar.json
             reports/sequence_agent/per_number_condition_formula_metrics.csv
@@ -106,6 +110,10 @@ jobs:
             reports/sequence_agent/per_number_condition_5plus_grammar.json
             reports/sequence_agent/per_number_condition_5plus_formula_metrics.csv
             reports/sequence_agent/per_number_condition_5plus_target_ledger.csv
+            reports/sequence_agent/per_number_condition_6plus_grammar.json
+            reports/sequence_agent/per_number_condition_6plus_formula_metrics_manifest.json
+            reports/sequence_agent/per_number_condition_6plus_formula_metrics_part_*.csv.gz
+            reports/sequence_agent/per_number_condition_6plus_target_ledger.csv
             reports/sequence_agent/per_number_condition_research_checkpoint.json
             reports/sequence_agent/research_queue_status.json
             reports/sequence_agent/latest_metrics.json
@@ -126,7 +134,7 @@ jobs:
       actions: write
     steps:
       - uses: actions/checkout@v4
-      - name: Download validated Q80 persistence bundle
+      - name: Download validated Q80-Q86 persistence bundle
         uses: actions/download-artifact@v4
         with:
           name: q80-persistence-bundle
@@ -138,12 +146,17 @@ jobs:
           mkdir -p reports/sequence_agent
           cp .q80-persistence-bundle/* reports/sequence_agent/
       - name: Persist validated Q80/Q81/Q82/Q83 outputs, archive sync and checkpoint with Git Data API
-        id: persist
+        id: persist-q80
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/persist_q80_outputs.py
+      - name: Persist validated Q86 outputs via Git Data API and verify exact bytes
+        id: persist-q86
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q86_outputs.py
       - name: Request CI on the persisted exact head
-        if: steps.persist.outputs.commit_created == 'true'
+        if: steps.persist-q86.outputs.commit_created == 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |

@@ -1,16 +1,5 @@
 name: SONAR Q86 Six-Feature Formula Grammar
 on:
-  push:
-    branches: ["research/per-number-condition-grammar-20261026"]
-    paths:
-      - ".github/workflows/sonar-q86-six-feature.yml"
-      - "scripts/sonar_per_number_condition_6plus_grammar.py"
-      - "scripts/chunk_q86_outputs.py"
-      - "scripts/persist_q86_outputs.py"
-      - "scripts/sonar_research_queue.py"
-      - "scripts/validate_formula_outputs.py"
-      - "tests/test_sonar_per_number_condition_6plus_grammar.py"
-      - "reports/sequence_agent/research_backlog.json"
   workflow_dispatch:
 permissions:
   contents: write
