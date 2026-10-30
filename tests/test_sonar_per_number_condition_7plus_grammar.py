@@ -48,7 +48,7 @@ class Q87ManifestTests(unittest.TestCase):
         ids = ["P7_" + "_".join(f"{i:02d}" for i in cols) for cols in formulas]
         self.assertEqual(len(ids), len(set(ids)))
         self.assertEqual(ids[0], "P7_00_01_02_03_04_05_06")
-        self.assertEqual(ids[-1], "P7_00_01_02_03_06_11_14")
+        self.assertEqual(ids[-1], "P7_00_01_02_03_09_12_26")
 
 if __name__ == "__main__":
     unittest.main()
