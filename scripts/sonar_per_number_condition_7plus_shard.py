@@ -38,6 +38,10 @@ if TOTAL_FORMULA_COUNT % SHARD_COUNT:
     raise SystemExit("Q87_BLOCKED: formula universe cannot be divided evenly")
 SHARD_START=SHARD_INDEX*SHARD_SIZE
 SHARD_END=SHARD_START+SHARD_SIZE
+SHARD_DIR=OUT/"q87_shards"
+METRICS=SHARD_DIR/f"shard_{SHARD_INDEX:02d}_metrics.csv"
+TARGET_LEDGER=SHARD_DIR/f"shard_{SHARD_INDEX:02d}_target_ledger.csv"
+REPORT=SHARD_DIR/f"shard_{SHARD_INDEX:02d}_report.json"
 FORMULAS=FORMULAS_ALL[SHARD_START:SHARD_END]
 FORMULA_IDS=["P7_"+"_".join(f"{i:02d}" for i in cols) for cols in FORMULAS]
 
