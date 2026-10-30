@@ -1,0 +1,88 @@
+name: SONAR Q87 Seven-Feature Formula Grammar
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: sonar-q87-seven-feature
+  cancel-in-progress: false
+jobs:
+  evaluate-shards:
+    name: Evaluate shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/per-number-condition-grammar-20261026
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Check Q87 evaluator and acceptance tests
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_7plus_shard.py scripts/aggregate_sonar_q87_shards.py scripts/sonar_research_queue.py scripts/persist_q87_outputs.py
+          python tests/test_sonar_per_number_condition_7plus_grammar.py -v
+      - name: Evaluate deterministic seven-feature shard
+        env:
+          SONAR_Q87_SHARD_INDEX: ${{ matrix.shard }}
+        run: python scripts/sonar_per_number_condition_7plus_shard.py
+      - name: Upload shard metrics and per-target ledger
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-q87-shard-${{ matrix.shard }}
+          path: |
+            reports/sequence_agent/q87_shards/shard_${{ matrix.shard }}_metrics.csv
+            reports/sequence_agent/q87_shards/shard_${{ matrix.shard }}_target_ledger.csv
+            reports/sequence_agent/q87_shards/shard_${{ matrix.shard }}_report.json
+          if-no-files-found: error
+          retention-days: 14
+
+  aggregate-validate-persist:
+    needs: evaluate-shards
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/per-number-condition-grammar-20261026
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Download all six shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sonar-q87-shard-*
+          merge-multiple: true
+          path: reports/sequence_agent/q87_shards
+      - name: Aggregate shards and apply global Holm correction
+        run: python scripts/aggregate_sonar_q87_shards.py
+      - name: Validate complete Q87 queue and evidence
+        run: python scripts/sonar_research_queue.py
+      - name: Persist Q87 outputs and verify exact committed bytes
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q87_outputs.py
+      - name: Request current-head CI
+        if: ${{ steps.persist.outputs.commit_created == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"research/per-number-condition-grammar-20261026\"}"
