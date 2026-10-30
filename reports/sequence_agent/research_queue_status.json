@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-10-29T17:50:52.001074+00:00",
+  "generated_at_utc": "2026-10-30T17:42:42.036693+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
-  "task_count": 14,
+  "task_count": 15,
   "complete_count": 2,
-  "ready_count": 1,
-  "active_next_task": "Q84",
-  "active_next_task_title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
+  "ready_count": 2,
+  "active_next_task": "Q87",
+  "active_next_task_title": "Exhaustively evaluate all seven-feature equal-weight combinations with distributed shards",
   "blocking_tasks": [],
   "next_action": null,
   "tasks": [
@@ -218,8 +218,39 @@
       ]
     },
     {
-      "id": "Q84",
+      "id": "Q87",
       "priority": 84,
+      "title": "Exhaustively evaluate all seven-feature equal-weight combinations with distributed shards",
+      "status": "READY",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [
+        "reports/sequence_agent/per_number_condition_7plus_grammar.json",
+        "reports/sequence_agent/per_number_condition_7plus_formula_metrics_manifest.json",
+        "reports/sequence_agent/per_number_condition_7plus_target_ledger.csv"
+      ],
+      "validation_errors": [
+        "missing evidence: reports/sequence_agent/per_number_condition_7plus_grammar.json",
+        "missing evidence: reports/sequence_agent/per_number_condition_7plus_formula_metrics_manifest.json",
+        "missing evidence: reports/sequence_agent/per_number_condition_7plus_target_ledger.csv"
+      ],
+      "acceptance_criteria": [
+        "evaluate all 888,030 unique unordered seven-feature equal-weight combinations from the 27 registered prior-only features",
+        "use six deterministic shards of 148,005 formulas each and 1,024-formula batches with contiguous manifests and no gaps or overlaps",
+        "rank all 40 numbers for every target with at least 50 prior draws using only the strict prefix before that target",
+        "produce a per-target ledger reconciling actual quintet, immediate prior cutoff, all 27 single-feature ranks and the best retrospective seven-feature formula",
+        "produce 2,664,090 formula-by-split metric rows across chronological discovery, validation and blind OOS splits",
+        "apply Holm-Bonferroni across the complete 7,992,270 formula×split×endpoint test family",
+        "persist chunked metrics with per-part SHA-256, byte count, row range and a manifest; reconcile every shard without duplicate or missing formula IDs",
+        "report the uniform number-rank baseline and preserve exploratory/null results without automatic promotion",
+        "document the finite seven-feature grammar boundary; higher-order, conditional and other mathematical formula families remain open",
+        "preserve immutable freezes and require human review/integration before Q87 is marked COMPLETE"
+      ]
+    },
+    {
+      "id": "Q84",
+      "priority": 85,
       "title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
       "status": "READY",
       "depends_on": [
@@ -250,7 +281,7 @@
     },
     {
       "id": "Q85",
-      "priority": 85,
+      "priority": 86,
       "title": "Reconcile research branch with the latest canonical archive and rerun affected chronological evidence",
       "status": "COMPLETE",
       "depends_on": [
@@ -260,7 +291,7 @@
       "validation_errors": [],
       "acceptance_criteria": [
         "record the canonical archive blob SHA, draw count and last date from the current main archive",
-        "identify every Q80/Q81/Q82/Q83 output whose archive cutoff is stale and do not represent it as current",
+        "identify every Q80/Q81/Q82/Q83/Q86 output whose archive cutoff is stale and do not represent it as current",
         "recompute affected targets only with prior-only features and preserve all existing immutable freezes",
         "reconcile metrics, target ledgers, formula manifests and chronological split counts to the refreshed archive",
         "run exact-head CI and persist/re-read outputs before reporting validated status",
@@ -269,7 +300,7 @@
     },
     {
       "id": "Q86",
-      "priority": 86,
+      "priority": 87,
       "title": "Exhaustively evaluate all six-feature equal-weight combinations",
       "status": "VALIDATED_PENDING_HUMAN_REVIEW",
       "depends_on": [
