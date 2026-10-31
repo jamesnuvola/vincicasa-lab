@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-30T18:35:22.564223+00:00",
+  "generated_at_utc": "2026-10-31T10:46:06.545079+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
@@ -221,12 +221,20 @@
       "id": "Q87",
       "priority": 84,
       "title": "Exhaustively evaluate all seven-feature equal-weight combinations with distributed shards",
-      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "Q87 archive/target count mismatch",
+        "Q87 source archive SHA mismatch",
+        "Q87 archive dates mismatch",
+        "Q87 chronological split counts mismatch",
+        "Q87 output row counts mismatch",
+        "Q87 target ledger row count mismatch",
+        "Q87 target ledger date coverage/order mismatch"
+      ],
       "acceptance_criteria": [
         "evaluate all 888,030 unique unordered seven-feature equal-weight combinations from the 27 registered prior-only features",
         "use six deterministic shards of 148,005 formulas each and 1,024-formula batches with contiguous manifests and no gaps or overlaps",
