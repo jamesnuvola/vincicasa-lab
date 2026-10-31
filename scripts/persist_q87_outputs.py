@@ -34,7 +34,7 @@ def main():
     if errors: raise SystemExit("Q87_PERSIST_BLOCKED: acceptance validation failed: "+"; ".join(errors[:30]))
     # Promote only the technical evidence status after the fail-closed validator passes.
     report["status"]="VALIDATED_PENDING_HUMAN_REVIEW"
-    report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     errors=validate_q87()
     if errors: raise SystemExit("Q87_PERSIST_BLOCKED: post-status acceptance validation failed: "+"; ".join(errors[:30]))
     queue=json.loads((OUT/"research_queue_status.json").read_text(encoding="utf-8"))
@@ -42,7 +42,7 @@ def main():
     if queue.get("queue_status")!="QUEUE_VALID" or not task or task.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW" or task.get("validation_errors"):
         raise SystemExit("Q87_PERSIST_BLOCKED: queue is not validated/pending human review")
     checkpoint={
-      "schema_version":"1.0","project":"VinciCasa SONAR","checkpoint_id":"SONAR-Q87-2026-10-30",
+      "schema_version":"1.0","project":"VinciCasa SONAR","checkpoint_id":"SONAR-Q87-2026-10-31",
       "status":"VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION","task_id":"Q87",
       "source_checkout_head_sha":head,"source_archive_sha256":report["source_archive_sha256"],
       "target_count":report["target_count"],"last_date":report["last_date"],"formula_count":report["formula_count"],
@@ -52,7 +52,7 @@ def main():
       "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION",
       "guardrails":["no automatic promotion","no PR merge","no immutable freeze overwritten","higher-order/conditional families remain open"]
     }
-    checkpoint_path=OUT/"q87_checkpoint_2026-10-30.json"
+    checkpoint_path=OUT/"q87_checkpoint_2026-10-31.json"
     checkpoint_path.write_text(json.dumps(checkpoint,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     paths=[str(report_path.relative_to(ROOT)),
       "reports/sequence_agent/per_number_condition_7plus_formula_metrics_manifest.json",
