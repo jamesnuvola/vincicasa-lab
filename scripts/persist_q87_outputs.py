@@ -58,7 +58,7 @@ def main():
       "reports/sequence_agent/per_number_condition_7plus_formula_metrics_manifest.json",
       "reports/sequence_agent/per_number_condition_7plus_target_ledger.csv",
       "reports/sequence_agent/research_queue_status.json",
-      "reports/sequence_agent/q87_checkpoint_2026-10-30.json"]
+      str(checkpoint_path.relative_to(ROOT))]
     paths.extend(x["path"] for x in report.get("metrics_parts",[]))
     payloads={}
     for rel in paths:

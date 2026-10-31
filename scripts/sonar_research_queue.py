@@ -40,6 +40,8 @@ Q85_REPORT = ROOT / "reports" / "sequence_agent" / "archive_reconciliation_2026-
 Q86_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_grammar.json"
 Q87_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_7plus_grammar.json"
 Q87_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_7plus_target_ledger.csv"
+Q88_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_8plus_grammar.json"
+Q88_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_8plus_target_ledger.csv"
 Q86_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_formula_metrics.csv"
 Q86_MANIFEST = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_formula_metrics_manifest.json"
 Q86_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_target_ledger.csv"
@@ -1115,6 +1117,130 @@ def validate_q87():
 
 
 
+def validate_q88():
+    errors=[]
+    report=load_json(Q88_REPORT)
+    parts=report.get("metrics_parts",[])
+    with DATA.open(newline="",encoding="utf-8-sig") as handle:
+        archive=list(csv.DictReader(handle))
+    minimum=int(report.get("minimum_prior_history",0))
+    scored=max(0,len(archive)-minimum)
+    formulas=math.comb(27,8)
+    expected_rows=formulas*len(Q80_SPLITS)
+    add_error(errors,report.get("task_id")=="Q88","Q88 task id mismatch")
+    add_error(errors,report.get("status") in ("AGGREGATED_PENDING_ACCEPTANCE_VALIDATION","VALIDATED_PENDING_HUMAN_REVIEW","VALIDATED_FINITE_GRAMMAR_COMPLETE"),"Q88 aggregate status mismatch")
+    add_error(errors,report.get("review_status")=="PENDING_HUMAN_REVIEW_INTEGRATION","Q88 human-review gate missing")
+    add_error(errors,report.get("metrics_storage")=="chunked_csv_gzip_parts","Q88 metrics storage label missing")
+    add_error(errors,minimum>=50,"Q88 minimum prior history too small")
+    add_error(errors,report.get("target_count")==len(archive) and report.get("scored_targets")==scored,"Q88 archive/target count mismatch")
+    add_error(errors,report.get("formula_count")==formulas==2220075 and report.get("formula_count_check")==formulas,"Q88 formula count mismatch")
+    add_error(errors,report.get("shard_count")==15 and report.get("shard_formula_count")==148005,"Q88 shard layout mismatch")
+    add_error(errors,report.get("formula_grammar")=="all 8-feature equal-weight combinations","Q88 grammar label mismatch")
+    add_error(errors,report.get("feature_count")==27 and len(report.get("features",[]))==27,"Q88 feature schema mismatch")
+    add_error(errors,report.get("source_archive_sha256")==hashlib.sha256(DATA.read_bytes()).hexdigest(),"Q88 source archive SHA mismatch")
+    add_error(errors,report.get("first_date")==archive[0]["data"] and report.get("last_date")==archive[-1]["data"],"Q88 archive dates mismatch")
+    discovery=math.ceil(.60*scored); validation=math.ceil(.80*scored)
+    expected_splits={"discovery":discovery,"validation":validation-discovery,"blind_oos":scored-validation}
+    split_counts=report.get("split_counts",{})
+    add_error(errors,split_counts==expected_splits,"Q88 chronological split counts mismatch")
+    add_error(errors,report.get("formula_batch_size")==1024,"Q88 batch size mismatch")
+    batches=report.get("batch_manifest",[])
+    add_error(errors,report.get("formula_batch_count")==len(batches),"Q88 batch count mismatch")
+    cursor=0
+    for batch in batches:
+        start=int(batch.get("formula_start_inclusive",-1)); end=int(batch.get("formula_end_exclusive",-1))
+        if start!=cursor or end<=start or end>formulas or int(batch.get("formula_count",-1))!=end-start:
+            errors.append("Q88 batch manifest gap/overlap or invalid range"); break
+        cursor=end
+    add_error(errors,cursor==formulas,"Q88 batch manifest does not cover all formulas")
+    baseline=report.get("uniform_number_rank_baseline",{})
+    add_error(errors,baseline.get("mean_number_hits_top5")==.125 and baseline.get("mean_number_hits_top10")==.25 and baseline.get("mean_number_hits_top20")==.5 and baseline.get("mean_rank_of_actual_numbers")==20.5,"Q88 uniform baseline missing or invalid")
+    add_error(errors,report.get("multiple_testing",{}).get("method")=="Holm-Bonferroni","Q88 multiple-testing method mismatch")
+    add_error(errors,report.get("multiple_testing",{}).get("test_count")==formulas*len(Q80_SPLITS)*3,"Q88 Holm family size mismatch")
+    add_error(errors,report.get("metrics_rows")==expected_rows and report.get("target_ledger_rows")==scored,"Q88 output row counts mismatch")
+    add_error(errors,len(parts)==math.ceil(expected_rows/30000),"Q88 metrics part count mismatch")
+    manifest_rel=report.get("outputs",{}).get("metrics_manifest")
+    add_error(errors,manifest_rel=="reports/sequence_agent/per_number_condition_8plus_formula_metrics_manifest.json","Q88 metrics manifest path mismatch")
+    parts_sha=hashlib.sha256(json.dumps(parts,sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
+    add_error(errors,report.get("outputs",{}).get("metrics_parts_manifest_sha256")==parts_sha,"Q88 parts manifest hash mismatch")
+    if manifest_rel and (ROOT/manifest_rel).is_file():
+        manifest=load_json(ROOT/manifest_rel)
+        add_error(errors,manifest.get("task_id")=="Q88" and manifest.get("storage_format")=="chunked_csv_gzip_parts","Q88 manifest identity/storage mismatch")
+        add_error(errors,manifest.get("source_archive_sha256")==report.get("source_archive_sha256"),"Q88 manifest archive SHA mismatch")
+        add_error(errors,manifest.get("formula_count")==formulas and manifest.get("metrics_rows")==expected_rows,"Q88 manifest dimensions mismatch")
+        add_error(errors,manifest.get("parts")==parts and manifest.get("part_count")==len(parts),"Q88 manifest parts mismatch")
+        add_error(errors,manifest.get("parts_manifest_sha256")==parts_sha,"Q88 manifest hash mismatch")
+    else: errors.append("Q88 metrics manifest missing")
+    required={"split","formula_id","feature_count","features","targets","mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","all5_top5_rate","all5_top10_rate","all5_top20_rate","mean_rank_of_actual_numbers","p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx","holm_p_max_endpoint_family"}
+    names=report.get("features",[]); valid_names=set(names)
+    counts={s:0 for s in Q80_SPLITS}; ids={s:set() for s in Q80_SPLITS}; row_cursor=0
+    for part_index,part in enumerate(parts):
+        rel=str(part.get("path","")); path=ROOT/rel; nrows=int(part.get("rows",-1))
+        add_error(errors,part.get("part_index")==part_index,"Q88 part index/order mismatch")
+        add_error(errors,int(part.get("row_start_inclusive",-1))==row_cursor,"Q88 part range gap/overlap")
+        if not path.is_file():
+            errors.append("Q88 metrics part missing: "+rel); row_cursor+=max(0,nrows); continue
+        raw=path.read_bytes()
+        add_error(errors,len(raw)==int(part.get("bytes",-1)),"Q88 part byte count mismatch: "+rel)
+        add_error(errors,hashlib.sha256(raw).hexdigest()==part.get("sha256"),"Q88 part SHA mismatch: "+rel)
+        local=0
+        try:
+            with gzip.open(path,"rt",newline="",encoding="utf-8-sig") as handle:
+                reader=csv.DictReader(handle)
+                add_error(errors,required.issubset(set(reader.fieldnames or [])),"Q88 metric schema incomplete")
+                for row in reader:
+                    split=row.get("split","")
+                    if split not in Q80_SPLITS: errors.append("Q88 invalid split"); break
+                    feats=row.get("features","").split("+")
+                    if int(row.get("feature_count",0))!=8 or len(feats)!=8 or len(set(feats))!=8 or not set(feats).issubset(valid_names):
+                        errors.append("Q88 invalid eight-feature row"); break
+                    indices=sorted(names.index(x) for x in feats)
+                    if row.get("formula_id")!="P8_"+"_".join(f"{i:02d}" for i in indices):
+                        errors.append("Q88 formula ID does not match feature list"); break
+                    if row["formula_id"] in ids[split]: errors.append("Q88 duplicate formula/split row"); break
+                    if int(row.get("targets",-1))!=int(split_counts.get(split,-2)): errors.append("Q88 split target count mismatch"); break
+                    for field in ("mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","all5_top5_rate","all5_top10_rate","all5_top20_rate","mean_rank_of_actual_numbers","p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx","holm_p_max_endpoint_family"):
+                        try: value=float(row[field])
+                        except Exception: errors.append("Q88 non-numeric metric "+field); break
+                        if not math.isfinite(value) or (field=="mean_rank_of_actual_numbers" and not 1<=value<=40) or (field!="mean_rank_of_actual_numbers" and not 0<=value<=1):
+                            errors.append("Q88 invalid metric "+field); break
+                    ids[split].add(row["formula_id"]); counts[split]+=1; local+=1
+        except Exception as exc: errors.append("cannot read Q88 gzip part "+rel+": "+str(exc))
+        add_error(errors,local==nrows,"Q88 part row count mismatch: "+rel)
+        row_cursor+=nrows
+        add_error(errors,int(part.get("row_end_exclusive",-1))==row_cursor,"Q88 part end range mismatch")
+    add_error(errors,row_cursor==expected_rows,"Q88 parts do not cover expected rows")
+    for split in Q80_SPLITS:
+        add_error(errors,counts[split]==formulas and len(ids[split])==formulas,"Q88 formula coverage mismatch in "+split)
+    ledger_fields,ledger=load_csv(Q88_LEDGER)
+    required_ledger={"target_date","cutoff_date","prior_draws","actual_quintet","status","formula_count_tested","best_formula_id","best_formula_features","best_actual_number_ranks","single_feature_rank_ledger"}
+    add_error(errors,required_ledger.issubset(set(ledger_fields)),"Q88 target ledger schema incomplete")
+    add_error(errors,len(ledger)==scored,"Q88 target ledger row count mismatch")
+    expected_dates=[r["data"] for r in archive[minimum:]]
+    add_error(errors,[r.get("target_date","") for r in ledger]==expected_dates,"Q88 target ledger date coverage/order mismatch")
+    archive_by_date={r["data"]:" ".join(str(int(r["n"+str(i)])) for i in range(1,6)) for r in archive}
+    archive_index={r["data"]:i for i,r in enumerate(archive)}
+    for row in ledger:
+        d=row.get("target_date",""); idx=archive_index.get(d)
+        if idx is None or idx<minimum: errors.append("Q88 target missing or too early: "+d); break
+        if row.get("cutoff_date")!=archive[idx-1]["data"] or int(row.get("prior_draws",-1))!=idx: errors.append("Q88 strict prior cutoff mismatch at "+d); break
+        if row.get("actual_quintet")!=archive_by_date.get(d): errors.append("Q88 actual quintet mismatch at "+d); break
+        if row.get("status")!="SCORED" or int(row.get("formula_count_tested",0))!=formulas: errors.append("Q88 target status/formula count invalid at "+d); break
+        feats=row.get("best_formula_features","").split("+")
+        if len(feats)!=8 or len(set(feats))!=8 or not set(feats).issubset(valid_names): errors.append("Q88 best formula features invalid at "+d); break
+        indices=sorted(names.index(x) for x in feats)
+        if row.get("best_formula_id")!="P8_"+"_".join(f"{i:02d}" for i in indices): errors.append("Q88 best formula ID mismatch at "+d); break
+        try:
+            ranks=json.loads(row["best_actual_number_ranks"]); singles=json.loads(row["single_feature_rank_ledger"])
+            if len(ranks)!=5 or any(not isinstance(v,int) or v<1 or v>40 for v in ranks): raise ValueError("invalid best ranks")
+            if len(singles)!=27 or {x.get("feature") for x in singles}!=valid_names: raise ValueError("single-feature ledger must contain 27 features")
+            for item in singles:
+                if len(item.get("ranks",[]))!=5 or any(not isinstance(v,int) or v<1 or v>40 for v in item["ranks"]): raise ValueError("invalid single-feature ranks")
+        except Exception as exc: errors.append("invalid Q88 target record at "+d+": "+str(exc)); break
+    return errors
+
+
+
 def main():
     plan = load_json(BACKLOG)
     tasks = plan.get("tasks", [])
@@ -1141,7 +1267,7 @@ def main():
 
     validators = {"Q10": validate_q10, "Q20": validate_q20, "Q30": validate_q30,
                   "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80, "Q81": validate_q81,
-                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87}
+                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87, "Q88": validate_q88}
     states = {}
     for task in sorted(tasks, key=lambda t: (t["priority"], t["id"])):
         missing_evidence = [p for p in task.get("evidence", []) if not (ROOT / p).is_file()]
