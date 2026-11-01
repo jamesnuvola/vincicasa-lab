@@ -1303,7 +1303,7 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
-            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87") and not validation_errors:
+            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87", "Q88") and not validation_errors:
                 status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],
