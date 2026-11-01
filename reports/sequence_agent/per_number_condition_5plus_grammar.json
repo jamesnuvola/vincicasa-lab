@@ -4,12 +4,12 @@
   "status": "VALIDATED_FINITE_GRAMMAR_COMPLETE",
   "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
   "source_archive": "data/storico_daily.csv",
-  "source_archive_sha256": "06e34cab2bcf7f8e686cb776b08ac5ea6c7fcaf164191fd52da68e8dd0fb7839",
-  "target_count": 3393,
+  "source_archive_sha256": "2260f71060984bd27baa1ec968971f9d51b59ed56b62af01253077ed2f164b73",
+  "target_count": 3394,
   "first_date": "2017-07-17",
-  "last_date": "2026-10-30",
+  "last_date": "2026-10-31",
   "minimum_prior_history": 50,
-  "scored_targets": 3343,
+  "scored_targets": 3344,
   "feature_count": 27,
   "features": [
     "freq_5",
@@ -681,9 +681,9 @@
   "formula_grammar": "all 5-feature equal-weight combinations",
   "scoring_rule": "per target, z-score each of the 27 features over numbers 1..40, then average each unordered 5-feature subset",
   "metrics_rows": 242190,
-  "target_ledger_rows": 3343,
+  "target_ledger_rows": 3344,
   "split_counts": {
-    "discovery": 2006,
+    "discovery": 2007,
     "validation": 669,
     "blind_oos": 668
   },
@@ -704,37 +704,46 @@
     {
       "formula_id": "P5_04_07_13_17_22",
       "features": "freq_100+freq_all+gap_sd+neighbor_pm1_history+lag_5",
-      "mean_number_hits_top5": 0.131437125748503,
-      "mean_number_hits_top10": 0.2682634730538922,
+      "mean_number_hits_top5": 0.1311377245508982,
+      "mean_number_hits_top10": 0.2679640718562874,
       "mean_number_hits_top20": 0.5134730538922155,
-      "mean_rank_of_actual_numbers": 20.156586826347304,
+      "mean_rank_of_actual_numbers": 20.15868263473054,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_04_07_13_18_22",
       "features": "freq_100+freq_all+gap_sd+neighbor_pm2_history+lag_5",
-      "mean_number_hits_top5": 0.13293413173652693,
-      "mean_number_hits_top10": 0.27095808383233533,
-      "mean_number_hits_top20": 0.5146706586826347,
-      "mean_rank_of_actual_numbers": 20.157784431137724,
+      "mean_number_hits_top5": 0.13263473053892216,
+      "mean_number_hits_top10": 0.27065868263473053,
+      "mean_number_hits_top20": 0.5149700598802395,
+      "mean_rank_of_actual_numbers": 20.158982035928144,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_04_06_07_13_16",
       "features": "freq_100+freq_500+freq_all+gap_sd+pair_count_with_last_draw",
-      "mean_number_hits_top5": 0.131437125748503,
-      "mean_number_hits_top10": 0.25389221556886227,
-      "mean_number_hits_top20": 0.5161676646706587,
-      "mean_rank_of_actual_numbers": 20.172754491017965,
+      "mean_number_hits_top5": 0.1311377245508982,
+      "mean_number_hits_top10": 0.25419161676646707,
+      "mean_number_hits_top20": 0.5164670658682635,
+      "mean_rank_of_actual_numbers": 20.169161676646706,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P5_06_07_13_16_20",
+      "features": "freq_500+freq_all+gap_sd+pair_count_with_last_draw+lag_2",
+      "mean_number_hits_top5": 0.1254491017964072,
+      "mean_number_hits_top10": 0.25269461077844313,
+      "mean_number_hits_top20": 0.5134730538922155,
+      "mean_rank_of_actual_numbers": 20.17185628742515,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_04_06_07_13_22",
       "features": "freq_100+freq_500+freq_all+gap_sd+lag_5",
-      "mean_number_hits_top5": 0.12694610778443113,
-      "mean_number_hits_top10": 0.2631736526946108,
-      "mean_number_hits_top20": 0.5164670658682635,
-      "mean_rank_of_actual_numbers": 20.17305389221557,
+      "mean_number_hits_top5": 0.12664670658682634,
+      "mean_number_hits_top10": 0.262874251497006,
+      "mean_number_hits_top20": 0.5167664670658683,
+      "mean_rank_of_actual_numbers": 20.175449101796406,
       "holm_p_max_endpoint_family": 1.0
     },
     {
@@ -742,53 +751,44 @@
       "features": "freq_100+freq_all+gap_sd+lag_2+lag_5",
       "mean_number_hits_top5": 0.12065868263473054,
       "mean_number_hits_top10": 0.25808383233532933,
-      "mean_number_hits_top20": 0.5182634730538922,
-      "mean_rank_of_actual_numbers": 20.17395209580838,
-      "holm_p_max_endpoint_family": 1.0
-    },
-    {
-      "formula_id": "P5_06_07_13_16_20",
-      "features": "freq_500+freq_all+gap_sd+pair_count_with_last_draw+lag_2",
-      "mean_number_hits_top5": 0.1254491017964072,
-      "mean_number_hits_top10": 0.25239520958083833,
-      "mean_number_hits_top20": 0.5134730538922155,
-      "mean_rank_of_actual_numbers": 20.17814371257485,
+      "mean_number_hits_top20": 0.5179640718562875,
+      "mean_rank_of_actual_numbers": 20.176047904191616,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_06_07_13_20_22",
       "features": "freq_500+freq_all+gap_sd+lag_2+lag_5",
-      "mean_number_hits_top5": 0.12634730538922156,
-      "mean_number_hits_top10": 0.2508982035928144,
-      "mean_number_hits_top20": 0.5167664670658683,
-      "mean_rank_of_actual_numbers": 20.180538922155687,
+      "mean_number_hits_top5": 0.12604790419161677,
+      "mean_number_hits_top10": 0.2502994011976048,
+      "mean_number_hits_top20": 0.517065868263473,
+      "mean_rank_of_actual_numbers": 20.179940119760477,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_06_07_13_16_18",
       "features": "freq_500+freq_all+gap_sd+pair_count_with_last_draw+neighbor_pm2_history",
-      "mean_number_hits_top5": 0.12125748502994012,
+      "mean_number_hits_top5": 0.12095808383233533,
       "mean_number_hits_top10": 0.25868263473053893,
-      "mean_number_hits_top20": 0.5191616766467065,
-      "mean_rank_of_actual_numbers": 20.186227544910178,
+      "mean_number_hits_top20": 0.5194610778443114,
+      "mean_rank_of_actual_numbers": 20.180239520958082,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_06_07_13_18_22",
       "features": "freq_500+freq_all+gap_sd+neighbor_pm2_history+lag_5",
       "mean_number_hits_top5": 0.1317365269461078,
-      "mean_number_hits_top10": 0.2616766467065868,
-      "mean_number_hits_top20": 0.5158682634730539,
-      "mean_rank_of_actual_numbers": 20.187724550898203,
+      "mean_number_hits_top10": 0.26137724550898206,
+      "mean_number_hits_top20": 0.5164670658682635,
+      "mean_rank_of_actual_numbers": 20.18562874251497,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_04_06_07_13_20",
       "features": "freq_100+freq_500+freq_all+gap_sd+lag_2",
-      "mean_number_hits_top5": 0.13263473053892216,
+      "mean_number_hits_top5": 0.13233532934131736,
       "mean_number_hits_top10": 0.25838323353293413,
-      "mean_number_hits_top20": 0.5179640718562875,
-      "mean_rank_of_actual_numbers": 20.190119760479043,
+      "mean_number_hits_top20": 0.518562874251497,
+      "mean_rank_of_actual_numbers": 20.187425149700598,
       "holm_p_max_endpoint_family": 1.0
     }
   ],
@@ -796,19 +796,19 @@
     {
       "formula_id": "P5_03_07_13_16_18",
       "features": "freq_50+freq_all+gap_sd+pair_count_with_last_draw+neighbor_pm2_history",
-      "mean_number_hits_top5": 0.14251497005988023,
+      "mean_number_hits_top5": 0.14281437125748503,
       "mean_number_hits_top10": 0.26467065868263473,
-      "mean_number_hits_top20": 0.5077844311377245,
-      "mean_rank_of_actual_numbers": 20.22245508982036,
+      "mean_number_hits_top20": 0.5080838323353294,
+      "mean_rank_of_actual_numbers": 20.220359281437126,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_03_04_06_09_18",
       "features": "freq_50+freq_100+freq_500+trend_10_vs_100+neighbor_pm2_history",
       "mean_number_hits_top5": 0.14251497005988023,
-      "mean_number_hits_top10": 0.25838323353293413,
+      "mean_number_hits_top10": 0.25778443113772453,
       "mean_number_hits_top20": 0.5005988023952096,
-      "mean_rank_of_actual_numbers": 20.447305389221558,
+      "mean_rank_of_actual_numbers": 20.45568862275449,
       "holm_p_max_endpoint_family": 1.0
     },
     {
@@ -816,26 +816,8 @@
       "features": "freq_50+freq_250+freq_all+gap_sd+neighbor_pm1_history",
       "mean_number_hits_top5": 0.14191616766467066,
       "mean_number_hits_top10": 0.2634730538922156,
-      "mean_number_hits_top20": 0.5092814371257485,
-      "mean_rank_of_actual_numbers": 20.30688622754491,
-      "holm_p_max_endpoint_family": 1.0
-    },
-    {
-      "formula_id": "P5_01_03_04_06_18",
-      "features": "freq_10+freq_50+freq_100+freq_500+neighbor_pm2_history",
-      "mean_number_hits_top5": 0.14191616766467066,
-      "mean_number_hits_top10": 0.25898203592814373,
-      "mean_number_hits_top20": 0.5008982035928143,
-      "mean_rank_of_actual_numbers": 20.41107784431138,
-      "holm_p_max_endpoint_family": 1.0
-    },
-    {
-      "formula_id": "P5_03_04_06_18_26",
-      "features": "freq_50+freq_100+freq_500+neighbor_pm2_history+recent_10",
-      "mean_number_hits_top5": 0.14191616766467066,
-      "mean_number_hits_top10": 0.25898203592814373,
-      "mean_number_hits_top20": 0.5008982035928143,
-      "mean_rank_of_actual_numbers": 20.41107784431138,
+      "mean_number_hits_top20": 0.5095808383233533,
+      "mean_rank_of_actual_numbers": 20.303592814371257,
       "holm_p_max_endpoint_family": 1.0
     },
     {
@@ -844,7 +826,7 @@
       "mean_number_hits_top5": 0.14191616766467066,
       "mean_number_hits_top10": 0.26137724550898206,
       "mean_number_hits_top20": 0.49550898203592814,
-      "mean_rank_of_actual_numbers": 20.470958083832336,
+      "mean_rank_of_actual_numbers": 20.477245508982037,
       "holm_p_max_endpoint_family": 1.0
     },
     {
@@ -853,34 +835,52 @@
       "mean_number_hits_top5": 0.14191616766467066,
       "mean_number_hits_top10": 0.26137724550898206,
       "mean_number_hits_top20": 0.49550898203592814,
-      "mean_rank_of_actual_numbers": 20.470958083832336,
+      "mean_rank_of_actual_numbers": 20.477245508982037,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P5_01_03_04_06_18",
+      "features": "freq_10+freq_50+freq_100+freq_500+neighbor_pm2_history",
+      "mean_number_hits_top5": 0.14161676646706586,
+      "mean_number_hits_top10": 0.25838323353293413,
+      "mean_number_hits_top20": 0.5008982035928143,
+      "mean_rank_of_actual_numbers": 20.419760479041916,
+      "holm_p_max_endpoint_family": 1.0
+    },
+    {
+      "formula_id": "P5_03_04_06_18_26",
+      "features": "freq_50+freq_100+freq_500+neighbor_pm2_history+recent_10",
+      "mean_number_hits_top5": 0.14161676646706586,
+      "mean_number_hits_top10": 0.25838323353293413,
+      "mean_number_hits_top20": 0.5008982035928143,
+      "mean_rank_of_actual_numbers": 20.419760479041916,
       "holm_p_max_endpoint_family": 1.0
     },
     {
       "formula_id": "P5_03_05_06_17_18",
       "features": "freq_50+freq_250+freq_500+neighbor_pm1_history+neighbor_pm2_history",
-      "mean_number_hits_top5": 0.14161676646706586,
+      "mean_number_hits_top5": 0.14131736526946106,
       "mean_number_hits_top10": 0.2562874251497006,
       "mean_number_hits_top20": 0.5059880239520959,
-      "mean_rank_of_actual_numbers": 20.33682634730539,
+      "mean_rank_of_actual_numbers": 20.334131736526945,
       "holm_p_max_endpoint_family": 1.0
     },
     {
-      "formula_id": "P5_05_06_07_12_18",
-      "features": "freq_250+freq_500+freq_all+gap_mean+neighbor_pm2_history",
-      "mean_number_hits_top5": 0.14161676646706586,
-      "mean_number_hits_top10": 0.26407185628742513,
-      "mean_number_hits_top20": 0.5032934131736527,
-      "mean_rank_of_actual_numbers": 20.37694610778443,
+      "formula_id": "P5_01_04_05_16_18",
+      "features": "freq_10+freq_100+freq_250+pair_count_with_last_draw+neighbor_pm2_history",
+      "mean_number_hits_top5": 0.14131736526946106,
+      "mean_number_hits_top10": 0.26497005988023953,
+      "mean_number_hits_top20": 0.505688622754491,
+      "mean_rank_of_actual_numbers": 20.355089820359282,
       "holm_p_max_endpoint_family": 1.0
     },
     {
-      "formula_id": "P5_03_05_07_17_23",
-      "features": "freq_50+freq_250+freq_all+neighbor_pm1_history+lag_10",
-      "mean_number_hits_top5": 0.14161676646706586,
-      "mean_number_hits_top10": 0.2625748502994012,
-      "mean_number_hits_top20": 0.4994011976047904,
-      "mean_rank_of_actual_numbers": 20.43562874251497,
+      "formula_id": "P5_04_05_16_18_26",
+      "features": "freq_100+freq_250+pair_count_with_last_draw+neighbor_pm2_history+recent_10",
+      "mean_number_hits_top5": 0.14131736526946106,
+      "mean_number_hits_top10": 0.26497005988023953,
+      "mean_number_hits_top20": 0.505688622754491,
+      "mean_rank_of_actual_numbers": 20.355089820359282,
       "holm_p_max_endpoint_family": 1.0
     }
   ],
@@ -908,7 +908,7 @@
       "reports/sequence_agent/per_number_condition_5plus_formula_metrics_part_08.csv"
     ],
     "metrics_manifest": "reports/sequence_agent/per_number_condition_5plus_formula_metrics_manifest.json",
-    "metrics_parts_manifest_sha256": "524c5c65494cf97fdf3dd8c5219b43eaff0e0794608dc945aaefdc6a15614330"
+    "metrics_parts_manifest_sha256": "71304e425a3e9f8caf374b016cb779a874294dcf7b0fe48feb4af8415dd352af"
   },
   "metrics_storage": "chunked_csv_parts",
   "metrics_parts": [
@@ -918,8 +918,8 @@
       "rows": 30000,
       "row_start_inclusive": 0,
       "row_end_exclusive": 30000,
-      "bytes": 8095273,
-      "sha256": "a323a783f8aba25a4c60c691a9275ab35998e57f8c401a01d3bb6d0b2bbe5466"
+      "bytes": 8083241,
+      "sha256": "f38cb9ae75c6dc6ef366b85f32ac957e640290eb87aff8de66c33afceca6245c"
     },
     {
       "part_index": 1,
@@ -927,8 +927,8 @@
       "rows": 30000,
       "row_start_inclusive": 30000,
       "row_end_exclusive": 60000,
-      "bytes": 8156366,
-      "sha256": "334bb75a9a470c3c92adec1b60d7916a902b4f0fedbd1bcec2346a584b01fe53"
+      "bytes": 8145897,
+      "sha256": "efa20a263f5f080378f69dd8fcfc7c4d37e4891727e4037c00e5b0ef9dd4eae6"
     },
     {
       "part_index": 2,
@@ -936,8 +936,8 @@
       "rows": 30000,
       "row_start_inclusive": 60000,
       "row_end_exclusive": 90000,
-      "bytes": 8107413,
-      "sha256": "45671d8a57e843d22cbf74d083610cc0adb89b87ba6c82cbe9ebbbed79e67112"
+      "bytes": 8101366,
+      "sha256": "53af06246150536df7eecd44421189b29e635b4e44b9eddbf59a986f0907df14"
     },
     {
       "part_index": 3,
@@ -945,8 +945,8 @@
       "rows": 30000,
       "row_start_inclusive": 90000,
       "row_end_exclusive": 120000,
-      "bytes": 7794836,
-      "sha256": "2abe6fe6b7879bfba7ac1813f0ea542e830e99eab5fc80ae29115f3cbc8a8029"
+      "bytes": 7795057,
+      "sha256": "28089985e9a6c4977414f9eee8d6e22d8c3ad5e4d39a0ac82e8aecef56a8ede0"
     },
     {
       "part_index": 4,
@@ -954,8 +954,8 @@
       "rows": 30000,
       "row_start_inclusive": 120000,
       "row_end_exclusive": 150000,
-      "bytes": 7902224,
-      "sha256": "bc019d73f9f89ca3cfd7303a04b5f9e8156356b1e58dbb2d80f054bd1ef42cab"
+      "bytes": 7901906,
+      "sha256": "be6aeecadd1d5e96d4bd8e34010b067655268e619eb2052b00faed0dac9988fb"
     },
     {
       "part_index": 5,
@@ -963,8 +963,8 @@
       "rows": 30000,
       "row_start_inclusive": 150000,
       "row_end_exclusive": 180000,
-      "bytes": 7918818,
-      "sha256": "b8d10e509c9c1e67757d47d5f28eed109872b0be0d50415f9d8356d6cbc2832b"
+      "bytes": 7918150,
+      "sha256": "bf57ae64179cb56ab4dfd8457aeab0e5813f3ad5aa537ecdcf1816908f459da3"
     },
     {
       "part_index": 6,
@@ -972,8 +972,8 @@
       "rows": 30000,
       "row_start_inclusive": 180000,
       "row_end_exclusive": 210000,
-      "bytes": 7922276,
-      "sha256": "767dd715cba4489761092883a00d35148d38446a8f278ea5decfa7e8f752cc4c"
+      "bytes": 7921991,
+      "sha256": "47a1057170972c71cf1790c90f0656897ea649d93debc02d0a82c839342c9c40"
     },
     {
       "part_index": 7,
@@ -981,8 +981,8 @@
       "rows": 30000,
       "row_start_inclusive": 210000,
       "row_end_exclusive": 240000,
-      "bytes": 7990851,
-      "sha256": "845451b870125b64dfad4092374ba1a40e02ff9517cc2091a51ef5b90e13f324"
+      "bytes": 7989959,
+      "sha256": "c803acb795f3beaad6e37ded2b6b116e0e73fc9d8f8a24abf9bc6e135c8c5f0c"
     },
     {
       "part_index": 8,
@@ -990,8 +990,8 @@
       "rows": 2190,
       "row_start_inclusive": 240000,
       "row_end_exclusive": 242190,
-      "bytes": 581128,
-      "sha256": "097fbeec4e1d9042552d1680d88c77c574c2b380ac7963f86e8799a5e668be95"
+      "bytes": 580644,
+      "sha256": "eca254b0db8374a436cc2b36e2b0a742cf1b0ac90a9a5a3a6890213e5893ecd2"
     }
   ]
 }

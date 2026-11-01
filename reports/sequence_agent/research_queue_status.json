@@ -1,5 +1,5 @@
 {
-  "generated_at_utc": "2026-10-31T18:26:06.868337+00:00",
+  "generated_at_utc": "2026-11-01T20:08:25.464644+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
@@ -221,12 +221,20 @@
       "id": "Q87",
       "priority": 84,
       "title": "Exhaustively evaluate all seven-feature equal-weight combinations with distributed shards",
-      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "Q87 archive/target count mismatch",
+        "Q87 source archive SHA mismatch",
+        "Q87 archive dates mismatch",
+        "Q87 chronological split counts mismatch",
+        "Q87 output row counts mismatch",
+        "Q87 target ledger row count mismatch",
+        "Q87 target ledger date coverage/order mismatch"
+      ],
       "acceptance_criteria": [
         "evaluate all 888,030 unique unordered seven-feature equal-weight combinations from the 27 registered prior-only features",
         "use six deterministic shards of 148,005 formulas each and 1,024-formula batches with contiguous manifests and no gaps or overlaps",
@@ -326,7 +334,18 @@
         "missing evidence: reports/sequence_agent/per_number_condition_8plus_formula_metrics_manifest.json",
         "missing evidence: reports/sequence_agent/per_number_condition_8plus_target_ledger.csv"
       ],
-      "acceptance_criteria": []
+      "acceptance_criteria": [
+        "evaluate all 2,220,075 unique unordered eight-feature equal-weight combinations from the 27 registered prior-only features",
+        "use 15 deterministic shards of 148,005 formulas each and 1,024-formula batches with contiguous manifests and no gaps or overlaps",
+        "rank all 40 numbers for every target with at least 50 prior draws using only the strict prefix before that target",
+        "produce a per-target ledger reconciling actual quintet, immediate prior cutoff, all 27 single-feature ranks and the best retrospective eight-feature formula",
+        "produce 6,660,225 formula-by-split metric rows across chronological discovery, validation and blind OOS splits",
+        "apply global Holm-Bonferroni across the complete 19,980,675 formula×split×endpoint test family",
+        "persist chunked metrics with per-part SHA-256, byte count, row range and a manifest; reconcile all 15 shards without duplicate or missing formula IDs",
+        "report the uniform number-rank baseline and preserve exploratory/null results without automatic promotion",
+        "document that this is a finite eight-feature equal-weight grammar; weighted, conditional, nonlinear, interaction and higher-order formula families remain open",
+        "preserve immutable freezes and require human review/integration before Q88 is marked COMPLETE"
+      ]
     }
   ],
   "guardrail": "Evidence presence is not validation. Valid exploratory/null results can complete analytical tasks; the cycle remains incomplete while the prospective gate lacks the registered minimum. No automatic model promotion."
