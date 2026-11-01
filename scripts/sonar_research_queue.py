@@ -1310,7 +1310,7 @@ def main():
             "status": status, "depends_on": task.get("depends_on", []),
             "missing_evidence": missing_evidence,
             "validation_errors": validation_errors,
-            "acceptance_criteria": task.get("acceptance", [])
+            "acceptance_criteria": task.get("acceptance", task.get("acceptance_criteria", []))
         }
 
     ready = [s["id"] for s in states.values() if s["status"] == "READY"]
