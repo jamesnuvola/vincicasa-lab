@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-REGISTRATION-2026-11-01",
+  "task_id": "Q89",
+  "status": "REGISTERED_NOT_RUN",
+  "registration_commit": "a11de9e6bc29660b4bce9eecb8588761873db9ce",
+  "spec_path": "reports/sequence_agent/adaptive_novelty_rule_anticipation_spec.json",
+  "backlog_path": "reports/sequence_agent/research_backlog.json",
+  "baseline_feature_count": 27,
+  "proposed_new_feature_count": 32,
+  "proposed_total_feature_count": 59,
+  "feature_families": [
+    "exponential_recency",
+    "gap_dynamics_hazard",
+    "cooccurrence_graph_novelty",
+    "rank_trajectory_consensus",
+    "residual_surprise",
+    "draw_regime_transition_affinity"
+  ],
+  "research_compute_budget_shares": {
+    "novel_families": 0.4,
+    "legacy_families_under_drift": 0.25,
+    "residual_complementarity_interactions": 0.2,
+    "random_controls": 0.1,
+    "unstructured_exploration": 0.05
+  },
+  "archive_reconciliation": {
+    "status": "REQUIRED_BEFORE_EXECUTION",
+    "authority": "current canonical main archive",
+    "immutable_target_freeze": "2026-10-25"
+  },
+  "validation_gates": [
+    "feature lineage and strict prior-only unit tests",
+    "nested walk-forward and chronological split validation",
+    "multiple-testing correction",
+    "chunked output persistence and read-back SHA verification",
+    "exact-head CI",
+    "human review/integration"
+  ],
+  "guardrails": [
+    "novelty changes search allocation only, never number scores",
+    "retrospective oracle is diagnostic only, never ex-ante forecast",
+    "no automatic model promotion",
+    "no automatic PR merge",
+    "no immutable freeze overwritten",
+    "finite grammar boundary explicitly documented"
+  ]
+}
