@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q89",
+  "title": "Adaptive novelty priority and rule anticipation",
+  "status": "REGISTERED_NOT_RUN",
+  "registered_at_utc": "2026-11-01",
+  "purpose": "Expand the prior-only per-number feature catalog beyond the existing 27-feature grammar, detect historical regime drift, and test whether the success of each rule can be anticipated before the target draw. Retrospective oracle rules are diagnostic labels only, never prospective forecasts.",
+  "baseline_feature_count": 27,
+  "proposed_new_feature_count": 32,
+  "proposed_total_feature_count": 59,
+  "new_feature_families": [
+    {
+      "family": "exponential_recency",
+      "priority": "exploration",
+      "features": [
+        "ewma_hit_hl_3",
+        "ewma_hit_hl_7",
+        "ewma_hit_hl_14",
+        "ewma_hit_hl_30",
+        "ewma_hit_hl_60",
+        "ewma_acceleration_3_14",
+        "ewma_acceleration_7_30"
+      ],
+      "definition": "Per-number exponentially decayed hit rates using only prior draws; acceleration is the difference between normalized EWMA rates."
+    },
+    {
+      "family": "gap_dynamics_hazard",
+      "priority": "exploration",
+      "features": [
+        "last_gap_vs_median",
+        "last_gap_robust_z",
+        "gap_cv",
+        "gap_slope_recent",
+        "gap_hazard_empirical",
+        "gap_hazard_residual"
+      ],
+      "definition": "Last inter-arrival gap relative to prior per-number gap distribution, robust dispersion/trend, smoothed discrete hazard and hazard residual. Right-censoring and small-sample shrinkage must be explicit."
+    },
+    {
+      "family": "cooccurrence_graph_novelty",
+      "priority": "exploration",
+      "features": [
+        "pair_lift_recent_last_draw",
+        "pair_pmi_recent_last_draw",
+        "cooccurrence_strength_recent",
+        "cooccurrence_surprise_recent",
+        "neighbor_balance_pm1_recent",
+        "neighbor_balance_pm2_recent"
+      ],
+      "definition": "Recent pair lift/PMI against members of the immediately preceding draw, recent-versus-long-run co-occurrence change, and adjusted local-neighbour density."
+    },
+    {
+      "family": "rank_trajectory_consensus",
+      "priority": "exploration",
+      "features": [
+        "rank_velocity_5_20",
+        "rank_acceleration_5_20_50",
+        "rank_volatility_20",
+        "feature_disagreement_27",
+        "rank_consensus_27"
+      ],
+      "definition": "Prior-only trajectories of each number's rank under the baseline 27 features, including velocity, acceleration, rank volatility, disagreement and robust consensus. Historical ranks must themselves be reconstructed with strict historical prefixes."
+    },
+    {
+      "family": "residual_surprise",
+      "priority": "exploration",
+      "features": [
+        "novelty_residual_20",
+        "novelty_residual_50"
+      ],
+      "definition": "Standardized deviations of recent per-number hit counts from a frozen/shrunk prior-only expectation; estimate dispersion from prior data and avoid using target outcomes."
+    },
+    {
+      "family": "draw_regime_transition_affinity",
+      "priority": "exploration",
+      "features": [
+        "regime_sum_affinity",
+        "regime_span_affinity",
+        "regime_parity_affinity",
+        "regime_entropy_affinity",
+        "transition_profile_affinity",
+        "conditional_frequency_prev_draw_regime"
+      ],
+      "definition": "Per-number historical affinity conditional on observable characteristics of the immediately preceding draw and prior draw-regime transitions. Regime bins and shrinkage are learned on discovery only, then frozen for validation/blind OOS."
+    }
+  ],
+  "feature_engineering_guardrails": [
+    "Every feature for target i must be computed exclusively from draws with index < i.",
+    "Historical rank-trajectory features must reconstruct each historical rank using the prefix available at that historical time; no full-history backfill.",
+    "EWMA half-lives, smoothing constants, robust estimators and hazard priors are registered before validation and blind OOS.",
+    "Conditional regime cutpoints are learned on discovery only and frozen thereafter.",
+    "Feature lineage, missingness, effective sample size and pairwise redundancy must be reported.",
+    "New features are hypotheses, not assumed improvements; preserve null and adverse outcomes."
+  ],
+  "adaptive_novelty_priority": {
+    "purpose": "Allocate research compute so legacy high-performing families do not monopolize search; do not add a novelty bonus to number scores.",
+    "fixed_compute_budget_shares": {
+      "novel_feature_families_and_unseen_formula_structures": 0.4,
+      "previously_strong_families_retested_under_drift": 0.25,
+      "residual_complementarity_and_cross_family_interactions": 0.2,
+      "random_or_uniform_search_controls": 0.1,
+      "unstructured_exploration_reserve": 0.05
+    },
+    "rule": "Shares govern search allocation only. Candidate number rankings remain generated by their registered formula scores; no formula receives an artificial rank boost because it is new.",
+    "novelty_definition": "A strategy is novel when its feature lineage, formula structure, interaction pattern or conditional regime is not equivalent to an already catalogued strategy under preregistered equivalence tolerances.",
+    "anti_dominance": "Report results separately by family and novelty class; retain Pareto-efficient strategies on blind-OOS performance, stability, complementarity and calibration rather than selecting only the most frequent historical winners."
+  },
+  "formula_grammar_expansion": [
+    "Single-feature transforms: percentile rank, robust z-score, winsorized z-score and monotone rank transforms.",
+    "Weighted linear combinations with weights drawn from a finite, preregistered simplex grid; weights selected on discovery only.",
+    "Pairwise interactions: products, signed differences, ratios with denominator floors and residualized interactions.",
+    "Conditional/piecewise rules with discovery-only quantile cutpoints, frozen before validation and blind OOS.",
+    "Bounded depth-2 decision rules and selected 4+ feature combinations across both baseline and new features.",
+    "Formula batches must be deterministic, contiguous, resumable and fully reconciled; compute budgets may pause but never silently truncate a declared universe."
+  ],
+  "rule_anticipation_protocol": {
+    "unit": "rule × target",
+    "pre_target_information": "Only prior rule outcomes, prior-only feature states, rule lineage, rolling rank stability, recent drift and prior regime similarity.",
+    "outcomes_recorded_after_target": [
+      "number_hits_top5",
+      "number_hits_top10",
+      "number_hits_top20",
+      "mean_actual_number_rank",
+      "target_hit_top5_at_least_1",
+      "target_hit_top10_at_least_2"
+    ],
+    "prediction": "For each eligible rule, emit calibrated probabilities for each preregistered outcome before scoring the target.",
+    "calibration_metrics": [
+      "Brier score",
+      "log loss",
+      "calibration slope/intercept",
+      "reliability bins",
+      "precision at fixed coverage",
+      "false-alarm rate",
+      "regret versus retrospective oracle upper bound"
+    ],
+    "drift_metrics": [
+      "rolling performance CUSUM",
+      "Page-Hinkley change signal",
+      "feature-distribution PSI or robust alternative",
+      "family-share drift",
+      "rank-volatility change",
+      "novelty/residual activation"
+    ],
+    "unexpected_success": "A target where realized rule utility is high but its pre-target success probability was low; log it as a diagnostic event and investigate only using pre-target state, without relabelling the forecast.",
+    "unexpected_failure": "A target where success was predicted but the rule failed; retain it and diagnose the same way.",
+    "oracle_policy": "Best-per-target formula/rule is explicitly retrospective and serves only as an upper-bound diagnostic; never mix oracle labels into ex-ante forecast metrics.",
+    "chronological_training": "Nested walk-forward: model/threshold/feature selection at target i uses only targets < i. Discovery, validation and blind OOS remain chronological; blind OOS is never used to tune."
+  },
+  "statistical_controls": [
+    "Compare each new family against uniform ranking, each of the 27 baseline single features, and preregistered baseline formula families on identical targets.",
+    "Use paired target-level comparisons and suitable conditional/randomization nulls that preserve five winning numbers per draw.",
+    "Register the complete feature×formula×split×endpoint×threshold test family and apply Holm-Bonferroni or a justified hierarchical correction.",
+    "Report effect sizes and confidence intervals, not p-values alone.",
+    "Separate discovery, validation and untouched blind OOS; any post-hoc rule becomes a new hypothesis requiring a new prospective or later chronological holdout.",
+    "No automatic promotion; prospective evidence and human review remain mandatory."
+  ],
+  "expected_outputs": [
+    "reports/sequence_agent/adaptive_novelty_feature_catalog.json",
+    "reports/sequence_agent/adaptive_novelty_formula_metrics_manifest.json",
+    "reports/sequence_agent/adaptive_novelty_rule_anticipation_metrics.csv",
+    "reports/sequence_agent/adaptive_novelty_target_ledger.csv",
+    "reports/sequence_agent/adaptive_novelty_regime_drift.json",
+    "reports/sequence_agent/adaptive_novelty_checkpoint_2026-11-01.json"
+  ],
+  "acceptance_criteria": [
+    "All 32 new features are implemented with documented formulas, prior-only lineage and strict historical rank reconstruction where applicable.",
+    "All 59 features are evaluated on identical walk-forward targets and compared against the 27-feature baseline.",
+    "The fixed 40/25/20/10/5 research allocation is logged and reconciled; it changes search allocation only, never number scores.",
+    "At least one finite higher-complexity grammar is fully declared, batch-manifested and evaluated without silent truncation.",
+    "Per-rule/per-target ledger records cutoff, pre-target success probabilities, realized outcomes, ranks of all five winning numbers, regime/drift signals and novelty class.",
+    "Unexpected successes and failures are retained and diagnosed without changing their original pre-target predictions.",
+    "All model selection is nested walk-forward; discovery-only thresholds and weights are frozen before validation and blind OOS.",
+    "Metrics include calibration, false alarms, paired lift, complementarity, stability and corrected multiple-testing results.",
+    "Canonical archive SHA, date and draw count are reconciled; immutable target-2026-10-25 freeze is preserved.",
+    "Outputs are persisted in deterministic chunks, re-read and verified; exact-head CI passes; human review/integration is required before task completion.",
+    "Finite grammar boundaries and null findings are explicit; no claim that all mathematical formulas have been exhausted."
+  ],
+  "guardrails": [
+    "No target leakage.",
+    "No retrospective oracle counted as an ex-ante prediction.",
+    "No novelty bonus added to number ranking scores.",
+    "No automatic PR merge or model promotion.",
+    "No overwrite/reconstruction of immutable prospective freezes."
+  ]
+}
