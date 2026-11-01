@@ -8,9 +8,9 @@
     "chronological_validation_required": true,
     "minimum_complete_oos_cases": 100,
     "preferred_complete_oos_cases": 200,
-    "status_rules": "A task is complete only when its declared evidence artifact exists and passes structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered gate minimum (currently 200 complete prospective paired targets; 200 preferred) and registered criteria are met. Human review/integration is required before Q80-Q87 is marked COMPLETE; passing automated validators alone leaves each VALIDATED_PENDING_HUMAN_REVIEW.",
+    "status_rules": "A task is complete only when its declared evidence artifacts exist and pass structural, cutoff/leakage, baseline, split and multiple-testing validation. A valid null result completes an analytical task; promotion remains incomplete until the registered prospective gate minimum is met. Human review/integration is required before Q80-Q90 is marked COMPLETE; automated validation alone leaves research tasks VALIDATED_PENDING_HUMAN_REVIEW.",
     "strategy_catalog_policy": "Catalog occasional, intermittent, conditional, complementary, antagonistic, retrospective and null strategies; keep ex-ante and retrospective evidence separate. Formula-universe claims must name the finite grammar explored.",
-    "archive_freshness": "As of 2026-10-30, canonical main contains 3,392 verified draws through 2026-10-29 (latest 1,8,17,27,36). The research branch is synchronized to this exact archive; Q80-Q86 chronological outputs must be recomputed and revalidated on this cutoff before being treated as current. Immutable target-2026-10-25 freeze remains append-only."
+    "archive_freshness": "Research branches may lag canonical main. Before every Q80-Q90 evaluation, reconcile the branch archive to the current canonical main archive by blob SHA, draw count and last date; recompute all affected walk-forward outputs from the refreshed archive. Never overwrite or reconstruct the immutable target-2026-10-25 freeze."
   },
   "tasks": [
     {
@@ -258,7 +258,11 @@
         "measure equivalence, redundancy, complementarity on paired misses, antagonism and marginal contribution across strategies",
         "use chronological discovery/validation/blind OOS splits, registered multiple-testing correction and suitable conditional nulls",
         "retain failed/null strategies; no automatic promotion; never overwrite immutable freezes",
-        "report latest canonical archive date/blob SHA and document the finite grammar boundary without claiming all mathematical formulas are exhausted"
+        "report latest canonical archive date/blob SHA and document the finite grammar boundary without claiming all mathematical formulas are exhausted",
+        "for every target, distinguish rules known before the target from retrospective oracle rules; never count oracle selection as ex-ante performance",
+        "record rule novelty, family drift, performance change points, rank trajectories and pre-target conditions that could distinguish an emerging rule from a previously dominant family",
+        "identify and preserve unexpected successes/failures where realized rule outcome differs from pre-target probability; diagnose without rewriting the original forecast",
+        "report research allocation by rule family so legacy frequent winners cannot monopolize exploration; allocation must not artificially alter number ranks"
       ],
       "kind": "analysis"
     },
@@ -356,6 +360,64 @@
         "document that this is a finite eight-feature equal-weight grammar; weighted, conditional, nonlinear, interaction and higher-order formula families remain open",
         "preserve immutable freezes and require human review/integration before Q88 is marked COMPLETE"
       ]
+    },
+    {
+      "id": "Q89",
+      "priority": 89,
+      "title": "Expand to 59 prior-only per-number features and anticipate rule success under adaptive novelty priority",
+      "depends_on": [
+        "Q00",
+        "Q84",
+        "Q85"
+      ],
+      "evidence": [
+        "reports/sequence_agent/adaptive_novelty_rule_anticipation_spec.json",
+        "reports/sequence_agent/adaptive_novelty_feature_catalog.json",
+        "reports/sequence_agent/adaptive_novelty_formula_metrics_manifest.json",
+        "reports/sequence_agent/adaptive_novelty_rule_anticipation_metrics.csv",
+        "reports/sequence_agent/adaptive_novelty_target_ledger.csv",
+        "reports/sequence_agent/adaptive_novelty_regime_drift.json",
+        "reports/sequence_agent/adaptive_novelty_checkpoint_2026-11-01.json"
+      ],
+      "acceptance": [
+        "register and implement all 32 new features in six families, expanding the baseline from 27 to 59; every feature is prior-only with explicit lineage and missingness handling",
+        "reconstruct historical ranks using the strict prefix available at each historical time; no full-history backfill",
+        "compare all new feature families against the 27-feature baseline on identical walk-forward targets",
+        "apply fixed research compute allocation 40% novel families, 25% previously strong families under drift, 20% residual/complementarity/interactions, 10% random controls and 5% unstructured exploration; this allocation never changes number-ranking scores",
+        "evaluate a finite, declared higher-complexity grammar including weighted combinations, nonlinear transforms, pairwise interactions and discovery-frozen conditional thresholds in deterministic resumable batches",
+        "predict rule success before each target from prior rule outcomes and prior-only state; store calibrated probabilities for preregistered endpoints",
+        "record per-rule/per-target cutoff, all five actual-number ranks, pre-target probabilities, realized outcomes, novelty class and drift signals",
+        "retain unexpected successes and failures and diagnose them without changing original forecasts or treating retrospective oracle choices as forecasts",
+        "use nested chronological walk-forward, discovery-only tuning, untouched blind OOS, paired comparisons, suitable conditional nulls and Holm or justified hierarchical multiple-testing correction",
+        "report Brier/log loss, calibration, false alarms, paired lift, complementarity, stability, effect sizes and confidence intervals",
+        "reconcile canonical archive SHA/date/count and preserve immutable target-2026-10-25 freeze",
+        "persist deterministic chunks, re-read and verify every artifact, pass exact-head CI and require human review/integration; no automatic promotion or PR merge",
+        "document finite grammar limits and retain null/adverse results without claiming all mathematical formulas are exhausted"
+      ],
+      "kind": "analysis"
+    },
+    {
+      "id": "Q90",
+      "priority": 90,
+      "title": "Build adaptive ex-ante rule selector with novelty, drift and complementarity controls",
+      "depends_on": [
+        "Q89"
+      ],
+      "evidence": [
+        "reports/sequence_agent/adaptive_rule_selector_spec.json",
+        "reports/sequence_agent/adaptive_rule_selector_walkforward.json",
+        "reports/sequence_agent/adaptive_rule_selector_target_ledger.csv",
+        "reports/sequence_agent/adaptive_rule_selector_checkpoint.json"
+      ],
+      "acceptance": [
+        "select one or a calibrated ensemble of rules before each target using only prior data and Q89's validated rule-anticipation evidence",
+        "compare adaptive selection with fixed best-discovery rule, fixed family baseline, uniform ranking and random controls on identical chronological targets",
+        "include a controlled exploration path for novel families and a drift-triggered reduction in stale-rule reliance; do not award score bonuses merely for novelty",
+        "evaluate selection quality, calibration, realized ranking utility, missed-success rate, false activation, stability and regret versus retrospective oracle upper bound",
+        "use nested walk-forward with no blind OOS tuning and preserve all frozen forecasts",
+        "require prospective shadow evaluation and the registered minimum paired OOS cases before any promotion; human review/integration mandatory"
+      ],
+      "kind": "analysis"
     }
   ]
 }

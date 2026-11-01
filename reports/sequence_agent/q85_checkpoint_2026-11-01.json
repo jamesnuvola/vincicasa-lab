@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q85",
+  "status": "ARCHIVE_SYNCED_RECOMPUTE_PENDING",
+  "checkpoint_date": "2026-11-01",
+  "branch": "research/adaptive-novelty-rule-anticipation-20261101",
+  "canonical_archive_blob_sha": "8082ec0b376e7595733917e89544a08b209ca9b4",
+  "research_archive_blob_sha": "8082ec0b376e7595733917e89544a08b209ca9b4",
+  "draw_count": 3394,
+  "first_date": "2017-07-17",
+  "last_date": "2026-10-31",
+  "latest_quintet": [
+    10,
+    20,
+    30,
+    34,
+    36
+  ],
+  "verified": {
+    "exact_byte_match": true,
+    "append_only_prefix": true,
+    "appended_draw_count": 1,
+    "readback_sha": "8082ec0b376e7595733917e89544a08b209ca9b4"
+  },
+  "pending": [
+    "recompute all affected chronological outputs",
+    "refresh archive-bound Q87/Q88 manifests and ledgers",
+    "verify immutable target-2026-10-25 freeze path/checksum",
+    "persist and read back all output artifacts",
+    "exact-head CI",
+    "human review/integration"
+  ],
+  "guardrails": [
+    "no PR merge",
+    "no model promotion",
+    "no freeze overwrite",
+    "strict prior-only features",
+    "do not infer Q88 shard completion from registered shard manifest"
+  ]
+}
