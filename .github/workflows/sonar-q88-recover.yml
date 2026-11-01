@@ -1,0 +1,75 @@
+name: SONAR Q88 Recovery from Existing Shards
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: "Previously completed Q88 shard workflow run"
+        required: false
+        default: "41225908689"
+        type: string
+  push:
+    branches:
+      - research/per-number-condition-grammar-20261026
+    paths:
+      - ".github/workflows/sonar-q88-recover.yml"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: sonar-q88-recovery
+  cancel-in-progress: false
+jobs:
+  recover-aggregate-persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/per-number-condition-grammar-20261026
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Download the 15 already-completed Q88 shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sonar-q88-shard-*
+          merge-multiple: true
+          path: reports/sequence_agent/q88_shards
+          run-id: ${{ inputs.source_run_id || '41225908689' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify all 15 shard triplets are present
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path("reports/sequence_agent/q88_shards")
+          expected = [f"shard_{i}_{suffix}" for i in range(15) for suffix in
+                      ("metrics.csv", "target_ledger.csv", "report.json")]
+          missing = [name for name in expected if not (root / name).is_file()]
+          if missing:
+              raise SystemExit("Q88_RECOVERY_BLOCKED: missing shard outputs: " + ", ".join(missing[:30]))
+          print("Q88_RECOVERY_SHARDS_VERIFIED: 15 shards, 45 files")
+          PY
+      - name: Aggregate all Q88 shards and apply global Holm correction
+        run: python scripts/aggregate_sonar_q88_shards.py
+      - name: Run fail-closed Q88 queue and evidence validators
+        run: python scripts/sonar_research_queue.py
+      - name: Persist Q88 outputs through Git Data API and verify exact committed bytes
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q88_outputs.py
+      - name: Request CI on the newly persisted exact branch head
+        if: ${{ steps.persist.outputs.commit_created == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"research/per-number-condition-grammar-20261026\"}"
