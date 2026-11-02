@@ -1,3 +1,6 @@
+import sys
+from pathlib import Path
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import numpy as np
 import sonar_adaptive_novelty_rule_anticipation as q
 def test_schema(): assert len(q.NEW)==32 and len(q.NAMES)==59 and len(set(q.NAMES))==59
