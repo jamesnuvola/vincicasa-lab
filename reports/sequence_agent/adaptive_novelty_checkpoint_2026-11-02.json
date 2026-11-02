@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q89",
+  "status": "ENGINE_IMPLEMENTED_CI_PENDING",
+  "checkpoint_date": "2026-11-02",
+  "branch": "research/adaptive-novelty-rule-anticipation-20261101",
+  "implementation_commit": "3303f5e06148827cbb2014cc23c53af87932113b",
+  "source_path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+  "test_path": "tests/test_sonar_adaptive_novelty_rule_anticipation.py",
+  "workflow_path": ".github/workflows/sonar-q89-adaptive-novelty.yml",
+  "canonical_archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "8082ec0b376e7595733917e89544a08b209ca9b4",
+    "draw_count": 3394,
+    "last_date": "2026-10-31"
+  },
+  "scope": {
+    "baseline_features": 27,
+    "new_feature_families": 6,
+    "new_features": 32,
+    "total_features": 59,
+    "walk_forward_min_prior_draws": 50,
+    "expected_scored_targets": 3344,
+    "expected_target_ledger_rows": 197296,
+    "expected_feature_metrics_rows": 59
+  },
+  "implemented": [
+    "EWMA half-life hit features and accelerations",
+    "gap median/MAD/CV/slope and shrunk hazard",
+    "last-draw cooccurrence lift/PMI, strength and surprise",
+    "strict historical-prefix cached baseline rank trajectories",
+    "20/50-draw residual surprise",
+    "fixed-bin previous draw regime affinities",
+    "per-feature ranks for all five winning numbers and top5/top10/top20 outcomes"
+  ],
+  "gates": {
+    "compile_and_unit_tests": "PENDING",
+    "workflow_run": "PENDING",
+    "output_validator": "PENDING",
+    "persisted_artifact_readback": "PENDING",
+    "exact_head_ci": "PENDING",
+    "human_review": "PENDING"
+  },
+  "limitations": [
+    "This initial Q89 pass computes feature ranking and descriptive target ledger only; it is not yet calibrated ex-ante rule success probability forecasting.",
+    "Finite formula grammar evaluation and regime drift report are not yet implemented.",
+    "The archive freeze dated 2026-10-25 remains immutable."
+  ],
+  "acceptance_pending": [
+    "inspect and correct any CI failure",
+    "verify 197296 target ledger rows and chronology cutoffs",
+    "verify each feature is strict prior-only and lineage/missingness/ESS",
+    "add nested walk-forward rule anticipation calibration and false alarm/regret metrics",
+    "declare and evaluate finite higher-complexity formula grammar",
+    "persist chunked output, exact readback and SHA",
+    "exact-head CI pass and human review"
+  ]
+}
