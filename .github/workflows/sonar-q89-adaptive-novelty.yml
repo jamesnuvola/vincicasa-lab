@@ -1,0 +1,47 @@
+name: SONAR Q89 Adaptive Novelty
+on:
+ workflow_dispatch:
+ push:
+  branches: ["research/adaptive-novelty-rule-anticipation-20261101"]
+  paths: ["scripts/sonar_adaptive_novelty_rule_anticipation.py","tests/test_sonar_adaptive_novelty_rule_anticipation.py","data/storico_daily.csv",".github/workflows/sonar-q89-adaptive-novelty.yml"]
+permissions: {contents: read}
+concurrency: {group: sonar-q89-adaptive-novelty, cancel-in-progress: false}
+jobs:
+ q89:
+  runs-on: ubuntu-latest
+  timeout-minutes: 360
+  steps:
+   - uses: actions/checkout@v4
+     with: {ref: research/adaptive-novelty-rule-anticipation-20261101}
+   - uses: actions/setup-python@v5
+     with: {python-version: "3.12"}
+   - run: pip install numpy pytest
+   - run: python -m py_compile scripts/sonar_adaptive_novelty_rule_anticipation.py tests/test_sonar_adaptive_novelty_rule_anticipation.py
+   - run: cd tests && pytest -q test_sonar_adaptive_novelty_rule_anticipation.py
+   - run: python scripts/sonar_adaptive_novelty_rule_anticipation.py
+   - name: Validate outputs
+     run: |
+      python - <<'PY'
+      import csv,json
+      from pathlib import Path
+      p=Path("reports/sequence_agent")
+      c=json.loads((p/"adaptive_novelty_feature_catalog.json").read_text())
+      m=json.loads((p/"adaptive_novelty_formula_metrics_manifest.json").read_text())
+      rows=list(csv.DictReader((p/"adaptive_novelty_target_ledger.csv").open()))
+      assert c["feature_count"]==59 and len(c["new_features"])==32
+      assert c["archive"]["draw_count"]==3394 and c["archive"]["last_date"]=="2026-10-31"
+      assert len(rows)==(3394-50)*59==m["target_ledger_rows"]
+      assert all(int(x["prior_draws"])>=50 and x["cutoff_date"]<x["target_date"] for x in rows)
+      print("Q89_FEATURE_ACCEPTANCE_PASS",len(rows),m["ledger_sha256"])
+      PY
+   - uses: actions/upload-artifact@v4
+     with:
+      name: q89-feature-engine-bundle
+      path: |
+       reports/sequence_agent/adaptive_novelty_feature_catalog.json
+       reports/sequence_agent/adaptive_novelty_formula_metrics_manifest.json
+       reports/sequence_agent/adaptive_novelty_rule_anticipation_metrics.csv
+       reports/sequence_agent/adaptive_novelty_target_ledger.csv
+       reports/sequence_agent/adaptive_novelty_checkpoint_2026-11-02.json
+      if-no-files-found: error
+      retention-days: 7
