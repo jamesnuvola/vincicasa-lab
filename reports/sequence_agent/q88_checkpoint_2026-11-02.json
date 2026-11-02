@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q88-2026-11-02",
+  "task_id": "Q88",
+  "status": "ARCHIVE_REFRESH_PENDING",
+  "previous_evaluations": [
+    {
+      "workflow_run_id": 41225908689,
+      "status": "AGGREGATE_PERSIST_FAILED_TRANSIENT_GITHUB_API_502",
+      "shards_success": 15,
+      "aggregate_validator": "PASS"
+    },
+    {
+      "workflow_run_id": 41340265780,
+      "source_archive_blob_sha": "8082ec0b376e7595733917e89544a08b209ca9b4",
+      "archive_cutoff": "2026-10-31",
+      "target_count": 3394,
+      "scored_targets": 3344,
+      "formula_count": 2220075,
+      "metrics_rows": 6660225,
+      "target_ledger_rows": 3344,
+      "shard_count": 15,
+      "aggregate_validator": "PASS",
+      "queue_report_status": "QUEUE_VALID",
+      "task_status": "BLOCKED_BY_DEPENDENCY",
+      "multiple_testing": {
+        "method": "Holm-Bonferroni",
+        "test_count": 19980675
+      },
+      "holm_adjusted_formula_split_rows_below_0_05": 0,
+      "minimum_holm_p_max_endpoint_family": 1,
+      "best_blind_oos_by_mean_rank": {
+        "formula_id": "P8_04_06_07_13_16_17_18_22",
+        "features": "freq_100+freq_500+freq_all+gap_sd+pair_count_with_last_draw+neighbor_pm1_history+neighbor_pm2_history+lag_5",
+        "mean_number_hits_top5": 0.12904191616766467,
+        "mean_number_hits_top10": 0.2634730538922156,
+        "mean_number_hits_top20": 0.5140718562874251,
+        "mean_rank_of_actual_numbers": 20.175449101796406,
+        "holm_p_max_endpoint_family": 1
+      },
+      "best_blind_oos_by_mean_top5_hits": {
+        "formula_id": "P8_01_03_04_06_07_13_17_18",
+        "features": "freq_10+freq_50+freq_100+freq_500+freq_all+gap_sd+neighbor_pm1_history+neighbor_pm2_history",
+        "mean_number_hits_top5": 0.1440119760479042,
+        "mean_number_hits_top10": 0.26137724550898206,
+        "mean_number_hits_top20": 0.5026946107784431,
+        "mean_rank_of_actual_numbers": 20.322155688622754,
+        "holm_p_max_endpoint_family": 1
+      },
+      "persistence_status": "BLOCKED_BY_Q00_STALE_LATEST_METRICS",
+      "persistence_errors": [
+        "latest metrics cutoff does not match canonical archive",
+        "latest metrics draw count does not match canonical archive"
+      ],
+      "report_manifest_target_ledger_not_persisted": true
+    }
+  ],
+  "current_archive": {
+    "git_blob_sha": "de4ce8d5868a483b9b729eb92ce11666bc1c16e3",
+    "draw_count": 3395,
+    "last_date": "2026-11-01"
+  },
+  "next_run_trigger": "workflow_run after successful Test VinciCasa Lab push CI carrying [sonar-archive-refresh] commit marker",
+  "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+  "guardrails": [
+    "15-shard finite eight-feature equal-weight grammar only",
+    "no formula promotion",
+    "no PR merge",
+    "no freeze overwrite",
+    "not COMPLETE until persisted exact bytes, current-head CI and human review/integration"
+  ]
+}

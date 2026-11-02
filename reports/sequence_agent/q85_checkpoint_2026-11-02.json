@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q85-2026-11-02",
+  "task_id": "Q85",
+  "status": "ARCHIVE_SYNCED_RECOMPUTE_PENDING",
+  "observed_at_utc": "2026-11-02T17:07:07Z",
+  "branch": "research/per-number-condition-grammar-20261026",
+  "branch_head_before_sync": "d464e86478f1d49bd632723dcf2da679dfb50047",
+  "canonical_main_archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "de4ce8d5868a483b9b729eb92ce11666bc1c16e3",
+    "draw_count": 3395,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-01",
+    "latest_quintet": [
+      9,
+      12,
+      14,
+      15,
+      33
+    ]
+  },
+  "research_branch_archive_after_sync": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "de4ce8d5868a483b9b729eb92ce11666bc1c16e3",
+    "draw_count": 3395,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-01",
+    "latest_quintet": [
+      9,
+      12,
+      14,
+      15,
+      33
+    ]
+  },
+  "previous_research_archive": {
+    "git_blob_sha": "8082ec0b376e7595733917e89544a08b209ca9b4",
+    "draw_count": 3394,
+    "last_date": "2026-10-31",
+    "latest_quintet": [
+      10,
+      20,
+      30,
+      34,
+      36
+    ]
+  },
+  "delta": {
+    "appended_draw_count": 1,
+    "draws": [
+      {
+        "date": "2026-11-01",
+        "quintet": [
+          9,
+          12,
+          14,
+          15,
+          33
+        ]
+      }
+    ],
+    "prefix_verified": true,
+    "canonical_byte_match": true
+  },
+  "prior_verified_milestone": {
+    "head_sha": "d464e86478f1d49bd632723dcf2da679dfb50047",
+    "ci_run_id": 41345587676,
+    "ci_status": "SUCCESS",
+    "archive_cutoff": "2026-10-31",
+    "tasks": [
+      "Q80",
+      "Q81",
+      "Q82",
+      "Q83",
+      "Q86"
+    ],
+    "task_status": "VALIDATED_PENDING_HUMAN_REVIEW"
+  },
+  "q87_q88_pipeline_diagnosis": {
+    "q87_run_id": 41340265682,
+    "q87_shards_success": 6,
+    "q87_aggregate_validator": "PASS",
+    "q87_persistence": "BLOCKED_BY_Q00_STALE_LATEST_METRICS",
+    "q88_run_id": 41340265780,
+    "q88_shards_success": 15,
+    "q88_aggregate_validator": "PASS",
+    "q88_persistence": "BLOCKED_BY_Q00_STALE_LATEST_METRICS",
+    "root_cause": [
+      "latest metrics cutoff does not match canonical archive",
+      "latest metrics draw count does not match canonical archive"
+    ],
+    "fix": "Q87/Q88 workflows now gate their aggregate/persist stage on successful archive-refresh push CI; direct archive-push triggers removed to avoid racing Q00 refresh."
+  },
+  "pending": [
+    "push archive and workflow sequencing fix",
+    "CI refresh Q00 and Q80-Q86 on exact new archive",
+    "run Q87/Q88 after CI success",
+    "persist and reread all outputs",
+    "exact-head CI",
+    "human review/integration"
+  ],
+  "guardrails": [
+    "append-only archive",
+    "no PR merge",
+    "no model promotion",
+    "immutable target-2026-10-25 freeze not overwritten",
+    "strict prior-only feature cutoffs"
+  ]
+}
