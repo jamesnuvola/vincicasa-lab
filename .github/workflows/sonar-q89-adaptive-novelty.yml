@@ -29,6 +29,8 @@ jobs:
       manifest=json.loads((p/"adaptive_novelty_formula_metrics_manifest.json").read_text())
       ledger_path=p/"adaptive_novelty_target_ledger.csv"
       rows=list(csv.DictReader(ledger_path.open(newline="",encoding="utf-8")))
+      metrics_path=p/"adaptive_novelty_rule_anticipation_metrics.csv"
+      metrics=list(csv.DictReader(metrics_path.open(newline="",encoding="utf-8")))
       with Path("data/storico_daily.csv").open(newline="",encoding="utf-8-sig") as f:
        archive=list(csv.reader(f))
       draws=[r for r in archive[1:] if r]
@@ -40,6 +42,9 @@ jobs:
       assert manifest["archive_draw_count"]==n and manifest["archive_blob_sha"]==expected_blob
       assert manifest["scored_targets"]==n-50 and manifest["metrics_rows"]==59
       assert len(rows)==(n-50)*59==manifest["target_ledger_rows"]
+      assert len(metrics)==59 and all(int(x["targets"])==n-50 for x in metrics)
+      assert all(0<=float(x["mean_number_hits_top5"])<=1 and 0<=float(x["mean_number_hits_top10"])<=1 and 0<=float(x["mean_number_hits_top20"])<=1 for x in metrics)
+      assert all(1<=float(x["mean_actual_number_rank"])<=40 for x in metrics)
       assert hashlib.sha256(ledger_path.read_bytes()).hexdigest()==manifest["ledger_sha256"]
       assert all(int(x["prior_draws"])>=50 and x["cutoff_date"]<x["target_date"] for x in rows)
       print("Q89_FEATURE_ACCEPTANCE_PASS",len(rows),manifest["ledger_sha256"],last_date,expected_blob)

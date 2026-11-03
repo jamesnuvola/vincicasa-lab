@@ -12,6 +12,8 @@ def z(a):
  a=np.asarray(a,float); sd=a.std(axis=0); sd[sd<1e-12]=1; return (a-a.mean(axis=0))/sd
 def ranks(a):
  order=np.argsort(-a,axis=0,kind="stable"); r=np.empty(order.shape,np.int16);r[order,np.arange(a.shape[1])]=np.arange(1,a.shape[0]+1)[:,None];return r
+def rank_sum_int(r):
+ return int(np.sum(r,dtype=np.int64))
 def load():
  with ARCH.open(newline="",encoding="utf-8-sig") as f: rows=list(csv.reader(f))
  dates=[];draws=[]
@@ -65,7 +67,7 @@ def main():
    x[:,31]=[(sum(v in draws[t] for t in range(max(0,i-100),i) if regimes[t]==regimes[i-1])+.5)/(max(1,regimes[max(0,i-100):i].count(regimes[i-1]))*5+20) for v in range(1,41)]
    full=z(np.column_stack((base,x)));rr=ranks(full);ai=np.array(actual)-1
    for c,name in enumerate(NAMES):
-    r=rr[ai,c];m=metric[name];m[0]+=1;m[1]+=sum(r<=5);m[2]+=sum(r<=10);m[3]+=sum(r<=20);m[4]+=sum(r)
+    r=rr[ai,c];m=metric[name];m[0]+=1;m[1]+=sum(r<=5);m[2]+=sum(r<=10);m[3]+=sum(r<=20);m[4]+=rank_sum_int(r)
     ledger.append({"target_date":dates[i],"cutoff_date":dates[i-1],"prior_draws":i,"feature":name,"family":"baseline" if c<27 else NEW[c-27],"actual_quintet":" ".join(map(str,actual)),"actual_number_ranks":json.dumps(r.tolist()),"number_hits_top5":int(sum(r<=5)),"number_hits_top10":int(sum(r<=10)),"number_hits_top20":int(sum(r<=20)),"mean_actual_rank":float(np.mean(r))})
    rankhist.append(cur_r)
   for h in HL:
