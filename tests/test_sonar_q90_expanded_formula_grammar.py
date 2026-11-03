@@ -77,3 +77,10 @@ def test_holm_adjustment_is_monotone_and_reproducible():
     adjusted = q90.holm_adjust_array(p)
     assert np.allclose(adjusted, [0.03, 0.06, 0.06], atol=1e-12)
     assert np.all(adjusted >= p)
+
+
+def test_finite_population_null_pvalues_are_bounded_near_chance():
+    p5 = q90.upper_top5_hypergeometric_p(np.asarray([62], dtype=np.int64), 100)
+    prank = q90.lower_mean_rank_p(np.asarray([10249], dtype=np.int64), 100)
+    assert 0.4 < float(p5[0]) < 0.6
+    assert 0.4 < float(prank[0]) < 0.6
