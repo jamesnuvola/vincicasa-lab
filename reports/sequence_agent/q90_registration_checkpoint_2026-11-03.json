@@ -15,7 +15,9 @@
     "bdae56a6c50813147adb4dad0b8ab7c20938ca43",
     "222311b9ecb2dfdc2f70f445b75caee6eab6cfcc",
     "6eb477f7d65a4a4c0364210d751cc21cf944ee23",
-    "f47b3220f62571e28e99d22b1464f2bd8cee612c"
+    "f47b3220f62571e28e99d22b1464f2bd8cee612c",
+    "ac5d8146f7b72e576039f7eaf5ca10dd9b453895",
+    "d1c661ac9e6b476ab7ea02e0d67401cab87a7c43"
   ],
   "source_path": "scripts/sonar_q90_expanded_formula_grammar.py",
   "validator_path": "scripts/validate_sonar_q90_expanded_formula_grammar.py",
@@ -64,15 +66,16 @@
     "per-target retrospective oracle ledger and best formula by grammar group",
     "Holm adjustment across full 330429 formula catalog per chronological split and endpoint",
     "finite-population corrected normal null approximations for top5 hits and mean rank",
-    "fail-closed formula count, chronology, rank ledger, metric and SHA acceptance validator"
+    "fail-closed formula count, chronology, rank ledger, metric and SHA acceptance validator",
+    "finite-population variance and correct lower-tail continuity correction for rank-sum p-values"
   ],
   "gates": {
-    "compile_and_unit_tests": "PENDING",
+    "compile_and_unit_tests": "PENDING_CURRENT_HEAD",
     "formula_engine_walk_forward": "PENDING",
     "acceptance_validator": "PENDING",
     "artifact_persistence_90d": "PENDING",
     "external_artifact_readback": "PENDING",
-    "exact_head_ci": "PENDING",
+    "exact_head_ci": "PENDING_CURRENT_HEAD",
     "main_repo_ci": "PENDING",
     "human_review": "PENDING"
   },
@@ -85,11 +88,13 @@
     "immutable target-2026-10-25 freeze remains untouched"
   ],
   "pending": [
+    "exact-head CI after null-variance correction",
     "Q90 exact-head workflow and acceptance validator pass",
     "download artifact and independently verify digest and internal SHAs",
     "main repository exact-head CI pass",
     "human review/integration",
     "nested walk-forward ex-ante formula anticipation and calibration",
     "expand conditional thresholds/interactions beyond the 4-feature slice"
-  ]
+  ],
+  "current_branch_head": "d1c661ac9e6b476ab7ea02e0d67401cab87a7c43"
 }
