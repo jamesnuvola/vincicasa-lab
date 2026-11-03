@@ -110,6 +110,7 @@ def main():
    for b in actual:
     if a!=b:pair[a-1,b-1]+=1
   regimes.append(int(sum(actual)>=100)+2*int(max(actual)-min(actual)>=25)+4*int(sum(v%2 for v in actual)>=3))
+  sum_bins.append(sum_regime_bin(actual));span_bins.append(span_regime_bin(actual));odd_counts.append(sum(v%2 for v in actual));entropy_bins.append(parity_entropy_bin(actual))
  OUT.mkdir(exist_ok=True,parents=True)
  catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":blob_sha,"draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; EWMA states update only after scoring; trajectory ranks are cached at their own prefix; regime-conditioned rates use only the preceding 250 draws.","new_feature_family_map":{name:NEW_FAMILIES[k] for k,name in enumerate(NEW)},"rank_tie_policy":"scores rounded to 12 decimal places; equal scores rank by number ascending","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
  (OUT/"adaptive_novelty_feature_catalog.json").write_text(json.dumps(catalog,indent=2)+"\n")
