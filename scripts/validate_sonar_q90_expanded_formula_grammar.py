@@ -190,6 +190,9 @@ def main():
         file_holmrank = np.empty(FORMULA_COUNT, dtype=np.float64)
         with METRICS_PATH.open(newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
+            split_index = SPLITS.index(split)
+            for _ in range(FORMULA_COUNT * split_index):
+                next(reader)
             for idx in range(FORMULA_COUNT):
                 row = next(reader)
                 if row["split"] != split or row["formula_id"] != formula_ids[idx]:
@@ -227,6 +230,8 @@ def main():
                 file_holm5[idx] = float(row["holm_top5"])
                 file_prank[idx] = float(row["p_rank_lower"])
                 file_holmrank[idx] = float(row["holm_rank_lower"])
+            if split == "blind_oos" and next(reader, None) is not None:
+                raise AssertionError("unexpected extra formula metrics rows")
         p5 = upper_binomial_p(hits5, trials, 5 / 40)
         prank = lower_mean_rank_p(rank_sum, trials)
         if np.max(np.abs(file_p5 - p5)) > 1e-12 or np.max(np.abs(file_prank - prank)) > 1e-12:
@@ -235,13 +240,6 @@ def main():
         holmrank = holm_adjust_array(prank)
         if np.max(np.abs(file_holm5 - holm5)) > 1e-12 or np.max(np.abs(file_holmrank - holmrank)) > 1e-12:
             raise AssertionError(f"Holm adjustment mismatch in {split}")
-        if split == "blind_oos":
-            with METRICS_PATH.open(newline="", encoding="utf-8") as f:
-                reader = csv.DictReader(f)
-                for _ in range(FORMULA_COUNT * 2):
-                    next(reader)
-                if next(reader, None) is not None:
-                    raise AssertionError("unexpected extra formula metrics rows")
 
     ledger_rows = 0
     group_expectations = {
