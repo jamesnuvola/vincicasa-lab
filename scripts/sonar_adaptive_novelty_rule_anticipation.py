@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Q89 walk-forward feature engine. Each target uses only its strict historical prefix."""
-import csv,json,math,hashlib
+import csv,json,math,hashlib,subprocess
 from pathlib import Path
 import numpy as np
 import sonar_per_number_condition_grammar as q80
@@ -22,7 +22,10 @@ def load():
   dates.append(d);draws.append(nums)
  return dates,draws
 def main():
- dates,draws=load(); n=len(draws); assert n==3394 and dates[-1]=="2026-10-31"
+ dates,draws=load(); n=len(draws)
+ assert n>50 and dates[-1]
+ blob_sha=subprocess.check_output(["git","rev-parse","HEAD:data/storico_daily.csv"],cwd=ROOT,text=True).strip()
+ checkpoint_date=dates[-1]
  prefix=np.zeros((n+1,40),np.int32);pos=np.zeros((n+1,5,40),np.int32);pair=np.zeros((40,40),np.int32);occ=[[] for _ in range(40)]
  ew={h:np.zeros(40) for h in HL};rankhist=[];regimes=[]
  metric={name:[0,0,0,0,0] for name in NAMES}; ledger=[]
@@ -76,7 +79,7 @@ def main():
     if a!=b:pair[a-1,b-1]+=1
   regimes.append(int(sum(actual)>=100)+2*int(max(actual)-min(actual)>=25)+4*int(sum(v%2 for v in actual)>=3))
  OUT.mkdir(exist_ok=True,parents=True)
- catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":"8082ec0b376e7595733917e89544a08b209ca9b4","draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; trajectory ranks stored at their own historical prefix; EWMA states update only after scoring target.","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
+ catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":blob_sha,"draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; trajectory ranks stored at their own historical prefix; EWMA states update only after scoring target.","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
  (OUT/"adaptive_novelty_feature_catalog.json").write_text(json.dumps(catalog,indent=2)+"\n")
  with (OUT/"adaptive_novelty_rule_anticipation_metrics.csv").open("w",newline="") as f:
   w=csv.writer(f);w.writerow(["feature","family","targets","mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","mean_actual_number_rank"])
@@ -84,8 +87,8 @@ def main():
    t=m[0];w.writerow([name,"baseline" if name in q80.FEATURE_NAMES else NEW[NAMES.index(name)-27],t,m[1]/(5*t),m[2]/(5*t),m[3]/(5*t),m[4]/(5*t)])
  with (OUT/"adaptive_novelty_target_ledger.csv").open("w",newline="") as f:
   w=csv.DictWriter(f,fieldnames=list(ledger[0]));w.writeheader();w.writerows(ledger)
- manifest={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive_blob_sha":"8082ec0b376e7595733917e89544a08b209ca9b4","archive_draw_count":n,"scored_targets":n-50,"feature_count":59,"metrics_rows":59,"target_ledger_rows":len(ledger),"ledger_sha256":hashlib.sha256((OUT/"adaptive_novelty_target_ledger.csv").read_bytes()).hexdigest(),"compute_allocation":{"new_family":40,"existing_strong_under_drift":25,"residual_complementarity":20,"random_control":10,"unstructured":5},"pending":["ex ante nested walk-forward rule anticipation","finite grammar execution","regime drift diagnostic","acceptance validators and persistence readback","exact-head CI and human review"]}
+ manifest={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive_blob_sha":blob_sha,"archive_draw_count":n,"scored_targets":n-50,"feature_count":59,"metrics_rows":59,"target_ledger_rows":len(ledger),"ledger_sha256":hashlib.sha256((OUT/"adaptive_novelty_target_ledger.csv").read_bytes()).hexdigest(),"compute_allocation":{"new_family":40,"existing_strong_under_drift":25,"residual_complementarity":20,"random_control":10,"unstructured":5},"pending":["ex ante nested walk-forward rule anticipation","finite grammar execution","regime drift diagnostic","acceptance validators and persistence readback","exact-head CI and human review"]}
  (OUT/"adaptive_novelty_formula_metrics_manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
- cp={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","checkpoint_date":"2026-11-02","archive_blob_sha":"8082ec0b376e7595733917e89544a08b209ca9b4","draw_count":n,"feature_count":59,"new_features":32,"scored_targets":n-50,"ledger_rows":len(ledger),"pending":manifest["pending"]}
- (OUT/"adaptive_novelty_checkpoint_2026-11-02.json").write_text(json.dumps(cp,indent=2)+"\n")
+ cp={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","checkpoint_date":checkpoint_date,"archive_blob_sha":blob_sha,"draw_count":n,"feature_count":59,"new_features":32,"scored_targets":n-50,"ledger_rows":len(ledger),"pending":manifest["pending"]}
+ (OUT/f"adaptive_novelty_checkpoint_{checkpoint_date}.json").write_text(json.dumps(cp,indent=2)+"\n")
 if __name__=="__main__":main()
