@@ -25,6 +25,7 @@ jobs:
      run: |
       python - <<'PY'
       import csv,json,hashlib,subprocess,math
+      import numpy as np
       from collections import defaultdict
       from pathlib import Path
       p=Path("reports/sequence_agent")
@@ -38,6 +39,7 @@ jobs:
       split_metrics=list(csv.DictReader(split_metrics_path.open(newline="",encoding="utf-8")))
       drift_path=p/"adaptive_novelty_regime_drift.json"
       drift=json.loads(drift_path.read_text())
+      feature_matrix_path=p/"adaptive_novelty_feature_matrix.npz"
       with Path("data/storico_daily.csv").open(newline="",encoding="utf-8-sig") as f:
        archive=list(csv.reader(f))
       draws=[r for r in archive[1:] if r]
@@ -45,6 +47,7 @@ jobs:
       expected_blob=subprocess.check_output(["git","rev-parse","HEAD:data/storico_daily.csv"],text=True).strip()
       assert catalog["feature_count"]==59 and len(catalog["new_features"])==32
       assert len(catalog["new_feature_family_map"])==32
+      assert catalog["formula_search_matrix"]["path"]=="reports/sequence_agent/adaptive_novelty_feature_matrix.npz" and catalog["formula_search_matrix"]["shape"]==[n-50,40,59] and catalog["formula_search_matrix"]["dtype"]=="float32"
       assert len(catalog["rank_duplicate_pairs"])==manifest["rank_duplicate_pairs"]
       assert all(x["feature_a"] in catalog["baseline_features"]+catalog["new_features"] and x["feature_b"] in catalog["baseline_features"]+catalog["new_features"] and 1<=int(x["targets_identical"])<=n-50 and abs(float(x["share_of_targets"])-int(x["targets_identical"])/(n-50))<1e-12 for x in catalog["rank_duplicate_pairs"])
       assert catalog["rank_tie_policy"]=="scores rounded to 12 decimal places; equal scores rank by number ascending"
@@ -53,6 +56,8 @@ jobs:
       assert manifest["archive_draw_count"]==n and manifest["archive_blob_sha"]==expected_blob
       assert manifest["scored_targets"]==n-50 and manifest["metrics_rows"]==59
       assert manifest["split_metrics_rows"]==177 and len(split_metrics)==177
+      assert manifest["feature_matrix_path"]=="reports/sequence_agent/adaptive_novelty_feature_matrix.npz" and manifest["feature_matrix_shape"]==[n-50,40,59] and manifest["feature_matrix_dtype"]=="float32"
+      assert manifest["feature_matrix_sha256"]==hashlib.sha256(feature_matrix_path.read_bytes()).hexdigest()
       assert manifest["split_metrics_sha256"]==hashlib.sha256(split_metrics_path.read_bytes()).hexdigest()
       assert manifest["regime_drift_sha256"]==hashlib.sha256(drift_path.read_bytes()).hexdigest()
       assert len(rows)==(n-50)*59==manifest["target_ledger_rows"]
@@ -64,6 +69,13 @@ jobs:
        p=(i-50)/max(n-50,1)
        return "discovery" if p<0.60 else ("validation" if p<0.80 else "blind_oos")
       expected_targets={draws[i][0]:(draws[i-1][0],i," ".join(draws[i][1:6]),split_for(i)) for i in range(50,n)}
+      with np.load(feature_matrix_path) as z:
+       fm=z["feature_matrix"];td=z["target_dates"].tolist();cd=z["cutoff_dates"].tolist();aq=z["actual_quintets"].tolist();fn=z["feature_names"].tolist();matrix_sha=str(z["archive_blob_sha"])
+       assert fm.shape==(n-50,40,59) and fm.dtype==np.float32 and np.isfinite(fm).all()
+       assert np.max(np.abs(fm.mean(axis=1)))<1e-5
+       assert td==[draws[i][0] for i in range(50,n)] and cd==[draws[i-1][0] for i in range(50,n)]
+       assert aq==[list(map(int,draws[i][1:6])) for i in range(50,n)]
+       assert fn==catalog["baseline_features"]+catalog["new_features"] and matrix_sha==expected_blob
       target_meta={}
       accum=defaultdict(lambda:[0,0,0,0,0.0,0.0,float("inf"),float("-inf"),set()])
       split_accum=defaultdict(lambda:[0,0,0,0,0.0,set()])
@@ -160,6 +172,7 @@ jobs:
        reports/sequence_agent/adaptive_novelty_rule_anticipation_metrics.csv
        reports/sequence_agent/adaptive_novelty_split_metrics.csv
        reports/sequence_agent/adaptive_novelty_regime_drift.json
+       reports/sequence_agent/adaptive_novelty_feature_matrix.npz
        reports/sequence_agent/adaptive_novelty_target_ledger.csv
        reports/sequence_agent/adaptive_novelty_checkpoint_*.json
       if-no-files-found: error
