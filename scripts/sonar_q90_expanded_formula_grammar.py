@@ -291,7 +291,8 @@ def score_target(X, spec):
     np.round(scores[:, i_start:i_end], 12, out=scores[:, i_start:i_end])
 
     g_start, g_end = spec["group_slices"]["G4"]
-    gate_feature_ids = spec["feature_ids"][g_start:g_end, spec["gate_positions"][g_start:g_end]]
+    gate_rows = np.arange(g_start, g_end, dtype=np.int64)
+    gate_feature_ids = spec["feature_ids"][gate_rows, spec["gate_positions"][g_start:g_end]]
     scores[:, g_start:g_end] = (
         base4[:, spec["aux_combo"][g_start:g_end]]
         + GATE_BONUS * (X[:, gate_feature_ids] >= spec["gate_thresholds"][g_start:g_end][None, :])
