@@ -96,8 +96,60 @@ jobs:
        assert abs(float(x["max_support_draws"])-a[7])<1e-9
        ss=manifest["support_summary"][x["feature"]]
        assert abs(float(ss["mean"])-a[5]/t)<1e-9 and abs(float(ss["min"])-a[6])<1e-9 and abs(float(ss["max"])-a[7])<1e-9
+      def binomial_upper_normal_p(successes,trials,p0):
+       if trials<=0:return 1.0
+       mu=trials*p0;variance=trials*p0*(1-p0)
+       if variance<=0:return 1.0
+       z=(successes-0.5-mu)/math.sqrt(variance)
+       return min(1.0,max(0.0,0.5*math.erfc(z/math.sqrt(2))))
+      def holm_adjust(p_values):
+       order=sorted(range(len(p_values)),key=lambda i:p_values[i]);adjusted=[1.0]*len(p_values);running=0.0;m=len(p_values)
+       for rank,idx in enumerate(order):
+        value=min(1.0,(m-rank)*p_values[idx]);running=max(running,value);adjusted[idx]=running
+       return adjusted
+      expected_split_counts={sp:sum(meta[3]==sp for meta in expected_targets.values()) for sp in ("discovery","validation","blind_oos")}
+      assert len(split_accum)==177 and len({(x["split"],x["feature"]) for x in split_metrics})==177
+      assert drift["status"]=="EXPLORATORY_DRIFT_DIAGNOSTIC_PENDING_HUMAN_REVIEW" and drift["archive_blob_sha"]==expected_blob and drift["scored_targets"]==n-50
+      assert drift["split_target_counts"]==expected_split_counts
+      pcalc={ep:[] for ep in ("top5","top10","top20","rank_lower")}
+      for idx,x in enumerate(split_metrics):
+       assert x["split"] in expected_split_counts
+       a=split_accum[(x["split"],x["feature"])];t=a[0];trials=5*t;family=next(iter(a[5]))
+       assert t==expected_split_counts[x["split"]] and int(x["targets"])==t and len(a[5])==1 and x["family"]==family
+       assert abs(float(x["mean_number_hits_top5"])-a[1]/trials)<1e-12
+       assert abs(float(x["mean_number_hits_top10"])-a[2]/trials)<1e-12
+       assert abs(float(x["mean_number_hits_top20"])-a[3]/trials)<1e-12
+       assert abs(float(x["mean_actual_number_rank"])-a[4]/t)<1e-9
+       for ep,successes,p0 in (("top5",a[1],5/40),("top10",a[2],10/40),("top20",a[3],20/40)):
+        pv=binomial_upper_normal_p(successes,trials,p0);pcalc[ep].append(pv)
+        assert abs(float(x["p_"+ep])-pv)<1e-12
+       rank_sum=a[4]*5;zrank=(rank_sum-0.5-trials*20.5)/math.sqrt(trials*133.25);prank=min(1.0,max(0.0,0.5*math.erfc(-zrank/math.sqrt(2))))
+       pcalc["rank_lower"].append(prank);assert abs(float(x["p_rank_lower"])-prank)<1e-12
+      for ep,pvs in pcalc.items():
+       adj=holm_adjust(pvs)
+       for idx,x in enumerate(split_metrics):assert abs(float(x["holm_"+ep])-adj[idx])<1e-12
+      family_set={"baseline"}|set(catalog["new_feature_family_map"].values())
+      family_rows=drift["family_split_summary"]
+      assert len(family_rows)==3*len(family_set)
+      for fr in family_rows:
+       gr=[x for x in split_metrics if x["split"]==fr["split"] and x["family"]==fr["family"]]
+       assert len(gr)==int(fr["feature_count"]) and len(gr)>0
+       for field in ("mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","mean_actual_number_rank"):
+        assert abs(float(fr[field])-sum(float(x[field]) for x in gr)/len(gr))<1e-12
+       assert abs(float(fr["delta_top5_from_chance"])-(float(fr["mean_number_hits_top5"])-0.125))<1e-12
+       assert abs(float(fr["delta_rank_from_chance"])-(float(fr["mean_actual_number_rank"])-20.5))<1e-12
+       assert int(fr["raw_p_top5_below_0_05"])==sum(float(x["p_top5"])<0.05 for x in gr)
+       assert int(fr["holm_p_top5_below_0_05"])==sum(float(x["holm_top5"])<0.05 for x in gr)
+       assert int(fr["holm_rank_lower_below_0_05"])==sum(float(x["holm_rank_lower"])<0.05 for x in gr)
+      for sp in expected_split_counts:
+       gr=sorted([x for x in split_metrics if x["split"]==sp],key=lambda x:(float(x["mean_actual_number_rank"]),x["feature"]))[:10]
+       candidates=drift["top_candidates_by_split"][sp];assert len(candidates)==10
+       for a,b in zip(gr,candidates):
+        assert a["feature"]==b["feature"] and a["family"]==b["family"] and int(a["targets"])==int(b["targets"])
+        for field in ("mean_number_hits_top5","mean_actual_number_rank","p_top5","holm_top5","p_rank_lower","holm_rank_lower"):
+         assert abs(float(a[field])-float(b[field]))<1e-12
       assert hashlib.sha256(ledger_path.read_bytes()).hexdigest()==manifest["ledger_sha256"]
-      print("Q89_FEATURE_ACCEPTANCE_PASS",len(rows),manifest["ledger_sha256"],last_date,expected_blob)
+      print("Q89_FEATURE_ACCEPTANCE_PASS",len(rows),len(split_metrics),manifest["ledger_sha256"],last_date,expected_blob)
       PY
    - uses: actions/upload-artifact@v4
      with:
