@@ -4,6 +4,8 @@ on:
  push:
   branches: ["research/adaptive-novelty-rule-anticipation-20261101"]
   paths: ["scripts/sonar_adaptive_novelty_rule_anticipation.py","tests/test_sonar_adaptive_novelty_rule_anticipation.py","data/storico_daily.csv",".github/workflows/sonar-q89-adaptive-novelty.yml"]
+ pull_request:
+  branches: ["main"]
 permissions: {contents: read}
 concurrency: {group: sonar-q89-adaptive-novelty, cancel-in-progress: false}
 jobs:
@@ -22,7 +24,7 @@ jobs:
    - name: Validate outputs
      run: |
       python - <<'PY'
-      import csv,json,hashlib,subprocess
+      import csv,json,hashlib,subprocess,math
       from collections import defaultdict
       from pathlib import Path
       p=Path("reports/sequence_agent")
@@ -38,27 +40,49 @@ jobs:
       n=len(draws); last_date=draws[-1][0]
       expected_blob=subprocess.check_output(["git","rev-parse","HEAD:data/storico_daily.csv"],text=True).strip()
       assert catalog["feature_count"]==59 and len(catalog["new_features"])==32
+      assert len(catalog["new_feature_family_map"])==32
       assert catalog["rank_tie_policy"]=="scores rounded to 12 decimal places; equal scores rank by number ascending"
       assert catalog["archive"]["draw_count"]==n and catalog["archive"]["last_date"]==last_date
       assert catalog["archive"]["blob_sha"]==expected_blob
       assert manifest["archive_draw_count"]==n and manifest["archive_blob_sha"]==expected_blob
       assert manifest["scored_targets"]==n-50 and manifest["metrics_rows"]==59
       assert len(rows)==(n-50)*59==manifest["target_ledger_rows"]
-      assert len(metrics)==59 and all(int(x["targets"])==n-50 for x in metrics)
+      assert len(metrics)==59 and len({x["feature"] for x in metrics})==59
+      assert all(int(x["targets"])==n-50 for x in metrics)
       assert all(0<=float(x["mean_number_hits_top5"])<=1 and 0<=float(x["mean_number_hits_top10"])<=1 and 0<=float(x["mean_number_hits_top20"])<=1 for x in metrics)
       assert all(1<=float(x["mean_actual_number_rank"])<=40 for x in metrics)
-      accum=defaultdict(lambda:[0,0,0,0,0.0])
+      expected_targets={draws[i][0]:(draws[i-1][0],i," ".join(draws[i][1:6])) for i in range(50,n)}
+      target_meta={}
+      accum=defaultdict(lambda:[0,0,0,0,0.0,0.0,float("inf"),float("-inf"),set()])
       for x in rows:
-       a=accum[x["feature"]];a[0]+=1;a[1]+=int(x["number_hits_top5"]);a[2]+=int(x["number_hits_top10"]);a[3]+=int(x["number_hits_top20"]);a[4]+=float(x["mean_actual_rank"])
-      assert len(accum)==59 and all(a[0]==n-50 for a in accum.values())
+       d=x["target_date"];meta=(x["cutoff_date"],int(x["prior_draws"]),x["actual_quintet"])
+       assert d in expected_targets and meta==expected_targets[d]
+       assert d not in target_meta or target_meta[d]==meta
+       target_meta[d]=meta
+       feature=x["feature"];family="baseline" if feature in catalog["baseline_features"] else catalog["new_feature_family_map"][feature]
+       assert x["family"]==family
+       assert int(x["prior_draws"])>=50 and x["cutoff_date"]<x["target_date"]
+       support=float(x["feature_support_draws"]);assert support>=0
+       ranks=json.loads(x["actual_number_ranks"]);assert len(ranks)==5 and all(1<=int(r)<=40 for r in ranks)
+       assert int(x["number_hits_top5"])==sum(int(r)<=5 for r in ranks)
+       assert int(x["number_hits_top10"])==sum(int(r)<=10 for r in ranks)
+       assert int(x["number_hits_top20"])==sum(int(r)<=20 for r in ranks)
+       a=accum[feature];a[0]+=1;a[1]+=int(x["number_hits_top5"]);a[2]+=int(x["number_hits_top10"]);a[3]+=int(x["number_hits_top20"]);a[4]+=float(x["mean_actual_rank"]);a[5]+=support;a[6]=min(a[6],support);a[7]=max(a[7],support);a[8].add(family)
+      assert len(target_meta)==n-50 and set(target_meta)==set(expected_targets)
+      assert len(accum)==59 and all(a[0]==n-50 and len(a[8])==1 for a in accum.values())
       for x in metrics:
-       a=accum[x["feature"]];t=a[0]
+       a=accum[x["feature"]];t=a[0];family=next(iter(a[8]))
+       assert x["family"]==family
        assert abs(float(x["mean_number_hits_top5"])-a[1]/(5*t))<1e-12
        assert abs(float(x["mean_number_hits_top10"])-a[2]/(5*t))<1e-12
        assert abs(float(x["mean_number_hits_top20"])-a[3]/(5*t))<1e-12
        assert abs(float(x["mean_actual_number_rank"])-a[4]/t)<1e-9
+       assert abs(float(x["mean_support_draws"])-a[5]/t)<1e-9
+       assert abs(float(x["min_support_draws"])-a[6])<1e-9
+       assert abs(float(x["max_support_draws"])-a[7])<1e-9
+       ss=manifest["support_summary"][x["feature"]]
+       assert abs(float(ss["mean"])-a[5]/t)<1e-9 and abs(float(ss["min"])-a[6])<1e-9 and abs(float(ss["max"])-a[7])<1e-9
       assert hashlib.sha256(ledger_path.read_bytes()).hexdigest()==manifest["ledger_sha256"]
-      assert all(int(x["prior_draws"])>=50 and x["cutoff_date"]<x["target_date"] for x in rows)
       print("Q89_FEATURE_ACCEPTANCE_PASS",len(rows),manifest["ledger_sha256"],last_date,expected_blob)
       PY
    - uses: actions/upload-artifact@v4
