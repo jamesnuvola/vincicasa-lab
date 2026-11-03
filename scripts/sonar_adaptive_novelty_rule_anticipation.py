@@ -72,9 +72,12 @@ def main():
    for radius,col in [(1,17),(2,18)]:
     for v in range(40):x[v,col]=sum(freq[u] for u in range(max(0,v-radius),min(40,v+radius+1)) if u!=v)
    support[44:46]=i
-   if rankhist:
-    h=np.asarray(rankhist[-50:],float); x[:,19]=h[-5:].mean(axis=(0,2))-h[-20:].mean(axis=(0,2));x[:,20]=h[-20:].mean(axis=(0,2))-h[-50:].mean(axis=(0,2));x[:,21]=h[-20:].std(axis=(0,2));x[:,22]=cur_r.std(axis=1);x[:,23]=np.median(cur_r,axis=1)
-   support[46:51]=len(rankhist)
+   h=np.asarray(rankhist[-50:],float)
+   if len(h)>=20:
+    x[:,19]=h[-5:].mean(axis=(0,2))-h[-20:].mean(axis=(0,2));x[:,21]=h[-20:].std(axis=(0,2))
+   if len(h)>=50:x[:,20]=h[-20:].mean(axis=(0,2))-h[-50:].mean(axis=(0,2))
+   x[:,22]=cur_r.std(axis=1);x[:,23]=np.median(cur_r,axis=1)
+   support[46:51]=[20 if len(rankhist)>=20 else 0,50 if len(rankhist)>=50 else 0,20 if len(rankhist)>=20 else 0,27,27]
    for w,col in [(20,24),(50,25)]:
     hits=prefix[i]-prefix[max(0,i-w)];rate=(freq+.5)/(i+20);exp=rate*min(w,i);x[:,col]=(hits-exp)/np.sqrt(np.maximum(exp*(1-rate),.25))
    support[51:53]=[min(20,i),min(50,i)]
@@ -108,7 +111,7 @@ def main():
     if a!=b:pair[a-1,b-1]+=1
   regimes.append(int(sum(actual)>=100)+2*int(max(actual)-min(actual)>=25)+4*int(sum(v%2 for v in actual)>=3))
  OUT.mkdir(exist_ok=True,parents=True)
- catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":blob_sha,"draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; EWMA states update only after scoring; trajectory ranks are cached at their own prefix; regime-conditioned rates use only the preceding 250 draws.","new_feature_family_map":{name:NEW_FAMILIES[k] for k,name in enumerate(NEW)},"rank_tie_policy:"scores rounded to 12 decimal places; equal scores rank by number ascending","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
+ catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":blob_sha,"draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; EWMA states update only after scoring; trajectory ranks are cached at their own prefix; regime-conditioned rates use only the preceding 250 draws.","new_feature_family_map":{name:NEW_FAMILIES[k] for k,name in enumerate(NEW)},"rank_tie_policy":"scores rounded to 12 decimal places; equal scores rank by number ascending","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
  (OUT/"adaptive_novelty_feature_catalog.json").write_text(json.dumps(catalog,indent=2)+"\n")
  with (OUT/"adaptive_novelty_rule_anticipation_metrics.csv").open("w",newline="") as f:
   w=csv.writer(f);w.writerow(["feature","family","targets","mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","mean_actual_number_rank","mean_support_draws","min_support_draws","max_support_draws"])
@@ -116,7 +119,7 @@ def main():
    t=m[0];family="baseline" if name in q80.FEATURE_NAMES else NEW_FAMILIES[NAMES.index(name)-27];w.writerow([name,family,t,m[1]/(5*t),m[2]/(5*t),m[3]/(5*t),m[4]/(5*t),m[5]/t,m[6],m[7]])
  with (OUT/"adaptive_novelty_target_ledger.csv").open("w",newline="") as f:
   w=csv.DictWriter(f,fieldnames=list(ledger[0]));w.writeheader();w.writerows(ledger)
- manifest={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive_blob_sha":blob_sha,"archive_draw_count":n,"scored_targets":n-50,"feature_count":59,"metrics_rows":59,"target_ledger_rows":len(ledger),"ledger_sha256":hashlib.sha256((OUT/"adaptive_novelty_target_ledger.csv").read_bytes()).hexdigest(),"support_summary":{name:{"mean":metric[name][5]/metric[name][0],"min":metric[name][6],"max":metric[name][7]} for name in NAMES},"compute_allocation:{"new_family":40,"existing_strong_under_drift":25,"residual_complementarity":20,"random_control":10,"unstructured":5},"pending":["ex ante nested walk-forward rule anticipation","finite grammar execution","regime drift diagnostic","acceptance validators and persistence readback","exact-head CI and human review"]}
+ manifest={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive_blob_sha":blob_sha,"archive_draw_count":n,"scored_targets":n-50,"feature_count":59,"metrics_rows":59,"target_ledger_rows":len(ledger),"ledger_sha256":hashlib.sha256((OUT/"adaptive_novelty_target_ledger.csv").read_bytes()).hexdigest(),"support_summary":{name:{"mean":metric[name][5]/metric[name][0],"min":metric[name][6],"max":metric[name][7]} for name in NAMES},"compute_allocation":{"new_family":40,"existing_strong_under_drift":25,"residual_complementarity":20,"random_control":10,"unstructured":5},"pending":["ex ante nested walk-forward rule anticipation","finite grammar execution","regime drift diagnostic","acceptance validators and persistence readback","exact-head CI and human review"]}
  (OUT/"adaptive_novelty_formula_metrics_manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
  cp={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","checkpoint_date":checkpoint_date,"archive_blob_sha":blob_sha,"draw_count":n,"feature_count":59,"new_features":32,"scored_targets":n-50,"ledger_rows":len(ledger),"pending":manifest["pending"]}
  (OUT/f"adaptive_novelty_checkpoint_{checkpoint_date}.json").write_text(json.dumps(cp,indent=2)+"\n")
