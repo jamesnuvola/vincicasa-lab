@@ -34,15 +34,17 @@ def sha256_file(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def upper_binomial_p(successes, trials, p0):
-    mu = trials * p0
-    variance = trials * p0 * (1.0 - p0)
-    z = (successes.astype(np.float64) - 0.5 - mu) / math.sqrt(variance)
+def upper_top5_hypergeometric_p(successes, targets):
+    mean_per_draw = 5.0 * (5.0 / 40.0)
+    variance_per_draw = 5.0 * (5.0 / 40.0) * (1.0 - 5.0 / 40.0) * (40.0 - 5.0) / (40.0 - 1.0)
+    z = (successes.astype(np.float64) - 0.5 - targets * mean_per_draw) / math.sqrt(targets * variance_per_draw)
     return np.clip(0.5 * erfc(z / math.sqrt(2.0)), 0.0, 1.0)
 
 
-def lower_mean_rank_p(rank_sum, trials):
-    z = (rank_sum.astype(np.float64) - 0.5 - trials * 20.5) / math.sqrt(trials * 133.25)
+def lower_mean_rank_p(rank_sum, targets):
+    mean_per_draw = 5.0 * 20.5
+    variance_per_draw = 5.0 * 133.25 * (40.0 - 5.0) / (40.0 - 1.0)
+    z = (rank_sum.astype(np.float64) - 0.5 - targets * mean_per_draw) / math.sqrt(targets * variance_per_draw)
     return np.clip(0.5 * erfc(-z / math.sqrt(2.0)), 0.0, 1.0)
 
 
@@ -96,6 +98,7 @@ def main():
     assert manifest["formula_grammar"]["formula_count_check"] == FORMULA_COUNT
     assert manifest["metrics_rows"] == FORMULA_COUNT * 3
     assert manifest["target_ledger_rows"] == expected_targets
+    assert "finite-population" in manifest["multiple_testing"]["p_value_method"]
     assert manifest["q89_feature_matrix"]["sha256"] == q89_manifest["feature_matrix_sha256"]
     assert q89_manifest["archive_blob_sha"] == expected_blob
     assert sha256_file(Q89_MATRIX) == q89_manifest["feature_matrix_sha256"]
@@ -232,8 +235,8 @@ def main():
                 file_holmrank[idx] = float(row["holm_rank_lower"])
             if split == "blind_oos" and next(reader, None) is not None:
                 raise AssertionError("unexpected extra formula metrics rows")
-        p5 = upper_binomial_p(hits5, trials, 5 / 40)
-        prank = lower_mean_rank_p(rank_sum, trials)
+        p5 = upper_top5_hypergeometric_p(hits5, targets)
+        prank = lower_mean_rank_p(rank_sum, targets)
         if np.max(np.abs(file_p5 - p5)) > 1e-12 or np.max(np.abs(file_prank - prank)) > 1e-12:
             raise AssertionError(f"raw p-value recomputation mismatch in {split}")
         holm5 = holm_adjust_array(p5)
