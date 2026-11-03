@@ -34,6 +34,10 @@ jobs:
       rows=list(csv.DictReader(ledger_path.open(newline="",encoding="utf-8")))
       metrics_path=p/"adaptive_novelty_rule_anticipation_metrics.csv"
       metrics=list(csv.DictReader(metrics_path.open(newline="",encoding="utf-8")))
+      split_metrics_path=p/"adaptive_novelty_split_metrics.csv"
+      split_metrics=list(csv.DictReader(split_metrics_path.open(newline="",encoding="utf-8")))
+      drift_path=p/"adaptive_novelty_regime_drift.json"
+      drift=json.loads(drift_path.read_text())
       with Path("data/storico_daily.csv").open(newline="",encoding="utf-8-sig") as f:
        archive=list(csv.reader(f))
       draws=[r for r in archive[1:] if r]
@@ -41,21 +45,30 @@ jobs:
       expected_blob=subprocess.check_output(["git","rev-parse","HEAD:data/storico_daily.csv"],text=True).strip()
       assert catalog["feature_count"]==59 and len(catalog["new_features"])==32
       assert len(catalog["new_feature_family_map"])==32
+      assert len(catalog["rank_duplicate_pairs"])==manifest["rank_duplicate_pairs"]
+      assert all(x["feature_a"] in catalog["baseline_features"]+catalog["new_features"] and x["feature_b"] in catalog["baseline_features"]+catalog["new_features"] and 1<=int(x["targets_identical"])<=n-50 and abs(float(x["share_of_targets"])-int(x["targets_identical"])/(n-50))<1e-12 for x in catalog["rank_duplicate_pairs"])
       assert catalog["rank_tie_policy"]=="scores rounded to 12 decimal places; equal scores rank by number ascending"
       assert catalog["archive"]["draw_count"]==n and catalog["archive"]["last_date"]==last_date
       assert catalog["archive"]["blob_sha"]==expected_blob
       assert manifest["archive_draw_count"]==n and manifest["archive_blob_sha"]==expected_blob
       assert manifest["scored_targets"]==n-50 and manifest["metrics_rows"]==59
+      assert manifest["split_metrics_rows"]==177 and len(split_metrics)==177
+      assert manifest["split_metrics_sha256"]==hashlib.sha256(split_metrics_path.read_bytes()).hexdigest()
+      assert manifest["regime_drift_sha256"]==hashlib.sha256(drift_path.read_bytes()).hexdigest()
       assert len(rows)==(n-50)*59==manifest["target_ledger_rows"]
       assert len(metrics)==59 and len({x["feature"] for x in metrics})==59
       assert all(int(x["targets"])==n-50 for x in metrics)
       assert all(0<=float(x["mean_number_hits_top5"])<=1 and 0<=float(x["mean_number_hits_top10"])<=1 and 0<=float(x["mean_number_hits_top20"])<=1 for x in metrics)
       assert all(1<=float(x["mean_actual_number_rank"])<=40 for x in metrics)
-      expected_targets={draws[i][0]:(draws[i-1][0],i," ".join(draws[i][1:6])) for i in range(50,n)}
+      def split_for(i):
+       p=(i-50)/max(n-50,1)
+       return "discovery" if p<0.60 else ("validation" if p<0.80 else "blind_oos")
+      expected_targets={draws[i][0]:(draws[i-1][0],i," ".join(draws[i][1:6]),split_for(i)) for i in range(50,n)}
       target_meta={}
       accum=defaultdict(lambda:[0,0,0,0,0.0,0.0,float("inf"),float("-inf"),set()])
+      split_accum=defaultdict(lambda:[0,0,0,0,0.0,set()])
       for x in rows:
-       d=x["target_date"];meta=(x["cutoff_date"],int(x["prior_draws"]),x["actual_quintet"])
+       d=x["target_date"];meta=(x["cutoff_date"],int(x["prior_draws"]),x["actual_quintet"],x["split"])
        assert d in expected_targets and meta==expected_targets[d]
        assert d not in target_meta or target_meta[d]==meta
        target_meta[d]=meta
@@ -68,6 +81,7 @@ jobs:
        assert int(x["number_hits_top10"])==sum(int(r)<=10 for r in ranks)
        assert int(x["number_hits_top20"])==sum(int(r)<=20 for r in ranks)
        a=accum[feature];a[0]+=1;a[1]+=int(x["number_hits_top5"]);a[2]+=int(x["number_hits_top10"]);a[3]+=int(x["number_hits_top20"]);a[4]+=float(x["mean_actual_rank"]);a[5]+=support;a[6]=min(a[6],support);a[7]=max(a[7],support);a[8].add(family)
+       sa=split_accum[(x["split"],feature)];sa[0]+=1;sa[1]+=int(x["number_hits_top5"]);sa[2]+=int(x["number_hits_top10"]);sa[3]+=int(x["number_hits_top20"]);sa[4]+=float(x["mean_actual_rank"]);sa[5].add(family)
       assert len(target_meta)==n-50 and set(target_meta)==set(expected_targets)
       assert len(accum)==59 and all(a[0]==n-50 and len(a[8])==1 for a in accum.values())
       for x in metrics:
@@ -92,6 +106,8 @@ jobs:
        reports/sequence_agent/adaptive_novelty_feature_catalog.json
        reports/sequence_agent/adaptive_novelty_formula_metrics_manifest.json
        reports/sequence_agent/adaptive_novelty_rule_anticipation_metrics.csv
+       reports/sequence_agent/adaptive_novelty_split_metrics.csv
+       reports/sequence_agent/adaptive_novelty_regime_drift.json
        reports/sequence_agent/adaptive_novelty_target_ledger.csv
        reports/sequence_agent/adaptive_novelty_checkpoint_*.json
       if-no-files-found: error
