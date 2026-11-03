@@ -36,3 +36,11 @@ def test_rank_ties_and_near_ties_use_number_ascending():
  a[1,0]=1.0+1e-10
  r=q.ranks(a)
  assert r[1,0]==1 and r[0,0]==2
+def test_neighbor_balance_uses_recent_window_counts_and_excludes_self():
+ counts=np.zeros(40);counts[0]=3;counts[2]=5
+ b1=q.neighbor_balance(counts,1);b2=q.neighbor_balance(counts,2)
+ assert b1[1]==8 and b1[0]==0 and b2[2]==3
+def test_duplicate_rank_pairs_reports_exact_columns_only():
+ r=np.tile(np.arange(1,41,dtype=np.int16)[:,None],(1,3))
+ r[:,2]=np.arange(40,0,-1,dtype=np.int16)
+ assert q.duplicate_rank_pairs(r)==[(0,1)]
