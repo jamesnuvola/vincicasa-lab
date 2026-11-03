@@ -514,7 +514,7 @@ def main():
 
     metric_fields = ["split", "formula_id", "formula_type", "formula_size", "targets",
                      "number_hits_top5", "number_hits_top10", "number_hits_top20",
-                     "all5_top5_count", "all5_top10_count", "all5_top20_count",
+                     "all5_top5_count", "all5_top10_count", "all5_top20_count", "rank_sum",
                      "mean_number_hits_top5", "mean_number_hits_top10", "mean_number_hits_top20",
                      "all5_top5_rate", "all5_top10_rate", "all5_top20_rate",
                      "mean_actual_number_rank", "p_top5", "holm_top5",
@@ -551,6 +551,7 @@ def main():
                     "all5_top5_count": int(a["all5_top5"][i]),
                     "all5_top10_count": int(a["all5_top10"][i]),
                     "all5_top20_count": int(a["all5_top20"][i]),
+                    "rank_sum": int(a["rank_sum"][i]),
                     "mean_number_hits_top5": float(a["hits5"][i] / trials),
                     "mean_number_hits_top10": float(a["hits10"][i] / trials),
                     "mean_number_hits_top20": float(a["hits20"][i] / trials),
