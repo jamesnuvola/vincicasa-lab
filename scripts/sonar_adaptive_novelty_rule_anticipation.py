@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Q89 walk-forward feature engine. Each target uses only its strict historical prefix."""
 import csv,json,math,hashlib,subprocess
+from itertools import combinations
 from pathlib import Path
 import numpy as np
 import sonar_per_number_condition_grammar as q80
@@ -17,6 +18,14 @@ def ranks(a):
  r=np.empty(order.shape,np.int16);r[order,np.arange(a.shape[1])]=np.arange(1,a.shape[0]+1)[:,None];return r
 def rank_sum_int(r):
  return int(np.sum(r,dtype=np.int64))
+def neighbor_balance(counts,radius):
+ counts=np.asarray(counts,float)
+ return np.asarray([sum(counts[u] for u in range(max(0,v-radius),min(40,v+radius+1)) if u!=v) for v in range(40)],float)
+def duplicate_rank_pairs(rank_matrix):
+ groups={}
+ for c in range(rank_matrix.shape[1]):
+  key=np.ascontiguousarray(rank_matrix[:,c]).tobytes();groups.setdefault(key,[]).append(c)
+ return [pair for group in groups.values() for pair in combinations(group,2)]
 def sum_regime_bin(draw):
  return min(4,max(0,(sum(draw)-15)//35))
 def span_regime_bin(draw):
@@ -40,6 +49,7 @@ def main():
  checkpoint_date=dates[-1]
  prefix=np.zeros((n+1,40),np.int32);pos=np.zeros((n+1,5,40),np.int32);pair=np.zeros((40,40),np.int32);occ=[[] for _ in range(40)]
  ew={h:np.zeros(40) for h in HL};rankhist=[];regimes=[];sum_bins=[];span_bins=[];odd_counts=[];entropy_bins=[]
+ split_names=("discovery","validation","blind_oos");split_metric={sp:{name:[0,0,0,0,0] for name in NAMES} for sp in split_names};duplicate_rank_counts={}
  metric={name:[0,0,0,0,0,0.0,float("inf"),float("-inf")] for name in NAMES}; ledger=[]
  for i,actual in enumerate(draws):
   if i>=50:
@@ -69,9 +79,8 @@ def main():
      l=pxy/max(p[v]*py,1e-9);lift.append(l);pm.append(math.log(max(l,1e-9)))
      surprise.append(math.log((recent[v,u]+0.25)/(window_n+20.0))-math.log((pair[v,u]+0.25)/(i+20.0)))
     x[v,13]=np.mean(lift);x[v,14]=np.mean(pm);x[v,15]=recent[v,last].mean()/max(window_n,1);x[v,16]=np.mean(surprise)
-   for radius,col in [(1,17),(2,18)]:
-    for v in range(40):x[v,col]=sum(freq[u] for u in range(max(0,v-radius),min(40,v+radius+1)) if u!=v)
-   support[44:46]=i
+   x[:,17]=neighbor_balance(freq_recent,1);x[:,18]=neighbor_balance(freq_recent,2)
+   support[44:46]=window_n
    h=np.asarray(rankhist[-50:],float)
    if len(h)>=20:
     x[:,19]=h[-5:].mean(axis=(0,2))-h[-20:].mean(axis=(0,2));x[:,21]=h[-20:].std(axis=(0,2))
@@ -94,11 +103,14 @@ def main():
     if t>=1 and regimes[t-1]==prev_transition[0] and regimes[t]==prev_transition[1]:ntrans+=1;ctrans[np.array(d)-1]+=1
    x[:,26]=(csum+2.5)/(nsum+20.0);x[:,27]=(cspan+2.5)/(nspan+20.0);x[:,28]=(codd+2.5)/(nodd+20.0);x[:,29]=(cent+2.5)/(nent+20.0);x[:,30]=(ctrans+2.5)/(ntrans+20.0);x[:,31]=(creg+2.5)/(nreg+20.0)
    support[53:59]=[nsum,nspan,nodd,nent,ntrans,nreg]
-   full=z(np.column_stack((base,x)));rr=ranks(full);ai=np.array(actual)-1
+   full=z(np.column_stack((base,x)));rr=ranks(full);ai=np.array(actual)-1;split=q80.split_name(i-50,n-50)
+   for ca,cb in duplicate_rank_pairs(rr):
+    key=(NAMES[ca],NAMES[cb]);duplicate_rank_counts[key]=duplicate_rank_counts.get(key,0)+1
    for c,name in enumerate(NAMES):
     r=rr[ai,c];m=metric[name];m[0]+=1;m[1]+=sum(r<=5);m[2]+=sum(r<=10);m[3]+=sum(r<=20);m[4]+=rank_sum_int(r);m[5]+=support[c];m[6]=min(m[6],support[c]);m[7]=max(m[7],support[c])
+    sm=split_metric[split][name];sm[0]+=1;sm[1]+=sum(r<=5);sm[2]+=sum(r<=10);sm[3]+=sum(r<=20);sm[4]+=rank_sum_int(r)
     family="baseline" if c<27 else NEW_FAMILIES[c-27]
-    ledger.append({"target_date":dates[i],"cutoff_date":dates[i-1],"prior_draws":i,"feature":name,"family":family,"feature_support_draws":float(support[c]),"actual_quintet":" ".join(map(str,actual)),"actual_number_ranks":json.dumps(r.tolist()),"number_hits_top5":int(sum(r<=5)),"number_hits_top10":int(sum(r<=10)),"number_hits_top20":int(sum(r<=20)),"mean_actual_rank":float(np.mean(r))})
+    ledger.append({"target_date":dates[i],"cutoff_date":dates[i-1],"prior_draws":i,"split":split,"feature":name,"family":family,"feature_support_draws":float(support[c]),"actual_quintet":" ".join(map(str,actual)),"actual_number_ranks":json.dumps(r.tolist()),"number_hits_top5":int(sum(r<=5)),"number_hits_top10":int(sum(r<=10)),"number_hits_top20":int(sum(r<=20)),"mean_actual_rank":float(np.mean(r))})
    rankhist.append(cur_r)
   for h in HL:
    d=math.exp(math.log(.5)/h);ew[h]=ew[h]*d
@@ -112,15 +124,38 @@ def main():
   regimes.append(int(sum(actual)>=100)+2*int(max(actual)-min(actual)>=25)+4*int(sum(v%2 for v in actual)>=3))
   sum_bins.append(sum_regime_bin(actual));span_bins.append(span_regime_bin(actual));odd_counts.append(sum(v%2 for v in actual));entropy_bins.append(parity_entropy_bin(actual))
  OUT.mkdir(exist_ok=True,parents=True)
- catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":blob_sha,"draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; EWMA states update only after scoring; trajectory ranks are cached at their own prefix; regime-conditioned rates use only the preceding 250 draws.","new_feature_family_map":{name:NEW_FAMILIES[k] for k,name in enumerate(NEW)},"rank_tie_policy":"scores rounded to 12 decimal places; equal scores rank by number ascending","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
+ catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":blob_sha,"draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; EWMA states update only after scoring; trajectory ranks are cached at their own prefix; regime-conditioned rates use only the preceding 250 draws.","new_feature_family_map":{name:NEW_FAMILIES[k] for k,name in enumerate(NEW)},"rank_duplicate_pairs":[{"feature_a":a,"feature_b":b,"targets_identical":count,"share_of_targets":count/(n-50)} for (a,b),count in sorted(duplicate_rank_counts.items(),key=lambda kv:(-kv[1],kv[0]))],"rank_tie_policy:"scores rounded to 12 decimal places; equal scores rank by number ascending","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
  (OUT/"adaptive_novelty_feature_catalog.json").write_text(json.dumps(catalog,indent=2)+"\n")
  with (OUT/"adaptive_novelty_rule_anticipation_metrics.csv").open("w",newline="") as f:
   w=csv.writer(f);w.writerow(["feature","family","targets","mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","mean_actual_number_rank","mean_support_draws","min_support_draws","max_support_draws"])
   for name,m in metric.items():
    t=m[0];family="baseline" if name in q80.FEATURE_NAMES else NEW_FAMILIES[NAMES.index(name)-27];w.writerow([name,family,t,m[1]/(5*t),m[2]/(5*t),m[3]/(5*t),m[4]/(5*t),m[5]/t,m[6],m[7]])
+ split_rows=[];p_records={ep:[] for ep in ("top5","top10","top20","rank_lower")}
+ for sp in split_names:
+  for name,m in split_metric[sp].items():
+   t=m[0];trials=5*t;row={"split":sp,"feature":name,"family":"baseline" if name in q80.FEATURE_NAMES else NEW_FAMILIES[NAMES.index(name)-27],"targets":t,"mean_number_hits_top5":m[1]/trials,"mean_number_hits_top10":m[2]/trials,"mean_number_hits_top20":m[3]/trials,"mean_actual_number_rank":m[4]/trials}
+   for ep,k,successes,p0 in (("top5",5,m[1],5/40),("top10",10,m[2],10/40),("top20",20,m[3],20/40)):
+    pv=q80.binomial_upper_normal_p(successes,trials,p0);row["p_"+ep]=pv;p_records[ep].append((len(split_rows),pv))
+   zrank=(m[4]-0.5-trials*20.5)/math.sqrt(trials*133.25);prank=min(1.0,max(0.0,0.5*math.erfc(-zrank/math.sqrt(2))));row["p_rank_lower"]=prank;p_records["rank_lower"].append((len(split_rows),prank))
+   split_rows.append(row)
+ for ep,records in p_records.items():
+  adjusted=q80.holm_adjust([pv for _,pv in records])
+  for (idx,pv),adj in zip(records,adjusted):split_rows[idx]["holm_"+ep]=adj
+ split_metrics_path=OUT/"adaptive_novelty_split_metrics.csv"
+ with split_metrics_path.open("w",newline="") as f:
+  w=csv.DictWriter(f,fieldnames=list(split_rows[0]));w.writeheader();w.writerows(split_rows)
+ family_split_summary=[];top_candidates={}
+ for sp in split_names:
+  sr=[r for r in split_rows if r["split"]==sp]
+  top_candidates[sp]=[{k:r[k] for k in ("feature","family","targets","mean_number_hits_top5","mean_actual_number_rank","p_top5","holm_top5","p_rank_lower","holm_rank_lower")} for r in sorted(sr,key=lambda r:(r["mean_actual_number_rank"],r["feature"]))[:10]]
+  for fam in sorted({r["family"] for r in sr}):
+   gr=[r for r in sr if r["family"]==fam]
+   family_split_summary.append({"split":sp,"family":fam,"feature_count":len(gr),"mean_number_hits_top5":float(np.mean([r["mean_number_hits_top5"] for r in gr])),"mean_number_hits_top10":float(np.mean([r["mean_number_hits_top10"] for r in gr])),"mean_number_hits_top20":float(np.mean([r["mean_number_hits_top20"] for r in gr])),"mean_actual_number_rank":float(np.mean([r["mean_actual_number_rank"] for r in gr])),"delta_top5_from_chance":float(np.mean([r["mean_number_hits_top5"] for r in gr])-0.125),"delta_rank_from_chance":float(np.mean([r["mean_actual_number_rank"] for r in gr])-20.5),"raw_p_top5_below_0_05":sum(float(r["p_top5"])<0.05 for r in gr),"holm_p_top5_below_0_05":sum(float(r["holm_top5"])<0.05 for r in gr),"holm_rank_lower_below_0_05":sum(float(r["holm_rank_lower"])<0.05 for r in gr)})
+ drift={"schema_version":"1.0","task_id":"Q89","status":"EXPLORATORY_DRIFT_DIAGNOSTIC_PENDING_HUMAN_REVIEW","archive_blob_sha":blob_sha,"archive_draw_count":n,"scored_targets":n-50,"split_target_counts":{sp:split_metric[sp][NAMES[0]][0] for sp in split_names},"family_split_summary":family_split_summary,"top_candidates_by_split":top_candidates,"multiple_testing":{"method":"Holm-Bonferroni","adjustment_family":"59 features across 3 chronological splits, adjusted separately for each endpoint","endpoints":["top5","top10","top20","rank_lower"],"p_value_method":"continuity-corrected normal approximation for hit counts; normal lower-tail approximation for mean rank","promotion":"none; exploratory only"},"guardrails":["strict prior-only feature values","chronological discovery/validation/blind OOS splits","raw p-values are exploratory","no feature or formula promotion","immutable target-2026-10-25 freeze untouched"]}
+ drift_path=OUT/"adaptive_novelty_regime_drift.json";drift_path.write_text(json.dumps(drift,indent=2)+"\n")
  with (OUT/"adaptive_novelty_target_ledger.csv").open("w",newline="") as f:
   w=csv.DictWriter(f,fieldnames=list(ledger[0]));w.writeheader();w.writerows(ledger)
- manifest={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive_blob_sha":blob_sha,"archive_draw_count":n,"scored_targets":n-50,"feature_count":59,"metrics_rows":59,"target_ledger_rows":len(ledger),"ledger_sha256":hashlib.sha256((OUT/"adaptive_novelty_target_ledger.csv").read_bytes()).hexdigest(),"support_summary":{name:{"mean":metric[name][5]/metric[name][0],"min":metric[name][6],"max":metric[name][7]} for name in NAMES},"compute_allocation":{"new_family":40,"existing_strong_under_drift":25,"residual_complementarity":20,"random_control":10,"unstructured":5},"pending":["ex ante nested walk-forward rule anticipation","finite grammar execution","regime drift diagnostic","acceptance validators and persistence readback","exact-head CI and human review"]}
+ manifest={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive_blob_sha":blob_sha,"archive_draw_count":n,"scored_targets":n-50,"feature_count":59,"metrics_rows":59,"target_ledger_rows":len(ledger),"ledger_sha256":hashlib.sha256((OUT/"adaptive_novelty_target_ledger.csv").read_bytes()).hexdigest(),"split_metrics_rows":len(split_rows),"split_metrics_sha256":hashlib.sha256(split_metrics_path.read_bytes()).hexdigest(),"regime_drift_sha256":hashlib.sha256(drift_path.read_bytes()).hexdigest(),"rank_duplicate_pairs":len(duplicate_rank_counts),"support_summary:{name:{"mean":metric[name][5]/metric[name][0],"min":metric[name][6],"max":metric[name][7]} for name in NAMES},"compute_allocation":{"new_family":40,"existing_strong_under_drift":25,"residual_complementarity":20,"random_control":10,"unstructured":5},"pending":["ex ante nested walk-forward rule anticipation","finite higher-complexity formula grammar (4+ features, interactions and conditional thresholds)","persisted artifact readback","exact-head CI and human review"]}
  (OUT/"adaptive_novelty_formula_metrics_manifest.json").write_text(json.dumps(manifest,indent=2)+"\n")
  cp={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","checkpoint_date":checkpoint_date,"archive_blob_sha":blob_sha,"draw_count":n,"feature_count":59,"new_features":32,"scored_targets":n-50,"ledger_rows":len(ledger),"pending":manifest["pending"]}
  (OUT/f"adaptive_novelty_checkpoint_{checkpoint_date}.json").write_text(json.dumps(cp,indent=2)+"\n")
