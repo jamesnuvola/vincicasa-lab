@@ -44,7 +44,7 @@ def upper_top5_hypergeometric_p(successes, targets):
 def lower_mean_rank_p(rank_sum, targets):
     mean_per_draw = 5.0 * 20.5
     variance_per_draw = 5.0 * 133.25 * (40.0 - 5.0) / (40.0 - 1.0)
-    z = (rank_sum.astype(np.float64) - 0.5 - targets * mean_per_draw) / math.sqrt(targets * variance_per_draw)
+    z = (rank_sum.astype(np.float64) + 0.5 - targets * mean_per_draw) / math.sqrt(targets * variance_per_draw)
     return np.clip(0.5 * erfc(-z / math.sqrt(2.0)), 0.0, 1.0)
 
 
