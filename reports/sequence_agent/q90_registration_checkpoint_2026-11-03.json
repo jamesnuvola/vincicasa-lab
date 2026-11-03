@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q90",
+  "status": "IMPLEMENTED_PENDING_EXACT_HEAD_CI_AND_ARTIFACT_READBACK",
+  "checkpoint_date": "2026-11-03",
+  "branch": "research/q90-expanded-formula-grammar-20261103",
+  "base_q89_head": "38c8327e1ebf04f761eca30c49618422baa58d84",
+  "implementation_commits": [
+    "7bbfcbf5ddfe6a6d40326b8194d3de5ea11016f6",
+    "8b79977cd106b5c50064600fa8e4ccb2ae3627da",
+    "cee84baa34c627af4fad44906bc84c2c7fdbf3d9",
+    "8386fc297864dcac161d5b4bcf649271050025a3",
+    "ccf9994fd34dc9b433c58b893066fce572246ab9",
+    "70b0b19908da23736ba20de55c36734ef94cdd21",
+    "bdae56a6c50813147adb4dad0b8ab7c20938ca43",
+    "222311b9ecb2dfdc2f70f445b75caee6eab6cfcc",
+    "6eb477f7d65a4a4c0364210d751cc21cf944ee23",
+    "f47b3220f62571e28e99d22b1464f2bd8cee612c"
+  ],
+  "source_path": "scripts/sonar_q90_expanded_formula_grammar.py",
+  "validator_path": "scripts/validate_sonar_q90_expanded_formula_grammar.py",
+  "test_path": "tests/test_sonar_q90_expanded_formula_grammar.py",
+  "workflow_path": ".github/workflows/sonar-q90-expanded-formula-grammar.yml",
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "ba13920a78d588d3ede9c8355c15e441bb917f10",
+    "draw_count": 3396,
+    "last_date": "2026-11-02"
+  },
+  "scope": {
+    "baseline_features": 27,
+    "q89_features_total": 59,
+    "discovery_selected_features": 20,
+    "family_quotas": {
+      "baseline": 3,
+      "cooccurrence_novelty": 3,
+      "ewma_hit_dynamics": 3,
+      "gap_dynamics": 3,
+      "rank_trajectory": 3,
+      "regime_transition_affinity": 3,
+      "residual_surprise": 2
+    },
+    "walk_forward_min_prior_draws": 50,
+    "expected_scored_targets": 3346,
+    "linear_formula_counts": {
+      "4": 4845,
+      "5": 15504,
+      "6": 38760,
+      "7": 77520,
+      "8": 125970
+    },
+    "pairwise_interaction_4way": 29070,
+    "conditional_gate_4way": 38760,
+    "expected_formula_count": 330429,
+    "expected_formula_split_metrics_rows": 991287,
+    "expected_target_ledger_rows": 3346
+  },
+  "implemented": [
+    "discovery-only, family-balanced selection of 20 Q89 features",
+    "exhaustive equal-weight 4-, 5-, 6-, 7- and 8-feature combinations within selected subset",
+    "4-feature mean plus standardized pair-product interaction for each of six component pairs",
+    "4-feature mean plus candidate-specific conditional gates at thresholds 0.5 and 1.0",
+    "strict-prior target scoring from Q89 feature matrix",
+    "per-target retrospective oracle ledger and best formula by grammar group",
+    "Holm adjustment across full 330429 formula catalog per chronological split and endpoint",
+    "finite-population corrected normal null approximations for top5 hits and mean rank",
+    "fail-closed formula count, chronology, rank ledger, metric and SHA acceptance validator"
+  ],
+  "gates": {
+    "compile_and_unit_tests": "PENDING",
+    "formula_engine_walk_forward": "PENDING",
+    "acceptance_validator": "PENDING",
+    "artifact_persistence_90d": "PENDING",
+    "external_artifact_readback": "PENDING",
+    "exact_head_ci": "PENDING",
+    "main_repo_ci": "PENDING",
+    "human_review": "PENDING"
+  },
+  "guardrails": [
+    "exhaustive only within discovery-selected 20-feature subset and declared formula variants; not all 59-feature combinations or all mathematical formulas",
+    "feature subset selection uses discovery split only; validation and blind_oos remain chronological",
+    "per-target oracle uses actual target ranks and is retrospective, not an ex-ante forecast",
+    "no formula/model promotion",
+    "no PR merge",
+    "immutable target-2026-10-25 freeze remains untouched"
+  ],
+  "pending": [
+    "Q90 exact-head workflow and acceptance validator pass",
+    "download artifact and independently verify digest and internal SHAs",
+    "main repository exact-head CI pass",
+    "human review/integration",
+    "nested walk-forward ex-ante formula anticipation and calibration",
+    "expand conditional thresholds/interactions beyond the 4-feature slice"
+  ]
+}
