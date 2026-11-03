@@ -42,8 +42,10 @@ jobs:
           from pathlib import Path
           p=Path("reports/sequence_agent")
           manifest_path=p/"q90_formula_metrics_manifest.json"
-          checkpoint_path=next(p.glob("q90_checkpoint_*.json"))
           manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+          checkpoint_path=p/f"q90_checkpoint_{manifest['archive']['last_date']}.json"
+          if not checkpoint_path.exists():
+            raise SystemExit("Q90 checkpoint for current archive date is missing")
           acceptance={
             "validator":"Q90_FORMULA_ACCEPTANCE_PASS",
             "workflow_run_id":int(os.environ["GITHUB_RUN_ID"]),
