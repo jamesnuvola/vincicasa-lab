@@ -11,7 +11,9 @@ NAMES=q80.FEATURE_NAMES+NEW
 def z(a):
  a=np.asarray(a,float); sd=a.std(axis=0); sd[sd<1e-12]=1; return (a-a.mean(axis=0))/sd
 def ranks(a):
- order=np.argsort(-a,axis=0,kind="stable"); r=np.empty(order.shape,np.int16);r[order,np.arange(a.shape[1])]=np.arange(1,a.shape[0]+1)[:,None];return r
+ a=np.asarray(a,float); idx=np.arange(a.shape[0]); order=np.empty(a.shape,np.int16)
+ for c in range(a.shape[1]):order[:,c]=np.lexsort((idx,-np.round(a[:,c],12)))
+ r=np.empty(order.shape,np.int16);r[order,np.arange(a.shape[1])]=np.arange(1,a.shape[0]+1)[:,None];return r
 def rank_sum_int(r):
  return int(np.sum(r,dtype=np.int64))
 def load():
@@ -81,7 +83,7 @@ def main():
     if a!=b:pair[a-1,b-1]+=1
   regimes.append(int(sum(actual)>=100)+2*int(max(actual)-min(actual)>=25)+4*int(sum(v%2 for v in actual)>=3))
  OUT.mkdir(exist_ok=True,parents=True)
- catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":blob_sha,"draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; trajectory ranks stored at their own historical prefix; EWMA states update only after scoring target.","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
+ catalog={"schema_version":"1.0","task_id":"Q89","status":"FEATURE_ENGINE_EXECUTED_PENDING_ACCEPTANCE","archive":{"path":"data/storico_daily.csv","blob_sha":blob_sha,"draw_count":n,"first_date":dates[0],"last_date":dates[-1]},"feature_count":59,"baseline_features":q80.FEATURE_NAMES,"new_features":NEW,"feature_lineage":"Target i uses draws[:i]; trajectory ranks stored at their own historical prefix; EWMA states update only after scoring target.","rank_tie_policy":"scores rounded to 12 decimal places; equal scores rank by number ascending","guardrails":["prior-only","no oracle labels in feature values","no freeze overwritten","finite grammar not exhausted"]}
  (OUT/"adaptive_novelty_feature_catalog.json").write_text(json.dumps(catalog,indent=2)+"\n")
  with (OUT/"adaptive_novelty_rule_anticipation_metrics.csv").open("w",newline="") as f:
   w=csv.writer(f);w.writerow(["feature","family","targets","mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","mean_actual_number_rank"])

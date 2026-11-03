@@ -13,3 +13,13 @@ def test_rank_sum_accumulator_avoids_int16_overflow():
  total=0
  for _ in range(1000): total+=q.rank_sum_int(ranks)
  assert isinstance(total,int) and total==200000
+
+def test_rank_ties_and_near_ties_use_number_ascending():
+ a=np.ones((40,2))
+ a[1,0]=1.0+1e-13
+ r=q.ranks(a)
+ assert np.array_equal(r[:,1],np.arange(1,41))
+ assert r[0,0]==1 and r[1,0]==2
+ a[1,0]=1.0+1e-10
+ r=q.ranks(a)
+ assert r[1,0]==1 and r[0,0]==2
