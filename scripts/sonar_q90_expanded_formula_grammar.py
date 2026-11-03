@@ -342,7 +342,7 @@ def lower_mean_rank_p(rank_sum, targets):
         return np.ones_like(rank_sum, dtype=np.float64)
     mean_per_draw = 5.0 * 20.5
     variance_per_draw = 5.0 * 133.25 * (40.0 - 5.0) / (40.0 - 1.0)
-    z = (rank_sum.astype(np.float64) - 0.5 - targets * mean_per_draw) / math.sqrt(targets * variance_per_draw)
+    z = (rank_sum.astype(np.float64) + 0.5 - targets * mean_per_draw) / math.sqrt(targets * variance_per_draw)
     return np.clip(0.5 * erfc(-z / math.sqrt(2.0)), 0.0, 1.0)
 
 
@@ -610,7 +610,7 @@ def main():
         "multiple_testing": {"method": "Holm-Bonferroni",
                              "adjustment_family": "all 330429 formulas within each chronological split",
                              "endpoints": ["top5 number-hit upper-tail", "mean actual rank lower-tail"],
-                             "p_value_method": "continuity-corrected normal approximations with finite-population hypergeometric variance; exploratory"},
+                             "p_value_method": "upper-tail top5 uses x-0.5 and lower-tail rank sum uses x+0.5; finite-population variance for sampling five winning numbers without replacement; exploratory"},
         "guardrails": ["Q89 features are strict prior-only at each target",
                        "feature subset selection uses discovery split only",
                        "formula scores use only the Q89 matrix for that target",
