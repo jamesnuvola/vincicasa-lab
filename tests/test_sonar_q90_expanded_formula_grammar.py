@@ -6,6 +6,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 import sonar_q90_expanded_formula_grammar as q90
+import validate_sonar_q90_expanded_formula_grammar as validator
 
 
 def test_declared_formula_count_is_exact():
@@ -84,3 +85,21 @@ def test_finite_population_null_pvalues_are_bounded_near_chance():
     prank = q90.lower_mean_rank_p(np.asarray([10249], dtype=np.int64), 100)
     assert 0.4 < float(p5[0]) < 0.6
     assert 0.4 < float(prank[0]) < 0.6
+
+
+def test_validator_raw_pvalue_recomputation_matches_engine():
+    targets = 2008
+    hits5 = np.asarray([0, 250, 251, 252, 300, 500, 1004, 2008], dtype=np.int64)
+    rank_sum = np.asarray([targets * 5, targets * 40, targets * 102, targets * 103,
+                           targets * 200, targets * 400, targets * 600, targets * 800],
+                          dtype=np.int64)
+    assert np.allclose(
+        validator.upper_top5_hypergeometric_p(hits5, targets),
+        q90.upper_top5_hypergeometric_p(hits5, targets),
+        rtol=0.0, atol=1e-15
+    )
+    assert np.allclose(
+        validator.lower_mean_rank_p(rank_sum, targets),
+        q90.lower_mean_rank_p(rank_sum, targets),
+        rtol=0.0, atol=1e-15
+    )
