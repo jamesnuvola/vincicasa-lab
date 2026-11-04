@@ -366,12 +366,12 @@ def build_family_summary(split, acc, targets_by_split, spec):
             idx = np.flatnonzero(mask)
             if not len(idx):
                 continue
-            rank_sum = acc[split]["rank_sum"][idx]
-            h5 = acc[split]["hits5"][idx]
-            h10 = acc[split]["hits10"][idx]
-            h20 = acc[split]["hits20"][idx]
-            holm5 = acc[split]["holm_top5"][idx]
-            holmrank = acc[split]["holm_rank_lower"][idx]
+            rank_sum = acc["rank_sum"][idx]
+            h5 = acc["hits5"][idx]
+            h10 = acc["hits10"][idx]
+            h20 = acc["hits20"][idx]
+            holm5 = acc["holm_top5"][idx]
+            holmrank = acc["holm_rank_lower"][idx]
             order = np.argsort(rank_sum / trials, kind="mergesort")[:10]
             top10 = []
             for local in order:
