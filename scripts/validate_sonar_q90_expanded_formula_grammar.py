@@ -237,8 +237,21 @@ def main():
                 raise AssertionError("unexpected extra formula metrics rows")
         p5 = upper_top5_hypergeometric_p(hits5, targets)
         prank = lower_mean_rank_p(rank_sum, targets)
-        if np.max(np.abs(file_p5 - p5)) > 1e-12 or np.max(np.abs(file_prank - prank)) > 1e-12:
-            raise AssertionError(f"raw p-value recomputation mismatch in {split}")
+        delta5 = np.abs(file_p5 - p5)
+        deltarank = np.abs(file_prank - prank)
+        max_delta5 = float(np.max(delta5))
+        max_deltarank = float(np.max(deltarank))
+        if max_delta5 > 1e-12 or max_deltarank > 1e-12:
+            i5 = int(np.argmax(delta5))
+            irank = int(np.argmax(deltarank))
+            raise AssertionError(
+                f"raw p-value recomputation mismatch in {split}: "
+                f"top5 max_delta={max_delta5:.17g} idx={i5} file={file_p5[i5]:.17g} "
+                f"recomputed={p5[i5]:.17g} hits5={hits5[i5]} targets={targets}; "
+                f"rank max_delta={max_deltarank:.17g} idx={irank} "
+                f"file={file_prank[irank]:.17g} recomputed={prank[irank]:.17g} "
+                f"rank_sum={rank_sum[irank]} targets={targets}"
+            )
         holm5 = holm_adjust_array(p5)
         holmrank = holm_adjust_array(prank)
         if np.max(np.abs(file_holm5 - holm5)) > 1e-12 or np.max(np.abs(file_holmrank - holmrank)) > 1e-12:
