@@ -145,15 +145,17 @@ def holm_adjust(p_values):
     return adjusted
 
 
-def write_score_part(part_index, target_start, target_dates, hits5_rows, rank_sum_rows, archive_blob_sha):
+def write_score_part(part_index, target_start, target_dates, hits5_rows, hits20_rows, rank_sum_rows, archive_blob_sha):
     OUT.mkdir(parents=True, exist_ok=True)
     path = OUT / f"q91_formula_target_scores_part_{part_index:02d}.npz"
     hits5 = np.stack(hits5_rows, axis=0).astype(np.uint8, copy=False)
+    hits20 = np.stack(hits20_rows, axis=0).astype(np.uint8, copy=False)
     rank_sum = np.stack(rank_sum_rows, axis=0).astype(np.uint16, copy=False)
     with path.open("wb") as handle:
         np.savez_compressed(
             handle,
             hits5=hits5,
+            hits20=hits20,
             rank_sum=rank_sum,
             target_dates=np.asarray(target_dates, dtype="U10"),
             target_start=np.asarray(target_start, dtype=np.int32),
@@ -224,7 +226,7 @@ def main():
     }
     target_rows = []
     score_parts = []
-    hits5_chunk, rank_sum_chunk, dates_chunk = [], [], []
+    hits5_chunk, hits20_chunk, rank_sum_chunk, dates_chunk = [], [], [], []
     part_index = 0
     cum_hits5 = np.zeros(formula_count, dtype=np.int32)
     cum_rank_sum = np.zeros(formula_count, dtype=np.int32)
@@ -330,15 +332,16 @@ def main():
             })
 
             hits5_chunk.append(hits5)
+            hits20_chunk.append(hits20)
             rank_sum_chunk.append(rank_sum)
             dates_chunk.append(target_date)
             if len(hits5_chunk) == SCORE_CHUNK_TARGETS or target_index == scored_targets - 1:
                 score_parts.append(write_score_part(
                     part_index, target_index - len(hits5_chunk) + 1, dates_chunk,
-                    hits5_chunk, rank_sum_chunk, archive_blob_sha
+                    hits5_chunk, hits20_chunk, rank_sum_chunk, archive_blob_sha
                 ))
                 part_index += 1
-                hits5_chunk, rank_sum_chunk, dates_chunk = [], [], []
+                hits5_chunk, hits20_chunk, rank_sum_chunk, dates_chunk = [], [], [], []
 
             # The current target becomes historical only after its prediction/score is recorded.
             cum_hits5 += hits5.astype(np.int32)
