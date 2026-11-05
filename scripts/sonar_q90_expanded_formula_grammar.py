@@ -356,6 +356,27 @@ def holm_adjust_array(p_values):
     return adjusted
 
 
+def compute_split_pvalue_arrays(acc, targets_by_split, split_names):
+    """Bind raw and Holm-adjusted p-value vectors to their own chronological split."""
+    values = {}
+    for split in split_names:
+        targets = targets_by_split[split]
+        a = acc[split]
+        p_top5 = upper_top5_hypergeometric_p(a["hits5"], targets)
+        p_rank_lower = lower_mean_rank_p(a["rank_sum"], targets)
+        holm_top5 = holm_adjust_array(p_top5)
+        holm_rank_lower = holm_adjust_array(p_rank_lower)
+        a["holm_top5"] = holm_top5
+        a["holm_rank_lower"] = holm_rank_lower
+        values[split] = {
+            "p_top5": p_top5,
+            "holm_top5": holm_top5,
+            "p_rank_lower": p_rank_lower,
+            "holm_rank_lower": holm_rank_lower,
+        }
+    return values
+
+
 def build_family_summary(split, acc, targets_by_split, spec):
     rows = []
     trials = 5 * targets_by_split[split]
@@ -521,17 +542,9 @@ def main():
                      "mean_actual_number_rank", "p_top5", "holm_top5",
                      "p_rank_lower", "holm_rank_lower"]
     family_summary = []
+    split_pvalues = compute_split_pvalue_arrays(acc, targets_by_split, split_names)
     for split in split_names:
-        targets = targets_by_split[split]
-        trials = 5 * targets
-        a = acc[split]
-        p_top5 = upper_top5_hypergeometric_p(a["hits5"], targets)
-        p_rank = lower_mean_rank_p(a["rank_sum"], targets)
-        holm_top5 = holm_adjust_array(p_top5)
-        holm_rank = holm_adjust_array(p_rank)
-        a["holm_top5"] = holm_top5
-        a["holm_rank_lower"] = holm_rank
-        family_summary.extend(build_family_summary(split, a, targets_by_split, spec))
+        family_summary.extend(build_family_summary(split, acc[split], targets_by_split, spec))
 
     with split_metrics_path.open("w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=metric_fields)
@@ -540,6 +553,7 @@ def main():
             targets = targets_by_split[split]
             trials = 5 * targets
             a = acc[split]
+            split_p = split_pvalues[split]
             for i, formula_id in enumerate(spec["formula_ids"]):
                 code = int(spec["type_codes"][i])
                 size = int(spec["sizes"][i])
@@ -560,8 +574,8 @@ def main():
                     "all5_top10_rate": float(a["all5_top10"][i] / targets),
                     "all5_top20_rate": float(a["all5_top20"][i] / targets),
                     "mean_actual_number_rank": float(a["rank_sum"][i] / trials),
-                    "p_top5": float(p_top5[i]), "holm_top5": float(holm_top5[i]),
-                    "p_rank_lower": float(p_rank[i]), "holm_rank_lower": float(holm_rank[i])
+                    "p_top5": float(split_p["p_top5"][i]), "holm_top5": float(split_p["holm_top5"][i]),
+                    "p_rank_lower": float(split_p["p_rank_lower"][i]), "holm_rank_lower": float(split_p["holm_rank_lower"][i])
                 })
 
     family_summary_path.write_text(json.dumps({
