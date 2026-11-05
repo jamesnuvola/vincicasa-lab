@@ -90,12 +90,28 @@ def collect_output_paths():
     return paths, checkpoint_rel
 
 
-def verify_outputs_at_ref(ref_sha: str, paths):
+def tree_entries_at_ref(ref_sha: str):
     commit_info = api("GET", "/git/commits/" + ref_sha)
     tree_info = api("GET", "/git/trees/" + commit_info["tree"]["sha"] + "?recursive=1")
     if tree_info.get("truncated"):
         raise SystemExit("Q91_PERSIST_BLOCKED: repository tree response was truncated")
-    entries = {item["path"]: item for item in tree_info.get("tree", []) if item.get("type") == "blob"}
+    return {item["path"]: item for item in tree_info.get("tree", []) if item.get("type") == "blob"}
+
+
+def stale_output_paths(ref_sha: str, expected_paths):
+    entries = tree_entries_at_ref(ref_sha)
+    keep = set(expected_paths)
+    stale = []
+    for path in entries:
+        is_score_part = path.startswith("reports/sequence_agent/q91_formula_target_scores_part_") and path.endswith(".npz")
+        is_checkpoint = path.startswith("reports/sequence_agent/q91_checkpoint_") and path.endswith(".json")
+        if (is_score_part or is_checkpoint) and path not in keep:
+            stale.append(path)
+    return sorted(stale)
+
+
+def verify_outputs_at_ref(ref_sha: str, paths, deleted_paths=()):
+    entries = tree_entries_at_ref(ref_sha)
     for path in paths:
         entry = entries.get(path)
         if not entry:
@@ -111,6 +127,10 @@ def verify_outputs_at_ref(ref_sha: str, paths):
             raise SystemExit("Q91_PERSIST_BLOCKED: SHA readback mismatch for " + path)
         print("Q91_PERSIST_VERIFIED:", path, "bytes=" + str(len(persisted_bytes)),
               "sha256=" + sha256_bytes(persisted_bytes))
+    for path in deleted_paths:
+        if path in entries:
+            raise SystemExit("Q91_PERSIST_BLOCKED: stale output remains in persisted tree " + path)
+        print("Q91_PERSIST_DELETED_VERIFIED:", path)
 
 
 def main():
@@ -173,12 +193,13 @@ def main():
         previous = git_head_file(path)
         if previous != content:
             changed.append((path, content))
+    deleted_paths = stale_output_paths(head, paths)
     output_path = os.environ.get("GITHUB_OUTPUT")
-    if not changed:
+    if not changed and not deleted_paths:
         verify_outputs_at_ref(head, paths)
         if output_path:
             with open(output_path, "a", encoding="utf-8") as handle:
-                handle.write("commit_created=false\nnew_sha=" + head + "\n")
+                handle.write("commit_created=false\\nnew_sha=" + head + "\\n")
         print("Q91_PERSIST_NOOP: validated outputs already match branch head")
         return
 
@@ -191,6 +212,7 @@ def main():
         })
         tree_entries.append({"path": path, "mode": "100644", "type": "blob", "sha": blob["sha"]})
         print("Q91_PERSIST_BLOB:", path, "bytes=" + str(len(content)), "sha=" + blob["sha"])
+    tree_entries.extend({"path": path, "mode": "100644", "type": "blob", "sha": None} for path in deleted_paths)
     tree = api("POST", "/git/trees", {
         "base_tree": commit_data["tree"]["sha"],
         "tree": tree_entries,
@@ -204,7 +226,7 @@ def main():
     ref_after = api("GET", "/git/ref/heads/" + BRANCH)
     if ref_after.get("object", {}).get("sha") != commit["sha"]:
         raise SystemExit("Q91_PERSIST_BLOCKED: branch ref does not point to persisted commit")
-    verify_outputs_at_ref(commit["sha"], paths)
+    verify_outputs_at_ref(commit["sha"], paths, deleted_paths)
     if output_path:
         with open(output_path, "a", encoding="utf-8") as handle:
             handle.write("commit_created=true\nnew_sha=" + commit["sha"] + "\n")
