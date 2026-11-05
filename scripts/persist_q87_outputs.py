@@ -37,6 +37,9 @@ def main():
     report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     errors=validate_q87()
     if errors: raise SystemExit("Q87_PERSIST_BLOCKED: post-status acceptance validation failed: "+"; ".join(errors[:30]))
+    # Recompute queue status after the report transitions to validated; the prior
+    # queue snapshot still labels Q87 as evidence-present/requires-validation.
+    subprocess.run(["python", str(ROOT/"scripts/sonar_research_queue.py")], cwd=ROOT, check=True)
     queue=json.loads((OUT/"research_queue_status.json").read_text(encoding="utf-8"))
     task=next((x for x in queue.get("tasks",[]) if x.get("id")=="Q87"),None)
     if queue.get("queue_status")!="QUEUE_VALID" or not task or task.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW" or task.get("validation_errors"):
