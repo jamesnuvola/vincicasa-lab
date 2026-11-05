@@ -103,3 +103,40 @@ def test_validator_raw_pvalue_recomputation_matches_engine():
         q90.lower_mean_rank_p(rank_sum, targets),
         rtol=0.0, atol=1e-15
     )
+
+
+
+def test_split_pvalue_arrays_are_bound_to_each_chronological_split():
+    targets_by_split = {"discovery": 2008, "blind_oos": 669}
+    split_names = ["discovery", "blind_oos"]
+    acc = {
+        "discovery": {
+            "hits5": np.asarray([1348, 1255], dtype=np.int64),
+            "rank_sum": np.asarray([203133, 2008 * 102], dtype=np.int64),
+        },
+        "blind_oos": {
+            "hits5": np.asarray([400, 418], dtype=np.int64),
+            "rank_sum": np.asarray([669 * 102, 669 * 103], dtype=np.int64),
+        },
+    }
+    values = q90.compute_split_pvalue_arrays(acc, targets_by_split, split_names)
+
+    for split in split_names:
+        targets = targets_by_split[split]
+        assert np.allclose(
+            values[split]["p_top5"],
+            q90.upper_top5_hypergeometric_p(acc[split]["hits5"], targets),
+            rtol=0.0, atol=1e-15
+        )
+        assert np.allclose(
+            values[split]["p_rank_lower"],
+            q90.lower_mean_rank_p(acc[split]["rank_sum"], targets),
+            rtol=0.0, atol=1e-15
+        )
+    assert not np.allclose(
+        values["discovery"]["p_top5"], values["blind_oos"]["p_top5"], rtol=0.0, atol=1e-12
+    )
+    assert not np.allclose(
+        values["discovery"]["p_rank_lower"], values["blind_oos"]["p_rank_lower"],
+        rtol=0.0, atol=1e-12
+    )
