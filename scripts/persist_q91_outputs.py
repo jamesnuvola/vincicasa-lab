@@ -199,7 +199,7 @@ def main():
         verify_outputs_at_ref(head, paths)
         if output_path:
             with open(output_path, "a", encoding="utf-8") as handle:
-                handle.write("commit_created=false\\nnew_sha=" + head + "\\n")
+                handle.write("commit_created=false\nnew_sha=" + head + "\n")
         print("Q91_PERSIST_NOOP: validated outputs already match branch head")
         return
 
