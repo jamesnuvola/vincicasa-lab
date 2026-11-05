@@ -170,7 +170,7 @@ def validate_outputs():
                   and report.get("formula_target_scores", {}).get("part_count") == len(parts),
                   "Q91 score parts count mismatch")
 
-        hits5_parts, rank_sum_parts, score_dates = [], [], []
+        hits5_parts, hits20_parts, rank_sum_parts, score_dates = [], [], [], []
         target_cursor = 0
         for part_index, part in enumerate(parts):
             rel = str(part.get("path", ""))
@@ -191,6 +191,7 @@ def validate_outputs():
             try:
                 with np.load(path, allow_pickle=False) as z:
                     local_hits5 = z["hits5"]
+                    local_hits20 = z["hits20"]
                     local_rank_sum = z["rank_sum"]
                     local_dates = z["target_dates"].tolist()
                     local_start = int(z["target_start"].item())
@@ -199,6 +200,7 @@ def validate_outputs():
                     local_archive_sha = str(z["archive_blob_sha"].item())
                 expected_targets = int(part.get("targets", -1))
                 add_error(errors, local_hits5.shape == (expected_targets, FORMULA_COUNT)
+                          and local_hits20.shape == (expected_targets, FORMULA_COUNT)
                           and local_rank_sum.shape == (expected_targets, FORMULA_COUNT),
                           "Q91 score part array shape mismatch: " + rel)
                 add_error(errors, local_start == target_cursor
@@ -217,9 +219,12 @@ def validate_outputs():
                 if local_hits5.shape == (expected_targets, FORMULA_COUNT):
                     add_error(errors, np.all((local_hits5 >= 0) & (local_hits5 <= 5)),
                               "Q91 score part Top5 hit values out of range: " + rel)
-                    add_error(errors, np.all((local_rank_sum >= 5) & (local_rank_sum <= 200)),
+                    add_error(errors, np.all((local_hits20 >= 0) & (local_hits20 <= 5)),
+                              "Q91 score part Top20 hit values out of range: " + rel)
+                    add_error(errors, np.all((local_rank_sum >= 5) & (local_rank_sum <= 200)), 
                               "Q91 score part rank sums out of range: " + rel)
                     hits5_parts.append(local_hits5.astype(np.uint8, copy=False))
+                    hits20_parts.append(local_hits20.astype(np.uint8, copy=False))
                     rank_sum_parts.append(local_rank_sum.astype(np.uint16, copy=False))
                     score_dates.extend(local_dates)
             except Exception as exc:
@@ -230,12 +235,14 @@ def validate_outputs():
         add_error(errors, int(score_manifest.get("rows", -1)) == scored_targets * FORMULA_COUNT,
                   "Q91 score manifest row coverage mismatch")
 
-        if len(hits5_parts) != len(parts) or len(rank_sum_parts) != len(parts):
+        if len(hits5_parts) != len(parts) or len(hits20_parts) != len(parts) or len(rank_sum_parts) != len(parts):
             errors.append("Q91 score parts could not be fully materialized for validation")
             return errors
         all_hits5 = np.concatenate(hits5_parts, axis=0)
+        all_hits20 = np.concatenate(hits20_parts, axis=0)
         all_rank_sum = np.concatenate(rank_sum_parts, axis=0)
         add_error(errors, all_hits5.shape == (scored_targets, FORMULA_COUNT)
+                  and all_hits20.shape == (scored_targets, FORMULA_COUNT)
                   and all_rank_sum.shape == (scored_targets, FORMULA_COUNT),
                   "Q91 combined score arrays shape mismatch")
         add_error(errors, score_dates == dates[MIN_HISTORY:],
@@ -405,6 +412,14 @@ def validate_outputs():
                 errors.append("Q91 unknown oracle formula at " + target_date)
                 oracle_idx = 0
             try:
+                expected_oracle_idx = q91.oracle_formula_index(
+                    all_rank_sum[target_index], all_hits5[target_index], all_hits20[target_index]
+                )
+                add_error(errors, oracle_idx == expected_oracle_idx,
+                          "Q91 oracle formula tie-break mismatch at " + target_date)
+                expected_oracle_features = "+".join(q80.FEATURE_NAMES[c] for c in q80.FORMULAS[expected_oracle_idx])
+                add_error(errors, row.get("oracle_best_formula_features") == expected_oracle_features,
+                          "Q91 oracle formula features mismatch at " + target_date)
                 oracle_ranks = [int(value) for value in json.loads(row["oracle_actual_number_ranks"])]
                 if len(oracle_ranks) != 5 or any(value < 1 or value > 40 for value in oracle_ranks):
                     raise ValueError("invalid oracle ranks")
@@ -418,6 +433,7 @@ def validate_outputs():
                           and int(row.get("oracle_rank_sum", -1)) == oracle_rs,
                           "Q91 oracle rank/hit ledger mismatch at " + target_date)
                 add_error(errors, int(all_hits5[target_index, oracle_idx]) == oracle_h5
+                          and int(all_hits20[target_index, oracle_idx]) == oracle_h20
                           and int(all_rank_sum[target_index, oracle_idx]) == oracle_rs,
                           "Q91 oracle score-array mismatch at " + target_date)
                 add_error(errors, oracle_rs == int(np.min(all_rank_sum[target_index])),
@@ -616,6 +632,7 @@ def validate_outputs():
             standardized = q80.zscore_columns(raw)
             actual_idx = np.asarray(draws[i], dtype=np.int16) - 1
             sample_hits5 = np.empty(FORMULA_COUNT, dtype=np.uint8)
+            sample_hits20 = np.empty(FORMULA_COUNT, dtype=np.uint8)
             sample_rank_sum = np.empty(FORMULA_COUNT, dtype=np.uint16)
             for formula_index, cols in enumerate(q80.FORMULAS):
                 scores = standardized[:, cols].mean(axis=1)
@@ -624,9 +641,12 @@ def validate_outputs():
                 rank[order] = np.arange(1, 41, dtype=np.int16)
                 actual_ranks = rank[actual_idx]
                 sample_hits5[formula_index] = np.sum(actual_ranks <= 5)
+                sample_hits20[formula_index] = np.sum(actual_ranks <= 20)
                 sample_rank_sum[formula_index] = np.sum(actual_ranks)
             add_error(errors, np.array_equal(sample_hits5, all_hits5[target_index]),
                       "Q91 direct score recomputation Top5 mismatch at target index " + str(target_index))
+            add_error(errors, np.array_equal(sample_hits20, all_hits20[target_index]),
+                      "Q91 direct score recomputation Top20 mismatch at target index " + str(target_index))
             add_error(errors, np.array_equal(sample_rank_sum, all_rank_sum[target_index]),
                       "Q91 direct score recomputation rank sum mismatch at target index " + str(target_index))
 
