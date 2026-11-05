@@ -150,6 +150,8 @@ def validate_outputs():
         add_error(errors, report.get("formula_target_scores", {}).get("manifest_sha256")
                   == sha256_file(SCORE_MANIFEST_PATH),
                   "Q91 score manifest SHA mismatch")
+        add_error(errors, report.get("formula_target_scores", {}).get("rows") == scored_targets * FORMULA_COUNT,
+                  "Q91 report score row count mismatch")
         add_error(errors, score_manifest.get("task_id") == "Q91"
                   and score_manifest.get("storage_format") == "chunked_npz",
                   "Q91 score manifest identity/storage mismatch")
@@ -199,6 +201,8 @@ def validate_outputs():
                     local_formula_count = int(z["formula_count"].item())
                     local_archive_sha = str(z["archive_blob_sha"].item())
                 expected_targets = int(part.get("targets", -1))
+                add_error(errors, int(part.get("rows", -1)) == expected_targets * FORMULA_COUNT,
+                          "Q91 score part row count mismatch: " + rel)
                 add_error(errors, local_hits5.shape == (expected_targets, FORMULA_COUNT)
                           and local_hits20.shape == (expected_targets, FORMULA_COUNT)
                           and local_rank_sum.shape == (expected_targets, FORMULA_COUNT),
@@ -589,6 +593,17 @@ def validate_outputs():
         expected_specs = [{"policy_id": p, "window": w, "objective": o} for p, w, o in q91.POLICY_SPECS]
         add_error(errors, selection_report.get("policy_specs") == expected_specs,
                   "Q91 selection policy specifications mismatch")
+        discovery_rows = selection_report.get("discovery_policy_metrics", [])
+        add_error(errors, len(discovery_rows) == len(POLICY_IDS),
+                  "Q91 selection report discovery metric count mismatch")
+        for policy, discovery_row in zip(POLICY_IDS, discovery_rows):
+            metric_row = metrics_by_key.get((policy, "discovery"), {})
+            add_error(errors, discovery_row.get("policy_id") == policy
+                      and int(discovery_row.get("targets", -1)) == int(metric_row.get("targets", -2))
+                      and abs(float(discovery_row.get("mean_number_hits_top5", -1)) - float(metric_row.get("mean_number_hits_top5", -2))) <= 1e-12
+                      and abs(float(discovery_row.get("mean_rank_of_actual_numbers", -1)) - float(metric_row.get("mean_rank_of_actual_numbers", -2))) <= 1e-12
+                      and bool(discovery_row.get("selected_on_discovery")) == (policy == expected_selected_policy),
+                      "Q91 selection report discovery metrics mismatch for " + policy)
 
         # Independent direct-loop recomputation at deterministic boundary samples.
         discovery_count = expected_split_counts["discovery"]
@@ -650,12 +665,23 @@ def validate_outputs():
             add_error(errors, np.array_equal(sample_rank_sum, all_rank_sum[target_index]),
                       "Q91 direct score recomputation rank sum mismatch at target index " + str(target_index))
 
+        if report.get("status") in ("FORMULA_ACCEPTANCE_PASS_PENDING_ARTIFACT_READBACK_MAIN_CI_HUMAN_REVIEW", "VALIDATED_PENDING_HUMAN_REVIEW"):
+            acceptance = report.get("acceptance", {})
+            add_error(errors, acceptance.get("validator") == "Q91_FORMULA_ACCEPTANCE_PASS",
+                      "Q91 finalized acceptance validator marker missing")
+            add_error(errors, acceptance.get("human_review") == "PENDING_HUMAN_REVIEW_INTEGRATION",
+                      "Q91 finalized human-review gate missing")
         if report.get("status") == "VALIDATED_PENDING_HUMAN_REVIEW":
             acceptance = report.get("acceptance", {})
             add_error(errors, acceptance.get("validator") == "Q91_FORMULA_ACCEPTANCE_PASS",
                       "Q91 acceptance checkpoint validator marker missing")
             add_error(errors, acceptance.get("human_review") == "PENDING_HUMAN_REVIEW_INTEGRATION",
                       "Q91 acceptance human-review gate missing")
+        add_error(errors, checkpoint.get("status") in (
+            "FORMULA_ENGINE_EXECUTED_PENDING_ACCEPTANCE_VALIDATION",
+            "FORMULA_ACCEPTANCE_PASS_PENDING_ARTIFACT_READBACK_MAIN_CI_HUMAN_REVIEW",
+            "VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION",
+        ), "Q91 checkpoint status is not an allowed acceptance state")
         add_error(errors, checkpoint.get("task_id") == "Q91"
                   and checkpoint.get("archive_blob_sha") == archive_blob_sha
                   and checkpoint.get("draw_count") == n
@@ -663,6 +689,10 @@ def validate_outputs():
                   and checkpoint.get("formula_count") == FORMULA_COUNT
                   and checkpoint.get("selected_policy_on_discovery") == expected_selected_policy,
                   "Q91 checkpoint dimensions/provenance mismatch")
+        if checkpoint.get("status") == "VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION":
+            add_error(errors, checkpoint.get("acceptance", {}).get("validator") == "Q91_FORMULA_ACCEPTANCE_PASS"
+                      and checkpoint.get("acceptance", {}).get("human_review") == "PENDING_HUMAN_REVIEW_INTEGRATION",
+                      "Q91 checkpoint finalized acceptance/human-review marker missing")
         add_error(errors, checkpoint.get("metrics_sha256") == sha256_file(METRICS_PATH)
                   and checkpoint.get("target_ledger_sha256") == sha256_file(LEDGER_PATH)
                   and checkpoint.get("score_manifest_sha256") == sha256_file(SCORE_MANIFEST_PATH)
