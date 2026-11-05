@@ -1,0 +1,111 @@
+name: SONAR Q91 Nested Formula Walk-Forward
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["research/per-number-condition-grammar-20261026"]
+    paths:
+      - "scripts/sonar_q91_nested_walkforward.py"
+      - "scripts/validate_sonar_q91_nested_walkforward.py"
+      - "scripts/persist_q91_outputs.py"
+      - "tests/test_sonar_q91_nested_walkforward.py"
+      - "scripts/sonar_research_queue.py"
+      - "reports/sequence_agent/research_backlog.json"
+      - "data/storico_daily.csv"
+      - ".github/workflows/sonar-q91-nested-formula-walkforward.yml"
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: sonar-q91-nested-formula-walkforward
+  cancel-in-progress: true
+jobs:
+  q91:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile Q91 engine, validator and persistence
+        run: python -m py_compile scripts/sonar_q91_nested_walkforward.py scripts/validate_sonar_q91_nested_walkforward.py scripts/persist_q91_outputs.py scripts/sonar_research_queue.py tests/test_sonar_q91_nested_walkforward.py
+      - name: Run Q91 regression tests
+        run: python -m pytest -q tests/test_sonar_q91_nested_walkforward.py
+      - name: Evaluate nested strict-prior formula anticipation
+        run: python scripts/sonar_q91_nested_walkforward.py
+      - name: Fail-closed Q91 acceptance validator
+        run: python scripts/validate_sonar_q91_nested_walkforward.py
+      - name: Finalize Q91 acceptance checkpoint
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          p=Path("reports/sequence_agent")
+          report_path=p/"q91_nested_formula_walkforward.json"
+          checkpoint_path=p/f"q91_checkpoint_{json.loads(report_path.read_text(encoding='utf-8'))['archive']['last_date']}.json"
+          report=json.loads(report_path.read_text(encoding="utf-8"))
+          checkpoint=json.loads(checkpoint_path.read_text(encoding="utf-8"))
+          acceptance={
+            "validator":"Q91_FORMULA_ACCEPTANCE_PASS",
+            "workflow_run_id":int(os.environ["GITHUB_RUN_ID"]),
+            "source_merge_or_dispatch_sha":os.environ["GITHUB_SHA"],
+            "exact_research_branch_head_sha":os.environ["GITHUB_HEAD_SHA"],
+            "artifact_retention_days":90,
+            "artifact_readback":"PENDING_EXTERNAL_READBACK",
+            "current_head_ci":"PENDING",
+            "human_review":"PENDING_HUMAN_REVIEW_INTEGRATION"
+          }
+          report["status"]="FORMULA_ACCEPTANCE_PASS_PENDING_ARTIFACT_READBACK_MAIN_CI_HUMAN_REVIEW"
+          report["acceptance"]=acceptance
+          report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          checkpoint["status"]=report["status"]
+          checkpoint["acceptance"]=acceptance
+          checkpoint["report_sha256"]=hashlib.sha256(report_path.read_bytes()).hexdigest()
+          checkpoint_path.write_text(json.dumps(checkpoint,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print("Q91_ACCEPTANCE_CHECKPOINT_FINALIZED",checkpoint["report_sha256"])
+          PY
+      - name: Recheck finalized Q91 acceptance manifest
+        run: python scripts/validate_sonar_q91_nested_walkforward.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: q91-nested-formula-walkforward-bundle
+          path: |
+            reports/sequence_agent/q91_formula_catalog.csv
+            reports/sequence_agent/q91_policy_metrics.csv
+            reports/sequence_agent/q91_target_ledger.csv
+            reports/sequence_agent/q91_formula_selection_report.json
+            reports/sequence_agent/q91_formula_target_scores_manifest.json
+            reports/sequence_agent/q91_formula_target_scores_part_*.npz
+            reports/sequence_agent/q91_nested_formula_walkforward.json
+            reports/sequence_agent/q91_checkpoint_*.json
+          if-no-files-found: error
+          retention-days: 90
+      - name: Persist Q91 outputs with exact Git Data API readback
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          GITHUB_SOURCE_SHA: ${{ github.sha }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+        run: python scripts/persist_q91_outputs.py
+      - name: Request current-head CI
+        if: ${{ steps.persist.outputs.commit_created == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"research/q91-nested-formula-walkforward-20261105\"}"
