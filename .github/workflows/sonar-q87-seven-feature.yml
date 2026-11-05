@@ -22,7 +22,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   evaluate-shards:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && contains(github.event.workflow_run.head_commit.message, '[q87-persist-retry]')) || (github.event_name == 'push' && !contains(github.event.head_commit.message, '[sonar-archive-refresh]')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && (contains(github.event.workflow_run.head_commit.message, '[q87-persist-retry]') || contains(github.event.workflow_run.head_commit.message, '[sonar-archive-refresh]'))) || (github.event_name == 'push' && !contains(github.event.head_commit.message, '[sonar-archive-refresh]')) }}
     name: Evaluate shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
