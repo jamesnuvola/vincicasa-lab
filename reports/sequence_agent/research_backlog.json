@@ -356,6 +356,34 @@
         "document that this is a finite eight-feature equal-weight grammar; weighted, conditional, nonlinear, interaction and higher-order formula families remain open",
         "preserve immutable freezes and require human review/integration before Q88 is marked COMPLETE"
       ]
+    },
+    {
+      "id": "Q91",
+      "priority": 91,
+      "title": "Nested strict-prior walk-forward anticipation and calibration over the Q80 3,303-formula catalog",
+      "depends_on": [
+        "Q00"
+      ],
+      "evidence": [
+        "reports/sequence_agent/q91_nested_formula_walkforward.json",
+        "reports/sequence_agent/q91_formula_catalog.csv",
+        "reports/sequence_agent/q91_policy_metrics.csv",
+        "reports/sequence_agent/q91_target_ledger.csv",
+        "reports/sequence_agent/q91_formula_target_scores_manifest.json",
+        "reports/sequence_agent/q91_formula_selection_report.json"
+      ],
+      "acceptance": [
+        "use the complete canonical archive and the exact 3,303 Q80 single/pair/triple equal-weight formulas; each target's 27 features and formula ranks use only draws strictly before the target",
+        "evaluate six registered meta-policies: expanding/rolling-250/rolling-500 history with Top5-hit or mean-rank selection, with a fixed freq_5 cold start for the first 100 scored targets",
+        "at each target, every policy selects its formula only from prior target outcomes; the meta-policy is selected using discovery outcomes only and frozen through validation and blind OOS",
+        "produce a per-target ledger with strict cutoff, actual quintet, all six policy formula IDs/ranks/hits, discovery-frozen policy output, retrospective oracle formula and nonnegative rank-sum regret",
+        "persist the complete formula×target Top5-hit, Top20-hit and rank-sum arrays in deterministic chunked NPZ parts with archive SHA, contiguous target ranges, row counts, byte counts and SHA-256 manifest",
+        "produce 18 policy×split metric rows across chronological discovery, validation and blind OOS; apply Holm-Bonferroni over the full 6×3×2 policy×split×endpoint family",
+        "acceptance validator independently checks archive reconciliation, formula catalog order/count, strict-prior policy selections from prior score arrays, target coverage, metrics/p-values/Holm, oracle tie-break and direct-loop score recomputation at deterministic boundary samples",
+        "report uniform number-rank baseline, calibration and regret; exploratory/null outcomes remain valid and no formula or meta-policy is automatically promoted",
+        "persist outputs with exact Git-object readback, pass current-head CI and require human review/integration before Q91 is marked COMPLETE"
+      ],
+      "kind": "analysis"
     }
   ]
 }
