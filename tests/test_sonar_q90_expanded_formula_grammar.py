@@ -140,3 +140,37 @@ def test_split_pvalue_arrays_are_bound_to_each_chronological_split():
         values["discovery"]["p_rank_lower"], values["blind_oos"]["p_rank_lower"],
         rtol=0.0, atol=1e-12
     )
+
+
+
+def test_validator_oracle_and_family_rank_vectors_match_emitted_ledger_schema():
+    oracle_id = "L4_00_01_02_03"
+    gate_id = "G4_00_01_02_03_F0_T05_B025"
+    formula_map = {
+        oracle_id: ("linear_mean", 4),
+        gate_id: ("conditional_gate", 4),
+    }
+    row = {
+        "oracle_best_formula_id": oracle_id,
+        "oracle_best_formula_type": "linear_mean",
+        "oracle_best_formula_size": "4",
+        "oracle_actual_number_ranks": "[1,6,11,21,40]",
+        "oracle_number_hits_top5": "1",
+        "oracle_number_hits_top10": "2",
+        "oracle_number_hits_top20": "3",
+        "oracle_rank_sum": "79",
+        "best_G4_formula_id": gate_id,
+        "best_G4_formula_type": "conditional_gate",
+        "best_G4_formula_size": "4",
+        "best_G4_actual_number_ranks": "[2,7,12,22,39]",
+        "best_G4_number_hits_top5": "1",
+        "best_G4_number_hits_top10": "2",
+        "best_G4_number_hits_top20": "3",
+        "best_G4_rank_sum": "82",
+    }
+    assert validator.check_rank_vector(row, "oracle", formula_map) == (
+        oracle_id, [1, 6, 11, 21, 40]
+    )
+    assert validator.check_rank_vector(
+        row, "best_G4", formula_map, "conditional_gate", 4
+    ) == (gate_id, [2, 7, 12, 22, 39])
