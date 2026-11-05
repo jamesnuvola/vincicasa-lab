@@ -38,7 +38,7 @@ jobs:
         run: python scripts/audit_dataset.py --check-json
 
       - name: Refresh SONAR retrospective metrics and append-only shadow outcomes
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.ref_name != 'research/q91-nested-formula-walkforward-20261105' && github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         run: python scripts/sonar_sequence_agent.py
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
