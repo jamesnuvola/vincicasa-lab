@@ -31,7 +31,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install numerical dependency
-        run: python -m pip install --disable-pip-version-check numpy
+        run: python -m pip install --disable-pip-version-check numpy pytest
       - name: Compile Q91 engine, validator and persistence
         run: python -m py_compile scripts/sonar_q91_nested_walkforward.py scripts/validate_sonar_q91_nested_walkforward.py scripts/persist_q91_outputs.py scripts/sonar_research_queue.py tests/test_sonar_q91_nested_walkforward.py
       - name: Run Q91 regression tests
