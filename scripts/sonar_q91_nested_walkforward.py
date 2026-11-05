@@ -187,6 +187,10 @@ def main():
     archive_blob_sha = __import__("subprocess").check_output(
         ["git", "rev-parse", "HEAD:data/storico_daily.csv"], cwd=ROOT, text=True
     ).strip()
+    OUT.mkdir(parents=True, exist_ok=True)
+    # Remove stale score parts from an earlier longer/shorter archive run.
+    for stale in OUT.glob("q91_formula_target_scores_part_*.npz"):
+        stale.unlink()
     q80_checkpoint_path = OUT / "per_number_condition_research_checkpoint.json"
     if not q80_checkpoint_path.is_file():
         raise SystemExit("Q91_BLOCKED: current Q80/Q86 research checkpoint is missing")
