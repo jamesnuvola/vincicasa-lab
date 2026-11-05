@@ -58,22 +58,43 @@ def holm_adjust_array(p_values):
 
 
 def check_rank_vector(raw, prefix, formula_map, expected_type=None, expected_size=None):
-    formula_id = raw[f"{prefix}_formula_id"]
+    # The oracle winner uses "oracle_best_*" for its formula identity/type/size,
+    # while its rank vector and hit counts retain the "oracle_*" prefix.
+    if prefix == "oracle":
+        formula_id_key = "oracle_best_formula_id"
+        ranks_key = "oracle_actual_number_ranks"
+        rank_sum_key = "oracle_rank_sum"
+        hit_key = lambda k: f"oracle_number_hits_top{k}"
+        recorded_type_key = "oracle_best_formula_type"
+        recorded_size_key = "oracle_best_formula_size"
+    else:
+        formula_id_key = f"{prefix}_formula_id"
+        ranks_key = f"{prefix}_actual_number_ranks"
+        rank_sum_key = f"{prefix}_rank_sum"
+        hit_key = lambda k: f"{prefix}_number_hits_top{k}"
+        recorded_type_key = f"{prefix}_formula_type"
+        recorded_size_key = f"{prefix}_formula_size"
+
+    formula_id = raw[formula_id_key]
     if formula_id not in formula_map:
         raise AssertionError(f"unknown formula ID {formula_id}")
     formula_type, formula_size = formula_map[formula_id]
+    if raw.get(recorded_type_key) != formula_type:
+        raise AssertionError(f"{prefix}: recorded type does not match formula catalog")
+    if int(raw.get(recorded_size_key, -1)) != formula_size:
+        raise AssertionError(f"{prefix}: recorded size does not match formula catalog")
     if expected_type is not None and formula_type != expected_type:
         raise AssertionError(f"{prefix}: type {formula_type} != {expected_type}")
     if expected_size is not None and formula_size != expected_size:
         raise AssertionError(f"{prefix}: size {formula_size} != {expected_size}")
-    ranks = [int(x) for x in json.loads(raw[f"{prefix}_actual_number_ranks"])]
+    ranks = [int(x) for x in json.loads(raw[ranks_key])]
     if len(ranks) != 5 or any(x < 1 or x > 40 for x in ranks):
         raise AssertionError(f"{prefix}: invalid actual ranks")
     for k in (5, 10, 20):
         hits = sum(x <= k for x in ranks)
-        if int(raw[f"{prefix}_number_hits_top{k}"]) != hits:
+        if int(raw[hit_key(k)]) != hits:
             raise AssertionError(f"{prefix}: top{k} hit count mismatch")
-    if int(raw[f"{prefix}_rank_sum"]) != sum(ranks):
+    if int(raw[rank_sum_key]) != sum(ranks):
         raise AssertionError(f"{prefix}: rank sum mismatch")
     return formula_id, ranks
 
