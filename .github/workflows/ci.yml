@@ -29,7 +29,7 @@ jobs:
         with:
           node-version: 20
       - name: Install data-generation dependency
-        run: pip install numpy
+        run: pip install numpy pytest
       - name: Audit canonical historical archive
         run: python scripts/audit_dataset.py
       - name: Rebuild generated app data
