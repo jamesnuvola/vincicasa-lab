@@ -37,7 +37,7 @@ jobs:
       - name: Finalize acceptance checkpoint
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
-          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          SONAR_EXACT_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           python - <<'PY'
           import json,hashlib,os
@@ -51,7 +51,7 @@ jobs:
           acceptance={
             "validator":"Q90_FORMULA_ACCEPTANCE_PASS",
             "workflow_run_id":int(os.environ["GITHUB_RUN_ID"]),
-            "exact_head_sha":os.environ["GITHUB_SHA"],
+            "exact_head_sha":os.environ["SONAR_EXACT_HEAD_SHA"],
             "artifact_retention_days":90,
             "artifact_readback":"PENDING_EXTERNAL_READBACK",
             "main_ci":"PENDING",
