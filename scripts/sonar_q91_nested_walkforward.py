@@ -521,6 +521,7 @@ def main():
             for split in SPLITS
         },
         "formula_count": formula_count,
+        "formula_count_check": 27 + math.comb(27, 2) + math.comb(27, 3),
         "formula_grammar": "all 3,303 Q80 single/pair/triple equal-weight formulas",
         "policy_count": len(POLICY_SPECS),
         "policy_ids": POLICY_IDS,
@@ -548,6 +549,13 @@ def main():
             "parts_manifest_sha256": score_parts_manifest_sha,
             "part_count": len(score_parts),
             "rows": scored_targets * formula_count,
+        },
+        "output_sha256": {
+            "formula_catalog": sha256_file(catalog_path),
+            "policy_metrics": sha256_file(metrics_path),
+            "target_ledger": sha256_file(ledger_path),
+            "selection_report": sha256_file(selection_report_path),
+            "score_manifest": sha256_file(score_manifest_path),
         },
         "outputs": {
             "formula_catalog": str(catalog_path.relative_to(ROOT)),
