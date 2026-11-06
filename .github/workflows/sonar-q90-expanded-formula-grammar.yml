@@ -1,0 +1,90 @@
+name: SONAR Q90 Expanded Formula Grammar
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["research/adaptive-novelty-rule-anticipation-20261101"]
+    paths:
+      - "scripts/sonar_q90_expanded_formula_grammar.py"
+      - "scripts/validate_sonar_q90_expanded_formula_grammar.py"
+      - "tests/test_sonar_q90_expanded_formula_grammar.py"
+      - "scripts/sonar_adaptive_novelty_rule_anticipation.py"
+      - "scripts/sonar_per_number_condition_grammar.py"
+      - "data/storico_daily.csv"
+      - ".github/workflows/sonar-q90-expanded-formula-grammar.yml"
+      - ".github/workflows/sonar-q89-adaptive-novelty.yml"
+permissions: {contents: read}
+concurrency: {group: sonar-q90-expanded-formula-grammar, cancel-in-progress: true}
+# Q90 retry after correcting gate feature index broadcasting.
+jobs:
+  q90:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install numpy scipy pytest
+      - run: python -m py_compile scripts/sonar_q90_expanded_formula_grammar.py scripts/validate_sonar_q90_expanded_formula_grammar.py tests/test_sonar_q90_expanded_formula_grammar.py
+      - run: cd tests && pytest -q test_sonar_q90_expanded_formula_grammar.py
+      - name: Rebuild strict-prior Q89 feature matrix
+        run: python scripts/sonar_adaptive_novelty_rule_anticipation.py
+      - name: Evaluate expanded Q90 formula grammar
+        run: python scripts/sonar_q90_expanded_formula_grammar.py
+      - name: Fail-closed Q90 acceptance validator
+        run: python scripts/validate_sonar_q90_expanded_formula_grammar.py
+      - name: Finalize acceptance checkpoint
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          SONAR_EXACT_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          python - <<'PY'
+          import json,hashlib,os
+          from pathlib import Path
+          p=Path("reports/sequence_agent")
+          manifest_path=p/"q90_formula_metrics_manifest.json"
+          manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+          checkpoint_path=p/f"q90_checkpoint_{manifest['archive']['last_date']}.json"
+          if not checkpoint_path.exists():
+            raise SystemExit("Q90 checkpoint for current archive date is missing")
+          acceptance={
+            "validator":"Q90_FORMULA_ACCEPTANCE_PASS",
+            "workflow_run_id":int(os.environ["GITHUB_RUN_ID"]),
+            "exact_head_sha":os.environ["SONAR_EXACT_HEAD_SHA"],
+            "artifact_retention_days":90,
+            "artifact_readback":"PENDING_EXTERNAL_READBACK",
+            "main_ci":"PENDING",
+            "human_review":"PENDING"
+          }
+          manifest["status"]="FORMULA_ACCEPTANCE_PASS_PENDING_ARTIFACT_READBACK_MAIN_CI_HUMAN_REVIEW"
+          manifest["acceptance"]=acceptance
+          manifest_path.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          checkpoint=json.loads(checkpoint_path.read_text(encoding="utf-8"))
+          checkpoint["status"]=manifest["status"]
+          checkpoint["acceptance"]=acceptance
+          checkpoint["manifest_sha256"]=hashlib.sha256(manifest_path.read_bytes()).hexdigest()
+          checkpoint_path.write_text(json.dumps(checkpoint,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+          print("Q90_ACCEPTANCE_CHECKPOINT_FINALIZED",checkpoint["manifest_sha256"])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: q90-expanded-formula-grammar-bundle
+          path: |
+            reports/sequence_agent/adaptive_novelty_feature_catalog.json
+            reports/sequence_agent/adaptive_novelty_formula_metrics_manifest.json
+            reports/sequence_agent/adaptive_novelty_rule_anticipation_metrics.csv
+            reports/sequence_agent/adaptive_novelty_split_metrics.csv
+            reports/sequence_agent/adaptive_novelty_regime_drift.json
+            reports/sequence_agent/adaptive_novelty_feature_matrix.npz
+            reports/sequence_agent/adaptive_novelty_target_ledger.csv
+            reports/sequence_agent/adaptive_novelty_checkpoint_*.json
+            reports/sequence_agent/q90_formula_catalog.csv
+            reports/sequence_agent/q90_split_metrics.csv
+            reports/sequence_agent/q90_target_ledger.csv
+            reports/sequence_agent/q90_feature_selection.json
+            reports/sequence_agent/q90_formula_family_split_summary.json
+            reports/sequence_agent/q90_formula_metrics_manifest.json
+            reports/sequence_agent/q90_checkpoint_*.json
+          if-no-files-found: error
+          retention-days: 90
