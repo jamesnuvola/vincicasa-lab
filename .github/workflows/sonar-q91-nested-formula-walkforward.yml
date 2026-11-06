@@ -36,9 +36,10 @@ jobs:
         id: preflight
         run: |
           python - <<'PY'
-          import json, os
+          import hashlib, json, os, subprocess
           from pathlib import Path
           report_path = Path("reports/sequence_agent/q91_nested_formula_walkforward.json")
+          archive_blob_sha = subprocess.check_output(["git", "rev-parse", "HEAD:data/storico_daily.csv"], text=True).strip()
           already = False
           if report_path.is_file():
               report = json.loads(report_path.read_text(encoding="utf-8"))
@@ -54,6 +55,9 @@ jobs:
                       and checkpoint.get("status") == "VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION"
                       and checkpoint.get("acceptance", {}).get("validator") == "Q91_FORMULA_ACCEPTANCE_PASS"
                       and checkpoint.get("acceptance", {}).get("human_review") == "PENDING_HUMAN_REVIEW_INTEGRATION"
+                      and report.get("archive", {}).get("blob_sha") == archive_blob_sha
+                      and checkpoint.get("archive_blob_sha") == archive_blob_sha
+                      and checkpoint.get("report_sha256") == hashlib.sha256(report_path.read_bytes()).hexdigest()
                   )
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
               handle.write("already_validated=" + ("true" if already else "false") + "\n")
