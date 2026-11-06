@@ -2,34 +2,34 @@
   "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
   "source": "data/storico_daily.csv",
   "first_date": "2017-07-17",
-  "last_date": "2026-11-04",
-  "draws": 3398,
+  "last_date": "2026-11-05",
+  "draws": 3399,
   "warmup_draws": 500,
-  "evaluated_targets": 2898,
+  "evaluated_targets": 2899,
   "same_targets_and_splits": true,
   "global_top20_definition": "Rank numbers by frequency in the previous 100 draws; deterministic ties resolve by smaller number.",
   "raw_positional_union_definition": "Union the top 3 smoothed values for each of P1-P5 before any completion; report raw union size before deduplication (set union) and before filling.",
   "completion_to_20_rule": "Keep the union seeds ranked by summed position-conditioned scores; fill remaining slots with the global trailing-100 frequency ranking until 20 distinct numbers are selected.",
   "raw_positional_union_size": {
-    "targets": 2898,
-    "mean_raw_union_size": 14.621118012422361,
+    "targets": 2899,
+    "mean_raw_union_size": 14.6212487064505,
     "minimum_raw_union_size": 12,
     "maximum_raw_union_size": 15,
     "size_distribution": {
       "12": 5,
       "13": 113,
       "14": 857,
-      "15": 1923
+      "15": 1924
     }
   },
   "overall": {
     "global_top20": {
-      "targets": 2898,
-      "mean_hits": 2.5096618357487923,
+      "targets": 2899,
+      "mean_hits": 2.509486029665402,
       "hit_distribution": {
         "0": 64,
         "1": 446,
-        "2": 910,
+        "2": 911,
         "3": 971,
         "4": 441,
         "5": 66
@@ -38,46 +38,46 @@
       "top20_4plus": 507
     },
     "position_seed_mix_top20": {
-      "targets": 2898,
-      "mean_hits": 2.508281573498965,
+      "targets": 2899,
+      "mean_hits": 2.5084511900655397,
       "hit_distribution": {
         "0": 76,
         "1": 432,
         "2": 930,
-        "3": 944,
+        "3": 945,
         "4": 435,
         "5": 81
       },
       "top20_5of5": 81,
       "top20_4plus": 516
     },
-    "mean_hit_delta_mix_minus_global": -0.0013802622498273465,
+    "mean_hit_delta_mix_minus_global": -0.0010348395998622806,
     "random_top20_5of5_baseline_rate": 0.02356202356202356,
-    "random_top20_5of5_expected_count": 68.28274428274429
+    "random_top20_5of5_expected_count": 68.30630630630631
   },
   "chronological_splits": {
     "discovery": {
-      "targets": 1738,
+      "targets": 1739,
       "raw_positional_union_size": {
-        "targets": 1738,
-        "mean_raw_union_size": 14.598964326812428,
+        "targets": 1739,
+        "mean_raw_union_size": 14.599194939620471,
         "minimum_raw_union_size": 12,
         "maximum_raw_union_size": 15,
         "size_distribution": {
           "12": 5,
           "13": 73,
           "14": 536,
-          "15": 1124
+          "15": 1125
         }
       },
       "global_top20": {
-        "targets": 1738,
-        "mean_hits": 2.536823935558113,
+        "targets": 1739,
+        "mean_hits": 2.5370902817711327,
         "hit_distribution": {
           "0": 37,
           "1": 250,
           "2": 556,
-          "3": 577,
+          "3": 578,
           "4": 274,
           "5": 44
         },
@@ -85,20 +85,20 @@
         "top20_4plus": 318
       },
       "position_seed_mix_top20": {
-        "targets": 1738,
-        "mean_hits": 2.5109321058688145,
+        "targets": 1739,
+        "mean_hits": 2.511213341000575,
         "hit_distribution": {
           "0": 46,
           "1": 265,
           "2": 549,
-          "3": 564,
+          "3": 565,
           "4": 261,
           "5": 53
         },
         "top20_5of5": 53,
         "top20_4plus": 314
       },
-      "random_top20_5of5_expected_count": 40.95079695079695
+      "random_top20_5of5_expected_count": 40.97435897435897
     },
     "validation": {
       "targets": 580,
@@ -115,12 +115,12 @@
       },
       "global_top20": {
         "targets": 580,
-        "mean_hits": 2.420689655172414,
+        "mean_hits": 2.418965517241379,
         "hit_distribution": {
           "0": 11,
           "1": 105,
-          "2": 183,
-          "3": 199,
+          "2": 184,
+          "3": 198,
           "4": 74,
           "5": 8
         },
@@ -188,7 +188,7 @@
     }
   },
   "per_target_paired": {
-    "mix_better": 690,
+    "mix_better": 691,
     "tie": 1482,
     "global_better": 726
   },
