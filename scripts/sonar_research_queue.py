@@ -1241,6 +1241,14 @@ def validate_q88():
 
 
 
+def validate_q91():
+    try:
+        from validate_sonar_q91_nested_walkforward import validate_outputs
+        return validate_outputs()
+    except Exception as exc:
+        return ["Q91 validator import/execution failed: " + str(exc)]
+
+
 def main():
     plan = load_json(BACKLOG)
     tasks = plan.get("tasks", [])
@@ -1267,7 +1275,8 @@ def main():
 
     validators = {"Q10": validate_q10, "Q20": validate_q20, "Q30": validate_q30,
                   "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80, "Q81": validate_q81,
-                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87, "Q88": validate_q88}
+                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86,
+                  "Q87": validate_q87, "Q88": validate_q88, "Q91": validate_q91}
     states = {}
     for task in sorted(tasks, key=lambda t: (t["priority"], t["id"])):
         missing_evidence = [p for p in task.get("evidence", []) if not (ROOT / p).is_file()]
@@ -1303,7 +1312,7 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
-            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87", "Q88") and not validation_errors:
+            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87", "Q88", "Q91") and not validation_errors:
                 status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],
