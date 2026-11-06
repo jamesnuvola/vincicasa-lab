@@ -1,20 +1,20 @@
 {
   "schema_version": "1.0",
   "project": "VinciCasa SONAR",
-  "generated_at_utc": "2026-11-05T18:22:28.163365+00:00",
+  "generated_at_utc": "2026-11-06T17:10:29Z",
   "archive_snapshot": {
     "source_archive": "data/storico_daily.csv",
-    "source_blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
-    "canonical_main_archive_blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
-    "draw_count": 3398,
+    "source_blob_sha": "c264e3655fa80aaa5b5879dec3d141238843efc6",
+    "canonical_main_archive_blob_sha": "c264e3655fa80aaa5b5879dec3d141238843efc6",
+    "draw_count": 3399,
     "first_date": "2017-07-17",
-    "last_date": "2026-11-04",
+    "last_date": "2026-11-05",
     "latest_quintet": [
-      14,
-      16,
-      18,
-      20,
-      21
+      15,
+      24,
+      25,
+      27,
+      38
     ],
     "immutable_target_2026_10_25_freeze_overwritten": false
   },
@@ -734,7 +734,11 @@
     "q86_status": "VALIDATED_PENDING_HUMAN_REVIEW",
     "human_review_required": true,
     "automatic_promotion": false,
-    "exact_head_ci_status": "PENDING"
+    "exact_head_ci_status": "PENDING",
+    "archive_refresh_status": "REFRESH_PENDING",
+    "canonical_archive_cutoff": "2026-11-05",
+    "previous_verified_archive_cutoff": "2026-11-04",
+    "outputs_current": false
   },
   "next_stages": [
     {
@@ -767,15 +771,29 @@
       "Q83",
       "Q86"
     ],
-    "status": "ARTIFACT_VALIDATORS_PASS_PENDING_PERSISTED_HEAD_CI",
-    "archive_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
-    "draw_count": 3398,
-    "last_date": "2026-11-04",
+    "status": "CANONICAL_ARCHIVE_ADVANCED_REFRESH_PENDING",
+    "archive_sha": "c264e3655fa80aaa5b5879dec3d141238843efc6",
+    "draw_count": 3399,
+    "last_date": "2026-11-05",
     "required_postconditions": [
-      "Q80-Q83 reports, metrics, target ledgers and queue are committed via Git Data API",
-      "each persisted artifact is reread from the exact commit and byte-compared",
-      "workflow_dispatch CI passes on the persisted exact head",
-      "human review/integration occurs before any Q80-Q83 task is marked COMPLETE"
+      "recompute Q80/Q81/Q82/Q83/Q86 formula metrics and per-target ledgers on the current canonical archive using only the strict prefix before each target",
+      "queue validator reconciles latest metrics cutoff and draw count to canonical main",
+      "persist refreshed Q80-Q86 outputs through Git Data API and verify exact committed bytes by readback",
+      "current-head CI passes on the persisted exact head",
+      "human review/integration occurs before any Q80-Q86 task is marked COMPLETE"
     ]
-  }
+  },
+  "archive_refresh_history": [
+    {
+      "recorded_at_utc": "2026-11-06T17:10:29Z",
+      "previous_archive_blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+      "previous_draw_count": 3398,
+      "previous_last_date": "2026-11-04",
+      "canonical_archive_blob_sha": "c264e3655fa80aaa5b5879dec3d141238843efc6",
+      "canonical_draw_count": 3399,
+      "canonical_last_date": "2026-11-05",
+      "reason": "canonical main advanced by one verified draw; previous Q80-Q86 output cutoff is stale",
+      "immutable_target_2026_10_25_freeze_overwritten": false
+    }
+  ]
 }
