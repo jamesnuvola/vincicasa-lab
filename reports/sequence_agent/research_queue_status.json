@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-11-04T17:17:24.994618+00:00",
+  "generated_at_utc": "2026-11-06T16:56:22.935999+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
-  "task_count": 16,
+  "task_count": 17,
   "complete_count": 2,
   "ready_count": 2,
   "active_next_task": "Q84",
@@ -345,6 +345,28 @@
         "report the uniform number-rank baseline and preserve exploratory/null results without automatic promotion",
         "document that this is a finite eight-feature equal-weight grammar; weighted, conditional, nonlinear, interaction and higher-order formula families remain open",
         "preserve immutable freezes and require human review/integration before Q88 is marked COMPLETE"
+      ]
+    },
+    {
+      "id": "Q91",
+      "priority": 91,
+      "title": "Nested strict-prior walk-forward anticipation and calibration over the Q80 3,303-formula catalog",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "depends_on": [
+        "Q00"
+      ],
+      "missing_evidence": [],
+      "validation_errors": [],
+      "acceptance_criteria": [
+        "use the complete canonical archive and the exact 3,303 Q80 single/pair/triple equal-weight formulas; each target's 27 features and formula ranks use only draws strictly before the target",
+        "evaluate six registered meta-policies: expanding/rolling-250/rolling-500 history with Top5-hit or mean-rank selection, with a fixed freq_5 cold start for the first 100 scored targets",
+        "at each target, every policy selects its formula only from prior target outcomes; the meta-policy is selected using discovery outcomes only and frozen through validation and blind OOS",
+        "produce a per-target ledger with strict cutoff, actual quintet, all six policy formula IDs/ranks/hits, discovery-frozen policy output, retrospective oracle formula and nonnegative rank-sum regret",
+        "persist the complete formula×target Top5-hit, Top20-hit and rank-sum arrays in deterministic chunked NPZ parts with archive SHA, contiguous target ranges, row counts, byte counts and SHA-256 manifest",
+        "produce 18 policy×split metric rows across chronological discovery, validation and blind OOS; apply Holm-Bonferroni over the full 6×3×2 policy×split×endpoint family",
+        "acceptance validator independently checks archive reconciliation, formula catalog order/count, strict-prior policy selections from prior score arrays, target coverage, metrics/p-values/Holm, oracle tie-break and direct-loop score recomputation at deterministic boundary samples",
+        "report uniform number-rank baseline, calibration and regret; exploratory/null outcomes remain valid and no formula or meta-policy is automatically promoted",
+        "persist outputs with exact Git-object readback, pass current-head CI and require human review/integration before Q91 is marked COMPLETE"
       ]
     }
   ],

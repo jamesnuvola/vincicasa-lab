@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q91",
+  "selected_policy_on_discovery": "EXPANDING_TOP5",
+  "policy_selection_rule": "maximize discovery mean number_hits_top5; tie-break by lower discovery mean rank; final tie-break by policy_id ascending",
+  "policy_specs": [
+    {
+      "policy_id": "EXPANDING_TOP5",
+      "window": "expanding",
+      "objective": "top5"
+    },
+    {
+      "policy_id": "EXPANDING_RANK",
+      "window": "expanding",
+      "objective": "rank"
+    },
+    {
+      "policy_id": "ROLLING250_TOP5",
+      "window": "rolling250",
+      "objective": "top5"
+    },
+    {
+      "policy_id": "ROLLING250_RANK",
+      "window": "rolling250",
+      "objective": "rank"
+    },
+    {
+      "policy_id": "ROLLING500_TOP5",
+      "window": "rolling500",
+      "objective": "top5"
+    },
+    {
+      "policy_id": "ROLLING500_RANK",
+      "window": "rolling500",
+      "objective": "rank"
+    }
+  ],
+  "cold_start_targets": 100,
+  "cold_start_formula_id": "P1_00",
+  "discovery_policy_metrics": [
+    {
+      "policy_id": "EXPANDING_TOP5",
+      "targets": 2009,
+      "mean_number_hits_top5": 0.1294176207068193,
+      "mean_rank_of_actual_numbers": 20.412045793927327,
+      "selected_on_discovery": true
+    },
+    {
+      "policy_id": "EXPANDING_RANK",
+      "targets": 2009,
+      "mean_number_hits_top5": 0.12463912394225983,
+      "mean_rank_of_actual_numbers": 20.393130910900947,
+      "selected_on_discovery": false
+    },
+    {
+      "policy_id": "ROLLING250_TOP5",
+      "targets": 2009,
+      "mean_number_hits_top5": 0.12762568442010952,
+      "mean_rank_of_actual_numbers": 20.447088103534096,
+      "selected_on_discovery": false
+    },
+    {
+      "policy_id": "ROLLING250_RANK",
+      "targets": 2009,
+      "mean_number_hits_top5": 0.12215032354405177,
+      "mean_rank_of_actual_numbers": 20.546241911398706,
+      "selected_on_discovery": false
+    },
+    {
+      "policy_id": "ROLLING500_TOP5",
+      "targets": 2009,
+      "mean_number_hits_top5": 0.12872075659532106,
+      "mean_rank_of_actual_numbers": 20.536386261821804,
+      "selected_on_discovery": false
+    },
+    {
+      "policy_id": "ROLLING500_RANK",
+      "targets": 2009,
+      "mean_number_hits_top5": 0.1258337481333997,
+      "mean_rank_of_actual_numbers": 20.384270781483323,
+      "selected_on_discovery": false
+    }
+  ],
+  "frozen_policy_guardrails": [
+    "policy selection is frozen at the discovery boundary",
+    "validation and blind_oos update formula performance histories but do not change the selected meta-policy",
+    "all formula selection decisions at target t use target outcomes with index < t",
+    "no formula or meta-policy is automatically promoted"
+  ]
+}
