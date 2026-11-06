@@ -56,7 +56,7 @@ jobs:
                       and checkpoint.get("acceptance", {}).get("human_review") == "PENDING_HUMAN_REVIEW_INTEGRATION"
                   )
           with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as handle:
-              handle.write("already_validated=" + ("true" if already else "false") + "\\n")
+              handle.write("already_validated=" + ("true" if already else "false") + "\n")
           print("Q91_ALREADY_VALIDATED_SKIP_COMPUTE" if already else "Q91_FRESH_EVALUATION_REQUIRED")
           PY
       - name: Compile Q91 engine, validator and persistence
