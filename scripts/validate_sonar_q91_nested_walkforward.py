@@ -83,8 +83,12 @@ def validate_outputs():
             ["git", "rev-parse", "HEAD:data/storico_daily.csv"], cwd=ROOT, text=True
         ).strip()
         report = read_json(REPORT_PATH)
-        checkpoint = read_json(Q80_CHECKPOINT_PATH)
-        q80_archive_sha = checkpoint.get("archive_snapshot", {}).get("source_blob_sha")
+        q80_checkpoint = read_json(Q80_CHECKPOINT_PATH)
+        q91_checkpoint_path = OUT / f"q91_checkpoint_{report['archive']['last_date']}.json"
+        if not q91_checkpoint_path.is_file():
+            return errors + ["Q91 missing required checkpoint: " + str(q91_checkpoint_path.relative_to(ROOT))]
+        q91_checkpoint = read_json(q91_checkpoint_path)
+        q80_archive_sha = q80_checkpoint.get("archive_snapshot", {}).get("source_blob_sha")
         add_error(errors, q80_archive_sha == archive_blob_sha,
                   "Q91 Q80 checkpoint archive SHA differs from canonical archive")
         add_error(errors, report.get("task_id") == "Q91", "Q91 task ID mismatch")
@@ -677,27 +681,27 @@ def validate_outputs():
                       "Q91 acceptance checkpoint validator marker missing")
             add_error(errors, acceptance.get("human_review") == "PENDING_HUMAN_REVIEW_INTEGRATION",
                       "Q91 acceptance human-review gate missing")
-        add_error(errors, checkpoint.get("status") in (
+        add_error(errors, q91_checkpoint.get("status") in (
             "FORMULA_ENGINE_EXECUTED_PENDING_ACCEPTANCE_VALIDATION",
             "FORMULA_ACCEPTANCE_PASS_PENDING_ARTIFACT_READBACK_MAIN_CI_HUMAN_REVIEW",
             "VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION",
         ), "Q91 checkpoint status is not an allowed acceptance state")
-        add_error(errors, checkpoint.get("task_id") == "Q91"
-                  and checkpoint.get("archive_blob_sha") == archive_blob_sha
-                  and checkpoint.get("draw_count") == n
-                  and checkpoint.get("scored_targets") == scored_targets
-                  and checkpoint.get("formula_count") == FORMULA_COUNT
-                  and checkpoint.get("selected_policy_on_discovery") == expected_selected_policy,
+        add_error(errors, q91_checkpoint.get("task_id") == "Q91"
+                  and q91_checkpoint.get("archive_blob_sha") == archive_blob_sha
+                  and q91_checkpoint.get("draw_count") == n
+                  and q91_checkpoint.get("scored_targets") == scored_targets
+                  and q91_checkpoint.get("formula_count") == FORMULA_COUNT
+                  and q91_checkpoint.get("selected_policy_on_discovery") == expected_selected_policy,
                   "Q91 checkpoint dimensions/provenance mismatch")
-        if checkpoint.get("status") == "VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION":
-            add_error(errors, checkpoint.get("acceptance", {}).get("validator") == "Q91_FORMULA_ACCEPTANCE_PASS"
-                      and checkpoint.get("acceptance", {}).get("human_review") == "PENDING_HUMAN_REVIEW_INTEGRATION",
+        if q91_checkpoint.get("status") == "VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION":
+            add_error(errors, q91_checkpoint.get("acceptance", {}).get("validator") == "Q91_FORMULA_ACCEPTANCE_PASS"
+                      and q91_checkpoint.get("acceptance", {}).get("human_review") == "PENDING_HUMAN_REVIEW_INTEGRATION",
                       "Q91 checkpoint finalized acceptance/human-review marker missing")
-        add_error(errors, checkpoint.get("metrics_sha256") == sha256_file(METRICS_PATH)
-                  and checkpoint.get("target_ledger_sha256") == sha256_file(LEDGER_PATH)
-                  and checkpoint.get("score_manifest_sha256") == sha256_file(SCORE_MANIFEST_PATH)
-                  and checkpoint.get("score_parts_manifest_sha256") == parts_sha
-                  and checkpoint.get("report_sha256") == sha256_file(REPORT_PATH),
+        add_error(errors, q91_checkpoint.get("metrics_sha256") == sha256_file(METRICS_PATH)
+                  and q91_checkpoint.get("target_ledger_sha256") == sha256_file(LEDGER_PATH)
+                  and q91_checkpoint.get("score_manifest_sha256") == sha256_file(SCORE_MANIFEST_PATH)
+                  and q91_checkpoint.get("score_parts_manifest_sha256") == parts_sha
+                  and q91_checkpoint.get("report_sha256") == sha256_file(REPORT_PATH),
                   "Q91 checkpoint artifact SHA mismatch")
         return errors
     except Exception as exc:
