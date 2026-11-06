@@ -1,10 +1,10 @@
 {
-  "generated_at_utc": "2026-11-05T18:23:39.664362+00:00",
+  "generated_at_utc": "2026-11-06T17:27:08.793260+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
   "task_count": 16,
-  "complete_count": 2,
+  "complete_count": 1,
   "ready_count": 2,
   "active_next_task": "Q84",
   "active_next_task_title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
@@ -140,12 +140,18 @@
       "id": "Q80",
       "priority": 80,
       "title": "Expand per-number conditions and exhaustively test single/pair/triple formula grammar",
-      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "Q80 target count does not match canonical archive",
+        "Q80 scored target count mismatch",
+        "Q80 chronological split sizes do not sum to scored targets",
+        "Q80 target ledger row count mismatch",
+        "Q80 last date mismatch"
+      ],
       "acceptance_criteria": [
         "all 27 registered prior-only number features are computed without target leakage",
         "all 3,303 unique one-, two- and three-feature equal-weight formulas are evaluated walk-forward for every target with sufficient history",
@@ -160,12 +166,22 @@
       "id": "Q81",
       "priority": 81,
       "title": "Exhaustively evaluate all 4-feature equal-weight combinations",
-      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "Q81 target count does not match canonical archive",
+        "Q81 scored target count mismatch",
+        "Q81 source archive SHA-256 mismatch",
+        "Q81 split sizes do not sum to scored targets",
+        "Q81 chronological split sizes mismatch",
+        "Q81 target ledger count mismatch",
+        "Q81 target ledger row count mismatch",
+        "Q81 target ledger coverage/order mismatch",
+        "Q81 last date mismatch"
+      ],
       "acceptance_criteria": [
         "formula evaluation runs in explicit 1,024-formula batches with a contiguous manifest covering all 17,550 formulas",
         "all 17,550 unique unordered 4-feature combinations from the registered 27 prior-only features are evaluated",
@@ -181,12 +197,21 @@
       "id": "Q82",
       "priority": 82,
       "title": "Test conditional thresholds, nonlinear transforms and feature interactions",
-      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "Q82 target count does not match canonical archive",
+        "Q82 scored target count mismatch",
+        "Q82 source archive SHA-256 mismatch",
+        "Q82 split sizes do not sum to scored targets",
+        "Q82 chronological split sizes mismatch",
+        "Q82 report target ledger row count mismatch",
+        "Q82 target ledger row count mismatch",
+        "Q82 last date mismatch"
+      ],
       "acceptance_criteria": [
         "the registered finite grammar contains 27 base terms, 108 nonlinear transforms, 351 pairwise products and 4,212 conditional interactions (4,698 terms total)",
         "threshold cutpoints are quantiles of discovery-split feature values only, use no target outcomes, and are frozen before validation/blind OOS",
@@ -201,12 +226,22 @@
       "id": "Q83",
       "priority": 83,
       "title": "Extend feature subsets to five and higher variables with bounded batch evaluation",
-      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "Q83 target count does not match canonical archive",
+        "Q83 scored target count mismatch",
+        "Q83 source archive SHA-256 mismatch",
+        "Q83 split sizes do not sum to scored targets",
+        "Q83 chronological split sizes mismatch",
+        "Q83 target ledger count mismatch",
+        "Q83 target ledger row count mismatch",
+        "Q83 target ledger coverage/order mismatch",
+        "Q83 last date mismatch"
+      ],
       "acceptance_criteria": [
         "all 5-feature combinations are evaluated in reproducible batches with formula-range manifests",
         "chunked metric parts are persisted with per-part SHA-256, byte count, row range, and a manifest; a monolithic CSV is not required when chunked storage is declared",
@@ -221,20 +256,12 @@
       "id": "Q87",
       "priority": 84,
       "title": "Exhaustively evaluate all seven-feature equal-weight combinations with distributed shards",
-      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [
-        "Q87 archive/target count mismatch",
-        "Q87 source archive SHA mismatch",
-        "Q87 archive dates mismatch",
-        "Q87 chronological split counts mismatch",
-        "Q87 output row counts mismatch",
-        "Q87 target ledger row count mismatch",
-        "Q87 target ledger date coverage/order mismatch"
-      ],
+      "validation_errors": [],
       "acceptance_criteria": [
         "evaluate all 888,030 unique unordered seven-feature equal-weight combinations from the 27 registered prior-only features",
         "use six deterministic shards of 148,005 formulas each and 1,024-formula batches with contiguous manifests and no gaps or overlaps",
@@ -283,12 +310,17 @@
       "id": "Q85",
       "priority": 86,
       "title": "Reconcile research branch with the latest canonical archive and rerun affected chronological evidence",
-      "status": "COMPLETE",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "Q85 archive blob SHA mismatch",
+        "Q85 archive draw count mismatch",
+        "Q85 archive last date mismatch",
+        "Q85 latest quintet mismatch"
+      ],
       "acceptance_criteria": [
         "record the canonical archive blob SHA, draw count and last date from the current main archive",
         "identify every Q80/Q81/Q82/Q83/Q86 output whose archive cutoff is stale and do not represent it as current",
@@ -302,12 +334,20 @@
       "id": "Q86",
       "priority": 87,
       "title": "Exhaustively evaluate all six-feature equal-weight combinations",
-      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "status": "EVIDENCE_PRESENT_REQUIRES_VALIDATION",
       "depends_on": [
         "Q00"
       ],
       "missing_evidence": [],
-      "validation_errors": [],
+      "validation_errors": [
+        "Q86 archive/target count mismatch",
+        "Q86 source archive SHA mismatch",
+        "Q86 archive dates mismatch",
+        "Q86 chronological split counts mismatch",
+        "Q86 output row counts mismatch",
+        "Q86 target ledger row count mismatch",
+        "Q86 target ledger date coverage/order mismatch"
+      ],
       "acceptance_criteria": [
         "all 296,010 unique unordered six-feature equal-weight combinations from the 27 registered prior-only features are evaluated",
         "formula evaluation uses explicit 1,024-formula batches with a contiguous manifest and no gaps or overlaps",
