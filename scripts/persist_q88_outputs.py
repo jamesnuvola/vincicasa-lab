@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Persist fully validated Q88 aggregate outputs with branch-head CAS and exact-byte reread."""
 from __future__ import annotations
-import base64, hashlib, json, os, subprocess, urllib.error, urllib.request
+import base64, hashlib, json, os, subprocess, time, urllib.error, urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 BRANCH="research/per-number-condition-grammar-20261026"
@@ -14,12 +14,34 @@ def api(method,path,payload=None):
     req=urllib.request.Request(API+"/repos/"+repo+path,data=data,method=method,headers={
         "Accept":"application/vnd.github+json","Authorization":"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28",
         "Content-Type":"application/json","User-Agent":"VinciCasa-SONAR-Q88-persistence"})
-    try:
-        with urllib.request.urlopen(req,timeout=300) as response: raw=response.read()
-    except urllib.error.HTTPError as exc:
-        detail=exc.read().decode("utf-8",errors="replace")[:2000]
-        raise SystemExit("Q88_PERSIST_BLOCKED: GitHub API "+str(exc.code)+" "+detail) from exc
-    return json.loads(raw.decode()) if raw else {}
+    for attempt in range(7):
+        try:
+            with urllib.request.urlopen(req,timeout=300) as response: raw=response.read()
+            return json.loads(raw.decode()) if raw else {}
+        except urllib.error.HTTPError as exc:
+            detail=exc.read().decode("utf-8",errors="replace")[:2000]
+            retryable=exc.code in (429,500,502,503,504) or (exc.code==403 and ("rate limit" in detail.lower() or exc.headers.get("X-RateLimit-Remaining")=="0"))
+            if retryable and attempt<6:
+                retry_after=exc.headers.get("Retry-After")
+                try: delay=float(retry_after) if retry_after else min(2**attempt,60)
+                except (TypeError,ValueError): delay=min(2**attempt,60)
+                reset=exc.headers.get("X-RateLimit-Reset")
+                if exc.code==403 and reset:
+                    try: delay=max(delay,min(max(0,float(reset)-time.time()),60))
+                    except (TypeError,ValueError): pass
+                delay=max(1,min(delay,60))
+                print("Q88_PERSIST_RETRY: HTTP "+str(exc.code)+" attempt "+str(attempt+1)+"/7 sleep="+str(delay)+"s")
+                time.sleep(delay)
+                continue
+            raise SystemExit("Q88_PERSIST_BLOCKED: GitHub API "+str(exc.code)+" "+detail) from exc
+        except urllib.error.URLError as exc:
+            if attempt<6:
+                delay=min(2**attempt,60)
+                print("Q88_PERSIST_RETRY: network attempt "+str(attempt+1)+"/7 sleep="+str(delay)+"s error="+str(exc))
+                time.sleep(delay)
+                continue
+            raise SystemExit("Q88_PERSIST_BLOCKED: network error "+str(exc)) from exc
+    raise SystemExit("Q88_PERSIST_BLOCKED: API retry budget exhausted")
 def sha256(data): return hashlib.sha256(data).hexdigest()
 def main():
     head=subprocess.run(["git","rev-parse","HEAD"],cwd=ROOT,check=True,stdout=subprocess.PIPE,text=True).stdout.strip()
@@ -80,7 +102,12 @@ def main():
     commit=api("POST","/git/commits",{"message":"Persist validated Q88 eight-feature formula results, global Holm family and checkpoint [q88-persisted]","tree":tree["sha"],"parents":[head]})
     if api("GET","/git/ref/heads/"+BRANCH)["object"]["sha"]!=head:
         raise SystemExit("Q88_PERSIST_BLOCKED: branch advanced during persistence; refusing ref update")
-    api("PATCH","/git/refs/heads/"+BRANCH,{"sha":commit["sha"],"force":False})
+    try:
+        api("PATCH","/git/refs/heads/"+BRANCH,{"sha":commit["sha"],"force":False})
+    except SystemExit:
+        current_ref=api("GET","/git/ref/heads/"+BRANCH)
+        if current_ref.get("object",{}).get("sha")!=commit["sha"]: raise
+        print("Q88_PERSIST_REF_UPDATE_VERIFIED_AFTER_TRANSIENT_RESPONSE")
     committed=api("GET","/git/commits/"+commit["sha"])
     tree_doc=api("GET","/git/trees/"+committed["tree"]["sha"]+"?recursive=1")
     if tree_doc.get("truncated"): raise SystemExit("Q88_PERSIST_BLOCKED: persisted tree truncated")
