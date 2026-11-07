@@ -1,0 +1,32 @@
+{
+ "status":"POSITION_FAMILY_SCREEN_AND_P5_RESIDUAL_DIAGNOSTIC_EXPLORATORY",
+ "date":"2026-11-07",
+ "source":"Q90 target ledger from q90_bundle.zip",
+ "scope":{"blind_oos_targets":669,"chronological_splits":{"discovery":2009,"validation":670,"blind_oos":669},"formula_catalog":330429},
+ "blind_oos_family_top5_rate_by_sorted_position_P1_to_P5":{
+  "oracle_best_per_target":[0.433483,0.463378,0.476831,0.508221,0.544096],
+  "best_I4_interaction_per_target":[0.421525,0.458894,0.463378,0.508221,0.535127],
+  "best_G4_gate_per_target":[0.358744,0.408072,0.428999,0.467862,0.466368],
+  "best_L4_linear_per_target":[0.35725,0.375187,0.382661,0.400598,0.44843],
+  "best_L5_linear_per_target":[0.351271,0.361734,0.390135,0.430493,0.452915],
+  "best_L6_linear_per_target":[0.358744,0.369208,0.379671,0.426009,0.457399],
+  "best_L7_linear_per_target":[0.31988,0.349776,0.393124,0.405082,0.45441],
+  "best_L8_linear_per_target":[0.303438,0.337818,0.384155,0.387145,0.442451]
+ },
+ "p5_residual_diagnostic_blind_oos":{
+  "note":"best_I4 rank vector is retrospectively best formula within interaction family per target; therefore these residuals are oracle-conditioned and are NOT ex-ante selected model misses.",
+  "n":669,
+  "rank_buckets":{"1-5":358,"6-10":205,"11-20":98,"21-40":8},
+  "top5_rate":0.5351270553064275,
+  "top10_rate":0.8415545590433483,
+  "mean_rank":6.279521674140509,
+  "by_actual_P5_value_bins":{
+   "1-10":{"n":1,"top5_rate":1,"mean_rank":3},
+   "11-20":{"n":19,"top5_rate":0.5789473684210527,"mean_rank":7.368421052631579},
+   "21-30":{"n":137,"top5_rate":0.46715328467153283,"mean_rank":7.408759124087592},
+   "31-40":{"n":512,"top5_rate":0.55078125,"mean_rank":5.943359375}
+  },
+  "interpretation":"P5 ranks stronger than other positions in oracle-conditioned family results. However, residual tail is substantial: 106/669 ranks >10 and 8/669 ranks >20. Value-bin slices are exploratory and imbalanced; especially 1-10 has only one target. No ex-ante validation."
+ },
+ "next_gate":"Build formula-specific prior-only position scores/ranks and nested walk-forward selection, then examine P5 misses from the ex-ante selected formula stream."
+}
