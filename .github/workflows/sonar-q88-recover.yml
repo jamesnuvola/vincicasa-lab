@@ -5,7 +5,7 @@ on:
       source_run_id:
         description: "Previously completed Q88 shard workflow run"
         required: false
-        default: "41225908689"
+        default: "42257081278"
         type: string
   push:
     branches:
@@ -38,7 +38,7 @@ jobs:
           pattern: sonar-q88-shard-*
           merge-multiple: true
           path: reports/sequence_agent/q88_shards
-          run-id: ${{ inputs.source_run_id || '41225908689' }}
+          run-id: ${{ inputs.source_run_id || '42257081278' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Verify all 15 shard triplets are present
         run: |
