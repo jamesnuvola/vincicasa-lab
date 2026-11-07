@@ -1,5 +1,5 @@
 name: SONAR Q88 Recovery from Existing Shards
-# Re-run aggregate/persistence with retry-backoff after transient GitHub API 502; source artifacts stay immutable.
+# Re-run aggregate/persistence with retry-backoff after transient GitHub API 502/incomplete responses; source artifacts stay immutable.
 on:
   workflow_dispatch:
     inputs:
@@ -13,6 +13,7 @@ on:
       - research/per-number-condition-grammar-20261026
     paths:
       - ".github/workflows/sonar-q88-recover.yml"
+      - "scripts/persist_q88_outputs.py"
 permissions:
   contents: write
   actions: write

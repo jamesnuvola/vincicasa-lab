@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Persist fully validated Q88 aggregate outputs with branch-head CAS and exact-byte reread."""
 from __future__ import annotations
-import base64, hashlib, json, os, subprocess, time, urllib.error, urllib.request
+import base64, hashlib, http.client, json, os, subprocess, time, urllib.error, urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 BRANCH="research/per-number-condition-grammar-20261026"
@@ -11,10 +11,10 @@ def api(method,path,payload=None):
     token=os.environ.get("GITHUB_TOKEN"); repo=os.environ.get("GITHUB_REPOSITORY","jamesnuvola/vincicasa-lab")
     if not token: raise SystemExit("Q88_PERSIST_BLOCKED: missing GITHUB_TOKEN")
     data=None if payload is None else json.dumps(payload,separators=(",",":"),ensure_ascii=False).encode()
-    req=urllib.request.Request(API+"/repos/"+repo+path,data=data,method=method,headers={
-        "Accept":"application/vnd.github+json","Authorization":"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28",
-        "Content-Type":"application/json","User-Agent":"VinciCasa-SONAR-Q88-persistence"})
     for attempt in range(7):
+        req=urllib.request.Request(API+"/repos/"+repo+path,data=data,method=method,headers={
+            "Accept":"application/vnd.github+json","Authorization":"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28",
+            "Content-Type":"application/json","User-Agent":"VinciCasa-SONAR-Q88-persistence"})
         try:
             with urllib.request.urlopen(req,timeout=300) as response: raw=response.read()
             return json.loads(raw.decode()) if raw else {}
@@ -34,6 +34,13 @@ def api(method,path,payload=None):
                 time.sleep(delay)
                 continue
             raise SystemExit("Q88_PERSIST_BLOCKED: GitHub API "+str(exc.code)+" "+detail) from exc
+        except (http.client.IncompleteRead, http.client.RemoteDisconnected, ConnectionError, TimeoutError) as exc:
+            if attempt<6:
+                delay=min(2**attempt,60)
+                print("Q88_PERSIST_RETRY: incomplete response attempt "+str(attempt+1)+"/7 sleep="+str(delay)+"s error="+repr(exc))
+                time.sleep(delay)
+                continue
+            raise SystemExit("Q88_PERSIST_BLOCKED: incomplete response after retries "+repr(exc)) from exc
         except urllib.error.URLError as exc:
             if attempt<6:
                 delay=min(2**attempt,60)
