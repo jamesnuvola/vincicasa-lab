@@ -1,4 +1,5 @@
 name: SONAR Q88 Recovery from Existing Shards
+# Re-run aggregate/persistence with retry-backoff after transient GitHub API 502; source artifacts stay immutable.
 on:
   workflow_dispatch:
     inputs:
