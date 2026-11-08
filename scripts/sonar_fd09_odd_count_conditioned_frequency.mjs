@@ -34,8 +34,7 @@ for(let t=300;t<rows.length;t++){
  for(const n of actual)total[n]++;ex[st]++;for(const n of actual)cc[st][n]++;
 }
 const summary=m=>({targets:m.targets,hits5:m.hits5,top5HitSharePct:m.targets?100*m.hits5/(5*m.targets):null,hits10:m.hits10,top10HitSharePct:m.targets?100*m.hits10/(5*m.targets):null,hits20:m.hits20,top20HitSharePct:m.targets?100*m.hits20/(5*m.targets):null,meanRank:m.targets?m.rankSum/(5*m.targets):null,brier:m.targets?m.brierSum/m.targets:null,logLoss:m.targets?m.logLossSum/m.targets:null});
-let best=0;for(let ci=1;ci<configs.length;ci++){const a=metrics.validation.models[ci],b=metrics.validation.models[best];if(a.hits5>b.hits5||(a.hits5===b.hits5&&(a.brierSum<b.brierSum-1e-12||(Math.abs(a.brierSum-b.brierSum)<=1e-12&&configs[ci].alpha>configs[best].alpha))))best=ci;
-}
+let best=0;for(let ci=1;ci<configs.length;ci++){const a=metrics.validation.models[ci],b=metrics.validation.models[best];if(a.hits5>b.hits5||(a.hits5===b.hits5&&(a.brierSum<b.brierSum-1e-12||(Math.abs(a.brierSum-b.brierSum)<=1e-12&&configs[ci].alpha>configs[best].alpha))))best=ci;}
 const choose=(n,k)=>{if(k<0||k>n)return 0;k=Math.min(k,n-k);let v=1;for(let i=1;i<=k;i++)v=v*(n-k+i)/i;return v;};
 const hd=Array.from({length:6},(_,k)=>choose(5,k)*choose(35,5-k)/choose(40,5));let dp=[1];
 for(let i=0;i<851;i++){const nx=Array(dp.length+5).fill(0);for(let j=0;j<dp.length;j++)for(let k=0;k<=5;k++)nx[j+k]+=dp[j]*hd[k];dp=nx;}
