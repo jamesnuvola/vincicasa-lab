@@ -777,5 +777,10 @@
     "latest_freeze_cutoff": "2026-11-07",
     "missing_freezes_reconstructed": 0
   },
+  "reproducibility_corrections": [
+    "Initial Node 20 exact replay found the Markdown baseline-share renderer used the modulo operator after toFixed(), yielding NaN; corrected to concatenate a literal percent sign and regenerate the report.",
+    "Synthetic state-bin assertion was corrected from representative overlap values to the registered threshold mapping R<=1, R<=3, else state 2.",
+    "Target-leakage perturbation test now holds alpha=0 fixed because changing a discovery outcome can legitimately affect validation alpha selection through later strict-prior training history; the test isolates target-t self-leakage."
+  ],
   "next_action": "Freeze PSR-11 as exploratory. Do not tune against the same historical tail again; continue append-only Q60 prospective scoring and register any next feature before new outcomes are observed."
 }
