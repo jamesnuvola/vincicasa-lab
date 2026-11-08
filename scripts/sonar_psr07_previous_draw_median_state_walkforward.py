@@ -161,7 +161,7 @@ def score_probability(probability: np.ndarray, actual_index: int) -> dict[str, f
     if np.any(probability < 0.0) or not np.isclose(probability.sum(), 1.0, atol=1e-10, rtol=0.0):
         raise AssertionError("Scoring received non-normalized probabilities")
     actual_probability = float(probability[actual_index])
-    brier = float(np.dot(probability, probability) - 2.0 * actual_probability + 1.0)
+    brier = float(math.fsum(float(value) * float(value) for value in probability) - 2.0 * actual_probability + 1.0)
     order = np.lexsort((np.arange(len(probability)), -probability))
     rank = int(np.flatnonzero(order == actual_index)[0]) + 1
     return {
@@ -204,7 +204,7 @@ def circular_block_means(values: np.ndarray, replicates: int, block_length: int,
             take = min(block_length, n - total)
             sampled.append(values[(start + offsets[:take]) % n])
             total += take
-        result[replicate] = float(np.mean(np.concatenate(sampled)))
+        result[replicate] = math.fsum(float(value) for value in np.concatenate(sampled)) / n
     return result
 
 
@@ -216,7 +216,7 @@ def block_bootstrap_inference(
 ) -> dict[str, float | int]:
     if differences.ndim != 1 or len(differences) < 2:
         raise ValueError("Blind OOS needs at least two paired observations")
-    observed_mean = float(np.mean(differences))
+    observed_mean = math.fsum(float(value) for value in differences) / len(differences)
     ci_draws = circular_block_means(differences, replicates, block_length, seed)
     lower, upper = np.quantile(ci_draws, (0.025, 0.975), method="linear")
     centered = differences - observed_mean
@@ -234,9 +234,24 @@ def block_bootstrap_inference(
     }
 
 
-def rounded(value: Any, digits: int = 12) -> Any:
+def rounded(value: Any, digits: int = 9) -> Any:
     if isinstance(value, (np.floating, float)):
         return float(round(float(value), digits))
+    if isinstance(value, (np.integer, int)):
+        return int(value)
+    return value
+
+
+def canonicalize(value: Any) -> Any:
+    """Canonical JSON numeric representation to suppress sub-ulp runner drift."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, dict):
+        return {key: canonicalize(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [canonicalize(item) for item in value]
+    if isinstance(value, (np.floating, float)):
+        return float(format(float(value), ".12g"))
     if isinstance(value, (np.integer, int)):
         return int(value)
     return value
@@ -245,7 +260,7 @@ def rounded(value: Any, digits: int = 12) -> Any:
 def mean_metric(records: list[dict[str, Any]], key: str) -> float:
     if not records:
         raise ValueError(f"Empty metric group: {key}")
-    return float(np.mean([float(record[key]) for record in records]))
+    return math.fsum(float(record[key]) for record in records) / len(records)
 
 
 def run_walkforward(
@@ -793,7 +808,7 @@ def write_outputs(
     ledger_bytes = ledger_path.read_bytes()
     report["integrity"]["selected_ledger_rows"] = len(selected_ledger)
     report["integrity"]["selected_ledger_sha256"] = hashlib.sha256(ledger_bytes).hexdigest()
-    json_path.write_text(json.dumps(report, indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
+    json_path.write_text(json.dumps(canonicalize(report), indent=2, sort_keys=True, ensure_ascii=False) + "\n", encoding="utf-8")
     markdown_path.write_text(render_markdown(report), encoding="utf-8")
     return {"json": json_path, "markdown": markdown_path, "ledger": ledger_path}
 

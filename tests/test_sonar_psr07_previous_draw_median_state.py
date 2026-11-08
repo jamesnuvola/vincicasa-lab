@@ -23,6 +23,8 @@ from sonar_psr07_previous_draw_median_state_walkforward import (  # noqa: E402
     run_walkforward,
     score_probability,
     circular_block_means,
+    canonicalize,
+    rounded,
 )
 
 
@@ -69,6 +71,14 @@ class PSR07UnitTests(unittest.TestCase):
         self.assertAlmostEqual(adjusted["a"], 0.03, places=12)
         self.assertAlmostEqual(adjusted["c"], 0.06, places=12)
         self.assertAlmostEqual(adjusted["b"], 0.06, places=12)
+
+
+    def test_canonical_numeric_serialization_suppresses_ulp_noise(self) -> None:
+        left = 0.0011042943238679965
+        right = 0.0011042943238679958
+        self.assertEqual(canonicalize(left), canonicalize(right))
+        self.assertNotEqual(canonicalize(4.440892098500626e-16), 0.0)
+        self.assertEqual(rounded(0.002310031019999999), rounded(0.002310031019000001))
 
     def test_block_sampler_is_deterministic(self) -> None:
         values = np.asarray([0.1, -0.2, 0.4, 0.0, 0.3, -0.1, 0.2, 0.05])

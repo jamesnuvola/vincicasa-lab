@@ -22,3 +22,12 @@ The discrepancy came from a prior exploratory floating-point cumulative calculat
 - Added tests for the lower-median convention at P3=20 and the next state at P3=21.
 
 This is a mathematical definition correction, not an observed predictive result. The failed run produced no walk-forward metrics. Retry the pinned archive run and then verify generated report/ledger persistence and byte reproducibility.
+
+
+## Second replay mismatch — numeric serialization root cause
+
+- Replay runs: push run 42482327342 and pull-request run 42482331231, both on commit a69439bf936a5d6c875d3eaf8af8fe2b146726e3.
+- The walk-forward and unit tests completed successfully, but the persisted-output comparison failed. The validation aggregate JSON contained last-bit differences around 1e-18; the target ledger SHA-256 changed from 9f9fef21824b1332e5d4c8a381573a0f0d066e60b10d781ee4ad3d6395dfd7d2 to af61169216618d7b9174c33931a867f42941095fd7343430b66508c7746114f7. A few per-target values crossed the 12-decimal rounding boundary by 1e-12.
+- Root cause: floating-point reductions (NumPy dot/mean) and 12-decimal ledger serialization were too sensitive to last-bit runner variation. Archive SHA, dates, code path and train-prefix checks did not change; this was output numeric canonicalization, not a target leakage finding.
+- Correction: use Python math.fsum for score/reduction/mean calculations; canonicalize JSON numbers to 12 significant digits; round target-ledger floats to 9 decimal places; add a regression test for ULP-level numeric noise.
+- The next run must pass the persisted-output byte-diff guard. Until then, reproducibility is not claimed.
