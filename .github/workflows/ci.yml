@@ -49,5 +49,14 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Run SONAR PSR-01 position-specific walk-forward
+        run: node scripts/sonar_psr01_position_specific_range_walkforward.mjs data/storico_daily.csv reports/position_specific_range_residual
+      - name: Upload PSR-01 experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr01-walkforward
+          path: reports/position_specific_range_residual/psr01_walkforward_*
+          if-no-files-found: warn
       - name: Build web application
         run: npm install && npm run build
