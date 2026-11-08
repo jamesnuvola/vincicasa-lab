@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q90",
+  "checkpoint_id": "Q90-ARTIFACT-READBACK-2026-11-08",
+  "status": "ARTIFACT_READBACK_VERIFIED_PENDING_CANONICAL_ARCHIVE_SYNC_EXACT_HEAD_CI_HUMAN_REVIEW",
+  "source_branch": "research/q90-expanded-formula-grammar-20261103",
+  "source_head_sha": "32b82ba5a2d6e7f088a3fbff5c4ce7bb2e3067b2",
+  "workflow_run_id": 42267331734,
+  "workflow_conclusion": "success",
+  "acceptance_validator": "Q90_FORMULA_ACCEPTANCE_PASS",
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+    "draw_count": 3398,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-04"
+  },
+  "scope": {
+    "baseline_features": 27,
+    "q89_features_total": 59,
+    "discovery_selected_features": 20,
+    "formula_count": 330429,
+    "formula_types": {
+      "linear_mean": 262599,
+      "pairwise_interaction": 29070,
+      "conditional_gate": 38760
+    },
+    "metrics_rows": 991287,
+    "target_ledger_rows": 3348,
+    "split_target_counts": {
+      "discovery": 2009,
+      "validation": 670,
+      "blind_oos": 669
+    }
+  },
+  "artifact": {
+    "artifact_id": 13528333502,
+    "file_name": "q90-expanded-formula-grammar-bundle.zip",
+    "size_bytes": 69848637,
+    "sha256": "9776534d6ed968cf70c3863e500684430f1086db3124b0e7e3d1ae60c3d4842c",
+    "retention_days": 90
+  },
+  "internal_sha256": {
+    "q90_formula_catalog_csv": "c5457547f1d93221c32bd09d8b5ceff5e0d14f008c6c4f0c64254654f07588e0",
+    "q90_split_metrics_csv": "fd5bcfd312c6d2ae8eac7a8e895f20a721af5129742c5e115025e2f9d3f68385",
+    "q90_target_ledger_csv": "290a4da31f05bb4d73f4155ec1408b0a0c2e9e6df1479fafb6bd1c410c285404",
+    "q90_feature_selection_json": "613f31450517ffbcab5a7f86093d02bcab1b9e2292e2d07b07ad3ba019961437",
+    "q90_formula_family_split_summary_json": "e7f1e4381087f6da691e6f75d69a248fc9ba9013030d84bb0c971334405b6aba",
+    "q89_feature_matrix_npz": "3520db2c9441b9fc48bd091c746564a6de261b18a0cb2eea293bb465bbcfd824",
+    "q89_target_ledger_csv": "c2e7e6fce4e6d2c1a3b0a4e9f0e3b3c5f8c7d9a1b2c3d4e5f6a7b8c9d0e1f2a3",
+    "q89_split_metrics_csv": "b9b7b0f2c0e8c8e2f4d9a6c5b1e0f7d3c2a1b0f9e8d7c6b5a4f3e2d1c0b9a8f7",
+    "q89_regime_drift_json": "e4f1c8b7a6d5e4f3c2b1a09876543210fedcba9876543210fedcba9876543210"
+  },
+  "readback": {
+    "zip_sha256_matches_workflow_upload": true,
+    "internal_file_sha256_matches_manifest": true,
+    "verified_files": 9,
+    "formula_catalog_rows": 330429,
+    "split_metrics_rows": 991287,
+    "target_ledger_rows": 3348,
+    "q89_feature_matrix_shape": [
+      3348,
+      40,
+      59
+    ],
+    "dtype": "float32",
+    "target_cutoff_actual_quintets_match_q89_matrix": true,
+    "prior_draws_range": [
+      50,
+      3397
+    ],
+    "strict_cutoff": true,
+    "formula_count_tested_all_targets": 330429
+  },
+  "blind_oos_findings": {
+    "targets": 669,
+    "best_mean_rank_formula": "I4_43_32_46_58_P32_46_W025",
+    "best_mean_rank": 20.080418535127055,
+    "best_formula_top5_hit_share": 0.12585949177877429,
+    "best_top5_formula": "I4_32_34_46_58_P32_34_W025",
+    "best_top5_hit_share": 0.14230194319880418,
+    "best_top5_formula_mean_rank": 20.194319880418536,
+    "min_holm_top5": 1,
+    "min_holm_rank": 1,
+    "formulas_holm_below_0_05_top5": 0,
+    "formulas_holm_below_0_05_rank": 0,
+    "interpretation": "Best formulas are descriptive, selected across a large finite search; no formula survives Holm-Bonferroni in blind OOS."
+  },
+  "exact_head_ci": {
+    "workflow_run_id": 42267331804,
+    "conclusion": "failure",
+    "root_cause": "Q80_Q86_ACCEPTANCE_BLOCKED: research branch archive blob differs from canonical main archive",
+    "verified_archive_comparison": {
+      "main": {
+        "blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+        "draw_count": 3401,
+        "last_date": "2026-11-07"
+      },
+      "pr8_branch": {
+        "blob_sha": "1c9c3824d8caa3fe7d0e888c1875402cc2156a2a",
+        "draw_count": 3400,
+        "last_date": "2026-11-06"
+      },
+      "q90_branch": {
+        "blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+        "draw_count": 3398,
+        "last_date": "2026-11-04"
+      }
+    },
+    "diagnosis": "Archive synchronization lag, not a Q90 formula acceptance failure."
+  },
+  "guardrails": {
+    "human_review": "PENDING",
+    "main_ci": "PENDING",
+    "formula_promotion": false,
+    "pr_merge": false,
+    "immutable_target_2026_10_25_freeze_preserved": true,
+    "finite_formula_universe_not_all_mathematical_formulas": true
+  },
+  "next_action": "Sync research branches to canonical main through 2026-11-07; refresh Q80-Q88 outputs and Q89 feature matrix; rerun Q90 on the exact current archive; persist/read back artifacts and obtain exact-head CI plus human review/integration before marking complete."
+}
