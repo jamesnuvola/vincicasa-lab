@@ -323,13 +323,13 @@ function renderMarkdown(report) {
   lines.push("|---|---:|---:|---:|---:|---:|");
   for (const s of report.validation_selection) lines.push("| P" + s.position + " | " + s.selected_alpha + " | " + f(s.validation_brier_improvement_vs_global) + " | " + f(s.validation_grid[0].metrics.brier_improvement_vs_global) + " | " + f(s.validation_grid[1].metrics.brier_improvement_vs_global) + " | " + f(s.validation_grid[2].metrics.brier_improvement_vs_global) + " |");
   lines.push("", "## Selected model by split", "");
-  lines.push("| P | α | Split | N | ΔBrier vs global | ΔLog-loss vs global | Top-1 Δ | Top-5 Δ | Mean rank improvement |");
-  lines.push("|---|---:|---|---:|---:|---:|---:|---:|---:|");
-  for (const s of report.selected_split_metrics) { const m = s.metrics; lines.push("| P" + s.position + " | " + s.selected_alpha + " | " + s.split + " | " + m.n + " | " + f(m.brier_improvement_vs_global) + " | " + f(m.logloss_improvement_vs_global) + " | " + pp(m.top1_delta) + " | " + pp(m.top5_delta) + " | " + f(m.rank_improvement) + " |"); }
+  lines.push("| P | α | Split | N | ΔBrier vs global | ΔBrier vs exact prior | ΔLog-loss vs global | ΔLog-loss vs exact prior | Top-1 Δ | Top-5 Δ | Mean rank improvement |");
+  lines.push("|---|---:|---|---:|---:|---:|---:|---:|---:|---:|---:|");
+  for (const s of report.selected_split_metrics) { const m = s.metrics; lines.push("| P" + s.position + " | " + s.selected_alpha + " | " + s.split + " | " + m.n + " | " + f(m.brier_improvement_vs_global) + " | " + f(m.brier_improvement_vs_prior) + " | " + f(m.logloss_improvement_vs_global) + " | " + f(m.logloss_improvement_vs_prior) + " | " + pp(m.top1_delta) + " | " + pp(m.top5_delta) + " | " + f(m.rank_improvement) + " |"); }
   lines.push("", "## Blind OOS primary inference", "");
-  lines.push("| P | α | ΔBrier | 95% block CI | Raw one-sided p | Holm p (5) | Top-1 Δ | Top-5 Δ |");
-  lines.push("|---|---:|---:|---|---:|---:|---:|---:|");
-  for (const s of report.blind_oos_primary_inference) lines.push("| P" + s.position + " | " + s.selected_alpha + " | " + f(s.mean_improvement) + " | [" + f(s.ci95[0]) + ", " + f(s.ci95[1]) + "] | " + f(s.raw_one_sided_benefit_p, 4) + " | " + f(s.holm_p_family_5_positions, 4) + " | " + pp(s.metrics.top1_delta) + " | " + pp(s.metrics.top5_delta) + " |");
+  lines.push("| P | α | ΔBrier vs global | ΔBrier vs exact prior | ΔLog-loss vs exact prior | 95% block CI (vs global) | Raw one-sided p | Holm p (5) | Top-1 Δ | Top-5 Δ |");
+  lines.push("|---|---:|---:|---:|---:|---|---:|---:|---:|---:|");
+  for (const s of report.blind_oos_primary_inference) lines.push("| P" + s.position + " | " + s.selected_alpha + " | " + f(s.mean_improvement) + " | " + f(s.metrics.brier_improvement_vs_prior) + " | " + f(s.metrics.logloss_improvement_vs_prior) + " | [" + f(s.ci95[0]) + ", " + f(s.ci95[1]) + "] | " + f(s.raw_one_sided_benefit_p, 4) + " | " + f(s.holm_p_family_5_positions, 4) + " | " + pp(s.metrics.top1_delta) + " | " + pp(s.metrics.top5_delta) + " |");
   lines.push("", "## Decision and retained candidates", "");
   lines.push(report.decision.root_cause_reading, "");
   if (report.decision.preserve_unconfirmed_positive_brier_candidates.length) {
