@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   evaluate-shards:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && !contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687')) }}
+    if: "${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && !contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687')) }}"
     name: Evaluate shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
@@ -61,7 +61,7 @@ jobs:
           retention-days: 14
 
   recover-aggregate-validate-persist:
-    if: ${{ github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687') }}
+    if: "${{ github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687') }}"
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
@@ -107,7 +107,7 @@ jobs:
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -H "Content-Type: application/json" \
-            -d "{\\\"ref\\\":\\\"research/sonar-q89-nine-feature-20261108\\\"}"
+            -d "{\"ref\":\"research/sonar-q89-nine-feature-20261108\"}"
 
   aggregate-validate-persist:
     needs: evaluate-shards
