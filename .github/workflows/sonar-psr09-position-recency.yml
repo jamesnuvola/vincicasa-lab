@@ -1,0 +1,30 @@
+name: SONAR PSR-09 Position Recency Marginals
+on:
+  push:
+    branches:
+      - research/sonar-psr09-position-recency-marginals-20261108
+  pull_request:
+    branches:
+      - main
+    paths:
+      - scripts/sonar_psr09_position_recency_walkforward.cjs
+      - tests/test_sonar_psr09_position_recency_walkforward.cjs
+      - reports/position_specific_range_residual/PSR09_*
+      - .github/workflows/sonar-psr09-position-recency.yml
+jobs:
+  psr09:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Unit and synthetic chronology tests
+        run: node --test tests/test_sonar_psr09_position_recency_walkforward.cjs
+      - name: Canonical pinned walk-forward replay
+        run: node scripts/sonar_psr09_position_recency_walkforward.cjs
+      - name: Reconcile runner blob SHA with Git object
+        run: |
+          node -e 'const fs=require("fs");const cp=require("child_process");const r=JSON.parse(fs.readFileSync("reports/position_specific_range_residual/PSR09_results_20261108.json","utf8"));const sha=cp.execSync("git rev-parse HEAD:scripts/sonar_psr09_position_recency_walkforward.cjs").toString().trim();if(r.runner.gitBlobSha!==sha)throw new Error("Runner blob SHA mismatch: "+r.runner.gitBlobSha+" != "+sha);console.log("Runner blob SHA reconciled:",sha);'
