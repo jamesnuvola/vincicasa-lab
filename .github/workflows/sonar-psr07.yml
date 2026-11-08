@@ -50,6 +50,14 @@ jobs:
             reports/position_specific_range_residual/PSR07_results_20261108.md
             reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
           retention-days: 90
+      - name: Verify deterministic replay against persisted outputs
+        if: github.event_name == 'push'
+        run: |
+          if git ls-files --error-unmatch reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv >/dev/null 2>&1; then
+            git diff --exit-code -- reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
+          else
+            echo "Initial report/ledger generation: no persisted outputs to compare yet."
+          fi
       - name: Persist deterministic research outputs on isolated branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/research/sonar-psr07-prior-median-state-20261108'
         run: |
