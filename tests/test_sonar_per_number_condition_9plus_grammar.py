@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """Acceptance/unit tests for the finite Q89 nine-feature formula universe."""
 import itertools
+import json
 import math
 import random
 import sys
 import tempfile
 import unittest
+from datetime import date, timedelta
+from unittest.mock import patch
+import numpy as np
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -24,10 +28,57 @@ class Q89FormulaUniverseTests(unittest.TestCase):
     def test_acceptance_csv_reader_materializes_rows_before_close(self):
         with tempfile.TemporaryDirectory() as directory:
             path=Path(directory)/"tiny.csv"
-            path.write_text("a,b\\n1,2\\n3,4\\n",encoding="utf-8")
+            path.write_text("a,b\n1,2\n3,4\n",encoding="utf-8")
             fields,rows=q89accept.load_csv(path)
             self.assertEqual(fields,["a","b"])
             self.assertEqual(rows,[{"a":"1","b":"2"},{"a":"3","b":"4"}])
+
+    def test_paired_candidate_metric_blocks_replay(self):
+        paired=[
+            {"Q89_number_hits_top5":1,"Q89_number_hits_top10":2,"Q89_number_hits_top20":3,"Q89_rank_sum":50,
+             "Q88_number_hits_top5":2,"Q88_number_hits_top10":3,"Q88_number_hits_top20":4,"Q88_rank_sum":60},
+            {"Q89_number_hits_top5":2,"Q89_number_hits_top10":3,"Q89_number_hits_top20":4,"Q89_rank_sum":70,
+             "Q88_number_hits_top5":1,"Q88_number_hits_top10":2,"Q88_number_hits_top20":3,"Q88_rank_sum":80}
+        ]
+        inference={}
+        for family,prefix in q89accept.PAIRED_METRIC_BLOCKS:
+            inference[family]={}
+            for k in (5,10,20):
+                inference[family][f"mean_number_hits_top{k}"]=sum(row[f"{prefix}_number_hits_top{k}"] for row in paired)/(5*len(paired))
+            inference[family]["mean_rank_of_actual_numbers"]=sum(row[f"{prefix}_rank_sum"] for row in paired)/(5*len(paired))
+        self.assertEqual(q89accept.validate_paired_metric_replay(inference,paired),[])
+        inference["Q89_candidate_blind_metrics"]["mean_number_hits_top5"]=0.25
+        self.assertIn("Q89 blind candidate metric replay mismatch Q89_candidate_blind_metrics Top5",
+                      q89accept.validate_paired_metric_replay(inference,paired))
+
+    def test_paired_blind_ledger_uses_separate_q89_and_q88_ranks(self):
+        matrix=np.zeros((40,27),dtype=np.float64)
+        numbers=np.arange(40,dtype=np.float64)
+        matrix[:,0:8]=-numbers[:,None]
+        matrix[:,8]=1000.0*numbers
+        scored=3401-q80.MIN_HISTORY
+        standardized_stack=[matrix]*scored
+        dates=[(date(2017,7,17)+timedelta(days=index)).isoformat() for index in range(3401)]
+        draws=[[1,2,3,4,5] for _ in range(3401)]
+        selection={
+            "Q89_candidate":{"formula_id":"P9_00_01_02_03_04_05_06_07_08"},
+            "Q88_control":{"formula_id":"P8_00_01_02_03_04_05_06_07"}
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            ledger_path=Path(directory)/"paired.csv"
+            with patch("aggregate_sonar_q89_shards.q81.build_feature_stack",return_value=standardized_stack), \\
+                 patch.object(q89agg,"PAIRED_LEDGER_PATH",ledger_path):
+                rows,differences=q89agg.paired_blind_ledger(selection,dates,draws)
+        self.assertEqual(len(rows),670)
+        first=rows[0]
+        q89_ranks=json.loads(first["Q89_actual_number_ranks"])
+        q88_ranks=json.loads(first["Q88_actual_number_ranks"])
+        self.assertEqual(q89_ranks,[40,39,38,37,36])
+        self.assertEqual(q88_ranks,[1,2,3,4,5])
+        self.assertEqual(first["Q89_number_hits_top5"],0)
+        self.assertEqual(first["Q88_number_hits_top5"],5)
+        self.assertEqual(first["paired_delta_number_hits_top5"],-5)
+        self.assertEqual(differences["top5"][0],-5)
 
     def test_exact_formula_count_and_endpoints(self):
         self.assertEqual(q89.TOTAL_FORMULA_COUNT,4_686_825)
