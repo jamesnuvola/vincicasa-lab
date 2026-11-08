@@ -9,10 +9,16 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
+import sonar_per_number_condition_grammar as q80
 import sonar_q89_common as q89
 import aggregate_sonar_q89_shards as q89agg
 
 class Q89FormulaUniverseTests(unittest.TestCase):
+    def test_aggregator_runtime_constants_are_bound(self):
+        self.assertEqual(q89agg.MIN_HISTORY,q80.MIN_HISTORY)
+        self.assertEqual(q89agg.FEATURE_COUNT,q89.FEATURE_COUNT)
+        self.assertEqual(q89agg.FORMULA_SIZE,q89.FORMULA_SIZE)
+
     def test_exact_formula_count_and_endpoints(self):
         self.assertEqual(q89.TOTAL_FORMULA_COUNT,4_686_825)
         self.assertEqual(q89.SHARD_COUNT,15)
