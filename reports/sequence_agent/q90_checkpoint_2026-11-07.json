@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q90",
+  "status": "FORMULA_ACCEPTANCE_PASS_ARTIFACT_READBACK_VERIFIED_PENDING_REPOSITORY_PERSISTENCE_MAIN_CI_HUMAN_REVIEW",
+  "checkpoint_date": "2026-11-07",
+  "archive_blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+  "draw_count": 3401,
+  "scored_targets": 3351,
+  "selected_feature_count": 20,
+  "formula_count": 330429,
+  "formula_catalog_sha256": "a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586",
+  "split_metrics_sha256": "3192a5ab2a64e8526321b6b5c322320dfc5636e337eadde573b5e27b0461ec2a",
+  "target_ledger_sha256": "553ea2519f109cf0913f86a43210481f7e9ac346128f18698d425036d4e1c120",
+  "pending": [
+    "nested walk-forward ex-ante formula anticipation and calibration",
+    "expand conditional gates and interactions beyond the four-feature slice",
+    "persist raw Q90 output bundle as repository Git objects and verify exact blob readback",
+    "exact-head CI on the updated PR branch and human review/integration"
+  ],
+  "acceptance": {
+    "validator": "Q90_FORMULA_ACCEPTANCE_PASS",
+    "workflow_run_id": 42504717670,
+    "exact_head_sha": "30480c640c1c1f5667e28562f75247cd8661f8ad",
+    "artifact_retention_days": 90,
+    "artifact_readback": "VERIFIED_EXTERNAL_ARTIFACT_DOWNLOAD_SHA256_AND_INTERNAL_MANIFEST",
+    "artifact_id": 13627507532,
+    "artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "readback_report_path": "reports/sequence_agent/q90_external_artifact_readback_2026-11-08.json",
+    "repository_git_object_persistence": "PENDING",
+    "main_ci": "PENDING",
+    "human_review": "PENDING"
+  },
+  "manifest_sha256": "30ea0587f00fab25b06358a32aa01e6dd72b82ffa673dc99981c522cd1a95272",
+  "guardrails": {
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "pr6_pr7_pr8_untouched": true,
+    "immutable_target_2026_10_25_freeze_preserved": true
+  }
+}
