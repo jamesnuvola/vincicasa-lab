@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "SONAR_FD02_BAND_CONDITIONED_RESIDUAL",
+  "status": "FROZEN_PENDING",
+  "frozen_at": "2026-11-08T02:43:29+01:00",
+  "target_date": "2026-11-08",
+  "history_cutoff": "2026-11-07",
+  "archive_source": "data/storico_daily.csv",
+  "archive_git_blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+  "archive_draws": 3401,
+  "minimum_history_before_target": 200,
+  "ranking_tie_break": "ascending number",
+  "formula_parameters": {
+    "temporal_half_life_draws": 200,
+    "gaussian_sigma": 4,
+    "raw_baseline": "exponentially decayed prior occurrence count, no number-space smoothing",
+    "fd01_diffusion": "normalized Gaussian kernel on labels 1..40",
+    "fd02_reflected_boundary": "sigma=4 Gaussian image kernel with reflected boundaries, period 80, image terms m=-3..3"
+  },
+  "candidates": {
+    "raw_temporal_exponential_frequency": {
+      "model_id": "SONAR_FD02_RAW_H200",
+      "top20_ranked": [38,28,25,36,16,12,34,26,8,10,37,15,23,31,20,1,5,29,2,39],
+      "top10_ranked": [38,28,25,36,16,12,34,26,8,10],
+      "top5_ranked": [38,28,25,36,16]
+    },
+    "fd01_discrete_diffusion": {
+      "model_id": "SONAR_FD01_DIFF_H200_SIGMA4",
+      "top20_ranked": [40,39,38,37,36,35,34,33,32,29,31,28,30,27,26,25,24,14,15,13],
+      "top10_ranked": [40,39,38,37,36,35,34,33,32,29],
+      "top5_ranked": [40,39,38,37,36]
+    },
+    "fd02_reflected_boundary": {
+      "model_id": "SONAR_FD02_REF_H200_SIGMA4",
+      "top20_ranked": [40,39,38,37,36,35,34,33,32,29,31,28,30,27,26,25,24,14,15,13],
+      "top10_ranked": [40,39,38,37,36,35,34,33,32,29],
+      "top5_ranked": [40,39,38,37,36]
+    }
+  },
+  "actual_draw": null,
+  "evaluation_status": "PENDING",
+  "guardrails": [
+    "This is an exploratory shadow freeze, not the official position_seed_mix_top20_v1 Q60 freeze.",
+    "Do not reconstruct or overwrite this freeze after the target outcome.",
+    "No automatic engine promotion or merge."
+  ]
+}
