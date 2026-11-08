@@ -55,6 +55,19 @@ const mulberry32 = (seed) => {
     return ((t ^ (t >>> 14) >>> 0) >>> 0) / 4294967296;
   };
 };
+const roundDeep = (value) => {
+  if (Array.isArray(value)) return value.map(roundDeep);
+  if (value && typeof value === "object") {
+    const output = {};
+    for (const key of Object.keys(value)) output[key] = roundDeep(value[key]);
+    return output;
+  }
+  if (typeof value === "number") {
+    const rounded = Number(value.toFixed(12));
+    return Object.is(rounded, -0) ? 0 : rounded;
+  }
+  return value;
+};
 const holmAdjust = (pValues) => {
   const ordered = pValues.map((p, i) => ({ p, i })).sort((a, b) => a.p - b.p || a.i - b.i);
   const adjusted = Array(pValues.length).fill(1);
@@ -297,10 +310,8 @@ function run(csv) {
 
   const ledgerHeader = ["date", "target_index", "cutoff_date", ...Array.from({ length: 5 }, (_, p) => "actual_p" + (p + 1))];
   for (let p = 1; p <= 5; p++) {
-    const fields = ["selected_alpha", "state_bin", "previous_position_value", "state_train_n", "train_n",
-      "brier_improvement_vs_global", "logloss_improvement_vs_global", "brier_improvement_vs_exact_prior",
-      "logloss_improvement_vs_exact_prior", "top1_delta_vs_global", "top5_delta_vs_global",
-      "top10_delta_vs_global", "top20_delta_vs_global", "rank_improvement_vs_global"];
+    const fields = ["selected_alpha", "state_bin", "previous_position_value", "state_train_n",
+      "brier_improvement_vs_global", "logloss_improvement_vs_global", "top5_delta_vs_global", "rank_improvement_vs_global"];
     for (const field of fields) ledgerHeader.push("p" + p + "_" + field);
   }
   const ledgerRows = [];
@@ -313,14 +324,11 @@ function run(csv) {
       selectedRows.push(r);
     }
     const row = [rows[t].date, t, rows[t - 1].date, ...rows[t].nums];
+    const fixed6 = (x) => Math.abs(x) < 0.0000005 ? "0.000000" : Number(x).toFixed(6);
     for (const r of selectedRows) row.push(
-      r.alpha, r.state_bin, r.previous_position_value, r.state_train_n, r.train_n,
-      r.brier_improvement_vs_global, r.logloss_improvement_vs_global,
-      r.brier_improvement_vs_exact_prior, r.logloss_improvement_vs_exact_prior,
-      Number(r.conditional_top1) - Number(r.global_top1),
+      r.alpha, r.state_bin, r.previous_position_value, r.state_train_n,
+      fixed6(r.brier_improvement_vs_global), fixed6(r.logloss_improvement_vs_global),
       Number(r.conditional_top5) - Number(r.global_top5),
-      Number(r.conditional_top10) - Number(r.global_top10),
-      Number(r.conditional_top20) - Number(r.global_top20),
       r.global_rank - r.conditional_rank
     );
     ledgerRows.push(row);
@@ -372,7 +380,7 @@ function run(csv) {
     },
     next_action: "PSR-04: test a continuous same-position lag-1 transition kernel with prior shrinkage and a validation-frozen bandwidth grid; preserve P2's small Brier candidate and P3's Top-5 anomaly. Keep the exact order-statistic marginal as baseline, use identical blind dates and Holm across five positions. No motor change."
   };
-  return { report, ledgerCsv };
+  return { report: roundDeep(report), ledgerCsv };
 }
 
 function renderMarkdown(report) {

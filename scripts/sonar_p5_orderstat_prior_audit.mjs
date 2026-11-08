@@ -35,7 +35,7 @@ const trainSpec=pooled.temporal_split.train_target_dates;
 const testSpec=pooled.temporal_split.test_target_dates;
 const m=testSpec.match(/(\d{4}-\d{2}-\d{2})\s+through\s+(\d{4}-\d{2}-\d{2})/);
 if(!m) throw new Error("Could not parse pooled ranker test date window");
-const trainMatch=trainSpec.match(/(\\d{4}-\\d{2}-\\d{2})\\s+through\\s+(\\d{4}-\\d{2}-\\d{2})/);
+const trainMatch=trainSpec.match(/(\d{4}-\d{2}-\d{2})\s+through\s+(\d{4}-\d{2}-\d{2})/);
 if(!trainMatch) throw new Error("Could not parse pooled ranker train date window");
 const trainStart=trainMatch[1],trainEnd=trainMatch[2],testStart=m[1],testEnd=m[2];
 const test=rows.filter(r=>r.date>=testStart&&r.date<=testEnd);
