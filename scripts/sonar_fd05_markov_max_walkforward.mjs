@@ -151,9 +151,39 @@ if (process.argv.includes("--write")) {
   process.stdout.write(`Wrote ${RESULT_PATH}\n`);
 } else if (process.argv.includes("--check")) {
   const expected = JSON.parse(fs.readFileSync(RESULT_PATH, "utf8"));
-  if (JSON.stringify(generated) !== JSON.stringify(expected)) {
-    throw new Error("FD-05 generated result differs from persisted JSON");
+  function firstMismatch(actual, expected, path = "$") {
+    if (typeof actual === "number" && typeof expected === "number") {
+      return Math.abs(actual - expected) <= 1e-12 ? null : {path, actual, expected};
+    }
+    if (actual === null || expected === null || typeof actual !== typeof expected) {
+      return actual === expected ? null : {path, actual, expected};
+    }
+    if (Array.isArray(actual) || Array.isArray(expected)) {
+      if (!Array.isArray(actual) || !Array.isArray(expected) || actual.length !== expected.length) {
+        return {path, actualLength: actual?.length, expectedLength: expected?.length};
+      }
+      for (let i = 0; i < actual.length; i++) {
+        const mismatch = firstMismatch(actual[i], expected[i], `${path}[${i}]`);
+        if (mismatch) return mismatch;
+      }
+      return null;
+    }
+    if (typeof actual === "object") {
+      const actualKeys = Object.keys(actual).sort();
+      const expectedKeys = Object.keys(expected).sort();
+      if (JSON.stringify(actualKeys) !== JSON.stringify(expectedKeys)) {
+        return {path, actualKeys, expectedKeys};
+      }
+      for (const key of actualKeys) {
+        const mismatch = firstMismatch(actual[key], expected[key], `${path}.${key}`);
+        if (mismatch) return mismatch;
+      }
+      return null;
+    }
+    return actual === expected ? null : {path, actual, expected};
   }
+  const mismatch = firstMismatch(generated, expected);
+  if (mismatch) throw new Error(`FD-05 persisted-output mismatch: ${JSON.stringify(mismatch)}`);
   process.stdout.write("FD-05 deterministic output matches persisted JSON.\n");
 } else {
   process.stdout.write(JSON.stringify({selected: generated.selected, blind: generated.selectedBlind, deltaBrier: generated.selectedBlindDeltaBrier, pHolm: generated.blindTests.find(x => x.id === generated.selected).pHolm, prospectiveFreeze: generated.prospectiveFreeze}, null, 2) + "\n");
