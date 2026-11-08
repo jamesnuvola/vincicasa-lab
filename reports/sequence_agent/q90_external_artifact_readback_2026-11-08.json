@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q90",
+  "audit_type": "INDEPENDENT_EXTERNAL_ARTIFACT_READBACK",
+  "audit_date": "2026-11-08",
+  "source": {
+    "workflow_run_id": 42504717670,
+    "exact_head_sha": "30480c640c1c1f5667e28562f75247cd8661f8ad",
+    "artifact_id": 13627507532,
+    "artifact_name": "q90-expanded-formula-grammar-bundle",
+    "artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "artifact_size_bytes": 69356707,
+    "retention_expires_at": "2027-02-06T17:23:20Z"
+  },
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07"
+  },
+  "formula_universe": {
+    "feature_matrix_shape": [
+      3351,
+      40,
+      59
+    ],
+    "discovery_selected_feature_count": 20,
+    "formula_count": 330429,
+    "formula_types": {
+      "linear_equal_weight_sizes_4_to_8": 262599,
+      "four_feature_pairwise_interaction": 29070,
+      "four_feature_conditional_gate": 38760
+    },
+    "split_targets": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 991287,
+    "target_ledger_rows": 3351
+  },
+  "independent_readback": {
+    "zip_sha256_matches_github_artifact_digest": true,
+    "files_verified": [
+      {
+        "path": "q90_formula_catalog.csv",
+        "rows": 330429,
+        "sha256": "a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586",
+        "match_manifest": true
+      },
+      {
+        "path": "q90_split_metrics.csv",
+        "rows": 991287,
+        "sha256": "3192a5ab2a64e8526321b6b5c322320dfc5636e337eadde573b5e27b0461ec2a",
+        "match_manifest": true
+      },
+      {
+        "path": "q90_target_ledger.csv",
+        "rows": 3351,
+        "sha256": "553ea2519f109cf0913f86a43210481f7e9ac346128f18698d425036d4e1c120",
+        "match_manifest": true
+      },
+      {
+        "path": "q90_feature_selection.json",
+        "sha256": "0e752f901f1d5f8f7c4b7d8436f38e3939ee2ab7018dc4229a0e1fddd3c08ed9",
+        "match_manifest": true
+      },
+      {
+        "path": "q90_formula_family_split_summary.json",
+        "sha256": "aff80ea4ed4204a55237ea626e2ee54d9816d648e879e9cef7bcc8ee27106f70",
+        "match_manifest": true
+      },
+      {
+        "path": "adaptive_novelty_feature_matrix.npz",
+        "sha256": "681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49",
+        "match_manifest": true
+      }
+    ],
+    "result": "PASS"
+  },
+  "measured_results": {
+    "multiple_testing": {
+      "method": "Holm-Bonferroni",
+      "family": "330429 formulas per chronological split and endpoint",
+      "discovery_top5_significant_formula_count": 1,
+      "discovery_rank_lower_significant_formula_count": 0,
+      "validation_significant_formula_count": 0,
+      "blind_oos_significant_formula_count": 0,
+      "minimum_holm_top5": 0.03735452405976903,
+      "minimum_holm_rank_lower": 1
+    },
+    "sole_discovery_top5_formula": {
+      "formula_id": "L8_20_23_18_45_33_50_57_53",
+      "discovery": {
+        "targets": 2011,
+        "top5_hit_share": 0.14122327200397813,
+        "uniform_baseline": 0.125,
+        "delta_percentage_points": 1.622327200397813,
+        "mean_actual_number_rank": 20.120437593237195,
+        "raw_p_top5": 1.1304856432022924e-7,
+        "holm_p_top5": 0.03735452405976903
+      },
+      "validation": {
+        "targets": 670,
+        "top5_hit_share": 0.12865671641791046,
+        "uniform_baseline": 0.125,
+        "delta_percentage_points": 0.365671641791046,
+        "mean_actual_number_rank": 20.554328358208956,
+        "raw_p_top5": 0.2585022675897779,
+        "holm_p_top5": 1
+      },
+      "blind_oos": {
+        "targets": 670,
+        "top5_hit_share": 0.12268656716417911,
+        "uniform_baseline": 0.125,
+        "delta_percentage_points": -0.231343283582089,
+        "mean_actual_number_rank": 20.508059701492538,
+        "raw_p_top5": 0.6754300793111115,
+        "holm_p_top5": 1
+      }
+    },
+    "blind_oos_family_mean_top5_hit_share": {
+      "linear_size_4": 0.124652,
+      "linear_size_5": 0.124557,
+      "linear_size_6": 0.124435,
+      "linear_size_7": 0.124352,
+      "linear_size_8": 0.124269,
+      "pairwise_interaction_4": 0.124869,
+      "conditional_gate_4": 0.124509,
+      "uniform_baseline": 0.125
+    },
+    "blind_oos_family_mean_actual_number_rank": {
+      "linear_size_4": 20.475224,
+      "linear_size_5": 20.475431,
+      "linear_size_6": 20.475343,
+      "linear_size_7": 20.475474,
+      "linear_size_8": 20.475755,
+      "pairwise_interaction_4": 20.463739,
+      "conditional_gate_4": 20.48332,
+      "uniform_baseline": 20.5
+    }
+  },
+  "diagnosis": {
+    "root_cause": "The only Holm-significant formula is Discovery-only. Its Top5 hit share falls from 14.1223% to 12.8657% in Validation and 12.2687% in Blind OOS; adjusted p-values in both later splits are 1.0. This is consistent with selection overfit, not a stable ex-ante effect.",
+    "limitations": [
+      "Feature subset selection was discovery-only but still data-adaptive.",
+      "Q90 is exhaustive only within the selected 20-feature subset and registered grammar, not all 59-feature combinations or all mathematical formulas.",
+      "Retrospective per-target oracle ranks are descriptive and cannot be used as forecasts.",
+      "The family p-values use finite-population normal approximations and remain exploratory.",
+      "The downloaded GitHub artifact was independently read back and hash-verified, but the raw bundle has not yet been persisted as repository Git objects.",
+      "Main/current-head CI and human review/integration remain pending."
+    ]
+  },
+  "next_action": "Persist this readback audit and the finalized Q90 checkpoint in the PR branch; then require CI on the resulting exact head and human review before Q90 is marked complete or any formula is promoted.",
+  "guardrails": {
+    "pr6_pr7_pr8_untouched": true,
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "immutable_2026_10_25_freeze_preserved": true
+  }
+}
