@@ -27,7 +27,7 @@ def load_csv(path):
         reader=csv.DictReader(handle)
         if not reader.fieldnames:
             raise ValueError("missing CSV header: "+str(path))
-        return reader.fieldnames,reader
+        return reader.fieldnames,list(reader)
 
 def fail(errors,message):
     errors.append(message)
@@ -165,8 +165,7 @@ def validate_q89():
 
     # Validate the global retrospective target ledger against every canonical target and strict prior cutoff.
     try:
-        ledger_fields,ledger_reader=load_csv(LEDGER_PATH)
-        ledger=list(ledger_reader)
+        ledger_fields,ledger=load_csv(LEDGER_PATH)
         required_ledger={"target_date","cutoff_date","prior_draws","actual_quintet","status","formula_count_tested","best_formula_id",
             "best_formula_features","best_actual_number_ranks","single_feature_rank_ledger"}
         add(required_ledger.issubset(set(ledger_fields)),"Q89 target ledger schema incomplete")
@@ -198,8 +197,7 @@ def validate_q89():
     # Candidate selection must be frozen on Discovery/Validation only and include exactly 100 per family.
     try:
         selection=load_json(SELECTION_PATH)
-        shortlist_fields,shortlist_reader=load_csv(SHORTLIST_PATH)
-        shortlist=list(shortlist_reader)
+        shortlist_fields,shortlist=load_csv(SHORTLIST_PATH)
         add(selection.get("task_id")=="Q89" and selection.get("status")=="CANDIDATES_FROZEN_BEFORE_BLIND_OOS","Q89 candidate selection status mismatch")
         add(selection.get("blind_oos_used_for_selection") is False and selection.get("selected_candidate_ids_frozen") is True,"Q89 candidate selection leakage guard missing")
         add(len(shortlist)==200 and {"family","formula_id","features","discovery_rank","discovery_mean_number_hits_top5","discovery_mean_rank_of_actual_numbers",
@@ -239,9 +237,9 @@ def validate_q89():
         fail(errors,"Q89 candidate selection validation exception: "+str(exc))
 
     # Paired blind ledger must reconcile every held-out target and all paired endpoint arithmetic.
+    paired=[]
     try:
-        paired_fields,paired_reader=load_csv(PAIRED_LEDGER_PATH)
-        paired=list(paired_reader)
+        paired_fields,paired=load_csv(PAIRED_LEDGER_PATH)
         expected_blind_dates=[dates[q80.MIN_HISTORY+offset] for offset in range(scored) if q80.split_name(offset,scored)=="blind_oos"]
         required_paired={"target_date","cutoff_date","prior_draws","actual_quintet","Q89_formula_id","Q88_control_formula_id",
             "Q89_actual_number_ranks","Q88_actual_number_ranks","Q89_number_hits_top5","Q89_number_hits_top10","Q89_number_hits_top20",
