@@ -29,7 +29,7 @@
   "runs": {
     "q87": {
       "workflow_run_id": 42503927101,
-      "status": "IN_PROGRESS",
+      "status": "ALL_6_SHARDS_SUCCESS_AGGREGATE_VALIDATION_IN_PROGRESS",
       "formula_count": 888030,
       "metrics_rows_expected": 2664090,
       "target_ledger_rows_expected": 3350,
@@ -42,7 +42,7 @@
     },
     "q88": {
       "workflow_run_id": 42503927115,
-      "status": "IN_PROGRESS",
+      "status": "14_OF_15_SHARDS_SUCCESS_LAST_SHARD_IN_PROGRESS",
       "formula_count": 2220075,
       "metrics_rows_expected": 6660225,
       "target_ledger_rows_expected": 3350,
@@ -76,7 +76,7 @@
   "next_action": "Allow the in-flight Q87/Q88 runs to finish as recoverable checkpoints; then sync the research branch to canonical main through 2026-11-07, refresh Q80-Q86 and Q87/Q88 walk-forward outputs, pass fail-closed acceptance, persist and reread exact bytes, rerun exact-head CI, and retain human review/integration as the final gate.",
   "shard_artifact_progress": {
     "q87": {
-      "uploaded_count": 5,
+      "uploaded_count": 6,
       "expected_count": 6,
       "artifacts": [
         {
@@ -108,6 +108,13 @@
           "expired": false
         },
         {
+          "id": 13626699774,
+          "name": "sonar-q87-shard-2",
+          "size_bytes": 16779881,
+          "digest": "sha256:95e632e8b0d674beaf764c0718cfbbea5ed5c0250d5fc5a5dfeb1957d94cd384",
+          "expired": false
+        },
+        {
           "id": 13626434815,
           "name": "sonar-q87-shard-1",
           "size_bytes": 16663439,
@@ -117,14 +124,56 @@
       ]
     },
     "q88": {
-      "uploaded_count": 7,
+      "uploaded_count": 14,
       "expected_count": 15,
       "artifacts": [
+        {
+          "id": 13627460505,
+          "name": "sonar-q88-shard-13",
+          "size_bytes": 17196356,
+          "digest": "sha256:3f071fed384ebce70f3c41e9a058b108e3fc5ad9101469ab3045898f5477e5c9",
+          "expired": false
+        },
+        {
+          "id": 13627455836,
+          "name": "sonar-q88-shard-2",
+          "size_bytes": 16620069,
+          "digest": "sha256:175d16ae7082b17b55b40a585686d3c7c412c45ac9d1b65dee86d80db14ca09d",
+          "expired": false
+        },
+        {
+          "id": 13627341340,
+          "name": "sonar-q88-shard-10",
+          "size_bytes": 16853959,
+          "digest": "sha256:49b763d116e5ca68c7f64e8d608480b02ef91503092705574d26b128ba4b2695",
+          "expired": false
+        },
         {
           "id": 13627320467,
           "name": "sonar-q88-shard-4",
           "size_bytes": 16746662,
           "digest": "sha256:cef67de4733a6e359d4b7d149eab0713128ee2618b2ca08ecc80107183792700",
+          "expired": false
+        },
+        {
+          "id": 13627172036,
+          "name": "sonar-q88-shard-0",
+          "size_bytes": 16370851,
+          "digest": "sha256:e2de1b409a1bda0432bb5ed7ca99974cff609efa028d05433b167d0e61f606d3",
+          "expired": false
+        },
+        {
+          "id": 13627147283,
+          "name": "sonar-q88-shard-7",
+          "size_bytes": 16915172,
+          "digest": "sha256:0508abcd047ba7473f6a36f0240745eacecd8b44362cd4dc2687b0f96a1841be",
+          "expired": false
+        },
+        {
+          "id": 13627112369,
+          "name": "sonar-q88-shard-3",
+          "size_bytes": 16776945,
+          "digest": "sha256:ddfc42e3228a18f76d33d251ed9f5a485a90e0be13a4002a22a8bbae092640a6",
           "expired": false
         },
         {
@@ -139,6 +188,13 @@
           "name": "sonar-q88-shard-14",
           "size_bytes": 17413656,
           "digest": "sha256:83d5d4dcbdaf0ad24134634f0d33bdb78095a8206e6560fd058f53e41fe17991",
+          "expired": false
+        },
+        {
+          "id": 13626757812,
+          "name": "sonar-q88-shard-8",
+          "size_bytes": 16833846,
+          "digest": "sha256:8e1881726f7775aedeb7b002895674975c4ac1e0a39d9c16e1f47fe2e9a5a5d7",
           "expired": false
         },
         {
