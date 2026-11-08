@@ -49,6 +49,11 @@ Q86_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_t
 SPLITS = ("discovery", "validation", "oos")
 Q80_SPLITS = ("discovery", "validation", "blind_oos")
 
+# Q89 acceptance is isolated from the legacy validators but participates in the queue gate.
+import sys
+sys.path.insert(0, str(ROOT / "scripts"))
+from sonar_q89_acceptance import validate_q89
+
 
 def load_json(path):
     try:
@@ -1267,12 +1272,15 @@ def main():
 
     validators = {"Q10": validate_q10, "Q20": validate_q20, "Q30": validate_q30,
                   "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80, "Q81": validate_q81,
-                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87, "Q88": validate_q88}
+                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87, "Q88": validate_q88, "Q89": validate_q89}
     states = {}
     for task in sorted(tasks, key=lambda t: (t["priority"], t["id"])):
         missing_evidence = [p for p in task.get("evidence", []) if not (ROOT / p).is_file()]
         dependency_states = [states[d]["status"] for d in task.get("depends_on", [])]
         dependency_complete = all(s == "COMPLETE" for s in dependency_states)
+        # Q89 may use Q88's validated exploratory artifact while Q88 still awaits human integration.
+        if task["id"] == "Q89":
+            dependency_complete = all(s in ("COMPLETE", "VALIDATED_PENDING_HUMAN_REVIEW") for s in dependency_states)
         validation_errors = []
         if task["id"] == "Q00":
             validation_errors = validate_q00()
@@ -1303,7 +1311,7 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
-            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87", "Q88") and not validation_errors:
+            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87", "Q88", "Q89") and not validation_errors:
                 status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],

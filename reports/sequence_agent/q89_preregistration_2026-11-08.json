@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q89",
+  "protocol_id": "Q89-nine-feature-equal-weight-catalog-2026-11-08",
+  "status": "PREREGISTERED_Q88_ACCEPTANCE_AND_EXACT_HEAD_CI_PASS_Q89_IMPLEMENTATION_READY",
+  "registered_at_utc": "2026-11-08T20:37:52Z",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "canonical_main_commit_sha": "94d18ca3115c6052d436be1c09f541f39214c9cf",
+    "canonical_main_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "source_archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07",
+    "latest_quintet": [
+      12,
+      16,
+      27,
+      31,
+      38
+    ],
+    "prior_archive_cutoff": "2026-11-06",
+    "prior_q88_report_draw_count": 3400,
+    "prior_q88_scored_target_count": 3350
+  },
+  "hypothesis": "Exhaustively extend the registered finite equal-weight formula grammar from eight to nine prior-only features. Test whether the added feature yields a stable rank-hit improvement relative to the eight-feature formula selected by the same discovery/validation rule. No new feature definitions or tuning are introduced. Formula-family results remain exploratory; a single candidate is frozen using discovery and validation only before its blind OOS evaluation.",
+  "formula_universe": {
+    "feature_count": 27,
+    "subset_size": 9,
+    "formula_count": 4686825,
+    "formula_count_check": "C(27,9)=4686825",
+    "enumeration": "lexicographic itertools.combinations over the registered 27 prior-only feature columns",
+    "formula_id_prefix": "P9_",
+    "formula_batch_size": 1024,
+    "formula_batch_count": 4577,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "shard_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "shard_partition": "contiguous lexicographic formula-rank intervals; every rank 0..4686824 appears exactly once, no gaps or overlaps"
+  },
+  "walk_forward": {
+    "minimum_prior_history": 50,
+    "target_count": 3401,
+    "scored_targets": 3351,
+    "split_rule": "discovery if target_offset/scored_targets < 0.60; validation if <0.80; else blind_oos",
+    "expected_split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "target_start_date": "2017-09-05",
+    "target_end_date": "2026-11-07",
+    "prior_only_cutoff": "For target archive index i, every feature uses draws[0:i] only; record cutoff date i-1; rank all 40 numbers before reading/scoring target i; update state only after scoring.",
+    "metrics_rows": 14060475,
+    "target_ledger_rows": 3351,
+    "scoring_rule": "z-score each of the 27 registered features across numbers 1..40 for each target prefix; score each unordered nine-feature subset by the equal-weight arithmetic mean of its nine standardized feature columns",
+    "ledger_fields": [
+      "target_date",
+      "cutoff_date",
+      "prior_draws",
+      "actual_quintet",
+      "all_27_single_feature_ranks",
+      "best_retrospective_9_feature_formula_and_ranks"
+    ],
+    "retrospective_best_formula": "Descriptive only; never use as an ex-ante forecast or candidate-selection rule."
+  },
+  "primary_endpoints": [
+    "number_hits_top5",
+    "number_hits_top10",
+    "number_hits_top20"
+  ],
+  "secondary_descriptive_endpoints": [
+    "all5_top5_rate",
+    "all5_top10_rate",
+    "all5_top20_rate",
+    "mean_rank_of_actual_numbers"
+  ],
+  "multiple_testing": {
+    "method": "Global Holm-Bonferroni across the complete registered formula×split×primary-endpoint family",
+    "family_size": 42181425,
+    "calculation": "4686825 formulas × 3 chronological splits × 3 primary endpoints",
+    "p_value_method": "Finite-population null: for each target, the five actual distinct numbers are a uniform 5-subset of 40, so X_k~Hypergeometric(N=40,K=k,n=5); aggregate mean/variance across split targets and use a continuity-corrected normal upper-tail approximation. Exploratory approximation, not an exact p-value.",
+    "per_target_null_mean": "5*k/40",
+    "per_target_null_variance": "5*(k/40)*(1-k/40)*(40-5)/(40-1)",
+    "endpoints": [
+      {
+        "name": "number_hits_top5",
+        "k": 5
+      },
+      {
+        "name": "number_hits_top10",
+        "k": 10
+      },
+      {
+        "name": "number_hits_top20",
+        "k": 20
+      }
+    ],
+    "dependency_note": "Holm controls family-wise error under arbitrary dependence if input p-values are valid; the normal approximation and lottery-independence assumptions remain limitations."
+  },
+  "frozen_candidate_selection": {
+    "rule": "Select the top 100 nine-feature formulas on Discovery by mean number_hits_top5, tie-break by lower mean_rank_of_actual_numbers, then lexicographic formula_id. From those 100, select exactly one on Validation by mean number_hits_top5 with the same tie-break. Do not use Blind OOS values, retrospective per-target winners, or blind top lists to select the candidate.",
+    "eight_feature_control": "Apply the identical top-100 Discovery then single-candidate Validation rule to the refreshed Q88 eight-feature metrics on the same archive and splits. Freeze both IDs before blind evaluation.",
+    "blind_primary_comparison": "Paired difference in number_hits_top5 per target between the frozen nine-feature candidate and frozen eight-feature control over the 670 blind OOS targets.",
+    "blind_secondary_comparisons": [
+      "paired number_hits_top10 difference",
+      "paired number_hits_top20 difference"
+    ],
+    "inference": "For the three paired blind endpoint differences, use circular moving-block bootstrap (20,000 replicates, block length 7, seed 890027) for 95% percentile confidence intervals and circular block sign-flip randomization (20,000 replicates, block length 7, seed 890028) for p-values; apply Holm across the three endpoint p-values. Top5 is the single primary endpoint; Top10/Top20 are secondary. Also report uniform rank baseline (Top5=0.125, Top10=0.25, Top20=0.5, mean rank=20.5) descriptively.",
+    "selected_candidate_ledger": "Second-pass prior-only ranking for the two frozen candidate formula IDs on every blind target; record target/cutoff/actual quintet, formula IDs, five actual-number ranks per formula, Top5/Top10/Top20 hit counts and rank sums. Reconcile row-by-row to the canonical archive.",
+    "leakage_guard": "Candidate IDs must be frozen using Discovery and Validation only. The blind target ledger and paired inference are computed only after the IDs are frozen; no blind formula ranking or blind result may alter selection."
+  },
+  "outputs": {
+    "report": "reports/sequence_agent/per_number_condition_9plus_grammar.json",
+    "metrics_manifest": "reports/sequence_agent/per_number_condition_9plus_formula_metrics_manifest.json",
+    "metrics_parts": "reports/sequence_agent/per_number_condition_9plus_formula_metrics_part_*.csv.gz",
+    "target_ledger": "reports/sequence_agent/per_number_condition_9plus_target_ledger.csv",
+    "selected_candidate_blind_ledger": "reports/sequence_agent/q89_selected_candidate_blind_ledger.csv",
+    "checkpoint": "reports/sequence_agent/q89_checkpoint_2026-11-08.json",
+    "queue_status": "reports/sequence_agent/research_queue_status.json",
+    "candidate_shortlist": "reports/sequence_agent/per_number_condition_9plus_candidate_shortlist.csv",
+    "candidate_selection": "reports/sequence_agent/per_number_condition_9plus_candidate_selection.json",
+    "paired_inference": "reports/sequence_agent/per_number_condition_9plus_paired_inference.json"
+  },
+  "acceptance_gates": [
+    "Q88 refreshed outputs on the same canonical archive pass aggregate acceptance, byte-exact persistence readback, and current exact-head CI before Q89 dispatch.",
+    "All 15 deterministic shard manifests cover formula ranks 0..4686824 exactly once with no gaps, overlaps, or duplicate formula IDs.",
+    "Each chronological split has exactly 4686825 formula rows; total metric row count is 14060475 and primary p-value count is exactly 42181425.",
+    "Target ledger contains 3351 unique chronological targets from 2017-09-05 through 2026-11-07; every target date, actual quintet, immediate prior cutoff and prior_draws count reconcile to canonical archive.",
+    "Strict-prefix/no-target-leakage checks pass for every target; state updates occur only after target scoring.",
+    "Selected nine-feature and eight-feature candidate IDs are derived only from Discovery/Validation by the frozen rule; second-pass blind ledger reconciles all 670 targets and both frozen formulas.",
+    "Global Holm family and paired blind bootstrap/sign-flip inference are reproducible from persisted code, seed, ledger and manifest.",
+    "All report, manifest, chunked metrics, target ledger, selected-candidate ledger, queue status and checkpoint are persisted append-only through Git Data API and reread byte-for-byte.",
+    "Exact-head CI passes on the persisted commit. Q89 remains VALIDATED_PENDING_HUMAN_REVIEW; it cannot be marked COMPLETE until human review/integration is recorded."
+  ],
+  "guardrails": {
+    "immutable_target_2026_10_25_freeze_overwritten": false,
+    "no_auto_merge": true,
+    "no_auto_promotion": true,
+    "pr6_pr7_pr8_untouched": true,
+    "q88_must_finish_and_pass_exact_head_ci_before_q89_run": true,
+    "q89_human_review_integration_required_before_complete": true
+  },
+  "known_limitations": [
+    "Finite nine-feature equal-weight subset grammar only; weighted, conditional, nonlinear, arbitrary formulas and feature definitions outside the registered 27 remain open.",
+    "Retrospective best-per-target formulas are descriptive and not ex-ante forecasts.",
+    "The formula-family p-values use a continuity-corrected normal approximation to a finite-population null; they are exploratory, not exact.",
+    "The historical blind tail has been inspected repeatedly by the broader SONAR project and is not independent project-level confirmation.",
+    "A large exhaustive catalog creates selection-overfit risk even with global Holm; the frozen Discovery→Validation→Blind candidate procedure is a separate guardrail, not evidence of lottery predictability."
+  ],
+  "next_action": "Implement and acceptance-test the Q89 nine-feature evaluator, global Holm aggregator, Discovery→Validation frozen candidate selection, paired blind OOS second pass, append-only Git Data API persistence, and exact-head CI. Run the 15 deterministic shards only after code/tests are reviewed by CI; preserve pending human review/integration.",
+  "execution_checkpoint": {
+    "recorded_at_utc": "2026-11-08T21:11:10Z",
+    "q88_run_id": 42520706541,
+    "q88_aggregate_acceptance": "PASS",
+    "q88_exact_byte_persistence": "PASS",
+    "q88_persisted_head_sha": "0f865d6585a768f623e7c56cfffc5fd4a48a7888",
+    "q88_exact_head_ci_run_id": 42523530410,
+    "q88_exact_head_ci_conclusion": "success",
+    "q89_branch": "research/sonar-q89-nine-feature-20261108",
+    "q89_branch_base_sha": "0f865d6585a768f623e7c56cfffc5fd4a48a7888",
+    "implementation_note": "Lexicographic itertools.combinations universe is implemented via combinadic rank/unrank plus successor, avoiding materialization of all 4,686,825 tuples; unit tests compare slices to itertools.combinations."
+  }
+}
