@@ -44,3 +44,13 @@ The historical blind partition overlaps previous PSR experiments, so it is not u
 
 ## Next action
 Preserve all positive point estimates, keep prospective freezes append-only, and examine calibration/state null controls before a new hypothesis.
+
+## Execution record — 2026-11-08
+
+- GitHub Actions CI run #640 (run ID 42477089443) completed **success** on this isolated branch. The PSR-06 step, archive SHA pin, strict-prefix assertions, probability normalization, report generation, upload and persistence step all passed.
+- Canonical archive: 3,401 draws through 2026-11-07; Git blob SHA `5d2efd70684e918b27d8f06386d545647898336d`.
+- Persisted results: 3,101 walk-forward targets (1,550 discovery / 775 validation / 776 blind OOS), 15,505 selected target-position ledger rows and 62,020 internal alpha-grid rows. The exact validation grid is 20 aggregate rows.
+- Validation selected alpha=500 for all five positions (upper end of the fixed grid). Blind OOS paired Brier improvements vs global shrinkage: P1 −0.000966533 (95% block CI [−0.001770376, −0.000184973]); P2 −0.000533459 (CI [−0.001081021, +0.000011431]); P3 +0.000071761 (CI [−0.000399809, +0.000546137]); P4 −0.000326438 (CI [−0.000918608, +0.000286634]); P5 −0.000182730 (CI [−0.000917556, +0.000529922]). One-sided raw p-values are 0.991004, 0.972014, 0.400300, 0.840580, 0.675162; all Holm-adjusted p-values are 1.000000.
+- P3 remains a weak exploratory positive point estimate only; its CI includes zero and Holm p=1. P1 shows a negative Brier improvement whose nominal CI is below zero. No lift survives inference; no promotion.
+- Artifact ZIP #13615813503 was downloaded. The Git blob SHA of each of the five files (protocol, JSON, Markdown, target ledger, validation grid) computed from the ZIP matched the corresponding repository SHA exactly. Target ledger counts, per-split rows, unique date-position keys, train_n=t−2, validation-grid cardinality and FNV fingerprints all passed local artifact audit.
+- Next CI run must reproduce the committed PSR-06 result files byte-for-byte. The historical blind split is not lab-wide untouched; prospective shadow evidence remains separate.
