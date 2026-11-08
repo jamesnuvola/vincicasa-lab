@@ -2,35 +2,35 @@
   "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
   "source": "data/storico_daily.csv",
   "first_date": "2017-07-17",
-  "last_date": "2026-11-06",
-  "draws": 3400,
+  "last_date": "2026-11-07",
+  "draws": 3401,
   "warmup_draws": 500,
-  "evaluated_targets": 2900,
+  "evaluated_targets": 2901,
   "same_targets_and_splits": true,
   "global_top20_definition": "Rank numbers by frequency in the previous 100 draws; deterministic ties resolve by smaller number.",
   "raw_positional_union_definition": "Union the top 3 smoothed values for each of P1-P5 before any completion; report raw union size before deduplication (set union) and before filling.",
   "completion_to_20_rule": "Keep the union seeds ranked by summed position-conditioned scores; fill remaining slots with the global trailing-100 frequency ranking until 20 distinct numbers are selected.",
   "raw_positional_union_size": {
-    "targets": 2900,
-    "mean_raw_union_size": 14.621379310344828,
+    "targets": 2901,
+    "mean_raw_union_size": 14.621509824198553,
     "minimum_raw_union_size": 12,
     "maximum_raw_union_size": 15,
     "size_distribution": {
       "12": 5,
       "13": 113,
       "14": 857,
-      "15": 1925
+      "15": 1926
     }
   },
   "overall": {
     "global_top20": {
-      "targets": 2900,
-      "mean_hits": 2.509310344827586,
+      "targets": 2901,
+      "mean_hits": 2.509479489831093,
       "hit_distribution": {
         "0": 64,
         "1": 446,
         "2": 912,
-        "3": 971,
+        "3": 972,
         "4": 441,
         "5": 66
       },
@@ -38,22 +38,22 @@
       "top20_4plus": 507
     },
     "position_seed_mix_top20": {
-      "targets": 2900,
-      "mean_hits": 2.5082758620689654,
+      "targets": 2901,
+      "mean_hits": 2.508445363667701,
       "hit_distribution": {
         "0": 76,
         "1": 432,
         "2": 931,
-        "3": 945,
+        "3": 946,
         "4": 435,
         "5": 81
       },
       "top20_5of5": 81,
       "top20_4plus": 516
     },
-    "mean_hit_delta_mix_minus_global": -0.001034482758620836,
+    "mean_hit_delta_mix_minus_global": -0.0010341261633919352,
     "random_top20_5of5_baseline_rate": 0.02356202356202356,
-    "random_top20_5of5_expected_count": 68.32986832986833
+    "random_top20_5of5_expected_count": 68.35343035343035
   },
   "chronological_splits": {
     "discovery": {
@@ -144,26 +144,26 @@
       "random_top20_5of5_expected_count": 13.665973665973667
     },
     "oos": {
-      "targets": 580,
+      "targets": 581,
       "raw_positional_union_size": {
-        "targets": 580,
-        "mean_raw_union_size": 14.681034482758621,
+        "targets": 581,
+        "mean_raw_union_size": 14.6815834767642,
         "minimum_raw_union_size": 13,
         "maximum_raw_union_size": 15,
         "size_distribution": {
           "13": 20,
           "14": 145,
-          "15": 415
+          "15": 416
         }
       },
       "global_top20": {
-        "targets": 580,
-        "mean_hits": 2.5155172413793103,
+        "targets": 581,
+        "mean_hits": 2.5163511187607575,
         "hit_distribution": {
           "0": 16,
           "1": 91,
           "2": 172,
-          "3": 194,
+          "3": 195,
           "4": 93,
           "5": 14
         },
@@ -171,25 +171,25 @@
         "top20_4plus": 107
       },
       "position_seed_mix_top20": {
-        "targets": 580,
-        "mean_hits": 2.532758620689655,
+        "targets": 581,
+        "mean_hits": 2.5335628227194493,
         "hit_distribution": {
           "0": 19,
           "1": 77,
           "2": 188,
-          "3": 185,
+          "3": 186,
           "4": 94,
           "5": 17
         },
         "top20_5of5": 17,
         "top20_4plus": 111
       },
-      "random_top20_5of5_expected_count": 13.665973665973667
+      "random_top20_5of5_expected_count": 13.68953568953569
     }
   },
   "per_target_paired": {
     "mix_better": 691,
-    "tie": 1483,
+    "tie": 1484,
     "global_better": 726
   },
   "guardrail": "All forecasts are pre-target. Retrospective OOS is exploratory and does not authorize promotion."
