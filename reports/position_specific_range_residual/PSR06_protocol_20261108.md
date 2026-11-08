@@ -54,3 +54,16 @@ Preserve all positive point estimates, keep prospective freezes append-only, and
 - P3 remains a weak exploratory positive point estimate only; its CI includes zero and Holm p=1. P1 shows a negative Brier improvement whose nominal CI is below zero. No lift survives inference; no promotion.
 - Artifact ZIP #13615813503 was downloaded. The Git blob SHA of each of the five files (protocol, JSON, Markdown, target ledger, validation grid) computed from the ZIP matched the corresponding repository SHA exactly. Target ledger counts, per-split rows, unique date-position keys, train_n=t−2, validation-grid cardinality and FNV fingerprints all passed local artifact audit.
 - Next CI run must reproduce the committed PSR-06 result files byte-for-byte. The historical blind split is not lab-wide untouched; prospective shadow evidence remains separate.
+
+
+## Supplemental root-cause control — range-state marginal goodness-of-fit
+
+A chi-square goodness-of-fit diagnostic compared the prior-draw range-state frequencies in the selected target ledger with the exact theoretical state masses. This is a marginal-distribution control only; it does not test predictive dependence.
+
+- All walk-forward targets (N=3,101): observed counts [898, 777, 800, 626] for states Q1–Q4; expected [868.01, 753.07, 847.33, 632.60]; chi-square(3)=4.508879, raw p=0.211500.
+- Discovery (N=1,550): observed [465, 396, 382, 307]; expected [433.86, 376.41, 423.53, 316.20]; chi-square(3)=7.592791, raw p=0.055222.
+- Validation (N=775): observed [213, 181, 208, 173]; expected [216.93, 188.21, 211.76, 158.10]; chi-square(3)=1.818740, raw p=0.610865.
+- Blind OOS (N=776): observed [220, 200, 210, 146]; expected [217.21, 188.45, 212.04, 158.30]; chi-square(3)=1.719265, raw p=0.632659.
+- Holm adjustment across the three split-specific checks: discovery p=0.165665; validation p=1.000000; blind OOS p=1.000000. None is significant at 0.05. The full-window check is reported descriptively and overlaps these partitions.
+
+Interpretation: the range-state predictor's marginal frequency is not detectably inconsistent with the exact combinatorial distribution in this walk-forward sample after split-wise correction. This does not establish independence, but it supplies no evidence that the PSR-06 null result is caused by a gross state-frequency imbalance. The weak P3 positive remains calibration/score inconsistent and is not promoted.
