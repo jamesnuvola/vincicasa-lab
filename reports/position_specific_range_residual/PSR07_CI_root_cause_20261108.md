@@ -31,3 +31,8 @@ This is a mathematical definition correction, not an observed predictive result.
 - Root cause: floating-point reductions (NumPy dot/mean) and 12-decimal ledger serialization were too sensitive to last-bit runner variation. Archive SHA, dates, code path and train-prefix checks did not change; this was output numeric canonicalization, not a target leakage finding.
 - Correction: use Python math.fsum for score/reduction/mean calculations; canonicalize JSON numbers to 12 significant digits; round target-ledger floats to 9 decimal places; add a regression test for ULP-level numeric noise.
 - The next run must pass the persisted-output byte-diff guard. Until then, reproducibility is not claimed.
+
+
+## One-time canonical-output rebaseline checkpoint
+
+The first canonicalized replay intentionally changed JSON numeric formatting (12 significant digits) and selected-ledger precision (9 decimal places) relative to the original pre-canonicalization report. This is a representation change, not a change to the pinned archive, target set, model, alpha selection, or inferential decision. A tracked one-run rebaseline flag is being used only to persist this canonical format. The flag must be removed afterward, and a subsequent clean replay must pass the byte-diff guard before reproducibility is claimed.
