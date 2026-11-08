@@ -43,7 +43,7 @@ Alpha grid fixed: 50, 100, 200, 500. Select alpha per position using validation 
 The historical blind partition overlaps previous PSR experiments, so it is not untouched lab-wide evidence. Five marginal positions are dependent; this is not a joint-ticket model. Historical state association is not causal and may be noise. No promotion or merge without prospective independent validation and human review.
 
 ## Next action
-Preserve all positive point estimates, keep prospective freezes append-only, and examine calibration/state null controls before a new hypothesis.
+Preserve PSR-06 P3 as an exploratory positive point estimate only. The next iteration is a fixed prospective P3-only shadow freeze with alpha=500 and the four theoretical range states unchanged; score paired Brier vs the exact order-statistic prior as primary, with log-loss and Top-1/Top-5 secondary. Do not tune on the historical blind OOS. Accumulate 200 complete prospective paired targets before inference; correct any multi-endpoint family and compare with global shrinkage and the active engine. The five-position PSR-06 model remains null/no promotion.
 
 ## Execution record — 2026-11-08
 
@@ -67,3 +67,8 @@ A chi-square goodness-of-fit diagnostic compared the prior-draw range-state freq
 - Holm adjustment across the three split-specific checks: discovery p=0.165665; validation p=1.000000; blind OOS p=1.000000. None is significant at 0.05. The full-window check is reported descriptively and overlaps these partitions.
 
 Interpretation: the range-state predictor's marginal frequency is not detectably inconsistent with the exact combinatorial distribution in this walk-forward sample after split-wise correction. This does not establish independence, but it supplies no evidence that the PSR-06 null result is caused by a gross state-frequency imbalance. The weak P3 positive remains calibration/score inconsistent and is not promoted.
+
+
+## Next iteration after the range-state marginal control
+
+Register and freeze the P3-only candidate prospectively before target outcomes are available. Keep the selected alpha=500, exact theoretical state cutpoints (23, 28, 33), and model formula fixed. Record the full probability vector, Brier, log-loss, Top-1/Top-5, global-shrinkage comparator and exact prior comparator per target. Use append-only freezes; do not retroactively fill or replace forecasts. Require 200 paired prospective targets and human review before any promotion consideration. This shadow action is a plan, not an execution or validation claim.
