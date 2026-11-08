@@ -33,7 +33,8 @@ const ix=name=>header.indexOf(name);
 assert.equal(first[ix("target_index")],"300");
 assert.equal(first[ix("cutoff")],new Date(Date.UTC(2017,6,17)+299*86400000).toISOString().slice(0,10));
 assert.equal(first[ix("train_outcomes")],"100");
-assert.equal(first[ix("prev_overlap_top20")],first[ix("state")]==="0"?"0":first[ix("state")]==="1"?"2":"4");
+const overlap=Number(first[ix("prev_overlap_top20")]),state=Number(first[ix("state")]);
+assert.equal(state,overlap<=1?0:overlap<=3?1:2,"state bin must match overlap");
 
 const altered=csv.split(/\r?\n/);
 const old=altered[301].split(",").slice(1).map(Number);
