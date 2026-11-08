@@ -58,5 +58,14 @@ jobs:
           name: sonar-psr01-walkforward
           path: reports/position_specific_range_residual/psr01_walkforward_*
           if-no-files-found: warn
+      - name: Run SONAR PSR-02 odd-count-conditioned position walk-forward
+        run: node scripts/sonar_psr02_position_oddcount_residual_walkforward.mjs data/storico_daily.csv reports/position_specific_range_residual
+      - name: Upload PSR-02 experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr02-walkforward
+          path: reports/position_specific_range_residual/psr02_walkforward_*
+          if-no-files-found: warn
       - name: Build web application
         run: npm install && npm run build
