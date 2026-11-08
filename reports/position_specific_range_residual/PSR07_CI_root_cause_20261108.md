@@ -42,4 +42,7 @@ The first canonicalized replay intentionally changed JSON numeric formatting (12
 
 - Rebaseline workflow run 42482566102 completed successfully on 2026-11-08; unit/synthetic tests, pinned canonical walk-forward, report generation and artifact upload passed.
 - The generated canonical JSON/Markdown/CSV were committed by the workflow at commit fef805ce9ee8bbe5fc5532f4eb41c337906ecef6. The selected target ledger contains 15,505 rows and its SHA-256 recorded in the report is f2ad33ff6cf7e8c6941dc730cb922fe0e93ed3fc5fdb2a8a42a512541b430b90.
-- The one-run flag is now being removed. The next run must execute the strict persisted-output diff without bypass. Reproducibility remains unconfirmed until that strict run passes.
+- The one-run flag was removed in commit bff22720366b6601c541722ffb94bbc3ea8bc87c, and strict replay run 42482664710 completed successfully on 2026-11-08.
+- The workflow executed git diff --exit-code against the persisted JSON, Markdown, and CSV, then reported: “Outputs already match this branch; no persistence commit required.” The three generated outputs matched byte-for-byte.
+- Reproducibility is verified for the pinned archive and this runner environment (Ubuntu 24.04.5, CPython 3.12.16, NumPy 2.5.4); this is not a cross-platform guarantee.
+- Next action remains no promotion: proceed to a separately registered joint-dependence diagnostic or prospective shadow evidence, without tuning the PSR-07 blind slice.
