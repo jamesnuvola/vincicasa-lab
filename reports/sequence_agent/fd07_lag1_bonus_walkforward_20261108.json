@@ -1,0 +1,576 @@
+{
+  "protocol": {
+    "archivePath": "data/storico_daily.csv",
+    "archiveBlobSha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "archiveRows": 3401,
+    "firstDate": "2017-07-17",
+    "lastDate": "2026-11-07",
+    "minHistory": 200,
+    "split": {
+      "discovery": [
+        200,
+        1700
+      ],
+      "validation": [
+        1700,
+        2550
+      ],
+      "blind": [
+        2550,
+        3401
+      ]
+    },
+    "primaryEndpoint": "per-draw count of actual numbers within the model's Top-5 candidate set; expected uniform-random Top-5 mean 0.625 hits/draw (12.5% of 5 actual numbers)",
+    "gridSize": 24,
+    "validationSelection": "maximize validation Top-5 hit count; tie-break lower lag bonus, then lower half-life",
+    "randomNullFamilySize": 25,
+    "randomNullMethod": "20,000 Monte Carlo replicates of 851 independent Hypergeometric(40,5,5) overlaps; one-sided greater tail; Holm correction",
+    "nullSeed": 20261109
+  },
+  "selected": {
+    "h": 200,
+    "l": 2,
+    "key": "h200_l2"
+  },
+  "baseline": {
+    "h": 200,
+    "l": 0,
+    "key": "h200_l0"
+  },
+  "metrics": {
+    "selected": {
+      "discovery": {
+        "targets": 1500,
+        "hits": 935,
+        "hitSharePct": 12.466666666666667,
+        "meanHitsPerDraw": 0.6233333333333333
+      },
+      "validation": {
+        "targets": 850,
+        "hits": 539,
+        "hitSharePct": 12.68235294117647,
+        "meanHitsPerDraw": 0.6341176470588236
+      },
+      "blind": {
+        "targets": 851,
+        "hits": 548,
+        "hitSharePct": 12.878965922444184,
+        "meanHitsPerDraw": 0.6439482961222092
+      }
+    },
+    "sameHalfLifeNoLag": {
+      "discovery": {
+        "targets": 1500,
+        "hits": 923,
+        "hitSharePct": 12.306666666666667,
+        "meanHitsPerDraw": 0.6153333333333333
+      },
+      "validation": {
+        "targets": 850,
+        "hits": 514,
+        "hitSharePct": 12.094117647058823,
+        "meanHitsPerDraw": 0.6047058823529412
+      },
+      "blind": {
+        "targets": 851,
+        "hits": 559,
+        "hitSharePct": 13.137485311398354,
+        "meanHitsPerDraw": 0.6568742655699178
+      }
+    },
+    "lag1Only": {
+      "discovery": {
+        "targets": 1500,
+        "hits": 961,
+        "hitSharePct": 12.813333333333333,
+        "meanHitsPerDraw": 0.6406666666666667
+      },
+      "validation": {
+        "targets": 850,
+        "hits": 535,
+        "hitSharePct": 12.588235294117647,
+        "meanHitsPerDraw": 0.6294117647058823
+      },
+      "blind": {
+        "targets": 851,
+        "hits": 523,
+        "hitSharePct": 12.291421856639248,
+        "meanHitsPerDraw": 0.6145710928319624
+      }
+    }
+  },
+  "blindPaired": {
+    "targets": 851,
+    "selectedHits": 548,
+    "baselineHits": 559,
+    "deltaHits": -11,
+    "deltaPctPoints": -0.25851938895417154,
+    "blockLength": 7,
+    "completeBlocks": 121,
+    "tailTargetsExcludedFromBlockTest": 4,
+    "blockSignFlipReplicates": 50000,
+    "pTwoSided": 0.6496670066598668,
+    "blockBootstrapReplicates": 20000,
+    "bootstrapCI_meanDeltaHitsPerDraw": [
+      -0.05785123966942149,
+      0.03305785123966942
+    ],
+    "bootstrapCI_hitSharePercentagePoints": [
+      -1.15702479338843,
+      0.6611570247933884
+    ]
+  },
+  "randomNull": {
+    "hypergeomPMF": [
+      0.49335570388201966,
+      0.39786750313066105,
+      0.09946687578266526,
+      0.00904244325296957,
+      0.0002659542133226344,
+      0.000001519738361843625
+    ],
+    "replicates": 20000,
+    "bestRaw": [
+      "h200_l0.5",
+      0.026748662566871657
+    ],
+    "bestHolm": 0.6687165641717914,
+    "selectedRaw": 0.22218889055547222,
+    "selectedHolm": 1,
+    "lag1Raw": 0.6724163791810409,
+    "lag1Holm": 1,
+    "allModels": [
+      {
+        "key": "h60_l0",
+        "blindHits": 553,
+        "pRaw": 0.1551422428878556,
+        "pHolm": 1
+      },
+      {
+        "key": "h60_l0.25",
+        "blindHits": 543,
+        "pRaw": 0.30173491325433727,
+        "pHolm": 1
+      },
+      {
+        "key": "h60_l0.5",
+        "blindHits": 547,
+        "pRaw": 0.2358882055897205,
+        "pHolm": 1
+      },
+      {
+        "key": "h60_l1",
+        "blindHits": 559,
+        "pRaw": 0.09324533773311335,
+        "pHolm": 1
+      },
+      {
+        "key": "h60_l1.5",
+        "blindHits": 558,
+        "pRaw": 0.10164491775411229,
+        "pHolm": 1
+      },
+      {
+        "key": "h60_l2",
+        "blindHits": 552,
+        "pRaw": 0.16844157792110395,
+        "pHolm": 1
+      },
+      {
+        "key": "h120_l0",
+        "blindHits": 563,
+        "pRaw": 0.0656467176641168,
+        "pHolm": 1
+      },
+      {
+        "key": "h120_l0.25",
+        "blindHits": 555,
+        "pRaw": 0.13264336783160843,
+        "pHolm": 1
+      },
+      {
+        "key": "h120_l0.5",
+        "blindHits": 552,
+        "pRaw": 0.16844157792110395,
+        "pHolm": 1
+      },
+      {
+        "key": "h120_l1",
+        "blindHits": 562,
+        "pRaw": 0.071996400179991,
+        "pHolm": 1
+      },
+      {
+        "key": "h120_l1.5",
+        "blindHits": 557,
+        "pRaw": 0.11124443777811109,
+        "pHolm": 1
+      },
+      {
+        "key": "h120_l2",
+        "blindHits": 554,
+        "pRaw": 0.143892805359732,
+        "pHolm": 1
+      },
+      {
+        "key": "h200_l0",
+        "blindHits": 559,
+        "pRaw": 0.09324533773311335,
+        "pHolm": 1
+      },
+      {
+        "key": "h200_l0.25",
+        "blindHits": 561,
+        "pRaw": 0.07809609519524024,
+        "pHolm": 1
+      },
+      {
+        "key": "h200_l0.5",
+        "blindHits": 572,
+        "pRaw": 0.026748662566871657,
+        "pHolm": 0.6687165641717914
+      },
+      {
+        "key": "h200_l1",
+        "blindHits": 565,
+        "pRaw": 0.05384730763461827,
+        "pHolm": 1
+      },
+      {
+        "key": "h200_l1.5",
+        "blindHits": 565,
+        "pRaw": 0.05384730763461827,
+        "pHolm": 1
+      },
+      {
+        "key": "h200_l2",
+        "blindHits": 548,
+        "pRaw": 0.22218889055547222,
+        "pHolm": 1
+      },
+      {
+        "key": "h400_l0",
+        "blindHits": 556,
+        "pRaw": 0.12094395280235988,
+        "pHolm": 1
+      },
+      {
+        "key": "h400_l0.25",
+        "blindHits": 560,
+        "pRaw": 0.08534573271336433,
+        "pHolm": 1
+      },
+      {
+        "key": "h400_l0.5",
+        "blindHits": 557,
+        "pRaw": 0.11124443777811109,
+        "pHolm": 1
+      },
+      {
+        "key": "h400_l1",
+        "blindHits": 563,
+        "pRaw": 0.0656467176641168,
+        "pHolm": 1
+      },
+      {
+        "key": "h400_l1.5",
+        "blindHits": 558,
+        "pRaw": 0.10164491775411229,
+        "pHolm": 1
+      },
+      {
+        "key": "h400_l2",
+        "blindHits": 555,
+        "pRaw": 0.13264336783160843,
+        "pHolm": 1
+      },
+      {
+        "key": "lag1_only",
+        "blindHits": 523,
+        "pRaw": 0.6724163791810409,
+        "pHolm": 1
+      }
+    ]
+  },
+  "prospectiveFreeze": {
+    "target": "2026-11-08",
+    "cutoff": "2026-11-07",
+    "selectedModel": "h200_l2",
+    "top5": [
+      38,
+      16,
+      12,
+      31,
+      28
+    ],
+    "top5Scores": [
+      {
+        "number": 38,
+        "score": 54.10490625836408,
+        "lag1": true
+      },
+      {
+        "number": 16,
+        "score": 48.80481592784808,
+        "lag1": true
+      },
+      {
+        "number": 12,
+        "score": 48.749236950134915,
+        "lag1": true
+      },
+      {
+        "number": 31,
+        "score": 45.57448092602213,
+        "lag1": true
+      },
+      {
+        "number": 28,
+        "score": 45.49074523120462,
+        "lag1": false
+      }
+    ]
+  },
+  "grid": [
+    {
+      "key": "h60_l0",
+      "h": 60,
+      "l": 0,
+      "discovery": 12.946666666666667,
+      "validation": 12.211764705882352,
+      "blind": 12.99647473560517,
+      "blindHits": 553,
+      "pHolm": 1
+    },
+    {
+      "key": "h60_l0.25",
+      "h": 60,
+      "l": 0.25,
+      "discovery": 12.666666666666666,
+      "validation": 12.094117647058823,
+      "blind": 12.761457109283196,
+      "blindHits": 543,
+      "pHolm": 1
+    },
+    {
+      "key": "h60_l0.5",
+      "h": 60,
+      "l": 0.5,
+      "discovery": 12.586666666666666,
+      "validation": 11.952941176470588,
+      "blind": 12.855464159811985,
+      "blindHits": 547,
+      "pHolm": 1
+    },
+    {
+      "key": "h60_l1",
+      "h": 60,
+      "l": 1,
+      "discovery": 12.64,
+      "validation": 12.117647058823529,
+      "blind": 13.137485311398354,
+      "blindHits": 559,
+      "pHolm": 1
+    },
+    {
+      "key": "h60_l1.5",
+      "h": 60,
+      "l": 1.5,
+      "discovery": 12.72,
+      "validation": 12.352941176470589,
+      "blind": 13.113983548766157,
+      "blindHits": 558,
+      "pHolm": 1
+    },
+    {
+      "key": "h60_l2",
+      "h": 60,
+      "l": 2,
+      "discovery": 12.88,
+      "validation": 12.211764705882352,
+      "blind": 12.972972972972974,
+      "blindHits": 552,
+      "pHolm": 1
+    },
+    {
+      "key": "h120_l0",
+      "h": 120,
+      "l": 0,
+      "discovery": 12.666666666666666,
+      "validation": 12.470588235294118,
+      "blind": 13.231492361927145,
+      "blindHits": 563,
+      "pHolm": 1
+    },
+    {
+      "key": "h120_l0.25",
+      "h": 120,
+      "l": 0.25,
+      "discovery": 12.32,
+      "validation": 12.352941176470589,
+      "blind": 13.043478260869565,
+      "blindHits": 555,
+      "pHolm": 1
+    },
+    {
+      "key": "h120_l0.5",
+      "h": 120,
+      "l": 0.5,
+      "discovery": 12.293333333333333,
+      "validation": 12.235294117647058,
+      "blind": 12.972972972972974,
+      "blindHits": 552,
+      "pHolm": 1
+    },
+    {
+      "key": "h120_l1",
+      "h": 120,
+      "l": 1,
+      "discovery": 12.493333333333334,
+      "validation": 12.282352941176471,
+      "blind": 13.207990599294947,
+      "blindHits": 562,
+      "pHolm": 1
+    },
+    {
+      "key": "h120_l1.5",
+      "h": 120,
+      "l": 1.5,
+      "discovery": 12.24,
+      "validation": 12.141176470588235,
+      "blind": 13.09048178613396,
+      "blindHits": 557,
+      "pHolm": 1
+    },
+    {
+      "key": "h120_l2",
+      "h": 120,
+      "l": 2,
+      "discovery": 12.533333333333333,
+      "validation": 12.470588235294118,
+      "blind": 13.019976498237368,
+      "blindHits": 554,
+      "pHolm": 1
+    },
+    {
+      "key": "h200_l0",
+      "h": 200,
+      "l": 0,
+      "discovery": 12.306666666666667,
+      "validation": 12.094117647058823,
+      "blind": 13.137485311398354,
+      "blindHits": 559,
+      "pHolm": 1
+    },
+    {
+      "key": "h200_l0.25",
+      "h": 200,
+      "l": 0.25,
+      "discovery": 12.16,
+      "validation": 12.117647058823529,
+      "blind": 13.18448883666275,
+      "blindHits": 561,
+      "pHolm": 1
+    },
+    {
+      "key": "h200_l0.5",
+      "h": 200,
+      "l": 0.5,
+      "discovery": 11.986666666666666,
+      "validation": 12.305882352941177,
+      "blind": 13.443008225616921,
+      "blindHits": 572,
+      "pHolm": 0.6687165641717914
+    },
+    {
+      "key": "h200_l1",
+      "h": 200,
+      "l": 1,
+      "discovery": 12.12,
+      "validation": 11.929411764705883,
+      "blind": 13.27849588719154,
+      "blindHits": 565,
+      "pHolm": 1
+    },
+    {
+      "key": "h200_l1.5",
+      "h": 200,
+      "l": 1.5,
+      "discovery": 12.253333333333334,
+      "validation": 12.329411764705883,
+      "blind": 13.27849588719154,
+      "blindHits": 565,
+      "pHolm": 1
+    },
+    {
+      "key": "h200_l2",
+      "h": 200,
+      "l": 2,
+      "discovery": 12.466666666666667,
+      "validation": 12.68235294117647,
+      "blind": 12.878965922444184,
+      "blindHits": 548,
+      "pHolm": 1
+    },
+    {
+      "key": "h400_l0",
+      "h": 400,
+      "l": 0,
+      "discovery": 12.613333333333333,
+      "validation": 11.882352941176471,
+      "blind": 13.066980023501763,
+      "blindHits": 556,
+      "pHolm": 1
+    },
+    {
+      "key": "h400_l0.25",
+      "h": 400,
+      "l": 0.25,
+      "discovery": 12.466666666666667,
+      "validation": 11.788235294117648,
+      "blind": 13.160987074030553,
+      "blindHits": 560,
+      "pHolm": 1
+    },
+    {
+      "key": "h400_l0.5",
+      "h": 400,
+      "l": 0.5,
+      "discovery": 12.52,
+      "validation": 12.070588235294117,
+      "blind": 13.09048178613396,
+      "blindHits": 557,
+      "pHolm": 1
+    },
+    {
+      "key": "h400_l1",
+      "h": 400,
+      "l": 1,
+      "discovery": 12.28,
+      "validation": 11.788235294117648,
+      "blind": 13.231492361927145,
+      "blindHits": 563,
+      "pHolm": 1
+    },
+    {
+      "key": "h400_l1.5",
+      "h": 400,
+      "l": 1.5,
+      "discovery": 12.346666666666666,
+      "validation": 12.258823529411766,
+      "blind": 13.113983548766157,
+      "blindHits": 558,
+      "pHolm": 1
+    },
+    {
+      "key": "h400_l2",
+      "h": 400,
+      "l": 2,
+      "discovery": 12.546666666666667,
+      "validation": 12.4,
+      "blind": 13.043478260869565,
+      "blindHits": 555,
+      "pHolm": 1
+    }
+  ]
+}
