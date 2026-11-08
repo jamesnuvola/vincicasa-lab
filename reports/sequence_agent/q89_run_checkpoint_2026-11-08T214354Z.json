@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "Q89-RUN-PROGRESS-2026-11-08T21:43:54Z",
+  "recorded_at_utc": "2026-11-08T21:43:54Z",
+  "canonical_archive": {
+    "path": "data/storico_daily.csv",
+    "main_commit_sha": "94d18ca3115c6052d436be1c09f541f39214c9cf",
+    "git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+    "draw_count": 3401,
+    "cutoff_date": "2026-11-07",
+    "latest_quintet": [
+      12,
+      16,
+      27,
+      31,
+      38
+    ]
+  },
+  "q88": {
+    "workflow_run_id": 42520706541,
+    "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+    "shards_success": 15,
+    "aggregate_validate_persist": "SUCCESS",
+    "formula_count": 2220075,
+    "scored_targets": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 6660225,
+    "target_ledger_rows": 3351,
+    "persisted_head_sha": "0f865d6585a768f623e7c56cfffc5fd4a48a7888",
+    "exact_head_ci_run_id": 42523530410,
+    "exact_head_ci_conclusion": "SUCCESS",
+    "human_review": "PENDING"
+  },
+  "q89": {
+    "pr_number": 20,
+    "pr_state": "OPEN_DRAFT",
+    "head_sha": "772c57848d1ba978b2333aa227b46bb591a7f0cf",
+    "base_branch": "research/per-number-condition-grammar-20261026",
+    "base_sha": "0f865d6585a768f623e7c56cfffc5fd4a48a7888",
+    "formula_universe": 4686825,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "target_count": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "expected_metrics_rows": 14060475,
+    "global_holm_family_size": 42181425,
+    "workflow_run_id": 42524743687,
+    "observed_shards": {
+      "success": 6,
+      "in_progress": 9,
+      "failure": 0
+    },
+    "aggregate_job": "PENDING_ALL_SHARDS",
+    "output_persistence": "PENDING",
+    "exact_head_ci": "PENDING",
+    "acceptance_status": "NOT_COMPLETE",
+    "quantitative_results": "NOT_YET_AVAILABLE",
+    "unit_tests": "PASS in pre-evaluation steps",
+    "next_action": "Wait for all 15 shard successes, aggregate and apply global Holm, freeze the Discovery→Validation candidates, run paired blind inference, acceptance validator, append-only persistence/readback, and exact-head CI; require human review."
+  },
+  "q91_trigger_diagnostic": {
+    "failed_run_id": 42524743568,
+    "trigger_context": "Q91 workflow ran against refs/pull/20/merge (merge of Q89 PR #20 head 772c578 into Q88 base 0f865d). The Q91 workflow's broad pull_request paths included data/storico_daily.csv, scripts/sonar_research_queue.py and research_backlog.json, all touched by unrelated Q89 PR #20. Its checkout therefore lacked Q91-specific implementation scripts, and py_compile failed on scripts/sonar_q91_nested_walkforward.py. This is a trigger-scope mismatch, not a Q89 evaluator failure.",
+    "corrective_change": "On PR #12 branch research/q91-nested-formula-walkforward-20261105, removed the broad archive/queue/backlog paths from the Q91 pull_request path filter, leaving only Q91 engine, validator, persistence, tests and the workflow file. workflow_dispatch remains for archive-only refreshes.",
+    "corrective_commit": "0868283401a5e7d05f71f08fe8ed371c2f56dd71",
+    "corrective_file_blob_sha": "e0e879c76090aa6a32bb52a6b91591e830fff178",
+    "readback_verified": true,
+    "pr12_head_ci": "NOT_YET_OBSERVED",
+    "human_review_required": true
+  },
+  "guardrails": {
+    "pr6_pr7_pr8_merged_or_modified": false,
+    "q89_blind_selection_used": false,
+    "immutable_freezes_overwritten": false,
+    "auto_merge": false,
+    "engine_promotion": false,
+    "human_review_required": true
+  },
+  "limitations": [
+    "Q89 formula-family p-values use a continuity-corrected normal approximation to a finite-population hypergeometric null, not exact tests.",
+    "Historical blind tail is not independent project-level confirmation.",
+    "Retrospective per-target best formulas are descriptive only.",
+    "No Q89 aggregate metrics or inferential results are available yet."
+  ]
+}
