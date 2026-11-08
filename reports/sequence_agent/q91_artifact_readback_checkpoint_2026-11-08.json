@@ -1,0 +1,174 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q91",
+  "checkpoint_id": "Q91-ARTIFACT-READBACK-2026-11-08",
+  "status": "ARTIFACT_READBACK_VERIFIED_PENDING_CANONICAL_ARCHIVE_SYNC_EXACT_HEAD_CI_HUMAN_REVIEW",
+  "source_branch": "research/q91-nested-formula-walkforward-20261105",
+  "source_head_sha": "df4a5b4716d4febd1efb294f1414133c3eedd1b3",
+  "acceptance_workflow_run_id": 42256671154,
+  "acceptance_workflow_conclusion": "success",
+  "acceptance_validator": "Q91_FORMULA_ACCEPTANCE_PASS",
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+    "draw_count": 3398,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-04"
+  },
+  "artifact": {
+    "artifact_id": 13522588075,
+    "file_name": "q91-nested-formula-walkforward-bundle.zip",
+    "size_bytes": 16157390,
+    "sha256": "19ae830a1e50215ead93353ee0b71c692d65a4b647631aa9172fd8bf278df581",
+    "retention_days": 90,
+    "expires_at": "2027-02-04T16:54:17Z"
+  },
+  "scope": {
+    "formula_count": 3303,
+    "policy_count": 6,
+    "policy_ids": [
+      "EXPANDING_TOP5",
+      "EXPANDING_RANK",
+      "ROLLING250_TOP5",
+      "ROLLING250_RANK",
+      "ROLLING500_TOP5",
+      "ROLLING500_RANK"
+    ],
+    "scored_targets": 3348,
+    "split_target_counts": {
+      "discovery": 2009,
+      "validation": 670,
+      "blind_oos": 669
+    },
+    "metrics_rows": 18,
+    "score_array_rows": 11058444,
+    "score_array_parts": 34,
+    "target_ledger_rows": 3348
+  },
+  "internal_sha256": {
+    "formula_catalog_csv": "ef1b65bc70cff361baf85fdadeb485d02c0ce3c096e4f54a895bd822be4b97af",
+    "policy_metrics_csv": "c62c6a440d46238e254df660f7481e417c95d25c879a609aea1e861448ae7cba",
+    "target_ledger_csv": "594024ad541760b4644a67e1b184c869fe9e5ea3dbb3e5c2ea6638287ce5856d",
+    "selection_report_json": "a1c418b49816f9c0f9139acd3754b9fcd5cf5850e33c04f8b18c9c4378e30a35",
+    "score_manifest_json": "8cafe20107a48089b6ad99763516f06c8c393216af2572881d2d2f3abe6113ee",
+    "parts_manifest_sha256": "0941f8cea662bf3cbecadc53cfd54e2b35f4b300a0418ebfa10478590f184725"
+  },
+  "readback": {
+    "zip_digest_matches_github_artifact_metadata": true,
+    "core_output_hashes_match_report": true,
+    "npz_part_hashes_match_manifest": 34,
+    "part_sizes_match_manifest": 34,
+    "part_ranges_contiguous": true,
+    "part_ranges_coverage": [
+      0,
+      3348
+    ],
+    "total_rows": 11058444,
+    "arrays_per_part": {
+      "hits5": "uint8 [targets,3303]",
+      "hits20": "uint8 [targets,3303]",
+      "rank_sum": "uint16 [targets,3303]"
+    },
+    "score_values_bounds": {
+      "hits5": [
+        0,
+        5
+      ],
+      "hits20": [
+        0,
+        5
+      ],
+      "rank_sum": [
+        15,
+        190
+      ]
+    },
+    "target_dates_match_q90_ledger": true,
+    "target_cutoffs_match_q90_ledger": true,
+    "actual_quintets_match_q90_ledger": true,
+    "split_labels_match_q90_ledger": true,
+    "prior_draws_range": [
+      50,
+      3397
+    ],
+    "strict_cutoff": true,
+    "chronological_targets": true,
+    "unique_targets": 3348
+  },
+  "quantitative_findings": {
+    "discovery_frozen_policy": "EXPANDING_TOP5",
+    "baseline": {
+      "mean_number_hits_top5": 0.125,
+      "mean_rank_of_actual_numbers": 20.5
+    },
+    "selected_policy": {
+      "discovery": {
+        "targets": 2009,
+        "mean_number_hits_top5": 0.1294176207068193,
+        "mean_rank_of_actual_numbers": 20.412045793927327,
+        "p_top5_upper": 0.08116567816541845,
+        "p_rank_lower": 0.21022020677714767,
+        "holm_p_max_endpoint_family": 1
+      },
+      "validation": {
+        "targets": 670,
+        "mean_number_hits_top5": 0.11582089552238806,
+        "mean_rank_of_actual_numbers": 20.86358208955224,
+        "p_top5_upper": 0.9575849999661702,
+        "p_rank_lower": 0.9728955974161444,
+        "holm_p_max_endpoint_family": 1
+      },
+      "blind_oos": {
+        "targets": 669,
+        "mean_number_hits_top5": 0.11808669656203288,
+        "mean_rank_of_actual_numbers": 20.64185351270553,
+        "p_top5_upper": 0.9038501467429324,
+        "p_rank_lower": 0.7736842269962176,
+        "holm_p_max_endpoint_family": 1
+      }
+    },
+    "best_blind_policy_descriptive_only": {
+      "policy_id": "ROLLING250_TOP5",
+      "mean_number_hits_top5": 0.12585949177877429,
+      "mean_rank_of_actual_numbers": 20.584155455904334,
+      "p_top5_upper": 0.44785978719151404,
+      "p_rank_lower": 0.6721571922646203,
+      "holm_p_max_endpoint_family": 1
+    },
+    "multiple_testing": {
+      "method": "Holm-Bonferroni",
+      "test_count": 36,
+      "adjustment_family": "6 policies x 3 chronological splits x 2 endpoints",
+      "holm_significant_blind_policy_endpoints": 0
+    },
+    "interpretation": "The discovery-selected EXPANDING_TOP5 meta-policy deteriorates in validation and blind OOS; no policy survives Holm. The blind-best rolling policy is descriptive only and cannot replace the discovery-frozen policy."
+  },
+  "exact_head_ci": {
+    "workflow_run_id": 42269363078,
+    "conclusion": "failure",
+    "root_cause": "Q80_Q86_ACCEPTANCE_BLOCKED: Q80-Q86 target counts, cutoffs, split sizes, ledgers and archive SHAs are stale relative to canonical main",
+    "verified_archive_comparison": {
+      "main": {
+        "blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+        "draw_count": 3401,
+        "last_date": "2026-11-07"
+      },
+      "q91_branch": {
+        "blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+        "draw_count": 3398,
+        "last_date": "2026-11-04"
+      }
+    },
+    "diagnosis": "Q91 dedicated acceptance succeeded; exact-head generic CI is blocked by stale inherited Q80-Q86 evidence/archive synchronization, not by Q91 validator failure."
+  },
+  "guardrails": {
+    "human_review": "PENDING",
+    "main_ci": "PENDING",
+    "formula_or_policy_promotion": false,
+    "pr_merge": false,
+    "immutable_target_2026_10_25_freeze_preserved": true,
+    "finite_formula_catalog_only": true
+  },
+  "next_action": "Sync the Q91 research branch and its inherited Q80-Q86 evidence to canonical main through 2026-11-07, rerun Q91 on the exact current archive, verify persisted artifacts again, pass exact-head CI and obtain human review/integration before marking Q91 complete."
+}
