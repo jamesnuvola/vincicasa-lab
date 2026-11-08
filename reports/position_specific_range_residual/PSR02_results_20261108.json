@@ -1,0 +1,416 @@
+{
+  "experiment": "PSR-02",
+  "status": "EXPLORATORY_NULL_NO_LIFT",
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07"
+  },
+  "execution": {
+    "workflow": "Test VinciCasa Lab",
+    "run_id": 42468954057,
+    "run_number": 595,
+    "conclusion": "success",
+    "branch": "research/sonar-psr01-isolated-20261108",
+    "pr": 13,
+    "artifact_id": 13612816632,
+    "artifact_digest": "sha256:2e71838355d78b0aa62f9726e74beacc7cc8db02aa83a8752b73d935741bd457",
+    "artifact_expires_at": "2027-02-06T09:51:42Z"
+  },
+  "method": {
+    "warmup": 300,
+    "test_targets": 3101,
+    "split_counts": {
+      "discovery": 1550,
+      "validation": 775,
+      "blind_oos": 776
+    },
+    "split_dates": {
+      "discovery": [
+        "2018-05-13",
+        "2022-08-09"
+      ],
+      "validation": [
+        "2022-08-10",
+        "2024-09-22"
+      ],
+      "blind_oos": [
+        "2024-09-23",
+        "2026-11-07"
+      ]
+    },
+    "state_bins": [
+      {
+        "state": 0,
+        "odd_count": [
+          0,
+          1
+        ]
+      },
+      {
+        "state": 1,
+        "odd_count": [
+          2,
+          3
+        ]
+      },
+      {
+        "state": 2,
+        "odd_count": [
+          4,
+          5
+        ]
+      }
+    ],
+    "alpha": 100,
+    "formula": "q_i,t(n|s)=[c_i,t,s(n)+100*pi_i(n)]/[N_t,s+100]",
+    "prior": "pi_i(n)=C(n-1,i-1)*C(40-n,5-i)/C(40,5), n=i..35+i",
+    "primary": "blind OOS per-position Brier improvement vs global empirical shrinkage",
+    "bootstrap": {
+      "type": "circular moving-block",
+      "block_length": 7,
+      "replicates": 2000,
+      "seed_base": 20261108,
+      "one_sided_benefit": true,
+      "holm_family": 5
+    }
+  },
+  "split_metrics": [
+    {
+      "split": "discovery",
+      "position": 1,
+      "n": 1550,
+      "mean_state_training_n": 542.02,
+      "state_top1_hit_rate": 0.112258,
+      "global_top1_hit_rate": 0.114194,
+      "prior_mode_hit_rate": 0.114194,
+      "state_top1_delta_vs_global": -0.001935,
+      "state_top1_delta_vs_prior": -0.001935,
+      "brier_improvement_vs_global": -0.000418263,
+      "brier_improvement_vs_prior": -0.00128372,
+      "logloss_improvement_vs_global": -0.004561683,
+      "logloss_improvement_vs_prior": -0.021700101
+    },
+    {
+      "split": "discovery",
+      "position": 2,
+      "n": 1550,
+      "mean_state_training_n": 542.02,
+      "state_top1_hit_rate": 0.052903,
+      "global_top1_hit_rate": 0.052258,
+      "prior_mode_hit_rate": 0.058065,
+      "state_top1_delta_vs_global": 0.000645,
+      "state_top1_delta_vs_prior": -0.005161,
+      "brier_improvement_vs_global": -0.000607224,
+      "brier_improvement_vs_prior": -0.001428029,
+      "logloss_improvement_vs_global": -0.008781817,
+      "logloss_improvement_vs_prior": -0.023583316
+    },
+    {
+      "split": "discovery",
+      "position": 3,
+      "n": 1550,
+      "mean_state_training_n": 542.02,
+      "state_top1_hit_rate": 0.044516,
+      "global_top1_hit_rate": 0.04,
+      "prior_mode_hit_rate": 0.03871,
+      "state_top1_delta_vs_global": 0.004516,
+      "state_top1_delta_vs_prior": 0.005806,
+      "brier_improvement_vs_global": -0.000537886,
+      "brier_improvement_vs_prior": -0.00120878,
+      "logloss_improvement_vs_global": -0.00653846,
+      "logloss_improvement_vs_prior": -0.019170132
+    },
+    {
+      "split": "discovery",
+      "position": 4,
+      "n": 1550,
+      "mean_state_training_n": 542.02,
+      "state_top1_hit_rate": 0.053548,
+      "global_top1_hit_rate": 0.049032,
+      "prior_mode_hit_rate": 0.059355,
+      "state_top1_delta_vs_global": 0.004516,
+      "state_top1_delta_vs_prior": -0.005806,
+      "brier_improvement_vs_global": -0.000538007,
+      "brier_improvement_vs_prior": -0.001454372,
+      "logloss_improvement_vs_global": -0.004867685,
+      "logloss_improvement_vs_prior": -0.023568505
+    },
+    {
+      "split": "discovery",
+      "position": 5,
+      "n": 1550,
+      "mean_state_training_n": 542.02,
+      "state_top1_hit_rate": 0.116129,
+      "global_top1_hit_rate": 0.117419,
+      "prior_mode_hit_rate": 0.117419,
+      "state_top1_delta_vs_global": -0.00129,
+      "state_top1_delta_vs_prior": -0.00129,
+      "brier_improvement_vs_global": -0.000624828,
+      "brier_improvement_vs_prior": -0.001383081,
+      "logloss_improvement_vs_global": -0.004378033,
+      "logloss_improvement_vs_prior": -0.023346684
+    },
+    {
+      "split": "validation",
+      "position": 1,
+      "n": 775,
+      "mean_state_training_n": 1140.5,
+      "state_top1_hit_rate": 0.082581,
+      "global_top1_hit_rate": 0.096774,
+      "prior_mode_hit_rate": 0.099355,
+      "state_top1_delta_vs_global": -0.014194,
+      "state_top1_delta_vs_prior": -0.016774,
+      "brier_improvement_vs_global": -0.001476476,
+      "brier_improvement_vs_prior": -0.001329626,
+      "logloss_improvement_vs_global": -0.015476936,
+      "logloss_improvement_vs_prior": -0.01961146
+    },
+    {
+      "split": "validation",
+      "position": 2,
+      "n": 775,
+      "mean_state_training_n": 1140.5,
+      "state_top1_hit_rate": 0.050323,
+      "global_top1_hit_rate": 0.052903,
+      "prior_mode_hit_rate": 0.055484,
+      "state_top1_delta_vs_global": -0.002581,
+      "state_top1_delta_vs_prior": -0.005161,
+      "brier_improvement_vs_global": -0.000110758,
+      "brier_improvement_vs_prior": -0.000935835,
+      "logloss_improvement_vs_global": -0.004081739,
+      "logloss_improvement_vs_prior": -0.016766464
+    },
+    {
+      "split": "validation",
+      "position": 3,
+      "n": 775,
+      "mean_state_training_n": 1140.5,
+      "state_top1_hit_rate": 0.063226,
+      "global_top1_hit_rate": 0.065806,
+      "prior_mode_hit_rate": 0.051613,
+      "state_top1_delta_vs_global": -0.002581,
+      "state_top1_delta_vs_prior": 0.011613,
+      "brier_improvement_vs_global": -0.00046921,
+      "brier_improvement_vs_prior": -0.001040772,
+      "logloss_improvement_vs_global": -0.00919602,
+      "logloss_improvement_vs_prior": -0.025042399
+    },
+    {
+      "split": "validation",
+      "position": 4,
+      "n": 775,
+      "mean_state_training_n": 1140.5,
+      "state_top1_hit_rate": 0.054194,
+      "global_top1_hit_rate": 0.050323,
+      "prior_mode_hit_rate": 0.046452,
+      "state_top1_delta_vs_global": 0.003871,
+      "state_top1_delta_vs_prior": 0.007742,
+      "brier_improvement_vs_global": -0.000389557,
+      "brier_improvement_vs_prior": -0.000612732,
+      "logloss_improvement_vs_global": -0.002986171,
+      "logloss_improvement_vs_prior": -0.008907922
+    },
+    {
+      "split": "validation",
+      "position": 5,
+      "n": 775,
+      "mean_state_training_n": 1140.5,
+      "state_top1_hit_rate": 0.156129,
+      "global_top1_hit_rate": 0.154839,
+      "prior_mode_hit_rate": 0.154839,
+      "state_top1_delta_vs_global": 0.00129,
+      "state_top1_delta_vs_prior": 0.00129,
+      "brier_improvement_vs_global": 0.000205213,
+      "brier_improvement_vs_prior": -0.000280831,
+      "logloss_improvement_vs_global": 0.001936668,
+      "logloss_improvement_vs_prior": -0.004870686
+    },
+    {
+      "split": "blind_oos",
+      "position": 1,
+      "n": 776,
+      "mean_state_training_n": 1475.53,
+      "state_top1_hit_rate": 0.104381,
+      "global_top1_hit_rate": 0.110825,
+      "prior_mode_hit_rate": 0.123711,
+      "state_top1_delta_vs_global": -0.006443,
+      "state_top1_delta_vs_prior": -0.01933,
+      "brier_improvement_vs_global": -0.000734572,
+      "brier_improvement_vs_prior": -0.001239192,
+      "logloss_improvement_vs_global": -0.012849992,
+      "logloss_improvement_vs_prior": -0.022536354
+    },
+    {
+      "split": "blind_oos",
+      "position": 2,
+      "n": 776,
+      "mean_state_training_n": 1475.53,
+      "state_top1_hit_rate": 0.048969,
+      "global_top1_hit_rate": 0.050258,
+      "prior_mode_hit_rate": 0.056701,
+      "state_top1_delta_vs_global": -0.001289,
+      "state_top1_delta_vs_prior": -0.007732,
+      "brier_improvement_vs_global": -0.000708768,
+      "brier_improvement_vs_prior": -0.001264677,
+      "logloss_improvement_vs_global": -0.00626545,
+      "logloss_improvement_vs_prior": -0.020214789
+    },
+    {
+      "split": "blind_oos",
+      "position": 3,
+      "n": 776,
+      "mean_state_training_n": 1475.53,
+      "state_top1_hit_rate": 0.054124,
+      "global_top1_hit_rate": 0.052835,
+      "prior_mode_hit_rate": 0.039948,
+      "state_top1_delta_vs_global": 0.001289,
+      "state_top1_delta_vs_prior": 0.014175,
+      "brier_improvement_vs_global": -0.000485029,
+      "brier_improvement_vs_prior": -0.000553639,
+      "logloss_improvement_vs_global": -0.004680948,
+      "logloss_improvement_vs_prior": -0.004533197
+    },
+    {
+      "split": "blind_oos",
+      "position": 4,
+      "n": 776,
+      "mean_state_training_n": 1475.53,
+      "state_top1_hit_rate": 0.055412,
+      "global_top1_hit_rate": 0.055412,
+      "prior_mode_hit_rate": 0.055412,
+      "state_top1_delta_vs_global": 0,
+      "state_top1_delta_vs_prior": 0,
+      "brier_improvement_vs_global": -0.000507823,
+      "brier_improvement_vs_prior": -0.000402064,
+      "logloss_improvement_vs_global": -0.013354556,
+      "logloss_improvement_vs_prior": -0.014323393
+    },
+    {
+      "split": "blind_oos",
+      "position": 5,
+      "n": 776,
+      "mean_state_training_n": 1475.53,
+      "state_top1_hit_rate": 0.118557,
+      "global_top1_hit_rate": 0.123711,
+      "prior_mode_hit_rate": 0.123711,
+      "state_top1_delta_vs_global": -0.005155,
+      "state_top1_delta_vs_prior": -0.005155,
+      "brier_improvement_vs_global": -0.001039171,
+      "brier_improvement_vs_prior": -0.001241941,
+      "logloss_improvement_vs_global": -0.015508716,
+      "logloss_improvement_vs_prior": -0.027363107
+    }
+  ],
+  "blind_oos_primary_inference": [
+    {
+      "position": 1,
+      "mean_improvement": -0.000734572,
+      "ci95": [
+        -0.001404548,
+        -0.000056492
+      ],
+      "p_one_sided_benefit": 0.983008,
+      "p_holm": 1
+    },
+    {
+      "position": 2,
+      "mean_improvement": -0.000708768,
+      "ci95": [
+        -0.001398203,
+        -0.000017688
+      ],
+      "p_one_sided_benefit": 0.984008,
+      "p_holm": 1
+    },
+    {
+      "position": 3,
+      "mean_improvement": -0.000485029,
+      "ci95": [
+        -0.001076406,
+        0.000096713
+      ],
+      "p_one_sided_benefit": 0.948526,
+      "p_holm": 1
+    },
+    {
+      "position": 4,
+      "mean_improvement": -0.000507823,
+      "ci95": [
+        -0.001129806,
+        0.000120133
+      ],
+      "p_one_sided_benefit": 0.955022,
+      "p_holm": 1
+    },
+    {
+      "position": 5,
+      "mean_improvement": -0.001039171,
+      "ci95": [
+        -0.001835534,
+        -0.000217616
+      ],
+      "p_one_sided_benefit": 0.993003,
+      "p_holm": 1
+    }
+  ],
+  "secondary_harm_diagnostic": {
+    "status": "EXPLORATORY_POST_RUN",
+    "replicates": 20000,
+    "block_length": 7,
+    "prng": "NumPy PCG64",
+    "seed": "(20261108 + position*2027) XOR 0x9E3779B9",
+    "holm_family": 5,
+    "results": [
+      {
+        "position": 1,
+        "p_one_sided_harm": 0.019949,
+        "p_two_sided_raw": 0.039248,
+        "p_holm_two_sided": 0.156992
+      },
+      {
+        "position": 2,
+        "p_one_sided_harm": 0.019649,
+        "p_two_sided_raw": 0.039898,
+        "p_holm_two_sided": 0.156992
+      },
+      {
+        "position": 3,
+        "p_one_sided_harm": 0.054747,
+        "p_two_sided_raw": 0.109195,
+        "p_holm_two_sided": 0.20539
+      },
+      {
+        "position": 4,
+        "p_one_sided_harm": 0.054197,
+        "p_two_sided_raw": 0.102695,
+        "p_holm_two_sided": 0.20539
+      },
+      {
+        "position": 5,
+        "p_one_sided_harm": 0.00515,
+        "p_two_sided_raw": 0.010449,
+        "p_holm_two_sided": 0.052247
+      }
+    ]
+  },
+  "integrity": {
+    "detail_rows": 15505,
+    "target_dates": 3101,
+    "duplicate_target_position_rows": 0,
+    "train_n_equals_target_index_minus1": true,
+    "cutoff_date_before_target": true,
+    "previous_target_date_cutoff_match_for_indices_gt300": true,
+    "state_bucket_matches_odd_count": true,
+    "position_domain_valid": true,
+    "prior_marginal_sum_check": "PASS"
+  },
+  "decision": {
+    "incremental_brier": "negative at all five positions; no Holm-adjusted benefit",
+    "p3_top1": "preserve exploratory: +0.1289 pp vs global and +1.4175 pp vs prior, while Brier worse",
+    "motor": "unchanged"
+  },
+  "next_action": "Audit P5 logistic against exact P5 order-statistic prior; prospectively freeze P3=18 vs exact prior mode 20 as shadow-only."
+}
