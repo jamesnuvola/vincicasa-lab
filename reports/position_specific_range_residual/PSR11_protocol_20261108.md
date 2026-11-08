@@ -24,7 +24,8 @@ The fixed state bins have masses 0.17082467082467082, 0.6583506583506583, 0.1708
 - For each target, predictor state uses (D_{t-1}) and a frequency ranking from rows (t-101,ldots,t-2), never target (D_t).
 - Conditional and global outcome counts update only after the target score; training outcomes are (u=200,ldots,t-1) only.
 - Chronological splits: discovery [300,1700) = 1,400; validation [1700,2550) = 850; blind historical tail [2550,3401) = 851.
-- Alpha grid fixed before computation: {0,25,50,100,200,500,1000}. Select alpha on validation by Top-5 hit count vs actual; tie-break lower multiclass inclusion Brier, then larger alpha. Discovery is descriptive; no parameter selection on the tail.
+- Alpha grid fixed before computation: {0,25,50,100,200,500,1000}. Select alpha on validation by Top-5 hit count vs actual; tie-break lower multiclass inclusion Brier (comparison canonicalized to 9 decimal places for cross-runtime determinism), then larger alpha. Discovery is descriptive; no parameter selection on the tail.
+- Reported target losses and aggregate floating metrics are canonicalized to 9 decimal places; raw values are retained during computation.
 - Baseline 1: strict-prior unconditional inclusion frequency (q_0), Top-5 ranked from the same training outcomes. Baseline 2: exact uniform Top-5 reference (expected hit-share 12.5%).
 
 ## Endpoints and inference
