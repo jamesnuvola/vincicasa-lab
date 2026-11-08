@@ -101,7 +101,7 @@ jobs:
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -H "Content-Type: application/json" \
-            -d "{\\\"ref\\\":\\\"research/per-number-condition-grammar-20261026\\\"}"
+            -d "{\"ref\":\"research/per-number-condition-grammar-20261026\"}"
 
       - name: Build web application
         run: npm install && npm run build
