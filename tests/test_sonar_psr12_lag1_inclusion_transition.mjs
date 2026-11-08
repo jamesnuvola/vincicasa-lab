@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { runExperiment, lag1ScoreVector } from "../scripts/sonar_psr12_lag1_inclusion_transition.mjs";
+import { runExperiment, lag1ScoreVector, lag1Rank } from "../scripts/sonar_psr12_lag1_inclusion_transition.mjs";
 
 function syntheticCsv(count=180) {
   let seed=987654321;
@@ -14,6 +14,7 @@ function syntheticCsv(count=180) {
 }
 
 const q0=Array(40).fill(0.125),cond=Array(40).fill(0),exp=Array(40).fill(10);cond[0]=2;const state=[1];
+const gc=Array(40).fill(1),cc=Array(40).fill(0),ee=Array(40).fill(10);cc[0]=2;assert.deepEqual(lag1Rank(gc,cc,ee,[1],0,100).slice(0,5),[1,2,3,4,5]);
 const raw=lag1ScoreVector(q0,cond,exp,state,0);assert.equal(raw[0],0.2);assert.equal(raw[1],0.125);
 const shrunk=lag1ScoreVector(q0,cond,exp,state,100);assert.ok(shrunk[0]>0.125&&shrunk[0]<0.2);assert.equal(shrunk[1],0.125);
 assert.throws(()=>lag1ScoreVector(q0,cond,exp,state,-1),/nonnegative/);

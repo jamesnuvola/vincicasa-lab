@@ -54,7 +54,7 @@ The candidate Top-5 ranks descending (hat q), with ties broken by ascending numb
 - Secondary: Top-5 hit-share (intersection count / (5\times targets)) and binary marginal inclusion log-loss; gains are baseline minus candidate.
 - Blind-tail grid audit: 7 alphas × 3 paired endpoints = 21 tests plus 7 exact uniform-null Top-5 tests. Under uniform 5-of-40, each target Top-5 overlap follows Hypergeometric(40,5,5); aggregate tail probabilities are computed by exact discrete convolution across blind targets. Paired model-vs-global tests use one-sided block sign-flip, 20,000 replicates, non-overlapping complete blocks of length 7. Holm-Bonferroni covers the full 28-test family, family-wise alpha 0.05.
 - 95% intervals: deterministic circular moving-block bootstrap, block length 7, 2,000 replicates. Point metrics use all 801 blind targets; inference uses 114 complete blocks (798 targets), omitting the final 3-target tail only from block inference.
-- Fixed PRNG seed: 20261108. All output canonicalization is deterministic.
+- Fixed PRNG seed: 20261108. All output canonicalization is deterministic: ranking uses exact integer cross-products for rational scores; target Brier/log-loss differences and aggregate floating metrics are rounded to 9 decimals before inference/serialization; ledger gains are rounded to 9 decimals. This avoids cross-runtime sub-ULP rank and JSON drift.
 
 ## Integrity gates
 
