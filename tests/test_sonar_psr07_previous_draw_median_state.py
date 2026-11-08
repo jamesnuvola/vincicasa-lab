@@ -38,12 +38,12 @@ class PSR07UnitTests(unittest.TestCase):
 
     def test_exact_p3_quartile_cutpoints_and_masses(self) -> None:
         cuts, masses = exact_p3_quartile_states()
-        self.assertEqual(cuts, (15, 21, 26))
+        self.assertEqual(cuts, (15, 20, 26))
         self.assertAlmostEqual(sum(masses), 1.0, places=12)
         self.assertEqual(p3_state(15, cuts), 0)
         self.assertEqual(p3_state(16, cuts), 1)
-        self.assertEqual(p3_state(21, cuts), 1)
-        self.assertEqual(p3_state(22, cuts), 2)
+        self.assertEqual(p3_state(20, cuts), 1)
+        self.assertEqual(p3_state(21, cuts), 2)
         self.assertEqual(p3_state(26, cuts), 2)
         self.assertEqual(p3_state(27, cuts), 3)
 

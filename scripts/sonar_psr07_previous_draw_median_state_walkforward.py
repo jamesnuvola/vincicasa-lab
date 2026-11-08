@@ -110,12 +110,12 @@ def exact_p3_quartile_states() -> tuple[tuple[int, int, int], tuple[float, float
         if cut is None:
             raise AssertionError("Theoretical P3 quartile could not be calculated")
         cuts.append(cut)
-    if tuple(cuts) != (15, 21, 26):
+    if tuple(cuts) != (15, 20, 26):
         raise AssertionError(f"Unexpected theoretical P3 cutpoints: {cuts}")
     masses = (
         sum(counts[m] for m in range(3, 16)) / denominator,
-        sum(counts[m] for m in range(16, 22)) / denominator,
-        sum(counts[m] for m in range(22, 27)) / denominator,
+        sum(counts[m] for m in range(16, 21)) / denominator,
+        sum(counts[m] for m in range(21, 27)) / denominator,
         sum(counts[m] for m in range(27, 39)) / denominator,
     )
     if not np.isclose(sum(masses), 1.0, atol=1e-12, rtol=0.0):
@@ -125,8 +125,8 @@ def exact_p3_quartile_states() -> tuple[tuple[int, int, int], tuple[float, float
 
 STATE_LABELS = (
     "P3_Q1_M<=15",
-    "P3_Q2_M=16..21",
-    "P3_Q3_M=22..26",
+    "P3_Q2_M=16..20",
+    "P3_Q3_M=21..26",
     "P3_Q4_M>=27",
 )
 

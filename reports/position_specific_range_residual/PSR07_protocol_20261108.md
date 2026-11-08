@@ -18,13 +18,13 @@ For a uniform 5-subset of 1..40, the exact P3 marginal is
 \pi_3(m)=\frac{\binom{m-1}{2}\binom{40-m}{2}}{\binom{40}{5}},\quad m=3,\ldots,38.
 \]
 
-Theoretical quartile cutpoints are **15, 21, 26**, yielding states:
+Theoretical quartile cutpoints are **15, 20, 26**, yielding states:
 - \(M\le15\)
-- \(16\le M\le21\)
-- \(22\le M\le26\)
+- \(16\le M\le20\)
+- \(21\le M\le26\)
 - \(M\ge27\)
 
-The corresponding exact prior state masses are approximately 26.3869%, 28.5507%, 22.8243%, and 22.2380%.
+The corresponding exact prior state masses are approximately 26.3869%, 23.6131%, 27.7620%, and 22.2380%.
 
 For position \(i\), the exact order-statistic prior is
 
