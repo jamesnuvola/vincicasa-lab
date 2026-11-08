@@ -1,7 +1,7 @@
 "use strict";
 const test=require("node:test");
 const assert=require("node:assert/strict");
-const {buildPrior,parseCsv,runWalkForward,renderMarkdown,gitBlobSha}=require("../scripts/sonar_psr09_position_recency_walkforward.cjs");
+const {buildPrior,parseCsv,runWalkForward,renderMarkdown,canonicalizeNumbers,gitBlobSha}=require("../scripts/sonar_psr09_position_recency_walkforward.cjs");
 function syntheticCsv(n=260){
   const start=Date.UTC(2017,6,17),rows=["data,n1,n2,n3,n4,n5"];
   for(let t=0;t<n;t++){
@@ -40,4 +40,13 @@ test("walk-forward has strict prefix, normalized probabilities, and deterministi
 test("pinned archive mismatch is rejected",()=>{
   const csv=syntheticCsv();
   assert.throws(()=>runWalkForward(csv,{archiveBlobSha:gitBlobSha(csv),expectedArchiveSha:"not-the-sha",warmup:200,windowGrid:[30],alphaGrid:[100],bootstrapReplicates:10}),/Pinned archive Git blob SHA mismatch/);
+});
+
+test("canonicalization removes sub-ULP cross-runtime log-loss drift",()=>{
+  const a=canonicalizeNumbers(0.0000922646150773039);
+  const b=canonicalizeNumbers(0.00009226461507731293);
+  assert.equal(a,b);
+  assert.equal(a,0.000092264615);
+  assert.equal(canonicalizeNumbers(-1e-13),0);
+  assert.deepEqual(canonicalizeNumbers({x:0.123456789012345,y:[0.0000000000004]}),{x:0.123456789012,y:[0]});
 });
