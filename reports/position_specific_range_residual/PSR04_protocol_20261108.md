@@ -23,5 +23,9 @@ Comparator q_global=[c_i,t(n)+100*pi_i(n)]/[N_t+100].
 - Historical blind partition is reused from PSR-01/02/03, not independent prospective evidence. Holm family covers PSR-04 five endpoints only.
 - No promotion, merge, or active motor replacement.
 
+
+
+**Persisted ledger precision:** numeric score columns are formatted to 9 decimal places for byte-stable cross-runtime hashes; model probabilities, proper scores and aggregate metrics are calculated at full precision (the report JSON is rounded to 12 decimal places).
+
 ## Result
 See PSR04_results_20261108.md and PSR04_results_20261108.json. Next experiment: PSR-05 signed same-position displacement residual.

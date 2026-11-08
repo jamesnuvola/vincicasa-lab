@@ -198,14 +198,14 @@ function run(csv) {
   blindInference.forEach((r, i) => { r.holm_p_family_5 = adjusted[i]; });
   const header = ["date", "target_index", "cutoff_date", ...Array.from({ length: 5 }, (_, p) => "actual_p" + (p + 1))];
   for (let p = 1; p <= 5; p++) for (const field of ["selected_h", "previous_value", "train_n", "global_brier", "kernel_brier", "brier_improvement", "logloss_improvement", "rank_improvement", "top1_delta", "top5_delta"]) header.push("p" + p + "_" + field);
-  const ledgerRows = [], fmt12 = x => Number(x).toFixed(12);
+  const ledgerRows = [], fmt9 = x => Number(x).toFixed(9);
   for (let t = warmup; t < rows.length; t++) {
     const row = [rows[t].date, String(t), rows[t - 1].date, ...rows[t].nums.map(String)];
     for (let p = 1; p <= 5; p++) {
       const h = validationSelection[p - 1].selected_h, hi = hGrid.indexOf(h), r = detail[p - 1][(t - warmup) * hGrid.length + hi];
       if (!r || r.target_index !== t) throw new Error("Missing ledger row");
-      row.push(String(h), String(r.previous_value), String(r.train_n), fmt12(r.global_brier), fmt12(r.kernel_brier),
-        fmt12(r.brier_improvement), fmt12(r.logloss_improvement), fmt12(r.rank_improvement), String(r.top1_delta), String(r.top5_delta));
+      row.push(String(h), String(r.previous_value), String(r.train_n), fmt9(r.global_brier), fmt9(r.kernel_brier),
+        fmt9(r.brier_improvement), fmt9(r.logloss_improvement), fmt9(r.rank_improvement), String(r.top1_delta), String(r.top5_delta));
     }
     ledgerRows.push(row);
   }
@@ -233,7 +233,7 @@ function run(csv) {
       exact_priors_sum_to_one: true, strict_prior_cutoff_checks: testN * 5, train_n_equals_target_index_minus_one_checks: testN * 5,
       scored_target_position_bandwidth_rows: expectedDetailRows, duplicate_detail_keys: 0,
       selected_ledger_rows: ledgerRows.length, selected_ledger_columns: header.length, ledger_fingerprint_fnv1a32: fingerprint,
-      aggregate_mean_method: "arithmetic_mean_over_target_rows"
+      aggregate_mean_method: "arithmetic_mean_over_target_rows", ledger_precision_decimal_places: 9
     },
     decision: {
       promotion: "NOT_ALLOWED",
@@ -277,7 +277,7 @@ function renderMarkdown(report) {
   lines.push("", "**Decision:** no Holm-adjusted primary benefit; all 95% intervals include zero. Preserve P2's small positive Brier/Top-1/Top-5 deltas and P3's Top-5-only rank anomaly as exploratory.", "");
   lines.push("## Integrity", "");
   lines.push("Strict prefix checks " + report.integrity.strict_prior_cutoff_checks + "; score rows " + report.integrity.scored_target_position_bandwidth_rows + "; duplicate keys " + report.integrity.duplicate_detail_keys + ".");
-  lines.push("Selected ledger " + report.integrity.selected_ledger_rows + " rows × " + report.integrity.selected_ledger_columns + " columns; FNV-1a32 " + report.integrity.ledger_fingerprint_fnv1a32 + ".");
+  lines.push("Selected ledger " + report.integrity.selected_ledger_rows + " rows × " + report.integrity.selected_ledger_columns + " columns; FNV-1a32 " + report.integrity.ledger_fingerprint_fnv1a32 + "; score fields persisted to 9 decimals (full precision used for scoring).");
   lines.push("Aggregate means use arithmetic means across target rows; reconciled against the persisted ledger. Two independent executions byte-identical: " + report.execution.double_run_exact_match + ". No engine change, merge, or promotion.", "");
   lines.push("## Root cause / next action", "");
   lines.push(report.decision.root_cause);
