@@ -96,10 +96,17 @@ for (let t = warmup; t < rows.length; t++) {
     const modelBrier = brier(posterior, actualIdx);
     const baseLogloss = logloss(prior, actualIdx);
     const modelLogloss = logloss(posterior, actualIdx);
+    const expectedRangeCoverage = prior.reduce((sum, q, i) => {
+      const n = domain[i];
+      return sum + (n >= trainMin && n <= trainMax ? q : 0);
+    }, 0);
     detail.push({
       date: target.date, target_index: t, position: p + 1, train_n: train.length,
       train_min: trainMin, train_max: trainMax, train_range_width: trainMax - trainMin + 1,
       actual, within_past_minmax: actual >= trainMin && actual <= trainMax,
+      expected_past_minmax_coverage: expectedRangeCoverage,
+      expected_range_escape_probability: 1 - expectedRangeCoverage,
+      range_coverage_residual: Number(actual >= trainMin && actual <= trainMax) - expectedRangeCoverage,
       empirical_mode_pick: empiricalPick, empirical_mode_hit: empiricalPick === actual,
       posterior_mode_pick: posteriorPick, posterior_mode_hit: posteriorPick === actual,
       theoretical_mode_pick: priorPick, theoretical_mode_hit: priorPick === actual,
@@ -177,6 +184,9 @@ for (let p = 1; p <= 5; p++) {
     summary.push({
       position: p, split, n, first_target: rs[0]?.date, last_target: rs.at(-1)?.date,
       past_minmax_coverage: metric("within_past_minmax"),
+      mean_expected_past_minmax_coverage: metric("expected_past_minmax_coverage"),
+      mean_expected_range_escape_probability: metric("expected_range_escape_probability"),
+      mean_range_coverage_residual: metric("range_coverage_residual"),
       mean_past_range_width: metric("train_range_width"),
       empirical_mode_hit_rate: metric("empirical_mode_hit"),
       posterior_mode_hit_rate: metric("posterior_mode_hit"),
