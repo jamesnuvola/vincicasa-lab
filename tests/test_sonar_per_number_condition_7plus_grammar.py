@@ -81,3 +81,37 @@ class Q87ManifestTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+    def test_refresh_protocol_reconciles_to_canonical_archive(self):
+        import csv
+        import hashlib
+        archive_path = ROOT / "data/storico_daily.csv"
+        protocol_path = ROOT / "reports/sequence_agent/q87_refresh_protocol_2026-11-07.json"
+        protocol = json.loads(protocol_path.read_text(encoding="utf-8"))
+        raw = archive_path.read_bytes()
+        git_blob_sha = hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + b"\\0" + raw).hexdigest()
+        self.assertEqual(protocol["source_archive"]["canonical_main_git_blob_sha1"], git_blob_sha)
+        with archive_path.open(newline="", encoding="utf-8-sig") as handle:
+            rows = list(csv.DictReader(handle))
+        dates = [row["data"] for row in rows]
+        self.assertEqual(protocol["source_archive"]["draw_count"], len(rows))
+        self.assertEqual(protocol["source_archive"]["first_date"], dates[0])
+        self.assertEqual(protocol["source_archive"]["last_date"], dates[-1])
+        self.assertEqual(protocol["source_archive"]["prior_archive_cutoff"], dates[-2])
+        self.assertEqual(protocol["source_archive"]["prior_q87_report_draw_count"], len(rows) - 1)
+        self.assertEqual(protocol["source_archive"]["latest_quintet"], [int(rows[-1][f"n{i}"]) for i in range(1, 6)])
+        minimum_history = protocol["walk_forward"]["minimum_prior_history"]
+        scored = len(rows) - minimum_history
+        discovery_end = math.ceil(0.60 * scored)
+        validation_end = math.ceil(0.80 * scored)
+        expected_splits = {
+            "discovery": discovery_end,
+            "validation": validation_end - discovery_end,
+            "blind_oos": scored - validation_end,
+        }
+        self.assertEqual(protocol["walk_forward"]["scored_targets"], scored)
+        self.assertEqual(protocol["walk_forward"]["expected_split_counts"], expected_splits)
+        self.assertEqual(protocol["walk_forward"]["target_count"], len(rows))
+        self.assertEqual(protocol["walk_forward"]["metrics_rows"], protocol["formula_universe"]["formula_count"] * 3)
+        self.assertEqual(protocol["walk_forward"]["target_ledger_rows"], scored)
+        self.assertEqual(protocol["multiple_testing"]["family_size"], protocol["formula_universe"]["formula_count"] * 3 * 3)
