@@ -67,5 +67,14 @@ jobs:
           name: sonar-psr02-walkforward
           path: reports/position_specific_range_residual/psr02_walkforward_*
           if-no-files-found: warn
+      - name: Run P5 exact order-statistic prior audit
+        run: node scripts/sonar_p5_orderstat_prior_audit.mjs data/storico_daily.csv reports/sequence_agent/p5_pooled_logistic_walkforward_2026-11-07.json reports/sequence_agent/p5_logistic_rolling_and_permutation_audit_2026-11-07.json reports/position_specific_range_residual
+      - name: Upload P5 prior audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-p5-orderstat-prior-audit
+          path: reports/position_specific_range_residual/p5_orderstat_prior_audit_20261108.*
+          if-no-files-found: warn
       - name: Build web application
         run: npm install && npm run build
