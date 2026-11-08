@@ -1,11 +1,6 @@
 name: SONAR Q88 Eight-Feature Formula Grammar
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Test VinciCasa Lab"]
-    types: [completed]
-    branches:
-      - research/per-number-condition-grammar-20261026
   push:
     branches:
       - research/per-number-condition-grammar-20261026
@@ -23,7 +18,7 @@ concurrency:
 # Latest successful CI commit carries both retry markers to dispatch Q87 and Q88.
 jobs:
   evaluate-shards:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && contains(github.event.workflow_run.head_commit.message, '[q88-persist-retry]')) || (github.event_name == 'push' && !contains(github.event.head_commit.message, '[sonar-archive-refresh]') && !contains(github.event.head_commit.message, '[q87-persist-retry]') && !contains(github.event.head_commit.message, '[q88-persist-retry]')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && !contains(github.event.head_commit.message, '[sonar-archive-refresh]') && !contains(github.event.head_commit.message, '[q87-persist-retry]') && !contains(github.event.head_commit.message, '[q88-persist-retry]')) }}
     name: Evaluate shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
