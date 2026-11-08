@@ -1,0 +1,189 @@
+{
+  "protocol": "FD-06 Q90 pooled P5 logistic reproduction and paired exact order-statistic baseline audit; exploratory, no promotion",
+  "model": {
+    "algorithm": "StandardScaler + LogisticRegression",
+    "C": 0.05,
+    "max_iter": 300,
+    "solver": "lbfgs",
+    "features": 59,
+    "target": "per target, positive label is the actual maximum P5 among candidates 1..40",
+    "tie_policy": "stable rank; candidate number ascending"
+  },
+  "provenance": {
+    "archive_blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+    "q90_workflow_run_id": 42267331734,
+    "q90_artifact_id": 13528333502,
+    "q90_artifact_digest": "sha256:9776534d6ed968cf70c3863e500684430f1086db3124b0e7e3d1ae60c3d4842",
+    "feature_matrix_sha256": "3520db2c9441b9fc48bd091c746564a6de261b18a0cb2eea293bb465bbcfd824",
+    "q90_target_ledger_sha256": "290a4da31f05bb4d73f4155ec1408b0a0c2e9e6df1479fafb6bd1c410c285404",
+    "targets": 3348,
+    "feature_matrix_shape": [
+      3348,
+      40,
+      59
+    ],
+    "feature_count": 59,
+    "target_period": [
+      "2017-09-05",
+      "2026-11-04"
+    ]
+  },
+  "integrity": {
+    "strict_prior_cutoff_all_targets": true,
+    "target_cutoff_is_previous_calendar_date": true,
+    "target_dates_cutoffs_quintets_aligned": true,
+    "prior_draws_consistent": true,
+    "finite_feature_matrix": true,
+    "q90_split_counts": {
+      "discovery": 2009,
+      "validation": 670,
+      "blind_oos": 669
+    }
+  },
+  "exact_order_statistic_null": {
+    "pmf": "P(P5=n)=C(n-1,4)/C(40,5), n=5..40",
+    "top5": 0.5066442961179803,
+    "top10": 0.7834281650071124,
+    "top20": 0.9764379764379765,
+    "mean_rank": 6.833333333333333
+  },
+  "primary_holdout": {
+    "train": {
+      "targets": 2675,
+      "start": "2017-09-05",
+      "end": "2024-12-31"
+    },
+    "test": {
+      "targets": 673,
+      "start": "2025-01-01",
+      "end": "2026-11-04"
+    },
+    "model": {
+      "top1": 0.10401188707280833,
+      "top5": 0.4279346210995542,
+      "top10": 0.7310549777117384,
+      "top20": 0.9063893016344725,
+      "mean_rank": 8.751857355126301,
+      "hits": {
+        "top1": 70,
+        "top5": 288,
+        "top10": 492,
+        "top20": 610
+      }
+    },
+    "numeric_order_baseline": {
+      "top1": 0.12332838038632987,
+      "top5": 0.5200594353640416,
+      "top10": 0.7667161961367014,
+      "top20": 0.9702823179791976,
+      "mean_rank": 7.062407132243685,
+      "hits": {
+        "top1": 83,
+        "top5": 350,
+        "top10": 516,
+        "top20": 653
+      }
+    },
+    "delta": {
+      "top5_model_minus_numeric": -0.09212481426448738,
+      "mean_rank_model_minus_numeric": 1.6894502228826151
+    },
+    "paired_top5": {
+      "model_only_wins": 56,
+      "numeric_only_wins": 118,
+      "discordant": 174,
+      "mcnemar_exact_two_sided_p": 0.000002987372600899082,
+      "block_signflip": {
+        "block_length": 7,
+        "blocks": 97,
+        "replicates": 200000,
+        "seed": 20261108,
+        "observed_hit_delta": -62,
+        "p_two_sided": 1.4999925000374998
+      }
+    },
+    "moving_block_bootstrap_95_ci": {
+      "top5_delta": [
+        -0.1277860326894502,
+        -0.05646359583952452
+      ],
+      "mean_rank_delta": [
+        1.3551263001485885,
+        2.0341753343239226
+      ]
+    }
+  },
+  "chronological_split_evaluation": {
+    "discovery": {
+      "train_targets": 200,
+      "train_end": "2018-03-23",
+      "test_targets": 1809,
+      "test_period": [
+        "2018-03-24",
+        "2023-03-06"
+      ],
+      "model_top5": 0.46876727473742397,
+      "numeric_top5": 0.5013819789939193,
+      "top5_delta": -0.0326147042564953,
+      "model_mean_rank": 8.72415699281371,
+      "numeric_mean_rank": 6.990049751243781,
+      "rank_delta": 1.7341072415699281,
+      "block_signflip_p": 0.0011999880001199988,
+      "holm_p_three_splits": 0.0023999760002399975
+    },
+    "validation": {
+      "train_targets": 2009,
+      "train_end": "2023-03-06",
+      "test_targets": 670,
+      "test_period": [
+        "2023-03-07",
+        "2025-01-04"
+      ],
+      "model_top5": 0.44925373134328356,
+      "numeric_top5": 0.5059701492537313,
+      "top5_delta": -0.056716417910447764,
+      "model_mean_rank": 8.286567164179104,
+      "numeric_mean_rank": 6.726865671641791,
+      "rank_delta": 1.5597014925373134,
+      "block_signflip_p": 0.014189858101418986,
+      "holm_p_three_splits": 0.014189858101418986
+    },
+    "blind_oos": {
+      "train_targets": 2679,
+      "train_end": "2025-01-04",
+      "test_targets": 669,
+      "test_period": [
+        "2025-01-05",
+        "2026-11-04"
+      ],
+      "model_top5": 0.4319880418535127,
+      "numeric_top5": 0.5201793721973094,
+      "top5_delta": -0.08819133034379671,
+      "model_mean_rank": 8.756352765321376,
+      "numeric_mean_rank": 7.073243647234679,
+      "rank_delta": 1.6831091180866966,
+      "block_signflip_p": 0.00002999970000299997,
+      "holm_p_three_splits": 0.00008999910000899992
+    }
+  },
+  "secondary_test_family": {
+    "endpoint": "paired Top5 hit-share delta model minus numeric order",
+    "block_length": 7,
+    "replicates": 100000,
+    "correction": "Holm across the three chronological split tests",
+    "adjusted_p": {
+      "discovery": 0.0023999760002399975,
+      "validation": 0.014189858101418986,
+      "blind_oos": 0.00008999910000899992
+    },
+    "status": "exploratory"
+  },
+  "decision": "NO_PREDICTIVE_LIFT; fixed Q90 P5 logistic ranker underperforms descending numeric order on the primary holdout and all three secondary chronological evaluations",
+  "limitations": [
+    "Feature matrix artifact ends at 2026-11-04; later canonical archive rows are not evaluated.",
+    "Block sign-flip assumes exchangeable block signs under the null; paired exact McNemar is also reported but assumes target-level independence.",
+    "Correction covers the three secondary split tests only; it does not correct the wider historical SONAR feature/model search.",
+    "No engine promotion, merge, or PR modification."
+  ],
+  "next_action": "Keep descending numeric order as the P5 order-statistic reference; audit feature families only against this baseline and preserve prospective freezes append-only."
+}

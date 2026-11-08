@@ -41,6 +41,8 @@ jobs:
         run: node --check scripts/sonar_active_engine_walkforward.mjs
       - name: Check SONAR analysis and queue scripts
         run: python -m py_compile scripts/sonar_fast_improvements.py scripts/sonar_research_queue.py
+      - name: Check FD-06 P5 audit script syntax
+        run: python -m py_compile scripts/sonar_fd06_q90_p5_orderstat_paired_audit.py
       - name: Test evolutionary lab syntax and run
         run: |
           python -m py_compile scripts/sonar_evolutionary_lab.py
