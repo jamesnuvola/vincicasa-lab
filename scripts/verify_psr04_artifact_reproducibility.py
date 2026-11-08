@@ -86,7 +86,7 @@ def main():
     compare_csv(expected_dir / names[2], actual_dir / names[2])
     expected_md = (expected_dir / names[1]).read_text(encoding="utf-8")
     actual_md = (actual_dir / names[1]).read_text(encoding="utf-8")
-    normalize = lambda s: re.sub(r"(FNV-1a32 )([0-9a-f]{8})", r"\\1<FINGERPRINT>", s)
+    normalize = lambda s: re.sub(r"(FNV-1a32 )([0-9a-f]{8})", r"\1<FINGERPRINT>", s)
     if normalize(expected_md) != normalize(actual_md):
         raise AssertionError("PSR-04 Markdown differs beyond the ledger fingerprint")
     print(f"PSR-04 reproducibility PASS: JSON/CSV numeric tolerance={TOL:g}; exact internal double-run=true; rows={len(expected_csv.splitlines())-1}")
