@@ -227,3 +227,5 @@ def main():
     print("SONAR_Q87_SHARD_REPORT_BEGIN"); print(REPORT.read_text(encoding="utf-8"),end=""); print("SONAR_Q87_SHARD_REPORT_END")
 
 if __name__=="__main__": main()
+
+# SONAR refresh checkpoint: rerun this finite prior-only formula catalog against the canonical archive cutoff 2026-11-06.
