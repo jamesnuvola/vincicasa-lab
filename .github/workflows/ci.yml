@@ -43,6 +43,19 @@ jobs:
         run: python -m py_compile scripts/sonar_fast_improvements.py scripts/sonar_research_queue.py
       - name: Check FD-06 P5 audit script syntax
         run: python -m py_compile scripts/sonar_fd06_q90_p5_orderstat_paired_audit.py
+      - name: Check and reproduce FD-07 lag-1 bonus walk-forward
+        run: |
+          node --check scripts/sonar_fd07_lag1_bonus_walkforward.mjs
+          node scripts/sonar_fd07_lag1_bonus_walkforward.mjs > /tmp/fd07-results.json
+          python - <<'PY'
+          import json
+          with open('/tmp/fd07-results.json', encoding='utf-8') as f:
+              actual = json.load(f)
+          with open('reports/sequence_agent/fd07_lag1_bonus_walkforward_20261108.json', encoding='utf-8') as f:
+              expected = json.load(f)
+          assert actual == expected, 'FD-07 runtime output differs from persisted JSON'
+          print('FD-07 output matches persisted result JSON exactly')
+          PY
       - name: Test evolutionary lab syntax and run
         run: |
           python -m py_compile scripts/sonar_evolutionary_lab.py
