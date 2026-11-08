@@ -31,12 +31,17 @@ const rankMap=new Map(priorRank.map((n,i)=>[n,i+1]));
 const topSets={};
 const priorCoverage={};
 for(const k of [1,5,10,20]){topSets[k]=priorRank.slice(0,k);priorCoverage[k]=topSets[k].reduce((s,n)=>s+p5Prior[n-1],0);}
+const trainSpec=pooled.temporal_split.train_target_dates;
 const testSpec=pooled.temporal_split.test_target_dates;
 const m=testSpec.match(/(\d{4}-\d{2}-\d{2})\s+through\s+(\d{4}-\d{2}-\d{2})/);
 if(!m) throw new Error("Could not parse pooled ranker test date window");
-const testStart=m[1],testEnd=m[2];
+const trainMatch=trainSpec.match(/(\\d{4}-\\d{2}-\\d{2})\\s+through\\s+(\\d{4}-\\d{2}-\\d{2})/);
+if(!trainMatch) throw new Error("Could not parse pooled ranker train date window");
+const trainStart=trainMatch[1],trainEnd=trainMatch[2],testStart=m[1],testEnd=m[2];
 const test=rows.filter(r=>r.date>=testStart&&r.date<=testEnd);
 if(test.length!==pooled.temporal_split.test_draws) throw new Error(`P5 audit target count mismatch: archive=${test.length}, ranker report=${pooled.temporal_split.test_draws}`);
+const train=rows.filter(r=>r.date>=trainStart&&r.date<=trainEnd);
+if(train.length!==pooled.temporal_split.train_draws) throw new Error("P5 empirical baseline training count mismatch");
 const priorTestMetrics={targets:test.length,top1_hit_rate:test.filter(r=>topSets[1].includes(r.p5)).length/test.length,
  top5_hit_rate:test.filter(r=>topSets[5].includes(r.p5)).length/test.length,
  top10_hit_rate:test.filter(r=>topSets[10].includes(r.p5)).length/test.length,
@@ -44,7 +49,6 @@ const priorTestMetrics={targets:test.length,top1_hit_rate:test.filter(r=>topSets
  mean_rank:test.reduce((s,r)=>s+rankMap.get(r.p5),0)/test.length,
  top5_hits:test.filter(r=>topSets[5].includes(r.p5)).length,
  top1_hits:test.filter(r=>topSets[1].includes(r.p5)).length};
-const train=rows.filter(r=>r.date<testStart);
 const freq=Array(41).fill(0);
 for(const r of train)freq[r.p5]++;
 const empiricalRank=Array.from({length:40},(_,i)=>i+1).sort((a,b)=>freq[b]-freq[a]||a-b);
