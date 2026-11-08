@@ -1,0 +1,59 @@
+name: SONAR PSR-08 Adjacent Joint Gap State Lab
+
+on:
+  push:
+    branches:
+      - research/sonar-psr08-adjacent-joint-gap-20261108
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/sonar_psr08_joint_gap_walkforward.mjs
+      - tests/test_sonar_psr08_joint_gap_walkforward.mjs
+      - reports/position_specific_range_residual/PSR08_protocol_20261108.md
+      - reports/position_specific_range_residual/PSR08_results_20261108.json
+      - reports/position_specific_range_residual/PSR08_results_20261108.md
+      - reports/position_specific_range_residual/PSR08_target_ledger_P1_P2_20261108.csv
+      - reports/position_specific_range_residual/PSR08_target_ledger_P2_P3_20261108.csv
+      - reports/position_specific_range_residual/PSR08_target_ledger_P3_P4_20261108.csv
+      - reports/position_specific_range_residual/PSR08_target_ledger_P4_P5_20261108.csv
+      - data/storico_daily.csv
+      - .github/workflows/sonar-psr08.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: psr08-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Unit and synthetic strict-prefix tests
+        run: node --test tests/test_sonar_psr08_joint_gap_walkforward.mjs
+      - name: Run pinned canonical PSR-08 walk-forward
+        run: node scripts/sonar_psr08_joint_gap_walkforward.mjs data/storico_daily.csv reports/position_specific_range_residual
+      - name: Check generated report and ledger whitespace
+        run: git diff --check
+      - name: Verify deterministic outputs against persisted files
+        run: |
+          git diff --exit-code -- reports/position_specific_range_residual/PSR08_results_20261108.json reports/position_specific_range_residual/PSR08_results_20261108.md reports/position_specific_range_residual/PSR08_target_ledger_P1_P2_20261108.csv reports/position_specific_range_residual/PSR08_target_ledger_P2_P3_20261108.csv reports/position_specific_range_residual/PSR08_target_ledger_P3_P4_20261108.csv reports/position_specific_range_residual/PSR08_target_ledger_P4_P5_20261108.csv
+      - name: Upload measured outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr08-adjacent-joint-gap-state
+          path: |
+            reports/position_specific_range_residual/PSR08_results_20261108.json
+            reports/position_specific_range_residual/PSR08_results_20261108.md
+            reports/position_specific_range_residual/PSR08_target_ledger_P1_P2_20261108.csv
+            reports/position_specific_range_residual/PSR08_target_ledger_P2_P3_20261108.csv
+            reports/position_specific_range_residual/PSR08_target_ledger_P3_P4_20261108.csv
+            reports/position_specific_range_residual/PSR08_target_ledger_P4_P5_20261108.csv
+          retention-days: 90
