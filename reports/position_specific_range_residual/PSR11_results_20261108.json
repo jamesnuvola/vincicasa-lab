@@ -769,13 +769,20 @@
     "new_hypothesis_reason": "PSR-11 fixes a predictor-specific prior-Top20 overlap state and exact hypergeometric reference masses before computation; validation selects alpha, and all seven alpha configurations are corrected as one family."
   },
   "prospective_context": {
+    "canonical_main_gate_status": "INSUFFICIENT_PROSPECTIVE_CASES",
     "canonical_main_gate_complete": 20,
     "minimum_required": 200,
+    "position_top20_5of5": 0,
+    "global_top20_5of5": 1,
+    "paired_rate_difference_position_minus_global": -0.05,
+    "mcnemar_exact_two_sided_p": 1,
+    "paired_target_dates": "2026-10-19..2026-11-07",
     "promotion_allowed": false,
     "latest_freeze_target": "2026-11-08",
     "latest_freeze_status": "FROZEN_PENDING",
     "latest_freeze_cutoff": "2026-11-07",
-    "missing_freezes_reconstructed": 0
+    "missing_freezes_reconstructed": 0,
+    "branch_consistency_note": "The older research/fluid-dynamics-residual gate snapshot is stale at 19 complete through 2026-11-06 with 2026-11-07 pending; canonical main gate and main position_mix_shadow.csv show 20 complete through 2026-11-07 and 2026-11-08 frozen pending. Main is used; no freeze reconstructed or branch merged."
   },
   "reproducibility_corrections": [
     "Initial Node 20 exact replay found the Markdown baseline-share renderer used the modulo operator after toFixed(), yielding NaN; corrected to concatenate a literal percent sign and regenerate the report.",
