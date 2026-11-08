@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "Q87-Q88-REFRESH-2026-11-08",
+  "status": "RUNNING_STALE_RELATIVE_TO_CANONICAL_MAIN_PENDING_ARCHIVE_SYNC",
+  "research_branch": "research/per-number-condition-grammar-20261026",
+  "research_head_sha": "b91a98aaa05e8ac7fadae3ede0ceb0a6ad5dde8f",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "1c9c3824d8caa3fe7d0e888c1875402cc2156a2a",
+    "draw_count": 3400,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-06"
+  },
+  "canonical_main_archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07",
+    "latest_draw": [
+      12,
+      16,
+      27,
+      31,
+      38
+    ]
+  },
+  "runs": {
+    "q87": {
+      "workflow_run_id": 42503927101,
+      "status": "IN_PROGRESS",
+      "formula_count": 888030,
+      "metrics_rows_expected": 2664090,
+      "target_ledger_rows_expected": 3350,
+      "split_target_counts": {
+        "discovery": 2010,
+        "validation": 670,
+        "blind_oos": 670
+      },
+      "shards": 6
+    },
+    "q88": {
+      "workflow_run_id": 42503927115,
+      "status": "IN_PROGRESS",
+      "formula_count": 2220075,
+      "metrics_rows_expected": 6660225,
+      "target_ledger_rows_expected": 3350,
+      "split_target_counts": {
+        "discovery": 2010,
+        "validation": 670,
+        "blind_oos": 670
+      },
+      "shards": 15
+    },
+    "exact_head_ci": {
+      "workflow_run_id": 42503927127,
+      "conclusion": "FAILURE",
+      "failure": "Q80_Q86_ACCEPTANCE_BLOCKED: research branch archive blob differs from canonical main archive"
+    }
+  },
+  "verified_diagnosis": "The current PR8 branch and Q87/Q88 refresh use archive cutoff 2026-11-06; canonical main has appended the 2026-11-07 draw. Therefore these Q87/Q88 outputs, once computed, will be stale relative to main and cannot be marked complete.",
+  "outputs_persisted": false,
+  "acceptance": {
+    "queue_validator": "PENDING",
+    "exact_byte_persistence": "PENDING",
+    "current_head_ci": "FAILURE_ARCHIVE_MISMATCH",
+    "human_review": "PENDING"
+  },
+  "guardrails": {
+    "no_pr_merge": true,
+    "no_formula_promotion": true,
+    "immutable_target_2026_10_25_freeze_preserved": true,
+    "finite_catalog_only": true
+  },
+  "next_action": "Allow the in-flight Q87/Q88 runs to finish as recoverable checkpoints; then sync the research branch to canonical main through 2026-11-07, refresh Q80-Q86 and Q87/Q88 walk-forward outputs, pass fail-closed acceptance, persist and reread exact bytes, rerun exact-head CI, and retain human review/integration as the final gate."
+}
