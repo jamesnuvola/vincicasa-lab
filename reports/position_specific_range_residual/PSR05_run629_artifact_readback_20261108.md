@@ -18,4 +18,14 @@ The downloaded workflow artifact was inspected locally. Both ledger row counts a
 
 All four artifact file Git blob SHA values were calculated from downloaded bytes and match the files read back from the repository. The ZIP digest matches GitHub's artifact metadata. PSR-05's two complete internal executions were byte-identical.
 
-**Next gate:** a subsequent CI run must regenerate the committed PSR-05 outputs and pass the byte-for-byte `git diff --exit-code` check; the first run only created and persisted them.
+## Final report and reproducibility readback
+
+**Subsequent CI:** run #635 / 42475545395, conclusion **success**. Step 27 regenerated all four PSR-05 outputs and passed the committed byte-for-byte `git diff --exit-code` guard. The workflow also passed the tolerance-aware PSR-04 verifier, all existing lab checks, and the application build.
+
+**Run #635 artifact:** ID 13614928050; digest sha256:0a46587c571911ba454a3373610c48c6d39c9048d7c18677789a4b73304b428e. Downloaded ZIP digest matches GitHub metadata. Artifact file Git blob SHA values match repository readback:
+- PSR-05 JSON: `7f1d0b6f6f8f39fd3f36b59c054643a5f785c0fd`.
+- PSR-05 Markdown: `104b0852f96747fc4b115b0f795f2949c7cb1253`.
+- Grid ledger: `50770efcab8a0da7965b7f5b4fd2f0a90025015d` (46,515 × 38).
+- Selected ledger: `630a8e23e2e9825b5ca67e95b8ed8d6526817b37` (15,505 × 36).
+
+The final interpretation now explicitly compares PSR-05 with the exact order-statistic prior and quantifies the P2/P3 anomalies. No engine promotion, merge, or change to PR #6/#7/#8 occurred.
