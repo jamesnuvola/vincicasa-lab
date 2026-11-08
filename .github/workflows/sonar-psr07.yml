@@ -1,0 +1,67 @@
+name: SONAR PSR-07 Prior Median State Lab
+
+on:
+  push:
+    branches:
+      - research/sonar-psr07-prior-median-state-20261108
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/sonar_psr07_previous_draw_median_state_walkforward.py
+      - tests/test_sonar_psr07_previous_draw_median_state.py
+      - reports/position_specific_range_residual/PSR07_protocol_20261108.md
+      - reports/position_specific_range_residual/PSR07_results_20261108.json
+      - reports/position_specific_range_residual/PSR07_results_20261108.md
+      - reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
+      - data/storico_daily.csv
+      - .github/workflows/sonar-psr07.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: psr07-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: pip install numpy
+      - name: Unit and synthetic walk-forward tests
+        run: python -m unittest discover -s tests -p 'test_sonar_psr07_previous_draw_median_state.py' -v
+      - name: Run pinned canonical PSR-07 walk-forward
+        run: python scripts/sonar_psr07_previous_draw_median_state_walkforward.py --input data/storico_daily.csv --out-dir reports/position_specific_range_residual
+      - name: Check report and ledger whitespace
+        run: git diff --check
+      - name: Upload measured report and target ledger
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr07-prior-median-state
+          path: |
+            reports/position_specific_range_residual/PSR07_results_20261108.json
+            reports/position_specific_range_residual/PSR07_results_20261108.md
+            reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
+          retention-days: 90
+      - name: Persist deterministic research outputs on isolated branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/research/sonar-psr07-prior-median-state-20261108'
+        run: |
+          git config user.name "sonar-research-agent"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
+          if git diff --cached --quiet; then
+            echo "Outputs already match this branch; no persistence commit required."
+          else
+            git commit -m "SONAR PSR-07: persist prior median-state walk-forward evidence"
+            git push origin HEAD:${GITHUB_REF_NAME}
+          fi
+      - name: Fail if generated outputs differ on pull request
+        if: github.event_name == 'pull_request'
+        run: git diff --exit-code -- reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
