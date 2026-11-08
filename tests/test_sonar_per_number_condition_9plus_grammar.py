@@ -66,7 +66,7 @@ class Q89FormulaUniverseTests(unittest.TestCase):
         }
         with tempfile.TemporaryDirectory() as directory:
             ledger_path=Path(directory)/"paired.csv"
-            with patch("aggregate_sonar_q89_shards.q81.build_feature_stack",return_value=standardized_stack), \\
+            with patch("aggregate_sonar_q89_shards.q81.build_feature_stack",return_value=standardized_stack), \
                  patch.object(q89agg,"PAIRED_LEDGER_PATH",ledger_path):
                 rows,differences=q89agg.paired_blind_ledger(selection,dates,draws)
         self.assertEqual(len(rows),670)
