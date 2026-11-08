@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q88",
+  "protocol_id": "Q88-refresh-canonical-2026-11-07",
+  "status": "PREREGISTERED_PENDING_RUN",
+  "registered_at_utc": "2026-11-08T20:15:53Z",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "canonical_main_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "source_archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07",
+    "latest_quintet": [
+      12,
+      16,
+      27,
+      31,
+      38
+    ],
+    "prior_archive_cutoff": "2026-11-06",
+    "prior_q88_report_draw_count": 3400,
+    "prior_q88_scored_target_count": 3350
+  },
+  "hypothesis": "Refresh the complete finite eight-feature equal-weight formula universe on the synchronized canonical archive through 2026-11-07. No new model family, feature, or tuning is introduced; this archive-aligned rerun adds the newly available target and recalculates the chronological split memberships under the preregistered rule.",
+  "formula_universe": {
+    "feature_count": 27,
+    "subset_size": 8,
+    "formula_count": 2220075,
+    "formula_count_check": "C(27,8)=2220075",
+    "enumeration": "lexicographic itertools.combinations over the registered 27 prior-only feature columns",
+    "formula_batch_size": 1024,
+    "formula_batch_count": 2169,
+    "shard_count": 15,
+    "formulas_per_shard": 148005,
+    "shard_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ]
+  },
+  "walk_forward": {
+    "minimum_prior_history": 50,
+    "target_count": 3401,
+    "scored_targets": 3351,
+    "split_rule": "discovery if target_offset/scored_targets < 0.60; validation if <0.80; else blind_oos",
+    "expected_split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 6660225,
+    "target_ledger_rows": 3351,
+    "ledger_fields": [
+      "target_date",
+      "cutoff_date",
+      "prior_draws",
+      "actual_quintet",
+      "all_27_single_feature_ranks",
+      "best_retrospective_8_feature_formula_and_ranks"
+    ],
+    "retrospective_best_formula": "Descriptive only; never treat as an ex-ante forecast."
+  },
+  "multiple_testing": {
+    "method": "Global Holm-Bonferroni",
+    "family_size": 19980675,
+    "calculation": "2220075 formulas × 3 chronological splits × 3 rank endpoints",
+    "p_value_method": "continuity-corrected normal approximation to number-level binomial hit counts; exploratory, not exact",
+    "endpoints": [
+      "number_hits_top5",
+      "number_hits_top10",
+      "number_hits_top20"
+    ]
+  },
+  "acceptance_gates": [
+    "All 15 deterministic shard manifests cover 2220075 formula IDs exactly once with no gaps or overlaps.",
+    "Each split contains exactly 2220075 formula rows; total metrics row count is 6660225.",
+    "Target ledger contains 3351 unique chronological targets from 2017-09-05 through 2026-11-07, with exact archive quintet and immediate-prior cutoff reconciliation.",
+    "Strict-prefix/no-target-leakage checks pass for every scored target.",
+    "Aggregate Q88 validator and research queue validator pass fail-closed.",
+    "Outputs are persisted append-only through Git Data API and reread byte-for-byte.",
+    "Current-head CI passes on the exact persisted head.",
+    "Human review/integration remains required; do not mark Q88 COMPLETE before it."
+  ],
+  "guardrails": {
+    "immutable_target_2026_10_25_freeze_overwritten": false,
+    "no_auto_merge": true,
+    "no_auto_promotion": true,
+    "pr8_remains_draft": true,
+    "q89_waits_for_q88_persisted_exact_head_ci": true
+  },
+  "known_limitation": "Finite eight-feature equal-weight formula grammar only. It does not exhaust weighted, conditional, nonlinear, interaction, or arbitrary mathematical formulas. Historical blind OOS has already been repeatedly inspected and remains descriptive/exploratory.",
+  "next_action": "Run 15 deterministic Q88 shards against the canonical archive through 2026-11-07 after current-head CI success; aggregate, validate, persist, and verify exact-head CI. Only then preregister and dispatch Q89."
+}
