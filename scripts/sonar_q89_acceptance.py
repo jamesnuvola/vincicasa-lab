@@ -18,6 +18,7 @@ SELECTION_PATH=OUT/"per_number_condition_9plus_candidate_selection.json"
 PAIRED_LEDGER_PATH=OUT/"q89_selected_candidate_blind_ledger.csv"
 PAIRED_INFERENCE_PATH=OUT/"per_number_condition_9plus_paired_inference.json"
 SPLITS=("discovery","validation","blind_oos")
+PAIRED_METRIC_BLOCKS=(("Q89_candidate_blind_metrics","Q89"),("Q88_control_blind_metrics","Q88"))
 
 def load_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
@@ -55,6 +56,23 @@ def expected_archive():
             raise ValueError("canonical archive quintet invalid")
         draws.append(values)
     return dates,draws
+
+def validate_paired_metric_replay(inference,paired):
+    errors=[]
+    if not paired:
+        return errors
+    for family,prefix in PAIRED_METRIC_BLOCKS:
+        metrics=inference.get(family,{})
+        for k in (5,10,20):
+            expected=sum(int(row[f"{prefix}_number_hits_top{k}"]) for row in paired)/(5*len(paired))
+            actual=float(metrics.get(f"mean_number_hits_top{k}",float("nan")))
+            if not math.isfinite(actual) or abs(actual-expected)>=1e-12:
+                errors.append("Q89 blind candidate metric replay mismatch "+family+" Top"+str(k))
+        expected_rank=sum(int(row[f"{prefix}_rank_sum"]) for row in paired)/(5*len(paired))
+        actual_rank=float(metrics.get("mean_rank_of_actual_numbers",float("nan")))
+        if not math.isfinite(actual_rank) or abs(actual_rank-expected_rank)>=1e-12:
+            errors.append("Q89 blind candidate rank metric replay mismatch "+family)
+    return errors
 
 def validate_q89():
     errors=[]
@@ -300,13 +318,8 @@ def validate_q89():
             adjusted=q89agg.holm_adjust(raw_pvalues)
             for endpoint,value in zip(("top5","top10","top20"),adjusted):
                 add(abs(float(endpoint_results[endpoint]["holm_p"])-value)<1e-12,"Q89 paired Holm replay mismatch "+endpoint)
-            for family,prefix in (("Q89_candidate","Q89"),("Q88_control","Q88")):
-                metrics=inference.get(family,{})
-                for k in (5,10,20):
-                    expected=sum(int(row[f"{prefix}_number_hits_top{k}"]) for row in paired)/(5*len(paired))
-                    add(abs(float(metrics.get(f"mean_number_hits_top{k}",float("nan")))-expected)<1e-12,"Q89 blind candidate metric replay mismatch "+family+" Top"+str(k))
-                expected_rank=sum(int(row[f"{prefix}_rank_sum"]) for row in paired)/(5*len(paired))
-                add(abs(float(metrics.get("mean_rank_of_actual_numbers",float("nan")))-expected_rank)<1e-12,"Q89 blind candidate rank metric replay mismatch "+family)
+            for message in validate_paired_metric_replay(inference,paired):
+                fail(errors,message)
     except Exception as exc:
         fail(errors,"Q89 paired inference validation exception: "+str(exc))
 
