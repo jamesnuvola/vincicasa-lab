@@ -1,0 +1,785 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "SONAR_PSR08_ADJACENT_JOINT_GAP_STATE",
+  "status": "EXPLORATORY_NO_PROMOTION",
+  "hypothesis": {
+    "feature": "adjacent gap G_i=P_(i+1)-P_i from immediately preceding draw, conditioned pairwise joint law of next draw (P_i,P_(i+1))",
+    "quantitativeClaim": "gap-state conditional joint probabilities improve blind-OOS multiclass Brier score over global pair-joint shrinkage with the same validation-selected alpha",
+    "nullExpectation": "under independent uniform 5-subset draws, preceding-draw gap state has no incremental predictive information",
+    "target": "four adjacent pair joint distributions P1-P2, P2-P3, P3-P4, P4-P5; not a complete 5-number ticket"
+  },
+  "archive": {
+    "draws": 3401,
+    "firstDate": "2017-07-17",
+    "lastDate": "2026-11-07",
+    "gitBlobSha": "5d2efd70684e918b27d8f06386d545647898336d"
+  },
+  "protocol": {
+    "formalPreregistrationStatus": "EXPLORATORY; protocol document was persisted after the initial computation, not before it",
+    "alphaGrid": [
+      100,
+      300,
+      1000
+    ],
+    "warmup": 300,
+    "scoredTargets": 3101,
+    "splitRule": "chronological 50% discovery / 25% validation / 25% blind OOS",
+    "splits": {
+      "discovery": {
+        "n": 1550,
+        "first": "2018-05-13",
+        "last": "2022-08-09"
+      },
+      "validation": {
+        "n": 775,
+        "first": "2022-08-10",
+        "last": "2024-09-22"
+      },
+      "blind_oos": {
+        "n": 776,
+        "first": "2024-09-23",
+        "last": "2026-11-07"
+      }
+    },
+    "alphaSelection": "validation maximum mean multiclass Brier improvement vs global shrinkage with same alpha; ties choose smaller alpha",
+    "primaryEndpoint": "blind-OOS mean paired multiclass Brier improvement (global comparator minus conditional model), per adjacent pair",
+    "inference": "circular moving-block bootstrap; centered-null one-sided p; percentile 95% CI; Holm across four primary pair endpoints",
+    "bootstrap": {
+      "replicates": 2000,
+      "blockLength": 7,
+      "seedBase": 20261108
+    }
+  },
+  "prior": {
+    "denominator": 658008,
+    "pairJointLaw": "pi_i(a,b)=C(a-1,i-1)*C(40-b,4-i)/C(40,5), 1<=a<b<=40",
+    "pairs": [
+      {
+        "pair": "P1-P2",
+        "jointSupportCells": 666,
+        "totalPriorCount": 658008,
+        "gapQuartileCutpoints": [
+          3,
+          5,
+          10
+        ],
+        "gapStatePriorMasses": [
+          0.337550607287,
+          0.169093688831,
+          0.276783868889,
+          0.216571834993
+        ]
+      },
+      {
+        "pair": "P2-P3",
+        "jointSupportCells": 666,
+        "totalPriorCount": 658008,
+        "gapQuartileCutpoints": [
+          3,
+          5,
+          10
+        ],
+        "gapStatePriorMasses": [
+          0.337550607287,
+          0.169093688831,
+          0.276783868889,
+          0.216571834993
+        ]
+      },
+      {
+        "pair": "P3-P4",
+        "jointSupportCells": 666,
+        "totalPriorCount": 658008,
+        "gapQuartileCutpoints": [
+          3,
+          5,
+          10
+        ],
+        "gapStatePriorMasses": [
+          0.337550607287,
+          0.169093688831,
+          0.276783868889,
+          0.216571834993
+        ]
+      },
+      {
+        "pair": "P4-P5",
+        "jointSupportCells": 666,
+        "totalPriorCount": 658008,
+        "gapQuartileCutpoints": [
+          3,
+          5,
+          10
+        ],
+        "gapStatePriorMasses": [
+          0.337550607287,
+          0.169093688831,
+          0.276783868889,
+          0.216571834993
+        ]
+      }
+    ]
+  },
+  "validationSelection": [
+    {
+      "pair": "P1-P2",
+      "selectedAlpha": 1000,
+      "candidates": [
+        {
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.00106584969449,
+          "meanLoglossImprovementVsGlobal": -0.156473941641
+        },
+        {
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000550127831069,
+          "meanLoglossImprovementVsGlobal": -0.0421108631325
+        },
+        {
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000101781000883,
+          "meanLoglossImprovementVsGlobal": 0.0102726882603
+        }
+      ],
+      "selectionMetric": "validation mean Brier improvement vs global same-alpha shrinkage"
+    },
+    {
+      "pair": "P2-P3",
+      "selectedAlpha": 1000,
+      "candidates": [
+        {
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.0010582264911,
+          "meanLoglossImprovementVsGlobal": -0.216890959147
+        },
+        {
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000534288098534,
+          "meanLoglossImprovementVsGlobal": -0.0599426514865
+        },
+        {
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.0000963832984497,
+          "meanLoglossImprovementVsGlobal": 0.0116304458507
+        }
+      ],
+      "selectionMetric": "validation mean Brier improvement vs global same-alpha shrinkage"
+    },
+    {
+      "pair": "P3-P4",
+      "selectedAlpha": 1000,
+      "candidates": [
+        {
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.000778599551213,
+          "meanLoglossImprovementVsGlobal": -0.196161168715
+        },
+        {
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000327070381623,
+          "meanLoglossImprovementVsGlobal": -0.0505178994817
+        },
+        {
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.0000199022031502,
+          "meanLoglossImprovementVsGlobal": 0.0134839592563
+        }
+      ],
+      "selectionMetric": "validation mean Brier improvement vs global same-alpha shrinkage"
+    },
+    {
+      "pair": "P4-P5",
+      "selectedAlpha": 1000,
+      "candidates": [
+        {
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.00070932067433,
+          "meanLoglossImprovementVsGlobal": -0.126218978525
+        },
+        {
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000267704288311,
+          "meanLoglossImprovementVsGlobal": -0.0246015228762
+        },
+        {
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.0000555502456553,
+          "meanLoglossImprovementVsGlobal": 0.0193082311731
+        }
+      ],
+      "selectionMetric": "validation mean Brier improvement vs global same-alpha shrinkage"
+    }
+  ],
+  "splitMetrics": [
+    {
+      "pair": "P1-P2",
+      "selectedAlpha": 1000,
+      "metrics": {
+        "discovery": {
+          "n": 1550,
+          "meanBrierImprovementVsGlobal": 0.0000519271797102,
+          "meanLoglossImprovementVsGlobal": 0.0204292784913,
+          "meanBrierImprovementVsExactPrior": -0.000180597770385,
+          "meanLoglossImprovementVsExactPrior": -0.0232907446127,
+          "meanBrierConditional": 0.995181320381,
+          "meanBrierGlobal": 0.995233247561,
+          "meanBrierExactPrior": 0.995000722611,
+          "stateTrainingN": {
+            "mean": 289.480645161,
+            "min": 38,
+            "max": 662
+          }
+        },
+        "validation": {
+          "n": 775,
+          "meanBrierImprovementVsGlobal": -0.000101781000883,
+          "meanLoglossImprovementVsGlobal": 0.0102726882603,
+          "meanBrierImprovementVsExactPrior": -0.000362548876519,
+          "meanLoglossImprovementVsExactPrior": -0.0522189915663,
+          "meanBrierConditional": 0.99556955587,
+          "meanBrierGlobal": 0.99546777487,
+          "meanBrierExactPrior": 0.995207006994,
+          "stateTrainingN": {
+            "mean": 592.414193548,
+            "min": 304,
+            "max": 911
+          }
+        },
+        "blind_oos": {
+          "n": 776,
+          "meanBrierImprovementVsGlobal": -0.00000135170804003,
+          "meanLoglossImprovementVsGlobal": 0.0193946984787,
+          "meanBrierImprovementVsExactPrior": -0.000232097733998,
+          "meanLoglossImprovementVsExactPrior": -0.0528986317724,
+          "meanBrierConditional": 0.995408569596,
+          "meanBrierGlobal": 0.995407217888,
+          "meanBrierExactPrior": 0.995176471862,
+          "stateTrainingN": {
+            "mean": 806.960051546,
+            "min": 441,
+            "max": 1169
+          }
+        }
+      }
+    },
+    {
+      "pair": "P2-P3",
+      "selectedAlpha": 1000,
+      "metrics": {
+        "discovery": {
+          "n": 1550,
+          "meanBrierImprovementVsGlobal": 0.0000255550061786,
+          "meanLoglossImprovementVsGlobal": 0.0142986398728,
+          "meanBrierImprovementVsExactPrior": -0.000112777146738,
+          "meanLoglossImprovementVsExactPrior": -0.0248302650669,
+          "meanBrierConditional": 0.996978924017,
+          "meanBrierGlobal": 0.997004479023,
+          "meanBrierExactPrior": 0.99686614687,
+          "stateTrainingN": {
+            "mean": 293.028387097,
+            "min": 53,
+            "max": 652
+          }
+        },
+        "validation": {
+          "n": 775,
+          "meanBrierImprovementVsGlobal": -0.0000963832984497,
+          "meanLoglossImprovementVsGlobal": 0.0116304458507,
+          "meanBrierImprovementVsExactPrior": -0.000330966611303,
+          "meanLoglossImprovementVsExactPrior": -0.0771810430411,
+          "meanBrierConditional": 0.997316855138,
+          "meanBrierGlobal": 0.997220471839,
+          "meanBrierExactPrior": 0.996985888527,
+          "stateTrainingN": {
+            "mean": 598.345806452,
+            "min": 304,
+            "max": 911
+          }
+        },
+        "blind_oos": {
+          "n": 776,
+          "meanBrierImprovementVsGlobal": -0.000042231777173,
+          "meanLoglossImprovementVsGlobal": -0.000909783664471,
+          "meanBrierImprovementVsExactPrior": -0.000281087127415,
+          "meanLoglossImprovementVsExactPrior": -0.0748560419924,
+          "meanBrierConditional": 0.997261463618,
+          "meanBrierGlobal": 0.997219231841,
+          "meanBrierExactPrior": 0.996980376491,
+          "stateTrainingN": {
+            "mean": 806.831185567,
+            "min": 427,
+            "max": 1192
+          }
+        }
+      }
+    },
+    {
+      "pair": "P3-P4",
+      "selectedAlpha": 1000,
+      "metrics": {
+        "discovery": {
+          "n": 1550,
+          "meanBrierImprovementVsGlobal": 0.0000833661426839,
+          "meanLoglossImprovementVsGlobal": 0.0318896894287,
+          "meanBrierImprovementVsExactPrior": -0.000123260214118,
+          "meanLoglossImprovementVsExactPrior": -0.0279428285914,
+          "meanBrierConditional": 0.997160704149,
+          "meanBrierGlobal": 0.997244070292,
+          "meanBrierExactPrior": 0.997037443935,
+          "stateTrainingN": {
+            "mean": 286.800645161,
+            "min": 44,
+            "max": 620
+          }
+        },
+        "validation": {
+          "n": 775,
+          "meanBrierImprovementVsGlobal": 0.0000199022031502,
+          "meanLoglossImprovementVsGlobal": 0.0134839592563,
+          "meanBrierImprovementVsExactPrior": -0.000215461825875,
+          "meanLoglossImprovementVsExactPrior": -0.0516899401942,
+          "meanBrierConditional": 0.99722643486,
+          "meanBrierGlobal": 0.997246337063,
+          "meanBrierExactPrior": 0.997010973034,
+          "stateTrainingN": {
+            "mean": 599.690322581,
+            "min": 301,
+            "max": 883
+          }
+        },
+        "blind_oos": {
+          "n": 776,
+          "meanBrierImprovementVsGlobal": -0.0000377697046375,
+          "meanLoglossImprovementVsGlobal": 0.0112974390907,
+          "meanBrierImprovementVsExactPrior": -0.000216790644526,
+          "meanLoglossImprovementVsExactPrior": -0.0519593620935,
+          "meanBrierConditional": 0.997314504254,
+          "meanBrierGlobal": 0.997276734549,
+          "meanBrierExactPrior": 0.99709771361,
+          "stateTrainingN": {
+            "mean": 790.548969072,
+            "min": 430,
+            "max": 1131
+          }
+        }
+      }
+    },
+    {
+      "pair": "P4-P5",
+      "selectedAlpha": 1000,
+      "metrics": {
+        "discovery": {
+          "n": 1550,
+          "meanBrierImprovementVsGlobal": 0.0000902030653501,
+          "meanLoglossImprovementVsGlobal": 0.0286573214651,
+          "meanBrierImprovementVsExactPrior": -0.000138146538027,
+          "meanLoglossImprovementVsExactPrior": -0.033156874852,
+          "meanBrierConditional": 0.9955240336,
+          "meanBrierGlobal": 0.995614236666,
+          "meanBrierExactPrior": 0.995385887062,
+          "stateTrainingN": {
+            "mean": 284.425806452,
+            "min": 52,
+            "max": 619
+          }
+        },
+        "validation": {
+          "n": 775,
+          "meanBrierImprovementVsGlobal": 0.0000555502456553,
+          "meanLoglossImprovementVsGlobal": 0.0193082311731,
+          "meanBrierImprovementVsExactPrior": -0.00014000094139,
+          "meanLoglossImprovementVsExactPrior": -0.0304897350213,
+          "meanBrierConditional": 0.994904362077,
+          "meanBrierGlobal": 0.994959912322,
+          "meanBrierExactPrior": 0.994764361135,
+          "stateTrainingN": {
+            "mean": 596.696774194,
+            "min": 304,
+            "max": 894
+          }
+        },
+        "blind_oos": {
+          "n": 776,
+          "meanBrierImprovementVsGlobal": -0.000111445036322,
+          "meanLoglossImprovementVsGlobal": 0.000245599352392,
+          "meanBrierImprovementVsExactPrior": -0.000194602352364,
+          "meanLoglossImprovementVsExactPrior": -0.0479602935827,
+          "meanBrierConditional": 0.995081313378,
+          "meanBrierGlobal": 0.994969868342,
+          "meanBrierExactPrior": 0.994886711025,
+          "stateTrainingN": {
+            "mean": 803.588917526,
+            "min": 435,
+            "max": 1165
+          }
+        }
+      }
+    }
+  ],
+  "blindOosPrimaryInference": [
+    {
+      "pair": "P1-P2",
+      "selectedAlpha": 1000,
+      "n": 776,
+      "meanBrierImprovementVsGlobal": -0.00000135170804003,
+      "ci95": [
+        -0.000128585014056,
+        0.000127626891043
+      ],
+      "rawCenteredOneSidedP": 0.525737131434,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20262105,
+      "holmAdjustedP": 1
+    },
+    {
+      "pair": "P2-P3",
+      "selectedAlpha": 1000,
+      "n": 776,
+      "meanBrierImprovementVsGlobal": -0.000042231777173,
+      "ci95": [
+        -0.000154200918677,
+        0.0000778891493868
+      ],
+      "rawCenteredOneSidedP": 0.753623188406,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20263102,
+      "holmAdjustedP": 1
+    },
+    {
+      "pair": "P3-P4",
+      "selectedAlpha": 1000,
+      "n": 776,
+      "meanBrierImprovementVsGlobal": -0.0000377697046375,
+      "ci95": [
+        -0.000158079382335,
+        0.0000797031389548
+      ],
+      "rawCenteredOneSidedP": 0.732633683158,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20264099,
+      "holmAdjustedP": 1
+    },
+    {
+      "pair": "P4-P5",
+      "selectedAlpha": 1000,
+      "n": 776,
+      "meanBrierImprovementVsGlobal": -0.000111445036322,
+      "ci95": [
+        -0.000244708719117,
+        0.0000178069810981
+      ],
+      "rawCenteredOneSidedP": 0.949525237381,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20265096,
+      "holmAdjustedP": 1
+    }
+  ],
+  "stateFrequencyControl": [
+    {
+      "pair": "P1-P2",
+      "splitCounts": {
+        "discovery": {
+          "n": 1550,
+          "observedCounts": [
+            552,
+            266,
+            400,
+            332
+          ],
+          "expectedCounts": [
+            523.203441296,
+            262.095217687,
+            429.014996778,
+            335.686344239
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        },
+        "validation": {
+          "n": 775,
+          "observedCounts": [
+            249,
+            137,
+            222,
+            167
+          ],
+          "expectedCounts": [
+            261.601720648,
+            131.047608844,
+            214.507498389,
+            167.843172119
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        },
+        "blind_oos": {
+          "n": 776,
+          "observedCounts": [
+            258,
+            123,
+            233,
+            162
+          ],
+          "expectedCounts": [
+            261.939271255,
+            131.216702532,
+            214.784282258,
+            168.059743954
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        }
+      }
+    },
+    {
+      "pair": "P2-P3",
+      "splitCounts": {
+        "discovery": {
+          "n": 1550,
+          "observedCounts": [
+            540,
+            251,
+            467,
+            292
+          ],
+          "expectedCounts": [
+            523.203441296,
+            262.095217687,
+            429.014996778,
+            335.686344239
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        },
+        "validation": {
+          "n": 775,
+          "observedCounts": [
+            259,
+            123,
+            210,
+            183
+          ],
+          "expectedCounts": [
+            261.601720648,
+            131.047608844,
+            214.507498389,
+            167.843172119
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        },
+        "blind_oos": {
+          "n": 776,
+          "observedCounts": [
+            281,
+            132,
+            180,
+            183
+          ],
+          "expectedCounts": [
+            261.939271255,
+            131.216702532,
+            214.784282258,
+            168.059743954
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        }
+      }
+    },
+    {
+      "pair": "P3-P4",
+      "splitCounts": {
+        "discovery": {
+          "n": 1550,
+          "observedCounts": [
+            523,
+            257,
+            437,
+            333
+          ],
+          "expectedCounts": [
+            523.203441296,
+            262.095217687,
+            429.014996778,
+            335.686344239
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        },
+        "validation": {
+          "n": 775,
+          "observedCounts": [
+            263,
+            129,
+            226,
+            157
+          ],
+          "expectedCounts": [
+            261.601720648,
+            131.047608844,
+            214.507498389,
+            167.843172119
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        },
+        "blind_oos": {
+          "n": 776,
+          "observedCounts": [
+            248,
+            144,
+            207,
+            177
+          ],
+          "expectedCounts": [
+            261.939271255,
+            131.216702532,
+            214.784282258,
+            168.059743954
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        }
+      }
+    },
+    {
+      "pair": "P4-P5",
+      "splitCounts": {
+        "discovery": {
+          "n": 1550,
+          "observedCounts": [
+            516,
+            252,
+            427,
+            355
+          ],
+          "expectedCounts": [
+            523.203441296,
+            262.095217687,
+            429.014996778,
+            335.686344239
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        },
+        "validation": {
+          "n": 775,
+          "observedCounts": [
+            275,
+            131,
+            201,
+            168
+          ],
+          "expectedCounts": [
+            261.601720648,
+            131.047608844,
+            214.507498389,
+            167.843172119
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        },
+        "blind_oos": {
+          "n": 776,
+          "observedCounts": [
+            271,
+            140,
+            215,
+            150
+          ],
+          "expectedCounts": [
+            261.939271255,
+            131.216702532,
+            214.784282258,
+            168.059743954
+          ],
+          "priorMasses": [
+            0.337550607287,
+            0.169093688831,
+            0.276783868889,
+            0.216571834993
+          ]
+        }
+      }
+    }
+  ],
+  "integrity": {
+    "archiveRows": 3401,
+    "scoredTargets": 3101,
+    "warmupTargetRowIndexZeroBased": 300,
+    "strictPrefixTrainNChecks": 3101,
+    "targetCutoffBeforeTargetDateChecks": 3101,
+    "exactJointPriorNormalizationChecks": 4,
+    "candidateAndGlobalProbabilityNormalizationChecks": 74424,
+    "maxProbabilityNormalizationError": 1.33226762955e-14,
+    "expectedSelectedLedgerRows": 12404,
+    "duplicateTargetPairKeys": 0,
+    "trainNRule": "target row t uses target-history rows j=2..t-1 inclusive; N_t=t-2",
+    "featureCutoffRule": "conditioning gap comes from draw row t-1; date[t-1] < date[t]"
+  },
+  "limitations": [
+    "This protocol was not formally persisted before the initial computation; treat PSR-08 as exploratory.",
+    "The historical blind slice overlaps earlier SONAR lab research and is not independent lab-wide confirmation.",
+    "Four pairwise joint distributions do not define or validate the full 5-number joint ticket.",
+    "The conditional state is a prior-draw association diagnostic, not a causal effect.",
+    "The discrete statistical analogy is not a physical Navier-Stokes field and does not claim fluid dynamics governs the draw.",
+    "No engine promotion, merge, or prospective gate completion is authorized."
+  ],
+  "rootCauseDiagnosis": [
+    "Discovery Brier gains are positive for all four adjacent pairs, while validation is mixed and every blind-OOS Brier gain is negative.",
+    "The temporal reversal is consistent with unstable historical association and sampling noise; no pair survives Holm correction.",
+    "Each pair has 666 supported joint cells; conditioning on four previous-gap states reduces the available training observations per cell, while alpha=1000 dominates the selected shrinkage grid.",
+    "Some blind-OOS log-loss gains are slightly positive, but the secondary metric is not concordant with the primary Brier endpoint and does not alter the decision."
+  ],
+  "decision": "No primary pair survives Holm at 0.05; retain as exploratory null evidence, do not promote.",
+  "nextAction": "Freeze PSR-08 and do not tune its cutpoints or alpha on the inspected blind slice. Register a prospective append-only shadow protocol before future targets, with an explicit GLOBAL_ONLY fallback chosen in validation and at least 200 new paired targets; then require human review."
+}
