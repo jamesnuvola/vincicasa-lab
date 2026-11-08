@@ -89,5 +89,18 @@ jobs:
           name: sonar-p5-orderstat-prior-audit
           path: reports/position_specific_range_residual/p5_orderstat_prior_audit_20261108.*
           if-no-files-found: warn
+      - name: Run SONAR PSR-04 continuous lag-1 kernel walk-forward
+        env:
+          SONAR_PSR04_EXPECTED_ARCHIVE_BLOB_SHA: "5d2efd70684e918b27d8f06386d545647898336d"
+        run: node scripts/sonar_psr04_continuous_lag1_kernel_walkforward.mjs data/storico_daily.csv reports/position_specific_range_residual
+      - name: Verify PSR-04 outputs reproduce committed report byte-for-byte
+        run: git diff --exit-code -- reports/position_specific_range_residual/PSR04_results_20261108.json reports/position_specific_range_residual/PSR04_results_20261108.md reports/position_specific_range_residual/PSR04_target_ledger_20261108.csv
+      - name: Upload PSR-04 experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr04-continuous-kernel
+          path: reports/position_specific_range_residual/PSR04_*
+          if-no-files-found: warn
       - name: Build web application
         run: npm install && npm run build
