@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "Q89-RUN-PROGRESS-2026-11-08T21:41:12Z",
+  "recorded_at_utc": "2026-11-08T21:41:12Z",
+  "canonical_archive": {
+    "path": "data/storico_daily.csv",
+    "main_commit_sha": "94d18ca3115c6052d436be1c09f541f39214c9cf",
+    "git_blob_sha1": "5d2efd70684e918b27d8f063460d545647898336d",
+    "sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+    "draw_count": 3401,
+    "cutoff_date": "2026-11-07",
+    "latest_quintet": [
+      12,
+      16,
+      27,
+      31,
+      38
+    ]
+  },
+  "q88": {
+    "workflow_run_id": 42520706541,
+    "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+    "all_15_shards": "SUCCESS",
+    "aggregate_validate_persist": "SUCCESS",
+    "formula_count": 2220075,
+    "scored_targets": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 6660225,
+    "target_ledger_rows": 3351,
+    "persisted_head_sha": "0f865d6585a768f623e7c56cfffc5fd4a48a7888",
+    "exact_head_ci_run_id": 42523530410,
+    "exact_head_ci_conclusion": "SUCCESS",
+    "human_review": "PENDING",
+    "evidence_url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42520706541"
+  },
+  "q89": {
+    "pr_number": 20,
+    "pr_state": "OPEN_DRAFT",
+    "head_sha": "772c57848d1ba978b2333aa227b46bb591a7f0cf",
+    "base_branch": "research/per-number-condition-grammar-20261026",
+    "base_sha": "0f865d6585a768f623e7c56cfffc5fd4a48a7888",
+    "formula_universe": 4686825,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "target_count": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "expected_metrics_rows": 14060475,
+    "global_holm_family_size": 42181425,
+    "workflow_run_id": 42524743687,
+    "observed_shards": {
+      "success": 5,
+      "in_progress": 10,
+      "failure": 0
+    },
+    "aggregate_job": "NOT_STARTED_UNTIL_ALL_SHARDS_PASS",
+    "output_persistence": "PENDING",
+    "exact_head_ci": "PENDING",
+    "acceptance_status": "NOT_COMPLETE",
+    "quantitative_results": "NOT_YET_AVAILABLE",
+    "unit_tests": "PASS in the pre-evaluation step of observed shard jobs",
+    "next_action": "Wait for all 15 shard successes; then aggregate/global Holm, freeze Discovery→Validation candidates, run paired blind OOS inference, acceptance validator, append-only persistence/readback and exact-head CI; keep human review pending."
+  },
+  "q91_diagnostic": {
+    "workflow_run_id": 42524743568,
+    "conclusion": "FAILURE",
+    "root_cause": "Compile step references scripts/sonar_q91_nested_walkforward.py, absent from the checkout. Downstream tests, evaluation, acceptance and persistence were skipped.",
+    "next_action": "Inspect PR #11 merge-ref file inventory and resolve missing script path before retry; no Q91 result is claimed."
+  },
+  "guardrails": {
+    "pr6_pr7_pr8_merged_or_modified": false,
+    "q89_candidate_selection_blind_oos_used": false,
+    "immutable_freezes_overwritten": false,
+    "auto_merge": false,
+    "engine_promotion": false,
+    "human_review_required": true
+  },
+  "limitations": [
+    "Q89 formula-family p-values are a continuity-corrected normal approximation to the finite-population hypergeometric null, not exact.",
+    "Historical blind segment has been examined repeatedly across SONAR; not independent project-level confirmation.",
+    "Retrospective per-target best formulas are descriptive only.",
+    "No Q89 aggregate result exists yet."
+  ]
+}
