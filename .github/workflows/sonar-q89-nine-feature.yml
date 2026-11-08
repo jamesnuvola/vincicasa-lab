@@ -1,6 +1,15 @@
 name: SONAR Q89 Nine-Feature Formula Grammar
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - research/sonar-q89-nine-feature-20261108
+    paths:
+      - ".github/workflows/sonar-q89-nine-feature.yml"
+      - "scripts/aggregate_sonar_q89_shards.py"
+      - "scripts/sonar_q89_acceptance.py"
+      - "scripts/persist_q89_outputs.py"
+      - "tests/test_sonar_per_number_condition_9plus_grammar.py"
   pull_request:
     types: [opened, synchronize, reopened, edited]
     branches:
@@ -61,13 +70,13 @@ jobs:
           retention-days: 14
 
   recover-aggregate-validate-persist:
-    if: "${{ github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687') }}"
+    if: "${{ (github.event_name == 'pull_request' && contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687')) || (github.event_name == 'push' && contains(github.event.head_commit.message, '[q89-aggregate-recovery]')) }}"
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
