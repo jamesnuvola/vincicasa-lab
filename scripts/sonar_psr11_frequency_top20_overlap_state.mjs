@@ -177,11 +177,6 @@ export { run, stateReference };
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
-const outputFiles = [
-  [resolve(root, "reports/position_specific_range_residual/PSR11_results_20261108.json"), out.json],
-  [resolve(root, "reports/position_specific_range_residual/PSR11_results_20261108.md"), out.markdown],
-  [resolve(root, "reports/position_specific_range_residual/PSR11_target_ledger_selected_alpha_20261108.csv"), out.ledger]
-];
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const archiveText = readFileSync(resolve(root, "data/storico_daily.csv"), "utf8");
   const out = run(archiveText);
