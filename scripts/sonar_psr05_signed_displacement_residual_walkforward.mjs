@@ -299,7 +299,7 @@ function run(csv) {
       primary_holm_benefit_endpoints: primaryBenefitCount,
       preserve_unconfirmed_positive_brier_candidates: positiveUnconfirmed,
       root_cause_reading: primaryBenefitCount ? "At least one position endpoint is Holm-significant within PSR-05, but the repeated historical blind partition and no independent prospective evidence still prohibit promotion." :
-        "Signed displacement-state conditioning did not establish a calibrated blind-OOS Brier benefit after validation-only alpha selection and Holm correction; conditional state counts add estimation variance over the exact order-statistic prior/global shrinkage.",
+        "Blind OOS vs global shrinkage: P2 has ΔBrier +0.000140959 but ΔTop-1 −0.773 pp and ΔTop-5 −2.062 pp; against the exact prior its ΔBrier is −0.000257689 (raw p=0.1999, Holm=0.9995). P3 has ΔBrier +0.000050293 vs global and +0.000050780 vs exact prior, but ΔTop-1 −0.129 pp and ΔLog-loss vs exact prior −0.000583 (raw p=0.3793, Holm=1.0000). All five 95% block-bootstrap intervals cross zero. The conditional state counts therefore do not establish a robust calibrated edge; extra conditioning appears to add variance rather than stable signal.",
       next_action: "Retain all positive point-estimate candidates as exploratory. Continue prospective append-only shadow freezes; consider a joint dependence-aware model only after independent prospective evidence, and do not replace SONAR."
     },
     execution: { double_run_exact_match: true, grid_ledger_fingerprint_fnv1a32: gridFingerprint, selected_ledger_fingerprint_fnv1a32: selectedFingerprint, runtime: "Node.js; version omitted for deterministic output" }
