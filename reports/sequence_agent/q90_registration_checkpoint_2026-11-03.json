@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0",
   "task_id": "Q90",
-  "status": "IMPLEMENTED_PENDING_EXACT_HEAD_CI_AND_ARTIFACT_READBACK",
-  "checkpoint_date": "2026-11-03",
+  "status": "ARCHIVE_SYNCED_PENDING_Q90_REFRESH_RUN",
+  "checkpoint_date": "2026-11-07",
   "branch": "research/q90-expanded-formula-grammar-20261103",
   "base_q89_head": "38c8327e1ebf04f761eca30c49618422baa58d84",
   "implementation_commits": [
@@ -25,9 +25,9 @@
   "workflow_path": ".github/workflows/sonar-q90-expanded-formula-grammar.yml",
   "archive": {
     "path": "data/storico_daily.csv",
-    "blob_sha": "ba13920a78d588d3ede9c8355c15e441bb917f10",
-    "draw_count": 3396,
-    "last_date": "2026-11-02"
+    "blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "last_date": "2026-11-07"
   },
   "scope": {
     "baseline_features": 27,
@@ -43,7 +43,7 @@
       "residual_surprise": 2
     },
     "walk_forward_min_prior_draws": 50,
-    "expected_scored_targets": 3346,
+    "expected_scored_targets": 3351,
     "linear_formula_counts": {
       "4": 4845,
       "5": 15504,
@@ -55,7 +55,12 @@
     "conditional_gate_4way": 38760,
     "expected_formula_count": 330429,
     "expected_formula_split_metrics_rows": 991287,
-    "expected_target_ledger_rows": 3346
+    "expected_target_ledger_rows": 3351,
+    "expected_split_target_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    }
   },
   "implemented": [
     "discovery-only, family-balanced selection of 20 Q89 features",
@@ -70,12 +75,12 @@
     "finite-population variance and correct lower-tail continuity correction for rank-sum p-values"
   ],
   "gates": {
-    "compile_and_unit_tests": "PENDING_CURRENT_HEAD",
-    "formula_engine_walk_forward": "PENDING",
-    "acceptance_validator": "PENDING",
-    "artifact_persistence_90d": "PENDING",
-    "external_artifact_readback": "PENDING",
-    "exact_head_ci": "PENDING_CURRENT_HEAD",
+    "compile_and_unit_tests": "PENDING_REFRESH_RUN",
+    "formula_engine_walk_forward": "PENDING_REFRESH_RUN",
+    "acceptance_validator": "PENDING_REFRESH_RUN",
+    "artifact_persistence_90d": "PENDING_REFRESH_RUN",
+    "external_artifact_readback": "PENDING_REFRESH_RUN",
+    "exact_head_ci": "PENDING_REFRESH_RUN",
     "main_repo_ci": "PENDING",
     "human_review": "PENDING"
   },
@@ -88,13 +93,12 @@
     "immutable target-2026-10-25 freeze remains untouched"
   ],
   "pending": [
-    "exact-head CI after null-variance correction",
-    "Q90 exact-head workflow and acceptance validator pass",
-    "download artifact and independently verify digest and internal SHAs",
-    "main repository exact-head CI pass",
-    "human review/integration",
+    "run Q90 walk-forward on the canonical 2026-11-07 archive",
+    "fail-closed acceptance validator and 90-day artifact upload",
+    "independent artifact readback of ZIP and internal SHAs",
+    "exact-head CI and human review/integration",
     "nested walk-forward ex-ante formula anticipation and calibration",
     "expand conditional thresholds/interactions beyond the 4-feature slice"
   ],
-  "current_branch_head": "d1c661ac9e6b476ab7ea02e0d67401cab87a7c43"
+  "current_branch_head": "PENDING_COMMIT_SHA"
 }
