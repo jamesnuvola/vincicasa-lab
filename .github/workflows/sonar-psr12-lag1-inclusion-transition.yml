@@ -1,0 +1,27 @@
+name: SONAR PSR-12 lag-1 inclusion transition
+on:
+  push:
+    branches:
+      - research/sonar-psr12-lag1-inclusion-transition-20261108
+  pull_request:
+    branches: [main]
+    paths:
+      - data/storico_daily.csv
+      - scripts/sonar_psr12_lag1_inclusion_transition.mjs
+      - tests/test_sonar_psr12_lag1_inclusion_transition.mjs
+      - reports/position_specific_range_residual/PSR12_*
+      - .github/workflows/sonar-psr12-lag1-inclusion-transition.yml
+jobs:
+  replay-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Verify canonical archive Git blob
+        run: test "$(git hash-object data/storico_daily.csv)" = "5d2efd70684e918b27d8f06386d545647898336d"
+      - name: Recompute and verify persisted JSON and split ledgers byte-for-byte
+        run: node scripts/sonar_psr12_lag1_inclusion_transition.mjs --verify
+      - name: Run synthetic strict-prefix, lag-state, shrinkage and deterministic replay tests
+        run: node tests/test_sonar_psr12_lag1_inclusion_transition.mjs
