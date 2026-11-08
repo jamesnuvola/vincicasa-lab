@@ -67,6 +67,19 @@ jobs:
           name: sonar-psr02-walkforward
           path: reports/position_specific_range_residual/psr02_walkforward_*
           if-no-files-found: warn
+      - name: Run SONAR PSR-03 position lag-1 transition walk-forward
+        env:
+          SONAR_PSR03_EXPECTED_ARCHIVE_BLOB_SHA: "5d2efd70684e918b27d8f06386d545647898336d"
+        run: node scripts/sonar_psr03_position_lag1_transition_walkforward.mjs data/storico_daily.csv reports/position_specific_range_residual
+      - name: Verify PSR-03 outputs reproduce committed report byte-for-byte
+        run: git diff --exit-code -- reports/position_specific_range_residual/PSR03_results_20261108.json reports/position_specific_range_residual/PSR03_results_20261108.md reports/position_specific_range_residual/PSR03_target_ledger_20261108.csv
+      - name: Upload PSR-03 experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr03-position-lag1
+          path: reports/position_specific_range_residual/PSR03_*
+          if-no-files-found: warn
       - name: Run P5 exact order-statistic prior audit
         run: node scripts/sonar_p5_orderstat_prior_audit.mjs data/storico_daily.csv reports/sequence_agent/p5_pooled_logistic_walkforward_2026-11-07.json reports/sequence_agent/p5_logistic_rolling_and_permutation_audit_2026-11-07.json reports/position_specific_range_residual
       - name: Upload P5 prior audit artifact
