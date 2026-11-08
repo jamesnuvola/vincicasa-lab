@@ -1,0 +1,97 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q87",
+  "protocol_id": "Q87-refresh-canonical-2026-11-07",
+  "status": "PREREGISTERED_PENDING_RUN",
+  "registered_at_utc": "2026-11-08T18:43:00Z",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "canonical_main_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07",
+    "latest_quintet": [
+      12,
+      16,
+      27,
+      31,
+      38
+    ],
+    "prior_archive_cutoff": "2026-11-06",
+    "prior_q87_report_draw_count": 3400,
+    "prior_q87_scored_target_count": 3350
+  },
+  "hypothesis": "Refresh the complete finite seven-feature equal-weight formula universe on the synchronized canonical archive. No new model family or tuning is introduced; this is an archive-aligned rerun for the one newly available target.",
+  "formula_universe": {
+    "feature_count": 27,
+    "subset_size": 7,
+    "formula_count": 888030,
+    "formula_count_check": "C(27,7)=888030",
+    "enumeration": "lexicographic itertools.combinations over the registered 27 prior-only feature columns",
+    "formula_batch_size": 1024,
+    "shard_count": 6,
+    "formulas_per_shard": 148005,
+    "shard_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "walk_forward": {
+    "minimum_prior_history": 50,
+    "target_count": 3401,
+    "scored_targets": 3351,
+    "split_rule": "discovery if target_offset/scored_targets < 0.60; validation if <0.80; else blind_oos",
+    "expected_split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "prior_only_cutoff": "For each target at archive index i, every feature must be derived exclusively from draws[0:i]; record cutoff date i-1; score target i before any state update.",
+    "metrics_rows": 2664090,
+    "target_ledger_rows": 3351,
+    "ledger_fields": [
+      "target_date",
+      "cutoff_date",
+      "prior_draws",
+      "actual_quintet",
+      "all_27_single_feature_ranks",
+      "best_retrospective_7_feature_formula_and_ranks"
+    ],
+    "retrospective_best_formula": "Descriptive only; never treat as ex-ante forecast."
+  },
+  "multiple_testing": {
+    "method": "Global Holm-Bonferroni",
+    "family_size": 7992270,
+    "calculation": "888030 formulas × 3 chronological splits × 3 rank endpoints",
+    "p_value_method": "continuity-corrected normal approximation to number-level binomial hit counts; exploratory, not exact",
+    "endpoints": [
+      "number_hits_top5",
+      "number_hits_top10",
+      "number_hits_top20"
+    ]
+  },
+  "acceptance_gates": [
+    "All six deterministic shard manifests cover 888030 formula IDs exactly once with no gaps or overlaps.",
+    "Each split contains exactly 888030 formula rows; total metrics row count is 2664090.",
+    "Target ledger contains 3351 unique chronological targets from 2017-09-05 through 2026-11-07, with exact archive quintet and immediate-prior cutoff reconciliation.",
+    "Strict-prefix/no-target-leakage checks pass for every scored target.",
+    "Aggregate Q87 validator and research queue validator pass fail-closed.",
+    "Outputs are persisted append-only through Git Data API and reread byte-for-byte.",
+    "Current-head CI passes on the exact persisted head.",
+    "Human review/integration remains required; do not mark Q87 COMPLETE before it."
+  ],
+  "guardrails": {
+    "immutable_target_2026_10_25_freeze_overwritten": false,
+    "no_auto_merge": true,
+    "no_auto_promotion": true,
+    "pr8_remains_draft": true,
+    "q88_waits_for_q87_persisted_exact_head_ci": true
+  },
+  "known_limitation": "Finite seven-feature equal-weight formula grammar only. It does not exhaust weighted, conditional, nonlinear, or arbitrary mathematical formulas. Historical blind OOS is already repeatedly inspected and is descriptive/exploratory.",
+  "next_action": "Run six Q87 shards against the canonical archive through 2026-11-07; aggregate, validate, persist, and then verify exact-head CI before dispatching Q88."
+}
