@@ -66,7 +66,7 @@ This is a research ranking of individual candidates, not a full five-number lott
 - Model selection uses validation only; blind metrics and p-values are evaluation only.
 - The Monte Carlo null is a random Top-5 selection benchmark. It does not prove lottery predictability; temporal independence is a modelling assumption for this null.
 - The paired block test excludes four tail targets because 851 is not divisible by seven.
-- This cycle's calculation was executed in the V8 CodeMode runtime against the fetched canonical CSV. The persisted Node script is intended to reproduce the computation, but native Node execution and branch CI status must be verified separately; no claim of those checks is made here.
+- This cycle's calculation was executed in the V8 CodeMode runtime against the fetched canonical CSV. The branch CI workflow was extended to run `node --check`, execute the persisted Node script, and compare its JSON output exactly with the saved result. At the final commit, the GitHub combined-status endpoint returned an empty status list; therefore the CI execution result is **not verified here** and is not counted as passed. Native Node execution remains unconfirmed in this run.
 - No main update, PR, merge, or engine promotion. PR #6/#7/#8 remain outside this experiment.
 
 ## Decision and next action
