@@ -68,7 +68,8 @@ This is a shadow research freeze for evaluating a later outcome; it is not a lot
 - CSV structure, strict ascending dates, 5 unique values in [1,40], and ascending quintets are checked by the runner.
 - All scores are based on maxima (M_t=n5_t); contexts are built from (M_{t-1}) only.
 - Grid, splits, fixed context bins, seeds, permutation count, bootstrap count and full candidate metrics are persisted.
-- Native Node reproducibility is gated by `node scripts/sonar_fd05_markov_max_walkforward.mjs --check`, which compares the regenerated JSON byte-for-byte at the parsed-object level with the persisted report JSON.
+- Native Node reproducibility is gated by `node scripts/sonar_fd05_markov_max_walkforward.mjs --check`, which requires exact structure, keys, arrays and nonnumeric values while comparing numeric values at absolute tolerance 1e-12 (to avoid brittle cross-V8 floating-point serialization differences).
+- First exact-head CI run (42448003522) passed the canonical archive audit but failed the FD-05 comparator because it used strict serialized JSON equality; the comparator has now been hardened with structural checks and 1e-12 numeric tolerance, and a fresh exact-head CI run is pending.
 - Exact-head GitHub Actions CI is required; no model promotion, merge, or PR modification is authorized in this cycle.
 - PR #6, #7, #8 remain untouched.
 
