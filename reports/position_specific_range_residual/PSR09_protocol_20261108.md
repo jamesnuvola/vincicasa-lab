@@ -59,3 +59,7 @@ The historical blind partition has been inspected in prior SONAR work; it is not
 ## Decision and next gate
 
 A historical improvement does not authorize promotion. Prospective promotion remains governed by the existing SONAR Q60 gate: at least 200 complete pre-target paired shadow targets; no missing freezes reconstructed. If PSR-09 is null or non-significant, record the negative evidence and do not append a competing candidate to the live shadow stream without human review.
+
+## Pre-computation clarification (registered before run)
+
+For any target with fewer than W historical rows, use the available prefix only: (W_{eff}=min(W,t)), (C_{i,t,W}) counts those (W_{eff}) rows, and the denominator is (W_{eff}+\alpha). This avoids requesting unavailable history and preserves strict-prior chronology. The warm-up target row index is 200, so the 730-draw window begins with (W_{eff}=200) and grows until it reaches 730.
