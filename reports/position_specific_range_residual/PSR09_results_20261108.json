@@ -10,7 +10,7 @@
   },
   "runner": {
     "path": "scripts/sonar_psr09_position_recency_walkforward.cjs",
-    "gitBlobSha": "07bc80092839089c2406ce669004ddc59835a2eb"
+    "gitBlobSha": "af58cb53621a7e17c1dd5ce80977d298f08331ec"
   },
   "archive": {
     "draws": 3401,
@@ -72,7 +72,7 @@
           36
         ],
         "exactCountSum": 658008,
-        "probabilitySum": 1,
+        "probabilitySum": "1.0000000000000002e+0",
         "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
       },
       {
@@ -82,7 +82,7 @@
           37
         ],
         "exactCountSum": 658008,
-        "probabilitySum": 1,
+        "probabilitySum": "9.9999999999999989e-1",
         "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
       },
       {
@@ -92,7 +92,7 @@
           38
         ],
         "exactCountSum": 658008,
-        "probabilitySum": 1,
+        "probabilitySum": "1.0000000000000000e+0",
         "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
       },
       {
@@ -102,7 +102,7 @@
           39
         ],
         "exactCountSum": 658008,
-        "probabilitySum": 1,
+        "probabilitySum": "1.0000000000000000e+0",
         "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
       },
       {
@@ -112,7 +112,7 @@
           40
         ],
         "exactCountSum": 658008,
-        "probabilitySum": 1,
+        "probabilitySum": "1.0000000000000000e+0",
         "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
       }
     ]
@@ -1073,8 +1073,8 @@
     "candidateProbabilityNormalizationChecks": 240075,
     "globalSameAlphaNormalizationChecks": 48015,
     "normalizationChecks": 288090,
-    "maxProbabilityNormalizationError": 0,
-    "maxExactPriorNormalizationError": 0,
+    "maxProbabilityNormalizationError": "7.771561e-16",
+    "maxExactPriorNormalizationError": "2.220446e-16",
     "expectedSelectedLedgerRows": 16005,
     "perPositionLedgerRows": [
       3201,
@@ -1092,7 +1092,7 @@
     "Selection is validation-only, but the archive blind segment was inspected in prior SONAR work; results are retrospective and not independent confirmation.",
     "Position order-statistic priors are nonuniform by construction; comparing only raw hit rates would confound intrinsic position difficulty, so the primary endpoint is multiclass Brier against the exact prior.",
     "The cumulative empirical same-alpha comparator controls whether any apparent gain is attributable specifically to recency rather than simply empirical deviations from the theoretical prior.",
-    "Cross-runtime replay initially exposed sub-ULP Math.log drift in descriptive log-loss fields; report JSON values are canonicalized to 12 decimals and log-loss ledger gains to 9 decimals."
+    "Cross-runtime replay initially exposed sub-ULP Math.log drift in descriptive log-loss fields; report JSON values are canonicalized to 12 decimals, log-loss ledger gains to 9 decimals, and small normalization-error magnitudes are retained as scientific-notation strings."
   ],
   "limitations": [
     "Historical data cannot demonstrate a physical fluid-dynamics mechanism or lottery predictability.",
