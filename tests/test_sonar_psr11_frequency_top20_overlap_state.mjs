@@ -40,6 +40,7 @@ const altered=csv.split(/\r?\n/);
 const old=altered[301].split(",").slice(1).map(Number);
 const alt=old.join(" ")==="1 2 3 4 6"?"2,3,4,5,7":"1,2,3,4,6";
 altered[301]=altered[301].split(",")[0]+","+alt;
+// Hold alpha fixed: a changed discovery outcome can affect later validation selection through its training prefix.
 const leakOpts={...opts,alphaGrid:[0]};
 const leakA=run(csv,leakOpts),leakC=run(altered.join("\n"),leakOpts);
 const leakRows=leakA.ledger.trim().split(/\r?\n/),leakFirst=leakRows[1].split(",");
