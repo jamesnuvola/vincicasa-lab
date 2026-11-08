@@ -121,8 +121,39 @@ jobs:
           name: sonar-psr05-signed-displacement
           path: reports/position_specific_range_residual/PSR05_*
           if-no-files-found: warn
+      - name: Run SONAR PSR-06 previous-draw range-state position walk-forward
+        env:
+          SONAR_PSR06_EXPECTED_ARCHIVE_BLOB_SHA: "5d2efd70684e918b27d8f06386d545647898336d"
+        run: node scripts/sonar_psr06_previous_draw_range_state_walkforward.mjs data/storico_daily.csv reports/position_specific_range_residual
+      - name: Verify PSR-06 committed outputs reproduce on subsequent CI runs
+        if: success() && github.ref == 'refs/heads/research/sonar-psr06-range-conditioned-geometry-20261108'
+        run: |
+          if git ls-files --error-unmatch reports/position_specific_range_residual/PSR06_results_20261108.json >/dev/null 2>&1; then
+            git diff --exit-code -- reports/position_specific_range_residual/PSR06_results_20261108.json reports/position_specific_range_residual/PSR06_results_20261108.md reports/position_specific_range_residual/PSR06_target_ledger_20261108.csv reports/position_specific_range_residual/PSR06_validation_grid_20261108.csv
+          else
+            echo "First PSR-06 run: generated outputs will be persisted after the job succeeds."
+          fi
+      - name: Upload PSR-06 experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr06-range-state
+          path: reports/position_specific_range_residual/PSR06_*
+          if-no-files-found: warn
       - name: Build web application
         run: npm install && npm run build
+      - name: Persist PSR-06 reports on isolated research branch
+        if: success() && github.ref == 'refs/heads/research/sonar-psr06-range-conditioned-geometry-20261108'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/position_specific_range_residual/PSR06_results_20261108.json reports/position_specific_range_residual/PSR06_results_20261108.md reports/position_specific_range_residual/PSR06_target_ledger_20261108.csv reports/position_specific_range_residual/PSR06_validation_grid_20261108.csv
+          if git diff --cached --quiet; then
+            echo "PSR-06 outputs already match persisted reports."
+          else
+            git commit -m "Persist PSR-06 range-state walk-forward results"
+            git push origin HEAD:${GITHUB_REF_NAME}
+          fi
       - name: Persist PSR-05 reports on isolated research branch
         if: success() && github.ref == 'refs/heads/research/sonar-psr05-signed-displacement-20261108'
         run: |
