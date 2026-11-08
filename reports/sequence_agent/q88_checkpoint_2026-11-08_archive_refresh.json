@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q88-2026-11-06-RUN-42503927115",
+  "status": "VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION_ARCHIVE_REFRESH_REQUIRED",
+  "task_id": "Q88",
+  "workflow_run_id": 42503927115,
+  "source_workflow_head_sha": "b91a98aaa05e8ac7fadae3ede0ceb0a6ad5dde8f",
+  "persisted_head_sha": "4f63b7570d87d63123b34976d6ae35172024b11c",
+  "parent_sha": "cccca9ae01e788155ef3b43b27a2389cfce1d1d0",
+  "archive": {
+    "research_branch_blob_sha": "1c9c3824d8caa3fe7d0e888c1875402cc2156a2a",
+    "source_archive_sha256": "e8d09197b2ee22f8355f84c22893bb72eeae4c14caf55342a1ed5fe681123011",
+    "draw_count": 3400,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-06",
+    "latest_quintet": [
+      20,
+      21,
+      24,
+      38,
+      39
+    ]
+  },
+  "formula_universe": {
+    "feature_count": 27,
+    "feature_subset_size": 8,
+    "formula_count": 2220075,
+    "formula_count_check": 2220075,
+    "formula_batch_size": 1024,
+    "formula_batch_count": 2169,
+    "shard_count": 15,
+    "formulas_per_shard": 148005
+  },
+  "walk_forward": {
+    "minimum_prior_history": 50,
+    "target_count": 3400,
+    "scored_targets": 3350,
+    "split_counts": {
+      "discovery": 2010,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 6660225,
+    "target_ledger_rows": 3350
+  },
+  "multiple_testing": {
+    "method": "Holm-Bonferroni",
+    "test_count": 19980675,
+    "p_value_method": "continuity-corrected normal approximation to number-level binomial hit counts; exploratory, not exact",
+    "holm_adjusted_formula_split_rows_below_0_05": 0,
+    "minimum_holm_p_max_endpoint_family": 1
+  },
+  "blind_oos_descriptive": {
+    "uniform_baseline": {
+      "mean_number_hits_top5": 0.125,
+      "mean_number_hits_top10": 0.25,
+      "mean_number_hits_top20": 0.5,
+      "mean_rank_of_actual_numbers": 20.5
+    },
+    "best_by_mean_rank": {
+      "formula_id": "P8_01_04_06_07_13_16_17_18",
+      "mean_number_hits_top5": 0.13492537313432837,
+      "mean_number_hits_top10": 0.2632835820895522,
+      "mean_number_hits_top20": 0.5104477611940299,
+      "mean_rank_of_actual_numbers": 20.184776119402986,
+      "holm_p_max_endpoint_family": 1
+    },
+    "best_by_mean_top5_hits": {
+      "formula_id": "P8_01_03_04_06_10_17_18_23",
+      "mean_number_hits_top5": 0.14417910447761195,
+      "mean_number_hits_top10": 0.25850746268656716,
+      "mean_number_hits_top20": 0.4937313432835821,
+      "mean_rank_of_actual_numbers": 20.471641791044775,
+      "holm_p_max_endpoint_family": 1
+    }
+  },
+  "persistence": {
+    "commit_sha": "4f63b7570d87d63123b34976d6ae35172024b11c",
+    "verified_file_count": 228,
+    "verified_bytes": 244827550,
+    "all_exact_commit_bytes_verified": true,
+    "metrics_parts": 223,
+    "metrics_manifest_sha256": "be54715e2249b5a4a3f4e83df87da5057b0194fc299a614c4a3cf55f5c89e399",
+    "report_blob_sha": "59fa5d092946e1c0d3a018dea7ed3ab58deaca91",
+    "manifest_blob_sha": "318874ce25600c379a69e0533960488ba41234ec",
+    "ledger_blob_sha": "597227b2da1c509a0fc9ccd920fc96e2b6027b2b"
+  },
+  "acceptance": {
+    "aggregate_validator": "PASS",
+    "q88_queue_validator": "PASS",
+    "persisted_exact_byte_readback": "PASS",
+    "current_head_ci": "FAIL_ARCHIVE_MISMATCH",
+    "human_review_integration": "PENDING"
+  },
+  "current_head_ci_failure": {
+    "workflow_run_id": 42507292103,
+    "head_sha": "4f63b7570d87d63123b34976d6ae35172024b11c",
+    "conclusion": "failure",
+    "error": "Q80_Q86_ACCEPTANCE_BLOCKED: research branch archive blob differs from canonical main archive"
+  },
+  "limitations": [
+    "finite eight-feature equal-weight grammar only; not all mathematical formula families",
+    "best-per-target and split-top formulas are retrospective/descriptive, not ex-ante forecasts",
+    "Holm p-value method is exploratory normal approximation, not exact",
+    "no automatic promotion; human review/integration pending"
+  ],
+  "next_action": "Refresh research archive to canonical main through 2026-11-07; recompute and persist Q80-Q86; run Q87 only after CI success; after Q87 exact-head CI passes, trigger Q88 via a q88-persist-retry marker. Keep Q88 pending human review."
+}

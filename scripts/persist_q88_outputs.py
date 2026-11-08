@@ -2,6 +2,7 @@
 """Persist fully validated Q88 aggregate outputs with branch-head CAS and exact-byte reread."""
 from __future__ import annotations
 import base64, hashlib, http.client, json, os, subprocess, time, urllib.error, urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 BRANCH="research/per-number-condition-grammar-20261026"
@@ -73,18 +74,23 @@ def main():
     task=next((x for x in queue.get("tasks",[]) if x.get("id")=="Q88"),None)
     if queue.get("queue_status")!="QUEUE_VALID" or not task or task.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW" or task.get("validation_errors"):
         raise SystemExit("Q88_PERSIST_BLOCKED: queue is not validated/pending human review")
+    run_id=os.environ.get("GITHUB_RUN_ID","unknown")
+    archive_cutoff=report["last_date"]
     checkpoint={
-      "schema_version":"1.0","project":"VinciCasa SONAR","checkpoint_id":"SONAR-Q88-2026-10-31",
+      "schema_version":"1.0","project":"VinciCasa SONAR",
+      "checkpoint_id":"SONAR-Q88-"+archive_cutoff+"-RUN-"+run_id,
       "status":"VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION","task_id":"Q88",
+      "workflow_run_id":run_id,"created_at_utc":datetime.now(timezone.utc).isoformat(),
       "source_checkout_head_sha":head,"source_archive_sha256":report["source_archive_sha256"],
-      "target_count":report["target_count"],"last_date":report["last_date"],"formula_count":report["formula_count"],
+      "target_count":report["target_count"],"scored_targets":report["scored_targets"],
+      "first_date":report["first_date"],"last_date":archive_cutoff,"formula_count":report["formula_count"],
       "metrics_rows":report["metrics_rows"],"target_ledger_rows":report["target_ledger_rows"],
       "shard_count":report["shard_count"],"global_holm_test_count":report["multiple_testing"]["test_count"],
       "metrics_manifest_sha256":json.loads((OUT/"per_number_condition_8plus_formula_metrics_manifest.json").read_text())["parts_manifest_sha256"],
       "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION",
       "guardrails":["no automatic promotion","no PR merge","no immutable freeze overwritten","higher-order/conditional families remain open"]
     }
-    checkpoint_path=OUT/"q88_checkpoint_2026-10-31.json"
+    checkpoint_path=OUT/f"q88_checkpoint_{archive_cutoff}_run_{run_id}.json"
     checkpoint_path.write_text(json.dumps(checkpoint,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     paths=[str(report_path.relative_to(ROOT)),
       "reports/sequence_agent/per_number_condition_8plus_formula_metrics_manifest.json",
