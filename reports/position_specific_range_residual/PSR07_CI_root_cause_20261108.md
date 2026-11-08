@@ -36,3 +36,10 @@ This is a mathematical definition correction, not an observed predictive result.
 ## One-time canonical-output rebaseline checkpoint
 
 The first canonicalized replay intentionally changed JSON numeric formatting (12 significant digits) and selected-ledger precision (9 decimal places) relative to the original pre-canonicalization report. This is a representation change, not a change to the pinned archive, target set, model, alpha selection, or inferential decision. A tracked one-run rebaseline flag is being used only to persist this canonical format. The flag must be removed afterward, and a subsequent clean replay must pass the byte-diff guard before reproducibility is claimed.
+
+
+## Canonical rebaseline output persisted
+
+- Rebaseline workflow run 42482566102 completed successfully on 2026-11-08; unit/synthetic tests, pinned canonical walk-forward, report generation and artifact upload passed.
+- The generated canonical JSON/Markdown/CSV were committed by the workflow at commit fef805ce9ee8bbe5fc5532f4eb41c337906ecef6. The selected target ledger contains 15,505 rows and its SHA-256 recorded in the report is f2ad33ff6cf7e8c6941dc730cb922fe0e93ed3fc5fdb2a8a42a512541b430b90.
+- The one-run flag is now being removed. The next run must execute the strict persisted-output diff without bypass. Reproducibility remains unconfirmed until that strict run passes.

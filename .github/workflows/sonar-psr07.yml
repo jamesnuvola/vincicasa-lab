@@ -53,9 +53,7 @@ jobs:
       - name: Verify deterministic replay against persisted outputs
         if: github.event_name == 'push'
         run: |
-          if [ -f reports/position_specific_range_residual/PSR07_REBASELINE.flag ]; then
-            echo "One-time numeric-output rebaseline authorized by tracked flag."
-          elif git ls-files --error-unmatch reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv >/dev/null 2>&1; then
+          if git ls-files --error-unmatch reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv >/dev/null 2>&1; then
             git diff --exit-code -- reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
           else
             echo "Initial report/ledger generation: no persisted outputs to compare yet."
@@ -74,9 +72,4 @@ jobs:
           fi
       - name: Fail if generated outputs differ on pull request
         if: github.event_name == 'pull_request'
-        run: |
-          if [ -f reports/position_specific_range_residual/PSR07_REBASELINE.flag ]; then
-            echo "One-time numeric-output rebaseline authorized by tracked flag."
-          else
-            git diff --exit-code -- reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
-          fi
+        run: git diff --exit-code -- reports/position_specific_range_residual/PSR07_results_20261108.json reports/position_specific_range_residual/PSR07_results_20261108.md reports/position_specific_range_residual/PSR07_target_ledger_20261108.csv
