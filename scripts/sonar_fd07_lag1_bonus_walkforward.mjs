@@ -6,9 +6,9 @@ const fs = require('node:fs');
 const crypto = require('node:crypto');
 const csv = fs.readFileSync(process.argv[2] || 'data/storico_daily.csv', 'utf8');
 const expectedBlob = '5d2efd70684e918b27d8f06386d545647898336d';
-const gitBlob = crypto.createHash('sha1').update('blob ' + Buffer.byteLength(csv) + '\\0').update(csv).digest('hex');
+const gitBlob = crypto.createHash('sha1').update('blob ' + Buffer.byteLength(csv) + '\0').update(csv).digest('hex');
 if (gitBlob !== expectedBlob) throw new Error('Canonical archive Git blob SHA mismatch: ' + gitBlob);
-const lines = csv.trim().split(/\\r?\\n/);
+const lines = csv.trim().split(/\r?\n/);
 if (lines[0] !== 'data,n1,n2,n3,n4,n5') throw new Error('Unexpected CSV header');
 const rows = lines.slice(1).map(line => {
   const p = line.split(',');
