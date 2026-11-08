@@ -1,0 +1,526 @@
+{
+  "schema_version": "1.0",
+  "task_id": "FD09",
+  "status": "EXPLORATORY_RETROSPECTIVE_NO_PROMOTION",
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07",
+    "csv_line_count": 3402
+  },
+  "integrity": {
+    "dates_unique_ascending": true,
+    "each_draw_five_distinct_in_1_to_40": true,
+    "strict_prior_loop_order": "PASS: target scored before updating unconditional or state-conditioned histories",
+    "training_condition_rows": "j in [1,t-1], state from draw j-1",
+    "target_state": "odd-count bucket of draw t-1",
+    "cutoff_alignment": "target date t; cutoff date t-1",
+    "target_count": 3101,
+    "split_counts": {
+      "discovery": 1400,
+      "validation": 850,
+      "blind_oos": 851
+    },
+    "independent_runtime_repetitions": 2,
+    "native_node_execution": "NOT_RUN",
+    "github_actions_ci": "NOT_RUN"
+  },
+  "hypothesis": "Previous-draw odd-count composition (0-1, 2-3, 4-5) may condition next-draw per-number inclusion frequencies with shrinkage toward unconditional strict-prior frequency.",
+  "method": {
+    "state_bins": [
+      {
+        "state": 0,
+        "odd_count": [
+          0,
+          1
+        ]
+      },
+      {
+        "state": 1,
+        "odd_count": [
+          2,
+          3
+        ]
+      },
+      {
+        "state": 2,
+        "odd_count": [
+          4,
+          5
+        ]
+      }
+    ],
+    "alpha_grid": [
+      0,
+      25,
+      50,
+      100,
+      200,
+      500,
+      1000
+    ],
+    "model_count": 7,
+    "minimum_prior_draws": 300,
+    "split_bounds": {
+      "discovery": {
+        "start": 300,
+        "end": 1699
+      },
+      "validation": {
+        "start": 1700,
+        "end": 2549
+      },
+      "blind_oos": {
+        "start": 2550,
+        "end": 3400
+      }
+    },
+    "primary_endpoint": "Top5 hit-share",
+    "selection": "validation maximum Top5 hit count; ties lower Brier, then larger alpha",
+    "secondary_endpoints": [
+      "Top10/Top20 coverage of actual drawn numbers",
+      "mean rank",
+      "Brier",
+      "log-loss"
+    ],
+    "exact_uniform_null": "851-fold convolution of Hypergeometric(40,5,5) overlap distribution",
+    "multiple_testing": {
+      "uniform_null_family_size": 22,
+      "paired_family_size": 22,
+      "correction": "Holm",
+      "paired_block_length": 7,
+      "complete_blocks": 121,
+      "omitted_tail_targets": 4,
+      "sign_flip_replicates": 20000,
+      "bootstrap_block_length": 7,
+      "bootstrap_replicates": 10000
+    }
+  },
+  "selected_model": "ODD3_A100",
+  "selected_alpha": 100,
+  "selected_metrics": {
+    "discovery": {
+      "model": {
+        "targets": 1400,
+        "hits5": 860,
+        "top5HitSharePct": 12.285714285714286,
+        "hits10": 1707,
+        "top10HitSharePct": 24.385714285714286,
+        "hits20": 3489,
+        "top20HitSharePct": 49.84285714285714,
+        "meanRank": 20.589285714285715,
+        "brier": 0.10964274625477316,
+        "logLoss": 0.37801519248445814
+      },
+      "baseline": {
+        "targets": 1400,
+        "hits5": 870,
+        "top5HitSharePct": 12.428571428571429,
+        "hits10": 1720,
+        "top10HitSharePct": 24.571428571428573,
+        "hits20": 3513,
+        "top20HitSharePct": 50.18571428571428,
+        "meanRank": 20.570857142857143,
+        "brier": 0.10952236251568875,
+        "logLoss": 0.3774489794590522
+      }
+    },
+    "validation": {
+      "model": {
+        "targets": 850,
+        "hits5": 554,
+        "top5HitSharePct": 13.035294117647059,
+        "hits10": 1088,
+        "top10HitSharePct": 25.6,
+        "hits20": 2128,
+        "top20HitSharePct": 50.07058823529412,
+        "meanRank": 20.353882352941177,
+        "brier": 0.10944948374873949,
+        "logLoss": 0.37711301654654694
+      },
+      "baseline": {
+        "targets": 850,
+        "hits5": 517,
+        "top5HitSharePct": 12.16470588235294,
+        "hits10": 1036,
+        "top10HitSharePct": 24.376470588235293,
+        "hits20": 2136,
+        "top20HitSharePct": 50.258823529411764,
+        "meanRank": 20.435764705882352,
+        "brier": 0.1094105393253159,
+        "logLoss": 0.3769282957597235
+      }
+    },
+    "blind_oos": {
+      "model": {
+        "targets": 851,
+        "hits5": 514,
+        "top5HitSharePct": 12.079905992949472,
+        "hits10": 1060,
+        "top10HitSharePct": 24.91186839012926,
+        "hits20": 2128,
+        "top20HitSharePct": 50.0117508813161,
+        "meanRank": 20.449588719153937,
+        "brier": 0.10944323386330085,
+        "logLoss": 0.3770753826936642
+      },
+      "baseline": {
+        "targets": 851,
+        "hits5": 493,
+        "top5HitSharePct": 11.586368977673326,
+        "hits10": 1036,
+        "top10HitSharePct": 24.347826086956523,
+        "hits20": 2143,
+        "top20HitSharePct": 50.36427732079906,
+        "meanRank": 20.498237367802584,
+        "brier": 0.10939761300013442,
+        "logLoss": 0.3768693504221785
+      },
+      "delta_top5_hit_share_pp": 0.49353701527614646,
+      "delta_top5_hits": 21,
+      "uniform_p_exact": 0.8154655211480247,
+      "uniform_p_holm": 1,
+      "paired_block_p_raw": 0.40822958852057395,
+      "paired_block_p_holm": 1,
+      "paired_delta_bootstrap_95_ci_pp": [
+        -0.6110458284371327,
+        1.598119858989424
+      ],
+      "brier_delta_model_minus_baseline": 0.00004562086316642344,
+      "log_loss_delta_model_minus_baseline": 0.00020603227148568992
+    }
+  },
+  "baseline_uniform_reference": {
+    "top5_hit_share_pct": 12.5,
+    "top10_coverage_pct": 25,
+    "top20_coverage_pct": 50,
+    "mean_rank": 20.5,
+    "blind_baseline_hits5": 493,
+    "blind_baseline_hit_share_pct": 11.586368977673326,
+    "uniform_p_exact": 0.9738304243273767,
+    "uniform_p_holm": 1
+  },
+  "best_blind_raw_configuration": {
+    "id": "ODD3_A25",
+    "alpha": 25,
+    "blind_hits5": 518,
+    "blind_top5_hit_share_pct": 12.173913043478262,
+    "uniform_p_exact": 0.7583337343069801,
+    "uniform_p_holm": 1,
+    "retrospective_only": true
+  },
+  "models": [
+    {
+      "id": "ODD3_A0",
+      "alpha": 0,
+      "discovery": {
+        "targets": 1400,
+        "hits5": 863,
+        "top5HitSharePct": 12.32857142857143,
+        "hits10": 1709,
+        "top10HitSharePct": 24.414285714285715,
+        "hits20": 3503,
+        "top20HitSharePct": 50.042857142857144,
+        "meanRank": 20.56057142857143,
+        "brier": 0.10981387220426998,
+        "logLoss": 0.37888284803189987
+      },
+      "validation": {
+        "targets": 850,
+        "hits5": 548,
+        "top5HitSharePct": 12.894117647058824,
+        "hits10": 1088,
+        "top10HitSharePct": 25.6,
+        "hits20": 2131,
+        "top20HitSharePct": 50.141176470588235,
+        "meanRank": 20.371764705882352,
+        "brier": 0.10947558385239198,
+        "logLoss": 0.3772402952363542
+      },
+      "blind_oos": {
+        "targets": 851,
+        "hits5": 508,
+        "top5HitSharePct": 11.938895417156287,
+        "hits10": 1048,
+        "top10HitSharePct": 24.62984723854289,
+        "hits20": 2124,
+        "top20HitSharePct": 49.91774383078731,
+        "meanRank": 20.47943595769683,
+        "brier": 0.10946266786182014,
+        "logLoss": 0.37716450985859495
+      },
+      "uniform_p_exact": 0.8839265937150077,
+      "uniform_p_holm": 1,
+      "paired_block_p_raw": 0.5759212039398031,
+      "paired_block_p_holm": 1
+    },
+    {
+      "id": "ODD3_A25",
+      "alpha": 25,
+      "discovery": {
+        "targets": 1400,
+        "hits5": 867,
+        "top5HitSharePct": 12.385714285714286,
+        "hits10": 1697,
+        "top10HitSharePct": 24.242857142857144,
+        "hits20": 3479,
+        "top20HitSharePct": 49.7,
+        "meanRank": 20.584,
+        "brier": 0.10973363666593039,
+        "logLoss": 0.37845957043919304
+      },
+      "validation": {
+        "targets": 850,
+        "hits5": 553,
+        "top5HitSharePct": 13.011764705882353,
+        "hits10": 1094,
+        "top10HitSharePct": 25.741176470588236,
+        "hits20": 2131,
+        "top20HitSharePct": 50.141176470588235,
+        "meanRank": 20.358823529411765,
+        "brier": 0.10946696473473952,
+        "logLoss": 0.3771980584361119
+      },
+      "blind_oos": {
+        "targets": 851,
+        "hits5": 518,
+        "top5HitSharePct": 12.173913043478262,
+        "hits10": 1056,
+        "top10HitSharePct": 24.81786133960047,
+        "hits20": 2124,
+        "top20HitSharePct": 49.91774383078731,
+        "meanRank": 20.465099882491188,
+        "brier": 0.10945670427916783,
+        "logLoss": 0.377137111244318
+      },
+      "uniform_p_exact": 0.7583337343069801,
+      "uniform_p_holm": 1,
+      "paired_block_p_raw": 0.3157842107894605,
+      "paired_block_p_holm": 1
+    },
+    {
+      "id": "ODD3_A50",
+      "alpha": 50,
+      "discovery": {
+        "targets": 1400,
+        "hits5": 862,
+        "top5HitSharePct": 12.314285714285715,
+        "hits10": 1687,
+        "top10HitSharePct": 24.1,
+        "hits20": 3480,
+        "top20HitSharePct": 49.714285714285715,
+        "meanRank": 20.591142857142856,
+        "brier": 0.10969017635278484,
+        "logLoss": 0.3782443356129282
+      },
+      "validation": {
+        "targets": 850,
+        "hits5": 551,
+        "top5HitSharePct": 12.964705882352941,
+        "hits10": 1092,
+        "top10HitSharePct": 25.694117647058825,
+        "hits20": 2134,
+        "top20HitSharePct": 50.21176470588235,
+        "meanRank": 20.359058823529413,
+        "brier": 0.1094599878681024,
+        "logLoss": 0.37716401926984544
+      },
+      "blind_oos": {
+        "targets": 851,
+        "hits5": 518,
+        "top5HitSharePct": 12.173913043478262,
+        "hits10": 1056,
+        "top10HitSharePct": 24.81786133960047,
+        "hits20": 2125,
+        "top20HitSharePct": 49.94124559341951,
+        "meanRank": 20.464159811985898,
+        "brier": 0.10945157187188972,
+        "logLoss": 0.37711356679774966
+      },
+      "uniform_p_exact": 0.7583337343069801,
+      "uniform_p_holm": 1,
+      "paired_block_p_raw": 0.3157842107894605,
+      "paired_block_p_holm": 1
+    },
+    {
+      "id": "ODD3_A100",
+      "alpha": 100,
+      "discovery": {
+        "targets": 1400,
+        "hits5": 860,
+        "top5HitSharePct": 12.285714285714286,
+        "hits10": 1707,
+        "top10HitSharePct": 24.385714285714286,
+        "hits20": 3489,
+        "top20HitSharePct": 49.84285714285714,
+        "meanRank": 20.589285714285715,
+        "brier": 0.10964274625477316,
+        "logLoss": 0.37801519248445814
+      },
+      "validation": {
+        "targets": 850,
+        "hits5": 554,
+        "top5HitSharePct": 13.035294117647059,
+        "hits10": 1088,
+        "top10HitSharePct": 25.6,
+        "hits20": 2128,
+        "top20HitSharePct": 50.07058823529412,
+        "meanRank": 20.353882352941177,
+        "brier": 0.10944948374873949,
+        "logLoss": 0.37711301654654694
+      },
+      "blind_oos": {
+        "targets": 851,
+        "hits5": 514,
+        "top5HitSharePct": 12.079905992949472,
+        "hits10": 1060,
+        "top10HitSharePct": 24.91186839012926,
+        "hits20": 2128,
+        "top20HitSharePct": 50.0117508813161,
+        "meanRank": 20.449588719153937,
+        "brier": 0.10944323386330085,
+        "logLoss": 0.3770753826936642
+      },
+      "uniform_p_exact": 0.8154655211480247,
+      "uniform_p_holm": 1,
+      "paired_block_p_raw": 0.40822958852057395,
+      "paired_block_p_holm": 1
+    },
+    {
+      "id": "ODD3_A200",
+      "alpha": 200,
+      "discovery": {
+        "targets": 1400,
+        "hits5": 846,
+        "top5HitSharePct": 12.085714285714285,
+        "hits10": 1706,
+        "top10HitSharePct": 24.37142857142857,
+        "hits20": 3472,
+        "top20HitSharePct": 49.6,
+        "meanRank": 20.588142857142856,
+        "brier": 0.1096004676069946,
+        "logLoss": 0.37781418224517266
+      },
+      "validation": {
+        "targets": 850,
+        "hits5": 544,
+        "top5HitSharePct": 12.8,
+        "hits10": 1086,
+        "top10HitSharePct": 25.55294117647059,
+        "hits20": 2139,
+        "top20HitSharePct": 50.32941176470588,
+        "meanRank": 20.355764705882354,
+        "brier": 0.10943657705674684,
+        "logLoss": 0.3770507479340711
+      },
+      "blind_oos": {
+        "targets": 851,
+        "hits5": 510,
+        "top5HitSharePct": 11.98589894242068,
+        "hits10": 1049,
+        "top10HitSharePct": 24.653349001175087,
+        "hits20": 2134,
+        "top20HitSharePct": 50.152761457109285,
+        "meanRank": 20.457814336075206,
+        "brier": 0.10943171854571052,
+        "logLoss": 0.37702276981738897
+      },
+      "uniform_p_exact": 0.8634328161340349,
+      "uniform_p_holm": 1,
+      "paired_block_p_raw": 0.5131743412829358,
+      "paired_block_p_holm": 1
+    },
+    {
+      "id": "ODD3_A500",
+      "alpha": 500,
+      "discovery": {
+        "targets": 1400,
+        "hits5": 868,
+        "top5HitSharePct": 12.4,
+        "hits10": 1713,
+        "top10HitSharePct": 24.47142857142857,
+        "hits20": 3466,
+        "top20HitSharePct": 49.51428571428571,
+        "meanRank": 20.587714285714284,
+        "brier": 0.10956146015450481,
+        "logLoss": 0.37763063049273377
+      },
+      "validation": {
+        "targets": 850,
+        "hits5": 543,
+        "top5HitSharePct": 12.776470588235295,
+        "hits10": 1090,
+        "top10HitSharePct": 25.647058823529413,
+        "hits20": 2135,
+        "top20HitSharePct": 50.23529411764706,
+        "meanRank": 20.338588235294118,
+        "brier": 0.10942135454213822,
+        "logLoss": 0.3769779516837215
+      },
+      "blind_oos": {
+        "targets": 851,
+        "hits5": 505,
+        "top5HitSharePct": 11.868390129259694,
+        "hits10": 1050,
+        "top10HitSharePct": 24.676850763807284,
+        "hits20": 2122,
+        "top20HitSharePct": 49.870740305522915,
+        "meanRank": 20.433372502937722,
+        "brier": 0.10941551379990562,
+        "logLoss": 0.37694893970336907
+      },
+      "uniform_p_exact": 0.9104438297845948,
+      "uniform_p_holm": 1,
+      "paired_block_p_raw": 0.6552672366381681,
+      "paired_block_p_holm": 1
+    },
+    {
+      "id": "ODD3_A1000",
+      "alpha": 1000,
+      "discovery": {
+        "targets": 1400,
+        "hits5": 875,
+        "top5HitSharePct": 12.5,
+        "hits10": 1709,
+        "top10HitSharePct": 24.414285714285715,
+        "hits20": 3492,
+        "top20HitSharePct": 49.885714285714286,
+        "meanRank": 20.588714285714286,
+        "brier": 0.10954412875569919,
+        "logLoss": 0.377549695118433
+      },
+      "validation": {
+        "targets": 850,
+        "hits5": 524,
+        "top5HitSharePct": 12.329411764705883,
+        "hits10": 1073,
+        "top10HitSharePct": 25.24705882352941,
+        "hits20": 2126,
+        "top20HitSharePct": 50.023529411764706,
+        "meanRank": 20.352,
+        "brier": 0.10941436211155116,
+        "logLoss": 0.3769449332467116
+      },
+      "blind_oos": {
+        "targets": 851,
+        "hits5": 497,
+        "top5HitSharePct": 11.680376028202115,
+        "hits10": 1065,
+        "top10HitSharePct": 25.029377203290245,
+        "hits20": 2111,
+        "top20HitSharePct": 49.612220916568745,
+        "meanRank": 20.429377203290247,
+        "brier": 0.10940651021772288,
+        "logLoss": 0.37690805150701057
+      },
+      "uniform_p_exact": 0.9591566117125,
+      "uniform_p_holm": 1,
+      "paired_block_p_raw": 0.9229538523073846,
+      "paired_block_p_holm": 1
+    }
+  ],
+  "decision": "No predictive lift confirmed. Selected model's small retrospective Top5 difference versus unconditional frequency is not significant and scoring metrics are slightly worse. Prior SONAR experiments reuse this blind period; no independent prospective evidence.",
+  "next_action": "Freeze FD-09; no retuning on this blind segment. Continue append-only Q60 prospective freezes and register any new hypothesis/endpoint before computation."
+}
