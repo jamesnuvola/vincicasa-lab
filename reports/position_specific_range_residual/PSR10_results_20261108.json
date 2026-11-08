@@ -1,0 +1,499 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "SONAR_PSR10_PREVIOUS_SUM_QUARTILE_STATE_MARGINALS",
+  "status": "EXPLORATORY_NO_PROMOTION",
+  "generated_at_utc": "2026-11-08T15:43:33Z",
+  "data": {
+    "source": "data/storico_daily.csv",
+    "archive_git_blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draws": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07"
+  },
+  "hypothesis": {
+    "claim": "The previous draw's total sum, discretized by exact 5-of-40 theoretical sum quartiles, conditions the next sorted-position marginal law.",
+    "model": "q_i,t(n|s)=[C_i,s,t-1(n)+alpha*pi_i(n)]/[N_i,s,t-1+alpha]",
+    "state_predictor": "sum of draw t-1, available before target t",
+    "exact_position_prior": "pi_i(n)=choose(n-1,i-1)*choose(40-n,5-i)/choose(40,5)",
+    "alpha_grid": [
+      300,
+      1000,
+      3000
+    ],
+    "validation_selection": "per-position alpha maximizing validation mean Brier gain vs cumulative global transition marginal with same alpha; ties prefer larger alpha",
+    "primary_comparator": "cumulative global transition marginal with same alpha",
+    "secondary_comparator": "exact uniform 5-of-40 order-statistic prior"
+  },
+  "state_definition": {
+    "quantile_rule": "for q in {0.25,0.50,0.75}, cut is the smallest integer sum whose exact combinatorial CDF reaches q; bins are Q1<=cut1, Q2=(cut1,cut2], Q3=(cut2,cut3], Q4>cut3",
+    "cuts": [
+      86,
+      102,
+      119
+    ],
+    "mass_counts": [
+      172497,
+      156507,
+      165006,
+      163998
+    ],
+    "mass_fractions": [
+      0.262150308203,
+      0.237849691797,
+      0.250765948134,
+      0.249234051866
+    ],
+    "total_combinations": 658008
+  },
+  "design": {
+    "warmup_target_row_index_zero_based": 200,
+    "walk_forward_targets": 3201,
+    "splits": {
+      "discovery": {
+        "n": 1920,
+        "first": "2018-02-02",
+        "last": "2023-05-06"
+      },
+      "validation": {
+        "n": 640,
+        "first": "2023-05-07",
+        "last": "2025-02-04"
+      },
+      "blind_oos": {
+        "n": 641,
+        "first": "2025-02-05",
+        "last": "2026-11-07"
+      }
+    },
+    "strict_prefix_rule": "for target row t, transition outcomes u=1..t-1 only; each predictor state uses draw row u-1 and each outcome is draw row u",
+    "cutoff_rule": "cutoff is immediately preceding archive date; no row t or later data enters the target prediction",
+    "bootstrap": {
+      "method": "circular moving-block bootstrap, centered one-sided null",
+      "block_length": 7,
+      "replicates": 2000,
+      "seed_base": 20261108
+    },
+    "multiple_testing": "Holm correction across 10 blind-OOS endpoint/comparator tests; family-wise alpha 0.05"
+  },
+  "validation_selection": [
+    {
+      "position": 1,
+      "selectedAlpha": 1000,
+      "selectionMetric": "validation mean Brier improvement vs global transition-marginal with same alpha",
+      "grid": [
+        {
+          "alpha": 1000,
+          "validationBrierGainVsGlobalSameAlpha": 0.000029415606
+        },
+        {
+          "alpha": 3000,
+          "validationBrierGainVsGlobalSameAlpha": 0.000018660606
+        },
+        {
+          "alpha": 300,
+          "validationBrierGainVsGlobalSameAlpha": -0.000220519268
+        }
+      ]
+    },
+    {
+      "position": 2,
+      "selectedAlpha": 3000,
+      "selectionMetric": "validation mean Brier improvement vs global transition-marginal with same alpha",
+      "grid": [
+        {
+          "alpha": 3000,
+          "validationBrierGainVsGlobalSameAlpha": -0.000005590311
+        },
+        {
+          "alpha": 1000,
+          "validationBrierGainVsGlobalSameAlpha": -0.00025856672
+        },
+        {
+          "alpha": 300,
+          "validationBrierGainVsGlobalSameAlpha": -0.000945853754
+        }
+      ]
+    },
+    {
+      "position": 3,
+      "selectedAlpha": 3000,
+      "selectionMetric": "validation mean Brier improvement vs global transition-marginal with same alpha",
+      "grid": [
+        {
+          "alpha": 3000,
+          "validationBrierGainVsGlobalSameAlpha": -0.000049582758
+        },
+        {
+          "alpha": 1000,
+          "validationBrierGainVsGlobalSameAlpha": -0.000230317534
+        },
+        {
+          "alpha": 300,
+          "validationBrierGainVsGlobalSameAlpha": -0.000770338492
+        }
+      ]
+    },
+    {
+      "position": 4,
+      "selectedAlpha": 3000,
+      "selectionMetric": "validation mean Brier improvement vs global transition-marginal with same alpha",
+      "grid": [
+        {
+          "alpha": 3000,
+          "validationBrierGainVsGlobalSameAlpha": 0.000060023164
+        },
+        {
+          "alpha": 1000,
+          "validationBrierGainVsGlobalSameAlpha": 0.000045825325
+        },
+        {
+          "alpha": 300,
+          "validationBrierGainVsGlobalSameAlpha": -0.000203273336
+        }
+      ]
+    },
+    {
+      "position": 5,
+      "selectedAlpha": 1000,
+      "selectionMetric": "validation mean Brier improvement vs global transition-marginal with same alpha",
+      "grid": [
+        {
+          "alpha": 1000,
+          "validationBrierGainVsGlobalSameAlpha": 0.00019023926
+        },
+        {
+          "alpha": 3000,
+          "validationBrierGainVsGlobalSameAlpha": 0.000151938063
+        },
+        {
+          "alpha": 300,
+          "validationBrierGainVsGlobalSameAlpha": -0.000069426646
+        }
+      ]
+    }
+  ],
+  "split_metrics": [
+    {
+      "position": 1,
+      "metrics": {
+        "discovery": {
+          "gainPrior": -0.000096181307,
+          "gainGlobal": 0.000036098198,
+          "logGainPrior": -0.002503962244,
+          "logGainGlobal": 0.002083383366,
+          "n": 1920
+        },
+        "validation": {
+          "gainPrior": 0.000015822045,
+          "gainGlobal": 0.000029415606,
+          "logGainPrior": 0.000287460567,
+          "logGainGlobal": -0.001834989132,
+          "n": 640
+        },
+        "blind_oos": {
+          "gainPrior": -0.000242512031,
+          "gainGlobal": 0.00007345423,
+          "logGainPrior": -0.005978237866,
+          "logGainGlobal": 0.000871998961,
+          "n": 641
+        }
+      }
+    },
+    {
+      "position": 2,
+      "metrics": {
+        "discovery": {
+          "gainPrior": -0.000046930469,
+          "gainGlobal": 0.000025787175,
+          "logGainPrior": -0.000553770911,
+          "logGainGlobal": 0.000088411,
+          "n": 1920
+        },
+        "validation": {
+          "gainPrior": -0.000303698064,
+          "gainGlobal": -0.000005590311,
+          "logGainPrior": -0.003009057394,
+          "logGainGlobal": 0.000367371437,
+          "n": 640
+        },
+        "blind_oos": {
+          "gainPrior": -0.000076996013,
+          "gainGlobal": 0.000148228509,
+          "logGainPrior": -0.000508418646,
+          "logGainGlobal": 0.004282474067,
+          "n": 641
+        }
+      }
+    },
+    {
+      "position": 3,
+      "metrics": {
+        "discovery": {
+          "gainPrior": -0.000026427125,
+          "gainGlobal": 0.000016990919,
+          "logGainPrior": -0.00031850786,
+          "logGainGlobal": 0.000428233083,
+          "n": 1920
+        },
+        "validation": {
+          "gainPrior": -0.00017701025,
+          "gainGlobal": -0.000049582758,
+          "logGainPrior": -0.002893734899,
+          "logGainGlobal": 0.000721293368,
+          "n": 640
+        },
+        "blind_oos": {
+          "gainPrior": -0.00002460544,
+          "gainGlobal": -0.000110148666,
+          "logGainPrior": -0.001175339749,
+          "logGainGlobal": -0.003057846944,
+          "n": 641
+        }
+      }
+    },
+    {
+      "position": 4,
+      "metrics": {
+        "discovery": {
+          "gainPrior": -0.000085470083,
+          "gainGlobal": 0.000024176743,
+          "logGainPrior": -0.001128718294,
+          "logGainGlobal": 0.000740541654,
+          "n": 1920
+        },
+        "validation": {
+          "gainPrior": -0.000003069413,
+          "gainGlobal": 0.000060023164,
+          "logGainPrior": -0.000561892729,
+          "logGainGlobal": 0.001025745492,
+          "n": 640
+        },
+        "blind_oos": {
+          "gainPrior": -0.00010771233,
+          "gainGlobal": -0.000339749671,
+          "logGainPrior": -0.001565062465,
+          "logGainGlobal": -0.003649914946,
+          "n": 641
+        }
+      }
+    },
+    {
+      "position": 5,
+      "metrics": {
+        "discovery": {
+          "gainPrior": -0.000028512625,
+          "gainGlobal": 0.000254204587,
+          "logGainPrior": -0.001656580694,
+          "logGainGlobal": 0.00335173982,
+          "n": 1920
+        },
+        "validation": {
+          "gainPrior": 0.000011752609,
+          "gainGlobal": 0.00019023926,
+          "logGainPrior": -0.006429508193,
+          "logGainGlobal": -0.000816186047,
+          "n": 640
+        },
+        "blind_oos": {
+          "gainPrior": -0.000207803101,
+          "gainGlobal": -0.000167684826,
+          "logGainPrior": -0.005102637883,
+          "logGainGlobal": -0.000128041286,
+          "n": 641
+        }
+      }
+    }
+  ],
+  "blind_oos_inference": [
+    {
+      "position": 1,
+      "comparator": "global_transition_marginal_same_alpha",
+      "primary": true,
+      "n": 641,
+      "mean": 0.00007345423,
+      "ci95": [
+        -0.000574062739,
+        0.000749773716
+      ],
+      "rawCenteredOneSidedP": 0.413293353323,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20262105,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 1,
+      "comparator": "exact_order_statistic_prior",
+      "primary": false,
+      "n": 641,
+      "mean": -0.000242512031,
+      "ci95": [
+        -0.0008784809,
+        0.000357133121
+      ],
+      "rawCenteredOneSidedP": 0.786106946527,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20312105,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 2,
+      "comparator": "global_transition_marginal_same_alpha",
+      "primary": true,
+      "n": 641,
+      "mean": 0.000148228509,
+      "ci95": [
+        -0.000033833606,
+        0.000340163224
+      ],
+      "rawCenteredOneSidedP": 0.065467266367,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20263102,
+      "holmAdjustedP": 0.654672663668
+    },
+    {
+      "position": 2,
+      "comparator": "exact_order_statistic_prior",
+      "primary": false,
+      "n": 641,
+      "mean": -0.000076996013,
+      "ci95": [
+        -0.000262918152,
+        0.000105601471
+      ],
+      "rawCenteredOneSidedP": 0.807596201899,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20313102,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 3,
+      "comparator": "global_transition_marginal_same_alpha",
+      "primary": true,
+      "n": 641,
+      "mean": -0.000110148666,
+      "ci95": [
+        -0.00033954653,
+        0.000128623842
+      ],
+      "rawCenteredOneSidedP": 0.827086456772,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20264099,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 3,
+      "comparator": "exact_order_statistic_prior",
+      "primary": false,
+      "n": 641,
+      "mean": -0.00002460544,
+      "ci95": [
+        -0.000214519307,
+        0.000160658765
+      ],
+      "rawCenteredOneSidedP": 0.593703148426,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20314099,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 4,
+      "comparator": "global_transition_marginal_same_alpha",
+      "primary": true,
+      "n": 641,
+      "mean": -0.000339749671,
+      "ci95": [
+        -0.000588750478,
+        -0.000110623348
+      ],
+      "rawCenteredOneSidedP": 0.998500749625,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20265096,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 4,
+      "comparator": "exact_order_statistic_prior",
+      "primary": false,
+      "n": 641,
+      "mean": -0.00010771233,
+      "ci95": [
+        -0.000322248513,
+        0.000097543671
+      ],
+      "rawCenteredOneSidedP": 0.839580209895,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20315096,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 5,
+      "comparator": "global_transition_marginal_same_alpha",
+      "primary": true,
+      "n": 641,
+      "mean": -0.000167684826,
+      "ci95": [
+        -0.00081118654,
+        0.000460516398
+      ],
+      "rawCenteredOneSidedP": 0.698150924538,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20266093,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 5,
+      "comparator": "exact_order_statistic_prior",
+      "primary": false,
+      "n": 641,
+      "mean": -0.000207803101,
+      "ci95": [
+        -0.000932915149,
+        0.000518875058
+      ],
+      "rawCenteredOneSidedP": 0.703648175912,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20316093,
+      "holmAdjustedP": 1
+    }
+  ],
+  "integrity": {
+    "strict_prefix_checks": 3201,
+    "target_cutoff_before_target_checks": 3201,
+    "prior_normalization_checks": 5,
+    "candidate_and_global_probability_normalization_checks": 128040,
+    "max_probability_normalization_error": "7.771561e-16",
+    "max_exact_prior_normalization_error": "2.220446e-16",
+    "ledger_rows_total": 16005,
+    "ledger_rows_per_position": [
+      3201,
+      3201,
+      3201,
+      3201,
+      3201
+    ],
+    "duplicate_target_position_keys": 0,
+    "train_transition_count_rule": "trainN=t-1; stateTrainN is count of prior transitions with predictor in target's previous-sum state"
+  },
+  "limitations": [
+    "The historical blind partition is not pristine: other SONAR analyses have already inspected the archive tail through 2026-11-07; inference is exploratory, not independent confirmation.",
+    "The experiment tests five marginal laws only; it does not specify a joint quintet probability or a physical Navier-Stokes mechanism.",
+    "State conditioning creates smaller subsets; shrinkage and state-count sparsity can dominate any apparent signal.",
+    "Lottery draws may be independent; no predictive advantage is presumed or guaranteed."
+  ],
+  "decision": {
+    "promotion_allowed": false,
+    "engine_changed": false,
+    "prospective_shadow_candidate_added": false,
+    "next_action": "Continue the registered Q60 append-only prospective gate; do not add PSR-10 to the shadow candidate stream absent human review."
+  }
+}
