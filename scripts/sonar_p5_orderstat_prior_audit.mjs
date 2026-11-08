@@ -57,7 +57,7 @@ const empiricalTestMetrics={training_draws:train.length,training_cutoff:train.at
  top1_set:empiricalRank.slice(0,1),top5_set:empiricalRank.slice(0,5),top10_set:empiricalRank.slice(0,10),
  top1_hit_rate:test.filter(r=>empiricalRank.slice(0,1).includes(r.p5)).length/test.length,
  top5_hit_rate:test.filter(r=>empiricalRank.slice(0,5).includes(r.p5)).length/test.length,
- top10_hit_rate:test.filter(r=>empiricalRank.slice(0,10).includes(r.p5)).length,
+ top10_hit_rate:test.filter(r=>empiricalRank.slice(0,10).includes(r.p5)).length/test.length,
  mean_rank:test.reduce((s,r)=>s+empiricalMap.get(r.p5),0)/test.length};
 const rollingCompare=[];
 for(const rr of rolling.rolling_year_results){

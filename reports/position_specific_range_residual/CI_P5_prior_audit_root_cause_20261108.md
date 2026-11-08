@@ -1,8 +1,14 @@
 # CI failure root-cause — P5 order-statistic prior audit
 
-- Failed workflow: 42470276615 (base checkpoint run) and 42470653348 (PSR-03 branch run). The first failed at the P5 audit parser; the second failed earlier at PSR-03 report reproducibility, so P5 was skipped.
-- The P5 audit's train-date regex was double-escaped in a regex literal: it matched literal backslash+d instead of date digits. The report contains ordinary YYYY-MM-DD text, so the train window could not be parsed.
-- Correction in scripts/sonar_p5_orderstat_prior_audit.mjs: use the same single-escaped digit/date regex as the test-window parser. This is a parsing-only correction; it does not alter the P5 ranker or its metrics. The corrected regex was locally checked against the report's 2017-09-05 through 2024-12-31 training window.
-- PSR-03 itself executed successfully in both CI runs. The first reproducibility diff identified omitted position labels in position_bins and last-bit cross-runtime log-loss float differences (~1e-16); the second diff confirmed the JSON and compact target ledger now match, but Markdown differed in trailing whitespace, the comma in “2,000”, and a terminal blank line.
-- PSR-03 corrections: explicit P1–P5 labels, recursive 12-decimal report normalization, 48-column selected-target ledger with six-decimal score deltas, and Markdown formatting aligned with the Node renderer. The byte-for-byte CI diff guard remains enabled.
-- Status: code and persisted outputs read back exactly; CI rerun is pending to verify the reproducibility guard and P5 audit step.
+## Resolved parser and PSR-03 reproducibility issues
+
+- Workflow 42470276615 failed because the P5 audit train-date regex was double-escaped in a regex literal; it matched literal backslash+d instead of date digits. Corrected to the same single-escaped date regex as the test-window parser.
+- Workflow 42470653348 executed PSR-01, PSR-02 and PSR-03, but the PSR-03 byte-diff guard found missing P1–P5 labels and cross-runtime float/ledger formatting differences. Workflow 42471192018 confirmed the JSON and compact ledger matched after normalization; Markdown still differed in trailing whitespace, thousands separator, and terminal blank line. Those renderer details were aligned.
+- Workflow 42471485090 completed successfully: all preceding lab checks, PSR-01, PSR-02, PSR-03, the PSR-03 byte-for-byte reproducibility guard, P5 audit step, artifact uploads and application build passed.
+
+## P5 audit artifact inspection and correction
+
+- The successful P5 artifact confirmed the exact order-statistic baseline: pooled 2025-01-01–2026-11-04 (N=673), logistic Top5 42.7935% vs exact prior-ranked Top5 52.0059% on the same dates (−9.2125 pp); Top1 10.4012% vs 12.3328% (−1.9316 pp); mean rank 8.751857 vs 7.062407 (+1.689450, lower is better). Paired inference remains unavailable because the ranker report has aggregate-only metrics.
+- A code audit of that artifact found a reporting defect: empirical_frequency_prior_baseline.top10_hit_rate was written as raw hits (516) rather than rate (516/673 = 0.7667161961). The exact-prior top10 rate field is already a rate.
+- Corrected scripts/sonar_p5_orderstat_prior_audit.mjs to divide the empirical Top10 count by test.length. This changes only the reported metric scale, not ranker training or rankings.
+- Status: the parser and PSR-03 output reproduction are CI-verified; the Top10 metric correction is persisted and awaits a fresh CI run and artifact readback.
