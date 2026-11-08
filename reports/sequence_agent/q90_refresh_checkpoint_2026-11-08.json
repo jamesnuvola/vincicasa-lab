@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "Q90-REFRESH-2026-11-08",
+  "status": "Q90_REFRESH_RUNNING_PENDING_ACCEPTANCE",
+  "research_branch": "research/q90-expanded-formula-grammar-20261103",
+  "research_head_sha": "30480c640c1c1f5667e28562f75247cd8661f8ad",
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07"
+  },
+  "expected_scope": {
+    "minimum_prior_draws": 50,
+    "scored_targets": 3351,
+    "selected_features": 20,
+    "formula_count": 330429,
+    "metrics_rows": 991287,
+    "target_ledger_rows": 3351,
+    "split_target_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    }
+  },
+  "runs": {
+    "q90_workflow": {
+      "workflow_run_id": 42504717670,
+      "status": "IN_PROGRESS"
+    },
+    "exact_head_ci": {
+      "workflow_run_id": 42504717657,
+      "status": "IN_PROGRESS"
+    }
+  },
+  "previous_run": {
+    "workflow_run_id": 42267331734,
+    "archive_cutoff": "2026-11-04",
+    "status": "FORMULA_ACCEPTANCE_PASS_PENDING_ARTIFACT_READBACK_MAIN_CI_HUMAN_REVIEW",
+    "artifact_id": 13528333502,
+    "artifact_readback_verified": true,
+    "holm_significant_blind_formula_count": 0
+  },
+  "outputs_persisted": false,
+  "acceptance": {
+    "compile_tests": "PENDING",
+    "formula_walkforward": "PENDING",
+    "fail_closed_validator": "PENDING",
+    "artifact_upload_90d": "PENDING",
+    "external_readback": "PENDING",
+    "exact_head_ci": "PENDING",
+    "human_review_integration": "PENDING"
+  },
+  "guardrails": {
+    "finite_grammar_only": true,
+    "all_59_feature_combinations_not_exhausted": true,
+    "no_formula_promotion": true,
+    "no_pr_merge": true,
+    "immutable_target_2026_10_25_freeze_preserved": true
+  },
+  "next_action": "Monitor the exact Q90 workflow and CI runs. On success, download the 90-day artifact, verify ZIP digest and all internal SHA-256/row counts/chronology, persist a readback checkpoint. If either run fails, inspect the exact failed step and resume from its checkpoint. Human review/integration remains the completion gate."
+}
