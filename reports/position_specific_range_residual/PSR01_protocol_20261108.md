@@ -21,6 +21,7 @@ Fixed alpha is preregistered for PSR-01; no blind OOS tuning. In addition, recor
 - Target chronology split 50% discovery / 25% validation / final 25% blind OOS. Discovery and validation are descriptive; they are not used to tune alpha.
 - Compare empirical-frequency mode and prior-shrunk posterior mode to exact order-statistic prior mode.
 - Proper scores: Brier and log loss for posterior versus prior distribution.
+- For each past min/max interval, compute its exact expected coverage mass under the order-statistic prior and retain the observed-minus-expected coverage residual. Treat range coverage as a descriptive diagnostic, not as an inferential claim when expected tail escapes are very rare.
 - Blind-OOS inference: circular moving-block bootstrap (block length 7, 2,000 replicates, deterministic seed) for mean paired improvements and 95% intervals; one-sided benefit p-values; Holm correction across 20 blind endpoints (five positions × four metrics).
 
 ## Leakage / bias / reproducibility controls
