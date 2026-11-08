@@ -1,11 +1,11 @@
 {
-  "generated_at_utc": "2026-11-08T17:32:51.336139+00:00",
+  "generated_at_utc": "2026-11-08T17:44:35.538397+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
   "task_count": 16,
   "complete_count": 2,
-  "ready_count": 2,
+  "ready_count": 1,
   "active_next_task": "Q84",
   "active_next_task_title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
   "blocking_tasks": [],
@@ -314,18 +314,12 @@
       "id": "Q88",
       "priority": 88,
       "title": "Exhaustively evaluate all eight-feature equal-weight combinations with 15 distributed shards",
-      "status": "READY",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
       "depends_on": [
         "Q00"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/per_number_condition_8plus_formula_metrics_manifest.json",
-        "reports/sequence_agent/per_number_condition_8plus_target_ledger.csv"
-      ],
-      "validation_errors": [
-        "missing evidence: reports/sequence_agent/per_number_condition_8plus_formula_metrics_manifest.json",
-        "missing evidence: reports/sequence_agent/per_number_condition_8plus_target_ledger.csv"
-      ],
+      "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "evaluate all 2,220,075 unique unordered eight-feature equal-weight combinations from the 27 registered prior-only features",
         "use 15 deterministic shards of 148,005 formulas each and 1,024-formula batches with contiguous manifests and no gaps or overlaps",
