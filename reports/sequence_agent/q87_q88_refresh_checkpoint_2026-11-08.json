@@ -76,46 +76,152 @@
   "next_action": "Allow the in-flight Q87/Q88 runs to finish as recoverable checkpoints; then sync the research branch to canonical main through 2026-11-07, refresh Q80-Q86 and Q87/Q88 walk-forward outputs, pass fail-closed acceptance, persist and reread exact bytes, rerun exact-head CI, and retain human review/integration as the final gate.",
   "shard_artifact_progress": {
     "q87": {
-      "uploaded_count": 1,
+      "uploaded_count": 5,
       "expected_count": 6,
       "artifacts": [
+        {
+          "id": 13627505158,
+          "name": "sonar-q87-shard-4",
+          "size_bytes": 17002626,
+          "digest": "sha256:f0e74d20a1f3a3104bb1cc4f7c7b3fc09d76d701a4effa75e6c30c54fc7cb0b3",
+          "expired": false
+        },
+        {
+          "id": 13627121203,
+          "name": "sonar-q87-shard-0",
+          "size_bytes": 16399069,
+          "digest": "sha256:4b94eb38fc0e1a11d03f227a618d2e08785463ce5d8e3d49ca3a8092ba7cbfae",
+          "expired": false
+        },
+        {
+          "id": 13626907753,
+          "name": "sonar-q87-shard-3",
+          "size_bytes": 16853327,
+          "digest": "sha256:2215bebe9d6ee3dce722bedb57e88a1d4ef211a4eda54123c32deba17e4bcc67",
+          "expired": false
+        },
+        {
+          "id": 13626857084,
+          "name": "sonar-q87-shard-5",
+          "size_bytes": 17256321,
+          "digest": "sha256:96ad0a70a98c50f127529de5402e8369f5811426b08d595dc27ae159a87d4576",
+          "expired": false
+        },
         {
           "id": 13626434815,
           "name": "sonar-q87-shard-1",
           "size_bytes": 16663439,
+          "digest": "sha256:2d628d7f9d29ab8a11867dfd0da9681772fd6a07a85472f9c42757d0c32a2064",
           "expired": false
         }
       ]
     },
     "q88": {
-      "uploaded_count": 4,
+      "uploaded_count": 7,
       "expected_count": 15,
       "artifacts": [
         {
           "id": 13627320467,
           "name": "sonar-q88-shard-4",
           "size_bytes": 16746662,
+          "digest": "sha256:cef67de4733a6e359d4b7d149eab0713128ee2618b2ca08ecc80107183792700",
+          "expired": false
+        },
+        {
+          "id": 13626932813,
+          "name": "sonar-q88-shard-11",
+          "size_bytes": 17046441,
+          "digest": "sha256:06bb8a1ea27d4446bc1cbbc7ef321f0fe82269de4d34438d0935cc574dab0e82",
+          "expired": false
+        },
+        {
+          "id": 13626912664,
+          "name": "sonar-q88-shard-14",
+          "size_bytes": 17413656,
+          "digest": "sha256:83d5d4dcbdaf0ad24134634f0d33bdb78095a8206e6560fd058f53e41fe17991",
+          "expired": false
+        },
+        {
+          "id": 13626599556,
+          "name": "sonar-q88-shard-1",
+          "size_bytes": 16521396,
+          "digest": "sha256:7999a21096c19bf1f7defbd625237a75daf872cbaccd508d3d40ccd3c4143ecd",
           "expired": false
         },
         {
           "id": 13626504763,
           "name": "sonar-q88-shard-6",
           "size_bytes": 16879318,
+          "digest": "sha256:1a8075d67ffcf73aa964cc7a34f5c73c1a8d3ff938aa8d2d7639954e88d24980",
           "expired": false
         },
         {
           "id": 13626368370,
           "name": "sonar-q88-shard-5",
           "size_bytes": 16777490,
+          "digest": "sha256:1d17946bbd41ca06ea810dcd3716cd4c9383100e47d87bed2df692261fce6548",
           "expired": false
         },
         {
           "id": 13625904652,
           "name": "sonar-q88-shard-12",
           "size_bytes": 17140912,
+          "digest": "sha256:b2103b79587816c0125b3800619f25924b2ae4de370464440e34d2a340f38dfb",
           "expired": false
         }
       ]
     }
-  }
+  },
+  "verified_partial_shards": [
+    {
+      "task_id": "Q87",
+      "shard_index": 1,
+      "artifact_id": 13626434815,
+      "zip_sha256": "2d628d7f9d29ab8a11867dfd0da9681772fd6a07a85472f9c42757d0c32a2064",
+      "zip_size_bytes": 16663439,
+      "metrics_rows": 444015,
+      "split_rows": {
+        "discovery": 148005,
+        "validation": 148005,
+        "blind_oos": 148005
+      },
+      "unique_formula_ids_per_split": 148005,
+      "target_ledger_rows": 3350,
+      "unique_target_dates": 3350,
+      "prior_draws_range": [
+        50,
+        3399
+      ],
+      "batch_count": 145,
+      "batches_contiguous": true,
+      "formula_batch_total": 148005,
+      "actual_quintets_cutoffs_match_q90_prefix_3348": true,
+      "zip_digest_verified": true
+    },
+    {
+      "task_id": "Q88",
+      "shard_index": 4,
+      "artifact_id": 13627320467,
+      "zip_sha256": "cef67de4733a6e359d4b7d149eab0713128ee2618b2ca08ecc80107183792700",
+      "zip_size_bytes": 16746662,
+      "metrics_rows": 444015,
+      "split_rows": {
+        "discovery": 148005,
+        "validation": 148005,
+        "blind_oos": 148005
+      },
+      "unique_formula_ids_per_split": 148005,
+      "target_ledger_rows": 3350,
+      "unique_target_dates": 3350,
+      "prior_draws_range": [
+        50,
+        3399
+      ],
+      "batch_count": 145,
+      "batches_contiguous": true,
+      "formula_batch_total": 148005,
+      "actual_quintets_cutoffs_match_q90_prefix_3348": true,
+      "zip_digest_verified": true
+    }
+  ]
 }
