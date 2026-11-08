@@ -242,10 +242,22 @@ conditional.holm_adjusted_upper_tail_p=holm({
   reflected:conditional.ref.upper_tail_p
 });
 
-const latestIndex=rankings.raw.length-1;
-const currentForecast={target_date:rows[N-1].date,history_cutoff:rows[N-1].date,archive_draws:N};
+const nextDate=new Date(`${rows[N-1].date}T00:00:00Z`);
+nextDate.setUTCDate(nextDate.getUTCDate()+1);
+const targetDate=nextDate.toISOString().slice(0,10);
+const currentDiffusion=Array(M).fill(0), currentReflected=Array(M).fill(0);
+for (let n=0; n<M; n++) {
+  for (let k=0; k<M; k++) {
+    currentDiffusion[n] += directKernel[n][k]*decayed[k];
+    currentReflected[n] += reflectedKernel[n][k]*decayed[k];
+  }
+  currentDiffusion[n] /= directNorm[n];
+  currentReflected[n] /= reflectedNorm[n];
+}
+const currentScores={raw:decayed.slice(),diff:currentDiffusion,ref:currentReflected};
+const currentForecast={target_date:targetDate,history_cutoff:rows[N-1].date,archive_draws:N};
 for (const model of ["raw","diff","ref"]) {
-  const order=rankings[model][latestIndex];
+  const order=makeRanking(currentScores[model]);
   currentForecast[model]={top20:order.slice(0,20),top10:order.slice(0,10),top5:order.slice(0,5)};
 }
 console.log(JSON.stringify({
