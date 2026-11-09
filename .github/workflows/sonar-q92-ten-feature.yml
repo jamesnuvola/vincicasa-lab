@@ -10,7 +10,9 @@ on:
       - "scripts/sonar_per_number_condition_grammar.py"
       - "scripts/sonar_per_number_condition_4plus_grammar.py"
       - "scripts/sonar_per_number_condition_10plus_shard.py"
+      - "scripts/aggregate_sonar_q92_shards.py"
       - "tests/test_sonar_q92_formula_universe.py"
+      - "tests/test_sonar_q92_aggregate.py"
   workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, edited]
@@ -20,7 +22,9 @@ on:
       - ".github/workflows/sonar-q92-ten-feature.yml"
       - "scripts/sonar_q92_common.py"
       - "scripts/sonar_per_number_condition_10plus_shard.py"
+      - "scripts/aggregate_sonar_q92_shards.py"
       - "tests/test_sonar_q92_formula_universe.py"
+      - "tests/test_sonar_q92_aggregate.py"
       - "reports/sequence_agent/q92_preregistration_2026-11-09.json"
       - "reports/sequence_agent/q92_preregistration_2026-11-09.md"
 
@@ -45,7 +49,9 @@ jobs:
           python-version: "3.12"
       - name: Install numerical dependency
         run: python -m pip install --disable-pip-version-check numpy
-      - name: Compile Q92 combinadic module, shard evaluator and tests
-        run: python -m py_compile scripts/sonar_q92_common.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_10plus_shard.py tests/test_sonar_q92_formula_universe.py
+      - name: Compile Q92 combinadic module, shard evaluator, aggregator and tests
+        run: python -m py_compile scripts/sonar_q92_common.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_10plus_shard.py scripts/aggregate_sonar_q92_shards.py tests/test_sonar_q92_formula_universe.py tests/test_sonar_q92_aggregate.py
       - name: Test exact formula universe, shard coverage, rank/unrank and invalid-input guards
         run: python tests/test_sonar_q92_formula_universe.py -v
+      - name: Test Q92 aggregation, selection, Holm and paired inference primitives
+        run: python tests/test_sonar_q92_aggregate.py -v
