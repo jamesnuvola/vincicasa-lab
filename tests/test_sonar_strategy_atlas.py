@@ -115,3 +115,5 @@ if __name__ == "__main__":
     unittest.main(verbosity=2)
 
 # Q84 isolated workflow trigger: regression suite is intentionally branch-scoped.
+
+# Q84 provenance guard: exact source commit must be persisted and ancestry-verified.
