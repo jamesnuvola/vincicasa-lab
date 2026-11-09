@@ -1,0 +1,68 @@
+name: SONAR Q86-DIR Directional Field Kinematics
+
+on:
+  push:
+    branches:
+      - research/q86-directional-field-kinematics-20261110
+permissions:
+  contents: write
+concurrency:
+  group: sonar-q86-directional-field-kinematics
+  cancel-in-progress: false
+jobs:
+  evaluate-validate-persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Detect persisted Q86-DIR outputs
+        id: state
+        run: |
+          subject="$(git log -1 --format=%s)"
+          if [[ "$subject" == *"[q86-dir-persisted]"* ]]; then echo "persisted=true" >> "$GITHUB_OUTPUT"; else echo "persisted=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Compile Q86-DIR model and validator
+        run: python -m py_compile scripts/sonar_q86_directional_dynamics.py scripts/validate_sonar_q86_directional_dynamics.py
+      - name: Run directional cosine, coherence, fixed-alpha and prefix-invariance tests
+        run: python tests/test_sonar_q86_directional_dynamics.py -v
+      - name: Execute preregistered Q86-DIR strict-prior walk-forward
+        if: steps.state.outputs.persisted != 'true'
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: python scripts/sonar_q86_directional_dynamics.py
+      - name: Replay every target, rank vector, directional vector and Holm family
+        if: steps.state.outputs.persisted != 'true'
+        run: python scripts/validate_sonar_q86_directional_dynamics.py
+      - name: Persist append-only Q86-DIR artifacts and verify exact Git readback
+        if: steps.state.outputs.persisted != 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q86_directional_dynamics_catalog.jsonl \
+                  reports/sequence_agent/q86_directional_dynamics_target_ledger.csv.gz \
+                  reports/sequence_agent/q86_directional_dynamics_report.json \
+                  reports/sequence_agent/q86_directional_dynamics_manifest.json \
+                  reports/sequence_agent/q86_directional_dynamics_checkpoint_2026-11-10.json \
+                  reports/sequence_agent/q86_directional_dynamics_validation.json
+          git commit -m "Persist Q86-DIR directional field kinematics [q86-dir-persisted]"
+          git push origin "HEAD:${{ github.ref_name }}"
+          for f in \
+            reports/sequence_agent/q86_directional_dynamics_catalog.jsonl \
+            reports/sequence_agent/q86_directional_dynamics_target_ledger.csv.gz \
+            reports/sequence_agent/q86_directional_dynamics_report.json \
+            reports/sequence_agent/q86_directional_dynamics_manifest.json \
+            reports/sequence_agent/q86_directional_dynamics_checkpoint_2026-11-10.json \
+            reports/sequence_agent/q86_directional_dynamics_validation.json; do
+            git show "HEAD:$f" > /tmp/q86-dir-readback
+            cmp "$f" /tmp/q86-dir-readback
+          done
+      - name: Revalidate persisted exact-head outputs without modifying them
+        if: steps.state.outputs.persisted == 'true'
+        run: python scripts/validate_sonar_q86_directional_dynamics.py --read-only
