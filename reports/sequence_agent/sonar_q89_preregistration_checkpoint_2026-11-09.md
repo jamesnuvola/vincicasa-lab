@@ -60,3 +60,10 @@ Date: 2026-11-09
 - The Q89 acceptance validator's combinadic rank calculation is optimized with precomputed prefix sums. The persistence script now relies on one queue-driven fail-closed validation pass, adds API method/path diagnostics, throttles writes slightly, and retries transient 5xx/429 responses for a longer bounded window.
 - The recovery workflow waits for exact-head CI, downloads the original aggregate artifact by run ID, persists report/manifest/469 metric parts/ledger/queue/checkpoint through Git Data API, verifies every blob's SHA and bytes, then waits for persisted exact-head CI.
 - Q89 remains pending repository persistence and persisted-head CI. It is not COMPLETE and not promoted.
+
+## Recovery attempt 2 — exact-head CI condition correction
+
+- Recovery commit `ae271ee786d68d0b4d0212fb8deced9edc42f884` correctly compiled the optimized validator/persistence code and passed the Q89 unit tests and Q80/Q88 validators.
+- Its exact-head CI nevertheless failed because a broad string replacement accidentally added `[q89-persist-recovery]` to the persisted-output validator step. That step therefore ran before the aggregate artifact was restored and correctly failed closed with missing report/manifest/ledger and unvalidated queue status.
+- Corrected the CI condition: the full persisted-output validator now runs only for `[q89-persisted]` commits (or a PR head that actually contains the persisted report). The recovery marker still runs protocol tests and compiles the persistence code, but does not pretend outputs are already persisted.
+- The original aggregate artifact from run `42668855015` remains the source; no shards are rerun. Recovery request attempt 2 is now registered.

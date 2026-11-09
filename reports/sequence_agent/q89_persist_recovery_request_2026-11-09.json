@@ -3,12 +3,17 @@
   "task_id": "Q89",
   "status": "PERSIST_RECOVERY_REQUESTED",
   "recovery_request_id": "Q89-PERSIST-RECOVERY-2026-11-09-01",
-  "requested_at_utc": "2026-11-09T19:18:15.516Z",
+  "requested_at_utc": "2026-11-09T19:21:56.921Z",
   "experiment_run_request_head_sha": "be94053cd5c2a81bf2cca6ec8b74bee765a11d90",
   "source_workflow_run_id": 42668855015,
   "source_aggregate_artifact": "sonar-q89-aggregate",
   "source_aggregate_artifact_sha256": "sha256:82e08396f62e33f469f601a20732688133baa633fbb22ae79a2d67bdb375c88e",
   "archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
   "protocol_path": "reports/sequence_agent/q89_protocol_2026-11-09.json",
-  "policy": "Reuse the already accepted immutable aggregate artifact. Do not rerun any of the 30 historical shards. Persistence recovery must validate, Git-Data-API persist all aggregate outputs, byte-readback every blob, then pass exact-head CI."
+  "policy": "Reuse the already accepted immutable aggregate artifact. Do not rerun any of the 30 historical shards. Persistence recovery must validate, Git-Data-API persist all aggregate outputs, byte-readback every blob, then pass exact-head CI.",
+  "recovery_attempt": 2,
+  "previous_recovery_commit": "ae271ee786d68d0b4d0212fb8deced9edc42f884",
+  "previous_exact_head_ci_run": 42682150720,
+  "previous_recovery_workflow_run": 42682150965,
+  "previous_failure": "The exact-head Q89 persisted-output validator was accidentally conditioned on the recovery marker; it ran before the aggregate files were restored and correctly failed closed."
 }

@@ -117,7 +117,7 @@ jobs:
           raise SystemExit(1 if errors else 0)
           PY
       - name: Validate persisted Q89 outputs on the exact persisted head
-        if: ((github.event_name == 'push' && contains(github.event.head_commit.message, '[q89-persisted]') || contains(github.event.head_commit.message, '[q89-persist-recovery]')) || (github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/per-number-condition-q89-nine-feature-20261109' && hashFiles('reports/sequence_agent/per_number_condition_9plus_grammar.json') != ''))
+        if: ((github.event_name == 'push' && contains(github.event.head_commit.message, '[q89-persisted]')) || (github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/per-number-condition-q89-nine-feature-20261109' && hashFiles('reports/sequence_agent/per_number_condition_9plus_grammar.json') != ''))
         env:
           PYTHONPATH: scripts
         run: |
