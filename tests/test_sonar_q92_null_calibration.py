@@ -35,6 +35,15 @@ class Q92NullCalibrationTests(unittest.TestCase):
         relative=abs(approximate-exact)/exact
         self.assertAlmostEqual(exact,7.934337625211848e-10,places=20)
         self.assertGreater(relative,0.65); self.assertLess(relative,0.70)
+    def test_normal_approximation_flips_first_holm_step_at_registered_family_size(self):
+        family_size=75926565
+        threshold=0.05/family_size
+        exact=null.exact_upper_tail_pvalue(532,670,5)
+        approximate=null.normal_approximation_upper_tail(532,670,5)
+        self.assertGreater(exact,threshold)
+        self.assertLess(approximate,threshold)
+        self.assertAlmostEqual(exact/threshold,1.204854002865186,places=12)
+        self.assertAlmostEqual(approximate/threshold,0.38291880053657973,places=12)
     def test_fixed_seedless_calibration_is_deterministic(self):
         self.assertEqual(null.exact_upper_tail_pvalue(984,670,10),null.exact_upper_tail_pvalue(984,670,10))
-if __name__=="__main__": unittest.main()
+if __name__== "__main__": unittest.main()
