@@ -24,3 +24,12 @@ Next: finish runner synthetic acceptance; finish exact-head full CI; then valida
 - Runner strict-prior synthetic acceptance [42605829505](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42605829505) and aggregate/Holm/paired synthetic acceptance [42605829147](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42605829147) are SUCCESS on the previous code head; the new full CI will retest the corrected exact head. These synthetic checks do not constitute historical Q92 results.
 - The pre-registered quantitative Q92 primary gate remains: paired Blind OOS Top-5 lift versus same-archive Q89 at least +0.005, bootstrap 95% lower bound >0 and Holm-adjusted block sign-flip p<0.05 over four endpoints. No Q92 historical metrics exist yet.
 - No merge, model promotion or shadow insertion. PR #6/#7/#8 remain open/unmerged and untouched; PR #23 remains draft/open.
+
+
+## Next quantitative hypothesis candidate (exploratory; not preregistered)
+
+After Q92 is fully accepted/reviewed, consider Q93 with 11-feature equal-weight formulas over the same 27 prior-only features: `C(27,11)=13,037,895`, partitioned into 15 shards of 869,193 formulas (batch 2,048; 425 batches/shard). Candidate Q93 selection would still be Discovery top-100 followed by Validation freeze.
+
+Prospective test only: compare the Validation-frozen Q93 candidate against the Q92 candidate on a **new future holdout of 670 targets after the 2026-11-08 archive cutoff**; do not reuse the Q92 historical Blind OOS for Q93 inference. Quantitative success gate proposed: paired Top-5 hit-share lift ≥0.005 absolute, circular block-bootstrap 95% lower bound >0, and Holm-adjusted block sign-flip p<0.05 across Top-5/Top-10/Top-20/mean-rank endpoints. The catalog family would be 117,341,055 formula×split×catalog-endpoint tests.
+
+This is only a next-study proposal. It is not preregistered, implemented, or executed. It cannot be evaluated until the prospective holdout has accrued; no prediction or gain is claimed.
