@@ -30,6 +30,12 @@ class Q86DirectionalDynamicsTests(unittest.TestCase):
         np.testing.assert_allclose(result[4],np.ones(40)); np.testing.assert_allclose(result[5],np.ones(40))
         self.assertEqual(result[6].shape,(40,6)); self.assertEqual(result[7].shape,(40,40))
 
+    def test_signed_directional_regime_buckets(self):
+        values=np.asarray([-1.0,-0.34,-1.0/3.0,0.0,1.0/3.0,0.34,1.0])
+        labels=q86dir.directional_regime_labels(values)
+        self.assertEqual(labels.tolist(),["negative","negative","neutral","neutral","positive","positive","positive"])
+        with self.assertRaises(ValueError): q86dir.directional_regime_labels(np.asarray([1.1]))
+
     def test_directional_operator_scores_are_fixed_alpha_and_finite(self):
         base=np.linspace(-1.,1.,40); rev=np.linspace(1.,-1.,40); graph=np.sin(np.arange(40,dtype=float))
         node=np.linspace(-1.,1.,40); edge=np.linspace(1.,-1.,40)
