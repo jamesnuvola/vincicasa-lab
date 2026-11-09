@@ -14,7 +14,7 @@ SHARD_COUNT = 15
 if TOTAL_FORMULA_COUNT % SHARD_COUNT:
     raise RuntimeError("Q92 formula universe is not evenly shardable")
 SHARD_SIZE = TOTAL_FORMULA_COUNT // SHARD_COUNT
-FORMULA_BATCH_SIZE = 1024
+FORMULA_BATCH_SIZE = 2048
 
 COMPACT_METRIC_FIELDS=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
 SOURCE_CODE_HASH_PATHS=(
@@ -28,9 +28,19 @@ SOURCE_CODE_HASH_PATHS=(
     "scripts/sonar_q92_aggregate_common.py",
     "scripts/aggregate_sonar_q92_ten_feature.py",
     "scripts/validate_sonar_q92_ten_feature.py",
-    # Workflow definitions and preregistration are part of reproducibility.
+    # CI and artifact-backed execution workflows.
     ".github/workflows/sonar-q92-ten-feature.yml",
     ".github/workflows/sonar-q92-aggregate-core.yml",
+    ".github/workflows/sonar-q92-full-walkforward.yml",
+    # Synthetic regressions and preregistered engineering evidence.
+    "tests/test_sonar_q92_walkforward_shard.py",
+    "tests/test_sonar_q92_aggregate_common.py",
+    "tests/test_sonar_q92_null_calibration.py",
+    "tests/benchmark_sonar_q92_rank_kernel.py",
+    "reports/sequence_agent/q92_rank_kernel_02_preregistration_2026-11-09.json",
+    "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_preregistration_2026-11-09.json",
+    "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_result_2026-11-09.json",
+    "reports/sequence_agent/q92_minimum_practical_effect_amendment_2026-11-09.json",
     "reports/sequence_agent/q92_preregistration_2026-11-09.json",
     # Canonical input archive; its Git/SHA-256 identities are recorded separately too.
     "data/storico_daily.csv",

@@ -28,11 +28,28 @@ TARGET_LEDGER=SHARD_DIR/f"shard_{SHARD_INDEX}_target_ledger.csv"
 REPORT=SHARD_DIR/f"shard_{SHARD_INDEX}_report.json"
 
 def rank_matrix(scores):
-    """Rank every column; stable sort gives lower number priority on exact ties."""
-    order=np.argsort(-scores,axis=0,kind="stable")
+    """Rank each formula row across numbers; stable sort keeps lower-number tie-break."""
+    if scores.ndim!=2 or scores.shape[1]!=40:
+        raise ValueError("Q92 rank kernel expects formula-by-40-number scores")
+    order=np.argsort(-scores,axis=1,kind="stable")
     ranks=np.empty(order.shape,dtype=np.int16)
-    ranks[order,np.arange(scores.shape[1])]=np.arange(1,scores.shape[0]+1,dtype=np.int16)[:,None]
+    ranks[np.arange(order.shape[0])[:,None],order]=np.arange(1,41,dtype=np.int16)[None,:]
     return ranks
+
+def rank_actual_numbers(scores,actual_indices):
+    """Return exact stable ranks of five actual numbers against all 40 prior-only scores."""
+    if scores.ndim!=2 or scores.shape[0]!=40 or scores.shape[1]<=0:
+        raise ValueError("Q92 selective rank kernel expects non-empty 40-number-by-formula scores")
+    if not np.isfinite(scores).all():
+        raise ValueError("Q92 selective rank kernel rejects non-finite scores")
+    actual_indices=np.asarray(actual_indices,dtype=np.int64)
+    if actual_indices.ndim!=1 or actual_indices.size!=5 or np.unique(actual_indices).size!=5 or np.any(actual_indices<0) or np.any(actual_indices>=40):
+        raise ValueError("Q92 selective rank kernel requires five unique actual indices in 0..39")
+    actual_scores=scores[actual_indices,:]
+    number_ids=np.arange(40,dtype=np.int64)
+    greater=(scores[None,:,:]>actual_scores[:,None,:]).sum(axis=1,dtype=np.int16)
+    equal_lower=((scores[None,:,:]==actual_scores[:,None,:]) & (number_ids[None,:,None]<actual_indices[:,None,None])).sum(axis=1,dtype=np.int16)
+    return (1+greater+equal_lower).astype(np.int16,copy=False)
 
 def build_formula_weight_matrix(formulas):
     weights=np.zeros((FEATURE_COUNT,len(formulas)),dtype=np.float64)
@@ -76,8 +93,7 @@ def main():
         best_index=None
         best_ranks=None
         for batch_start,batch_end in formula_batches:
-            ranks=rank_matrix(standardized@weights[:,batch_start:batch_end])
-            actual_ranks=ranks[actual_indices,:]
+            actual_ranks=rank_actual_numbers(standardized@weights[:,batch_start:batch_end],actual_indices)
             rank_sum=actual_ranks.sum(axis=0,dtype=np.int64)
             hits5=np.sum(actual_ranks<=5,axis=0,dtype=np.int64)
             hits10=np.sum(actual_ranks<=10,axis=0,dtype=np.int64)
@@ -95,7 +111,7 @@ def main():
                 best_key=candidate
                 best_index=batch_start+local_best
                 best_ranks=actual_ranks[:,local_best].astype(int).tolist()
-        single_ranks=rank_matrix(standardized)[actual_indices,:]
+        single_ranks=rank_actual_numbers(standardized,actual_indices)
         single_ledger=[]
         for column,name in enumerate(FEATURE_NAMES):
             values=single_ranks[:,column].astype(int).tolist()
