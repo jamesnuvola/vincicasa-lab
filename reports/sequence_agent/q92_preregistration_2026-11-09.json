@@ -104,6 +104,18 @@
       "mean_number_hits_top10": 0.25,
       "mean_number_hits_top20": 0.5,
       "mean_rank_of_actual_numbers": 20.5
+    },
+    "absolute_uniform_baseline_gate": {
+      "endpoint": "Selected Q92 candidate Blind OOS mean number_hits_top5",
+      "baseline_mean_number_hits_top5": 0.125,
+      "raw_p_value_method": "Discrete upper-tail convolution of iid Hypergeometric(40,5,5) hit counts over the 670 fixed Blind OOS targets.",
+      "multiplicity": "Use the selected candidate's Top-5 adjusted p-value from the already registered global Holm family of 75,926,565 formula×split×endpoint tests; do not create a second uncorrected test.",
+      "criterion": "Mean number_hits_top5 must be strictly greater than 0.125 AND the selected candidate's global Holm-adjusted Blind OOS Top-5 p-value must be <0.05.",
+      "interpretation": "A paired lift over Q89 alone is relative evidence and does not establish absolute above-uniform predictive value.",
+      "selection_rule_changed": false,
+      "primary_paired_comparison_changed": false,
+      "technical_acceptance_can_complete_when_gate_fails": true,
+      "engine_promotion_allowed_when_gate_fails": false
     }
   },
   "multiple_testing": {
@@ -141,14 +153,18 @@
     "Each shard reports formula_batch_size=2048 and formula_batch_count=275; the global formula batch count is 4,120 and all batch boundaries reconcile exactly.",
     "The selective actual-number rank kernel exactly matches full stable argsort ranks on the seeded 4,096-formula synthetic sample, including lower-number tie-break cases; the preregistered batch sweep selects 2,048 by maximum median throughput.",
     "The primary paired Blind OOS Top-5 decision requires mean delta >= 0.005 absolute hit-share (0.5 percentage points), Holm-adjusted block sign-flip p < 0.05, and the 95% block-bootstrap lower bound > 0.",
-    "The uploaded compact metric bundle is downloaded and SHA-256 byte-verified against the upload digest; the dedicated result branch outputs and persistence receipt are Git-tree/blob read back byte-for-byte. Result-branch CI and human review remain required before any promotion."
+    "The uploaded compact metric bundle is downloaded and SHA-256 byte-verified against the upload digest; the dedicated result branch outputs and persistence receipt are Git-tree/blob read back byte-for-byte. Result-branch CI and human review remain required before any promotion.",
+    "Expose the Validation-frozen Q92 candidate's raw and global Holm-adjusted p-values for Top-5/Top-10/Top-20 in Discovery, Validation and Blind OOS; acceptance validator must replay these values from the full adjusted p-value vector.",
+    "Report absolute Blind OOS Top-5 evidence separately from paired Q92-vs-Q89 lift; absolute above-uniform evidence requires mean number_hits_top5 > 0.125 and the candidate's global Holm-adjusted Blind OOS Top-5 p-value < 0.05.",
+    "A positive paired Q92-vs-Q89 result alone must not be described as absolute predictive advantage when the selected candidate does not pass the registered uniform-baseline gate."
   ],
   "limitations": [
     "finite equal-weight ten-feature subset grammar only; weighted, nonlinear, conditional and interaction formulas remain untested",
     "this finite catalog does not exhaust the infinite mathematical formula universe",
     "historical blind OOS has prior SONAR exposure and is not independent prospective confirmation",
     "global formula-family p-values are approximate and exploratory",
-    "The 0.005 primary paired Top-5 threshold is a practical acceptance gate, not a forecast; historical Blind OOS remains prior-exposed."
+    "The 0.005 primary paired Top-5 threshold is a practical acceptance gate, not a forecast; historical Blind OOS remains prior-exposed.",
+    "The Q89 comparator is below the uniform Top-5 baseline in the prior accepted refresh; relative improvement over Q89 can remain below uniform. Candidate-specific global Holm-adjusted p-values and the absolute uniform-baseline gate must therefore be reported separately."
   ],
   "guardrails": {
     "no_automatic_merge": true,
@@ -158,7 +174,7 @@
     "prs_6_7_8_untouched": true,
     "run_completion_requires_acceptance_persistence_exact_head_ci_and_human_review": true
   },
-  "next_action": "Execute the artifact-backed Q92 full walk-forward only after exact-head full project CI and strict-prior synthetic preflight pass; recover immutable shard artifacts on failure, apply global Holm, freeze Discovery-to-Validation candidates, validate paired Blind OOS against the same-archive Q89 control, and persist digest-verified artifacts plus Git-tree byte readback for human review.",
+  "next_action": "Run the corrected exact-head full CI and Q92 synthetic regressions; rerun all 15 source-hash-bound shards; expose/replay selected-candidate global Holm p-values and the absolute uniform-baseline gate; then complete Discovery-to-Validation freeze, paired Blind OOS inference, acceptance and append-only byte readback. Require human review.",
   "protocol_amendments": [
     {
       "amendment_id": "Q92-NULL-CALIBRATION-01",
@@ -281,6 +297,21 @@
       "candidate_selection_rule_unchanged": true,
       "blind_oos_used_for_selection": false,
       "limitation": "This is a decision gate, not a claim of expected predictive gain."
+    },
+    {
+      "amendment_id": "Q92-ABSOLUTE-BASELINE-01",
+      "registered_at_utc": "2026-11-09T14:51:32Z",
+      "effective_before_corrected_full_walkforward_execution": true,
+      "rationale": "The registered paired primary comparison is against a Q89 candidate whose prior same-archive Blind OOS Top-5 share is below the uniform expectation of 0.125. A positive paired lift of at least 0.005 could therefore still leave Q92 below uniform. The aggregate previously computed the global Holm vector but did not expose the selected candidate's adjusted p-values, making the absolute baseline comparison difficult to audit.",
+      "method": "Persist the selected candidate's raw and global Holm-adjusted p-values for all three endpoints and all three splits. Compute the selected candidate's Blind OOS absolute-baseline evidence from its Top-5 share and its existing globally Holm-adjusted Top-5 p-value.",
+      "criterion": "mean number_hits_top5 > 0.125 AND global Holm-adjusted selected-candidate Blind OOS Top-5 p-value < 0.05.",
+      "changes_formula_universe": false,
+      "changes_feature_stack": false,
+      "changes_candidate_selection": false,
+      "changes_primary_paired_inference": false,
+      "changes_global_holm_family": false,
+      "changes_only_reporting_and_absolute_claim_gate": true,
+      "blind_oos_used_for_selection": false
     }
   ]
 }
