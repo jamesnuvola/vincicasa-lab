@@ -159,7 +159,7 @@ def main():
         "minimum_prior_history":MIN_HISTORY,"scored_targets":len(target_rows),"feature_count":FEATURE_COUNT,
         "features":FEATURE_NAMES,"formula_count":len(formulas),"total_formula_count":q92.TOTAL_FORMULA_COUNT,
         "formula_count_check":math.comb(FEATURE_COUNT,FORMULA_SIZE),"formula_size":FORMULA_SIZE,
-        "shard_index":SHARD_INDEX,"shard_count":q89.SHARD_COUNT,"shard_formula_start_inclusive":SHARD_START,
+        "shard_index":SHARD_INDEX,"shard_count":q92.SHARD_COUNT,"shard_formula_start_inclusive":SHARD_START,
         "shard_formula_end_exclusive":SHARD_END,"shard_formula_count":SHARD_SIZE,
         "formula_batch_size":FORMULA_BATCH_SIZE,"formula_batch_count":len(formula_batches),"batch_manifest":batches,
         "formula_grammar":"all ten-feature equal-weight combinations",
@@ -178,9 +178,9 @@ def main():
             "best-per-target formula is retrospective/descriptive and is never used for ex-ante candidate selection",
             "global Holm correction is applied across all 15 shards, three chronological splits and three endpoints",
             "no immutable freeze is overwritten; no automatic engine promotion"],
-        "outputs":{"metrics":"reports/sequence_agent/q89_shards/shard_"+str(SHARD_INDEX)+"_metrics.csv",
-            "target_ledger":"reports/sequence_agent/q89_shards/shard_"+str(SHARD_INDEX)+"_target_ledger.csv",
-            "report":"reports/sequence_agent/q89_shards/shard_"+str(SHARD_INDEX)+"_report.json"}}
+        "outputs":{"metrics":"reports/sequence_agent/q92_shards/shard_"+str(SHARD_INDEX)+"_metrics.csv",
+            "target_ledger":"reports/sequence_agent/q92_shards/shard_"+str(SHARD_INDEX)+"_target_ledger.csv",
+            "report":"reports/sequence_agent/q92_shards/shard_"+str(SHARD_INDEX)+"_report.json"}}
     REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     if len(metric_rows)!=len(formulas)*len(SPLITS) or len(target_rows)!=scored_targets:
         raise SystemExit("Q92_BLOCKED: shard output dimensions mismatch")
