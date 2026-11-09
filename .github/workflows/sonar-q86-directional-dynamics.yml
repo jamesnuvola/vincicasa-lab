@@ -27,8 +27,11 @@ jobs:
       - name: Detect persisted Q86-DIR outputs
         id: state
         run: |
-          subject="$(git log -1 --format=%s)"
-          if [[ "$subject" == *"[q86-dir-persisted]"* ]]; then echo "persisted=true" >> "$GITHUB_OUTPUT"; else echo "persisted=false" >> "$GITHUB_OUTPUT"; fi
+          if git log --format=%s | grep -Fq '[q86-dir-persisted]' && test -s reports/sequence_agent/q86_directional_dynamics_validation.json; then
+            echo "persisted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "persisted=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Compile Q86-DIR model and validator
         run: python -m py_compile scripts/sonar_q86_directional_dynamics.py scripts/validate_sonar_q86_directional_dynamics.py
       - name: Run directional cosine, coherence, fixed-alpha and prefix-invariance tests
