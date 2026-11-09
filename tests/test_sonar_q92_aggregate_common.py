@@ -169,6 +169,12 @@ class Q92AggregateCommonTests(unittest.TestCase):
         self.assertNotIn("q92a.metric_summary_from_compact_counts", validator)
         self.assertTrue(callable(q92.metric_summary_from_compact_counts))
 
+    def test_q92_acceptance_validator_imports_heapq_for_discovery_selection(self):
+        validator = (ROOT / "scripts/validate_sonar_q92_ten_feature.py").read_text(encoding="utf-8")
+        self.assertRegex(validator, r"(?m)^import csv,gzip,hashlib,heapq,json,math$")
+        self.assertIn("heapq.heappush(local_heap,entry)", validator)
+        self.assertIn("heapq.heapreplace(local_heap,entry)", validator)
+
     def test_source_code_hash_manifest_is_deterministic(self):
         root=Path(__file__).resolve().parents[1]
         first=q92.source_code_hashes(root);second=q92.source_code_hashes(root)
