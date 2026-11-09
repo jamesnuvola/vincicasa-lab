@@ -1,0 +1,70 @@
+{
+  "task_id": "Q86-DIR-01",
+  "title": "Directional field kinematics: signed node/graph alignment and cross-scale coherence",
+  "registered_at_utc": "2026-11-10T00:42:54+01:00",
+  "status": "PREREGISTERED_PENDING_EXECUTION",
+  "source_archive": {
+    "draws": 3402,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-08",
+    "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+  },
+  "target_design": {
+    "minimum_prior_draws": 200,
+    "targets": 3202,
+    "discovery": 1921,
+    "validation": 640,
+    "blind_oos": 641,
+    "cutoff_rule": "target draw excluded; every state is computed from draws[:target_index] only"
+  },
+  "hypothesis": "The signed cosine between each number's current six-feature velocity and acceleration, and between its graph-row velocity and acceleration, may preserve directional information lost by Q85 RMS acceleration. Node/graph coherence is the product of the two signed cosines per number.",
+  "operators": [
+    {
+      "id": "DYN::NODE_DIRECTIONAL_ALIGNMENT",
+      "definition": "base_z + 0.20 * reversion_i * cos(node_velocity_i,node_acceleration_i)"
+    },
+    {
+      "id": "DYN::NODE_DIRECTIONAL_CURVATURE",
+      "definition": "base_z - 0.20 * reversion_i * cos(node_velocity_i,node_acceleration_i)"
+    },
+    {
+      "id": "DYN::GRAPH_DIRECTIONAL_ALIGNMENT",
+      "definition": "base_z + 0.20 * graph_signal_i * cos(graph_row_velocity_i,graph_row_acceleration_i)"
+    },
+    {
+      "id": "DYN::NODE_GRAPH_DIRECTIONAL_COHERENCE",
+      "definition": "base_z + 0.20 * 0.5*(reversion_i+graph_signal_i) * node_cosine_i * graph_cosine_i"
+    }
+  ],
+  "controls": [
+    "BASE::EQUAL42",
+    "BASE::FLOW_K50",
+    "FIXED::REVERSION_A20",
+    "FIXED::GRAPH_MIX_A20"
+  ],
+  "models": 8,
+  "selection": "Select one directional operator by Discovery mean Top20 hits; tie-break lower mean actual rank then stable ID. Freeze before Validation and historical Blind OOS.",
+  "statistics": {
+    "exact_null": "discrete upper-tail convolution of Hypergeometric(40,k,5)",
+    "exact_holm_family": 72,
+    "paired": "moving-block bootstrap, block length 20, 2000 replications",
+    "paired_holm_family": 32,
+    "endpoints": [
+      "Top5",
+      "Top10",
+      "Top20",
+      "mean actual rank"
+    ],
+    "primary_gate": "selected Blind OOS Top20 lift >=0.10 vs Equal42, paired 95% CI lower bound >0, paired Holm p<0.05, exact-null Holm p<0.05"
+  },
+  "exposure": "Historical Blind OOS is already exposed to prior SONAR research; results are exploratory, not prospective confirmation.",
+  "safeguards": [
+    "fixed alpha 0.20; no hyperparameter tuning on Validation or Blind OOS",
+    "zero vectors map to neutral cosine 0",
+    "all 40 node, graph and coherence directional values are persisted per target",
+    "rank replay and directional-vector replay are mandatory",
+    "no freeze modification, shadow insertion, engine promotion or automatic merge",
+    "Q86-DIR is distinct from the existing Q86 six-feature formula grammar branch"
+  ]
+}
