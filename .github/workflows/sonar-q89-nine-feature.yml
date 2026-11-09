@@ -10,7 +10,7 @@ on:
       - "reports/sequence_agent/q89_preregistration_2026-11-08.json"
       - "data/storico_daily.csv"
   pull_request:
-    types: [opened, reopened, edited]
+    types: [opened, synchronize, reopened, edited]
     branches:
       - research/per-number-condition-grammar-20261026
 permissions:
@@ -60,7 +60,7 @@ jobs:
           retention-days: 14
 
   recover-aggregate-validate-persist:
-    if: "${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened' || github.event.action == 'edited') && contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687') }}"
+    if: "${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || github.event.action == 'edited') && contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687') }}"
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
