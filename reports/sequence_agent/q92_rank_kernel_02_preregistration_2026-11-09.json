@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q92",
+  "amendment_id": "Q92-RANK-KERNEL-02",
+  "status": "PRE_EXECUTION_ENGINEERING_AMENDMENT",
+  "registered_on": "2026-11-09",
+  "hypothesis": "For the unchanged Q92 strict-prior feature state, formula-major 40-number full sorting is unnecessary for the registered metrics. Computing the exact stable rank of each of the five actual numbers by comparing its score against all 40 number scores will preserve all seven sufficient-statistic counts exactly while increasing formula throughput at least 25% versus the previous full-rank baseline.",
+  "baseline": {
+    "kernel": "number-major score matrix 40xB; NumPy stable argsort across all 40 numbers for each formula",
+    "batch_size": 1024,
+    "metric_extract": "select actual-number rank rows from the full 40-number rank matrix"
+  },
+  "candidate": {
+    "kernel": "same number-major score matrix 40xB; exact selective rank computation for each actual number against all 40 scores",
+    "batch_size": 4096,
+    "rank_formula": "rank(a)=1+sum(score(n)>score(a))+sum(score(n)=score(a) and n<a), n=0..39; lower number wins ties",
+    "metrics": "Top-5/10/20 hit counts, all-five indicators and rank sum are reconstructed from the five exact actual-number ranks; no full formula rank matrix is materialized"
+  },
+  "quantitative_acceptance": {
+    "synthetic_benchmark_seed": 920092,
+    "actual_number_seed": 920093,
+    "formula_sample_count": 4096,
+    "baseline_batch_size": 1024,
+    "candidate_batch_size": 4096,
+    "timed_repetitions": 25,
+    "minimum_formula_throughput_speedup": 1.25,
+    "exact_rank_parity_required": true,
+    "rank_parity_scope": "all five actual-number ranks for every one of the 4,096 seeded formula samples; zero mismatch",
+    "batch_count_per_562419_formula_shard": 138,
+    "previous_batch_count": 550
+  },
+  "strict_prior_and_leakage_guardrails": {
+    "feature_state": "for target archive index i, all 27 features across numbers 1..40 use draws[0:i] only",
+    "target_use": "target quintet is used only to extract the five actual-number ranks after the 40 prior-only number scores are computed; each actual rank is compared against all 40 scores",
+    "tie_break": "stable lower-number priority exactly matches full argsort",
+    "selection": "Discovery top-100 then one Validation freeze; Blind OOS excluded from selection",
+    "no_formula_or_feature_change": true,
+    "no_statistical_method_or_endpoint_change": true
+  },
+  "limitations": [
+    "synthetic throughput benchmark is an engineering measurement, not predictive evidence",
+    "the finite Q92 equal-weight ten-feature formula universe and discrete-null assumptions remain unchanged",
+    "historical Q92 execution, global Holm, paired Blind OOS, persistence and human review remain pending"
+  ],
+  "next_action": "Run seeded synthetic parity/throughput acceptance and exact-head full CI on this amendment before any historical Q92 shard is executed."
+}
