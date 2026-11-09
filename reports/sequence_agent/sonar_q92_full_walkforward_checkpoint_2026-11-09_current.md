@@ -31,9 +31,9 @@ A separate branch `research/sonar-q92-persister-synthetic-ci-20261109` was creat
 
 Observed Actions status at checkpoint:
 - Q92 aggregate-core synthetic acceptance run [42599781629](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42599781629), on commit `9a39364...`: IN PROGRESS.
-- Follow-on synthetic acceptance run [42599820244](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42599820244), on commit `6513ae9...`: QUEUED.
-- Main project CI for the checkpoint branch [42598985535](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42598985535), on `72f0d7b...`: IN PROGRESS at exhaustive Q80-Q86 catalog tests; exact-head full CI has not passed.
-- A push CI run [42599781607](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42599781607) on commit `9a39364...` was SKIPPED by the `[q80-reuse-artifact]` guard to avoid dispatching another expensive main CI run.
+- Follow-on synthetic acceptance run [42599820244](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42599820244), on commit `6513ae9...`: QUEUED.
+- Main project CI for the checkpoint branch [42598985535](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42598985535), on `72f0d7b...`: IN PROGRESS at exhaustive Q80-Q86 catalog tests; exact-head full CI has not passed.
+- A push CI run [42599781607](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42599781607) on commit `9a39364...` was SKIPPED by the `[q80-reuse-artifact]` guard to avoid dispatching another expensive main CI run.
 
 ## Strict limits / current status
 
