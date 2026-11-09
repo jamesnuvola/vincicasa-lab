@@ -822,6 +822,7 @@ def main():
         "status": "RETROSPECTIVE_WALKFORWARD_COMPLETE_PENDING_VALIDATOR",
         "validation_status": "EXPLORATORY_NOT_PROMOTABLE",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "source_code_commit_sha": os.environ.get("GITHUB_SHA") or "LOCAL_UNPINNED",
         "source_archive": {
             "path": "data/storico_daily.csv", "git_blob_sha1": archive_sha1,
             "sha256": archive_sha256, "draw_count": len(draws),
@@ -899,6 +900,7 @@ def main():
     manifest = {
         "schema_version": "1.0", "task_id": "Q84", "status": "OUTPUTS_WRITTEN_PENDING_VALIDATOR",
         "source_archive_git_blob_sha1": archive_sha1, "source_archive_sha256": archive_sha256,
+        "source_code_commit_sha": os.environ.get("GITHUB_SHA") or "LOCAL_UNPINNED",
         "target_count": total, "global_strategy_count": len(GLOBAL_IDS),
         "conditional_strategy_count": 2 * len(CONFIGS),
         "oracle_rows": total, "ledger_rows": ledger_rows,
@@ -920,7 +922,9 @@ def main():
         "checkpoint_id": "SONAR-Q84-FLOW-STATE-2026-11-09",
         "status": "OUTPUTS_WRITTEN_PENDING_VALIDATOR",
         "source_archive_git_blob_sha1": archive_sha1,
-        "source_archive_sha256": archive_sha256, "draw_count": len(draws),
+        "source_archive_sha256": archive_sha256,
+        "source_code_commit_sha": os.environ.get("GITHUB_SHA") or "LOCAL_UNPINNED",
+        "draw_count": len(draws),
         "last_date": dates[-1], "target_count": total,
         "global_strategy_count": len(GLOBAL_IDS),
         "conditional_strategy_count": 2 * len(CONFIGS),
