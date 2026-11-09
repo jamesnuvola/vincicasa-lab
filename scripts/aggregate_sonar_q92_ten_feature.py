@@ -487,6 +487,22 @@ def main():
     global_top100=q92a.discovery_top_k(candidate_pool,k=100)
     validation_order=sorted(global_top100,key=lambda item:(-item["validation_mean_number_hits_top5"],item["validation_mean_rank_of_actual_numbers"],item["formula_id"]))
     selected=validation_order[0]
+    selected_holm={}
+    selected_metric_by_split={"discovery":selected["discovery"],"validation":selected["validation"],"blind_oos":selected["blind"]}
+    for split_index,split in enumerate(SPLITS):
+        adjusted=q92a.selected_formula_holm_pvalues(pvalues,int(selected["formula_rank"]),TOTAL,split_index)
+        metrics=selected_metric_by_split[split]
+        selected_holm[split]={
+            "raw_pvalues":{
+                "top5":float(metrics["p_top5_exact_hypergeom_sum"]),
+                "top10":float(metrics["p_top10_exact_hypergeom_sum"]),
+                "top20":float(metrics["p_top20_exact_hypergeom_sum"])},
+            "holm_adjusted_pvalues":adjusted}
+    uniform_baseline_evidence=q92a.uniform_baseline_evidence(
+        float(selected["blind"]["mean_number_hits_top5"]),
+        float(selected["blind"]["p_top5_exact_hypergeom_sum"]),
+        float(selected_holm["blind_oos"]["holm_adjusted_pvalues"]["top5"]),
+        baseline=0.125,alpha=0.05,targets=EXPECTED_BLIND_TARGETS)
     validation_rank={item["formula_id"]:rank+1 for rank,item in enumerate(validation_order)}
     shortlist=[]
     for discovery_rank,item in enumerate(global_top100,start=1):
@@ -513,7 +529,10 @@ def main():
             "validation_mean_number_hits_top5":selected["validation_mean_number_hits_top5"],
             "validation_mean_rank_of_actual_numbers":selected["validation_mean_rank_of_actual_numbers"],
             "validation_selection_rank":validation_rank[selected["formula_id"]],"validation_metrics":selected["validation"],
-            "blind_oos_metrics_descriptive_only":selected["blind"],"paired_blind_ledger_path":str(PAIRED_LEDGER_PATH.relative_to(ROOT))},
+            "blind_oos_metrics_descriptive_only":selected["blind"],
+            "global_holm_adjusted_pvalues":selected_holm,
+            "blind_oos_uniform_baseline_evidence":uniform_baseline_evidence,
+            "paired_blind_ledger_path":str(PAIRED_LEDGER_PATH.relative_to(ROOT))},
         "Q89_control":{"formula_id":q89_id,"features":"+".join(q80.FEATURE_NAMES[column] for column in q89_columns),
             "discovery_metrics":q89_report["selected_candidate_metrics"]["discovery"],
             "validation_metrics":q89_report["selected_candidate_metrics"]["validation"],
@@ -572,6 +591,8 @@ def main():
         "multiple_testing":{"method":"Global Holm-Bonferroni","test_count":tests,"endpoints":["Top-5","Top-10","Top-20"],
             "raw_pvalue_vector_sha256":raw_pvalue_sha256,"adjusted_pvalue_vector_sha256":adjusted_pvalue_sha256,
             "p_value_method":"discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws"},
+        "selected_candidate_global_holm_adjusted_pvalues":selected_holm,
+        "blind_oos_uniform_baseline_evidence":uniform_baseline_evidence,
         "metrics_parts":metrics_parts,"metrics_part_count":len(metrics_parts),
         "metrics_parts_schema":{"version":"compact_counts_v1","fields":list(q92.COMPACT_METRIC_FIELDS),
             "row_order":"split-major; formula-rank ascending within split; split and formula-rank are implicit",
@@ -584,6 +605,8 @@ def main():
             "paired_inference":{"path":str(INFERENCE_PATH.relative_to(ROOT)),"bytes":INFERENCE_PATH.stat().st_size,"sha256":sha256_file(INFERENCE_PATH)}},
         "guardrails":["strict-prior feature state uses draws[0:i] only for target i; target quintet enters after ranking",
             "global Holm includes all 8,436,285 formulas × 3 chronological splits × 3 endpoints",
+            "selected candidate raw and global Holm-adjusted p-values are exposed for every split and endpoint",
+            "absolute Blind OOS evidence requires Top-5 share above 0.125 and selected-candidate global Holm-adjusted Top-5 p<0.05; paired lift over Q89 alone is insufficient",
             "Discovery top100 and Validation freeze precede Blind OOS reporting; Blind OOS cannot select",
             "Q89 control was refreshed and accepted on the exact same 2026-11-08 canonical archive",
             "per-target best formula within each shard is retrospective descriptive only, never a candidate-selection rule",
@@ -592,6 +615,7 @@ def main():
             "global formula-family p-values use discrete float64 convolution under the independent uniform 5-of-40 null; extreme underflow tails use the smallest positive subnormal floor",
             "compact metric parts store seven integer sufficient statistics; exact raw p-values and global Holm adjusted vector are replayed from these counts",
             "historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation",
+            "relative paired improvement over Q89 does not establish absolute above-uniform predictive value; the selected candidate's global Holm-adjusted Blind OOS Top-5 p-value is reported separately",
             "the finite formula catalog does not exhaust the infinite mathematical formula universe"]}
     MANIFEST_PATH.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
@@ -610,10 +634,14 @@ def main():
             "p_value_method":"discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws",
             "holm_adjusted_formula_split_rows_below_0_05":holm_below,"minimum_holm_p_max_endpoint_family":minimum_holm},
         "uniform_number_rank_baseline":{"mean_number_hits_top5":0.125,"mean_number_hits_top10":0.25,"mean_number_hits_top20":0.5,"mean_rank_of_actual_numbers":20.5},
+        "selected_candidate_global_holm_adjusted_pvalues":selected_holm,
+        "blind_oos_uniform_baseline_evidence":uniform_baseline_evidence,
         "candidate_selection":{"rule":q92_selection["selection_rule"],"blind_oos_used_for_selection":False,
             "selected_candidate_id":selected["formula_id"],"Q89_control_candidate_id":q89_id,"discovery_top100_count":100,
             "validation_candidates":100,"blind_oos_targets":EXPECTED_BLIND_TARGETS,"paired_blind_ledger_rows":len(paired_rows)},
-        "selected_candidate_metrics":{"Q92_candidate":{"discovery":selected["discovery"],"validation":selected["validation"],"blind_oos_descriptive_only":selected["blind"]},
+        "selected_candidate_metrics":{"Q92_candidate":{"discovery":selected["discovery"],"validation":selected["validation"],
+            "blind_oos_descriptive_only":selected["blind"],"global_holm_adjusted_pvalues":selected_holm,
+            "blind_oos_uniform_baseline_evidence":uniform_baseline_evidence},
             "Q89_control":{"discovery":q89_report["selected_candidate_metrics"]["discovery"],
                 "validation":q89_report["selected_candidate_metrics"]["validation"],
                 "blind_oos_descriptive_only":q89_report["selected_candidate_metrics"]["blind_oos_descriptive_only"]}},
@@ -622,7 +650,7 @@ def main():
             "candidate_selection":str(SELECTION_PATH.relative_to(ROOT)),"paired_blind_ledger":str(PAIRED_LEDGER_PATH.relative_to(ROOT)),
             "paired_inference":str(INFERENCE_PATH.relative_to(ROOT)),"manifest":str(MANIFEST_PATH.relative_to(ROOT))},
         "guardrails":manifest["guardrails"],"limitations":manifest["limitations"],
-        "next_action":"Run Q92 acceptance validator, append-only persistence, exact-byte readback and current-head CI; then request human review without promoting any engine."}
+        "next_action":"Run Q92 acceptance validator with candidate-specific global Holm replay; report absolute Blind OOS evidence against the 0.125 uniform Top-5 baseline separately from paired Q89 lift; persist append-only and require human review."}
     REPORT_PATH.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     summary={key:report[key] for key in ("task_id","status","source_archive_sha256","target_count","scored_targets","formula_count","metrics_rows",
         "split_counts","multiple_testing","candidate_selection","paired_blind_inference")}
