@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q84-K-SENS",
+  "experiment_id": "Q84-FLOW-NEIGHBOR-SENSITIVITY-01",
+  "registered_at_utc": "2026-11-09T19:35:00Z",
+  "status": "PREREGISTERED_NOT_EXECUTED",
+  "parent_experiment": "Q84",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "draw_count": 3402,
+    "last_date": "2026-11-08",
+    "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+  },
+  "motivation": "The Q84 K=50 flow kernel had mean effective analog sample size 48.72 of 50 and mean weight CV 0.223. This sensitivity test asks whether narrower neighborhoods K=10 or K=20 produce a more locally responsive state-conditioned rule ensemble.",
+  "hypothesis": "Selecting K from {10,20,50} using Discovery Top-20 mean hits only will identify a flow-state ensemble that improves Blind OOS Top-20 mean hits over the equal-weight 42-rule ensemble by at least 0.10 hits per target, with a positive paired block-bootstrap lower bound and global Holm-adjusted p<0.05 against the uniform Top-20 null.",
+  "frozen_parameters": {
+    "K_values": [10, 20, 50],
+    "flow_features": 13,
+    "flow_state_lookback_targets": 250,
+    "minimum_prior_analogs": 30,
+    "shrinkage_pseudocount": 30.0,
+    "baseline_top20_hits_per_target": 2.5,
+    "temperature": 0.35,
+    "weight_clip": [0.5, 2.0],
+    "regime_quantiles": [0.2, 0.8],
+    "chronological_minimum_prior_draws": 200,
+    "splits": {"discovery": 0.60, "validation": 0.20, "blind_oos": 0.20},
+    "paired_bootstrap_replicates": 2000,
+    "paired_bootstrap_block_length": 20,
+    "paired_bootstrap_seed_base": 8400
+  },
+  "selection_rule": "Select K on Discovery only by highest mean Top-20 hits per target; ties by lower mean actual-number rank, then smaller K. Freeze selected K before Validation and Blind OOS.",
+  "controls": [
+    "ENSEMBLE::EQUAL_WEIGHT_42",
+    "K=50 reproduction of the already validated Q84 flow ensemble",
+    "PAIR::freq_20>momentum_10_50 (fixed Q84 discovery-selected comparator; descriptive only, excluded from the new inferential family)"
+  ],
+  "registered_test_family": {
+    "methods": 4,
+    "methods_in_family": ["ENSEMBLE::EQUAL_WEIGHT_42", "ENSEMBLE::FLOW_STATE_K10", "ENSEMBLE::FLOW_STATE_K20", "ENSEMBLE::FLOW_STATE_K50"],
+    "splits": 3,
+    "endpoints": ["top5", "top10", "top20"],
+    "total_holm_tests": 36,
+    "null": "Per-target conditional Hypergeometric(40,5,k) number-hit count with the same continuity-corrected normal screen used by Q84; one global Holm-Bonferroni family of 36 tests."
+  },
+  "paired_inference": {
+    "comparisons": "Discovery-selected K versus equal-weight ensemble and fixed Q84 comparator on Validation and Blind OOS",
+    "endpoints": ["top5", "top10", "top20", "mean_actual_rank"],
+    "method": "Circular moving-block bootstrap",
+    "interpretation": "Descriptive paired intervals only; not part of the 36-test Holm family."
+  },
+  "primary_acceptance_gate": [
+    "selected K Blind OOS mean Top-20 hits >= 2.5",
+    "selected K minus equal-weight Blind OOS mean Top-20 hits >= +0.10",
+    "paired 95% block-bootstrap lower bound for that Top-20 delta > 0",
+    "global Holm-adjusted selected-K Blind OOS Top-20 p-value < 0.05"
+  ],
+  "guardrails": [
+    "Every target state uses only draws strictly before the target.",
+    "Historical state/outcome pairs enter analogue memory only after their target has been scored.",
+    "K is selected on Discovery only; Validation and Blind OOS never tune K.",
+    "The fixed comparator is descriptive and is not counted as an independent test in the new family.",
+    "The K=50 output must reproduce the previously validated Q84 metrics exactly within numerical tolerance.",
+    "Historical Blind OOS has prior SONAR exposure and is exploratory, not a virgin holdout.",
+    "No model promotion or immutable target-freeze modification."
+  ]
+}
