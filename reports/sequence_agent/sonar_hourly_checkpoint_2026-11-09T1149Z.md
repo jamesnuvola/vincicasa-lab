@@ -37,6 +37,18 @@ Strict-prior ledger replay across the two persisted candidate Blind ledgers:
 - Paired Blind OOS primary gate versus same-archive Q89: Top-5 delta ≥0.005 absolute, circular block-bootstrap 95% lower bound >0, Holm-adjusted block sign-flip p<0.05 over four endpoints. This is a gate, not an expected gain.
 - No historical Q92 shard, aggregate, Discovery/Validation freeze, or Blind OOS result has been produced in this checkpoint.
 
+## Independent exact-uniform sanity check on Q89 Blind OOS (exploratory)
+
+Recomputed the Q89 selected candidate's aggregate number-hit counts from the persisted shares: Top-5 = 395, Top-10 = 790, Top-20 = 1,660 out of 3,350 actual-number observations across 670 draws. For each fixed k-number ranking set, the per-draw hit count follows Hypergeometric(N=40, K=k, draw_size=5); the 670-draw null distribution was built by repeated float64 discrete convolution (mass sums to 1 within 3e-14).
+
+| Endpoint | Observed share | Null expected count | Exact one-sided p for positive lift P(X≥observed) | Exact lower-tail p P(X≤observed) |
+|---|---:|---:|---:|---:|
+| Top-5 | 0.11791045 | 418.75 | 0.91016729 | 0.09925220 |
+| Top-10 | 0.23582090 | 837.50 | 0.97885139 | 0.02340716 |
+| Top-20 | 0.49552239 | 1,675.00 | 0.71409148 | 0.29843703 |
+
+Holm over the three fixed endpoints gives adjusted positive-lift p-values = 1.000 for all three. The lower-tail Top-10 raw p=0.02340716 becomes Holm-adjusted 0.07022147; no endpoint is significant at 0.05 after this three-endpoint correction. This is an independent discrete-null sanity check only; it does not correct for the wider historical SONAR experiment-selection exposure, so it is not confirmatory and does not authorize promotion.
+
 ## Root cause and CI recovery
 
 - Exact-head CI run `42606749640` for source commit `00502224b7b7c2cf64cff1bb1b51f3514d3874ef` was cancelled when the PR branch advanced. Its log had been inside the full legacy Q80/Q81/Q82/Q83/Q86 regeneration step: Q80 summary at 11:24:39Z, metrics CSV ended at 11:24:40Z, and the Q80 target-ledger export had only emitted its header before cancellation. This was an infrastructure/runtime gate, not a Q92 statistical failure.
