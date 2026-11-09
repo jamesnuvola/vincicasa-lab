@@ -180,6 +180,8 @@ def compute_experiment(draws=None):
             for alpha in ALPHAS: candidate.append(rank_from_scores(base_z+alpha*signal))
         current=np.vstack([equal,flow_rank]+candidate)
         actual=np.asarray(target["nums"],dtype=np.int16)
+        fixed_hits=np.sum(fixed[:,actual-1]<=20,axis=1)
+        if fixed_hits.shape!=(len(CONFIGS),): raise ValueError("Q84 flow memory must retain all 42 fixed-rule outcomes")
         ar=current[:,actual-1]
         hh=np.column_stack([np.sum(ar<=5,axis=1),np.sum(ar<=10,axis=1),np.sum(ar<=20,axis=1)]).astype(np.int8)
         ranks[t],hits[t],actual_ranks[t]=current,hh,ar
@@ -187,7 +189,7 @@ def compute_experiment(draws=None):
         turbulence.append(None if turb is None else float(turb))
         effective_n.append(float(eff_n))
         states.append(state)
-        prior_hits.append(hh[:len(CONFIGS),2].astype(np.float64))
+        prior_hits.append(fixed_hits.astype(np.float64))
         prior_turb.append(turb)
 
     indices={s:np.asarray([i for i,x in enumerate(splits) if x==s],dtype=np.int64) for s in SPLITS}
