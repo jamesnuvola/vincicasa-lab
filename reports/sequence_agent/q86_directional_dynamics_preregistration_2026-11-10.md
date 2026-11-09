@@ -31,3 +31,6 @@ Famiglia globale Holm: 8 modelli × 3 split × 3 endpoint = 72 test esatti. Conf
 ## Limiti e salvaguardie
 
 Il segmento storico Blind OOS è già esposto a precedenti ricerche SONAR: è esplorativo. Il replay dimostra correttezza computazionale, non capacità predittiva. Nessun freeze, forecast prospettico o motore viene modificato/promosso. Revisione umana obbligatoria. Q86-DIR è distinto dal Q86 della grammatica a sei caratteristiche.
+
+
+Workflow di accettazione: `pull_request` sul branch di supporto Q86-DIR; il job esegue test, walk-forward, replay, persistenza append-only e replay read-only del commit persistito.
