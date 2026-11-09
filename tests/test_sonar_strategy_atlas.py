@@ -48,6 +48,30 @@ class Q84FlowStateTests(unittest.TestCase):
         self.assertEqual(a[2], 40)
         self.assertTrue(0.5 <= float(a[0].min()) <= float(a[0].max()) <= 2.0)
 
+    def test_complementarity_requires_paired_miss_lift_not_any_unique_hit(self):
+        label, a_lift, b_lift = q84.classify_relationship(
+            0.25, 0.45, 100, 110, 2.50, 2.50, 2.55, 2.56
+        )
+        self.assertEqual(label, "MIXED")
+        self.assertAlmostEqual(a_lift, 0.06)
+        self.assertAlmostEqual(b_lift, 0.05)
+
+    def test_bidirectional_complementarity_requires_sample_and_lift(self):
+        label, _, _ = q84.classify_relationship(
+            0.10, 0.35, 100, 110, 2.50, 2.50, 2.70, 2.68
+        )
+        self.assertEqual(label, "COMPLEMENTARY_BOTH_WAYS")
+
+    def test_antagonism_and_near_equivalence_precede_complementarity(self):
+        anti, _, _ = q84.classify_relationship(
+            -0.2, 0.4, 100, 100, 2.5, 2.5, 2.8, 2.8
+        )
+        near, _, _ = q84.classify_relationship(
+            0.999, 0.99, 100, 100, 2.5, 2.5, 2.8, 2.8
+        )
+        self.assertEqual(anti, "ANTAGONISTIC")
+        self.assertEqual(near, "NEAR_EQUIVALENT")
+
     def test_rank_vector_is_complete_permutation(self):
         ranks = q84.rank_vector_from_order(list(range(1, 41)))
         self.assertEqual(sorted(ranks.tolist()), list(range(1, 41)))
