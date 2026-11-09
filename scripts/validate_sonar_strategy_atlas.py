@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail-closed Q84 output validator; supports persisted exact-head readback."""
 from __future__ import annotations
-import argparse, csv, gzip, hashlib, json, math
+import argparse, csv, gzip, hashlib, json, math, subprocess
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -71,6 +71,15 @@ def validate(write_validation):
 
     if report.get("task_id") != "Q84" or manifest.get("task_id") != "Q84":
         fail("task ID mismatch")
+    code_sha = report.get("source_code_commit_sha")
+    if not isinstance(code_sha, str) or len(code_sha) != 40 or any(ch not in "0123456789abcdef" for ch in code_sha):
+        fail("source-code commit SHA missing/invalid")
+    if manifest.get("source_code_commit_sha") != code_sha:
+        fail("source-code commit SHA mismatch between report and manifest")
+    ancestry = subprocess.run(["git", "merge-base", "--is-ancestor", code_sha, "HEAD"], cwd=ROOT,
+                              capture_output=True, text=True)
+    if ancestry.returncode != 0:
+        fail("reported source-code commit is not an ancestor of the validated repository head")
     if report.get("source_archive", {}).get("draw_count") != len(draws):
         fail("report archive draw count mismatch")
     if report.get("source_archive", {}).get("last_date") != dates[-1]:
