@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-Q92-IMPLEMENTATION-2026-11-09T0144Z",
+  "recorded_at_utc": "2026-11-09T01:44:00Z",
+  "implementation_branch": {
+    "name": "research/sonar-q92-ten-feature-implementation-20261109",
+    "head_sha": "b178ca7f512913a44eaf3296430aee6a47d21ce2",
+    "previous_head_sha": "4c8c1606feef46e4ed123687a5ddc4a0d82279e1"
+  },
+  "q89_base": {
+    "persisted_commit": "95bb4e8b4a950fb4ba80d46e44fd91fef83f6def",
+    "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+    "archive": {
+      "draw_count": 3401,
+      "last_date": "2026-11-07",
+      "blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+    },
+    "formula_count": 4686825,
+    "metrics_rows": 14060475,
+    "metric_parts": 469,
+    "selected_candidate": "P9_06_09_12_14_15_17_18_19_23",
+    "global_holm_rows_below_0_05": 0,
+    "outputs_exact_bytes_verified": true
+  },
+  "q89_current_head_recovery": {
+    "branch_head": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+    "run_id": 42545546642,
+    "status": "IN_PROGRESS",
+    "aggregation": "SUCCESS",
+    "acceptance": "IN_PROGRESS",
+    "persistence": "PENDING",
+    "exact_head_ci": "PENDING",
+    "latest_observed_step": "Validate complete Q89 acceptance evidence before persistence",
+    "no_current_run_metrics_reported": true
+  },
+  "q89_refresh_2026_11_08": {
+    "protocol_id": "Q89-nine-feature-incremental-refresh-2026-11-08",
+    "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "canonical_archive": {
+      "main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+      "blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "draw_count": 3402,
+      "last_date": "2026-11-08",
+      "latest_quintet": [
+        3,
+        7,
+        10,
+        16,
+        27
+      ]
+    },
+    "formula_count": 4686825,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "affected_offsets": [
+      2011,
+      2681,
+      3351
+    ],
+    "new_split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "holm_family_size": 42181425,
+    "runner_status": "IMPLEMENTED",
+    "synthetic_test_ci": {
+      "run_id": 42547061837,
+      "head_sha": "b178ca7f512913a44eaf3296430aee6a47d21ce2",
+      "conclusion": "SUCCESS"
+    },
+    "root_cause_fixed": "Synthetic delta replay patched the evaluator ROOT to the temp fixture root; report path relative_to(ROOT) no longer raises ValueError.",
+    "execution": "NOT_STARTED"
+  },
+  "q92": {
+    "protocol_commit": "758cf9ed15b7e2073358ed139b4e34dd75c9365f",
+    "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "formula_count": 8436285,
+    "subset_size": 10,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "target_count": 3352,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 25308855,
+    "holm_family_size": 75926565,
+    "execution": "NOT_STARTED",
+    "gate": "Do not execute until Q89 is refreshed/accepted on the same 2026-11-08 archive and exact-head CI passes."
+  },
+  "prospective_gate": {
+    "queue_status": "QUEUE_VALID",
+    "overall_cycle_status": "INCOMPLETE",
+    "blocking_task": "Q60",
+    "complete_paired_targets": 21,
+    "required_paired_targets": 200
+  },
+  "guardrails": {
+    "no_auto_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "prs_6_7_8_untouched": true,
+    "human_review_required": true,
+    "preserve_immutable_2026_10_25_freeze": true
+  },
+  "next_actions": [
+    "Finish current Q89 acceptance recovery; report current metrics only after log readback.",
+    "Implement Q89 refresh aggregator, fail-closed validator, Git Data API append-only persister and shard workflow.",
+    "Run 15 Q89 refresh delta shards on canonical 2026-11-08 archive; verify split counts, formula-rank coverage, Holm and exact bytes.",
+    "Freeze refreshed Q89 control and current-head CI before implementing/executing Q92."
+  ]
+}
