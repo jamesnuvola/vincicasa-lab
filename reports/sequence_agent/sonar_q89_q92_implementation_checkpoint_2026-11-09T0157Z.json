@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-Q92-IMPLEMENTATION-2026-11-09T0157Z",
+  "recorded_at_utc": "2026-11-09T01:57:00Z",
+  "implementation_branch": {
+    "name": "research/sonar-q92-ten-feature-implementation-20261109",
+    "head_sha": "62f59c28785604da6be6ace8ca9709069e4d3573",
+    "previous_head_sha": "ed2a6e7fd8de5429fb53ea15b9143e68ec32a28c"
+  },
+  "q89_base": {
+    "persisted_commit": "95bb4e8b4a950fb4ba80d46e44fd91fef83f6def",
+    "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+    "archive": {
+      "draw_count": 3401,
+      "last_date": "2026-11-07",
+      "blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+    },
+    "formula_count": 4686825,
+    "metrics_rows": 14060475,
+    "metric_parts": 469,
+    "selected_candidate": "P9_06_09_12_14_15_16_17_18_20",
+    "base_catalog_holm_rows_below_0_05": 0,
+    "outputs_exact_bytes_verified": true
+  },
+  "q89_current_head_recovery": {
+    "branch_head": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+    "run_id": 42545546642,
+    "status": "IN_PROGRESS",
+    "aggregation": "SUCCESS",
+    "acceptance": "SUCCESS",
+    "persistence": "IN_PROGRESS",
+    "exact_head_ci": "PENDING",
+    "persistence_started_at_utc": "2026-11-09T01:48:17Z",
+    "no_current_run_metrics_reported": true
+  },
+  "q89_refresh_2026_11_08": {
+    "protocol_id": "Q89-nine-feature-incremental-refresh-2026-11-08",
+    "status": "IMPLEMENTED_CI_VALIDATED_EXECUTION_PENDING",
+    "canonical_archive": {
+      "main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+      "blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "draw_count": 3402,
+      "last_date": "2026-11-08",
+      "latest_quintet": [
+        3,
+        7,
+        10,
+        16,
+        27
+      ]
+    },
+    "formula_count": 4686825,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "affected_offsets": [
+      2011,
+      2681,
+      3351
+    ],
+    "new_split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "holm_family_size": 42181425,
+    "implementation": {
+      "runner": "scripts/sonar_q89_refresh_delta_shard.py",
+      "aggregator": "scripts/aggregate_sonar_q89_refresh_delta.py",
+      "acceptance": "scripts/validate_q89_refresh_delta.py",
+      "persister": "scripts/persist_q89_refresh_delta.py",
+      "workflow": ".github/workflows/sonar-q89-refresh-delta.yml",
+      "synthetic_test": "tests/test_sonar_q89_refresh_delta.py",
+      "aggregate_test": "tests/test_sonar_q89_refresh_aggregate.py"
+    },
+    "code_blob_shas": {
+      "aggregator": "2909e384599e542d6b4357244dcacfe768a99490",
+      "validator": "8c142b4e58853995ab9309f864c86e0376cf52c6",
+      "persister": "dc32a39842b44dc9e7540a29cdb49d0399b1df8a",
+      "test": "ef4ce2bbdd1d63e86b6ed54042aaa4fe72914132",
+      "workflow": "d9c4af1894ddb5544ed17fd6ed45726fb231c9ef",
+      "ci": "f571b396d6a675096377b752992f54acea6c1c53"
+    },
+    "exact_head_ci": {
+      "run_id": 42548067205,
+      "head_sha": "62f59c28785604da6be6ace8ca9709069e4d3573",
+      "conclusion": "SUCCESS"
+    },
+    "prior_ci_root_causes_fixed": [
+      "synthetic fixture ROOT did not match temp report path; patched ROOT",
+      "aggregate test metric fixture exceeded valid mean/rank bounds; corrected and added range assertions",
+      "persist checkpoint line breaks were literal backslash-n sequences; corrected both and exact-head py_compile/tests passed"
+    ],
+    "execution": "NOT_STARTED"
+  },
+  "q92": {
+    "protocol_commit": "758cf9ed15b7e2073358ed139b4e34dd75c9365",
+    "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "formula_count": 8436285,
+    "subset_size": 10,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "target_count": 3352,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 25308855,
+    "holm_family_size": 75926565,
+    "execution": "NOT_STARTED",
+    "gate": "Do not execute until Q89 refresh is accepted/persisted on the same 2026-11-08 archive and exact-head CI passes."
+  },
+  "prospective_gate": {
+    "queue_status": "QUEUE_VALID",
+    "overall_cycle_status": "INCOMPLETE",
+    "blocking_task": "Q60",
+    "complete_paired_targets": 21,
+    "required_paired_targets": 200
+  },
+  "guardrails": {
+    "no_auto_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "prs_6_7_8_untouched": true,
+    "human_review_required": true,
+    "preserve_immutable_2026_10_25_freeze": true
+  },
+  "next_actions": [
+    "Finish Q89 base persistence exact-byte readback and current-head CI.",
+    "Launch the Q89 refresh 15-shard workflow only after the accepted base current-head gate completes.",
+    "Aggregate split deltas and global Holm; pass fail-closed acceptance; persist delta shards/selection/report/checkpoints append-only.",
+    "Verify exact-byte readback and CI on the final persisted Q89 refresh head.",
+    "Freeze refreshed Q89 candidate for Q92 same-archive control; then implement/execute Q92."
+  ]
+}
