@@ -6,6 +6,8 @@ import random
 import sys
 import unittest
 
+import numpy as np
+
 ROOT=__import__("pathlib").Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import sonar_q92_common as q92
