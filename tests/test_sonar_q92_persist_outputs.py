@@ -60,7 +60,7 @@ def make_bundle(bundle:Path):
     }
     manifest={
         "schema_version":"1.0","task_id":TASK_ID,"status":"AGGREGATED_PENDING_ACCEPTANCE_VALIDATION",
-        "source_archive_sha256":ARCHIVE_SHA,"split_counts":SPLITS,
+        "source_archive_sha256":ARCHIVE_SHA,"split_counts":SPLITS,"shard_count":15,
         "formula_split_endpoint_holm_family_size":75926565,
         "metrics_parts":metrics,"target_ledger_parts":target_parts,"supplemental_outputs":supplemental
     }
