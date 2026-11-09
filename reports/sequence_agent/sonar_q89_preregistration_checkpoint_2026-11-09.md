@@ -84,3 +84,8 @@ Date: 2026-11-09
 - Root cause: the queue status is a deliberately mutable generated snapshot, unlike the immutable metrics parts, report, manifest and target ledger.
 - The persistence script now explicitly permits replacement of only `reports/sequence_agent/research_queue_status.json`; every other existing output path remains fail-closed unless SHA and size match exactly. A regression test enforces this allowlist.
 - The 25-file chunked Git Data API strategy remains. The original accepted aggregate artifact is reused; no historical shard is rerun.
+
+## Recovery attempt 5 — mutable-path helper correction
+
+- The previous recovery commit `812b1a31313f2c65ae68e0f5dd045bd84eb2eaab` added the mutable queue snapshot allowlist and regression test, but readback showed the helper `is_mutable_output_path` had not been inserted into the persistence script.
+- Corrected before any persistence ref update. The recovery request is incremented to attempt 5; original accepted aggregate artifact/run remains unchanged.

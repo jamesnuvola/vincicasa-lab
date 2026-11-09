@@ -57,6 +57,9 @@ def git_blob_sha(data): return hashlib.sha1(b"blob "+str(len(data)).encode("asci
 def chunk_items(items,size):
     if size<1: raise ValueError("chunk size must be positive")
     return [items[i:i+size] for i in range(0,len(items),size)]
+
+def is_mutable_output_path(path):
+    return path in MUTABLE_OUTPUT_PATHS
 def main():
     head=subprocess.run(["git","rev-parse","HEAD"],cwd=ROOT,check=True,stdout=subprocess.PIPE,text=True).stdout.strip()
     report_path=OUT/"per_number_condition_9plus_grammar.json"
