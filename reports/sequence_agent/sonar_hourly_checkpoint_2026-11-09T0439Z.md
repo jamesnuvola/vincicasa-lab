@@ -34,3 +34,11 @@
 - Wait for all 15 Q89 shards, then aggregate, acceptance validate strict-prefix and archive reconciliation, persist append-only outputs, byte-readback, and exact-head CI. Use only the refreshed Q89 candidate as Q92 control.
 - Then implement Q92 runner/aggregator/acceptance/persistence; current PR #22 does not contain those components.
 - PRs #6, #7, #8 remain untouched, open/draft and not merged. No automatic merge, shadow insertion or engine promotion.
+
+
+## Additional verified diagnostics (2026-11-09 04:42 UTC)
+- Q92 combinadic regression counts from the exact PR head: 10,007 seeded rank/unrank round trips; 100 lexicographic successor comparisons; 15 contiguous shard intervals; 25-formula sample from shards 0,1,7,14; 550 batch intervals per shard with 562,419 total formulas; p-value helper bounds and deterministic replay tests. Dedicated CI passed. These are helper/unit checks, not full formula walk-forward acceptance.
+- Q91 PR-triggered run 42557768007 completed FAILURE. Root cause from decoded job logs: the workflow on PR #20's merge ref reported `Q91_FRESH_EVALUATION_REQUIRED`, then compile failed with `[Errno 2] No such file or directory: scripts/sonar_q91_nested_walkforward.py`. Q91 sources are not present in that merge ref; this is a cross-PR workflow trigger/checkout scope issue, not a model metric failure. No Q91 outputs were evaluated or persisted in this run.
+- The current Q89 recovery PR event 42557767913 is downloading the immutable shard artifacts from run 42524743687 (pre-Nov-08 archive). It is a stale-input recovery against a new archive and must be treated as inadmissible; current Nov-08 refresh is the push matrix run 42557762655.
+- Current Q89 matrix snapshot: 15 shard jobs are scheduled and each has passed setup, NumPy install and Q89 syntax/unit acceptance; the evaluator step is in progress. No shard has yet been reported complete in the latest snapshot.
+- Current project CI push 42557762695 was cancelled by concurrency; PR CI 42557767857 remains in progress. No current-head success has yet been observed for the new archive commit.
