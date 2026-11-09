@@ -325,6 +325,8 @@ jobs:
             "paired_top5_bootstrap_ci_95":[inference["endpoints"]["top5_hit_share"]["bootstrap_ci_95_low"],inference["endpoints"]["top5_hit_share"]["bootstrap_ci_95_high"]],
             "paired_top5_signflip_p_holm":inference["endpoints"]["top5_hit_share"]["signflip_p_holm"],
             "minimum_practical_effect_top5":inference["minimum_practical_effect"]["absolute_delta_threshold"],
+            "selected_candidate_global_holm_adjusted_pvalues":selection["Q92_candidate"]["global_holm_adjusted_pvalues"],
+            "blind_oos_uniform_baseline_evidence":selection["Q92_candidate"]["blind_oos_uniform_baseline_evidence"],
             "metrics_parts_storage":"GitHub Actions artifact bundle; manifest SHA-256 and part sizes are recorded in the aggregate manifest.",
             "output_sha256":hashes}
           (root/"q92_20261108_acceptance_summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
