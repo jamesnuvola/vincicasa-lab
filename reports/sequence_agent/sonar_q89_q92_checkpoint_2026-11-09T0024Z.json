@@ -1,0 +1,70 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-Q92-STATE-2026-11-09T0024Z",
+  "recorded_at_utc": "2026-11-09T00:24:04Z",
+  "status": "Q89_RECOVERY_IN_PROGRESS_Q92_PREREGISTERED_IMPLEMENTATION_PENDING",
+  "q89": {
+    "recovery_run_id": 42538247699,
+    "head": "d062bf9ea5068235a136c8adf011108c89440274",
+    "current_status": "IN_PROGRESS",
+    "current_step": "Aggregate shards, apply global Holm, freeze candidates and run paired blind OOS",
+    "acceptance": "PENDING",
+    "persistence": "PENDING",
+    "exact_head_ci": "PENDING",
+    "full_ci_run_id": 42538247764,
+    "full_ci_status": "IN_PROGRESS",
+    "provisional_aggregate_run_id": 42534331468,
+    "acceptance_failed": true,
+    "provisional_counts": {
+      "formula_count": 4686825,
+      "targets": 3351,
+      "metrics_rows": 14060475,
+      "holm_family_size": 42181425,
+      "holm_rows_below_0_05": 0
+    },
+    "provisional_candidate_ids": {
+      "q89": "P9_06_09_12_14_15_17_18_19_23",
+      "q88": "P8_00_08_11_12_15_16_19_23"
+    },
+    "provisional_results_status": "MEASURED_IN_RUN_LOG_BUT_NOT_ACCEPTED_OR_PERSISTED",
+    "source_archive_last_date": "2026-11-07",
+    "canonical_main_archive_last_date": "2026-11-08",
+    "canonical_main_archive_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf"
+  },
+  "q92": {
+    "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "branch": "research/sonar-q92-ten-feature-prereg-20261109",
+    "commit": "758cf9ed15b7e2073358ed139b4e34dd75c9365f",
+    "json_blob_sha": "e7cc679a5df83def6be0b0aa771ceca8e688695d",
+    "markdown_blob_sha": "df97d139dab50aa23490310a480854a902aad7d6",
+    "archive_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "formula_count": 8436285,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "target_count": 3352,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 25308855,
+    "holm_family_size": 75926565,
+    "paired_control": "Q89 nine-feature catalog must be refreshed on identical 2026-11-08 archive/splits; prior Q89 candidate from 2026-11-07 is not admissible.",
+    "execution": "NOT_STARTED"
+  },
+  "guardrails": {
+    "no_merge": true,
+    "no_promotion": true,
+    "no_shadow_insertion": true,
+    "prs_6_7_8_untouched": true,
+    "preserve_immutable_2026_10_25_freeze": true
+  },
+  "next_actions": [
+    "Wait for Q89 recovery run 42538247699; acceptance, persistence and current-head CI are pending.",
+    "If acceptance fails, diagnose numeric replay mismatches with stable source/blob evidence; patch only verified defects.",
+    "Reconcile and refresh Q89 on canonical main archive through 2026-11-08 before treating its candidate as Q92 control.",
+    "Implement Q92 combinadic utilities, distributed evaluator, fail-closed validator and synthetic tests; do not start shard evaluation before same-archive Q89 control is ready.",
+    "Require acceptance, append-only byte verification, exact-head CI and human review/integration before marking Q89/Q92 complete."
+  ]
+}
