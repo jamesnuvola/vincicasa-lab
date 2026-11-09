@@ -99,12 +99,12 @@ def empirical_midrank_percentile(value, prior_values, minimum_history=MIN_GATE_H
 
 def alpha_up(percentile):
     p = float(np.clip(percentile, 0.0, 1.0))
-    return 0.10 + 0.20 * p
+    return float(min(0.30, max(0.10, 0.10 + 0.20 * p)))
 
 
 def alpha_down(percentile):
     p = float(np.clip(percentile, 0.0, 1.0))
-    return 0.30 - 0.20 * p
+    return float(min(0.30, max(0.10, 0.30 - 0.20 * p)))
 
 
 def field_state_for_target(draws, target_index):
