@@ -25,6 +25,12 @@ FEATURE_COUNT=q92.FEATURE_COUNT
 FORMULA_SIZE=q92.FORMULA_SIZE
 Q92_REPORT_PATH=OUT/"per_number_condition_10plus_grammar.json"
 Q92_MANIFEST_PATH=OUT/"per_number_condition_10plus_formula_metrics_manifest.json"
+Q89_REFRESH_REPORT_PATH=OUT/"q89_refresh_20261108_report.json"
+Q89_REFRESH_MANIFEST_PATH=OUT/"q89_refresh_20261108_manifest.json"
+Q89_REFRESH_SELECTION_PATH=OUT/"q89_refresh_20261108_candidate_selection.json"
+Q89_REFRESH_PAIRED_LEDGER_PATH=OUT/"q89_refresh_20261108_selected_candidate_blind_ledger.csv"
+Q92_EXPECTED_ARCHIVE_GIT_BLOB_SHA1="77ca692a6082809fcc6c471501617433ec7c36cf"
+Q92_EXPECTED_ARCHIVE_MAIN_COMMIT="6cca9022d4311a3f9aba2925fce8c653dc6b63ab"
 Q92_LEDGER_PATH=OUT/"per_number_condition_10plus_target_ledger.csv"
 SHORTLIST_PATH=OUT/"per_number_condition_10plus_candidate_shortlist.csv"
 SELECTION_PATH=OUT/"per_number_condition_10plus_candidate_selection.json"
@@ -164,53 +170,111 @@ def q89_metric_paths():
         fail("Q89 control metric manifest total row count mismatch")
     return parts
 
-def candidate_selection():
-    q89_paths=[SHARD_DIR/f"shard_{shard}_metrics.csv" for shard in range(SHARDS)]
-    for path in q89_paths:
+def validate_q89_refresh_control(dates,draws,source_sha):
+    try:
+        report=json.loads(Q89_REFRESH_REPORT_PATH.read_text(encoding="utf-8"))
+        manifest=json.loads(Q89_REFRESH_MANIFEST_PATH.read_text(encoding="utf-8"))
+        selection=json.loads(Q89_REFRESH_SELECTION_PATH.read_text(encoding="utf-8"))
+        with Q89_REFRESH_PAIRED_LEDGER_PATH.open(newline="",encoding="utf-8-sig") as handle:
+            fields=csv.DictReader(handle).fieldnames
+            rows=list(csv.DictReader(handle))
+        raw_ledger=Q89_REFRESH_PAIRED_LEDGER_PATH.read_bytes()
+        raw_archive=ARCHIVE.read_bytes()
+    except Exception as exc:
+        fail("Q92 same-archive Q89 refresh control required/readable: "+str(exc))
+    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\\0"+raw_archive).hexdigest()
+    add=lambda condition,message: fail(message) if not condition else None
+    add(report.get("task_id")=="Q89_REFRESH_2026_11_08","Q92 Q89 refresh control task identity mismatch")
+    add(report.get("status")=="VALIDATED_PENDING_HUMAN_REVIEW" and report.get("review_status")=="PENDING_HUMAN_REVIEW_INTEGRATION","Q92 Q89 refresh control is not acceptance-validated/pending human review")
+    add(manifest.get("task_id")=="Q89_REFRESH_2026_11_08" and manifest.get("status")=="VALIDATED_PENDING_HUMAN_REVIEW","Q92 Q89 refresh manifest status mismatch")
+    add(report.get("source_archive_sha256")==source_sha and manifest.get("source_archive_sha256")==source_sha,"Q92 Q89 refresh archive SHA256 mismatch")
+    add(report.get("source_archive_git_blob_sha1")==Q92_EXPECTED_ARCHIVE_GIT_BLOB_SHA1 and archive_git_sha1==Q92_EXPECTED_ARCHIVE_GIT_BLOB_SHA1,"Q92 Q89 refresh canonical archive Git blob SHA1 mismatch")
+    add(report.get("source_archive_main_commit")==Q92_EXPECTED_ARCHIVE_MAIN_COMMIT,"Q92 Q89 refresh canonical main commit mismatch")
+    add(report.get("target_count")==3402 and report.get("last_date")=="2026-11-08" and report.get("scored_targets")==3352,"Q92 Q89 refresh archive dimensions/date mismatch")
+    add(report.get("split_counts")=={"discovery":2012,"validation":670,"blind_oos":670},"Q92 Q89 refresh split layout mismatch")
+    add(report.get("formula_count")==4_686_825 and report.get("formula_size")==9,"Q92 Q89 refresh formula universe mismatch")
+    add(report.get("multiple_testing",{}).get("test_count")==42_181_425,"Q92 Q89 refresh global Holm family size mismatch")
+    add(selection.get("status")=="CANDIDATE_FROZEN_BEFORE_BLIND_OOS" and selection.get("blind_oos_used_for_selection") is False and selection.get("selected_candidate_ids_frozen") is True,"Q92 Q89 control candidate is not frozen before Blind OOS")
+    q89_candidate=selection.get("Q89_candidate",{})
+    q89_id=q89_candidate.get("formula_id","")
+    q89_columns=parse_formula_id(q89_id,"P9_",9)
+    q89_features="+".join(FEATURES[index] for index in q89_columns)
+    add(q89_candidate.get("features")==q89_features,"Q92 Q89 control feature names/formula ID mismatch")
+    add(q89_candidate.get("blind_oos_ledger_path")==str(Q89_REFRESH_PAIRED_LEDGER_PATH.relative_to(ROOT)),"Q92 Q89 control paired-ledger path mismatch")
+    paired_manifest=manifest.get("supplemental_outputs",{}).get("selected_candidate_blind_ledger",{})
+    add(paired_manifest.get("path")==str(Q89_REFRESH_PAIRED_LEDGER_PATH.relative_to(ROOT)) and paired_manifest.get("rows")==670,"Q92 Q89 control paired-ledger manifest identity/count mismatch")
+    add(paired_manifest.get("sha256")==hashlib.sha256(raw_ledger).hexdigest() and paired_manifest.get("bytes")==len(raw_ledger),"Q92 Q89 control paired-ledger manifest hash/bytes mismatch")
+    required={"target_date","cutoff_date","prior_draws","actual_quintet","Q89_formula_id","Q89_actual_number_ranks",
+        "Q89_number_hits_top5","Q89_number_hits_top10","Q89_number_hits_top20","Q89_all5_top5","Q89_all5_top10","Q89_all5_top20","Q89_rank_sum"}
+    add(required.issubset(set(fields or [])) and len(rows)==670,"Q92 Q89 control paired-ledger schema/row count mismatch")
+    scored=len(draws)-MIN_HISTORY
+    validation_end=math.ceil(.80*scored)
+    expected_indices=list(range(MIN_HISTORY+validation_end,len(draws)))
+    expected_dates=[dates[index] for index in expected_indices]
+    add([row.get("target_date") for row in rows]==expected_dates,"Q92 Q89 control paired Blind OOS date coverage/order mismatch")
+    ledger_by_date={}
+    for row,index in zip(rows,expected_indices):
+        date=dates[index]
+        add(row.get("cutoff_date")==dates[index-1] and int(row.get("prior_draws",-1))==index,"Q92 Q89 control strict-prefix cutoff mismatch at "+date)
+        add(row.get("actual_quintet")==" ".join(map(str,draws[index])),"Q92 Q89 control actual quintet mismatch at "+date)
+        add(row.get("Q89_formula_id")==q89_id,"Q92 Q89 control formula ID changed on paired ledger")
+        ranks=json.loads(row["Q89_actual_number_ranks"])
+        add(len(ranks)==5 and all(isinstance(value,int) and 1<=value<=40 for value in ranks),"Q92 Q89 control rank vector invalid at "+date)
+        hits={k:sum(value<=k for value in ranks) for k in (5,10,20)}
+        all5={k:int(all(value<=k for value in ranks)) for k in (5,10,20)}
+        for k in (5,10,20):
+            add(int(row[f"Q89_number_hits_top{k}"])==hits[k] and int(row[f"Q89_all5_top{k}"])==all5[k],"Q92 Q89 control hit arithmetic mismatch at "+date)
+        add(int(row["Q89_rank_sum"])==sum(ranks),"Q92 Q89 control rank sum mismatch at "+date)
+        ledger_by_date[date]=row
+    return {"report":report,"manifest":manifest,"selection":selection,"candidate":q89_candidate,
+        "formula_id":q89_id,"formula_columns":q89_columns,"paired_rows":rows,"ledger_by_date":ledger_by_date}
+
+def candidate_selection(q89_refresh):
+    q92_paths=[SHARD_DIR/f"shard_{shard}_metrics.csv" for shard in range(SHARDS)]
+    for path in q92_paths:
         if not path.is_file():
             fail("missing Q92 shard metrics "+str(path))
-    q89_shortlist=discovery_top100(q89_paths,prefix="P10_")
-    q89_selected,q89_enriched=validation_select(q89_paths,q89_shortlist,prefix="P10_")
-    q89_paths=q89_metric_paths()
-    q89_shortlist=discovery_top100(q89_paths,gzip_mode=True,prefix="P8_")
-    q89_selected,q89_enriched=validation_select(q89_paths,q89_shortlist,gzip_mode=True,prefix="P8_")
+    q92_shortlist=discovery_top100(q92_paths,prefix="P10_")
+    q92_selected,q92_enriched=validation_select(q92_paths,q92_shortlist,prefix="P10_")
     rows=[]
-    for family,enriched,selected in (("ten_feature",q89_enriched,q89_selected),("nine_feature_control",q89_enriched,q89_selected)):
-        for item in enriched:
-            rows.append({"family":family,"formula_id":item["formula_id"],"features":item.get("features",item.get("validation_features","")),
-                "discovery_rank":item["discovery_rank"],"discovery_mean_number_hits_top5":item["discovery_mean_number_hits_top5"],
-                "discovery_mean_rank_of_actual_numbers":item["discovery_mean_rank_of_actual_numbers"],
-                "validation_mean_number_hits_top5":item["validation_mean_number_hits_top5"],
-                "validation_mean_rank_of_actual_numbers":item["validation_mean_rank_of_actual_numbers"],
-                "validation_selection_rank":item["validation_selection_rank"],"selected":int(item["formula_id"]==selected["formula_id"])})
+    for item in q92_enriched:
+        rows.append({"family":"ten_feature","formula_id":item["formula_id"],"features":item.get("features",item.get("validation_features","")),
+            "discovery_rank":item["discovery_rank"],"discovery_mean_number_hits_top5":item["discovery_mean_number_hits_top5"],
+            "discovery_mean_rank_of_actual_numbers":item["discovery_mean_rank_of_actual_numbers"],
+            "validation_mean_number_hits_top5":item["validation_mean_number_hits_top5"],
+            "validation_mean_rank_of_actual_numbers":item["validation_mean_rank_of_actual_numbers"],
+            "validation_selection_rank":item["validation_selection_rank"],"selected":int(item["formula_id"]==q92_selected["formula_id"])})
     with SHORTLIST_PATH.open("w",newline="",encoding="utf-8") as handle:
-        writer=csv.DictWriter(handle,fieldnames=list(rows[0].keys()))
-        writer.writeheader(); writer.writerows(rows)
-    selection={"schema_version":"1.0","task_id":"Q92","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-08",
+        writer=csv.DictWriter(handle,fieldnames=list(rows[0].keys()),lineterminator="\\n")
+        writer.writeheader();writer.writerows(rows)
+    q89_candidate=q89_refresh["candidate"]
+    selection={"schema_version":"1.0","task_id":"Q92","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-09",
         "status":"CANDIDATES_FROZEN_BEFORE_BLIND_OOS","blind_oos_used_for_selection":False,
-        "selection_rule":"Discovery top100 by mean number_hits_top5, tie-break lower mean_rank_of_actual_numbers then lexicographic formula_id; select one on Validation with the same tie-break.",
-        "top100_discovery_candidates":{"Q92":[item["formula_id"] for item in q89_shortlist],"Q89":[item["formula_id"] for item in q89_shortlist]},
+        "selection_rule":"Within each formula universe, Discovery top100 by mean number_hits_top5; tie-break lower mean_rank_of_actual_numbers then lexicographic formula_id; select one on Validation with the same tie-break.",
+        "top100_discovery_candidates":{"Q92":[item["formula_id"] for item in q92_shortlist]},
         "selected_candidate_ids_frozen":True,
-        "Q92_candidate":{"formula_id":q89_selected["formula_id"],"features":q89_selected["features"],
-            "discovery_rank":q89_selected["discovery_rank"],"discovery_mean_number_hits_top5":q89_selected["discovery_mean_number_hits_top5"],
-            "discovery_mean_rank_of_actual_numbers":q89_selected["discovery_mean_rank_of_actual_numbers"],
-            "validation_mean_number_hits_top5":q89_selected["validation_mean_number_hits_top5"],
-            "validation_mean_rank_of_actual_numbers":q89_selected["validation_mean_rank_of_actual_numbers"],
-            "validation_selection_rank":q89_selected["validation_selection_rank"]},
-        "Q89_control":{"formula_id":q89_selected["formula_id"],"features":q89_selected["features"],
-            "discovery_rank":q89_selected["discovery_rank"],"discovery_mean_number_hits_top5":q89_selected["discovery_mean_number_hits_top5"],
-            "discovery_mean_rank_of_actual_numbers":q89_selected["discovery_mean_rank_of_actual_numbers"],
-            "validation_mean_number_hits_top5":q89_selected["validation_mean_number_hits_top5"],
-            "validation_mean_rank_of_actual_numbers":q89_selected["validation_mean_rank_of_actual_numbers"],
-            "validation_selection_rank":q89_selected["validation_selection_rank"]}}
-    SELECTION_PATH.write_text(json.dumps(selection,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        "Q92_candidate":{"formula_id":q92_selected["formula_id"],"features":q92_selected["features"],
+            "discovery_rank":q92_selected["discovery_rank"],"discovery_mean_number_hits_top5":q92_selected["discovery_mean_number_hits_top5"],
+            "discovery_mean_rank_of_actual_numbers":q92_selected["discovery_mean_rank_of_actual_numbers"],
+            "validation_mean_number_hits_top5":q92_selected["validation_mean_number_hits_top5"],
+            "validation_mean_rank_of_actual_numbers":q92_selected["validation_mean_rank_of_actual_numbers"],
+            "validation_selection_rank":q92_selected["validation_selection_rank"]},
+        "Q89_control":{"formula_id":q89_candidate["formula_id"],"features":q89_candidate["features"],
+            "discovery_rank":q89_candidate["discovery_rank"],"discovery_mean_number_hits_top5":q89_candidate["discovery_mean_number_hits_top5"],
+            "discovery_mean_rank_of_actual_numbers":q89_candidate["discovery_mean_rank_of_actual_numbers"],
+            "validation_mean_number_hits_top5":q89_candidate["validation_mean_number_hits_top5"],
+            "validation_mean_rank_of_actual_numbers":q89_candidate["validation_mean_rank_of_actual_numbers"],
+            "validation_selection_rank":q89_candidate["validation_selection_rank"],
+            "same_archive_refresh_report":str(Q89_REFRESH_REPORT_PATH.relative_to(ROOT)),
+            "same_archive_paired_blind_ledger":str(Q89_REFRESH_PAIRED_LEDGER_PATH.relative_to(ROOT))}}
+    SELECTION_PATH.write_text(json.dumps(selection,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
     return selection
 
 def formula_columns_from_id(fid):
     if fid.startswith("P10_"):
         return parse_formula_id(fid,"P10_",10)
-    if fid.startswith("P8_"):
-        return parse_formula_id(fid,"P8_",8)
+    if fid.startswith("P9_"):
+        return parse_formula_id(fid,"P9_",9)
     fail("frozen candidate formula ID has unknown prefix")
 
 def rank_actual_for_formula(standardized,columns,actual_indices):
@@ -226,43 +290,58 @@ def paired_rank_evidence(q89_ranks,q89_ranks):
         "q89_hits":{k:sum(value<=k for value in q89_ranks) for k in (5,10,20)}
     }
 
-def paired_blind_ledger(selection,dates,draws):
-    q89_id=selection["Q92_candidate"]["formula_id"]
+def paired_blind_ledger(selection,dates,draws,q89_refresh):
+    q92_id=selection["Q92_candidate"]["formula_id"]
     q89_id=selection["Q89_control"]["formula_id"]
+    q92_columns=formula_columns_from_id(q92_id)
     q89_columns=formula_columns_from_id(q89_id)
-    q89_columns=formula_columns_from_id(q89_id)
+    q89_by_date=q89_refresh["ledger_by_date"]
     standardized_stack=q81.build_feature_stack(draws)
-    scored=len(draws)-q80.MIN_HISTORY
+    scored=len(draws)-MIN_HISTORY
     rows=[]
-    diffs={"top5":[],"top10":[],"top20":[]}
-    for target_offset,target_index in enumerate(range(q80.MIN_HISTORY,len(draws))):
+    diffs={"top5":[],"top10":[],"top20":[],"mean_rank":[]}
+    for target_offset,target_index in enumerate(range(MIN_HISTORY,len(draws))):
         if q80.split_name(target_offset,scored)!="blind_oos":
             continue
+        date=dates[target_index]
+        q89_row=q89_by_date.get(date)
+        if q89_row is None:
+            fail("same-archive Q89 control ledger missing Blind target "+date)
         standardized=standardized_stack[target_offset]
         actual_indices=np.asarray(draws[target_index],dtype=np.int64)-1
+        q92_ranks=rank_actual_for_formula(standardized,q92_columns,actual_indices)
         q89_ranks=rank_actual_for_formula(standardized,q89_columns,actual_indices)
-        q89_ranks=rank_actual_for_formula(standardized,q89_columns,actual_indices)
+        stored_q89_ranks=json.loads(q89_row["Q89_actual_number_ranks"])
+        if q89_ranks!=stored_q89_ranks:
+            fail("Q89 control rank replay mismatch at "+date)
+        q92_hits={k:sum(value<=k for value in q92_ranks) for k in (5,10,20)}
         q89_hits={k:sum(value<=k for value in q89_ranks) for k in (5,10,20)}
-        q89_hits={k:sum(value<=k for value in q89_ranks) for k in (5,10,20)}
-        delta={k:q89_hits[k]-q89_hits[k] for k in (5,10,20)}
+        q92_all5={k:int(all(value<=k for value in q92_ranks)) for k in (5,10,20)}
+        q89_all5={k:int(all(value<=k for value in q89_ranks)) for k in (5,10,20)}
+        delta={k:q92_hits[k]-q89_hits[k] for k in (5,10,20)}
+        rank_delta=(sum(q92_ranks)-sum(q89_ranks))/5.0
         for k,name in ((5,"top5"),(10,"top10"),(20,"top20")):
             diffs[name].append(delta[k])
-        rows.append({"target_date":dates[target_index],"cutoff_date":dates[target_index-1],"prior_draws":target_index,
-            "actual_quintet":" ".join(map(str,draws[target_index])),"Q92_formula_id":q89_id,"Q89_control_formula_id":q89_id,
-            "Q92_actual_number_ranks":json.dumps(q89_ranks,separators=(",",":")),
+        diffs["mean_rank"].append(rank_delta)
+        rows.append({"target_date":date,"cutoff_date":dates[target_index-1],"prior_draws":target_index,
+            "actual_quintet":" ".join(map(str,draws[target_index])),"Q92_formula_id":q92_id,"Q89_control_formula_id":q89_id,
+            "Q92_actual_number_ranks":json.dumps(q92_ranks,separators=(",",":")),
             "Q89_actual_number_ranks":json.dumps(q89_ranks,separators=(",",":")),
-            "Q92_number_hits_top5":q89_hits[5],"Q92_number_hits_top10":q89_hits[10],"Q92_number_hits_top20":q89_hits[20],
+            "Q92_number_hits_top5":q92_hits[5],"Q92_number_hits_top10":q92_hits[10],"Q92_number_hits_top20":q92_hits[20],
             "Q89_number_hits_top5":q89_hits[5],"Q89_number_hits_top10":q89_hits[10],"Q89_number_hits_top20":q89_hits[20],
-            "Q92_rank_sum":sum(q89_ranks),"Q89_rank_sum":sum(q89_ranks),
-            "paired_delta_number_hits_top5":delta[5],"paired_delta_number_hits_top10":delta[10],"paired_delta_number_hits_top20":delta[20]})
+            "Q92_all5_top5":q92_all5[5],"Q92_all5_top10":q92_all5[10],"Q92_all5_top20":q92_all5[20],
+            "Q89_all5_top5":q89_all5[5],"Q89_all5_top10":q89_all5[10],"Q89_all5_top20":q89_all5[20],
+            "Q92_rank_sum":sum(q92_ranks),"Q89_rank_sum":sum(q89_ranks),
+            "paired_delta_number_hits_top5":delta[5],"paired_delta_number_hits_top10":delta[10],"paired_delta_number_hits_top20":delta[20],
+            "paired_delta_mean_rank":rank_delta})
     if len(rows)!=670:
-        fail("selected-candidate Blind OOS ledger must contain 670 targets")
+        fail("Q92 paired Blind OOS ledger must contain 670 targets")
     with PAIRED_LEDGER_PATH.open("w",newline="",encoding="utf-8") as handle:
-        writer=csv.DictWriter(handle,fieldnames=list(rows[0].keys()))
-        writer.writeheader(); writer.writerows(rows)
+        writer=csv.DictWriter(handle,fieldnames=list(rows[0].keys()),lineterminator="\\n")
+        writer.writeheader();writer.writerows(rows)
     return rows,diffs
 
-def bootstrap_ci(differences,replicates=20000,block_length=7,seed=890027):
+def bootstrap_ci(differences,replicates=20000,block_length=7,seed=920027):
     values=np.asarray(differences,dtype=np.float64)
     n=len(values)
     if n==0: fail("paired bootstrap has no blind targets")
@@ -279,7 +358,7 @@ def bootstrap_ci(differences,replicates=20000,block_length=7,seed=890027):
         means[start:start+count]=sample.mean(axis=1)
     return [float(np.quantile(means,0.025)),float(np.quantile(means,0.975))]
 
-def block_signflip_p(differences,replicates=20000,block_length=7,seed=890028):
+def block_signflip_p(differences,replicates=20000,block_length=7,seed=920028):
     """Two-sided circular block sign-flip test with a randomized circular block origin."""
     values=np.asarray(differences,dtype=np.float64)
     n=len(values)
@@ -318,8 +397,13 @@ def main():
     discovery=math.ceil(.60*scored)
     validation=math.ceil(.80*scored)
     expected_splits={"discovery":discovery,"validation":validation-discovery,"blind_oos":scored-validation}
+    raw_archive=ARCHIVE.read_bytes()
+    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\\0"+raw_archive).hexdigest()
     if n!=3402 or dates[-1]!="2026-11-08" or scored!=3352 or expected_splits!={"discovery":2012,"validation":670,"blind_oos":670}:
         fail("Q92 preregistered archive/split dimensions mismatch")
+    if archive_git_sha1!=Q92_EXPECTED_ARCHIVE_GIT_BLOB_SHA1:
+        fail("Q92 canonical archive Git blob SHA1 mismatch")
+    q89_refresh=validate_q89_refresh_control(dates,draws,source_sha)
     total_rows=TOTAL*len(SPLITS)
     tests=total_rows*3
     pvals=np.empty(tests,dtype=np.float64)
@@ -454,6 +538,7 @@ def main():
     date_index={date:index for index,date in enumerate(dates)}
     best_by_date={}
     target_seen=Counter()
+    single_by_date={}
     expected_target_dates=dates[MIN_HISTORY:]
     for shard in range(SHARDS):
         path=SHARD_DIR/f"shard_{shard}_target_ledger.csv"
@@ -485,6 +570,11 @@ def main():
                     for item in singles:
                         if len(item.get("ranks",[]))!=5 or any(not isinstance(value,int) or value<1 or value>40 for value in item["ranks"]):
                             raise ValueError("single-feature ranks invalid")
+                    prior_single=single_by_date.get(date)
+                    if prior_single is None:
+                        single_by_date[date]=singles
+                    elif prior_single!=singles:
+                        raise ValueError("single-feature rank ledger differs across shards")
                 except Exception as exc:
                     fail("Q92 target ledger rank evidence invalid: "+str(exc))
                 shard_dates.append(date)
@@ -501,91 +591,117 @@ def main():
     for date in expected_target_dates:
         row=dict(best_by_date[date][1])
         row["formula_count_tested"]=TOTAL
+        index=date_index[date]
+        row["target_offset"]=index-MIN_HISTORY
+        row["split"]=q80.split_name(index-MIN_HISTORY,scored)
         ledgers.append(row)
     with Q92_LEDGER_PATH.open("w",newline="",encoding="utf-8") as handle:
         writer=csv.DictWriter(handle,fieldnames=list(ledgers[0].keys()))
         writer.writeheader(); writer.writerows(ledgers)
 
     # Freeze the Discovery/Validation candidate IDs before the blind paired second pass.
-    selection=candidate_selection()
-    paired_rows,differences=paired_blind_ledger(selection,dates,draws)
-    endpoint_names=("top5","top10","top20")
+    selection=candidate_selection(q89_refresh)
+    paired_rows,differences=paired_blind_ledger(selection,dates,draws,q89_refresh)
+    endpoint_names=("top5","top10","top20","mean_rank")
     raw_pvalues=[]
     endpoint_results={}
     for endpoint in endpoint_names:
         values=differences[endpoint]
-        mean_count=float(np.mean(values))
-        ci=bootstrap_ci(values)
-        pvalue=block_signflip_p(values)
+        mean_delta=float(np.mean(values))
+        ci=bootstrap_ci(values,replicates=20000,block_length=7,seed=920027)
+        pvalue=block_signflip_p(values,replicates=20000,block_length=7,seed=920028)
         raw_pvalues.append(pvalue)
-        endpoint_results[endpoint]={"mean_paired_delta_number_hits":mean_count,
-            "mean_paired_delta_hit_share":mean_count/5.0,
-            "mean_paired_delta_hit_share_percentage_points":mean_count/5.0*100.0,
-            "bootstrap_95_percentile_ci_number_hits":ci,
-            "bootstrap_95_percentile_ci_hit_share":[ci[0]/5.0,ci[1]/5.0],
-            "block_signflip_p_raw_two_sided":pvalue,"holm_p":None,
-            "primary_endpoint":endpoint=="top5","secondary_endpoint":endpoint!="top5"}
+        if endpoint=="mean_rank":
+            endpoint_results[endpoint]={"mean_paired_delta_mean_rank":mean_delta,
+                "bootstrap_95_percentile_ci_mean_rank":ci,"block_signflip_p_raw_two_sided":pvalue,
+                "holm_p":None,"primary_endpoint":False,"secondary_endpoint":True}
+        else:
+            endpoint_results[endpoint]={"mean_paired_delta_number_hits":mean_delta,
+                "mean_paired_delta_hit_share":mean_delta/5.0,
+                "mean_paired_delta_hit_share_percentage_points":mean_delta/5.0*100.0,
+                "bootstrap_95_percentile_ci_number_hits":ci,
+                "bootstrap_95_percentile_ci_hit_share":[ci[0]/5.0,ci[1]/5.0],
+                "block_signflip_p_raw_two_sided":pvalue,"holm_p":None,
+                "primary_endpoint":endpoint=="top5","secondary_endpoint":endpoint!="top5"}
     adjusted_p=holm_adjust(raw_pvalues)
     for endpoint,pvalue in zip(endpoint_names,adjusted_p):
         endpoint_results[endpoint]["holm_p"]=float(pvalue)
-    inference={"schema_version":"1.0","task_id":"Q92","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-08",
-        "blind_oos_targets":len(paired_rows),"bootstrap":{"method":"circular moving-block bootstrap percentile CI","replicates":20000,"block_length":7,"seed":890027,"confidence_level":0.95},
-        "signflip":{"method":"circular block sign-flip randomization, two-sided","replicates":20000,"block_length":7,"seed":890028},
-        "multiple_testing":{"method":"Holm-Bonferroni","family_size":3,"endpoints":["top5 primary","top10 secondary","top20 secondary"]},
+    q92_blind={"mean_number_hits_top5":sum(row["Q92_number_hits_top5"] for row in paired_rows)/(5*len(paired_rows)),
+        "mean_number_hits_top10":sum(row["Q92_number_hits_top10"] for row in paired_rows)/(5*len(paired_rows)),
+        "mean_number_hits_top20":sum(row["Q92_number_hits_top20"] for row in paired_rows)/(5*len(paired_rows)),
+        "mean_rank_of_actual_numbers":sum(row["Q92_rank_sum"] for row in paired_rows)/(5*len(paired_rows))}
+    q89_blind={"mean_number_hits_top5":sum(row["Q89_number_hits_top5"] for row in paired_rows)/(5*len(paired_rows)),
+        "mean_number_hits_top10":sum(row["Q89_number_hits_top10"] for row in paired_rows)/(5*len(paired_rows)),
+        "mean_number_hits_top20":sum(row["Q89_number_hits_top20"] for row in paired_rows)/(5*len(paired_rows)),
+        "mean_rank_of_actual_numbers":sum(row["Q89_rank_sum"] for row in paired_rows)/(5*len(paired_rows))}
+    top5=endpoint_results["top5"]
+    if top5["holm_p"]<0.05 and top5["bootstrap_95_percentile_ci_hit_share"][0]>0:
+        decision="SIGNIFICANT_TOP5_GAIN_REQUIRES_HUMAN_REVIEW"
+    elif top5["holm_p"]<0.05 and top5["bootstrap_95_percentile_ci_hit_share"][1]<0:
+        decision="SIGNIFICANT_TOP5_DEGRADATION"
+    else:
+        decision="NO_SIGNIFICANT_GAIN"
+    inference={"schema_version":"1.0","task_id":"Q92","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-09",
+        "blind_oos_targets":len(paired_rows),
+        "bootstrap":{"method":"circular moving-block bootstrap percentile CI","replicates":20000,"block_length":7,"seed":920027,"confidence_level":0.95},
+        "signflip":{"method":"circular block sign-flip randomization, two-sided","replicates":20000,"block_length":7,"seed":920028},
+        "multiple_testing":{"method":"Holm-Bonferroni","family_size":4,"endpoints":["Top-5 primary","Top-10 secondary","Top-20 secondary","mean rank secondary"]},
         "uniform_number_rank_baseline":{"mean_number_hits_top5":0.125,"mean_number_hits_top10":0.25,"mean_number_hits_top20":0.5,"mean_rank_of_actual_numbers":20.5},
-        "Q92_candidate_blind_metrics":{"mean_number_hits_top5":sum(row["Q92_number_hits_top5"] for row in paired_rows)/(5*len(paired_rows)),
-            "mean_number_hits_top10":sum(row["Q92_number_hits_top10"] for row in paired_rows)/(5*len(paired_rows)),
-            "mean_number_hits_top20":sum(row["Q92_number_hits_top20"] for row in paired_rows)/(5*len(paired_rows)),
-            "mean_rank_of_actual_numbers":sum(row["Q92_rank_sum"] for row in paired_rows)/(5*len(paired_rows))},
-        "Q89_control_blind_metrics":{"mean_number_hits_top5":sum(row["Q89_number_hits_top5"] for row in paired_rows)/(5*len(paired_rows)),
-            "mean_number_hits_top10":sum(row["Q89_number_hits_top10"] for row in paired_rows)/(5*len(paired_rows)),
-            "mean_number_hits_top20":sum(row["Q89_number_hits_top20"] for row in paired_rows)/(5*len(paired_rows)),
-            "mean_rank_of_actual_numbers":sum(row["Q89_rank_sum"] for row in paired_rows)/(5*len(paired_rows))},
-        "paired_endpoints":endpoint_results,
-        "decision":"NO_SIGNIFICANT_GAIN" if endpoint_results["top5"]["holm_p"]>=0.05 or endpoint_results["top5"]["bootstrap_95_percentile_ci_hit_share"][0]<=0 else "PRIMARY_GAIN_REQUIRES_HUMAN_REVIEW",
+        "Q92_candidate_blind_metrics":q92_blind,"Q89_control_blind_metrics":q89_blind,
+        "paired_endpoints":endpoint_results,"decision":decision,
         "blind_oos_used_for_candidate_selection":False,
-        "limitations":["finite equal-weight ten-feature grammar only","global formula-family p-values use an exploratory continuity-corrected normal approximation to summed hypergeometric hit counts",
-            "historical blind OOS has prior SONAR exposure and is not independent prospective confirmation","no engine promotion or shadow-stream insertion"]}
-    PAIRED_INFERENCE_PATH.write_text(json.dumps(inference,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+        "limitations":["finite equal-weight ten-feature catalog only; weighted, nonlinear, conditional and interaction formulas remain untested",
+            "historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation",
+            "Q92 formula-family p-values use an exploratory continuity-corrected normal approximation to the hypergeometric null",
+            "no engine promotion or shadow-stream insertion"]}
+    PAIRED_INFERENCE_PATH.write_text(json.dumps(inference,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
 
     parts_sha=hashlib.sha256(json.dumps(part_manifest,sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
     manifest={"schema_version":"1.0","task_id":"Q92","storage_format":"chunked_csv_gzip_parts","source_archive_sha256":source_sha,
-        "formula_count":TOTAL,"metrics_rows":total_rows,"part_count":len(part_manifest),"parts_manifest_sha256":parts_sha,"parts":part_manifest}
+        "source_archive_git_blob_sha1":archive_git_sha1,"formula_count":TOTAL,"metrics_rows":total_rows,
+        "part_count":len(part_manifest),"parts_manifest_sha256":parts_sha,"parts":part_manifest}
     report={"schema_version":"1.0","task_id":"Q92","status":"AGGREGATED_PENDING_ACCEPTANCE_VALIDATION",
-        "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-08",
-        "source_archive":"data/storico_daily.csv","source_archive_sha256":source_sha,"target_count":n,"first_date":dates[0],"last_date":dates[-1],
+        "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-09",
+        "source_archive":"data/storico_daily.csv","source_archive_sha256":source_sha,"source_archive_git_blob_sha1":archive_git_sha1,
+        "source_archive_main_commit":Q92_EXPECTED_ARCHIVE_MAIN_COMMIT,"target_count":n,"first_date":dates[0],"last_date":dates[-1],
         "minimum_prior_history":MIN_HISTORY,"scored_targets":scored,"feature_count":FEATURE_COUNT,"features":FEATURES,
-        "formula_size":FORMULA_SIZE,"formula_count":TOTAL,"formula_count_check":math.comb(27,10),"formula_batch_size":q92.FORMULA_BATCH_SIZE,
-        "formula_batch_count":math.ceil(TOTAL/q92.FORMULA_BATCH_SIZE),"shard_count":SHARDS,"shard_formula_count":SHARD_SIZE,
-        "formula_grammar":"all ten-feature equal-weight combinations",
-        "scoring_rule":"strict-prefix z-score each registered feature across numbers 1..40, then equal-weight arithmetic mean of each unordered ten-feature subset",
+        "formula_size":FORMULA_SIZE,"formula_count":TOTAL,"formula_count_check":math.comb(27,10),
+        "formula_batch_size":q92.FORMULA_BATCH_SIZE,"formula_batch_count":math.ceil(TOTAL/q92.FORMULA_BATCH_SIZE),
+        "shard_count":SHARDS,"shard_formula_count":SHARD_SIZE,"formula_grammar":"all ten-feature equal-weight combinations",
+        "scoring_rule":"strict-prefix z-score each of the 27 registered prior-only features across numbers 1..40, then equal-weight arithmetic mean of each unordered ten-feature subset",
         "metrics_storage":"chunked_csv_gzip_parts","metrics_rows":total_rows,"target_ledger_rows":scored,"split_counts":expected_splits,
         "uniform_number_rank_baseline":{"mean_number_hits_top5":0.125,"mean_number_hits_top10":0.25,"mean_number_hits_top20":0.5,"mean_rank_of_actual_numbers":20.5},
-        "multiple_testing":{"method":"Holm-Bonferroni","test_count":tests,
+        "multiple_testing":{"method":"Global Holm-Bonferroni","test_count":tests,
             "p_value_method":"continuity-corrected normal approximation to summed Hypergeometric(40,k,5) number-hit counts; exploratory, not exact",
             "formula_split_endpoint_family_size":tests},
         "holm_adjusted_formula_split_rows_below_0_05":int(np.sum(row_holm<0.05)),
         "minimum_holm_p_max_endpoint_family":float(np.min(row_holm)),
         "best_blind_oos_by_mean_rank":[item[1] for item in sorted(top_rank_heap,key=lambda item:item[0],reverse=True)],
         "best_blind_oos_by_mean_top5_hits":[item[1] for item in sorted(top_top5_heap,key=lambda item:item[0],reverse=True)],
-        "candidate_selection":{"rule":"Discovery top100 by Top5 number-hit share; one selected on Validation with same tie-break; blind never used for selection",
+        "candidate_selection":{"rule":"Discovery top100 by Top-5 number-hit share; one Q92 candidate selected on Validation with same tie-break; Q89 control selected by identical same-archive refresh protocol; Blind never used for selection",
             "selected_candidate_ids_frozen_before_blind":True,"Q92_formula_id":selection["Q92_candidate"]["formula_id"],
             "Q89_control_formula_id":selection["Q89_control"]["formula_id"],"blind_oos_targets":len(paired_rows),
             "paired_inference_path":str(PAIRED_INFERENCE_PATH.relative_to(ROOT))},
-        "guardrails":["strict prior-only feature values and cutoffs; target draw excluded","rank all 40 numbers before target scoring",
-            "retrospective best-per-target formula is descriptive only","global Holm family spans all shards, splits and primary endpoints",
-            "candidate selection uses Discovery and Validation only; blind is a frozen paired comparison",
+        "paired_blind_inference":{"decision":inference["decision"],"endpoint_results":inference["paired_endpoints"],
+            "Q92_candidate_blind_metrics":q92_blind,"Q89_control_blind_metrics":q89_blind},
+        "guardrails":["all feature values for target i use draws[0:i] only; target i is excluded from its feature state",
+            "rank all 40 numbers before scoring the target quintet","retrospective best-per-target formula is descriptive only",
+            "global Holm family spans all 15 shards, three splits and three endpoints","candidate selection uses Discovery and Validation only; paired Blind OOS is frozen",
+            "Q89 control is refreshed on the exact same 2026-11-08 archive and split layout",
             "finite ten-feature equal-weight grammar only; higher-order, weighted, conditional and nonlinear formulas remain open",
             "immutable freezes preserved; no automatic merge or promotion"],
         "known_limitations":["formula-family normal p-values are approximate under the finite-population hypergeometric null",
-            "historical blind OOS is not independent because prior SONAR analyses have inspected this tail",
+            "historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation",
+            "finite equal-weight ten-feature subset grammar does not exhaust the infinite mathematical formula universe",
             "candidate paired historical OOS is exploratory and requires prospective append-only confirmation"],
-        "next_action":"Persist all Q92 outputs append-only, validate exact bytes and current-head CI; then human review/integration before any Q92 COMPLETE status.",
+        "next_action":"Persist Q92 outputs append-only, validate exact bytes and current-head CI; then human review/integration before any Q92 COMPLETE status.",
         "metrics_parts":part_manifest,
         "outputs":{"metrics_parts":[item["path"] for item in part_manifest],"metrics_parts_manifest_sha256":parts_sha,
             "metrics_manifest":str(Q92_MANIFEST_PATH.relative_to(ROOT)),"target_ledger":str(Q92_LEDGER_PATH.relative_to(ROOT)),
             "candidate_shortlist":str(SHORTLIST_PATH.relative_to(ROOT)),"candidate_selection":str(SELECTION_PATH.relative_to(ROOT)),
-            "selected_candidate_blind_ledger":str(PAIRED_LEDGER_PATH.relative_to(ROOT)),"paired_inference":str(PAIRED_INFERENCE_PATH.relative_to(ROOT))}}
+            "selected_candidate_blind_ledger":str(PAIRED_LEDGER_PATH.relative_to(ROOT)),"paired_inference":str(PAIRED_INFERENCE_PATH.relative_to(ROOT)),
+            "q89_same_archive_control_report":str(Q89_REFRESH_REPORT_PATH.relative_to(ROOT)),
+            "q89_same_archive_control_ledger":str(Q89_REFRESH_PAIRED_LEDGER_PATH.relative_to(ROOT))}}
     Q92_REPORT_PATH.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     Q92_MANIFEST_PATH.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     print("SONAR_Q92_AGGREGATE_BEGIN")
