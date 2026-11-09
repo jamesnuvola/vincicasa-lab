@@ -76,7 +76,7 @@ def sha256(data):
     return hashlib.sha256(data).hexdigest()
 
 def git_blob_sha1(data):
-    return hashlib.sha1(b"blob "+str(len(data)).encode("ascii")+b"\\0"+data).hexdigest()
+    return hashlib.sha1(b"blob "+str(len(data)).encode("ascii")+b"\0"+data).hexdigest()
 
 def tree_batches(elements,limit=TREE_CHUNK_SIZE):
     if limit<1:
@@ -180,8 +180,8 @@ def main():
     report["status"]="VALIDATED_PENDING_HUMAN_REVIEW"
     report["review_status"]="PENDING_HUMAN_REVIEW_INTEGRATION"
     manifest["status"]="VALIDATED_PENDING_HUMAN_REVIEW"
-    REPORT_PATH.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
-    MANIFEST_PATH.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    REPORT_PATH.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    MANIFEST_PATH.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     run_id=os.environ.get("GITHUB_RUN_ID","unknown")
     attempt=os.environ.get("GITHUB_RUN_ATTEMPT","1")
     pre_relative="reports/sequence_agent/q92_checkpoint_run_"+run_id+"_attempt_"+attempt+"_pre_readback.json"
@@ -207,7 +207,7 @@ def main():
     else:
         pre_checkpoint=make_checkpoint(report,run_id,attempt,head,"VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION",
             {"readback_status":"PENDING","acceptance_validator":"scripts/sonar_q92_acceptance.py"})
-        pre_path.write_text(json.dumps(pre_checkpoint,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+        pre_path.write_text(json.dumps(pre_checkpoint,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     paths=[
         str(REPORT_PATH.relative_to(ROOT)),str(MANIFEST_PATH.relative_to(ROOT)),str(LEDGER_PATH.relative_to(ROOT)),
         str(SHORTLIST_PATH.relative_to(ROOT)),str(SELECTION_PATH.relative_to(ROOT)),str(PAIRED_LEDGER_PATH.relative_to(ROOT)),
@@ -242,17 +242,20 @@ def main():
     file_count,total_bytes,readback_tree_sha=readback_payloads(first_commit,expected,payloads)
     print("Q92_PERSIST_READBACK_VERIFIED: commit="+first_commit+" files="+str(file_count)+" bytes="+str(total_bytes)+" tree="+readback_tree_sha)
     # The post-readback checkpoint is a new append-only path, never an overwrite.
-    verified_extra={"readback_status":"PERSISTED_READBACK_VERIFIED","persisted_output_commit_sha":first_commit,
-        "verified_file_count":file_count,"verified_bytes":total_bytes,"verified_tree_sha":readback_tree_sha,
-        "all_output_bytes_exact":True,"human_review_integration_pending":True}
-    verified_checkpoint=make_checkpoint(report,run_id,attempt,first_commit,"PERSISTED_READBACK_VERIFIED_PENDING_HUMAN_REVIEW",verified_extra)
-    verified_bytes=json.dumps(verified_checkpoint,ensure_ascii=False,indent=2).encode("utf-8")+b"\\n"
     if verified_relative in current_map:
         remote_verified=blob_bytes(current_map[verified_relative]["sha"])
-        if remote_verified!=verified_bytes:
-            raise SystemExit("Q92_PERSIST_BLOCKED: verified checkpoint path already exists with different bytes")
-        final_sha=first_commit
+        remote_checkpoint=json.loads(remote_verified.decode("utf-8"))
+        if remote_checkpoint.get("status")!="PERSISTED_READBACK_VERIFIED_PENDING_HUMAN_REVIEW" or remote_checkpoint.get("source_archive_sha256")!=report.get("source_archive_sha256") or remote_checkpoint.get("all_output_bytes_exact") is not True or int(remote_checkpoint.get("verified_file_count",-1))!=file_count or int(remote_checkpoint.get("verified_bytes",-1))!=total_bytes:
+            raise SystemExit("Q92_PERSIST_BLOCKED: existing verified checkpoint conflicts with exact readback")
+        if git_blob_sha1(remote_verified)!=current_map[verified_relative]["sha"]:
+            raise SystemExit("Q92_PERSIST_BLOCKED: existing verified checkpoint Git blob SHA1 mismatch")
+        final_sha=head
     else:
+        verified_extra={"readback_status":"PERSISTED_READBACK_VERIFIED","persisted_output_commit_sha":first_commit,
+            "verified_file_count":file_count,"verified_bytes":total_bytes,"verified_tree_sha":readback_tree_sha,
+            "all_output_bytes_exact":True,"human_review_integration_pending":True}
+        verified_checkpoint=make_checkpoint(report,run_id,attempt,first_commit,"PERSISTED_READBACK_VERIFIED_PENDING_HUMAN_REVIEW",verified_extra)
+        verified_bytes=json.dumps(verified_checkpoint,ensure_ascii=False,indent=2).encode("utf-8")+b"\n"
         verified_blob=create_blob(verified_bytes)
         verified_element={"path":verified_relative,"mode":"100644","type":"blob","sha":verified_blob}
         current_commit=api("GET","/git/commits/"+first_commit)
@@ -274,7 +277,7 @@ def main():
     output=os.environ.get("GITHUB_OUTPUT")
     if output:
         with open(output,"a",encoding="utf-8") as handle:
-            handle.write("commit_created="+("true" if created_commit else "false")+"\\ncommit_sha="+final_sha+"\\n")
+            handle.write("commit_created="+("true" if created_commit else "false")+"\ncommit_sha="+final_sha+"\n")
     print(json.dumps({"task_id":"Q92","persisted_head_sha":final_sha,"source_checkout_head_sha":head,
         "output_commit_sha":first_commit,"verified_checkpoint_path":verified_relative,"verified_file_count":file_count,
         "verified_bytes":total_bytes,"all_exact_commit_bytes_verified":True,"commit_created":created_commit,
