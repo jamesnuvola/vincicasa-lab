@@ -154,7 +154,8 @@ def main():
     checkpoint["all_exact_commit_bytes_verified"]=True
     checkpoint["readback_verified_at_utc"]=datetime.now(timezone.utc).isoformat()
     final_checkpoint=json.dumps(checkpoint,ensure_ascii=False,indent=2).encode("utf-8")+b"\n"
-    final_checkpoint_relative=checkpoint_relative.replace("_pre_readback.json","_verified.json")\n    final_payload={final_checkpoint_relative:final_checkpoint}
+    final_checkpoint_relative=checkpoint_relative.replace("_pre_readback.json","_verified.json")
+    final_payload={final_checkpoint_relative:final_checkpoint}
     final_commit,final_count,final_bytes=commit_payloads(first_commit,final_payload,"Finalize Q89 refresh exact-byte readback checkpoint [q89-refresh-delta-checkpoint]")
     if final_count!=1 or final_bytes!=len(final_checkpoint):
         raise SystemExit("Q89_REFRESH_PERSIST_BLOCKED: final checkpoint readback dimensions mismatch")
