@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-Q92-IMPLEMENTATION-2026-11-09T01:28Z",
+  "recorded_at_utc": "2026-11-09T01:28:00Z",
+  "branches": {
+    "q89_pr20": {
+      "branch": "research/sonar-q89-nine-feature-20261108",
+      "head_sha": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+      "pr_number": 20,
+      "state": "open",
+      "draft": true,
+      "merged": false,
+      "base_sha": "0f865d6585a768f623e7c56cfffc5fd4a48a7888"
+    },
+    "q92_implementation": {
+      "branch": "research/sonar-q92-ten-feature-implementation-20261109",
+      "head_sha": "20bfd6cd0b1f1198ce4ea686fe9c6ab5453f9d37",
+      "parent_sha": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+      "status": "archive-aligned and protocols persisted; Q89 delta runner not implemented"
+    }
+  },
+  "verified_q89_base": {
+    "persisted_commit": "95bb4e8b4a950fb4ba80d46e44fd91fef83f6def",
+    "acceptance_run": {
+      "id": 42538247699,
+      "conclusion": "success"
+    },
+    "exact_bytes": {
+      "files": 478,
+      "bytes": 518672991,
+      "verified": true
+    },
+    "source_archive": {
+      "draw_count": 3401,
+      "last_date": "2026-11-07",
+      "git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+    },
+    "formula_count": 4686825,
+    "target_count": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 14060475,
+    "holm_family_size": 42181425,
+    "formula_split_holm_below_0_05": 0,
+    "selected_candidate": "P9_06_09_12_14_15_17_18_19_23",
+    "q88_control": "P8_00_08_11_12_15_16_19_23",
+    "paired_blind_oos": {
+      "decision": "NO_SIGNIFICANT_GAIN",
+      "holm_adjusted_p_values": {
+        "top5": 0.5395230238488076,
+        "top10": 0.6016699165041748,
+        "top20": 0.6016699165041748
+      }
+    }
+  },
+  "current_q89_validation": {
+    "recovery_run": {
+      "id": 42545546642,
+      "head_sha": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+      "status": "in_progress",
+      "current_step": "aggregate shards, apply global Holm, freeze candidates and run paired blind OOS"
+    },
+    "current_head_generic_ci": {
+      "id": 42545535949,
+      "head_sha": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+      "status": "in_progress"
+    },
+    "q91_cross_trigger": {
+      "id": 42545535929,
+      "head_sha": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+      "status": "failure",
+      "root_cause": "Q91 workflow from Q88 base checks out the Q89 PR head, which does not contain scripts/sonar_q91_nested_walkforward.py. PR #12's workflow fix is not present in PR #8 base; PR #8 remains untouched."
+    }
+  },
+  "archive_alignment": {
+    "canonical_main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+    "canonical_main_archive_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "canonical_draw_count": 3402,
+    "canonical_last_date": "2026-11-08",
+    "canonical_latest_quintet": [
+      3,
+      7,
+      10,
+      16,
+      27
+    ],
+    "q89_base_archive_freeze_added": "data/archive_freezes/storico_daily_2026-11-07.csv",
+    "q89_base_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "new_archive_file_readback_verified": true,
+    "immutable_2026_10_25_freeze_preserved": true
+  },
+  "q89_refresh_preregistration": {
+    "protocol_id": "Q89-nine-feature-incremental-refresh-2026-11-08",
+    "protocol_status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "protocol_json_blob_sha1": "b2d51d66fd86681ebf4b4299bc420f86a77751f2",
+    "protocol_markdown_blob_sha1": "9f78eb137b5c5086816f8517655ad2cb2236e5f2",
+    "formula_count": 4686825,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "target_deltas": [
+      {
+        "offset": 2011,
+        "index": 2061,
+        "target_date": "2023-03-09",
+        "cutoff_date": "2023-03-08",
+        "actual_quintet": [
+          5,
+          19,
+          32,
+          33,
+          37
+        ],
+        "movement": "old Validation -> new Discovery"
+      },
+      {
+        "offset": 2681,
+        "index": 2731,
+        "target_date": "2025-01-07",
+        "cutoff_date": "2025-01-06",
+        "actual_quintet": [
+          5,
+          17,
+          18,
+          23,
+          33
+        ],
+        "movement": "old Blind OOS -> new Validation"
+      },
+      {
+        "offset": 3351,
+        "index": 3401,
+        "target_date": "2026-11-08",
+        "cutoff_date": "2026-11-07",
+        "actual_quintet": [
+          3,
+          7,
+          10,
+          16,
+          27
+        ],
+        "movement": "new target in new Blind OOS"
+      }
+    ],
+    "new_split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "global_holm_family_size": 42181425,
+    "output_storage": "15 gzip delta shards + target ledger + candidate selection/report/manifest; base accepted Q89 metrics plus deltas reconstruct refreshed counts, avoiding a duplicate full metrics catalog",
+    "execution_status": "not started"
+  },
+  "q92": {
+    "protocol_status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "protocol_branch": "research/sonar-q92-ten-feature-prereg-20261109",
+    "protocol_commit": "b8f5bc67df2fea3dd19d3709e482851e67028fda",
+    "implementation_branch_head": "20bfd6cd0b1f1198ce4ea686fe9c6ab5453f9d37",
+    "formula_count": 8436285,
+    "formula_size": 10,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "target_count": 3352,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 25308855,
+    "global_holm_family_size": 75926565,
+    "execution_gate": "Q89 control refresh on the same 2026-11-08 archive must pass acceptance and exact-head CI before Q92 compute starts.",
+    "execution_status": "not started"
+  },
+  "prospective_gate": {
+    "queue_status": "QUEUE_VALID",
+    "overall_cycle_status": "INCOMPLETE",
+    "blocking_task": "Q60",
+    "complete_paired_targets": 21,
+    "required_paired_targets": 200
+  },
+  "guardrails": {
+    "no_auto_merge": true,
+    "no_promotion": true,
+    "no_shadow_insertion": true,
+    "prs_6_7_8_untouched": true,
+    "human_review_required": true
+  },
+  "next_action": "Complete Q89 current-head acceptance and CI; implement the Q89 three-target delta evaluator/aggregator/acceptance; execute and persist the refreshed Q89 control; only then run Q92 ten-feature catalog."
+}
