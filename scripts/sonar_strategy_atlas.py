@@ -211,7 +211,9 @@ def main():
         else:arr=hits_pair[ix,c-27,:];rank=rank_sum_pair[ix,c-27]
         h5=int(arr[:,0].sum());h10=int(arr[:,1].sum());h20=int(arr[:,2].sum());all5=int(np.sum(arr[:,0]==5))
         out={"targets":n,"top5_number_hits_total":h5,"mean_hits_top5":h5/n,"baseline_mean_hits_top5":.625,"lift_top5":h5/n-.625,"top10_number_hits_total":h10,"mean_hits_top10":h10/n,"baseline_mean_hits_top10":1.25,"lift_top10":h10/n-1.25,"top20_number_hits_total":h20,"mean_hits_top20":h20/n,"baseline_mean_hits_top20":2.5,"lift_top20":h20/n-2.5,"mean_rank_sum":float(rank.mean()),"all5_top5_count":all5,"all5_top5_expected":n*baseline_all5}
-        for e in ("top5","top10","top20","all5"):out[e+"_p_raw"]=perf_map[(c,z,("top5_number_hits","top10_number_hits","top20_number_hits","all5")[("top5","top10","top20","all5").index(e)]]["p_raw"];out[e+"_p_holm"]=perf_map[(c,z,("top5_number_hits","top10_number_hits","top20_number_hits","all5")[("top5","top10","top20","all5").index(e)]]["p_holm"]
+        endpoint={"top5":"top5_number_hits","top10":"top10_number_hits","top20":"top20_number_hits","all5":"all5"}
+        for e,ep in endpoint.items():
+            m=perf_map[(c,z,ep)];out[e+"_p_raw"]=m["p_raw"];out[e+"_p_holm"]=m["p_holm"]
         return out
     def union_metric(p,z):
         ix=split_ix[z];n=len(ix);h=int(union_hits[ix,p].sum());ex=float((5*union_size[ix,p]/40).sum());l=float(union_lift[ix,p].sum());v=float(sum(hvar(int(k)) for k in union_size[ix,p]));m=umap[(p,z)]

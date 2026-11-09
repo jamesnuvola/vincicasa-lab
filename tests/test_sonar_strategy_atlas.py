@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import csv, hashlib, importlib.util, json, tempfile, unittest
+from datetime import date, timedelta
 from pathlib import Path
 import numpy as np
 ROOT=Path(__file__).resolve().parents[1]
@@ -11,7 +12,7 @@ def make_csv(path,n=80):
     for i in range(n):
         vals=sorted({((i*7+k*11)%40)+1 for k in range(5)})
         if len(vals)!=5:raise AssertionError("synthetic quintet is not unique")
-        rows.append([f"2020-01-{1+i%28:02d}",*vals])
+        rows.append([(date(2020,1,1)+timedelta(days=i)).isoformat(),*vals])
     with path.open("w",newline="",encoding="utf-8") as f:
         w=csv.writer(f,lineterminator="\n");w.writerow(["data","n1","n2","n3","n4","n5"]);w.writerows(rows)
 def validate_ledger(path,expected_dates=None):

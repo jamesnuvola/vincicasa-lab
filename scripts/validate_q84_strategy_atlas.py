@@ -22,10 +22,8 @@ def main():
     for name,count in fam.items():
         if sum(x.get("family")==name for x in catalog)!=count:fail("catalog family count mismatch: "+name)
     if life.get("strategy_count")!=730 or len(life.get("strategies",[]))!=730:fail("lifecycle cardinality mismatch")
-    if report.get("split_counts")!={"discovery":int(T*.6)+int(T*.0),"validation":int(T*.8)-int(T*.6),"blind_oos":T-int(T*.8)}:
-        # Exact split uses t/T<0.6 and <0.8; compute with explicit indexes below.
-        ix=list(range(T));counts={"discovery":sum(t/T<.6 for t in ix),"validation":sum(.6<=t/T<.8 for t in ix),"blind_oos":sum(t/T>=.8 for t in ix)}
-        if report.get("split_counts")!=counts:fail("split count mismatch")
+    ix=list(range(T));counts={"discovery":sum(t/T<.6 for t in ix),"validation":sum(.6<=t/T<.8 for t in ix),"blind_oos":sum(t/T>=.8 for t in ix)}
+    if report.get("split_counts")!=counts:fail("split count mismatch")
     with paths["target_ledger.csv"].open(newline="",encoding="utf-8") as f:ledger=list(csv.DictReader(f))
     if len(ledger)!=T:fail("target ledger row count mismatch")
     rank_cols=[c for c in ledger[0] if c.startswith("rank_vector_")];actual_cols=[c for c in ledger[0] if c.startswith("actual_ranks_")]
