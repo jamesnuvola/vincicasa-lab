@@ -14,6 +14,7 @@ import numpy as np
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import sonar_q92_common as q92
+import sonar_q92_null_calibration as q92null
 import sonar_per_number_condition_10plus_shard as runner
 
 class Q92WalkForwardTests(unittest.TestCase):
@@ -35,7 +36,7 @@ class Q92WalkForwardTests(unittest.TestCase):
         for rank in range(1000,1100):
             self.assertEqual(q92.formula_rank(columns),rank)
             columns=q92.next_formula(columns)
-        self.assertTrue(0.0<=q92.hypergeom_upper_normal_p(100,670,5)<=1.0)
+        self.assertTrue(0.0<=q92null.exact_upper_tail_pvalue(100,670,5)<=1.0)
 
     def test_rank_matrix_stable_lower_number_tie_break(self):
         scores=np.asarray([[1.0,2.0],[1.0,0.0],[0.0,2.0]],dtype=np.float64)

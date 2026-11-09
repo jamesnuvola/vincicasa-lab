@@ -7,6 +7,7 @@ import numpy as np
 import sonar_per_number_condition_grammar as q80
 import sonar_per_number_condition_4plus_grammar as q81
 import sonar_q92_common as q92
+import sonar_q92_null_calibration as q92null
 import sonar_q92_aggregate_common as q92a
 import aggregate_sonar_q92_ten_feature as aggregate
 
@@ -30,7 +31,7 @@ EXPECTED_TESTS=TOTAL*3*3
 ENDPOINTS=(5,10,20)
 METRIC_FIELDS=("mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20",
     "all5_top5_rate","all5_top10_rate","all5_top20_rate","mean_rank_of_actual_numbers",
-    "p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx")
+    "p_top5_exact_hypergeom_sum","p_top10_exact_hypergeom_sum","p_top20_exact_hypergeom_sum")
 
 def fail(message):
     raise SystemExit("Q92_ACCEPTANCE_BLOCKED: "+str(message))
@@ -140,10 +141,10 @@ def validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,sele
                 s5=aggregate.integer_from_mean(row["mean_number_hits_top5"],5*targets,"Q92 Top5")
                 s10=aggregate.integer_from_mean(row["mean_number_hits_top10"],5*targets,"Q92 Top10")
                 s20=aggregate.integer_from_mean(row["mean_number_hits_top20"],5*targets,"Q92 Top20")
-                raw_p=[q92.hypergeom_upper_normal_p(s5,targets,5),q92.hypergeom_upper_normal_p(s10,targets,10),q92.hypergeom_upper_normal_p(s20,targets,20)]
+                raw_p=[q92null.exact_upper_tail_pvalue(s5,targets,5),q92null.exact_upper_tail_pvalue(s10,targets,10),q92null.exact_upper_tail_pvalue(s20,targets,20)]
                 adjusted_p=[float(row["holm_p_top5"]),float(row["holm_p_top10"]),float(row["holm_p_top20"])]
                 for endpoint_index,p in enumerate(raw_p):
-                    compare_float(row[("p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx")[endpoint_index]],p,
+                    compare_float(row[("p_top5_exact_hypergeom_sum","p_top10_exact_hypergeom_sum","p_top20_exact_hypergeom_sum")[endpoint_index]],p,
                         "Q92 raw p-value replay shard "+str(shard)+" formula "+fid+" split "+split)
                     if not 0.0<=adjusted_p[endpoint_index]<=1.0 or not math.isfinite(adjusted_p[endpoint_index]):
                         fail("Q92 adjusted p-value outside bounds shard "+str(shard)+" formula "+fid)
@@ -369,6 +370,10 @@ def validate():
         fail("Q92 manifest formula universe/dimensions mismatch")
     if manifest.get("formula_split_endpoint_holm_family_size")!=EXPECTED_TESTS:
         fail("Q92 manifest global Holm family size mismatch")
+    if manifest.get("multiple_testing",{}).get("p_value_method")!="discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws":
+        fail("Q92 manifest discrete null-calibration method mismatch")
+    if report.get("multiple_testing",{}).get("p_value_method")!="discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws":
+        fail("Q92 report discrete null-calibration method mismatch")
     feature_stack=q81.build_feature_stack(draws)
     q89_report,q89_selection,q89_paired,q89_id,q89_columns=validate_q89_control(archive_sha256,dates,draws,feature_stack)
     for shard in range(SHARDS):aggregate.validate_shard_report(shard,archive_sha256,dates)

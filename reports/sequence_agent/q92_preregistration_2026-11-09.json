@@ -3,7 +3,7 @@
   "project": "VinciCasa SONAR",
   "task_id": "Q92",
   "protocol_id": "Q92-ten-feature-equal-weight-catalog-2026-11-09",
-  "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+  "status": "PREREGISTERED_WITH_PRE_EXECUTION_AMENDMENT",
   "registered_at_utc": "2026-11-09T00:21:01Z",
   "source_archive": {
     "path": "data/storico_daily.csv",
@@ -109,7 +109,7 @@
     "method": "Global Holm-Bonferroni across the complete formula×split×endpoint family",
     "family_size": 75926565,
     "calculation": "8436285 formulas × 3 chronological splits × 3 primary catalog endpoints",
-    "p_value_method": "For each target, X_k~Hypergeometric(N=40,K=k,n=5); aggregate split-level means/variances and use continuity-corrected normal upper-tail approximation. Exploratory approximation, not exact.",
+    "p_value_method": "discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws",
     "endpoints": [
       {
         "name": "number_hits_top5",
@@ -134,7 +134,8 @@
     "Discovery top-100 and Validation selection deterministic; Q92 and refreshed Q89 candidate IDs frozen before Blind OOS",
     "paired blind ledger target dates, cutoff dates, actual quintets, rank vectors, hit counts, rank sums and deltas replay exactly",
     "paired bootstrap/sign-flip inference replayed from persisted ledger with fixed seeds and Holm over four endpoints",
-    "all output files persisted append-only and re-read byte-for-byte; exact-head CI passes; human review/integration remains mandatory"
+    "all output files persisted append-only and re-read byte-for-byte; exact-head CI passes; human review/integration remains mandatory",
+    "Catalog-level raw p-values replay from deterministic discrete upper-tail convolution of iid Hypergeometric(40,k,5) counts; method string reconciles across shard reports, aggregate report, manifest and acceptance validator."
   ],
   "limitations": [
     "finite equal-weight ten-feature subset grammar only; weighted, nonlinear, conditional and interaction formulas remain untested",
@@ -150,5 +151,18 @@
     "prs_6_7_8_untouched": true,
     "run_completion_requires_acceptance_persistence_exact_head_ci_and_human_review": true
   },
-  "next_action": "Implement deterministic Q92 combinadic enumeration, shard runner, acceptance validator and synthetic regression tests. Execute only after Q89 recovery is accepted and the Q89 control is refreshed on the same canonical 2026-11-08 archive/splits."
+  "next_action": "Implement immutable artifact-backed full Q92 shard execution/recovery, then execute only after synthetic acceptance and exact-head CI pass; run global Holm, candidate freeze, paired Blind OOS, acceptance, append-only persistence and exact-byte readback.",
+  "protocol_amendments": [
+    {
+      "amendment_id": "Q92-NULL-CALIBRATION-01",
+      "registered_at_utc": "2026-11-09T07:14:33Z",
+      "effective_before_full_walkforward_execution": true,
+      "supersedes": "Continuity-corrected normal upper-tail approximation to summed Hypergeometric(40,k,5) number-hit counts.",
+      "amended_method": "discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws",
+      "rationale": "Full-support audit found relative tail errors near first Holm threshold up to 68.22% for Top-5 at 670 targets and 49.48% for Top-5 at 2012 targets. Discrete convolution improves calibration without changing formula universe, features, chronological split, selection or paired endpoints.",
+      "audit_report": "reports/sequence_agent/q92_normal_approximation_audit_2026-11-09.json",
+      "changes_only_catalog_level_pvalues": true,
+      "blind_oos_used_for_method_selection": false
+    }
+  ]
 }

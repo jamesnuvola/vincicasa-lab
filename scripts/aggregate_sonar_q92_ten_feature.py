@@ -9,6 +9,7 @@ import sonar_per_number_condition_4plus_grammar as q81
 import sonar_q89_common as q89
 import sonar_q92_common as q92
 import sonar_q92_aggregate_common as q92a
+import sonar_q92_null_calibration as q92null
 
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"reports/sequence_agent"
@@ -40,7 +41,7 @@ EXPECTED_BLIND_TARGETS=670
 ENDPOINTS=(5,10,20)
 METRIC_FIELDS=("mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20",
     "all5_top5_rate","all5_top10_rate","all5_top20_rate","mean_rank_of_actual_numbers",
-    "p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx")
+    "p_top5_exact_hypergeom_sum","p_top10_exact_hypergeom_sum","p_top20_exact_hypergeom_sum")
 
 def fail(message):
     raise SystemExit("Q92_AGGREGATION_BLOCKED: "+str(message))
@@ -203,6 +204,8 @@ def validate_shard_report(shard,archive_sha256,dates):
         fail("Q92 shard archive date bounds mismatch shard "+str(shard))
     if report.get("multiple_testing",{}).get("method")!="GLOBAL_HOLM_PENDING_AGGREGATION" or report.get("multiple_testing",{}).get("test_count")!=SHARD_SIZE*3*3:
         fail("Q92 shard raw Holm family declaration mismatch shard "+str(shard))
+    if report.get("multiple_testing",{}).get("p_value_method")!="discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws":
+        fail("Q92 shard discrete null-calibration method mismatch shard "+str(shard))
     batches=report.get("batch_manifest",[])
     if len(batches)!=550:
         fail("Q92 shard batch manifest count mismatch shard "+str(shard))
@@ -408,11 +411,11 @@ def main():
                 successes5=integer_from_mean(row["mean_number_hits_top5"],5*targets,"Q92 Top5")
                 successes10=integer_from_mean(row["mean_number_hits_top10"],5*targets,"Q92 Top10")
                 successes20=integer_from_mean(row["mean_number_hits_top20"],5*targets,"Q92 Top20")
-                raw_p=[q92.hypergeom_upper_normal_p(successes5,targets,5),
-                    q92.hypergeom_upper_normal_p(successes10,targets,10),
-                    q92.hypergeom_upper_normal_p(successes20,targets,20)]
+                raw_p=[q92null.exact_upper_tail_pvalue(successes5,targets,5),
+                    q92null.exact_upper_tail_pvalue(successes10,targets,10),
+                    q92null.exact_upper_tail_pvalue(successes20,targets,20)]
                 for endpoint_index,p in enumerate(raw_p):
-                    observed=float(row[("p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx")[endpoint_index]])
+                    observed=float(row[("p_top5_exact_hypergeom_sum","p_top10_exact_hypergeom_sum","p_top20_exact_hypergeom_sum")[endpoint_index]])
                     if abs(observed-p)>1e-12:
                         fail("Q92 raw p-value replay mismatch shard "+str(shard)+" formula "+fid+" split "+split)
                     pvalues[global_metric_row*3+endpoint_index]=p
@@ -557,7 +560,7 @@ def main():
         "metrics_rows":TOTAL*3,"formula_split_endpoint_holm_family_size":tests,
         "multiple_testing":{"method":"Global Holm-Bonferroni","test_count":tests,"endpoints":["Top-5","Top-10","Top-20"],
             "raw_pvalue_vector_sha256":raw_pvalue_sha256,"adjusted_pvalue_vector_sha256":adjusted_pvalue_sha256,
-            "p_value_method":"continuity-corrected normal approximation to summed Hypergeometric(40,k,5) number-hit counts; exploratory, not exact"},
+            "p_value_method":"discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws"},
         "metrics_parts":metrics_parts,"metrics_part_count":len(metrics_parts),
         "target_ledger_parts":target_parts,"target_ledger_part_count":len(target_parts),"target_ledger_rows_per_shard":scored,
         "supplemental_outputs":{"candidate_shortlist":{"path":str(SHORTLIST_PATH.relative_to(ROOT)),"rows":100,"bytes":SHORTLIST_PATH.stat().st_size,"sha256":sha256_file(SHORTLIST_PATH)},
@@ -586,7 +589,7 @@ def main():
         "target_ledger_rows_per_shard":scored,"target_ledger_rows_total":scored*SHARDS,
         "multiple_testing":{"method":"Global Holm-Bonferroni","test_count":tests,"formula_split_endpoint_family_size":tests,
             "raw_pvalue_vector_sha256":raw_pvalue_sha256,"adjusted_pvalue_vector_sha256":adjusted_pvalue_sha256,
-            "p_value_method":"continuity-corrected normal approximation to summed Hypergeometric(40,k,5) number-hit counts; exploratory, not exact",
+            "p_value_method":"discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws",
             "holm_adjusted_formula_split_rows_below_0_05":holm_below,"minimum_holm_p_max_endpoint_family":minimum_holm},
         "uniform_number_rank_baseline":{"mean_number_hits_top5":0.125,"mean_number_hits_top10":0.25,"mean_number_hits_top20":0.5,"mean_rank_of_actual_numbers":20.5},
         "candidate_selection":{"rule":q92_selection["selection_rule"],"blind_oos_used_for_selection":False,

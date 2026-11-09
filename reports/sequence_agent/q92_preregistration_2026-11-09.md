@@ -1,6 +1,6 @@
 # Q92 preregistration — ten-feature equal-weight formula catalog
 
-**Status: preregistered; implementation and execution pending.** This protocol does not mark Q92 complete.
+**Status: preregistered with pre-execution amendment; full walk-forward execution pending.** This protocol does not mark Q92 complete.
 
 ## Quantitative hypothesis
 Exhaustively extend the finite 27-feature equal-weight formula grammar from nine to ten prior-only features. A Discovery→Validation-selected ten-feature formula may improve Blind OOS number-hit ranking over a nine-feature candidate selected by the identical procedure on the same canonical archive and split boundaries. Blind OOS is excluded from candidate selection.
@@ -24,7 +24,11 @@ Discovery ranks each catalog's top 100 by Top-5 hit share; tie-break lower mean 
 
 Primary endpoint: paired Blind OOS Top-5 hit-share difference (Q92−Q89). Secondary endpoints: Top-10, Top-20 hit-share and mean rank. Inference: circular block bootstrap 20,000 reps (block 7, seed 920027), block sign-flip 20,000 reps (block 7, seed 920028), and Holm correction over four paired endpoints. Uniform baselines: Top-5 12.5%, Top-10 25%, Top-20 50%, mean rank 20.5.
 
-Catalog-level p-values use a continuity-corrected normal approximation to the per-target Hypergeometric(40,k,5) null. This is exploratory, not exact.
+Catalog-level p-values use the discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts for each registered split size and Top-k endpoint. The null assumes independent uniform 5-of-40 draws; convolution is deterministic float64, with underflowed extreme tails floored to the smallest positive subnormal. This calibrates the catalog-level null, not predictive skill.
+
+## Pre-execution protocol amendment — 2026-11-09
+
+`Q92-NULL-CALIBRATION-01` replaces the continuity-corrected normal approximation before the full walk-forward run. A full-support audit over the 75,926,565-test family found relative tail discrepancies up to 68.22% for Top-5 with 670 targets and 49.48% for Top-5 with 2,012 targets near the first Holm step (`alpha/m = 6.58531e-10`). Formula universe, feature stack, strict-prior cutoff, chronological splits, candidate selection, paired endpoints and seeds are unchanged. See the amendment JSON and audit report in `reports/sequence_agent/`.
 
 ## Acceptance and guardrails
 Acceptance requires exact formula/shard coverage, strict-prefix reconciliation, all metric and ledger dimensions, global Holm family, frozen candidate IDs, paired ledger arithmetic and inference replay, append-only persistence with byte-for-byte readback, exact-head CI, and human review/integration. No automatic merge, promotion or shadow insertion. PRs #6, #7 and #8 remain untouched; the 2026-10-25 freeze is immutable.
@@ -32,4 +36,4 @@ Acceptance requires exact formula/shard coverage, strict-prefix reconciliation, 
 Limitations: this finite equal-weight subset catalog does not exhaust weighted, nonlinear, conditional, interaction or infinite formula spaces. Historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation.
 
 ## Next action
-Implement deterministic Q92 combinadic utilities, distributed shard runner, fail-closed acceptance validator and synthetic tests. Execute only after Q89 recovery is accepted and a refreshed Q89 control is computed on the same canonical 2026-11-08 archive/splits.
+Implement immutable artifact-backed full Q92 shard execution/recovery, then execute only after synthetic acceptance and exact-head CI pass; run global Holm, candidate freeze, paired Blind OOS, acceptance, append-only persistence and exact-byte readback.

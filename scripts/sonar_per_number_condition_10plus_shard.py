@@ -8,6 +8,7 @@ import numpy as np
 import sonar_per_number_condition_grammar as q80
 import sonar_per_number_condition_4plus_grammar as q81
 import sonar_q92_common as q92
+import sonar_q92_null_calibration as q92null
 
 ROOT=Path(__file__).resolve().parents[1]
 ARCHIVE=ROOT/"data/storico_daily.csv"
@@ -128,9 +129,9 @@ def main():
                 "all5_top10_rate":int(bucket["all5_top10"][formula_index])/targets,
                 "all5_top20_rate":int(bucket["all5_top20"][formula_index])/targets,
                 "mean_rank_of_actual_numbers":int(bucket["rank_sum"][formula_index])/(5*targets),
-                "p_top5_normal_approx":q92.hypergeom_upper_normal_p(successes5,targets,5),
-                "p_top10_normal_approx":q92.hypergeom_upper_normal_p(successes10,targets,10),
-                "p_top20_normal_approx":q92.hypergeom_upper_normal_p(successes20,targets,20),
+                "p_top5_exact_hypergeom_sum":q92null.exact_upper_tail_pvalue(successes5,targets,5),
+                "p_top10_exact_hypergeom_sum":q92null.exact_upper_tail_pvalue(successes10,targets,10),
+                "p_top20_exact_hypergeom_sum":q92null.exact_upper_tail_pvalue(successes20,targets,20),
                 "holm_p_max_endpoint_family":1.0}
             metric_rows.append(row)
 
@@ -169,7 +170,7 @@ def main():
         "uniform_number_rank_baseline":{"mean_number_hits_top5":0.125,"mean_number_hits_top10":0.25,
             "mean_number_hits_top20":0.5,"mean_rank_of_actual_numbers":20.5},
         "multiple_testing":{"method":"GLOBAL_HOLM_PENDING_AGGREGATION","test_count":len(metric_rows)*3,
-            "p_value_method":"continuity-corrected normal approximation to summed Hypergeometric(40,k,5) number-hit counts; exploratory, not exact"},
+            "p_value_method":"discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws"},
         "holm_adjusted_formula_split_rows_below_0_05":None,"minimum_holm_p_max_endpoint_family":None,
         "best_blind_oos_by_mean_rank":[compact_metric(row) for row in best_rank],
         "best_blind_oos_by_mean_top5_hits":[compact_metric(row) for row in best_top5],
