@@ -49,14 +49,15 @@ At N=670, Top-5 and 532 successes, the normal approximation falls below the firs
 Independent checks also reproduced the expected summed-Hypergeometric means for target counts 7, 670 and 2,012 with k=5/10/20 (absolute error ≤ 2.3e-13), monotone upper tails, positive tail support and normalized PMFs. The repository checkpoint records 7/7 local synthetic regressions; the Q92-specific GitHub synthetic CI is still not observed as complete.
 
 ## Q92 code / CI state
-PR #23 head: `17be52dca22fe5323a9b853509fc29216380820a`.
+PR #23 head after the Holm-threshold regression: `af28a0cf4196c43f8ee9578010ed21ec559ef307` (commit readback verified).
 - Exact discrete-null module blob SHA: `c0aba34111a39d4d6473f35ace082e4f853b59f2`.
 - Q92 aggregate-common blob SHA: `b7d54ba4125a9bdec9058f00ada2a7b0d902c76c`.
 - Q92 aggregate helper test blob SHA: `f22f0440c7d53097888b0a2c13a188caa3f0d412`.
-- Q92 null-calibration test blob SHA: `2a81149eda024ee6e45553931d1a25f06cccc9dc`.
+- Q92 null-calibration test blob SHA: `34e4fa344c94fef817f5d92c185e66454651b7ac`.
+- Added `test_normal_approximation_flips_first_holm_step_at_registered_family_size`; it asserts exact p > 0.05/75,926,565 while the old normal p < threshold, plus ratios 1.2048540 and 0.3829188. Commit `af28a0cf4196c43f8ee9578010ed21ec559ef307` was read back with the new test present.
 - Aggregator and fail-closed acceptance validator are implemented and include global Holm replay, Discovery top-100 → Validation freeze, strict-prior target/ledger replay, Q89 same-archive control and paired Blind OOS inference.
 
-Full project exact-head CI run [42580473098](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42580473098) is **IN PROGRESS**; Q80–Q86 exhaustive tests are currently running. This full CI does not itself demonstrate Q92-specific synthetic acceptance. PR #23 body still reports synthetic CI pending. No Q92 full shard run is present.
+Full project CI run [42580473098](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42580473098) remains **IN PROGRESS** on the pre-regression head `17be52d`; Q80–Q86 exhaustive tests are currently running. Exact-head CI and Q92-specific synthetic acceptance for the new head `af28a0c` are pending/not yet observed. No Q92 full shard run is present.
 
 ### Reproducibility audit gap to close before execution
 The Q92 shard `source_code_sha256` manifest hashes the shard evaluator, Q92 common/null-calibration modules, feature-stack scripts, archive and preregistration. It does not explicitly hash the Q92 aggregator, acceptance validator or aggregate-common module. Exact-head CI pins their Git revision, but the persisted Q92 report/manifest should also record explicit SHA-256 values for these aggregation/acceptance sources before the expensive walk-forward begins.
