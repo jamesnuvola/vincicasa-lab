@@ -179,7 +179,7 @@ class Q92AggregateCommonTests(unittest.TestCase):
 
     def test_absolute_uniform_baseline_requires_both_lift_and_global_holm(self):
         passed=q92a.uniform_baseline_evidence(0.14,0.01,0.04,baseline=0.125,alpha=0.05,targets=670)
-        self.assertEqual(passed["status"],"ABSOLUTE_LIFT_SUPPORTED")
+        self.assertEqual(passed["status"],"HISTORICAL_ABOVE_UNIFORM_GATE_PASS")
         self.assertTrue(passed["absolute_baseline_pass"])
         self.assertAlmostEqual(passed["absolute_lift"],0.015)
         below=q92a.uniform_baseline_evidence(0.124,0.001,0.001,baseline=0.125,alpha=0.05,targets=670)
