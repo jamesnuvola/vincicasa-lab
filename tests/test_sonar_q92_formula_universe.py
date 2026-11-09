@@ -9,6 +9,7 @@ import unittest
 ROOT=__import__("pathlib").Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import sonar_q92_common as q92
+import sonar_per_number_condition_10plus_shard as q92shard
 
 class Q92FormulaUniverseTests(unittest.TestCase):
     def test_exact_catalog_count_and_endpoints(self):
@@ -75,6 +76,30 @@ class Q92FormulaUniverseTests(unittest.TestCase):
         with self.assertRaises(ValueError): q92.shard_bounds(15)
         with self.assertRaises(ValueError): q92.formula_id((0,1,2,3,4,5,6,7,8,8))
         with self.assertRaises(ValueError): q92.batch_ranges(10,0)
+
+
+    def test_ten_feature_shard_schema_and_equal_weight_matrix(self):
+        self.assertEqual(q92shard.FORMULA_SIZE,10)
+        self.assertEqual(q92shard.SHARD_SIZE,562_419)
+        self.assertEqual(q92shard.SHARD_INDEX,0)
+        formulas=[q92.formula_unrank(0),q92.formula_unrank(1),q92.formula_unrank(100)]
+        weights=q92shard.build_formula_weight_matrix(formulas)
+        self.assertEqual(weights.shape,(27,3))
+        for column in range(weights.shape[1]):
+            self.assertEqual(int(np.count_nonzero(weights[:,column])),10)
+            self.assertAlmostEqual(float(weights[:,column].sum()),1.0,places=14)
+            self.assertTrue(np.allclose(weights[weights[:,column]!=0,column],0.1))
+
+    def test_stable_rank_matrix_and_actual_number_lookup(self):
+        scores=np.zeros((40,2),dtype=np.float64)
+        scores[0,:]=1.0
+        scores[1,1]=2.0
+        ranks=q92shard.rank_matrix(scores)
+        self.assertEqual(ranks[0,0],1)
+        self.assertEqual(ranks[1,0],2)
+        self.assertEqual(ranks[1,1],1)
+        self.assertEqual(ranks[0,1],2)
+        self.assertEqual(sorted(ranks[:,0].tolist()),list(range(1,41)))
 
 if __name__=="__main__":
     unittest.main(verbosity=2)
