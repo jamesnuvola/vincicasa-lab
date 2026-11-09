@@ -90,7 +90,7 @@ class Q89FormulaUniverseTests(unittest.TestCase):
         blobs={"blob-a":payloads["reports/a.json"],"blob-b":payloads["reports/b.csv.gz"]}
         exact,cache=q89persist.inspect_existing_payloads(payloads,current_map,lambda sha:blobs[sha])
         self.assertTrue(exact)
-        self.assertEqual(cache,blobs)
+        self.assertEqual(cache,payloads)
         missing=dict(current_map)
         del missing["reports/b.csv.gz"]
         exact,_=q89persist.inspect_existing_payloads(payloads,missing,lambda sha:blobs[sha])
