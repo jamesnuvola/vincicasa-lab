@@ -368,8 +368,10 @@ def main():
     if protocol["source_archive_git_blob_sha1"] != archive_sha1:
         raise SystemExit("Q84_BLOCKED: canonical archive blob differs from preregistered protocol")
     latest_metrics = json.loads((OUT / "latest_metrics.json").read_text(encoding="utf-8"))
-    if latest_metrics.get("source_git_blob_sha") != archive_sha1:
-        raise SystemExit("Q84_BLOCKED: latest metrics are not aligned to canonical archive")
+    if (latest_metrics.get("total_draws") != len(draws)
+            or latest_metrics.get("data_last_date") != dates[-1]
+            or (latest_metrics.get("source_git_blob_sha") and latest_metrics.get("source_git_blob_sha") != archive_sha1)):
+        raise SystemExit("Q84_BLOCKED: latest metrics cutoff/count are not aligned to canonical archive")
     active_report = json.loads(ACTIVE_REPORT.read_text(encoding="utf-8"))
     if active_report.get("source_git_blob_sha") != archive_sha1 or active_report.get("data", {}).get("total_draws") != len(draws):
         raise SystemExit("Q84_BLOCKED: exact app-engine comparator is not aligned to canonical archive")
