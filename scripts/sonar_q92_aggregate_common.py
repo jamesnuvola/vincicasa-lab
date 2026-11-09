@@ -232,6 +232,7 @@ def uniform_baseline_evidence(mean_top5_share: float, raw_p_top5: float,
         "global_holm_adjusted_p_top5": adjusted,
         "alpha": alpha,
         "absolute_baseline_pass": bool(supported),
-        "status": "ABSOLUTE_LIFT_SUPPORTED" if supported else "NOT_DEMONSTRATED",
-        "interpretation": "A paired lift over Q89 alone is not evidence of above-uniform performance."
+        "status": "HISTORICAL_ABOVE_UNIFORM_GATE_PASS" if supported else "NOT_DEMONSTRATED",
+        "evidence_scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+        "interpretation": "A paired lift over Q89 alone is not evidence of above-uniform performance; this historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation."
     }
