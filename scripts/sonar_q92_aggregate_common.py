@@ -192,14 +192,13 @@ def selected_formula_holm_pvalues(adjusted_pvalues, formula_rank: int,
         raise ValueError("selected formula Holm index is outside the declared family")
     if values.ndim != 1 or values.size != count * 3 * endpoints:
         raise ValueError("selected formula Holm vector dimensions do not match the family")
-    if not np.isfinite(values).all() or float(values.min()) < 0.0 or float(values.max()) > 1.0:
-        raise ValueError("selected formula Holm vector contains invalid p-values")
     shard_size = count // shards
     shard_index, local_rank = divmod(rank, shard_size)
     offset = (shard_index * shard_size * 3 + split * shard_size + local_rank) * endpoints
     selected = values[offset:offset + endpoints]
-    if selected.size != endpoints:
-        raise ValueError("selected formula Holm endpoint slice is incomplete")
+    if (selected.size != endpoints or not np.isfinite(selected).all()
+            or float(selected.min()) < 0.0 or float(selected.max()) > 1.0):
+        raise ValueError("selected formula Holm endpoint slice is invalid or incomplete")
     names = ("top5", "top10", "top20")
     if endpoints != len(names):
         raise ValueError("selected formula Holm endpoint contract must be Top-5/10/20")
