@@ -13,6 +13,10 @@
 - The tuple/list fix and regression tests are present at commit `10986cb6bf256550821d79f3139b3b37798887cf`. The associated project CI run `42629662800` completed SUCCESS, but its Q92-specific branch-only test steps were skipped; this is not evidence that the dedicated Q92 full walk-forward has rerun.
 - The old 15 shard artifacts are bound to their previous source checkout/hash manifest. They must not be mixed with the corrected source. A corrected exact-head run must regenerate all 15 shards.
 
+## Exposure caveat for the amendment
+
+The earlier failed Q92 run `42615347368` had already generated all 15 shard artifacts before the absolute-baseline amendment was registered. No aggregate was accepted and those artifacts were not used to select this gate in the present cycle, but this is an amendment before the corrected replay, not before any historical Q92 computation. Therefore the historical Blind OOS and the new absolute-baseline status are exploratory, not untouched prospective confirmation. Confirmatory evidence requires a new preregistered prospective holdout of 670 new draws.
+
 ## New methodological finding
 
 The Q92 paired primary comparison is relative to Q89. Since the recorded Q89 Blind OOS Top-5 share is below the uniform baseline, a paired improvement of 0.005 over Q89 could still leave Q92 below uniform. A relative lift alone must not be presented as absolute predictive advantage.
@@ -59,11 +63,11 @@ A synthetic mapping regression uses 3 shards × 4 formulas × 3 splits × 3 endp
 
 ## Next action
 
-1. Fast-forward the PR #23 head branch to this branch only after reviewing the exact diff.
-2. Let exact-head project CI and the dedicated Q92 preflight run on the same commit.
+1. The PR #23 head was fast-forwarded to commit `497f664e6c19fab2070c533a9e0b16d415fd513d`; exact-head project CI run `42641511859` passed, while Q92-specific steps in that general CI were skipped.
+2. Verify the dedicated Q92 preflight/run on the corrected exact head; its push-run status is not exposed by the connected run-list action.
 3. Regenerate all 15 shard artifacts because source hashes changed.
 4. Run aggregation and acceptance; inspect Discovery, Validation, selected-candidate global Holm values, absolute uniform-baseline status and paired Q89 inference.
 5. Persist accepted artifacts append-only and verify artifact digest plus Git blob byte readback.
-6. Request human review. No merge, engine promotion or shadow insertion is authorized.
+6. Treat historical Blind OOS as exploratory; require a new prospective 670-draw holdout for confirmation. Request human review. No merge, engine promotion or shadow insertion is authorized.
 
 PR #6, #7 and #8 are out of scope and must remain untouched.
