@@ -186,14 +186,17 @@ def prior_flow_context(current_state, prior_states, prior_hits, prior_turbulence
     weights = np.clip(np.exp((shrunk - BASELINE_TOP20) / TEMPERATURE), WEIGHT_CLIP[0], WEIGHT_CLIP[1])
 
     turbulence = float(np.sqrt(np.mean(np.square(z_current))))
-    recent_turbulence = np.asarray(prior_turbulence[-LOOKBACK:], dtype=float)
-    q20, q80 = np.quantile(recent_turbulence, [0.2, 0.8])
-    if turbulence <= q20:
-        regime = "LOW_TURBULENCE"
-    elif turbulence >= q80:
-        regime = "HIGH_TURBULENCE"
+    recent_turbulence = np.asarray([x for x in prior_turbulence[-LOOKBACK:] if x is not None], dtype=float)
+    if len(recent_turbulence) < MIN_ANALOGS:
+        regime = "UNCLASSIFIED"
     else:
-        regime = "MID_TURBULENCE"
+        q20, q80 = np.quantile(recent_turbulence, [0.2, 0.8])
+        if turbulence <= q20:
+            regime = "LOW_TURBULENCE"
+        elif turbulence >= q80:
+            regime = "HIGH_TURBULENCE"
+        else:
+            regime = "MID_TURBULENCE"
     return weights, local, k, effective_n, turbulence, regime
 
 
@@ -427,7 +430,7 @@ def main():
         # outcomes have been computed. This ordering is the core leakage guard.
         states.append(state)
         prior_hits.append(current_hits[:len(CONFIGS), 2].astype(float))
-        prior_turbulence.append(turbulence if turbulence is not None else 0.0)
+        prior_turbulence.append(turbulence)
 
     # Split-level global tests: 44 strategies x 3 splits x 3 endpoints.
     ptests = []
@@ -630,7 +633,7 @@ def main():
          "minimum_prior_analogs": MIN_ANALOGS, "shrinkage_pseudocount": SHRINKAGE,
          "baseline_top20_hits": BASELINE_TOP20, "temperature": TEMPERATURE,
          "weight_clip": list(WEIGHT_CLIP)},
-        "flow_state_analog_weighted_borda(all_42_fixed_rules)", FLOW_FEATURES + BASE_RULES,
+        "flow_state_analog_weighted_borda(all_42_fixed_rules)", list(FLOW_FEATURES) + list(BASE_RULES),
         ["robust_scale", "nearest_neighbor", "gaussian_kernel", "shrinkage", "weighted_borda"],
         "PREREGISTERED_PARAMETERS_2026-11-09", [c[0] for c in CONFIGS], cluster_ids[FLOW_ID]))
     for sid, _, sequence in CONFIGS:
