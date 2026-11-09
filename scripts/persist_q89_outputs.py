@@ -9,6 +9,8 @@ ROOT=Path(__file__).resolve().parents[1]
 BRANCH="research/sonar-q89-nine-feature-20261108"
 OUT=ROOT/"reports/sequence_agent"
 API="https://api.github.com"
+QUEUE_STATUS_RELATIVE="reports/sequence_agent/research_queue_status.json"
+QUEUE_STATUS_EXPECTED_BLOB_SHA="9944646da4c14b3f4958bdfe9108f318177837b5"
 
 def api(method,path,payload=None):
     token=os.environ.get("GITHUB_TOKEN")
@@ -64,6 +66,40 @@ def blob_bytes(sha):
     if blob.get("encoding")!="base64":
         raise SystemExit("Q89_PERSIST_BLOCKED: Git blob encoding mismatch")
     return base64.b64decode(blob["content"])
+
+def validate_queue_status_append(existing_bytes,new_bytes,existing_blob_sha):
+    if existing_blob_sha!=QUEUE_STATUS_EXPECTED_BLOB_SHA:
+        return False,"unexpected existing queue blob SHA"
+    try:
+        old=json.loads(existing_bytes.decode("utf-8"))
+        new=json.loads(new_bytes.decode("utf-8"))
+    except (UnicodeDecodeError,json.JSONDecodeError) as exc:
+        return False,"queue JSON decode failure: "+str(exc)
+    old_tasks=old.get("tasks")
+    new_tasks=new.get("tasks")
+    if not isinstance(old_tasks,list) or not isinstance(new_tasks,list):
+        return False,"queue task arrays are missing"
+    if new_tasks[:-1]!=old_tasks or len(new_tasks)!=len(old_tasks)+1:
+        return False,"existing task records are not preserved exactly with one appended task"
+    q89_task=new_tasks[-1]
+    if q89_task.get("id")!="Q89":
+        return False,"the only appended task is not Q89"
+    if q89_task.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW":
+        return False,"Q89 is not pending human review"
+    if q89_task.get("missing_evidence") or q89_task.get("validation_errors"):
+        return False,"Q89 queue acceptance has missing evidence or validation errors"
+    if q89_task.get("depends_on")!=["Q00","Q88"]:
+        return False,"Q89 dependency contract changed"
+    if old.get("queue_status")!="QUEUE_VALID" or new.get("queue_status")!="QUEUE_VALID":
+        return False,"queue status is not valid"
+    if new.get("task_count")!=old.get("task_count",0)+1:
+        return False,"queue task count did not increase by exactly one"
+    for key,value in old.items():
+        if key in ("generated_at_utc","task_count","tasks"):
+            continue
+        if new.get(key)!=value:
+            return False,"top-level queue field changed unexpectedly: "+key
+    return True,""
 
 def main():
     head=subprocess.run(["git","rev-parse","HEAD"],cwd=ROOT,check=True,stdout=subprocess.PIPE,text=True).stdout.strip()
@@ -126,16 +162,26 @@ def main():
     if current_tree.get("truncated"):
         raise SystemExit("Q89_PERSIST_BLOCKED: base tree is truncated")
     current_map={item["path"]:item for item in current_tree.get("tree",[]) if item.get("type")=="blob"}
-    # Idempotent append-only retry: retain the previously persisted queue snapshot if its Q89 status is identical.
-    queue_relative="reports/sequence_agent/research_queue_status.json"
+    # Q89 queue status is mutable, unlike immutable target freezes. Allow only a guarded one-task append
+    # against the exact preregistered queue blob; an idempotent retry retains the first accepted snapshot.
+    queue_relative=QUEUE_STATUS_RELATIVE
+    queue_update_allowed=False
     if queue_relative in current_map:
-        remote_queue_bytes=blob_bytes(current_map[queue_relative]["sha"])
+        existing_queue_sha=current_map[queue_relative]["sha"]
+        remote_queue_bytes=blob_bytes(existing_queue_sha)
         remote_queue=json.loads(remote_queue_bytes.decode("utf-8"))
         remote_q89=next((task for task in remote_queue.get("tasks",[]) if task.get("id")=="Q89"),None)
-        if remote_q89 and remote_q89.get("status")=="VALIDATED_PENDING_HUMAN_REVIEW" and not remote_q89.get("validation_errors"):
-            if q89_task.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW":
-                raise SystemExit("Q89_PERSIST_BLOCKED: existing queue Q89 status conflicts with local validation")
+        if remote_q89:
+            if remote_q89!=q89_task or remote_q89.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW" or remote_q89.get("missing_evidence") or remote_q89.get("validation_errors"):
+                raise SystemExit("Q89_PERSIST_BLOCKED: existing queue Q89 status conflicts with local validated evidence")
+            if remote_queue.get("tasks")!=local_queue.get("tasks"):
+                raise SystemExit("Q89_PERSIST_BLOCKED: existing queue task catalog differs from local validated catalog")
             payloads[queue_relative]=remote_queue_bytes
+        else:
+            allowed,reason=validate_queue_status_append(remote_queue_bytes,payloads[queue_relative],existing_queue_sha)
+            if not allowed:
+                raise SystemExit("Q89_PERSIST_BLOCKED: queue status append guard: "+reason)
+            queue_update_allowed=True
     # Idempotent append-only retry: retain the first accepted checkpoint at its preregistered path.
     checkpoint_relative="reports/sequence_agent/q89_checkpoint_2026-11-08.json"
     if checkpoint_relative in current_map:
@@ -150,9 +196,13 @@ def main():
         existing=current_map.get(relative)
         if existing:
             existing_bytes=blob_bytes(existing["sha"])
-            if existing_bytes!=data:
+            if existing_bytes==data:
+                blob_sha=existing["sha"]
+            elif relative==queue_relative and queue_update_allowed:
+                blob=api("POST","/git/blobs",{"content":base64.b64encode(data).decode("ascii"),"encoding":"base64"})
+                blob_sha=blob["sha"]
+            else:
                 raise SystemExit("Q89_PERSIST_BLOCKED: append-only path already exists with different bytes: "+relative)
-            blob_sha=existing["sha"]
         else:
             blob=api("POST","/git/blobs",{"content":base64.b64encode(data).decode("ascii"),"encoding":"base64"})
             blob_sha=blob["sha"]

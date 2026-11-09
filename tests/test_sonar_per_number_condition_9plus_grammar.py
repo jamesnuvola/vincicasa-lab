@@ -18,6 +18,7 @@ import sonar_per_number_condition_grammar as q80
 import sonar_q89_common as q89
 import aggregate_sonar_q89_shards as q89agg
 import sonar_q89_acceptance as q89accept
+import persist_q89_outputs as q89persist
 
 class Q89FormulaUniverseTests(unittest.TestCase):
     def test_aggregator_runtime_constants_are_bound(self):
@@ -79,6 +80,32 @@ class Q89FormulaUniverseTests(unittest.TestCase):
         self.assertEqual(first["Q88_number_hits_top5"],5)
         self.assertEqual(first["paired_delta_number_hits_top5"],-5)
         self.assertEqual(differences["top5"][0],-5)
+
+    def test_queue_status_append_guard_accepts_only_validated_q89_append(self):
+        old={
+            "generated_at_utc":"2026-11-08T20:55:29+00:00","project":"VinciCasa SONAR",
+            "queue_status":"QUEUE_VALID","overall_cycle_status":"INCOMPLETE","task_count":1,
+            "complete_count":1,"ready_count":0,"active_next_task":None,"blocking_tasks":[],"next_action":None,
+            "tasks":[{"id":"Q00","status":"COMPLETE","missing_evidence":[],"validation_errors":[]}]
+        }
+        new=json.loads(json.dumps(old))
+        new["generated_at_utc"]="2026-11-09T00:02:17+00:00"
+        new["task_count"]=2
+        new["tasks"].append({"id":"Q89","status":"VALIDATED_PENDING_HUMAN_REVIEW","depends_on":["Q00","Q88"],
+                             "missing_evidence":[],"validation_errors":[]})
+        ok,reason=q89persist.validate_queue_status_append(json.dumps(old).encode(),json.dumps(new).encode(),
+                                                          q89persist.QUEUE_STATUS_EXPECTED_BLOB_SHA)
+        self.assertTrue(ok,reason)
+        changed=json.loads(json.dumps(new))
+        changed["tasks"][0]["status"]="VALIDATED_PENDING_HUMAN_REVIEW"
+        self.assertFalse(q89persist.validate_queue_status_append(json.dumps(old).encode(),json.dumps(changed).encode(),
+                                                                 q89persist.QUEUE_STATUS_EXPECTED_BLOB_SHA)[0])
+        invalid_q89=json.loads(json.dumps(new))
+        invalid_q89["tasks"][-1]["status"]="COMPLETE"
+        self.assertFalse(q89persist.validate_queue_status_append(json.dumps(old).encode(),json.dumps(invalid_q89).encode(),
+                                                                 q89persist.QUEUE_STATUS_EXPECTED_BLOB_SHA)[0])
+        self.assertFalse(q89persist.validate_queue_status_append(json.dumps(old).encode(),json.dumps(new).encode(),
+                                                                 "unexpected-blob-sha")[0])
 
     def test_exact_formula_count_and_endpoints(self):
         self.assertEqual(q89.TOTAL_FORMULA_COUNT,4_686_825)
