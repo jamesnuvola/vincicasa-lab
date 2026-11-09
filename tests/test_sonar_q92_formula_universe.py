@@ -16,7 +16,7 @@ class Q92FormulaUniverseTests(unittest.TestCase):
         self.assertEqual(q92.SHARD_COUNT,15)
         self.assertEqual(q92.SHARD_SIZE,562_419)
         self.assertEqual(q92.FORMULA_BATCH_SIZE,1024)
-        self.assertEqual(len(q92.batch_ranges(q92.SHARD_SIZE)),549)
+        self.assertEqual(len(q92.batch_ranges(q92.SHARD_SIZE)),550)
         self.assertEqual(q92.formula_id(q92.formula_unrank(0)),"P10_00_01_02_03_04_05_06_07_08_09")
         self.assertEqual(q92.formula_id(q92.formula_unrank(q92.TOTAL_FORMULA_COUNT-1)),"P10_17_18_19_20_21_22_23_24_25_26")
 
