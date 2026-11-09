@@ -195,9 +195,47 @@ def validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,sele
         minimum_holm=min(minimum_holm,float(row_max.min()))
     if report.get("multiple_testing",{}).get("holm_adjusted_formula_split_rows_below_0_05")!=holm_below or abs(float(report.get("multiple_testing",{}).get("minimum_holm_p_max_endpoint_family",-1))-minimum_holm)>1e-15:
         fail("Q92 report Holm summary does not reconcile to replayed adjusted vector")
+    candidate=selection.get("Q92_candidate",{})
+    formula_id=candidate.get("formula_id")
+    formula_rank=int(candidate.get("formula_rank",-1))
+    selected_item=next((item for item in candidate_pool if item.get("formula_id")==formula_id),None)
+    if selected_item is None or int(selected_item.get("formula_rank",-2))!=formula_rank:
+        fail("Q92 selected candidate formula ID/rank is absent from replayed Discovery pool")
+    metrics_by_split={"discovery":selected_item["discovery"],"validation":selected_item["validation"],"blind_oos":selected_item["blind"]}
+    selected_holm={}
+    for split_index,split in enumerate(SPLITS):
+        adjusted=q92a.selected_formula_holm_pvalues(raw,formula_rank,TOTAL,split_index)
+        metrics=metrics_by_split[split]
+        selected_holm[split]={
+            "raw_pvalues":{
+                "top5":float(metrics["p_top5_exact_hypergeom_sum"]),
+                "top10":float(metrics["p_top10_exact_hypergeom_sum"]),
+                "top20":float(metrics["p_top20_exact_hypergeom_sum"])},
+            "holm_adjusted_pvalues":adjusted}
+    compare_json_numeric(candidate.get("global_holm_adjusted_pvalues"),selected_holm,
+                         "Q92 selected candidate global Holm p-values")
+    uniform_evidence=q92a.uniform_baseline_evidence(
+        float(metrics_by_split["blind_oos"]["mean_number_hits_top5"]),
+        float(metrics_by_split["blind_oos"]["p_top5_exact_hypergeom_sum"]),
+        float(selected_holm["blind_oos"]["holm_adjusted_pvalues"]["top5"]),
+        baseline=0.125,alpha=0.05,targets=SPLIT_COUNTS["blind_oos"])
+    compare_json_numeric(candidate.get("blind_oos_uniform_baseline_evidence"),uniform_evidence,
+                         "Q92 selected candidate absolute uniform-baseline evidence")
+    compare_json_numeric(report.get("selected_candidate_global_holm_adjusted_pvalues"),selected_holm,
+                         "Q92 report selected candidate Holm evidence")
+    compare_json_numeric(report.get("blind_oos_uniform_baseline_evidence"),uniform_evidence,
+                         "Q92 report absolute uniform-baseline evidence")
+    compare_json_numeric(report.get("selected_candidate_metrics",{}).get("Q92_candidate",{}).get("global_holm_adjusted_pvalues"),
+                         selected_holm,"Q92 report nested selected candidate Holm evidence")
+    compare_json_numeric(report.get("selected_candidate_metrics",{}).get("Q92_candidate",{}).get("blind_oos_uniform_baseline_evidence"),
+                         uniform_evidence,"Q92 report nested absolute baseline evidence")
+    compare_json_numeric(manifest.get("selected_candidate_global_holm_adjusted_pvalues"),selected_holm,
+                         "Q92 manifest selected candidate Holm evidence")
+    compare_json_numeric(manifest.get("blind_oos_uniform_baseline_evidence"),uniform_evidence,
+                         "Q92 manifest absolute uniform-baseline evidence")
     del raw
     raw_path.unlink(missing_ok=True)
-    return candidate_pool,holm_below,minimum_holm
+    return candidate_pool,holm_below,minimum_holm,selected_holm,uniform_evidence
 
 def validate_candidate_freeze(candidate_pool,selection):
     global_top100=q92a.discovery_top_k(candidate_pool,k=100)
@@ -389,7 +427,7 @@ def validate():
         fail("Q92 report/manifest source-code hash manifest mismatch")
     if manifest.get("shard_source_checkout_shas")!=source_checkout_shas or report.get("shard_source_checkout_shas")!=source_checkout_shas:
         fail("Q92 report/manifest shard checkout provenance mismatch")
-    candidate_pool,holm_below,minimum_holm=validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,selection)
+    candidate_pool,holm_below,minimum_holm,selected_holm,uniform_evidence=validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,selection)
     selected=validate_candidate_freeze(candidate_pool,selection)
     if report.get("candidate_selection",{}).get("selected_candidate_id")!=selected["formula_id"] or report.get("candidate_selection",{}).get("Q89_control_candidate_id")!=q89_id:
         fail("Q92 report candidate/control IDs do not reconcile")
@@ -423,7 +461,9 @@ def validate():
         "metrics_rows":TOTAL*3,"holm_family_size":EXPECTED_TESTS,"holm_adjusted_formula_split_rows_below_0_05":holm_below,
         "minimum_holm_p_max_endpoint_family":minimum_holm,"selected_q92_candidate_id":selected["formula_id"],
         "q89_control_candidate_id":q89_id,"paired_blind_ledger_rows":EXPECTED_BLIND_TARGETS,
-        "paired_primary_decision":paired_replay["primary_decision"]},ensure_ascii=False,separators=(",",":")))
+        "paired_primary_decision":paired_replay["primary_decision"],
+        "blind_oos_uniform_baseline_status":uniform_evidence["status"],
+        "blind_oos_global_holm_top5":selected_holm["blind_oos"]["holm_adjusted_pvalues"]["top5"]},ensure_ascii=False,separators=(",",":")))
 
 if __name__=="__main__":
     validate()
