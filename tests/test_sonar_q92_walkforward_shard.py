@@ -18,6 +18,12 @@ import sonar_q92_null_calibration as q92null
 import sonar_per_number_condition_10plus_shard as runner
 
 class Q92WalkForwardTests(unittest.TestCase):
+    def test_canonical_archive_last_draw_matches_registered_quintet(self):
+        dates,draws=runner.q80.load_archive()
+        self.assertEqual(len(dates),3402)
+        self.assertEqual(dates[-1],"2026-11-08")
+        # The archive loader returns immutable sorted tuples, not lists.
+        self.assertEqual(draws[-1],(3,7,10,16,27))
     def test_formula_universe_count_shards_and_batch_partition(self):
         self.assertEqual(q92.TOTAL_FORMULA_COUNT,8_436_285)
         self.assertEqual(q92.SHARD_SIZE,562_419)
