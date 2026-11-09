@@ -28,6 +28,7 @@ REPORT_PATH = OUT / "strategy_atlas_report.json"
 MANIFEST_PATH = OUT / "strategy_atlas_manifest.json"
 CHECKPOINT_PATH = OUT / "strategy_atlas_checkpoint_2026-11-09.json"
 VALIDATION_PATH = OUT / "strategy_atlas_validation.json"
+AMENDMENT_PATH = OUT / "strategy_atlas_diagnostic_amendment_2026-11-09.json"
 
 FLOW_FEATURES = (
     "sum_velocity_5", "sum_acceleration_5", "range_velocity_5",
@@ -319,6 +320,31 @@ def metric_row(strategy_id, split, indices, hits, actual_ranks, ptest_rows, fami
     return row
 
 
+def classify_relationship(rho, overlap_mean, a_low_count, b_low_count,
+                           mean_a, mean_b, b_when_a_low, a_when_b_low):
+    """Conservative descriptive complementarity label based on paired-miss lift."""
+    a_lift = None if a_when_b_low is None else float(a_when_b_low - mean_a)
+    b_lift = None if b_when_a_low is None else float(b_when_a_low - mean_b)
+    if rho >= 0.995 and overlap_mean >= 0.98:
+        label = "NEAR_EQUIVALENT"
+    elif rho <= -0.10 and overlap_mean <= 0.50:
+        label = "ANTAGONISTIC"
+    else:
+        a_covers_b = (b_low_count >= 30 and a_when_b_low is not None
+                      and a_when_b_low >= 2.5 and a_lift >= 0.10)
+        b_covers_a = (a_low_count >= 30 and b_when_a_low is not None
+                      and b_when_a_low >= 2.5 and b_lift >= 0.10)
+        if a_covers_b and b_covers_a:
+            label = "COMPLEMENTARY_BOTH_WAYS"
+        elif a_covers_b:
+            label = "COMPLEMENTARY_A_COVERS_B"
+        elif b_covers_a:
+            label = "COMPLEMENTARY_B_COVERS_A"
+        else:
+            label = "MIXED"
+    return label, a_lift, b_lift
+
+
 def contiguous_intervals(indices, dates):
     if not indices:
         return []
@@ -536,25 +562,28 @@ def main():
             hit_corr = float(np.corrcoef(ah, bh)[0, 1]) if std(ah) > 0 and std(bh) > 0 else None
             rho = float(rank_corr[a, b])
             overlap_mean = float(overlap.mean())
-            if rho >= 0.995 and overlap_mean >= 0.98:
-                relation = "NEAR_EQUIVALENT"
-                union(a, b)
-            elif rho <= -0.10 and overlap_mean <= 0.50:
-                relation = "ANTAGONISTIC"
-            elif a_unique > 0 and b_unique > 0:
-                relation = "COMPLEMENTARY_BOTH_WAYS"
-            else:
-                relation = "MIXED"
             a_low = ah <= 2
             b_low = bh <= 2
+            b_when_a_low = float(bh[a_low].mean()) if np.any(a_low) else None
+            a_when_b_low = float(ah[b_low].mean()) if np.any(b_low) else None
+            relation, a_lift, b_lift = classify_relationship(
+                rho, overlap_mean, int(a_low.sum()), int(b_low.sum()),
+                float(ah.mean()), float(bh.mean()), b_when_a_low, a_when_b_low
+            )
+            if relation == "NEAR_EQUIVALENT":
+                union(a, b)
             relationships.append({
                 "strategy_a": GLOBAL_IDS[a], "strategy_b": GLOBAL_IDS[b],
                 "rank_spearman_rho": rho, "top20_overlap_fraction": overlap_mean,
                 "hit_count_correlation": hit_corr,
                 "a_unique_actual_hits_outside_b_top20": a_unique,
                 "b_unique_actual_hits_outside_a_top20": b_unique,
-                "b_mean_hits_when_a_has_2_or_fewer": float(bh[a_low].mean()) if np.any(a_low) else None,
-                "a_mean_hits_when_b_has_2_or_fewer": float(ah[b_low].mean()) if np.any(b_low) else None,
+                "a_targets_with_2_or_fewer": int(a_low.sum()),
+                "b_targets_with_2_or_fewer": int(b_low.sum()),
+                "b_mean_hits_when_a_has_2_or_fewer": b_when_a_low,
+                "a_mean_hits_when_b_has_2_or_fewer": a_when_b_low,
+                "a_conditional_lift_when_b_low": a_lift,
+                "b_conditional_lift_when_a_low": b_lift,
                 "relation_class": relation,
             })
 
@@ -771,8 +800,16 @@ def main():
         "relationship_summary": {
             "pair_count": len(relationships),
             "near_equivalent_pairs": sum(x["relation_class"] == "NEAR_EQUIVALENT" for x in relationships),
-            "complementary_pairs": sum(x["relation_class"] == "COMPLEMENTARY_BOTH_WAYS" for x in relationships),
+            "complementary_pairs": sum(x["relation_class"].startswith("COMPLEMENTARY") for x in relationships),
+            "complementary_both_ways": sum(x["relation_class"] == "COMPLEMENTARY_BOTH_WAYS" for x in relationships),
+            "complementary_one_way": sum(x["relation_class"] in ("COMPLEMENTARY_A_COVERS_B", "COMPLEMENTARY_B_COVERS_A") for x in relationships),
             "antagonistic_pairs": sum(x["relation_class"] == "ANTAGONISTIC" for x in relationships),
+        },
+        "relationship_method": {
+            "version": "Q84_RELATIONSHIP_DIAGNOSTIC_V2",
+            "complementarity_rule": "at least 30 paired targets where the counterpart has <=2 Top20 hits; the candidate must average >=2.5 Top20 hits and exceed its own full-period mean by >=0.10 on those targets",
+            "amendment_reason": "The initial any-unique-hit rule was too permissive and labelled almost every pair complementary; v2 requires measurable paired-miss conditional lift.",
+            "status": "DESCRIPTIVE_EXPLORATORY_NOT_INFERENTIAL",
         },
         "guardrail": "Relationship and lifecycle labels are descriptive; they do not establish causal or predictive effects."
     })
@@ -805,6 +842,11 @@ def main():
             "shrinkage_pseudocount": SHRINKAGE, "temperature": TEMPERATURE,
             "regime_quantiles": [0.2, 0.8], "regime_counts": dict(Counter(regime_all)),
             "mean_analog_effective_n": float(np.mean(effective_n_all)),
+            "mean_weight_cv": float(np.mean(np.std(flow_weights_all, axis=1) / np.maximum(np.mean(flow_weights_all, axis=1), 1e-12))),
+            "mean_absolute_weight_deviation_from_one": float(np.mean(np.abs(flow_weights_all - 1.0))),
+            "mean_minimum_rule_weight": float(np.mean(np.min(flow_weights_all, axis=1))),
+            "mean_maximum_rule_weight": float(np.mean(np.max(flow_weights_all, axis=1))),
+            "share_of_rule_weights_at_clip": float(np.mean((flow_weights_all <= WEIGHT_CLIP[0] + 1e-8) | (flow_weights_all >= WEIGHT_CLIP[1] - 1e-8))),
         },
         "baseline": {
             "mean_hits_top5": 0.625, "mean_hits_top10": 1.25, "mean_hits_top20": 2.5,
@@ -825,11 +867,20 @@ def main():
             "blind_oos": pick_metric(selected_fixed_id, "blind_oos"),
         },
         "paired_block_bootstrap": paired,
+        "paired_bootstrap_inference_note": "These paired block-bootstrap p-values and intervals are descriptive comparisons; they are not part of the 1,152-test Holm family and must not be treated as adjusted significance.",
         "relationship_summary": {
             "pairwise_global_strategy_relationships": len(relationships),
             "near_equivalent_pairs": sum(x["relation_class"] == "NEAR_EQUIVALENT" for x in relationships),
-            "complementary_pairs": sum(x["relation_class"] == "COMPLEMENTARY_BOTH_WAYS" for x in relationships),
+            "complementary_pairs": sum(x["relation_class"].startswith("COMPLEMENTARY") for x in relationships),
+            "complementary_both_ways": sum(x["relation_class"] == "COMPLEMENTARY_BOTH_WAYS" for x in relationships),
+            "complementary_one_way": sum(x["relation_class"] in ("COMPLEMENTARY_A_COVERS_B", "COMPLEMENTARY_B_COVERS_A") for x in relationships),
             "antagonistic_pairs": sum(x["relation_class"] == "ANTAGONISTIC" for x in relationships),
+        },
+        "relationship_method": {
+            "version": "Q84_RELATIONSHIP_DIAGNOSTIC_V2",
+            "complementarity_rule": "at least 30 paired targets where the counterpart has <=2 Top20 hits; the candidate must average >=2.5 Top20 hits and exceed its own full-period mean by >=0.10 on those targets",
+            "amendment_reason": "The initial any-unique-hit rule was too permissive and labelled almost every pair complementary; v2 requires measurable paired-miss conditional lift.",
+            "status": "DESCRIPTIVE_EXPLORATORY_NOT_INFERENTIAL",
         },
         "external_active_app_engine_v2_comparator": {
             "model_id": active_report.get("model_id"),
@@ -859,6 +910,7 @@ def main():
         ("target_ledger", LEDGER_PATH, ledger_rows),
         ("lifecycle", LIFECYCLE_PATH, len(lifecycle)),
         ("report", REPORT_PATH, 1),
+        ("diagnostic_amendment", AMENDMENT_PATH, 1),
     ]:
         manifest["files"][name] = {"path": str(path.relative_to(ROOT)), "rows": rows,
                                    "bytes": path.stat().st_size, "sha256": sha256_file(path)}
