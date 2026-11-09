@@ -6,6 +6,8 @@ on:
     paths:
       - "scripts/sonar_q92_common.py"
       - "tests/test_sonar_q92_combinadic.py"
+      - "scripts/sonar_per_number_condition_10plus_shard.py"
+      - "tests/test_sonar_q92_walkforward.py"
       - ".github/workflows/sonar-q92-combinadic.yml"
   pull_request:
     types: [opened, synchronize, reopened]
@@ -35,4 +37,6 @@ jobs:
       - name: Compile Q92 combinadic module
         run: python -m py_compile scripts/sonar_q92_common.py tests/test_sonar_q92_combinadic.py
       - name: Run exact universe, shard partition and seeded synthetic regressions
-        run: python tests/test_sonar_q92_combinadic.py -v
+        run: |
+          python tests/test_sonar_q92_combinadic.py -v
+          python tests/test_sonar_q92_walkforward.py -v
