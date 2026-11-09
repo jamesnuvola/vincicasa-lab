@@ -1,0 +1,13 @@
+{
+  "schema_version":"1.0",
+  "task_id":"Q84",
+  "amendment_id":"Q84-DIAG-V2-2026-11-09",
+  "registered_at_utc":"2026-11-09T19:25:00Z",
+  "status":"POST_RUN_DIAGNOSTIC_REFINEMENT",
+  "does_not_change":["the preregistered flow-state features","the K=50 analog model","the 42 fixed rules","the walk-forward target set or chronological splits","the 1,152-test Holm family","the primary Top20 hypothesis","any target freeze"],
+  "root_cause":"The initial pairwise complementarity label treated any unique winning number captured by each of two different Top20 rankings as bidirectional complementarity. This was too permissive and labelled 896 of 946 pairs, even without evidence that one strategy rescued the other's misses.",
+  "correction":"Retain unique-hit counts as descriptive coverage, but assign a complementarity label only when there are at least 30 paired targets on which the counterpart has <=2 Top20 hits and the candidate averages >=2.5 Top20 hits plus at least +0.10 hits versus its own full-period mean on those targets. Distinguish bidirectional and one-way coverage.",
+  "inference_status":"The refined relationship labels are descriptive and post-run exploratory; they do not add or remove tests from the preregistered 1,152-test Holm family and cannot support strategy promotion.",
+  "additional_diagnostic":"Report the dispersion of adaptive rule weights and the mean effective analog sample size. The first Q84 run had mean effective neighbor count 48.72 of 50, suggesting the Gaussian kernel may have been too diffuse.",
+  "next_quantitative_hypothesis":"Test a preregistered sensitivity family with narrower analog neighborhoods (K=10, K=20, K=50) and compare the causal state-conditioned ensemble against the equal-weight ensemble on the same target dates. Select any K only on discovery; validation and blind OOS remain untouched by tuning. Because historical OOS dates have been inspected by prior SONAR work, treat all retrospective variants as exploratory and require prospective shadow evidence."
+}
