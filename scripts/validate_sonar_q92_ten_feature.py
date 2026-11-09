@@ -136,7 +136,7 @@ def validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,sele
                 fid=q92.formula_id(columns)
                 expected_features="+".join(q80.FEATURE_NAMES[column] for column in columns)
                 targets=SPLIT_COUNTS[split]
-                summary=q92a.metric_summary_from_compact_counts(row,targets)
+                summary=q92.metric_summary_from_compact_counts(row,targets)
                 raw_p=[summary["p_top5_exact_hypergeom_sum"],summary["p_top10_exact_hypergeom_sum"],summary["p_top20_exact_hypergeom_sum"]]
                 for endpoint_index,p in enumerate(raw_p):
                     raw[global_metric_row*3+endpoint_index]=p
