@@ -56,6 +56,7 @@ class TestQ89RefreshDelta(unittest.TestCase):
                 return "P9_"+"_".join(f"{value:02d}" for value in columns)
             rank_map={formulas[0]:0,formulas[1]:1}
             with ExitStack() as stack_patches:
+                stack_patches.enter_context(patch.object(delta,"ROOT",root))
                 stack_patches.enter_context(patch.object(delta,"ARCHIVE",archive))
                 stack_patches.enter_context(patch.object(delta,"OUT",root/"reports/sequence_agent"))
                 stack_patches.enter_context(patch.object(delta,"SHARD_DIR",root/"reports/sequence_agent/q89_refresh_20261108_delta_shards"))
