@@ -1,0 +1,87 @@
+name: SONAR Q92 Strict-Prior Ten-Feature Walk-Forward
+on:
+  push:
+    branches:
+      - research/sonar-q92-walkforward-prep-20261109
+    paths:
+      - "scripts/sonar_q92_common.py"
+      - "scripts/sonar_per_number_condition_10plus_shard.py"
+      - "tests/test_sonar_q92_combinadic.py"
+      - "tests/test_sonar_q92_walkforward.py"
+      - ".github/workflows/sonar-q92-walkforward.yml"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - research/per-number-condition-grammar-20261026
+    paths:
+      - "scripts/sonar_q92_common.py"
+      - "scripts/sonar_per_number_condition_10plus_shard.py"
+      - "tests/test_sonar_q92_combinadic.py"
+      - "tests/test_sonar_q92_walkforward.py"
+      - ".github/workflows/sonar-q92-walkforward.yml"
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: sonar-q92-walkforward-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile Q92 strict-prior evaluator and tests
+        run: |
+          python -m py_compile scripts/sonar_q92_common.py scripts/sonar_per_number_condition_10plus_shard.py tests/test_sonar_q92_combinadic.py tests/test_sonar_q92_walkforward.py
+      - name: Run exact combinadic universe and strict-prefix synthetic regressions
+        run: |
+          python tests/test_sonar_q92_combinadic.py -v
+          python tests/test_sonar_q92_walkforward.py -v
+
+  evaluate-shards:
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, '[q92-walkforward]') }}
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile and rerun Q92 acceptance tests
+        run: |
+          python -m py_compile scripts/sonar_q92_common.py scripts/sonar_per_number_condition_10plus_shard.py
+          python tests/test_sonar_q92_combinadic.py -v
+          python tests/test_sonar_q92_walkforward.py -v
+      - name: Evaluate deterministic Q92 strict-prior ten-feature shard
+        env:
+          SONAR_Q92_SHARD_INDEX: ${{ matrix.shard }}
+        run: python scripts/sonar_per_number_condition_10plus_shard.py
+      - name: Upload immutable Q92 shard metrics, target ledger and report
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-q92-shard-${{ matrix.shard }}
+          path: |
+            reports/sequence_agent/q92_shards/shard_${{ matrix.shard }}_metrics.csv
+            reports/sequence_agent/q92_shards/shard_${{ matrix.shard }}_target_ledger.csv
+            reports/sequence_agent/q92_shards/shard_${{ matrix.shard }}_report.json
+          if-no-files-found: error
+          retention-days: 14
