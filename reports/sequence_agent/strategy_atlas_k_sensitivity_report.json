@@ -1,0 +1,899 @@
+{
+  "acceptance_validation": {
+    "status": "PASS",
+    "validation_artifact": "reports/sequence_agent/strategy_atlas_k_sensitivity_validation.json"
+  },
+  "baseline": {
+    "mean_actual_number_rank": 20.5,
+    "mean_hits_top10": 1.25,
+    "mean_hits_top20": 2.5,
+    "mean_hits_top5": 0.625
+  },
+  "fixed_comparator_metrics_descriptive_only": [
+    {
+      "family_kind": "DESCRIPTIVE",
+      "mean_hits_top10": 1.2597605413846955,
+      "mean_hits_top20": 2.5502342529932327,
+      "mean_hits_top5": 0.6215512753774076,
+      "mean_rank_actual_numbers": 20.32274856845393,
+      "regime": null,
+      "split": "discovery",
+      "strategy_id": "FIXED::PAIR::freq_20>momentum_10_50",
+      "targets": 1921,
+      "top20_4plus": 358,
+      "top20_5of5": 58,
+      "top20_5of5_random_expected": 45.26264726264726,
+      "top20_5of5_rate": 0.03019260801665799,
+      "top20_hit_distribution": {
+        "0": 44,
+        "1": 279,
+        "2": 590,
+        "3": 650,
+        "4": 300,
+        "5": 58
+      }
+    },
+    {
+      "family_kind": "DESCRIPTIVE",
+      "mean_hits_top10": 1.2265625,
+      "mean_hits_top20": 2.496875,
+      "mean_hits_top5": 0.575,
+      "mean_rank_actual_numbers": 20.654375,
+      "regime": null,
+      "split": "validation",
+      "strategy_id": "FIXED::PAIR::freq_20>momentum_10_50",
+      "targets": 640,
+      "top20_4plus": 91,
+      "top20_5of5": 10,
+      "top20_5of5_random_expected": 15.079695079695078,
+      "top20_5of5_rate": 0.015625,
+      "top20_hit_distribution": {
+        "0": 10,
+        "1": 84,
+        "2": 225,
+        "3": 230,
+        "4": 81,
+        "5": 10
+      }
+    },
+    {
+      "family_kind": "DESCRIPTIVE",
+      "mean_hits_top10": 1.2324492979719188,
+      "mean_hits_top20": 2.4602184087363494,
+      "mean_hits_top5": 0.6146645865834633,
+      "mean_rank_actual_numbers": 20.625897035881437,
+      "regime": null,
+      "split": "blind_oos",
+      "strategy_id": "FIXED::PAIR::freq_20>momentum_10_50",
+      "targets": 641,
+      "top20_4plus": 106,
+      "top20_5of5": 20,
+      "top20_5of5_random_expected": 15.103257103257103,
+      "top20_5of5_rate": 0.031201248049921998,
+      "top20_hit_distribution": {
+        "0": 16,
+        "1": 96,
+        "2": 232,
+        "3": 191,
+        "4": 86,
+        "5": 20
+      }
+    }
+  ],
+  "flow_state": {
+    "K_values": [
+      10,
+      20,
+      50
+    ],
+    "features": [
+      "sum_velocity_5",
+      "sum_acceleration_5",
+      "range_velocity_5",
+      "range_acceleration_5",
+      "gap_velocity_5",
+      "odd_velocity_5",
+      "overlap_velocity_5",
+      "sum_dispersion_delta_20_80",
+      "range_dispersion_delta_20_80",
+      "frequency_total_variation_20_80",
+      "frequency_concentration_delta_20_80",
+      "decade_entropy_delta_20_80",
+      "overlap_dispersion_delta_20_80"
+    ],
+    "lookback_targets": 250,
+    "minimum_prior_analogs": 30,
+    "regime_quantiles": [
+      0.2,
+      0.8
+    ],
+    "shrinkage_pseudocount": 30.0,
+    "temperature": 0.35,
+    "weight_clip": [
+      0.5,
+      2.0
+    ]
+  },
+  "generated_at_utc": "2026-11-09T19:51:45.590503+00:00",
+  "global_metrics": [
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2592399791775117,
+      "mean_hits_top20": 2.515356585111921,
+      "mean_hits_top5": 0.6231129619989588,
+      "mean_rank_actual_numbers": 20.395627277459656,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.33393257940824134,
+        "top20": 0.2660811139886741,
+        "top5": 0.553434259553527
+      },
+      "regime": null,
+      "split": "discovery",
+      "strategy_id": "ENSEMBLE::EQUAL_WEIGHT_42",
+      "targets": 1921,
+      "top20_4plus": 336,
+      "top20_5of5": 43,
+      "top20_5of5_random_expected": 45.26264726264726,
+      "top20_5of5_rate": 0.022384174908901613,
+      "top20_hit_distribution": {
+        "0": 46,
+        "1": 272,
+        "2": 628,
+        "3": 639,
+        "4": 293,
+        "5": 43
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2234375,
+      "mean_hits_top20": 2.4984375,
+      "mean_hits_top5": 0.5796875,
+      "mean_rank_actual_numbers": 20.6303125,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.7746219694848564,
+        "top20": 0.5223217283613664,
+        "top5": 0.9519946717450818
+      },
+      "regime": null,
+      "split": "validation",
+      "strategy_id": "ENSEMBLE::EQUAL_WEIGHT_42",
+      "targets": 640,
+      "top20_4plus": 104,
+      "top20_5of5": 11,
+      "top20_5of5_random_expected": 15.079695079695078,
+      "top20_5of5_rate": 0.0171875,
+      "top20_hit_distribution": {
+        "0": 19,
+        "1": 81,
+        "2": 217,
+        "3": 219,
+        "4": 93,
+        "5": 11
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2449297971918876,
+      "mean_hits_top20": 2.546021840873635,
+      "mean_hits_top5": 0.608424336973479,
+      "mean_rank_actual_numbers": 20.481747269890796,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.5641417559359221,
+        "top20": 0.1397452773971471,
+        "top5": 0.734745015970514
+      },
+      "regime": null,
+      "split": "blind_oos",
+      "strategy_id": "ENSEMBLE::EQUAL_WEIGHT_42",
+      "targets": 641,
+      "top20_4plus": 117,
+      "top20_5of5": 17,
+      "top20_5of5_random_expected": 15.103257103257103,
+      "top20_5of5_rate": 0.0265210608424337,
+      "top20_hit_distribution": {
+        "0": 12,
+        "1": 97,
+        "2": 195,
+        "3": 220,
+        "4": 100,
+        "5": 17
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2623633524206144,
+      "mean_hits_top20": 2.5226444560124937,
+      "mean_hits_top5": 0.633524206142634,
+      "mean_rank_actual_numbers": 20.405726184279022,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.28152238130437585,
+        "top20": 0.17714705148786147,
+        "top5": 0.3025723642564291
+      },
+      "regime": null,
+      "split": "discovery",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K10",
+      "targets": 1921,
+      "top20_4plus": 334,
+      "top20_5of5": 37,
+      "top20_5of5_random_expected": 45.26264726264726,
+      "top20_5of5_rate": 0.019260801665799063,
+      "top20_hit_distribution": {
+        "0": 42,
+        "1": 269,
+        "2": 624,
+        "3": 652,
+        "4": 297,
+        "5": 37
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2125,
+      "mean_hits_top20": 2.478125,
+      "mean_hits_top5": 0.5921875,
+      "mean_rank_actual_numbers": 20.6453125,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.8544741350918195,
+        "top20": 0.7057994588315853,
+        "top5": 0.8874574705486012
+      },
+      "regime": null,
+      "split": "validation",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K10",
+      "targets": 640,
+      "top20_4plus": 98,
+      "top20_5of5": 7,
+      "top20_5of5_random_expected": 15.079695079695078,
+      "top20_5of5_rate": 0.0109375,
+      "top20_hit_distribution": {
+        "0": 21,
+        "1": 81,
+        "2": 214,
+        "3": 226,
+        "4": 91,
+        "5": 7
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2542901716068642,
+      "mean_hits_top20": 2.5241809672386895,
+      "mean_hits_top5": 0.5975039001560063,
+      "mean_rank_actual_numbers": 20.521372854914198,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.46140800986446623,
+        "top20": 0.28795182593193974,
+        "top5": 0.8465830143645898
+      },
+      "regime": null,
+      "split": "blind_oos",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K10",
+      "targets": 641,
+      "top20_4plus": 107,
+      "top20_5of5": 18,
+      "top20_5of5_random_expected": 15.103257103257103,
+      "top20_5of5_rate": 0.028081123244929798,
+      "top20_hit_distribution": {
+        "0": 14,
+        "1": 94,
+        "2": 200,
+        "3": 226,
+        "4": 89,
+        "5": 18
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2592399791775117,
+      "mean_hits_top20": 2.510671525247267,
+      "mean_hits_top5": 0.6350858927641854,
+      "mean_rank_actual_numbers": 20.39448204060385,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.33393257940824134,
+        "top20": 0.3332946752944614,
+        "top5": 0.26936974016316256
+      },
+      "regime": null,
+      "split": "discovery",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K20",
+      "targets": 1921,
+      "top20_4plus": 336,
+      "top20_5of5": 35,
+      "top20_5of5_random_expected": 45.26264726264726,
+      "top20_5of5_rate": 0.018219677251431546,
+      "top20_hit_distribution": {
+        "0": 48,
+        "1": 280,
+        "2": 607,
+        "3": 650,
+        "4": 301,
+        "5": 35
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2,
+      "mean_hits_top20": 2.4890625,
+      "mean_hits_top5": 0.5984375,
+      "mean_rank_actual_numbers": 20.6246875,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.919329229154891,
+        "top20": 0.6102257674404532,
+        "top5": 0.838281824477353
+      },
+      "regime": null,
+      "split": "validation",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K20",
+      "targets": 640,
+      "top20_4plus": 96,
+      "top20_5of5": 8,
+      "top20_5of5_random_expected": 15.079695079695078,
+      "top20_5of5_rate": 0.0125,
+      "top20_hit_distribution": {
+        "0": 19,
+        "1": 83,
+        "2": 208,
+        "3": 234,
+        "4": 88,
+        "5": 8
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.249609984399376,
+      "mean_hits_top20": 2.5257410296411855,
+      "mean_hits_top5": 0.592823712948518,
+      "mean_rank_actual_numbers": 20.504524180967238,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.5128818864610234,
+        "top20": 0.2753638444266625,
+        "top5": 0.8831786914055665
+      },
+      "regime": null,
+      "split": "blind_oos",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K20",
+      "targets": 641,
+      "top20_4plus": 106,
+      "top20_5of5": 18,
+      "top20_5of5_random_expected": 15.103257103257103,
+      "top20_5of5_rate": 0.028081123244929798,
+      "top20_hit_distribution": {
+        "0": 15,
+        "1": 90,
+        "2": 203,
+        "3": 227,
+        "4": 88,
+        "5": 18
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2503904216553878,
+      "mean_hits_top20": 2.5288912024986985,
+      "mean_hits_top5": 0.631441957313899,
+      "mean_rank_actual_numbers": 20.39333680374805,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.49751917439225934,
+        "top20": 0.1180497571319325,
+        "top5": 0.3494726724272691
+      },
+      "regime": null,
+      "split": "discovery",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K50",
+      "targets": 1921,
+      "top20_4plus": 341,
+      "top20_5of5": 43,
+      "top20_5of5_random_expected": 45.26264726264726,
+      "top20_5of5_rate": 0.022384174908901613,
+      "top20_hit_distribution": {
+        "0": 48,
+        "1": 265,
+        "2": 615,
+        "3": 652,
+        "4": 298,
+        "5": 43
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2,
+      "mean_hits_top20": 2.459375,
+      "mean_hits_top5": 0.5828125,
+      "mean_rank_actual_numbers": 20.654375,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.919329229154891,
+        "top20": 0.8386700281170443,
+        "top5": 0.9396283668526015
+      },
+      "regime": null,
+      "split": "validation",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K50",
+      "targets": 640,
+      "top20_4plus": 92,
+      "top20_5of5": 7,
+      "top20_5of5_random_expected": 15.079695079695078,
+      "top20_5of5_rate": 0.0109375,
+      "top20_hit_distribution": {
+        "0": 21,
+        "1": 84,
+        "2": 214,
+        "3": 229,
+        "4": 85,
+        "5": 7
+      }
+    },
+    {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2620904836193447,
+      "mean_hits_top20": 2.530421216848674,
+      "mean_hits_top5": 0.5912636505460218,
+      "mean_rank_actual_numbers": 20.493291731669267,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.3774473426633648,
+        "top20": 0.23930322437921403,
+        "top5": 0.8938760251717947
+      },
+      "regime": null,
+      "split": "blind_oos",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K50",
+      "targets": 641,
+      "top20_4plus": 106,
+      "top20_5of5": 18,
+      "top20_5of5_random_expected": 15.103257103257103,
+      "top20_5of5_rate": 0.028081123244929798,
+      "top20_hit_distribution": {
+        "0": 13,
+        "1": 98,
+        "2": 190,
+        "3": 234,
+        "4": 88,
+        "5": 18
+      }
+    }
+  ],
+  "holdout_guardrail": "The historical Blind OOS dates were already inspected by earlier SONAR research; this sensitivity is exploratory, not a virgin holdout.",
+  "hypothesis": "Selecting K from {10,20,50} using Discovery Top-20 mean hits only will identify a flow-state ensemble that improves Blind OOS Top-20 mean hits over the equal-weight 42-rule ensemble by at least 0.10 hits per target, with a positive paired block-bootstrap lower bound and global Holm-adjusted p<0.05 against the uniform Top-20 null.",
+  "neighbor_gap_summary": {
+    "10": {
+      "mean_analog_count": 9.90630855715178,
+      "mean_effective_n": 9.753589331196048,
+      "mean_max_weight": 1.565164781580049,
+      "mean_min_weight": 0.6630790060248071,
+      "mean_weight_cv": 0.19993916832117242,
+      "neighbor_age_targets": {
+        "mean": 97.83231399747793,
+        "median": 94.0,
+        "p90": 218.0
+      },
+      "neighbor_gap_days": {
+        "mean": 97.83231399747793,
+        "median": 94.0,
+        "p90": 218.0
+      }
+    },
+    "20": {
+      "mean_analog_count": 19.81261711430356,
+      "mean_effective_n": 19.52240276340733,
+      "mean_max_weight": 1.6502986515559126,
+      "mean_min_weight": 0.6320433106104748,
+      "mean_weight_cv": 0.22544349307648467,
+      "neighbor_age_targets": {
+        "mean": 108.09809268600252,
+        "median": 106.0,
+        "p90": 221.0
+      },
+      "neighbor_gap_days": {
+        "mean": 108.09809268600252,
+        "median": 106.0,
+        "p90": 221.0
+      }
+    },
+    "50": {
+      "mean_analog_count": 49.465958775765145,
+      "mean_effective_n": 48.72144583817189,
+      "mean_max_weight": 1.650968741573577,
+      "mean_min_weight": 0.6353425718777309,
+      "mean_weight_cv": 0.22334433397023054,
+      "neighbor_age_targets": {
+        "mean": 116.10889576362145,
+        "median": 115.0,
+        "p90": 223.0
+      },
+      "neighbor_gap_days": {
+        "mean": 116.10889576362145,
+        "median": 115.0,
+        "p90": 223.0
+      }
+    }
+  },
+  "next_action": "If no gain, retain K=10/20/50 as diagnostic evidence and test a preregistered alternative flow-state representation; if gain, human review and prospective shadow are still required.",
+  "paired_block_bootstrap": {
+    "blind_oos": {
+      "selected_vs_equal": {
+        "mean_actual_rank_improvement": {
+          "block_length": 20,
+          "ci95": [
+            -0.054297971918876725,
+            0.029960998439937617
+          ],
+          "interpretation": "positive mean_difference means the selected model has a lower (better) mean actual-number rank",
+          "mean_difference": -0.011544461778471089,
+          "n": 641,
+          "p_two_sided": 0.562,
+          "replicates": 2000,
+          "seed": 8503
+        },
+        "top10": {
+          "block_length": 20,
+          "ci95": [
+            -0.015600624024960999,
+            0.0499219968798752
+          ],
+          "mean_difference": 0.0171606864274571,
+          "mean_difference_hit_share_per_actual_number": 0.0034321372854914196,
+          "n": 641,
+          "p_two_sided": 0.335,
+          "replicates": 2000,
+          "seed": 8501
+        },
+        "top20": {
+          "block_length": 20,
+          "ci95": [
+            -0.0436817472698908,
+            0.0109204368174727
+          ],
+          "mean_difference": -0.015600624024960999,
+          "mean_difference_hit_share_per_actual_number": -0.0031201248049922,
+          "n": 641,
+          "p_two_sided": 0.302,
+          "replicates": 2000,
+          "seed": 8502
+        },
+        "top5": {
+          "block_length": 20,
+          "ci95": [
+            -0.0421216848673947,
+            0.006279251170046589
+          ],
+          "mean_difference": -0.0171606864274571,
+          "mean_difference_hit_share_per_actual_number": -0.0034321372854914196,
+          "n": 641,
+          "p_two_sided": 0.168,
+          "replicates": 2000,
+          "seed": 8500
+        }
+      },
+      "selected_vs_fixed": {
+        "mean_actual_rank_improvement": {
+          "block_length": 20,
+          "ci95": [
+            -0.10079563182527304,
+            0.35382995319812793
+          ],
+          "interpretation": "positive mean_difference means the selected model has a lower (better) mean actual-number rank",
+          "mean_difference": 0.13260530421216854,
+          "n": 641,
+          "p_two_sided": 0.257,
+          "replicates": 2000,
+          "seed": 8603
+        },
+        "top10": {
+          "block_length": 20,
+          "ci95": [
+            -0.028081123244929798,
+            0.08580343213728549
+          ],
+          "mean_difference": 0.029641185647425898,
+          "mean_difference_hit_share_per_actual_number": 0.00592823712948518,
+          "n": 641,
+          "p_two_sided": 0.34,
+          "replicates": 2000,
+          "seed": 8601
+        },
+        "top20": {
+          "block_length": 20,
+          "ci95": [
+            -0.0031201248049922,
+            0.14508580343213728
+          ],
+          "mean_difference": 0.07020280811232449,
+          "mean_difference_hit_share_per_actual_number": 0.014040561622464897,
+          "n": 641,
+          "p_two_sided": 0.064,
+          "replicates": 2000,
+          "seed": 8602
+        },
+        "top5": {
+          "block_length": 20,
+          "ci95": [
+            -0.07332293291731669,
+            0.0234009360374415
+          ],
+          "mean_difference": -0.0234009360374415,
+          "mean_difference_hit_share_per_actual_number": -0.0046801872074883,
+          "n": 641,
+          "p_two_sided": 0.353,
+          "replicates": 2000,
+          "seed": 8600
+        }
+      }
+    },
+    "validation": {
+      "selected_vs_equal": {
+        "mean_actual_rank_improvement": {
+          "block_length": 20,
+          "ci95": [
+            -0.06688281250000006,
+            0.021562499999999863
+          ],
+          "interpretation": "positive mean_difference means the selected model has a lower (better) mean actual-number rank",
+          "mean_difference": -0.024062500000000077,
+          "n": 640,
+          "p_two_sided": 0.283,
+          "replicates": 2000,
+          "seed": 8403
+        },
+        "top10": {
+          "block_length": 20,
+          "ci95": [
+            -0.0453515625,
+            -0.0015625
+          ],
+          "mean_difference": -0.0234375,
+          "mean_difference_hit_share_per_actual_number": -0.0046875,
+          "n": 640,
+          "p_two_sided": 0.037,
+          "replicates": 2000,
+          "seed": 8401
+        },
+        "top20": {
+          "block_length": 20,
+          "ci95": [
+            -0.0640625,
+            -0.0140625
+          ],
+          "mean_difference": -0.0390625,
+          "mean_difference_hit_share_per_actual_number": -0.0078125,
+          "n": 640,
+          "p_two_sided": 0.004,
+          "replicates": 2000,
+          "seed": 8402
+        },
+        "top5": {
+          "block_length": 20,
+          "ci95": [
+            -0.015625,
+            0.021875
+          ],
+          "mean_difference": 0.003125,
+          "mean_difference_hit_share_per_actual_number": 0.000625,
+          "n": 640,
+          "p_two_sided": 0.809,
+          "replicates": 2000,
+          "seed": 8400
+        }
+      },
+      "selected_vs_fixed": {
+        "mean_actual_rank_improvement": {
+          "block_length": 20,
+          "ci95": [
+            -0.2715703125000001,
+            0.26351562499999953
+          ],
+          "interpretation": "positive mean_difference means the selected model has a lower (better) mean actual-number rank",
+          "mean_difference": -1.3600232051658169e-16,
+          "n": 640,
+          "p_two_sided": 0.976,
+          "replicates": 2000,
+          "seed": 8503
+        },
+        "top10": {
+          "block_length": 20,
+          "ci95": [
+            -0.090625,
+            0.03125
+          ],
+          "mean_difference": -0.0265625,
+          "mean_difference_hit_share_per_actual_number": -0.0053124999999999995,
+          "n": 640,
+          "p_two_sided": 0.388,
+          "replicates": 2000,
+          "seed": 8501
+        },
+        "top20": {
+          "block_length": 20,
+          "ci95": [
+            -0.1125,
+            0.0375
+          ],
+          "mean_difference": -0.0375,
+          "mean_difference_hit_share_per_actual_number": -0.0075,
+          "n": 640,
+          "p_two_sided": 0.329,
+          "replicates": 2000,
+          "seed": 8502
+        },
+        "top5": {
+          "block_length": 20,
+          "ci95": [
+            -0.034375,
+            0.0515625
+          ],
+          "mean_difference": 0.0078125,
+          "mean_difference_hit_share_per_actual_number": 0.0015625,
+          "n": 640,
+          "p_two_sided": 0.74,
+          "replicates": 2000,
+          "seed": 8500
+        }
+      }
+    }
+  },
+  "paired_bootstrap_inference_note": "Paired block-bootstrap intervals are descriptive and are not part of the global 36-test Holm family.",
+  "parent_q84_report_sha256": "e1debe58f97afa3198858ee470bbbe219e680d0f966fda9c4e903bb86a757b5c",
+  "primary_gate": {
+    "blind_global_holm_p_top20": 1.0,
+    "blind_mean_hits_top20": 2.530421216848674,
+    "demonstrated_gain": false,
+    "equal_blind_mean_hits_top20": 2.546021840873635,
+    "paired_blind_top20_ci95_vs_equal": [
+      -0.0436817472698908,
+      0.0109204368174727
+    ],
+    "paired_blind_top20_delta_vs_equal": -0.015600624024960999,
+    "selected_discovery_mean_hits_top20": 2.5288912024986985,
+    "selected_k": 50,
+    "selected_strategy_id": "ENSEMBLE::FLOW_STATE_K50",
+    "selection_split": "discovery"
+  },
+  "promotion_guardrail": "No automatic promotion; require at least 200 future prospective paired targets and human review.",
+  "registered_test_family": {
+    "endpoints": 3,
+    "holm_adjusted_tests_below_0_05": 0,
+    "methods": 4,
+    "null": "Per-target Hypergeometric(40,5,k) number-hit count with continuity-corrected normal screen; one global Holm family.",
+    "splits": 3,
+    "tests": 36
+  },
+  "schema_version": "1.0",
+  "selection": {
+    "discovery_metric": {
+      "family_kind": "GLOBAL",
+      "mean_hits_top10": 1.2503904216553878,
+      "mean_hits_top20": 2.5288912024986985,
+      "mean_hits_top5": 0.631441957313899,
+      "mean_rank_actual_numbers": 20.39333680374805,
+      "p_values_holm": {
+        "top10": 1.0,
+        "top20": 1.0,
+        "top5": 1.0
+      },
+      "p_values_raw": {
+        "top10": 0.49751917439225934,
+        "top20": 0.1180497571319325,
+        "top5": 0.3494726724272691
+      },
+      "regime": null,
+      "split": "discovery",
+      "strategy_id": "ENSEMBLE::FLOW_STATE_K50",
+      "targets": 1921,
+      "top20_4plus": 341,
+      "top20_5of5": 43,
+      "top20_5of5_random_expected": 45.26264726264726,
+      "top20_5of5_rate": 0.022384174908901613,
+      "top20_hit_distribution": {
+        "0": 48,
+        "1": 265,
+        "2": 615,
+        "3": 652,
+        "4": 298,
+        "5": 43
+      }
+    },
+    "rule": "highest Discovery mean Top-20 hits; ties lower mean actual rank, then smaller K",
+    "selected_k": 50,
+    "selected_strategy_id": "ENSEMBLE::FLOW_STATE_K50"
+  },
+  "source_archive": {
+    "draw_count": 3402,
+    "first_date": "2017-07-17",
+    "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "last_date": "2026-11-08",
+    "latest_quintet": [
+      3,
+      7,
+      10,
+      16,
+      27
+    ],
+    "path": "data/storico_daily.csv",
+    "sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+  },
+  "source_code_commit_sha": "9e9b70b023050d3d4826a66609237a6f63bd6fed",
+  "source_code_sha256": {
+    "reports/sequence_agent/strategy_atlas_k_sensitivity_protocol_2026-11-09.json": "a5626579198fdc98c10a26c4d63ad94717944d47cee1ae6b7d3f27bee817db04",
+    "scripts/sonar_sequence_agent.py": "35430798629fc77bb3804d4a93fd845b738f7eff474b6a8b67ee92b70a8997e4",
+    "scripts/sonar_strategy_atlas.py": "ce571d66c18a36bc9ef97e7f45a42bd0294da7d339d1413db90c71adc88acf6c",
+    "scripts/sonar_strategy_atlas_k_sensitivity.py": "ca6cd401b67cc2a3328ad457b430a6baff0da021563b6843fa8a8fd635e2c567",
+    "scripts/validate_sonar_strategy_atlas_k_sensitivity.py": "352b53f24f32d60a511c630d0392a50073bb8cd85447885adb763ecfff11b40a",
+    "tests/test_sonar_strategy_atlas_k_sensitivity.py": "842930c5b78eec76156b7b2a6ccbadedecc7b588a02239512d2c30acc212beae"
+  },
+  "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+  "task_id": "Q84-K-SENS",
+  "validation_status": "EXPLORATORY_NOT_PROMOTABLE",
+  "walk_forward": {
+    "adaptive_memory_rule": "target state and outcome enter analogue memory only after its own ranking is recorded",
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-08",
+    "minimum_prior_draws": 200,
+    "split_counts": {
+      "blind_oos": 641,
+      "discovery": 1921,
+      "validation": 640
+    },
+    "strict_prefix_verified_by_runner": true,
+    "target_count": 3202
+  }
+}
