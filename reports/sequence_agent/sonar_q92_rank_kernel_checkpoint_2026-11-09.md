@@ -18,44 +18,53 @@ For the same finite Q92 formula subset and prior-only feature state, a formula-m
 1. preserve every rank vector exactly under the lower-number tie-break; and
 2. deliver at least 10% higher formula throughput than the prior number-major kernel (batch 1,024; score matrix `40 x B`) on the seeded synthetic benchmark.
 
-The batch partition changes from 550 to 138 batches per 562,419-formula shard (75% fewer batch-loop iterations). This is a computational hypothesis only, not a prediction-quality claim.
+The shard batch partition changes from 550 to 138 batches per 562,419-formula shard (75% fewer batch-loop iterations). This is a computational hypothesis only, not a prediction-quality claim.
 
-### Local exploratory microbenchmark (not GitHub CI)
+### Local synthetic measurement for the benchmark's exact seeded formula-sampling method
 
-Seed: 920092; synthetic standardized state; random equal-weight ten-feature subsets; 20 timed repetitions; median kernel latency:
+Seed: 920092; 4,096 formulas sampled without replacement by combinadic rank; synthetic standardized state; 25 timed repetitions; median kernel latency:
 
 | Kernel | Formulas/timed batch | Median latency | Throughput |
 |---|---:|---:|---:|
-| Existing number-major rank kernel | 1,024 | 1.247553 ms | 820,807 formulas/s |
-| Candidate formula-major rank kernel | 4,096 | 4.325642 ms | 946,912 formulas/s |
+| Existing number-major rank kernel | 1,024 | 1.289140 ms | 794,328 formulas/s |
+| Candidate formula-major rank kernel | 4,096 | 4.395365 ms | 931,891 formulas/s |
 
-Observed throughput change: **+15.36%**. Exact rank equality was observed for a common 1,024-formula sample and for all 4,096 formulas in a separate local seeded comparison (zero rank mismatches; score maximum absolute difference 0).
+Observed throughput change: **+17.32%**, above the registered synthetic threshold of +10%. Exact rank equality was observed across all 4,096 formulas in the local seeded comparison (zero rank mismatches; maximum score absolute difference 0).
 
-These are local synthetic measurements; they do not substitute for the committed seeded benchmark run on GitHub Actions or the historical Q92 walk-forward.
+These are local synthetic measurements; they do not substitute for the committed benchmark on GitHub Actions or the historical Q92 walk-forward.
 
-## Implementation persisted on isolated branch
+## Implementation persisted on isolated research branches
 
-Branch: `research/sonar-q92-rank-kernel-20261109`
-Code head at checkpoint: `385a0359fb23b8c599d31a7c2883cb5565ec0508`
+- Kernel code branch: `research/sonar-q92-rank-kernel-20261109`, code head `385a0359fb23b8c599d31a7c2883cb5565ec0508`.
+- Validation branch: `research/sonar-q92-rank-kernel-ci-20261109`, latest head `439f06435f5edba027a2706fd1275a7ac48a4dc0`.
 
 Changes:
-- `scripts/sonar_q92_common.py`: batch size 4,096 and benchmark source hash.
+- `scripts/sonar_q92_common.py`: batch size 4,096; benchmark and strict-prior regression added to source hash manifest.
 - `scripts/sonar_per_number_condition_10plus_shard.py`: contiguous formula-major weights, row-wise stable ranking and formula-major actual-rank indexing.
-- `tests/test_sonar_q92_walkforward_shard.py`: tie-break, matrix shape and batch-count regression updates.
-- `scripts/aggregate_sonar_q92_ten_feature.py`: strict batch-manifest validation updated to 4,096/138.
-- `tests/benchmark_sonar_q92_rank_kernel.py`: seeded benchmark; exact common-rank comparison; 25 repetitions; preregistered speedup threshold 1.10.
-- Q92 synthetic workflows include the rank-kernel branch and benchmark.
+- `tests/test_sonar_q92_walkforward_shard.py`: tie-break test now uses all 40 numbers, formula-major matrix shape, batch count and report batch fields checked.
+- `scripts/aggregate_sonar_q92_ten_feature.py`: fail-closed batch manifest validation updated to 4,096/138.
+- `tests/benchmark_sonar_q92_rank_kernel.py`: seeded benchmark; rank parity check; 25 repetitions; minimum throughput speedup 1.10. Script import path fixed after CI diagnosis.
+- Q92 synthetic workflows include the rank-kernel branch and self-trigger on their workflow-file changes.
 
-### CI state observed (not yet final at checkpoint)
+## CI evidence and root-cause recovery
 
-- Prior Q92 exact-head full project CI at `853a8592b0a0024a4a259aecb9ec6b3b923b4747`: SUCCESS (run 42588944269).
-- Prior Q92 shard synthetic acceptance: SUCCESS (run 42588940380).
-- Prior Q92 aggregate/paired inference synthetic acceptance: SUCCESS (run 42588936692).
-- Rank-kernel branch synthetic runner/benchmark workflow: run 42596595274 was superseded/cancelled by later branch commits; a latest run was queued/in progress when this checkpoint was recorded.
-- Rank-kernel branch aggregate synthetic workflow: run 42596605799 in progress.
-- Rank-kernel branch exact-head full project CI: run 42596605959 in progress.
+### Passed
+- Prior Q92 exact-head full project CI at `853a8592b0a0024a4a259aecb9ec6b3b923b4747`: SUCCESS (run [42588944269](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42588944269)).
+- Prior Q92 shard synthetic acceptance: SUCCESS (run [42588940380](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42588940380)).
+- Prior Q92 aggregate/paired inference synthetic acceptance: SUCCESS (run [42588936692](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42588936692)).
+- Rank-kernel branch aggregate synthetic acceptance on code head `385a0359`: SUCCESS (run [42596605799](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42596605799)); logs show 9 aggregate tests and 8 discrete-null tests both OK.
 
-No final CI conclusion is asserted for the rank-kernel branch here.
+### Failures diagnosed and corrected; final reruns pending
+1. Runner synthetic run [42596807272](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42596807272) failed because the tie-break test passed a 3-number score matrix while the new rank kernel explicitly requires 40 numbers. The fixture was corrected to a 40-number matrix and checks stable tie order. This fix is in commit `79651267fe80cfa671ee5ef6acae207eb5385231`.
+2. Runner synthetic run [42596927888](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42596927888) then failed because the benchmark script imported Q92 modules without adding the repository's `scripts/` directory to `sys.path`. The bootstrap was added in commit `439f06435f5edba027a2706fd1275a7ac48a4dc0`.
+
+Current gates observed:
+- Q92 shard synthetic runner + seeded benchmark: run [42597014932](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42597014932) IN PROGRESS on head `439f0643`.
+- Exact-head full project CI: run [42597014811](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42597014811) IN PROGRESS on head `439f0643`.
+- Earlier full project CI on kernel code head `385a0359`: run [42596605959](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42596605959) IN PROGRESS; archive audit, app-data rebuild/audit, prospective gate, diagnostics, evolutionary and positional/regime/residual/hazard steps passed; exhaustive Q80-Q86 formula grammar step was running at last observation.
+- The prior full CI attempt on head `79651267` was cancelled by the subsequent benchmark-import fix; it is not counted as a pass.
+
+No final CI conclusion is asserted for the rank-kernel validation head yet.
 
 ## Statistical and leakage guardrails
 
@@ -70,10 +79,10 @@ No final CI conclusion is asserted for the rank-kernel branch here.
 
 ## Blockers and next iteration
 
-1. Verify the latest Q92 rank-kernel synthetic runner benchmark on GitHub Actions and capture the measured throughput ratio. If below 1.10 or rank mismatches occur, reject/repair the kernel before any historical execution.
-2. Verify aggregate synthetic acceptance and exact-head full project CI on the same final code head.
-3. Add a full artifact-backed 15-shard execution/persistence workflow (currently the checked Q92 workflows are synthetic acceptance only); validate timeout, artifact completeness, immutable recovery, and exact-byte append-only persistence.
-4. Only after those gates, execute the historical 15 shards, aggregate all 25,308,855 formula×split metric rows, replay the 75,926,565-test Holm family, freeze Discovery→Validation candidates, and evaluate paired Blind OOS.
-5. Persist complete reports/artifacts, validator readback and exact-head CI; human review remains mandatory.
+1. Verify the current Q92 runner synthetic benchmark on GitHub Actions; capture its actual throughput ratio and rank-parity result. Reject/repair the optimization if speedup is below 1.10 or ranks differ.
+2. Verify aggregate synthetic acceptance and exact-head full project CI on the same final validation head.
+3. Implement a full artifact-backed 15-shard execution and append-only persistence workflow. Current Q92 workflows observed here are synthetic acceptance workflows only; no historical shard has run.
+4. Validate workflow timeout and recovery behavior, artifact completeness, immutable shard identity, global Holm replay, candidate freeze, paired Blind OOS, validator, exact-byte persistence/readback and exact-head CI.
+5. Only after those gates, execute the historical 15 shards and persist complete reports/artifacts; human review remains mandatory.
 
-Current decision: **rank-kernel optimization is exploratory and not accepted yet; Q92 historical walk-forward has not run.**
+Current decision: **rank-kernel optimization is not accepted until GitHub synthetic benchmark and exact-head CI pass; Q92 historical walk-forward has not run.**
