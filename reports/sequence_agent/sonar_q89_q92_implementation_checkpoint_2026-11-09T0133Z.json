@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-Q92-IMPLEMENTATION-2026-11-09T01:33Z",
+  "recorded_at_utc": "2026-11-09T01:33:00Z",
+  "implementation_branch": {
+    "name": "research/sonar-q92-ten-feature-implementation-20261109",
+    "head_sha": "c5b66dcbdfd36dbf17f0e280c984f4defd152722",
+    "base_q89_head": "efb863fbd7a172badeffbbf181b8ec5835e41510"
+  },
+  "q89_base": {
+    "persisted_commit": "95bb4e8b4a950fb4ba80d46e44fd91fef83f6def",
+    "acceptance_run": {
+      "id": 42538247699,
+      "conclusion": "success"
+    },
+    "persisted_files": {
+      "count": 478,
+      "bytes": 518672991,
+      "exact_bytes_verified": true
+    },
+    "source_archive": {
+      "draw_count": 3401,
+      "last_date": "2026-11-07",
+      "git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+    },
+    "formulas": 4686825,
+    "target_count": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metric_rows": 14060475,
+    "holm_family_size": 42181425,
+    "formula_split_holm_below_0_05": 0,
+    "selected_candidate": "P9_06_09_12_14_15_17_18_19_23",
+    "q88_control": "P8_00_08_11_12_15_16_19_23",
+    "paired_blind_decision": "NO_SIGNIFICANT_GAIN"
+  },
+  "q89_current_head_validation": {
+    "branch_head": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+    "generic_ci": {
+      "run_id": 42545535949,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "acceptance_recovery": {
+      "run_id": 42545546642,
+      "status": "in_progress",
+      "current_step": "aggregate shards, apply global Holm, freeze candidates and run paired blind OOS"
+    },
+    "current_head_acceptance": "pending"
+  },
+  "q89_refresh_2026_11_08": {
+    "protocol_id": "Q89-nine-feature-incremental-refresh-2026-11-08",
+    "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "source_archive_new": {
+      "draw_count": 3402,
+      "last_date": "2026-11-08",
+      "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "latest_quintet": [
+        3,
+        7,
+        10,
+        16,
+        27
+      ]
+    },
+    "immutable_base_archive_added": {
+      "path": "data/archive_freezes/storico_daily_2026-11-07.csv",
+      "draw_count": 3401,
+      "git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d"
+    },
+    "target_deltas": [
+      {
+        "offset": 2011,
+        "index": 2061,
+        "target_date": "2023-03-09",
+        "cutoff_date": "2023-03-08",
+        "actual_quintet": [
+          5,
+          19,
+          32,
+          33,
+          37
+        ],
+        "movement": "old Validation -> new Discovery"
+      },
+      {
+        "offset": 2681,
+        "index": 2731,
+        "target_date": "2025-01-07",
+        "cutoff_date": "2025-01-06",
+        "actual_quintet": [
+          5,
+          17,
+          18,
+          23,
+          33
+        ],
+        "movement": "old Blind OOS -> new Validation"
+      },
+      {
+        "offset": 3351,
+        "index": 3401,
+        "target_date": "2026-11-08",
+        "cutoff_date": "2026-11-07",
+        "actual_quintet": [
+          3,
+          7,
+          10,
+          16,
+          27
+        ],
+        "movement": "new target in new Blind OOS"
+      }
+    ],
+    "new_split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "formula_count": 4686825,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "global_holm_family_size": 42181425,
+    "storage": "Persist 15 gzip delta shards and candidate/report/manifest; base Q89 metrics plus delta rows reconstruct refreshed counts without duplicating the full 14,060,475-row metrics catalog.",
+    "execution_status": "not started"
+  },
+  "q89_refresh_delta_code": {
+    "runner_path": "scripts/sonar_q89_refresh_delta_shard.py",
+    "runner_blob_sha1": "286783d4e4092bd5edf3d6b83a26744ed54897cc",
+    "test_path": "tests/test_sonar_q89_refresh_delta.py",
+    "test_blob_sha1": "7f3bc8384006fd004120720cf01e3f4cda070de9",
+    "commit": "1d82508bac2ff798185c1e89f95eb44a897d1358",
+    "optimization_commit": "c5b66dcbdfd36dbf17f0e280c984f4defd152722",
+    "status": "IMPLEMENTED; synthetic CI validation pending on current branch head"
+  },
+  "q92": {
+    "protocol_status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "protocol_branch": "research/sonar-q92-ten-feature-prereg-20261109",
+    "protocol_commit": "b8f5bc67df2fea3dd19d3709e482851e67028fda",
+    "formula_count": 8436285,
+    "formula_size": 10,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "target_count": 3352,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 25308855,
+    "global_holm_family_size": 75926565,
+    "run_gate": "Do not run Q92 until the Q89 control is refreshed and accepted on the same 2026-11-08 archive, with current-head CI passing.",
+    "execution_status": "not started"
+  },
+  "current_q92_ci": {
+    "run_id": 42546125842,
+    "head_sha": "c5b66dcbdfd36dbf17f0e280c984f4defd152722",
+    "status": "pending",
+    "conclusion": null
+  },
+  "q91_block": {
+    "run_id": 42545535929,
+    "head_sha": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+    "status": "failure",
+    "root_cause": "Q91 workflow on the Q88 base checked out the Q89 PR head, which lacks scripts/sonar_q91_nested_walkforward.py; PR #12 fix is not on PR #8 base. PR #8 was not modified."
+  },
+  "prospective_gate": {
+    "queue_status": "QUEUE_VALID",
+    "overall_cycle_status": "INCOMPLETE",
+    "blocking_task": "Q60",
+    "complete_paired_targets": 21,
+    "required_paired_targets": 200
+  },
+  "guardrails": {
+    "no_auto_merge": true,
+    "no_promotion": true,
+    "no_shadow_insertion": true,
+    "prs_6_7_8_untouched": true,
+    "human_review_required": true
+  },
+  "next_action": "Wait for Q89 current-head acceptance recovery and Q92 implementation CI. Then implement the Q89 refresh aggregator/acceptance/persistence workflow, run the 15 delta shards, freeze the refreshed Q89 control, and only afterward implement/execute Q92."
+}
