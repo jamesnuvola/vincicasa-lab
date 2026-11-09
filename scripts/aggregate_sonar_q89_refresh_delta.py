@@ -5,6 +5,7 @@ import csv, gzip, hashlib, heapq, json, math
 from pathlib import Path
 import numpy as np
 import sonar_per_number_condition_grammar as q80
+import sonar_per_number_condition_4plus_grammar as q81
 import sonar_q89_common as q89
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -18,6 +19,7 @@ MANIFEST_PATH=OUT/"q89_refresh_20261108_manifest.json"
 LEDGER_PATH=OUT/"q89_refresh_20261108_target_delta_ledger.csv"
 SHORTLIST_PATH=OUT/"q89_refresh_20261108_candidate_shortlist.csv"
 SELECTION_PATH=OUT/"q89_refresh_20261108_candidate_selection.json"
+PAIRED_LEDGER_PATH=OUT/"q89_refresh_20261108_selected_candidate_blind_ledger.csv"
 SPLITS=("discovery","validation","blind_oos")
 OLD_SPLIT_COUNTS={"discovery":2011,"validation":670,"blind_oos":670}
 NEW_SPLIT_COUNTS={"discovery":2012,"validation":670,"blind_oos":670}
@@ -33,6 +35,7 @@ EXPECTED_NEW_SHA1="77ca692a6082809fcc6c471501617433ec7c36cf"
 EXPECTED_NEW_COMMIT="6cca9022d4311a3f9aba2925fce8c653dc6b63ab"
 EXPECTED_NEW_COUNT=3402
 EXPECTED_NEW_LAST_DATE="2026-11-08"
+EXPECTED_BLIND_TARGETS=670
 METRIC_COLUMNS=[f"o{offset}_{metric}" for offset in TARGET_OFFSETS for metric in METRIC_NAMES]
 
 def fail(message):
@@ -140,6 +143,53 @@ def build_target_delta_ledger(dates,draws):
 
 def invert_id(fid):
     return bytes(255-ord(character) for character in fid)
+
+def parse_formula_id(fid):
+    if not isinstance(fid,str) or not fid.startswith("P9_"):
+        fail("selected Q89 formula ID prefix mismatch")
+    columns=tuple(int(value) for value in fid[3:].split("_"))
+    if len(columns)!=9 or tuple(sorted(set(columns)))!=columns or columns[0]<0 or columns[-1]>=27:
+        fail("selected Q89 formula indices are not canonical")
+    if "P9_"+"_".join(f"{value:02d}" for value in columns)!=fid:
+        fail("selected Q89 formula ID canonicalization mismatch")
+    return columns
+
+def rank_actual_for_formula(standardized,columns,actual_indices):
+    score=standardized[:,columns].mean(axis=1)
+    order=np.argsort(-score,kind="stable")
+    ranks=np.empty(40,dtype=np.int16)
+    ranks[order]=np.arange(1,41,dtype=np.int16)
+    return ranks[np.asarray(actual_indices,dtype=np.int64)].astype(int).tolist()
+
+def paired_blind_ledger(selection,dates,draws):
+    formula_id=selection["Q89_candidate"]["formula_id"]
+    columns=parse_formula_id(formula_id)
+    standardized_stack=q81.build_feature_stack(draws)
+    scored=len(draws)-q80.MIN_HISTORY
+    rows=[]
+    expected_dates=[]
+    for target_offset,target_index in enumerate(range(q80.MIN_HISTORY,len(draws))):
+        if q80.split_name(target_offset,scored)!="blind_oos":
+            continue
+        standardized=standardized_stack[target_offset]
+        actual_indices=np.asarray(draws[target_index],dtype=np.int64)-1
+        ranks=rank_actual_for_formula(standardized,columns,actual_indices)
+        hits={k:sum(value<=k for value in ranks) for k in (5,10,20)}
+        all5={k:int(all(value<=k for value in ranks)) for k in (5,10,20)}
+        expected_dates.append(dates[target_index])
+        rows.append({"target_date":dates[target_index],"cutoff_date":dates[target_index-1],"prior_draws":target_index,
+            "actual_quintet":" ".join(map(str,draws[target_index])),"Q89_formula_id":formula_id,
+            "Q89_actual_number_ranks":json.dumps(ranks,separators=(",",":")),
+            "Q89_number_hits_top5":hits[5],"Q89_number_hits_top10":hits[10],"Q89_number_hits_top20":hits[20],
+            "Q89_all5_top5":all5[5],"Q89_all5_top10":all5[10],"Q89_all5_top20":all5[20],"Q89_rank_sum":sum(ranks)})
+    if len(rows)!=EXPECTED_BLIND_TARGETS:
+        fail("selected Q89 candidate Blind OOS ledger target count mismatch")
+    if expected_dates!=dates[q80.MIN_HISTORY+math.ceil(.80*scored):]:
+        fail("selected Q89 candidate Blind OOS ledger dates do not reconcile to the new split")
+    with PAIRED_LEDGER_PATH.open("w",newline="",encoding="utf-8") as handle:
+        writer=csv.DictWriter(handle,fieldnames=list(rows[0].keys()),lineterminator="\n")
+        writer.writeheader();writer.writerows(rows)
+    return rows
 
 def holm_adjust_global(pvalues):
     values=np.asarray(pvalues,dtype=np.float64)
@@ -327,9 +377,10 @@ def main():
             "validation_mean_number_hits_top5":selected["validation"]["mean_number_hits_top5"],
             "validation_mean_rank_of_actual_numbers":selected["validation"]["mean_rank_of_actual_numbers"],
             "validation_selection_rank":selection_rank[selected["formula_id"]],
-            "blind_oos_metrics_descriptive_only":selected["blind"]},
+            "blind_oos_metrics_descriptive_only":selected["blind"],"blind_oos_ledger_path":str(PAIRED_LEDGER_PATH.relative_to(ROOT))},
         "uniform_number_rank_baseline":{"mean_number_hits_top5":0.125,"mean_number_hits_top10":0.25,"mean_number_hits_top20":0.5,"mean_rank_of_actual_numbers":20.5}}
     SELECTION_PATH.write_text(json.dumps(selection,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    paired_rows=paired_blind_ledger(selection,dates,draws)
     manifest_parts=[]
     for shard in range(SHARDS):
         path=DELTA_DIR/f"shard_{shard}_delta_metrics.csv.gz"
@@ -339,12 +390,15 @@ def main():
             "formula_rank_start_inclusive":start,"formula_rank_end_exclusive":end,"bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest()})
     manifest={"schema_version":"1.0","task_id":"Q89_REFRESH_2026_11_08","protocol_id":"Q89-nine-feature-incremental-refresh-2026-11-08",
         "status":"AGGREGATED_PENDING_ACCEPTANCE_VALIDATION","source_archive_sha256":new_sha256,"source_archive_git_blob_sha1":new_blob_sha1,
+        "supplemental_pairing_protocol_id":"Q89-refresh-paired-blind-ledger-supplement-2026-11-09",
         "formula_count":TOTAL,"metrics_rows":TOTAL,"shard_count":SHARDS,"rows_per_shard":SHARD_SIZE,
         "formula_rank_coverage":"0..4686824 exactly once","target_offsets":list(TARGET_OFFSETS),"metric_names":list(METRIC_NAMES),
-        "parts":manifest_parts,"part_count":len(manifest_parts)}
+        "parts":manifest_parts,"part_count":len(manifest_parts),
+        "supplemental_outputs":{"selected_candidate_blind_ledger":{"path":str(PAIRED_LEDGER_PATH.relative_to(ROOT)),"rows":len(paired_rows),"bytes":len(PAIRED_LEDGER_PATH.read_bytes()),"sha256":hashlib.sha256(PAIRED_LEDGER_PATH.read_bytes()).hexdigest()}}}
     MANIFEST_PATH.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     report={"schema_version":"1.0","task_id":"Q89_REFRESH_2026_11_08","status":"AGGREGATED_PENDING_ACCEPTANCE_VALIDATION",
         "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION","protocol_id":"Q89-nine-feature-incremental-refresh-2026-11-08",
+        "supplemental_pairing_protocol_id":"Q89-refresh-paired-blind-ledger-supplement-2026-11-09",
         "source_archive":"data/storico_daily.csv","source_archive_sha256":new_sha256,"source_archive_git_blob_sha1":new_blob_sha1,
         "source_archive_main_commit":EXPECTED_NEW_COMMIT,"target_count":len(draws),"first_date":dates[0],"last_date":dates[-1],
         "minimum_prior_history":q80.MIN_HISTORY,"scored_targets":scored,"feature_count":27,"formula_size":9,"formula_count":TOTAL,
@@ -356,15 +410,16 @@ def main():
             "holm_adjusted_formula_split_rows_below_0_05":holm_below,"minimum_holm_p_max_endpoint_family":minimum_holm},
         "uniform_number_rank_baseline":{"mean_number_hits_top5":0.125,"mean_number_hits_top10":0.25,"mean_number_hits_top20":0.5,"mean_rank_of_actual_numbers":20.5},
         "candidate_selection":{"rule":selection["selection_rule"],"blind_oos_used_for_selection":False,"selected_candidate_id":selected["formula_id"],
-            "discovery_top100_count":100,"validation_candidates":100,"blind_oos_targets":670},
+            "discovery_top100_count":100,"validation_candidates":100,"blind_oos_targets":670,"paired_blind_ledger_rows":len(paired_rows)},
         "selected_candidate_metrics":{"discovery":selected["discovery"],
             "validation":selected["validation"],"blind_oos_descriptive_only":selected["blind"]},
         "outputs":{"delta_shards":[item["path"] for item in manifest_parts],"target_delta_ledger":str(LEDGER_PATH.relative_to(ROOT)),
             "candidate_shortlist":str(SHORTLIST_PATH.relative_to(ROOT)),"candidate_selection":str(SELECTION_PATH.relative_to(ROOT)),
-            "manifest":str(MANIFEST_PATH.relative_to(ROOT))},
+            "manifest":str(MANIFEST_PATH.relative_to(ROOT)),"selected_candidate_blind_ledger":str(PAIRED_LEDGER_PATH.relative_to(ROOT))},
         "guardrails":["Q89 base catalog was accepted on the 2026-11-07 frozen archive; only three preregistered target deltas are rescored",
             "all three target feature states use strict prior draws only; target outcomes enter only additive metrics",
             "Discovery top100 and Validation selection freeze the candidate before Blind OOS metrics are reported",
+            "supplemental selected-candidate Blind OOS rank ledger is for same-archive Q92 pairing only and never feeds selection",
             "global Holm covers all 4,686,825 formulas × 3 splits × 3 endpoints; raw p-values are exploratory normal approximations",
             "historical Blind OOS is not independent prospective confirmation; no automatic promotion or shadow insertion"],
         "limitations":["exact incremental refresh depends on accepted Q89 base metrics and immutable 2026-11-07 archive freeze",

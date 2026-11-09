@@ -2,8 +2,12 @@
 """Synthetic regression tests for the Q89 archive-aligned incremental aggregator."""
 from __future__ import annotations
 import hashlib
+import json
+import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+import numpy as np
 import sys
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
@@ -44,6 +48,39 @@ class Q89RefreshAggregatorTests(unittest.TestCase):
         for name in ("mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","all5_top5_rate","all5_top10_rate","all5_top20_rate"):
             self.assertTrue(0.0<=metrics[name]<=1.0)
         self.assertTrue(1.0<=metrics["mean_rank_of_actual_numbers"]<=40.0)
+    def test_rank_actual_formula_uses_stable_lower_number_tie_break(self):
+        standardized=np.zeros((40,27),dtype=np.float64)
+        standardized[0,0]=1.0
+        standardized[1,0]=1.0
+        standardized[2,0]=0.5
+        ranks=delta.rank_actual_for_formula(standardized,tuple(range(9)),[0,1,2])
+        self.assertEqual(ranks,[1,2,3])
+
+    def test_selected_candidate_blind_ledger_uses_strict_prior_cutoffs(self):
+        draws=[[1,2,3,4,5] for _ in range(10)]
+        dates=[f"2026-01-{day:02d}" for day in range(1,11)]
+        stack=np.zeros((10,40,27),dtype=np.float64)
+        stack[:,:,0]=np.arange(40,dtype=np.float64)[None,:]
+        selection={"Q89_candidate":{"formula_id":"P9_00_01_02_03_04_05_06_07_08"}}
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/"paired.csv"
+            with patch.object(delta.q80,"MIN_HISTORY",0), patch.object(delta,"EXPECTED_BLIND_TARGETS",2), patch.object(delta.q81,"build_feature_stack",return_value=stack), patch.object(delta,"PAIRED_LEDGER_PATH",path):
+                rows=delta.paired_blind_ledger(selection,dates,draws)
+            self.assertEqual(len(rows),2)
+            self.assertEqual([row["target_date"] for row in rows],dates[8:])
+            self.assertEqual([row["cutoff_date"] for row in rows],dates[7:9])
+            self.assertEqual([int(row["prior_draws"]) for row in rows],[8,9])
+            for row in rows:
+                self.assertEqual(json.loads(row["Q89_actual_number_ranks"]),[40,39,38,37,36])
+                self.assertEqual(row["Q89_number_hits_top5"],0)
+                self.assertEqual(row["Q89_number_hits_top10"],0)
+                self.assertEqual(row["Q89_number_hits_top20"],0)
+                self.assertEqual(row["Q89_all5_top5"],0)
+                self.assertEqual(row["Q89_all5_top10"],0)
+                self.assertEqual(row["Q89_all5_top20"],0)
+                self.assertEqual(row["Q89_rank_sum"],190)
+            self.assertTrue(path.is_file())
+
     def test_git_blob_sha1_uses_nul_header(self):
         data=b"abc"
         expected=hashlib.sha1(b"blob 3\0abc").hexdigest()

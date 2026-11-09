@@ -121,7 +121,8 @@ def main():
       str(report_path.relative_to(ROOT)),str(manifest_path.relative_to(ROOT)),
       "reports/sequence_agent/q89_refresh_20261108_target_delta_ledger.csv",
       "reports/sequence_agent/q89_refresh_20261108_candidate_shortlist.csv",
-      "reports/sequence_agent/q89_refresh_20261108_candidate_selection.json"]
+      "reports/sequence_agent/q89_refresh_20261108_candidate_selection.json",
+      "reports/sequence_agent/q89_refresh_20261108_selected_candidate_blind_ledger.csv"]
     paths.extend(item["path"] for item in manifest.get("parts",[]))
     payloads={}
     for relative in paths:
@@ -140,7 +141,7 @@ def main():
       "formula_count":report["formula_count"],"delta_shard_count":report["shard_count"],"holm_family_size":report["multiple_testing"]["test_count"],
       "holm_adjusted_rows_below_0_05":report["multiple_testing"]["holm_adjusted_formula_split_rows_below_0_05"],
       "minimum_holm_p_max_endpoint_family":report["multiple_testing"]["minimum_holm_p_max_endpoint_family"],
-      "selected_q89_candidate_id":report["candidate_selection"]["selected_candidate_id"],
+      "selected_q89_candidate_id":report["candidate_selection"]["selected_candidate_id"],"paired_blind_ledger_rows":report["candidate_selection"]["paired_blind_ledger_rows"],"supplemental_pairing_protocol_id":report["supplemental_pairing_protocol_id"],
       "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION",
       "guardrails":["Q89 base metrics and 2026-11-07 freeze preserved","delta targets scored strictly prior-only","Discovery/Validation selection frozen before Blind OOS",
         "no automatic merge, engine promotion or shadow insertion","PRs #6/#7/#8 untouched"]}

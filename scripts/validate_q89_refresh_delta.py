@@ -3,6 +3,9 @@
 from __future__ import annotations
 import csv,gzip,hashlib,json,math
 from pathlib import Path
+import numpy as np
+import sonar_per_number_condition_grammar as q80
+import sonar_per_number_condition_4plus_grammar as q81
 import sonar_q89_common as q89
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -13,6 +16,7 @@ MANIFEST_PATH=OUT/"q89_refresh_20261108_manifest.json"
 LEDGER_PATH=OUT/"q89_refresh_20261108_target_delta_ledger.csv"
 SHORTLIST_PATH=OUT/"q89_refresh_20261108_candidate_shortlist.csv"
 SELECTION_PATH=OUT/"q89_refresh_20261108_candidate_selection.json"
+PAIRED_LEDGER_PATH=OUT/"q89_refresh_20261108_selected_candidate_blind_ledger.csv"
 EXPECTED_SHA1="77ca692a6082809fcc6c471501617433ec7c36cf"
 EXPECTED_SHA256=""
 
@@ -44,8 +48,15 @@ def validate():
         with LEDGER_PATH.open(newline="",encoding="utf-8-sig") as handle:
             ledger_fields=csv.DictReader(handle).fieldnames
             ledger=list(csv.DictReader(handle))
+        with PAIRED_LEDGER_PATH.open(newline="",encoding="utf-8-sig") as handle:
+            paired_fields=csv.DictReader(handle).fieldnames
+            paired=list(csv.DictReader(handle))
         raw_archive=ARCHIVE.read_bytes()
         archive_sha256=hashlib.sha256(raw_archive).hexdigest()
+        with ARCHIVE.open(newline="",encoding="utf-8-sig") as handle:
+            archive_rows=list(csv.DictReader(handle))
+        dates=[row["data"] for row in archive_rows]
+        draws=[[int(row[f"n{i}"]) for i in range(1,6)] for row in archive_rows]
     except Exception as exc:
         return ["Q89 refresh required output/archive unreadable: "+str(exc)]
     add=lambda condition,message: fail(errors,message) if not condition else None
@@ -122,6 +133,70 @@ def validate():
         add(selection.get("Q89_candidate",{}).get("formula_id")==selected_id,"Q89 refresh selected formula ID does not reconcile")
         add(selection.get("top100_discovery_candidates")==ids,"Q89 refresh Discovery top100 IDs do not reconcile")
     add(report.get("candidate_selection",{}).get("selected_candidate_id")==selection.get("Q89_candidate",{}).get("formula_id"),"Q89 refresh report/selection candidate ID mismatch")
+    add(report.get("candidate_selection",{}).get("paired_blind_ledger_rows")==670,"Q89 refresh paired Blind OOS ledger row count declaration mismatch")
+    add(report.get("supplemental_pairing_protocol_id")=="Q89-refresh-paired-blind-ledger-supplement-2026-11-09" and manifest.get("supplemental_pairing_protocol_id")=="Q89-refresh-paired-blind-ledger-supplement-2026-11-09","Q89 refresh supplemental pairing protocol ID mismatch")
+    add(selection.get("Q89_candidate",{}).get("blind_oos_ledger_path")==str(PAIRED_LEDGER_PATH.relative_to(ROOT)),"Q89 refresh selection paired-ledger path mismatch")
+    add(report.get("outputs",{}).get("selected_candidate_blind_ledger")==str(PAIRED_LEDGER_PATH.relative_to(ROOT)),"Q89 refresh report paired-ledger path mismatch")
+    paired_manifest=manifest.get("supplemental_outputs",{}).get("selected_candidate_blind_ledger",{})
+    paired_raw=PAIRED_LEDGER_PATH.read_bytes()
+    add(paired_manifest.get("path")==str(PAIRED_LEDGER_PATH.relative_to(ROOT)) and paired_manifest.get("rows")==670,"Q89 refresh supplemental paired-ledger manifest identity/count mismatch")
+    add(paired_manifest.get("bytes")==len(paired_raw) and paired_manifest.get("sha256")==hashlib.sha256(paired_raw).hexdigest(),"Q89 refresh supplemental paired-ledger byte/SHA mismatch")
+    required_paired={"target_date","cutoff_date","prior_draws","actual_quintet","Q89_formula_id","Q89_actual_number_ranks",
+        "Q89_number_hits_top5","Q89_number_hits_top10","Q89_number_hits_top20","Q89_all5_top5","Q89_all5_top10","Q89_all5_top20","Q89_rank_sum"}
+    add(len(paired)==670 and required_paired.issubset(set(paired_fields or [])),"Q89 refresh paired Blind OOS ledger schema/count mismatch")
+    try:
+        scored=len(draws)-q80.MIN_HISTORY
+        validation_end=math.ceil(.80*scored)
+        expected_blind_dates=[dates[q80.MIN_HISTORY+offset] for offset in range(validation_end,scored)]
+        add([row.get("target_date") for row in paired]==expected_blind_dates,"Q89 refresh paired Blind OOS target date coverage/order mismatch")
+        archive_index={date:index for index,date in enumerate(dates)}
+        selected_id=selection["Q89_candidate"]["formula_id"]
+        selected_columns=parse_formula_id(selected_id)
+        feature_stack=q81.build_feature_stack(draws)
+        add(feature_stack.shape==(scored,40,27),"Q89 refresh paired feature stack dimensions mismatch")
+        sums={"number_hits_top5":0,"number_hits_top10":0,"number_hits_top20":0,
+            "all5_top5":0,"all5_top10":0,"all5_top20":0,"rank_sum":0}
+        for row in paired:
+            date=row.get("target_date","")
+            index=archive_index.get(date)
+            if index is None or index<q80.MIN_HISTORY:
+                fail(errors,"Q89 refresh paired ledger target missing/too early: "+date);continue
+            add(row.get("cutoff_date")==dates[index-1] and int(row.get("prior_draws",-1))==index,"Q89 refresh paired strict-prefix cutoff mismatch at "+date)
+            add(row.get("actual_quintet")==" ".join(map(str,draws[index])),"Q89 refresh paired actual quintet mismatch at "+date)
+            add(row.get("Q89_formula_id")==selected_id,"Q89 refresh paired candidate ID changed on Blind OOS ledger")
+            actual_indices=np.asarray(draws[index],dtype=np.int64)-1
+            score=feature_stack[index-q80.MIN_HISTORY][:,selected_columns].mean(axis=1)
+            order=np.argsort(-score,kind="stable")
+            ranks=np.empty(40,dtype=np.int16)
+            ranks[order]=np.arange(1,41,dtype=np.int16)
+            expected_ranks=ranks[actual_indices].astype(int).tolist()
+            try:
+                observed_ranks=json.loads(row["Q89_actual_number_ranks"])
+            except Exception as exc:
+                fail(errors,"Q89 refresh paired rank JSON invalid at "+date+": "+str(exc));continue
+            add(observed_ranks==expected_ranks,"Q89 refresh paired rank replay mismatch at "+date)
+            hits={k:sum(value<=k for value in observed_ranks) for k in (5,10,20)}
+            all5={k:int(all(value<=k for value in observed_ranks)) for k in (5,10,20)}
+            for k in (5,10,20):
+                add(int(row[f"Q89_number_hits_top{k}"])==hits[k],"Q89 refresh paired number-hit count mismatch at "+date)
+                add(int(row[f"Q89_all5_top{k}"])==all5[k],"Q89 refresh paired all-five indicator mismatch at "+date)
+                sums[f"number_hits_top{k}"]+=hits[k]
+                sums[f"all5_top{k}"]+=all5[k]
+            add(int(row["Q89_rank_sum"])==sum(observed_ranks),"Q89 refresh paired rank-sum mismatch at "+date)
+            sums["rank_sum"]+=sum(observed_ranks)
+        paired_means={"mean_number_hits_top5":sums["number_hits_top5"]/(5*len(paired)),
+            "mean_number_hits_top10":sums["number_hits_top10"]/(5*len(paired)),
+            "mean_number_hits_top20":sums["number_hits_top20"]/(5*len(paired)),
+            "all5_top5_rate":sums["all5_top5"]/len(paired),"all5_top10_rate":sums["all5_top10"]/len(paired),
+            "all5_top20_rate":sums["all5_top20"]/len(paired),"mean_rank_of_actual_numbers":sums["rank_sum"]/(5*len(paired))}
+        selection_metrics=selection["Q89_candidate"]["blind_oos_metrics_descriptive_only"]
+        report_metrics=report.get("selected_candidate_metrics",{}).get("blind_oos_descriptive_only",{})
+        for field,value in paired_means.items():
+            add(math.isfinite(float(selection_metrics.get(field,float("nan")))) and abs(float(selection_metrics[field])-value)<1e-12,"Q89 refresh selected Blind OOS metrics do not reconcile to paired ledger: "+field)
+            add(math.isfinite(float(report_metrics.get(field,float("nan")))) and abs(float(report_metrics[field])-value)<1e-12,"Q89 refresh report Blind OOS metrics do not reconcile to paired ledger: "+field)
+    except Exception as exc:
+        fail(errors,"Q89 refresh paired Blind OOS ledger validation exception: "+str(exc))
+
     if errors:
         print("Q89_REFRESH_ACCEPTANCE_FAILURES_BEGIN")
         for error in errors: print(error)

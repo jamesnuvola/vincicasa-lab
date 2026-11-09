@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-Q92-IMPLEMENTATION-2026-11-09T0205Z",
+  "recorded_at_utc": "2026-11-09T02:05:00Z",
+  "implementation_branch": {
+    "name": "research/sonar-q92-ten-feature-implementation-20261109",
+    "source_head_sha": "f47db684aada5cb8ff1c01b56c459e1fc8d85dee",
+    "status": "SUPPLEMENTAL_Q89_PAIRING_LEDGER_IMPLEMENTED_CI_PENDING"
+  },
+  "q89_base": {
+    "persisted_commit": "95bb4e8b4a950fb4ba80d46e44fd91fef83f6def",
+    "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+    "archive": {
+      "draw_count": 3401,
+      "last_date": "2026-11-07",
+      "blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+    },
+    "formula_count": 4686825,
+    "metrics_rows": 14060475,
+    "metric_parts": 469,
+    "selected_candidate": "P9_06_09_12_14_15_17_18_19_23",
+    "base_catalog_holm_rows_below_0_05": 0,
+    "outputs_exact_bytes_verified": true
+  },
+  "q89_current_head_recovery": {
+    "branch_head": "efb863fbd7a172badeffbbf181b8ec5835e41510",
+    "run_id": 42545546642,
+    "status": "IN_PROGRESS",
+    "aggregation": "SUCCESS",
+    "acceptance": "SUCCESS",
+    "persistence": "IN_PROGRESS",
+    "exact_head_ci": "PENDING",
+    "persistence_started_at_utc": "2026-11-09T01:48:17Z",
+    "no_current_run_metrics_reported": true
+  },
+  "q89_refresh_2026_11_08": {
+    "protocol_id": "Q89-nine-feature-incremental-refresh-2026-11-08",
+    "status": "IMPLEMENTED_CI_PENDING_EXECUTION",
+    "canonical_archive": {
+      "main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+      "blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "draw_count": 3402,
+      "last_date": "2026-11-08",
+      "latest_quintet": [
+        3,
+        7,
+        10,
+        16,
+        27
+      ]
+    },
+    "formula_count": 4686825,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "affected_offsets": [
+      2011,
+      2681,
+      3351
+    ],
+    "new_split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "holm_family_size": 42181425,
+    "supplemental_pairing_protocol_id": "Q89-refresh-paired-blind-ledger-supplement-2026-11-09",
+    "supplemental_pairing_status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "paired_blind_targets": 670,
+    "paired_ledger_path": "reports/sequence_agent/q89_refresh_20261108_selected_candidate_blind_ledger.csv",
+    "implementation": {
+      "runner": "scripts/sonar_q89_refresh_delta_shard.py",
+      "aggregator": "scripts/aggregate_sonar_q89_refresh_delta.py",
+      "acceptance": "scripts/validate_q89_refresh_delta.py",
+      "persister": "scripts/persist_q89_refresh_delta.py",
+      "workflow": ".github/workflows/sonar-q89-refresh-delta.yml",
+      "synthetic_test": "tests/test_sonar_q89_refresh_delta.py",
+      "aggregate_test": "tests/test_sonar_q89_refresh_aggregate.py"
+    },
+    "latest_exact_head_ci_before_pairing_extension": {
+      "run_id": 42548314285,
+      "head_sha": "f47db684aada5cb8ff1c01b56c459e1fc8d85dee",
+      "conclusion": "SUCCESS"
+    },
+    "current_pairing_extension_ci": "PENDING_AFTER_COMMIT",
+    "execution": "NOT_STARTED"
+  },
+  "q92": {
+    "protocol_commit": "758cf9ed15b7e2073358ed139b4e34dd75c9365",
+    "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "formula_count": 8436285,
+    "subset_size": 10,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "target_count": 3352,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 25308855,
+    "holm_family_size": 75926565,
+    "execution": "NOT_STARTED",
+    "gate": "Do not execute until Q89 refresh is accepted/persisted on the same 2026-11-08 archive, the Q89 target-level paired Blind ledger is verified, and exact-head CI passes."
+  },
+  "prospective_gate": {
+    "queue_status": "QUEUE_VALID",
+    "overall_cycle_status": "INCOMPLETE",
+    "blocking_task": "Q60",
+    "complete_paired_targets": 21,
+    "required_paired_targets": 200,
+    "latest_freeze": "2026-11-09",
+    "latest_freeze_status": "FROZEN_PENDING"
+  },
+  "guardrails": {
+    "no_auto_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "prs_6_7_8_untouched": true,
+    "human_review_required": true,
+    "preserve_immutable_2026_10_25_freeze": true
+  },
+  "next_actions": [
+    "Finish Q89 base current-head persistence and exact-head CI.",
+    "Pass CI on the supplemental Q89 paired-ledger code/addendum commit.",
+    "Run the Q89 refresh delta workflow only after the accepted base gate completes.",
+    "Validate exact 670-row target-level paired Blind ledger, metrics reconciliation, global Holm and append-only exact-byte persistence.",
+    "Run current-head CI on the persisted Q89 refresh, then use its frozen candidate/ledger as Q92 same-archive control."
+  ]
+}
