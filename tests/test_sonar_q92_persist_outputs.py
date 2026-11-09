@@ -40,7 +40,7 @@ def make_bundle(bundle:Path):
         "candidate_shortlist":(base+"q92_20261108_candidate_shortlist.csv",b"formula_id,selected\nQ92_test,1\n"),
         "candidate_selection":(base+"q92_20261108_candidate_selection.json",b"{\"selected\":\"Q92_test\"}\n"),
         "paired_blind_ledger":(base+"q92_20261108_paired_blind_ledger.csv",b"target_date,delta\n2026-01-01,0.0\n"),
-        "paired_inference":(base+"q92_20261108_paired_inference.json",b"{\"primary_decision\":\"NO_SIGNIFICANT_GAIN\"}\n")
+        "paired_inference":(base+"q92_20261108_paired_inference.json",b"{\"primary_decision\":\"NO_SIGNIFICANT_GAIN\",\"multiple_testing\":{\"endpoints\":[\"top5\"]},\"endpoints\":{\"top5\":{\"mean_delta\":-0.005,\"bootstrap_ci_95_low\":-0.02,\"bootstrap_ci_95_high\":0.01,\"signflip_p_raw\":0.4,\"signflip_p_holm\":1.0,\"n_targets\":670}},\"block_length\":7,\"replicates\":20000}\n")
     }
     for key,(path,data) in supplemental_data.items():
         supplemental[key]=write_bytes(bundle,path,data)
