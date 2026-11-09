@@ -25,8 +25,8 @@ class Q92WalkForwardTests(unittest.TestCase):
         self.assertEqual(intervals[0][0],0)
         self.assertEqual(intervals[-1][1],q92.TOTAL_FORMULA_COUNT)
         self.assertTrue(all(intervals[index][1]==intervals[index+1][0] for index in range(14)))
-        self.assertEqual(len(q92.batch_ranges(q92.SHARD_SIZE)),138)
-        self.assertEqual(len(q92.batch_ranges(q92.TOTAL_FORMULA_COUNT)),2_060)
+        self.assertEqual(len(q92.batch_ranges(q92.SHARD_SIZE)),275)
+        self.assertEqual(len(q92.batch_ranges(q92.TOTAL_FORMULA_COUNT)),4_120)
         sample_ranks=[0,1,1000,q92.TOTAL_FORMULA_COUNT//2,q92.TOTAL_FORMULA_COUNT-1]
         for rank in sample_ranks:
             columns=q92.formula_unrank(rank)

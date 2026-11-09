@@ -14,7 +14,7 @@ SHARD_COUNT = 15
 if TOTAL_FORMULA_COUNT % SHARD_COUNT:
     raise RuntimeError("Q92 formula universe is not evenly shardable")
 SHARD_SIZE = TOTAL_FORMULA_COUNT // SHARD_COUNT
-FORMULA_BATCH_SIZE = 4096
+FORMULA_BATCH_SIZE = 2048
 
 COMPACT_METRIC_FIELDS=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
 SOURCE_CODE_HASH_PATHS=(
