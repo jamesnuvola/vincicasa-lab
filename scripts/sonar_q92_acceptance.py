@@ -88,7 +88,13 @@ def validate_q92():
         dates,draws=expected_archive()
     except Exception as exc:
         return ["Q92 required report/manifest/archive unreadable: "+str(exc)]
-    source_sha=hashlib.sha256(DATA.read_bytes()).hexdigest()
+    raw_archive=DATA.read_bytes()
+    source_sha=hashlib.sha256(raw_archive).hexdigest()
+    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\\0"+raw_archive).hexdigest()
+    try:
+        q89_refresh=q92agg.validate_q89_refresh_control(dates,draws,source_sha)
+    except Exception as exc:
+        return ["Q92 same-archive Q89 refresh control acceptance/readback failed: "+str(exc)]
     n=len(draws)
     scored=n-q80.MIN_HISTORY
     discovery=math.ceil(.60*scored)
@@ -126,6 +132,8 @@ def validate_q92():
     current_split=-1
     expected_formula_iter=None
     counts={split:0 for split in SPLITS}
+    pvals=np.empty(total_tests,dtype=np.float64)
+    stored_holm=np.empty(total_rows,dtype=np.float64)
     try:
         for part_index,part in enumerate(parts):
             path=ROOT/part["path"]
@@ -176,6 +184,9 @@ def validate_q92():
                             continue
                         if not math.isfinite(value) or (field=="mean_rank_of_actual_numbers" and not 1<=value<=40) or (field!="mean_rank_of_actual_numbers" and not 0<=value<=1):
                             fail(errors,"Q92 invalid metric "+field)
+                    for endpoint_index,field in enumerate(("p_top5_normal_approx","p_top10_normal_approx","p_top20_normal_approx")):
+                        pvals[global_row*3+endpoint_index]=float(row[field])
+                    stored_holm[global_row]=float(row["holm_p_max_endpoint_family"])
                     counts[split]+=1
                     local+=1
             add(local==expected_rows,"Q92 metrics part decompressed row count mismatch: "+part["path"])
@@ -186,6 +197,16 @@ def validate_q92():
         fail(errors,"Q92 metrics parts validation exception: "+str(exc))
     add(row_cursor==total_rows,"Q92 metrics parts total row count mismatch")
     add(counts=={split:q92.TOTAL_FORMULA_COUNT for split in SPLITS},"Q92 formula/split coverage count mismatch")
+    # Recompute the complete global Holm step-down family from every raw formula×split×endpoint p-value.
+    order=np.argsort(pvals,kind="stable")
+    sorted_adjusted=np.maximum.accumulate((total_tests-np.arange(total_tests,dtype=np.int64))*pvals[order])
+    np.minimum(sorted_adjusted,1.0,out=sorted_adjusted)
+    adjusted=np.empty_like(pvals)
+    adjusted[order]=sorted_adjusted
+    replayed_row_holm=adjusted.reshape(total_rows,3).max(axis=1)
+    add(np.allclose(stored_holm,replayed_row_holm,rtol=0.0,atol=1e-12),"Q92 global Holm adjusted p-values do not replay")
+    add(report.get("holm_adjusted_formula_split_rows_below_0_05")==int(np.sum(replayed_row_holm<0.05)),"Q92 Holm rows below alpha count mismatch")
+    add(abs(float(report.get("minimum_holm_p_max_endpoint_family",float("nan")))-float(np.min(replayed_row_holm)))<1e-12,"Q92 minimum global Holm p-value mismatch")
 
     # Validate the global retrospective target ledger against every canonical target and strict prior cutoff.
     try:
@@ -218,112 +239,152 @@ def validate_q92():
     except Exception as exc:
         fail(errors,"Q92 target ledger validation exception: "+str(exc))
 
-    # Candidate selection must be frozen on Discovery/Validation only and include exactly 100 per family.
+    # Candidate selection is Discovery→Validation frozen; the same-archive Q89 control comes from the accepted refresh.
     try:
         selection=load_json(SELECTION_PATH)
         shortlist_fields,shortlist=load_csv(SHORTLIST_PATH)
         add(selection.get("task_id")=="Q92" and selection.get("status")=="CANDIDATES_FROZEN_BEFORE_BLIND_OOS","Q92 candidate selection status mismatch")
         add(selection.get("blind_oos_used_for_selection") is False and selection.get("selected_candidate_ids_frozen") is True,"Q92 candidate selection leakage guard missing")
-        add(len(shortlist)==200 and {"family","formula_id","features","discovery_rank","discovery_mean_number_hits_top5","discovery_mean_rank_of_actual_numbers",
-            "validation_mean_number_hits_top5","validation_mean_rank_of_actual_numbers","validation_selection_rank","selected"}.issubset(set(shortlist_fields)),"Q92 candidate shortlist schema/row count mismatch")
-        family_counts={}
-        selected_by_family={}
-        seen_ids={}
-        for family in ("ten_feature","nine_feature_control"):
-            family_rows=[row for row in shortlist if row.get("family")==family]
-            family_counts[family]=len(family_rows)
-            add(len(family_rows)==100,"Q92 shortlist candidate count mismatch for "+family)
-            ids=set()
-            discovery_ranks=[]
-            validation_ranks=[]
-            selected_rows=[]
-            for row in family_rows:
-                fid=row["formula_id"]
-                prefix,size=("P10_",9) if family=="ten_feature" else ("P8_",8)
-                columns=parse_formula_id(fid,prefix,size)
-                add(row.get("features")=="+".join(report["features"][index] for index in columns),"Q92 shortlist feature names/ID mismatch")
-                add(fid not in ids,"Q92 duplicate shortlist formula ID")
-                ids.add(fid)
-                discovery_ranks.append(int(row["discovery_rank"]))
-                validation_ranks.append(int(row["validation_selection_rank"]))
-                if int(row["selected"])==1:
-                    selected_rows.append(row)
-            add(sorted(discovery_ranks)==list(range(1,101)),"Q92 Discovery shortlist rank coverage mismatch")
-            add(sorted(validation_ranks)==list(range(1,101)),"Q92 Validation selection rank coverage mismatch")
-            add(len(selected_rows)==1,"Q92 exactly one Validation candidate must be selected for "+family)
-            selected_by_family[family]=selected_rows[0]["formula_id"] if selected_rows else None
-        add(selection.get("Q92_candidate",{}).get("formula_id")==selected_by_family.get("ten_feature"),"Q92 selected candidate ID does not reconcile")
-        add(selection.get("Q89_control",{}).get("formula_id")==selected_by_family.get("nine_feature_control"),"Q89 control ID does not reconcile")
+        required_shortlist={"family","formula_id","features","discovery_rank","discovery_mean_number_hits_top5","discovery_mean_rank_of_actual_numbers",
+            "validation_mean_number_hits_top5","validation_mean_rank_of_actual_numbers","validation_selection_rank","selected"}
+        add(len(shortlist)==100 and required_shortlist.issubset(set(shortlist_fields)),"Q92 shortlist schema/row count mismatch")
+        family_rows=[row for row in shortlist if row.get("family")=="ten_feature"]
+        add(len(family_rows)==100 and all(row.get("family")=="ten_feature" for row in shortlist),"Q92 shortlist family/count mismatch")
+        ids=set()
+        discovery_ranks=[]
+        validation_ranks=[]
+        selected_rows=[]
+        for row in family_rows:
+            fid=row["formula_id"]
+            columns=parse_formula_id(fid,"P10_",10)
+            add(row.get("features")=="+".join(report["features"][index] for index in columns),"Q92 shortlist feature names/ID mismatch")
+            add(fid not in ids,"Q92 duplicate shortlist formula ID")
+            ids.add(fid)
+            discovery_ranks.append(int(row["discovery_rank"]))
+            validation_ranks.append(int(row["validation_selection_rank"]))
+            if int(row["selected"])==1:
+                selected_rows.append(row)
+        add(sorted(discovery_ranks)==list(range(1,101)),"Q92 Discovery shortlist rank coverage mismatch")
+        add(sorted(validation_ranks)==list(range(1,101)),"Q92 Validation selection rank coverage mismatch")
+        add(len(selected_rows)==1,"Q92 exactly one Validation candidate must be selected")
+        selected_id=selected_rows[0]["formula_id"] if selected_rows else None
+        add(selection.get("Q92_candidate",{}).get("formula_id")==selected_id,"Q92 selected candidate ID does not reconcile to shortlist")
+        add(selection.get("Q92_candidate",{}).get("validation_selection_rank")==1,"Q92 selected candidate is not Validation rank 1")
         top100=selection.get("top100_discovery_candidates",{})
-        add(set(top100.get("Q92",[]))=={row["formula_id"] for row in shortlist if row["family"]=="ten_feature"},"Q92 Discovery top100 IDs mismatch")
-        add(set(top100.get("Q89",[]))=={row["formula_id"] for row in shortlist if row["family"]=="nine_feature_control"},"Q89 Discovery top100 IDs mismatch")
+        add(top100.get("Q92")==[row["formula_id"] for row in sorted(family_rows,key=lambda row:int(row["discovery_rank"]))],"Q92 Discovery top100 IDs/order mismatch")
+        q89_control=q89_refresh["candidate"]
+        q89_selection=selection.get("Q89_control",{})
+        add(q89_selection.get("formula_id")==q89_control.get("formula_id") and q89_selection.get("features")==q89_control.get("features"),"Q92 same-archive Q89 control ID/features mismatch")
+        for field in ("discovery_rank","discovery_mean_number_hits_top5","discovery_mean_rank_of_actual_numbers","validation_mean_number_hits_top5","validation_mean_rank_of_actual_numbers","validation_selection_rank"):
+            add(q89_selection.get(field)==q89_control.get(field),"Q92 same-archive Q89 control selection field mismatch "+field)
+        # Recompute the Discovery top-100 and Validation winner from the persisted metric parts.
+        metric_paths=[ROOT/part["path"] for part in parts]
+        replay_shortlist=q92agg.discovery_top100(metric_paths,gzip_mode=True,prefix="P10_")
+        replay_ids=[item["formula_id"] for item in replay_shortlist]
+        add(replay_ids==[row["formula_id"] for row in sorted(family_rows,key=lambda row:int(row["discovery_rank"]))],"Q92 Discovery top100 does not replay from metrics")
+        replay_selected,replay_enriched=q92agg.validation_select(metric_paths,replay_shortlist,gzip_mode=True,prefix="P10_")
+        add(replay_selected.get("formula_id")==selected_id,"Q92 Validation selection does not replay from metrics")
+        enriched_by_id={item["formula_id"]:item for item in replay_enriched}
+        for row in family_rows:
+            item=enriched_by_id.get(row["formula_id"],{})
+            add(abs(float(row["discovery_mean_number_hits_top5"])-float(item.get("discovery_mean_number_hits_top5",float("nan"))))<1e-12,"Q92 Discovery Top-5 metric replay mismatch "+row["formula_id"])
+            add(abs(float(row["discovery_mean_rank_of_actual_numbers"])-float(item.get("discovery_mean_rank_of_actual_numbers",float("nan"))))<1e-12,"Q92 Discovery mean-rank replay mismatch "+row["formula_id"])
+            add(abs(float(row["validation_mean_number_hits_top5"])-float(item.get("validation_mean_number_hits_top5",float("nan"))))<1e-12,"Q92 Validation Top-5 metric replay mismatch "+row["formula_id"])
+            add(abs(float(row["validation_mean_rank_of_actual_numbers"])-float(item.get("validation_mean_rank_of_actual_numbers",float("nan"))))<1e-12,"Q92 Validation mean-rank replay mismatch "+row["formula_id"])
     except Exception as exc:
         fail(errors,"Q92 candidate selection validation exception: "+str(exc))
 
-    # Paired blind ledger must reconcile every held-out target and all paired endpoint arithmetic.
+    # Paired Blind OOS ledger replays both frozen formulas from strict-prior feature states.
     paired=[]
     try:
         paired_fields,paired=load_csv(PAIRED_LEDGER_PATH)
-        expected_blind_dates=[dates[q80.MIN_HISTORY+offset] for offset in range(scored) if q80.split_name(offset,scored)=="blind_oos"]
+        selection=load_json(SELECTION_PATH)
+        q92_id=selection["Q92_candidate"]["formula_id"]
+        q89_id=selection["Q89_control"]["formula_id"]
+        q92_columns=parse_formula_id(q92_id,"P10_",10)
+        q89_columns=parse_formula_id(q89_id,"P9_",9)
+        expected_blind_indices=list(range(q80.MIN_HISTORY+validation,len(draws)))
+        expected_blind_dates=[dates[index] for index in expected_blind_indices]
         required_paired={"target_date","cutoff_date","prior_draws","actual_quintet","Q92_formula_id","Q89_control_formula_id",
             "Q92_actual_number_ranks","Q89_actual_number_ranks","Q92_number_hits_top5","Q92_number_hits_top10","Q92_number_hits_top20",
             "Q89_number_hits_top5","Q89_number_hits_top10","Q89_number_hits_top20","Q92_rank_sum","Q89_rank_sum",
-            "paired_delta_number_hits_top5","paired_delta_number_hits_top10","paired_delta_number_hits_top20"}
-        add(required_paired.issubset(set(paired_fields)) and len(paired)==670,"Q92 paired blind ledger schema/row count mismatch")
-        selection=load_json(SELECTION_PATH)
-        q89_id=selection["Q92_candidate"]["formula_id"]
-        q89_id=selection["Q89_control"]["formula_id"]
-        add([row.get("target_date") for row in paired]==expected_blind_dates,"Q92 paired blind target date coverage/order mismatch")
-        for row in paired:
-            date=row["target_date"]
-            index=dates.index(date)
-            add(row.get("cutoff_date")==dates[index-1] and int(row.get("prior_draws",-1))==index,"Q92 paired blind cutoff mismatch at "+date)
-            add(row.get("actual_quintet")==" ".join(map(str,draws[index])),"Q92 paired blind actual quintet mismatch at "+date)
-            add(row.get("Q92_formula_id")==q89_id and row.get("Q89_control_formula_id")==q89_id,"Q92 paired candidate IDs changed on blind ledger")
-            q9r=json.loads(row["Q92_actual_number_ranks"])
-            q8r=json.loads(row["Q89_actual_number_ranks"])
-            add(len(q9r)==5 and len(q8r)==5 and all(isinstance(value,int) and 1<=value<=40 for value in q9r+q8r),"Q92 paired blind rank vectors invalid")
+            "paired_delta_number_hits_top5","paired_delta_number_hits_top10","paired_delta_number_hits_top20","paired_delta_mean_rank"}
+        add(required_paired.issubset(set(paired_fields)) and len(paired)==670,"Q92 paired Blind ledger schema/row count mismatch")
+        add([row.get("target_date") for row in paired]==expected_blind_dates,"Q92 paired Blind target date coverage/order mismatch")
+        standardized_stack=q81.build_feature_stack(draws)
+        for row,index in zip(paired,expected_blind_indices):
+            date=dates[index]
+            add(row.get("cutoff_date")==dates[index-1] and int(row.get("prior_draws",-1))==index,"Q92 paired Blind cutoff mismatch at "+date)
+            add(row.get("actual_quintet")==" ".join(map(str,draws[index])),"Q92 paired Blind actual quintet mismatch at "+date)
+            add(row.get("Q92_formula_id")==q92_id and row.get("Q89_control_formula_id")==q89_id,"Q92 paired candidate IDs changed at "+date)
+            actual_indices=np.asarray(draws[index],dtype=np.int64)-1
+            standardized=standardized_stack[index-q80.MIN_HISTORY]
+            replay_q92=q92agg.rank_actual_for_formula(standardized,q92_columns,actual_indices)
+            replay_q89=q92agg.rank_actual_for_formula(standardized,q89_columns,actual_indices)
+            q92r=json.loads(row["Q92_actual_number_ranks"])
+            q89r=json.loads(row["Q89_actual_number_ranks"])
+            add(q92r==replay_q92 and q89r==replay_q89,"Q92/Q89 paired rank replay mismatch at "+date)
+            add(len(q92r)==5 and len(q89r)==5 and all(isinstance(value,int) and 1<=value<=40 for value in q92r+q89r),"Q92 paired rank vectors invalid at "+date)
+            q92hits={k:sum(value<=k for value in q92r) for k in (5,10,20)}
+            q89hits={k:sum(value<=k for value in q89r) for k in (5,10,20)}
+            q92all5={k:int(all(value<=k for value in q92r)) for k in (5,10,20)}
+            q89all5={k:int(all(value<=k for value in q89r)) for k in (5,10,20)}
             for k in (5,10,20):
-                q9h=sum(value<=k for value in q9r)
-                q8h=sum(value<=k for value in q8r)
-                add(int(row[f"Q92_number_hits_top{k}"])==q9h and int(row[f"Q89_number_hits_top{k}"])==q8h,"Q92 paired blind hit counts mismatch at "+date)
-                add(int(row[f"paired_delta_number_hits_top{k}"])==q9h-q8h,"Q92 paired blind endpoint delta mismatch at "+date)
-            add(int(row["Q92_rank_sum"])==sum(q9r) and int(row["Q89_rank_sum"])==sum(q8r),"Q92 paired blind rank sum mismatch at "+date)
+                add(int(row[f"Q92_number_hits_top{k}"])==q92hits[k] and int(row[f"Q89_number_hits_top{k}"])==q89hits[k],"Q92 paired hit count mismatch at "+date)
+                add(int(row[f"Q92_all5_top{k}"])==q92all5[k] and int(row[f"Q89_all5_top{k}"])==q89all5[k],"Q92 paired all-five indicator mismatch at "+date)
+                add(int(row[f"paired_delta_number_hits_top{k}"])==q92hits[k]-q89hits[k],"Q92 paired endpoint delta mismatch at "+date)
+            add(int(row["Q92_rank_sum"])==sum(q92r) and int(row["Q89_rank_sum"])==sum(q89r),"Q92 paired rank sum mismatch at "+date)
+            add(abs(float(row["paired_delta_mean_rank"])-(sum(q92r)-sum(q89r))/5.0)<1e-12,"Q92 paired mean-rank delta mismatch at "+date)
     except Exception as exc:
-        fail(errors,"Q92 paired blind ledger validation exception: "+str(exc))
+        fail(errors,"Q92 paired Blind ledger validation exception: "+str(exc))
 
-    # Paired inference is reproducible from the persisted paired ledger and frozen seeds.
+    # Paired inference is deterministically replayed from the frozen 670-target ledger.
     try:
         inference=load_json(PAIRED_INFERENCE_PATH)
         add(inference.get("task_id")=="Q92" and inference.get("blind_oos_targets")==670,"Q92 paired inference identity/count mismatch")
-        add(inference.get("bootstrap",{}).get("replicates")==20000 and inference.get("bootstrap",{}).get("block_length")==7 and inference.get("bootstrap",{}).get("seed")==890027,"Q92 bootstrap protocol mismatch")
-        add(inference.get("signflip",{}).get("replicates")==20000 and inference.get("signflip",{}).get("block_length")==7 and inference.get("signflip",{}).get("seed")==890028,"Q92 sign-flip protocol mismatch")
-        add(inference.get("multiple_testing",{}).get("method")=="Holm-Bonferroni" and inference.get("multiple_testing",{}).get("family_size")==3,"Q92 paired endpoint Holm family mismatch")
+        add(inference.get("bootstrap",{}).get("replicates")==20000 and inference.get("bootstrap",{}).get("block_length")==7 and inference.get("bootstrap",{}).get("seed")==920027,"Q92 bootstrap protocol mismatch")
+        add(inference.get("signflip",{}).get("replicates")==20000 and inference.get("signflip",{}).get("block_length")==7 and inference.get("signflip",{}).get("seed")==920028,"Q92 sign-flip protocol mismatch")
+        add(inference.get("multiple_testing",{}).get("method")=="Holm-Bonferroni" and inference.get("multiple_testing",{}).get("family_size")==4,"Q92 paired endpoint Holm family mismatch")
         endpoint_results=inference.get("paired_endpoints",{})
-        add(set(endpoint_results)=={"top5","top10","top20"},"Q92 paired inference endpoint keys mismatch")
-        for endpoint in ("top5","top10","top20"):
-            item=endpoint_results.get(endpoint,{})
-            for field in ("mean_paired_delta_number_hits","mean_paired_delta_hit_share","block_signflip_p_raw_two_sided","holm_p"):
-                value=float(item.get(field,float("nan")))
-                add(math.isfinite(value) and 0<=value<=1 if field in ("block_signflip_p_raw_two_sided","holm_p") else math.isfinite(value),"Q92 paired inference metric invalid "+endpoint+" / "+field)
-            ci=item.get("bootstrap_95_percentile_ci_number_hits",[])
-            add(len(ci)==2 and all(math.isfinite(float(value)) for value in ci) and float(ci[0])<=float(ci[1]),"Q92 bootstrap CI invalid "+endpoint)
-        # Recompute the registered bootstrap/sign-flip inference from the frozen paired ledger.
+        add(set(endpoint_results)=={"top5","top10","top20","mean_rank"},"Q92 paired inference endpoint keys mismatch")
         if paired:
             raw_pvalues=[]
-            for endpoint,k in (("top5",5),("top10",10),("top20",20)):
-                values=[int(row[f"paired_delta_number_hits_top{k}"]) for row in paired]
-                delta=sum(values)/len(values)
-                add(abs(delta-float(endpoint_results[endpoint]["mean_paired_delta_number_hits"]))<1e-12,"Q92 paired inference point estimate does not reconcile "+endpoint)
-                ci=q92agg.bootstrap_ci(values,replicates=20000,block_length=7,seed=890027)
-                pvalue=q92agg.block_signflip_p(values,replicates=20000,block_length=7,seed=890028)
-                stored_ci=endpoint_results[endpoint]["bootstrap_95_percentile_ci_number_hits"]
-                add(len(stored_ci)==2 and all(abs(float(stored_ci[index])-ci[index])<1e-12 for index in (0,1)),"Q92 bootstrap CI replay mismatch "+endpoint)
-                add(abs(float(endpoint_results[endpoint]["block_signflip_p_raw_two_sided"])-pvalue)<1e-12,"Q92 block sign-flip replay mismatch "+endpoint)
+            endpoint_names=("top5","top10","top20","mean_rank")
+            for endpoint in endpoint_names:
+                item=endpoint_results.get(endpoint,{})
+                if endpoint=="mean_rank":
+                    values=[float(row["paired_delta_mean_rank"]) for row in paired]
+                    expected_mean=sum(values)/len(values)
+                    add(abs(expected_mean-float(item.get("mean_paired_delta_mean_rank",float("nan"))))<1e-12,"Q92 paired mean-rank point estimate mismatch")
+                    ci=q92agg.bootstrap_ci(values,replicates=20000,block_length=7,seed=920027)
+                    pvalue=q92agg.block_signflip_p(values,replicates=20000,block_length=7,seed=920028)
+                    stored_ci=item.get("bootstrap_95_percentile_ci_mean_rank",[])
+                    add(len(stored_ci)==2 and all(abs(float(stored_ci[i])-ci[i])<1e-12 for i in (0,1)),"Q92 paired mean-rank bootstrap CI replay mismatch")
+                else:
+                    k=int(endpoint[3:])
+                    values=[int(row[f"paired_delta_number_hits_top{k}"]) for row in paired]
+                    expected_mean=sum(values)/len(values)
+                    add(abs(expected_mean-float(item.get("mean_paired_delta_number_hits",float("nan"))))<1e-12,"Q92 paired hit-count point estimate mismatch "+endpoint)
+                    add(abs(expected_mean/5.0-float(item.get("mean_paired_delta_hit_share",float("nan"))))<1e-12,"Q92 paired hit-share point estimate mismatch "+endpoint)
+                    ci=q92agg.bootstrap_ci(values,replicates=20000,block_length=7,seed=920027)
+                    pvalue=q92agg.block_signflip_p(values,replicates=20000,block_length=7,seed=920028)
+                    stored_ci=item.get("bootstrap_95_percentile_ci_number_hits",[])
+                    add(len(stored_ci)==2 and all(abs(float(stored_ci[i])-ci[i])<1e-12 for i in (0,1)),"Q92 paired bootstrap CI replay mismatch "+endpoint)
+                    stored_share_ci=item.get("bootstrap_95_percentile_ci_hit_share",[])
+                    add(len(stored_share_ci)==2 and all(abs(float(stored_share_ci[i])-ci[i]/5.0)<1e-12 for i in (0,1)),"Q92 paired hit-share CI replay mismatch "+endpoint)
+                add(abs(float(item.get("block_signflip_p_raw_two_sided",float("nan")))-pvalue)<1e-12,"Q92 paired block sign-flip replay mismatch "+endpoint)
                 raw_pvalues.append(pvalue)
             adjusted=q92agg.holm_adjust(raw_pvalues)
-            for endpoint,value in zip(("top5","top10","top20"),adjusted):
-                add(abs(float(endpoint_results[endpoint]["holm_p"])-value)<1e-12,"Q92 paired Holm replay mismatch "+endpoint)
+            for endpoint,value in zip(endpoint_names,adjusted):
+                add(abs(float(endpoint_results[endpoint].get("holm_p",float("nan")))-value)<1e-12,"Q92 paired Holm replay mismatch "+endpoint)
+            top5=endpoint_results["top5"]
+            if top5["holm_p"]<0.05 and top5["bootstrap_95_percentile_ci_hit_share"][0]>0:
+                expected_decision="SIGNIFICANT_TOP5_GAIN_REQUIRES_HUMAN_REVIEW"
+            elif top5["holm_p"]<0.05 and top5["bootstrap_95_percentile_ci_hit_share"][1]<0:
+                expected_decision="SIGNIFICANT_TOP5_DEGRADATION"
+            else:
+                expected_decision="NO_SIGNIFICANT_GAIN"
+            add(inference.get("decision")==expected_decision,"Q92 paired inference decision mismatch")
             for message in validate_paired_metric_replay(inference,paired):
                 fail(errors,message)
     except Exception as exc:
