@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q89_REFRESH_2026_11_08",
+  "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+  "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+  "protocol_id": "Q89-nine-feature-incremental-refresh-2026-11-08",
+  "supplemental_pairing_protocol_id": "Q89-refresh-paired-blind-ledger-supplement-2026-11-09",
+  "source_archive": "data/storico_daily.csv",
+  "source_archive_sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b",
+  "source_archive_git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+  "source_archive_main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+  "target_count": 3402,
+  "first_date": "2017-07-17",
+  "last_date": "2026-11-08",
+  "minimum_prior_history": 50,
+  "scored_targets": 3352,
+  "feature_count": 27,
+  "formula_size": 9,
+  "formula_count": 4686825,
+  "shard_count": 15,
+  "shard_formula_count": 312455,
+  "metrics_rows": 14060475,
+  "delta_shard_rows": 4686825,
+  "old_split_counts": {
+    "discovery": 2011,
+    "validation": 670,
+    "blind_oos": 670
+  },
+  "split_counts": {
+    "discovery": 2012,
+    "validation": 670,
+    "blind_oos": 670
+  },
+  "target_delta_ledger_rows": 3,
+  "target_delta_ledger": [
+    {
+      "target_offset": 2011,
+      "archive_index": 2061,
+      "target_date": "2023-03-09",
+      "cutoff_date": "2023-03-08",
+      "prior_draws": 2061,
+      "actual_quintet": "5 19 32 33 37",
+      "split_movement": "old_validation_to_new_discovery"
+    },
+    {
+      "target_offset": 2681,
+      "archive_index": 2731,
+      "target_date": "2025-01-07",
+      "cutoff_date": "2025-01-06",
+      "prior_draws": 2731,
+      "actual_quintet": "5 17 18 23 33",
+      "split_movement": "old_blind_to_new_validation"
+    },
+    {
+      "target_offset": 3351,
+      "archive_index": 3401,
+      "target_date": "2026-11-08",
+      "cutoff_date": "2026-11-07",
+      "prior_draws": 3401,
+      "actual_quintet": "3 7 10 16 27",
+      "split_movement": "new_target_in_new_blind_oos"
+    }
+  ],
+  "multiple_testing": {
+    "method": "Global Holm-Bonferroni",
+    "test_count": 42181425,
+    "formula_split_endpoint_family_size": 42181425,
+    "p_value_method": "continuity-corrected normal approximation to summed Hypergeometric(40,k,5) number-hit counts; exploratory, not exact",
+    "holm_adjusted_formula_split_rows_below_0_05": 0,
+    "minimum_holm_p_max_endpoint_family": 1.0
+  },
+  "uniform_number_rank_baseline": {
+    "mean_number_hits_top5": 0.125,
+    "mean_number_hits_top10": 0.25,
+    "mean_number_hits_top20": 0.5,
+    "mean_rank_of_actual_numbers": 20.5
+  },
+  "candidate_selection": {
+    "rule": "Discovery global top100 by mean Top-5 hit share, tie-break lower mean rank then lexicographic formula_id; select one on Validation with the same tie-break.",
+    "blind_oos_used_for_selection": false,
+    "selected_candidate_id": "P9_06_09_12_14_15_17_18_19_23",
+    "discovery_top100_count": 100,
+    "validation_candidates": 100,
+    "blind_oos_targets": 670,
+    "paired_blind_ledger_rows": 670
+  },
+  "selected_candidate_metrics": {
+    "discovery": {
+      "mean_number_hits_top5": 0.1374751491053678,
+      "mean_number_hits_top10": 0.2596421471172962,
+      "mean_number_hits_top20": 0.5129224652087475,
+      "all5_top5_rate": 0.0,
+      "all5_top10_rate": 0.0,
+      "all5_top20_rate": 0.02584493041749503,
+      "mean_rank_of_actual_numbers": 20.14572564612326
+    },
+    "validation": {
+      "mean_number_hits_top5": 0.13014925373134328,
+      "mean_number_hits_top10": 0.2435820895522388,
+      "mean_number_hits_top20": 0.4988059701492537,
+      "all5_top5_rate": 0.0,
+      "all5_top10_rate": 0.0,
+      "all5_top20_rate": 0.020895522388059702,
+      "mean_rank_of_actual_numbers": 20.587761194029852
+    },
+    "blind_oos_descriptive_only": {
+      "mean_number_hits_top5": 0.11791044776119403,
+      "mean_number_hits_top10": 0.23582089552238805,
+      "mean_number_hits_top20": 0.4955223880597015,
+      "all5_top5_rate": 0.0,
+      "all5_top10_rate": 0.0,
+      "all5_top20_rate": 0.016417910447761194,
+      "mean_rank_of_actual_numbers": 20.61402985074627
+    }
+  },
+  "outputs": {
+    "delta_shards": [
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_0_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_1_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_2_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_3_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_4_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_5_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_6_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_7_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_8_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_9_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_10_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_11_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_12_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_13_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_14_delta_metrics.csv.gz"
+    ],
+    "target_delta_ledger": "reports/sequence_agent/q89_refresh_20261108_target_delta_ledger.csv",
+    "candidate_shortlist": "reports/sequence_agent/q89_refresh_20261108_candidate_shortlist.csv",
+    "candidate_selection": "reports/sequence_agent/q89_refresh_20261108_candidate_selection.json",
+    "manifest": "reports/sequence_agent/q89_refresh_20261108_manifest.json",
+    "selected_candidate_blind_ledger": "reports/sequence_agent/q89_refresh_20261108_selected_candidate_blind_ledger.csv"
+  },
+  "guardrails": [
+    "Q89 base catalog was accepted on the 2026-11-07 frozen archive; only three preregistered target deltas are rescored",
+    "all three target feature states use strict prior draws only; target outcomes enter only additive metrics",
+    "Discovery top100 and Validation selection freeze the candidate before Blind OOS metrics are reported",
+    "supplemental selected-candidate Blind OOS rank ledger is for same-archive Q92 pairing only and never feeds selection",
+    "global Holm covers all 4,686,825 formulas × 3 splits × 3 endpoints; raw p-values are exploratory normal approximations",
+    "historical Blind OOS is not independent prospective confirmation; no automatic promotion or shadow insertion"
+  ],
+  "limitations": [
+    "exact incremental refresh depends on accepted Q89 base metrics and immutable 2026-11-07 archive freeze",
+    "formula-family p-values use a finite-population normal approximation and are exploratory",
+    "finite equal-weight nine-feature grammar only; Q92 ten-feature catalog remains a separate preregistered extension"
+  ],
+  "next_action": "Freeze the refreshed Q89 candidate as the same-archive Q92 control only after acceptance, append-only persistence, exact-byte readback and current-head CI; then implement/execute Q92 under its preregistered gate."
+}
