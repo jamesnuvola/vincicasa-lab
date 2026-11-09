@@ -1,0 +1,64 @@
+{
+  "schema_version":"1.0",
+  "project":"VinciCasa SONAR",
+  "task_id":"Q84",
+  "protocol_id":"Q84-flow-state-analog-ensemble-v1",
+  "registered_at_utc":"2026-11-09T19:00:00Z",
+  "status":"PREREGISTERED_BEFORE_EXECUTION",
+  "source_archive":"data/storico_daily.csv",
+  "source_archive_git_blob_sha1":"77ca692a6082809fcc6c471501617433ec7c36cf",
+  "source_archive_sha256":"TO_BE_COMPUTED_BY_RUNNER",
+  "source_draw_count":3402,
+  "source_first_date":"2017-07-17",
+  "source_last_date":"2026-11-08",
+  "hypothesis":"If the pre-target state of the historical sequence contains useful information about which registered ranking rules are locally effective, then a causal state-analog ensemble that weights rules by their performance on prior targets with similar flow states should outperform the equal-weight ensemble and the discovery-selected fixed rule on validation and blind OOS mean hits. Different rules may also alternate across high/low turbulence regimes.",
+  "primary_endpoint":"mean number of actual winning numbers ranked in Top20",
+  "secondary_endpoints":["mean number of actual winning numbers ranked in Top10","mean number of actual winning numbers ranked in Top5","Top20 4+ hit count","Top20 5/5 hit count","mean rank of actual numbers"],
+  "registered_strategy_family":{
+    "fixed_rule_count":42,
+    "equal_weight_ensemble_count":1,
+    "flow_state_adaptive_ensemble_count":1,
+    "conditional_variants":"42 fixed rules x HIGH_TURBULENCE/LOW_TURBULENCE",
+    "retrospective_oracle":"one per target, descriptive only, excluded from inferential tests"
+  },
+  "flow_state_features":["sum_velocity_5","sum_acceleration_5","range_velocity_5","range_acceleration_5","gap_velocity_5","odd_velocity_5","overlap_velocity_5","sum_dispersion_delta_20_80","range_dispersion_delta_20_80","frequency_total_variation_20_80","frequency_concentration_delta_20_80","decade_entropy_delta_20_80","overlap_dispersion_delta_20_80"],
+  "adaptive_parameters":{
+    "state_lookback_targets":250,
+    "nearest_prior_targets":50,
+    "minimum_prior_analogs":30,
+    "shrinkage_pseudocount":30,
+    "shrinkage_baseline_top20_hits":2.5,
+    "weight_temperature":0.35,
+    "weight_clip":[0.5,2.0],
+    "distance":"Euclidean distance after robust median/MAD scaling estimated on prior states only",
+    "kernel":"Gaussian with median nearest-neighbor distance bandwidth"
+  },
+  "regime_classifier":{
+    "state":"RMS robust-z magnitude of current flow-state vector",
+    "lookback_prior_states":250,
+    "quantiles":[0.2,0.8],
+    "labels":["LOW_TURBULENCE","MID_TURBULENCE","HIGH_TURBULENCE","UNCLASSIFIED"],
+    "eligibility":"conditional rule variants are eligible only when their regime matches; thresholds use prior state history only"
+  },
+  "success_definition":"At least 4 of 5 actual numbers in the strategy's Top20; all5 is retained as a separate sparse endpoint.",
+  "chronology":{
+    "minimum_prior_draws":200,
+    "split_rule":"discovery first floor(60%); validation next through floor(80%); blind_oos remainder",
+    "target_prefix":"strictly all archive rows before the target",
+    "adaptive_memory":"only previously scored targets are admitted after the current target is scored"
+  },
+  "statistics":{
+    "baseline_mean_hits":{"top5":0.625,"top10":1.25,"top20":2.5},
+    "null":"per-target Hypergeometric(N=40, K=5 winning numbers, n=5/10/20 ranked positions); conditional on exactly five distinct winners",
+    "p_values":"one-sided continuity-corrected normal approximation to the sum of per-target hypergeometric hit counts",
+    "correction":"one global Holm-Bonferroni family across 44 global strategies plus 84 conditional variants, 3 chronological splits and 3 hit endpoints; family size 1152",
+    "paired_comparison":"moving-block bootstrap, block length 20 targets, 2000 replicates, fixed seed 84"
+  },
+  "selection_policy":{
+    "discovery_fixed_comparator":"select one fixed rule by highest discovery mean Top20 hits, ties by lower mean actual rank then stable strategy ID; freeze it before validation/OOS",
+    "no_oos_tuning":true,
+    "no_auto_promotion":true
+  },
+  "limitations":["The repository's historical blind OOS dates have already been inspected by earlier SONAR research; Q84 blind_oos is chronological and untouched by Q84 tuning, but not a virgin research-wide holdout.","This is a finite family built from 42 registered fixed rules plus one causal analog ensemble; it does not exhaust arbitrary mathematical rules.","Historical walk-forward is retrospective evidence, not a prospective freeze.","The exact app engine v2 is included only as an external aggregate comparator; its per-target ranks are not recomputed in this Q84 experiment."],
+  "next_action":"Run the causal flow-state atlas, validate every target cutoff and rank permutation, persist exact artifacts, then obtain exact-head workflow validation and human review."
+}
