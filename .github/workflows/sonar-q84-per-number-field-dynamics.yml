@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: \${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -44,7 +44,7 @@ jobs:
       - name: Execute registered 40-node field walk-forward
         if: steps.state.outputs.persisted != 'true'
         env:
-          GITHUB_SHA: \${{ github.event.pull_request.head.sha }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
         run: python scripts/sonar_per_number_field_dynamics.py
       - name: Replay all target cutoffs, rank vectors, exact nulls and Holm family
         if: steps.state.outputs.persisted != 'true'
@@ -52,7 +52,7 @@ jobs:
       - name: Persist append-only field artifacts and verify exact Git readback
         if: steps.state.outputs.persisted != 'true'
         env:
-          TARGET_BRANCH: \${{ github.event.pull_request.head.ref }}
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
