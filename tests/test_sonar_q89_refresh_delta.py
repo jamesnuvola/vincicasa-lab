@@ -9,7 +9,10 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 from contextlib import ExitStack
+import sys
 import numpy as np
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/"scripts"))
 import sonar_q89_refresh_delta_shard as delta
 
 class TestQ89RefreshDelta(unittest.TestCase):
