@@ -119,7 +119,7 @@ def main():
             successes5=int(bucket["number_hits_top5"][formula_index])
             successes10=int(bucket["number_hits_top10"][formula_index])
             successes20=int(bucket["number_hits_top20"][formula_index])
-            row={"split":split,"formula_id":formula_ids[formula_index],"feature_count":9,
+            row={"split":split,"formula_id":formula_ids[formula_index],"feature_count":10,
                 "features":"+".join(FEATURE_NAMES[c] for c in columns),"targets":targets,
                 "mean_number_hits_top5":successes5/(5*targets),
                 "mean_number_hits_top10":successes10/(5*targets),
