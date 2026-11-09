@@ -1,0 +1,8 @@
+{"definition":"Equal-weight Borda of 42 fixed Q84 rules.","kind":"BASELINE","strategy_id":"BASE::EQUAL42"}
+{"definition":"Causal Q84 flow-state analogue ensemble, K=50.","kind":"BASELINE","strategy_id":"BASE::FLOW_K50"}
+{"definition":"Q84 field reversion signal with fixed alpha 0.20.","kind":"FIXED_CONTROL","strategy_id":"FIXED::REVERSION_A20"}
+{"definition":"Q84 0.70 FLOW + 0.30 graph signal with fixed alpha 0.20.","kind":"FIXED_CONTROL","strategy_id":"FIXED::GRAPH_MIX_A20"}
+{"definition":"Reversion node signal; alpha=0.10+0.20*prior-only node-acceleration percentile.","kind":"DYNAMIC_CANDIDATE","strategy_id":"DYN::REV_NODE_ACCEL_UP"}
+{"definition":"Reversion node signal; alpha=0.30-0.20*prior-only node-acceleration percentile.","kind":"DYNAMIC_CANDIDATE","strategy_id":"DYN::REV_NODE_ACCEL_DOWN"}
+{"definition":"Pair-graph-only signal; alpha=0.10+0.20*prior-only graph-acceleration percentile.","kind":"DYNAMIC_CANDIDATE","strategy_id":"DYN::GRAPH_ACCEL_UP"}
+{"definition":"Pair-graph-only signal; alpha=0.30-0.20*prior-only graph-acceleration percentile.","kind":"DYNAMIC_CANDIDATE","strategy_id":"DYN::GRAPH_ACCEL_DOWN"}
