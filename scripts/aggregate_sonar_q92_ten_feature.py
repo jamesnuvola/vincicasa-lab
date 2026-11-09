@@ -195,7 +195,7 @@ def validate_shard_report(shard,archive_sha256,dates):
         "feature_count":27,"formula_count":SHARD_SIZE,"total_formula_count":TOTAL,"formula_size":10,
         "formula_count_check":math.comb(27,10),"shard_index":shard,"shard_count":SHARDS,
         "shard_formula_start_inclusive":start,"shard_formula_end_exclusive":end,"shard_formula_count":SHARD_SIZE,
-        "formula_batch_size":1024,"formula_batch_count":550,"metrics_rows":SHARD_SIZE*3,
+        "formula_batch_size":4096,"formula_batch_count":138,"metrics_rows":SHARD_SIZE*3,
         "target_ledger_rows":EXPECTED_ARCHIVE_COUNT-q80.MIN_HISTORY,"split_counts":SPLIT_COUNTS}
     for key,value in expected.items():
         if report.get(key)!=value:
@@ -211,10 +211,10 @@ def validate_shard_report(shard,archive_sha256,dates):
     if report.get("multiple_testing",{}).get("p_value_method")!="discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws":
         fail("Q92 shard discrete null-calibration method mismatch shard "+str(shard))
     batches=report.get("batch_manifest",[])
-    if len(batches)!=550:
+    if len(batches)!=138:
         fail("Q92 shard batch manifest count mismatch shard "+str(shard))
     for index,batch in enumerate(batches):
-        if batch.get("batch_index")!=index or batch.get("formula_count")!=min(1024,SHARD_SIZE-index*1024):
+        if batch.get("batch_index")!=index or batch.get("formula_count")!=min(4096,SHARD_SIZE-index*4096):
             fail("Q92 shard batch manifest arithmetic mismatch shard "+str(shard))
     return report
 
