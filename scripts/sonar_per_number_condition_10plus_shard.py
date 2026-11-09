@@ -51,7 +51,7 @@ def main():
     if scored_targets<=0:
         raise SystemExit("Q92_BLOCKED: no targets have sufficient prior history")
     formulas=list(q92.iter_formula_slice(SHARD_START,SHARD_END))
-    if len(formulas)!=SHARD_SIZE or SHARD_SIZE!=562419:
+    if len(formulas)!=SHARD_SIZE or SHARD_SIZE!=q92.SHARD_SIZE:
         raise SystemExit("Q92_BLOCKED: deterministic shard formula count mismatch")
     formula_ids=[q92.formula_id(columns) for columns in formulas]
     if formula_ids[0]!=q92.formula_id(q92.formula_unrank(SHARD_START)) or q92.formula_rank(formulas[-1])!=SHARD_END-1:
