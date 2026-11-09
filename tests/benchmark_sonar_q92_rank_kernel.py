@@ -4,7 +4,11 @@ from __future__ import annotations
 import json
 import statistics
 import time
+from pathlib import Path
+import sys
 import numpy as np
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/"scripts"))
 import sonar_q92_common as q92
 import sonar_per_number_condition_10plus_shard as runner
 
