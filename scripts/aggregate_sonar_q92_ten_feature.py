@@ -117,7 +117,11 @@ def load_archive():
     if dates!=sorted(dates) or len(set(dates))!=len(dates):
         fail("canonical archive dates not unique and ascending")
     for values in draws:
-        if len(values)!=5 or values!=sorted(values) or len(set(values))!=5 or any(int(v)<1 or int(v)>40 for v in values):
+        # q80.load_archive currently returns tuples; normalize the container before
+        # comparing sorted values so tuple/list type differences cannot reject a
+        # valid canonical quintet.
+        quintet=tuple(values)
+        if len(quintet)!=5 or quintet!=tuple(sorted(quintet)) or len(set(quintet))!=5 or any(int(v)<1 or int(v)>40 for v in quintet):
             fail("canonical archive quintet invalid")
     return dates,draws,archive_sha256,archive_sha1
 
