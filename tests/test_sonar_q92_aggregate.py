@@ -6,7 +6,9 @@ import tempfile
 import unittest
 from unittest import mock
 from pathlib import Path
+import sys
 import numpy as np
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import aggregate_sonar_q92_shards as q92agg
 import sonar_q92_common as q92
 
