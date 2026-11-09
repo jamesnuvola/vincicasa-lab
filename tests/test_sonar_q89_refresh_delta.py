@@ -71,6 +71,7 @@ class TestQ89RefreshDelta(unittest.TestCase):
                 stack_patches.enter_context(patch.object(delta,"SHARD_START",0))
                 stack_patches.enter_context(patch.object(delta,"SHARD_END",2))
                 stack_patches.enter_context(patch.object(delta,"SHARD_SIZE",2))
+                stack_patches.enter_context(patch.object(delta,"EXPECTED_SHARD_SIZE",2))
                 stack_patches.enter_context(patch.object(delta.q80,"load_archive",return_value=(dates,draws)))
                 stack_patches.enter_context(patch.object(delta.q81,"build_feature_stack",return_value=stack))
                 stack_patches.enter_context(patch.object(delta.q89,"iter_formula_slice",side_effect=lambda start,end:iter(formulas)))

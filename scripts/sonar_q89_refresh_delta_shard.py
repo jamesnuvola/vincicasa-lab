@@ -33,6 +33,7 @@ TARGET_MOVEMENTS={
 SHARD_INDEX=int(os.environ.get("SONAR_Q89_REFRESH_SHARD_INDEX","0"))
 SHARD_START,SHARD_END=q89.shard_bounds(SHARD_INDEX)
 SHARD_SIZE=SHARD_END-SHARD_START
+EXPECTED_SHARD_SIZE=312455
 SHARD_DIR=OUT/"q89_refresh_20261108_delta_shards"
 METRICS=SHARD_DIR/f"shard_{SHARD_INDEX}_delta_metrics.csv.gz"
 REPORT=SHARD_DIR/f"shard_{SHARD_INDEX}_delta_report.json"
@@ -101,7 +102,7 @@ def main():
     scored_targets=n-MIN_HISTORY
     if n!=EXPECTED_DRAW_COUNT or dates[-1]!=EXPECTED_LAST_DATE or scored_targets!=EXPECTED_TARGET_COUNT:
         raise SystemExit("Q89_REFRESH_BLOCKED: canonical 2026-11-08 archive dimensions/cutoff mismatch")
-    if SHARD_SIZE!=312455:
+    if SHARD_SIZE!=EXPECTED_SHARD_SIZE:
         raise SystemExit("Q89_REFRESH_BLOCKED: deterministic nine-feature shard count mismatch")
     formulas=list(q89.iter_formula_slice(SHARD_START,SHARD_END))
     if len(formulas)!=SHARD_SIZE:
