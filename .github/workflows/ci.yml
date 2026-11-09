@@ -39,7 +39,7 @@ jobs:
         run: python scripts/audit_dataset.py --check-json
 
       - name: Refresh SONAR retrospective metrics and append-only shadow outcomes
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && (contains(github.event.head_commit.message, '[q80-validate-persisted]') || contains(github.event.head_commit.message, '[q89-protocol]') || contains(github.event.head_commit.message, '[q89-run]') || contains(github.event.head_commit.message, '[q89-persisted]')))
         run: python scripts/sonar_sequence_agent.py
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
@@ -48,17 +48,17 @@ jobs:
       - name: Check SONAR analysis and queue scripts
         run: python -m py_compile scripts/sonar_fast_improvements.py scripts/sonar_research_queue.py
       - name: Test evolutionary lab syntax and run
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && (contains(github.event.head_commit.message, '[q80-validate-persisted]') || contains(github.event.head_commit.message, '[q89-protocol]') || contains(github.event.head_commit.message, '[q89-run]') || contains(github.event.head_commit.message, '[q89-persisted]')))
         run: |
           python -m py_compile scripts/sonar_evolutionary_lab.py
           python scripts/sonar_evolutionary_lab.py
       - name: Test positional, regime, residual and hazard lab
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && (contains(github.event.head_commit.message, '[q80-validate-persisted]') || contains(github.event.head_commit.message, '[q89-protocol]') || contains(github.event.head_commit.message, '[q89-run]') || contains(github.event.head_commit.message, '[q89-persisted]')))
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
       - name: Test exhaustive per-number condition grammars (Q80/Q81/Q82/Q83/Q86)
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && (contains(github.event.head_commit.message, '[q80-validate-persisted]') || contains(github.event.head_commit.message, '[q89-protocol]') || contains(github.event.head_commit.message, '[q89-run]') || contains(github.event.head_commit.message, '[q89-persisted]')))
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -103,11 +103,41 @@ jobs:
             -H "Content-Type: application/json" \
             -d "{\"ref\":\"research/per-number-condition-grammar-20261026\"}"
 
+      - name: Test Q89 nine-feature protocol, prior-only features and conservative null
+        if: github.event_name == 'push' && (contains(github.event.head_commit.message, '[q89-protocol]') || contains(github.event.head_commit.message, '[q89-run]') || contains(github.event.head_commit.message, '[q89-persisted]'))
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_9plus_shard.py scripts/aggregate_sonar_q89_shards.py
+          python tests/test_sonar_per_number_condition_9plus_grammar.py -v
+          python - <<'PY'
+          from sonar_research_queue import validate_q80, validate_q88
+          errors = validate_q80() + validate_q88()
+          print("EXISTING_Q80_Q88_ACCEPTANCE_ERRORS", errors)
+          raise SystemExit(1 if errors else 0)
+          PY
+      - name: Validate persisted Q89 outputs on the exact persisted head
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, '[q89-persisted]')
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          from sonar_research_queue import validate_q89
+          errors = validate_q89()
+          queue = json.loads(Path("reports/sequence_agent/research_queue_status.json").read_text())
+          task = next((x for x in queue.get("tasks", []) if x.get("id") == "Q89"), None)
+          if not task or task.get("status") != "VALIDATED_PENDING_HUMAN_REVIEW" or task.get("validation_errors"):
+              errors.append("Q89 queue status is not validated/pending human review")
+          print("Q89_EXACT_HEAD_ACCEPTANCE_ERRORS", errors)
+          raise SystemExit(1 if errors else 0)
+          PY
       - name: Build web application
         run: npm install && npm run build
 
       - name: Upload validated Q80-Q86 formula persistence bundle
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && (contains(github.event.head_commit.message, '[q80-validate-persisted]') || contains(github.event.head_commit.message, '[q89-protocol]') || contains(github.event.head_commit.message, '[q89-run]') || contains(github.event.head_commit.message, '[q89-persisted]')))
         uses: actions/upload-artifact@v4
         with:
           name: q80-q86-persistence-bundle

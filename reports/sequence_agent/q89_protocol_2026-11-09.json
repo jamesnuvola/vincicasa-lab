@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q89",
+  "status": "PREREGISTERED_NOT_RUN",
+  "registered_at_utc": "2026-11-09T17:16:59Z",
+  "experiment_branch": "research/per-number-condition-q89-nine-feature-20261109",
+  "parent_pr8_head": "0f865d6585a768f623e7c56cfffc5fd4a48a7888",
+  "archive_snapshot": {
+    "path": "data/storico_daily.csv",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07",
+    "git_blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+    "note": "Pinned to the research-branch 2026-11-07 snapshot for same-target comparability with Q88. Main has one newer draw through 2026-11-08; it is intentionally excluded from this frozen experiment."
+  },
+  "minimum_prior_history": 50,
+  "scored_targets": 3351,
+  "split_counts": {
+    "discovery": 2011,
+    "validation": 670,
+    "blind_oos": 670
+  },
+  "feature_count": 27,
+  "formula_size": 9,
+  "formula_count": 4686825,
+  "formula_id_prefix": "P9_",
+  "formula_grammar": "All unique unordered nine-feature equal-weight subsets of the 27 registered prior-only features; finite grammar, not all mathematical formulas.",
+  "distribution": {
+    "shards": 30,
+    "partition": "contiguous lexicographic intervals [floor(N*i/30), floor(N*(i+1)/30))",
+    "formula_counts_min": 156227,
+    "formula_counts_max": 156228,
+    "max_parallel": 15,
+    "batch_size": 1024
+  },
+  "expected_outputs": {
+    "metrics_rows": 14060475,
+    "target_ledger_rows": 3351,
+    "holm_family_size": 42181425,
+    "metrics_chunk_rows": 30000,
+    "expected_metrics_parts": 469
+  },
+  "null_model": {
+    "assumption": "Under the registered uniform-draw null, each target quintet is a uniform 5-of-40 sample independent of the past-only ranking.",
+    "per_target_hit_distribution": "For a ranking top-k set, the number of actual quintet numbers in it is Hypergeometric(N=40,K=k,n=5), k in {5,10,20}.",
+    "p_value": "Conservative Chernoff upper bound for the sum of per-target hypergeometric hit counts within each chronological split; use as a conservative p-value.",
+    "correction": "One global Holm-Bonferroni family over every formula x split x endpoint (4,686,825 x 3 x 3 = 42,181,425 tests)."
+  },
+  "baseline": {
+    "mean_number_hits_top5": 0.125,
+    "mean_number_hits_top10": 0.25,
+    "mean_number_hits_top20": 0.5,
+    "mean_rank_of_actual_numbers": 20.5
+  },
+  "selection_protocol": {
+    "discovery": "Rank all formulas by mean Top-5 hit share descending; tie-break lower mean rank then lexicographic formula rank. Retain top 100.",
+    "validation": "Select one candidate from Discovery top-100 using Validation only; freeze before opening Blind OOS.",
+    "blind_oos": "Read Blind OOS only for the frozen candidate; never rank or select formulas using Blind OOS.",
+    "target_ledger": "Best formula per target is retrospective/descriptive only, not a forecast or candidate-selection input."
+  },
+  "guardrails": [
+    "Every target feature vector uses the complete archive prefix strictly before that target; state updates occur after feature construction.",
+    "Rank all 40 numbers before scoring the actual quintet.",
+    "Verify all 30 shard intervals are contiguous, non-overlapping and exhaustive.",
+    "Do not overwrite the immutable target-2026-10-25 prospective freeze or shadow_forecasts.csv.",
+    "Do not mark Q89 COMPLETE; acceptance, persistence, exact-head CI and human review/integration are separate gates.",
+    "No automatic model promotion, shadow insertion or merge.",
+    "Thresholded, nonlinear, interaction and ten-plus-feature grammars remain open future experiments."
+  ],
+  "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+  "promotion_allowed": false
+}
