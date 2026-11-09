@@ -27,6 +27,7 @@ class Q92AggregateTests(unittest.TestCase):
         adjusted=np.empty_like(values)
         adjusted[order]=sorted_adjusted
         self.assertTrue(np.allclose(adjusted,[0.03,0.06,0.06],atol=1e-12))
+        self.assertTrue(np.allclose(q92agg.holm_adjust(values),[0.03,0.06,0.06],atol=1e-12))
 
     def test_discovery_top100_and_validation_selection_are_deterministic(self):
         formulas=[q92.formula_id(q92.formula_unrank(index)) for index in range(100)]
