@@ -68,6 +68,25 @@ class Q92AggregateCommonTests(unittest.TestCase):
         self.assertAlmostEqual(first["endpoints"]["top5"]["bootstrap_ci_95_high"],0.2,places=12)
         self.assertGreaterEqual(first["endpoints"]["top5"]["signflip_p_holm"],first["endpoints"]["top5"]["signflip_p_raw"])
 
+    def test_primary_decision_requires_registered_minimum_practical_effect(self):
+        small={
+            "top5":np.full(140,0.004,dtype=np.float64),
+            "top10":np.zeros(140,dtype=np.float64),
+            "top20":np.zeros(140,dtype=np.float64),
+            "mean_rank":np.zeros(140,dtype=np.float64),
+        }
+        below=q92a.paired_endpoint_inference(small,replicates=1000,block_length=7)
+        self.assertLess(below["endpoints"]["top5"]["signflip_p_holm"],0.05)
+        self.assertGreater(below["endpoints"]["top5"]["bootstrap_ci_95_low"],0.0)
+        self.assertEqual(below["primary_decision"],"NO_SIGNIFICANT_GAIN")
+        self.assertEqual(below["minimum_practical_effect"]["absolute_delta_threshold"],0.005)
+        large={key:values.copy() for key,values in small.items()}
+        large["top5"]=np.full(140,0.006,dtype=np.float64)
+        above=q92a.paired_endpoint_inference(large,replicates=1000,block_length=7)
+        self.assertLess(above["endpoints"]["top5"]["signflip_p_holm"],0.05)
+        self.assertGreater(above["endpoints"]["top5"]["bootstrap_ci_95_low"],0.0)
+        self.assertEqual(above["primary_decision"],"SIGNIFICANT_POSITIVE_GAIN")
+
     def test_zero_deltas_have_null_ci_and_pvalue_one(self):
         values=np.zeros(28,dtype=np.float64)
         low,high=q92a.circular_moving_block_bootstrap_ci(values,replicates=100,block_length=7)

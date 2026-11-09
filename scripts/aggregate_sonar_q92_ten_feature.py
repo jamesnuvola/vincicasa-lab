@@ -27,6 +27,7 @@ Q89_REPORT_PATH=OUT/"q89_refresh_20261108_report.json"
 Q89_MANIFEST_PATH=OUT/"q89_refresh_20261108_manifest.json"
 Q89_SELECTION_PATH=OUT/"q89_refresh_20261108_candidate_selection.json"
 Q89_PAIRED_LEDGER_PATH=OUT/"q89_refresh_20261108_selected_candidate_blind_ledger.csv"
+PREREG_PATH=OUT/"q92_preregistration_2026-11-09.json"
 SPLITS=("discovery","validation","blind_oos")
 SPLIT_COUNTS={"discovery":2012,"validation":670,"blind_oos":670}
 TOTAL=q92.TOTAL_FORMULA_COUNT
@@ -195,7 +196,7 @@ def validate_shard_report(shard,archive_sha256,dates):
         "feature_count":27,"formula_count":SHARD_SIZE,"total_formula_count":TOTAL,"formula_size":10,
         "formula_count_check":math.comb(27,10),"shard_index":shard,"shard_count":SHARDS,
         "shard_formula_start_inclusive":start,"shard_formula_end_exclusive":end,"shard_formula_count":SHARD_SIZE,
-        "formula_batch_size":1024,"formula_batch_count":550,"metrics_rows":SHARD_SIZE*3,
+        "formula_batch_size":2048,"formula_batch_count":275,"metrics_rows":SHARD_SIZE*3,
         "target_ledger_rows":EXPECTED_ARCHIVE_COUNT-q80.MIN_HISTORY,"split_counts":SPLIT_COUNTS}
     for key,value in expected.items():
         if report.get(key)!=value:
@@ -211,10 +212,10 @@ def validate_shard_report(shard,archive_sha256,dates):
     if report.get("multiple_testing",{}).get("p_value_method")!="discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws":
         fail("Q92 shard discrete null-calibration method mismatch shard "+str(shard))
     batches=report.get("batch_manifest",[])
-    if len(batches)!=550:
+    if len(batches)!=275:
         fail("Q92 shard batch manifest count mismatch shard "+str(shard))
     for index,batch in enumerate(batches):
-        if batch.get("batch_index")!=index or batch.get("formula_count")!=min(1024,SHARD_SIZE-index*1024):
+        if batch.get("batch_index")!=index or batch.get("formula_count")!=min(2048,SHARD_SIZE-index*2048):
             fail("Q92 shard batch manifest arithmetic mismatch shard "+str(shard))
     return report
 
@@ -346,6 +347,10 @@ def build_paired_blind_ledger(selection,dates,draws,feature_stack,q89_selection,
 def main():
     OUT.mkdir(parents=True,exist_ok=True)
     dates,draws,archive_sha256,archive_sha1=load_archive()
+    prereg=read_json(PREREG_PATH)
+    minimum_effect=float(prereg.get("primary_comparison",{}).get("inference",{}).get("minimum_practical_effect_size_top5",-1.0))
+    if not math.isfinite(minimum_effect) or abs(minimum_effect-q92a.MINIMUM_EFFECT_SIZE_TOP5)>1e-15:
+        fail("Q92 preregistered minimum Top-5 practical effect mismatch")
     scored=len(draws)-q80.MIN_HISTORY
     if scored!=3352 or SPLIT_COUNTS!={"discovery":2012,"validation":670,"blind_oos":670}:
         fail("strict-prefix target/split counts mismatch")
@@ -514,7 +519,7 @@ def main():
     SELECTION_PATH.write_text(json.dumps(q92_selection,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 
     paired_rows,endpoint_deltas=build_paired_blind_ledger(q92_selection,dates,draws,feature_stack,q89_selection,q89_paired_rows,q89_id,q89_columns)
-    inference=q92a.paired_endpoint_inference(endpoint_deltas,replicates=20_000,block_length=7,bootstrap_seed=920027,signflip_seed=920028,confidence_level=0.95)
+    inference=q92a.paired_endpoint_inference(endpoint_deltas,replicates=20_000,block_length=7,bootstrap_seed=920027,signflip_seed=920028,confidence_level=0.95,minimum_effect_size_top5=minimum_effect)
     inference.update({"schema_version":"1.0","task_id":"Q92_2026_11_08","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-09",
         "source_archive_sha256":archive_sha256,"Q92_candidate_id":selected["formula_id"],"Q89_control_candidate_id":q89_id,
         "paired_blind_ledger_rows":len(paired_rows),"blind_oos_used_for_selection":False})

@@ -14,6 +14,7 @@ import aggregate_sonar_q92_ten_feature as aggregate
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/"reports/sequence_agent"
 ARCHIVE=ROOT/"data/storico_daily.csv"
+PREREG_PATH=OUT/"q92_preregistration_2026-11-09.json"
 REPORT_PATH=OUT/"q92_20261108_report.json"
 MANIFEST_PATH=OUT/"q92_20261108_manifest.json"
 SHORTLIST_PATH=OUT/"q92_20261108_candidate_shortlist.csv"
@@ -341,7 +342,11 @@ def validate_paired_ledger_and_inference(dates,draws,feature_stack,q89_selection
         endpoint_deltas["top10_hit_share"].append(delta[10]/5.0)
         endpoint_deltas["top20_hit_share"].append(delta[20]/5.0)
         endpoint_deltas["mean_rank_actual_numbers"].append(delta_rank/5.0)
-    replay=q92a.paired_endpoint_inference(endpoint_deltas,replicates=20_000,block_length=7,bootstrap_seed=920027,signflip_seed=920028,confidence_level=0.95)
+    prereg=read_json(PREREG_PATH)
+    minimum_effect=float(prereg.get("primary_comparison",{}).get("inference",{}).get("minimum_practical_effect_size_top5",-1.0))
+    if not math.isfinite(minimum_effect) or abs(minimum_effect-q92a.MINIMUM_EFFECT_SIZE_TOP5)>1e-15:
+        fail("Q92 preregistered minimum Top-5 practical effect mismatch")
+    replay=q92a.paired_endpoint_inference(endpoint_deltas,replicates=20_000,block_length=7,bootstrap_seed=920027,signflip_seed=920028,confidence_level=0.95,minimum_effect_size_top5=minimum_effect)
     inference_core={key:inference[key] for key in replay}
     compare_json_numeric(inference_core,replay,"Q92 paired inference replay",tolerance=1e-12)
     report=read_json(REPORT_PATH)

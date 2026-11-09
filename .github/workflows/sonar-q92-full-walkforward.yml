@@ -106,6 +106,10 @@ jobs:
           threshold=prereg.get("primary_comparison",{}).get("inference",{}).get("minimum_practical_effect_size_top5")
           if threshold!=0.005 or effect.get("effective_before_full_walkforward_execution") is not True or effect.get("minimum_absolute_effect_size")!=0.005:
               raise SystemExit("Q92_PREFLIGHT_BLOCKED: practical-effect amendment mismatch")
+          amendment_ids={item.get("amendment_id") for item in prereg.get("protocol_amendments",[])}
+          required_ids={"Q92-RANK-KERNEL-02","Q92-RANK-KERNEL-03","Q92-MINIMUM-PRACTICAL-EFFECT-01"}
+          if not required_ids.issubset(amendment_ids):
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: required pre-execution amendments missing")
           if batch_result.get("status")!="SYNTHETIC_ACCEPTANCE_PASS" or batch_result.get("selected_batch_size")!=2048 or batch_result.get("full_sample_rank_vectors_exactly_equal") is not True or float(batch_result.get("selected_batch_speedup",0))<1.25:
               raise SystemExit("Q92_PREFLIGHT_BLOCKED: selective-rank benchmark evidence mismatch")
           print("Q92_PREFLIGHT_PASS: archive SHA, Q89 same-archive freeze/ledger strict-prior replay, batch-2048 rank-kernel evidence and 0.005 Top-5 practical-effect gate reconciled.")
@@ -217,7 +221,7 @@ jobs:
           out=Path("reports/sequence_agent/q92_shards");out.mkdir(parents=True,exist_ok=True)
           grouped={}
           for directory in sorted(x for x in root.iterdir() if x.is_dir()):
-              match=re.search(r"-shard-(\\d+)-attempt-(\\d+)$",directory.name)
+              match=re.search(r"-shard-(\d+)-attempt-(\d+)$",directory.name)
               if not match: raise SystemExit("Q92_ARTIFACT_BLOCKED: unrecognized artifact name "+directory.name)
               index,attempt=map(int,match.groups())
               receipt_path=directory/f"shard_{index}_artifact_manifest.json"

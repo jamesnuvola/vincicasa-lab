@@ -8,6 +8,7 @@ FEATURE_COUNT = 27
 FORMULA_SIZE = 10
 FORMULA_PREFIX = "P10_"
 COMPACT_METRIC_FIELDS=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
+MINIMUM_EFFECT_SIZE_TOP5=0.005
 
 def parse_formula_id(formula_id: str) -> tuple[int, ...]:
     if not isinstance(formula_id, str) or not formula_id.startswith(FORMULA_PREFIX):
@@ -124,7 +125,8 @@ def circular_block_signflip_pvalue(deltas, replicates: int = 20_000,
 def paired_endpoint_inference(endpoint_deltas, replicates: int = 20_000,
                               block_length: int = 7, bootstrap_seed: int = 920027,
                               signflip_seed: int = 920028,
-                              confidence_level: float = 0.95):
+                              confidence_level: float = 0.95,
+                              minimum_effect_size_top5: float = MINIMUM_EFFECT_SIZE_TOP5):
     """Return reproducible paired bootstrap CI, raw sign-flip p and Holm p."""
     names = list(endpoint_deltas)
     if len(names) != 4:
@@ -152,8 +154,10 @@ def paired_endpoint_inference(endpoint_deltas, replicates: int = 20_000,
     adjusted = holm_adjust_in_place(np.asarray(raw_pvalues, dtype=np.float64), chunk_size=4)
     for index, name in enumerate(names):
         summaries[name]["signflip_p_holm"] = float(adjusted[index])
+    if not math.isfinite(float(minimum_effect_size_top5)) or float(minimum_effect_size_top5)<0.0:
+        raise ValueError("Q92 minimum Top-5 practical effect must be finite and non-negative")
     primary = summaries[names[0]]
-    decision = "SIGNIFICANT_POSITIVE_GAIN" if primary["signflip_p_holm"] < 0.05 and primary["mean_delta"] > 0.0 and primary["bootstrap_ci_95_low"] > 0.0 else "NO_SIGNIFICANT_GAIN"
+    decision = "SIGNIFICANT_POSITIVE_GAIN" if primary["signflip_p_holm"] < 0.05 and primary["mean_delta"] >= float(minimum_effect_size_top5) and primary["bootstrap_ci_95_low"] > 0.0 else "NO_SIGNIFICANT_GAIN"
     return {
         "method": "circular moving-block bootstrap percentile CI and circular block sign-flip randomization",
         "replicates": int(replicates),
@@ -162,6 +166,8 @@ def paired_endpoint_inference(endpoint_deltas, replicates: int = 20_000,
         "signflip_seed": int(signflip_seed),
         "confidence_level": float(confidence_level),
         "multiple_testing": {"method": "Holm-Bonferroni", "family_size": 4, "endpoints": names},
+        "minimum_practical_effect": {"primary_endpoint": names[0], "absolute_delta_threshold": float(minimum_effect_size_top5),
+            "criterion": "mean_delta >= threshold AND Holm sign-flip p < 0.05 AND 95% block-bootstrap CI lower > 0"},
         "endpoints": summaries,
         "primary_decision": decision,
     }
