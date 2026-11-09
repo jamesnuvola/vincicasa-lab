@@ -61,6 +61,36 @@ Holm over the three fixed endpoints gives adjusted positive-lift p-values = 1.00
 - Older full-walk-forward run [42606741630](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42606741630) ended FAILURE after its exact-head CI was cancelled; no shard execution.
 - Adjacent branch CI [42607100534](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42607100534) completed SUCCESS, but it is on commit `a76e0ff04c0b23c0bde7cc143a45961cbc9c0834`, not the current PR #23 exact head.
 
+## Q92 exact-head preflight poller recovery — 2026-11-09 11:55 UTC
+
+### Second root cause (verified)
+
+The Q92 preflight run [42611968234](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42611968234) failed after the general exact-SHA query selected the newest CI run by `workflow_id + head_sha` only. It selected run [42612163220](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42612163220), which was a cancelled `push` event on checkpoint branch `research/sonar-hourly-checkpoint-20261109-1149`, despite having the same source SHA `7a5d195cbdb0de818082093881725a15fa1fffe6`. The relevant CI run for PR #23 was [42611974913](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42611974913), event `pull_request`, exact Q92 branch, same SHA, and it completed SUCCESS. The polling selector did not filter `head_branch` or event and treated the unrelated cancelled run as a gate failure.
+
+### Implemented correction and regression evidence
+
+- Added `scripts/sonar_q92_ci_gate.py`: filters workflow ID, exact source SHA and exact expected branch; prefers PR-event runs when available; selects active runs before completed runs and sorts by created time/run attempt/ID.
+- Added `tests/test_sonar_q92_ci_gate.py` with six synthetic cases: unrelated checkpoint push ignored; active PR run preferred over a cancelled PR run; latest completed attempt selection; push fallback; SHA/workflow/branch mismatch filtering; empty-state formatting.
+- Local isolated Python regression: **6/6 tests PASS**.
+- On latest PR #23 head `0003de0ab7f469a8523fa5370828f6d1d4fe43aa`, exact-head CI run [42612676089](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42612676089) is IN PROGRESS; the dedicated `Test Q92 exact-head CI run selector` step is already SUCCESS.
+- Latest artifact-backed Q92 run [42612668612](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42612668612) is IN PROGRESS at exact-head CI wait. **No Q92 shard jobs have started.**
+- Earlier Q92 run [42612641888](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42612641888) on superseded commit `f90251affd55962f796477d32ebf42059b1cfa38` ended FAILURE because its exact-head CI was cancelled when PR #23 advanced; no shard execution.
+- Synthetic Q92 runner acceptance [42612641910](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42612641910) and global Holm/paired inference acceptance [42612641787](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42612641787) completed SUCCESS on that superseded head. The latest preflight will replay the synthetic regressions on the current exact head.
+
+Readback identities on PR #23 head `0003de0ab7f469a8523fa5370828f6d1d4fe43aa`:
+- CI workflow blob: `83e868bbb44e2046bd8e542fb6a2eca031048efc`.
+- Q92 common source-hash manifest blob: `647025282b57938ca66549757ef512e2bfd3dfb5`.
+- Q92 full-walkforward workflow blob: `dcf28fe7c50411e97a1628cd2f20a152bdf9751b`.
+- CI gate helper blob: `73e88f5a77049f5371fb83e1f2f9cbce8068a10e`.
+- CI gate regression test blob: `6f1ebf57309a7c8f727452a87924124e8446c8f0`.
+
+## Updated immediate next action
+
+1. Wait for exact-head full project CI [42612676089](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42612676089) to complete SUCCESS.
+2. Confirm Q92 preflight [42612668612](https://github.com/jamesnuvola/vincasa-lab/actions/runs/42612668612) passes its exact branch/sha gate and replays all synthetic regressions.
+3. Only after that, start the 15 immutable Q92 shards. Preserve shard checkpoints and do not proceed to global aggregation unless every shard artifact reconciles.
+4. Apply discrete-null p-value replay and global Holm, freeze Discovery→Validation, then paired Blind OOS against same-archive Q89. Persistence, digest/byte readback, exact-head CI and human review remain mandatory.
+
 ## Next action
 
 1. Confirm exact-head CI `42611974913` completes SUCCESS with the legacy Q80-Q86 regeneration scoped out and all other project checks intact.
