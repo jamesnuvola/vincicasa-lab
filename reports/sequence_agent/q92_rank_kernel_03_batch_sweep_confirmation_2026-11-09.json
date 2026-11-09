@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q92",
+  "experiment_id": "Q92-RANK-KERNEL-03",
+  "status": "SYNTHETIC_ACCEPTANCE_PASS_CONFIRMATION",
+  "recorded_on": "2026-11-09",
+  "confirmation_run_id": 42598046222,
+  "confirmation_run_url": "https://github.com/jamesnuvola/vincasa-lab/actions/runs/42598046222",
+  "source_commit": "4ab71fec66eaa7bbd0331ea6340347a55a5e8882",
+  "protocol_path": "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_preregistration_2026-11-09.json",
+  "formula_sample_count": 4096,
+  "seed": 920092,
+  "actual_number_seed": 920093,
+  "actual_number_indices": [
+    1,
+    2,
+    8,
+    35,
+    39
+  ],
+  "repeats": 25,
+  "baseline": {
+    "batch_size": 1024,
+    "batch_count": 4,
+    "median_seconds": 0.003947015000008491,
+    "min_seconds": 0.0038275440000035132,
+    "max_seconds": 0.009031718000002797,
+    "formulas_per_second": 1037746.2462116785,
+    "full_stable_rank": true
+  },
+  "candidates": [
+    {
+      "batch_size": 512,
+      "batch_count": 8,
+      "median_seconds": 0.0013220199999892657,
+      "min_seconds": 0.0012477369999999155,
+      "max_seconds": 0.001367920999996386,
+      "formulas_per_second": 3098288.982037532,
+      "speedup_vs_baseline": 2.9855940152497995,
+      "exact_rank_parity": true
+    },
+    {
+      "batch_size": 1024,
+      "batch_count": 4,
+      "median_seconds": 0.001048273999998628,
+      "min_seconds": 0.0010013059999920415,
+      "max_seconds": 0.003991697000003569,
+      "formulas_per_second": 3907375.3617902966,
+      "speedup_vs_baseline": 3.7652512606567154,
+      "exact_rank_parity": true
+    },
+    {
+      "batch_size": 2048,
+      "batch_count": 2,
+      "median_seconds": 0.0010130980000013778,
+      "min_seconds": 0.0009774130000010928,
+      "max_seconds": 0.004066432000001896,
+      "formulas_per_second": 4043044.2069715164,
+      "speedup_vs_baseline": 3.8959853834506863,
+      "exact_rank_parity": true
+    },
+    {
+      "batch_size": 4096,
+      "batch_count": 1,
+      "median_seconds": 0.0010764379999983475,
+      "min_seconds": 0.0009939589999987675,
+      "max_seconds": 0.012092230000007476,
+      "formulas_per_second": 3805142.516342128,
+      "speedup_vs_baseline": 3.6667369602471767,
+      "exact_rank_parity": true
+    }
+  ],
+  "selected_batch_size": 2048,
+  "selected_batch_speedup": 3.8959853834506863,
+  "minimum_registered_speedup": 1.25,
+  "full_sample_rank_vectors_exactly_equal": true,
+  "decision": "PASS",
+  "synthetic_test_suites": {
+    "q92_walkforward": 5,
+    "q92_null_calibration": 8,
+    "both": "OK"
+  },
+  "scope": "synthetic engineering benchmark only; no historical lottery outcomes evaluated",
+  "limitations": [
+    "host timing variability between the initial sweep and confirmation is present, but batch 2048 remained the best in both and exceeded the registered threshold",
+    "no full historical Q92 shard has run"
+  ],
+  "next_action": "Complete exact-head full project CI and build the artifact-backed historical 15-shard execution/persistence workflow."
+}
