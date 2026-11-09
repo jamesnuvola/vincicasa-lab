@@ -7,7 +7,7 @@ Recorded: 2026-11-09 08:14 Europe/Rome (07:14:33 UTC)
 - Exact-byte persistence checkpoint: commit `95e6d7b24f0a92318741b9fdb82fb856becd5436`; 22 files, 47,651,846 bytes, all byte-readback verified.
 - Archive: 3,402 draws through 2026-11-08; blob SHA-1 `77ca692a6082809fcc6c471501617433ec7c36cf`; SHA-256 `5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b`.
 - Q89 candidate frozen before Blind OOS: `P9_06_09_12_14_15_17_18_19_23`; Blind Top-5 11.7910% versus uniform 12.5%; no catalog formula/split Holm row below 0.05. Pending human review; not promoted.
-- Q89 exact-head project CI [42575002564](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42575002564): SUCCESS.
+- Q89 exact-head project CI after persistence: run [42576056851](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42576056851) on branch head `3e8c108dd18a5c09afdd67ed377882998bc26739`: SUCCESS. The earlier run [42575002564](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42575002564) was on pre-persistence head `03b6cd37af44035b403b05cd11c067a1bd69dd9f` and is not the persisted exact-head gate.
 
 ## Quantitative calibration finding
 Q92 family: 75,926,565 tests; first Holm step alpha/m = 6.58531e-10. Full-support audit over N=670 and 2,012 and Top-k=5/10/20 found normal-tail relative error up to 68.22% for Top-5/N=670, 49.48% for Top-5/N=2,012, and 44.11%/29.09% for Top-10. Top-20 errors are smaller (2.74%/0.91%).
