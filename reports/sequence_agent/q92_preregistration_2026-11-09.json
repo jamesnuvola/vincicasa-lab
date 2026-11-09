@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q92",
+  "protocol_id": "Q92-ten-feature-equal-weight-catalog-2026-11-09",
+  "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+  "registered_at_utc": "2026-11-09T00:21:01Z",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "canonical_main_commit_sha": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+    "canonical_main_git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "draw_count": 3402,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-08",
+    "latest_quintet": [
+      3,
+      7,
+      10,
+      16,
+      27
+    ],
+    "prior_archive_cutoff": "2026-11-07"
+  },
+  "hypothesis": "Exhaustively extend the finite equal-weight formula grammar from nine to ten prior-only features. A Discovery→Validation-selected ten-feature formula may improve blind number-hit ranking over a nine-feature formula selected by the identical procedure on the same canonical archive and chronological splits. Blind OOS must not be used for candidate selection.",
+  "formula_universe": {
+    "feature_count": 27,
+    "subset_size": 10,
+    "formula_count": 8436285,
+    "formula_count_check": "C(27,10)=8436285",
+    "enumeration": "lexicographic combinations over the registered 27 prior-only feature columns",
+    "formula_id_prefix": "P10_",
+    "formula_batch_size": 1024,
+    "formula_batch_count": 8239,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "shard_partition": "contiguous lexicographic formula-rank intervals; ranks 0..8436284 exactly once, no gaps/overlaps"
+  },
+  "walkforward": {
+    "minimum_prior_history": 50,
+    "target_count": 3402,
+    "scored_targets": 3352,
+    "split_rule": "discovery if target_offset/scored_targets < 0.60; validation if <0.80; else blind_oos",
+    "expected_split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "target_start_date": "2017-09-05",
+    "target_end_date": "2026-11-08",
+    "prior_only_cutoff": "For target archive index i, every feature uses draws[0:i] only; record cutoff date i-1; rank all 40 numbers before reading/scoring target i; update state only after scoring.",
+    "metrics_rows": 25308855,
+    "target_ledger_rows": 3352,
+    "scoring_rule": "At each target prefix, z-score each of the 27 registered features across numbers 1..40; score each unordered ten-feature subset by equal-weight arithmetic mean of its ten standardized columns.",
+    "ledger_fields": [
+      "target_date",
+      "cutoff_date",
+      "prior_draws",
+      "actual_quintet",
+      "all_27_single_feature_ranks",
+      "best_retrospective_10_feature_formula_and_ranks"
+    ],
+    "retrospective_best_formula": "Descriptive upper bound only; never an ex-ante forecast or candidate-selection rule."
+  },
+  "candidate_selection": {
+    "rule": "Within each formula universe, Discovery top-100 by mean number_hits_top5; tie-break lower mean rank then lexicographic formula_id; select one on Validation with the same tie-break. Freeze Q92 and Q89 candidates before Blind OOS.",
+    "q89_control_requirement": "Re-run the nine-feature catalog/selection on this exact 2026-11-08 archive and split layout. Do not reuse Q89 candidate selected from the 2026-11-07 archive.",
+    "blind_oos_used_for_selection": false
+  },
+  "primary_comparison": {
+    "endpoint": "paired difference in Blind OOS Top-5 number-hit share, Q92 candidate minus Q89 control",
+    "secondary_endpoints": [
+      "Top-10 number-hit share",
+      "Top-20 number-hit share",
+      "mean rank of actual numbers"
+    ],
+    "inference": {
+      "bootstrap": {
+        "method": "circular moving-block bootstrap percentile CI",
+        "replicates": 20000,
+        "block_length": 7,
+        "seed": 920027,
+        "confidence_level": 0.95
+      },
+      "signflip": {
+        "method": "circular block sign-flip randomization, two-sided",
+        "replicates": 20000,
+        "block_length": 7,
+        "seed": 920028
+      },
+      "multiple_testing": {
+        "method": "Holm-Bonferroni",
+        "family_size": 4,
+        "endpoints": [
+          "Top-5 primary",
+          "Top-10 secondary",
+          "Top-20 secondary",
+          "mean rank secondary"
+        ]
+      }
+    },
+    "uniform_number_rank_baseline": {
+      "mean_number_hits_top5": 0.125,
+      "mean_number_hits_top10": 0.25,
+      "mean_number_hits_top20": 0.5,
+      "mean_rank_of_actual_numbers": 20.5
+    }
+  },
+  "multiple_testing": {
+    "method": "Global Holm-Bonferroni across the complete formula×split×endpoint family",
+    "family_size": 75926565,
+    "calculation": "8436285 formulas × 3 chronological splits × 3 primary catalog endpoints",
+    "p_value_method": "For each target, X_k~Hypergeometric(N=40,K=k,n=5); aggregate split-level means/variances and use continuity-corrected normal upper-tail approximation. Exploratory approximation, not exact.",
+    "endpoints": [
+      {
+        "name": "number_hits_top5",
+        "k": 5
+      },
+      {
+        "name": "number_hits_top10",
+        "k": 10
+      },
+      {
+        "name": "number_hits_top20",
+        "k": 20
+      }
+    ],
+    "limitation": "Holm is valid under arbitrary dependence only when input p-values are valid; finite-population normal approximation and lottery-independence assumptions remain limitations."
+  },
+  "acceptance_criteria": [
+    "exact 8,436,285 formula count and 15 shard boundaries verified; every combinadic rank occurs once",
+    "strict-prefix target coverage 3,352 and split counts 2,012/670/670 reconciled to canonical archive SHA",
+    "all formula×split metric rows (25,308,855) and target ledger rows (3,352) validated",
+    "global Holm family contains 75,926,565 formula×split×endpoint tests; no endpoint family silently omitted",
+    "Discovery top-100 and Validation selection deterministic; Q92 and refreshed Q89 candidate IDs frozen before Blind OOS",
+    "paired blind ledger target dates, cutoff dates, actual quintets, rank vectors, hit counts, rank sums and deltas replay exactly",
+    "paired bootstrap/sign-flip inference replayed from persisted ledger with fixed seeds and Holm over four endpoints",
+    "all output files persisted append-only and re-read byte-for-byte; exact-head CI passes; human review/integration remains mandatory"
+  ],
+  "limitations": [
+    "finite equal-weight ten-feature subset grammar only; weighted, nonlinear, conditional and interaction formulas remain untested",
+    "this finite catalog does not exhaust the infinite mathematical formula universe",
+    "historical blind OOS has prior SONAR exposure and is not independent prospective confirmation",
+    "global formula-family p-values are approximate and exploratory"
+  ],
+  "guardrails": {
+    "no_automatic_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "preserve_immutable_2026_10_25_freeze": true,
+    "prs_6_7_8_untouched": true,
+    "run_completion_requires_acceptance_persistence_exact_head_ci_and_human_review": true
+  },
+  "next_action": "Implement deterministic Q92 combinadic enumeration, shard runner, acceptance validator and synthetic regression tests. Execute only after Q89 recovery is accepted and the Q89 control is refreshed on the same canonical 2026-11-08 archive/splits."
+}

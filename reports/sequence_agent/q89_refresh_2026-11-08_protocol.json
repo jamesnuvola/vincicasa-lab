@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q89_REFRESH_2026_11_08",
+  "protocol_id": "Q89-nine-feature-incremental-refresh-2026-11-08",
+  "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+  "registered_at_utc": "2026-11-09T01:28:00Z",
+  "hypothesis": "The Q89 nine-feature candidate selected by the frozen Discovery→Validation rule can be refreshed exactly for the canonical 2026-11-08 archive by adding the three target-level metric deltas caused by the chronological split boundary shift and the one new target, without re-evaluating the unchanged 3,349 target outcomes.",
+  "source_archives": {
+    "q89_base": {
+      "commit_sha": "95bb4e8b4a950fb4ba80d46e44fd91fef83f6def",
+      "git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "draw_count": 3401,
+      "first_date": "2017-07-17",
+      "last_date": "2026-11-07",
+      "source_archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+    },
+    "canonical_refresh": {
+      "main_commit_sha": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+      "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "draw_count": 3402,
+      "first_date": "2017-07-17",
+      "last_date": "2026-11-08",
+      "latest_quintet": [
+        3,
+        7,
+        10,
+        16,
+        27
+      ]
+    }
+  },
+  "formula_universe": {
+    "feature_count": 27,
+    "formula_size": 9,
+    "formula_count": 4686825,
+    "shard_count": 15,
+    "formulas_per_shard": 312455,
+    "formula_id_prefix": "P9_",
+    "rank_partition": "contiguous lexicographic rank intervals, 0..4,686,824 exactly once"
+  },
+  "split_transition": {
+    "old": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "new": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "target_deltas": [
+      {
+        "offset": 2011,
+        "index": 2061,
+        "target_date": "2023-03-09",
+        "cutoff_date": "2023-03-08",
+        "prior_draws": 2061,
+        "actual_quintet": "5 19 32 33 37",
+        "movement": "old_validation_to_new_discovery"
+      },
+      {
+        "offset": 2681,
+        "index": 2731,
+        "target_date": "2025-01-07",
+        "cutoff_date": "2025-01-06",
+        "prior_draws": 2731,
+        "actual_quintet": "5 17 18 23 33",
+        "movement": "old_blind_to_new_validation"
+      },
+      {
+        "offset": 3351,
+        "index": 3401,
+        "target_date": "2026-11-08",
+        "cutoff_date": "2026-11-07",
+        "prior_draws": 3401,
+        "actual_quintet": "3 7 10 16 27",
+        "movement": "new_target_in_new_blind_oos"
+      }
+    ],
+    "exact_count_adjustments": {
+      "discovery": "old_discovery + target_offset_2011",
+      "validation": "old_validation - target_offset_2011 + target_offset_2681",
+      "blind_oos": "old_blind_oos - target_offset_2681 + target_offset_3351"
+    }
+  },
+  "scoring": {
+    "strict_prefix": "For target archive index i, feature stack uses draws[0:i] only; record cutoff date i-1. Use the exact existing Q81 27-feature z-score stack and Q89 equal-weight 9-feature scoring/rank tie-break.",
+    "delta_metrics": [
+      "number_hits_top5",
+      "number_hits_top10",
+      "number_hits_top20",
+      "all5_top5",
+      "all5_top10",
+      "all5_top20",
+      "rank_sum"
+    ],
+    "raw_p_values": "Recompute continuity-corrected normal approximation to summed Hypergeometric(40,k,5) using refreshed integer hit counts and new split target counts."
+  },
+  "multiple_testing": {
+    "method": "Global Holm-Bonferroni",
+    "family_size": 42181425,
+    "calculation": "4,686,825 formulas × 3 chronological splits × 3 endpoints",
+    "endpoint_names": [
+      "Top-5 number hits",
+      "Top-10 number hits",
+      "Top-20 number hits"
+    ],
+    "p_value_method": "Exploratory continuity-corrected normal approximation; not exact."
+  },
+  "candidate_selection": {
+    "rule": "Discovery top100 by mean Top-5 number-hit share; tie-break lower mean rank then lexicographic formula_id; select one on Validation with same tie-break.",
+    "blind_oos_used_for_selection": false,
+    "control_for_q92": "Freeze the Q89 candidate ID from this exact 2026-11-08 archive/split layout before Q92 Blind OOS."
+  },
+  "persistence": {
+    "strategy": "Persist 15 deterministic gzip delta shards (one formula row per P9 formula, seven metrics for each of the three affected target offsets), target-delta ledger, refreshed Q89 candidate shortlist/selection, report and manifest. Do not duplicate the complete 14,060,475-row Q89 metrics catalog: the prior accepted Q89 metrics parts plus these exact target delta shards reconstruct all refreshed split counts and raw p-values.",
+    "outputs": [
+      "reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_{0..14}_delta_metrics.csv.gz",
+      "reports/sequence_agent/q89_refresh_20261108_target_delta_ledger.csv",
+      "reports/sequence_agent/q89_refresh_20261108_candidate_shortlist.csv",
+      "reports/sequence_agent/q89_refresh_20261108_candidate_selection.json",
+      "reports/sequence_agent/q89_refresh_20261108_report.json",
+      "reports/sequence_agent/q89_refresh_20261108_manifest.json"
+    ]
+  },
+  "acceptance_criteria": [
+    "Old Q89 source archive freeze blob SHA1 and SHA256 reconcile to the accepted Q89 report/manifest.",
+    "New archive is exactly canonical main commit 6cca9022 and blob 77ca692a; 3,402 unique chronological draws through 2026-11-08.",
+    "All three target offsets/dates/cutoffs/actual quintets reconcile exactly; every feature uses strict prefix only.",
+    "All 4,686,825 formula ranks occur once across 15 delta shards with 312,455 rows each; no gaps/overlaps.",
+    "Refreshed integer metrics satisfy count bounds and exact split target totals 2,012/670/670.",
+    "Global Holm family size 42,181,425 and all three endpoint families included.",
+    "Discovery top100 and Validation selection are deterministic; Q89 candidate ID frozen before Blind OOS.",
+    "Delta shards, selection, report and manifest are persisted append-only and read back byte-for-byte; current-head CI passes; human review remains mandatory."
+  ],
+  "limitations": [
+    "This is an exact incremental refresh of the accepted Q89 base catalog, not a full recomputation across all 3,352 targets.",
+    "It depends on the accepted Q89 2026-11-07 aggregate metrics and exact delta scores for the three affected target offsets.",
+    "Catalog-level p-values remain exploratory approximations; historical Blind OOS is not independent prospective confirmation.",
+    "Q92 ten-feature execution remains gated until this Q89 control refresh is accepted."
+  ],
+  "guardrails": {
+    "no_automatic_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "preserve_immutable_2026_10_25_freeze": true,
+    "prs_6_7_8_untouched": true,
+    "human_review_required": true
+  },
+  "next_action": "Implement the deterministic Q89 delta shard runner, aggregation/acceptance tests and workflow; run only after current-head Q89 acceptance and CI are complete, then use the refreshed Q89 candidate as the Q92 control."
+}
