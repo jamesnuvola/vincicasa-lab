@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q85-REGIME-TRANSITION-01",
+  "experiment_id": "Q85-CAUSAL-STATE-ACCELERATION-GATES",
+  "registered_at_utc": "2026-11-09T23:46:30+01:00",
+  "status": "PREREGISTERED_BEFORE_EXECUTION",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "draw_count": 3402,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-08",
+    "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+  },
+  "motivation": "Q84's 40-node field passed strict-prior acceptance but did not improve the selected Top20 strategy over equal42 in Validation or Blind OOS. Its selected field rule had Validation Top20 2.4953 versus 2.4984 for equal42, and Blind OOS 2.5413 versus 2.5460. The next test asks whether the field's transition speed/acceleration, rather than its static level, should govern how strongly node and graph signals perturb the base ranking.",
+  "quantitative_hypothesis": "A causal rolling percentile of node-field acceleration or pair-graph acceleration may identify when the reversion or graph signal should be strengthened versus damped. Four fixed adaptive operators use alpha in [0.10,0.30], with the percentile computed only from prior target states. The Discovery-selected operator must deliver at least +0.10 mean Top20 hits/target over equal42 on Blind OOS, paired moving-block 95% CI lower bound >0, paired Holm p<0.05, and global exact-null Holm p<0.05.",
+  "state_transition": {
+    "node_speed": "RMS difference between current and previous 40x6 standardized node-state matrices.",
+    "node_acceleration": "RMS difference between current node-state velocity and the previous target's node-state velocity.",
+    "graph_speed": "RMS difference between current and previous symmetric 40x40 pair-residual matrices.",
+    "graph_acceleration": "RMS difference between current graph velocity and the previous target's graph velocity.",
+    "percentile": "Mid-rank empirical percentile of the current acceleration against at most 300 previously scored target-state accelerations; use 0.5 until 100 prior states exist.",
+    "alpha_up": "0.10 + 0.20 * percentile.",
+    "alpha_down": "0.30 - 0.20 * percentile."
+  },
+  "models": {
+    "baselines": ["BASE::EQUAL42", "BASE::FLOW_K50"],
+    "fixed_controls": ["FIXED::REVERSION_A20", "FIXED::GRAPH_MIX_A20"],
+    "adaptive_candidates": [
+      "DYN::REV_NODE_ACCEL_UP",
+      "DYN::REV_NODE_ACCEL_DOWN",
+      "DYN::GRAPH_ACCEL_UP",
+      "DYN::GRAPH_ACCEL_DOWN"
+    ],
+    "model_count": 8,
+    "selection": "Discovery only: highest mean Top20 hits/target among four adaptive candidates; tie lower mean actual rank, then stable ID.",
+    "blind_oos_used_for_selection": false
+  },
+  "walkforward": {
+    "minimum_prior_history": 200,
+    "targets": 3202,
+    "split_counts": {"discovery": 1921, "validation": 640, "blind_oos": 641},
+    "split_rule": "First floor(60%) Discovery, next through floor(80%) Validation, remainder Blind OOS.",
+    "causal_gate_rule": "For target i, compute current node/graph accelerations from states based only on draws[0:i]. Compute percentile from target-state accelerations scored strictly before i. Append the current state acceleration only after ranking and scoring target i.",
+    "adaptive_alpha_range": [0.10, 0.30],
+    "target_ledger": "One row per target with prior cutoff, actual quintet, transition metrics, prior-only percentiles, adaptive alphas and complete 40-number rank permutations for all eight models."
+  },
+  "inference": {
+    "primary_endpoint": "Mean actual-number hits in Top20",
+    "secondary_endpoints": ["Top10 hits", "Top5 hits", "Top20 4+ and 5/5 counts", "mean actual-number rank"],
+    "exact_null": "Per-target Hypergeometric(40,k,5) hit count under independent uniform 5-of-40 reference; discrete upper-tail convolution across each fixed split.",
+    "exact_null_multiple_testing": "One global Holm-Bonferroni family across 8 models x 3 splits x 3 endpoints = 72 tests.",
+    "paired_comparison": "Circular moving-block bootstrap, block length 20, 2,000 replicates, fixed seeds. Discovery-selected adaptive model versus equal42, flow K50, fixed reversion A20 and fixed graph-mix A20 on Validation and Blind OOS.",
+    "paired_multiple_testing": "One Holm-Bonferroni family across 2 splits x 4 comparators x 4 endpoints = 32 paired tests.",
+    "primary_gate": [
+      "Selected adaptive Blind OOS Top20 mean >= 2.5",
+      "Blind OOS paired Top20 lift versus equal42 >= +0.10 hits/target",
+      "Paired 95% moving-block bootstrap lower bound > 0",
+      "Paired Holm-adjusted p < 0.05",
+      "Global exact-null Holm-adjusted Blind OOS Top20 p < 0.05"
+    ]
+  },
+  "guardrails": [
+    "No target or future row enters current node state, graph, transition, percentile, alpha or ranking.",
+    "Current target state is appended to rolling percentile history only after it is scored.",
+    "Only Discovery selects the adaptive operator; Validation and Blind OOS do not tune parameters.",
+    "All eight models and all endpoints/splits enter one global exact-null Holm family.",
+    "All paired endpoint/comparator/split tests enter a separate global Holm family.",
+    "Historical Blind OOS is already exposed to prior SONAR research; it is exploratory, not a virgin holdout.",
+    "No automatic merge, engine promotion, prospective shadow insertion or immutable freeze modification."
+  ],
+  "limitations": [
+    "Four adaptive operators form a finite preregistered grammar, not every possible dynamic field function.",
+    "The pair graph is a historical association descriptor, not physical coupling.",
+    "The uniform independent 5-of-40 null is a reference calibration, not proof of the generating mechanism.",
+    "A historical regime association does not establish prospective predictive value."
+  ],
+  "next_action": "Execute the causal transition walk-forward, replay all rank vectors and percentile histories, persist exact-byte artifacts, then request human review and prospective confirmation."
+}
