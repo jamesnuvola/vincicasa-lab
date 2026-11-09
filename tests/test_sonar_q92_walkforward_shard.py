@@ -25,8 +25,8 @@ class Q92WalkForwardTests(unittest.TestCase):
         self.assertEqual(intervals[0][0],0)
         self.assertEqual(intervals[-1][1],q92.TOTAL_FORMULA_COUNT)
         self.assertTrue(all(intervals[index][1]==intervals[index+1][0] for index in range(14)))
-        self.assertEqual(len(q92.batch_ranges(q92.SHARD_SIZE)),550)
-        self.assertEqual(len(q92.batch_ranges(q92.TOTAL_FORMULA_COUNT)),8_239)
+        self.assertEqual(len(q92.batch_ranges(q92.SHARD_SIZE)),138)
+        self.assertEqual(len(q92.batch_ranges(q92.TOTAL_FORMULA_COUNT)),2_060)
         sample_ranks=[0,1,1000,q92.TOTAL_FORMULA_COUNT//2,q92.TOTAL_FORMULA_COUNT-1]
         for rank in sample_ranks:
             columns=q92.formula_unrank(rank)
@@ -39,19 +39,19 @@ class Q92WalkForwardTests(unittest.TestCase):
         self.assertTrue(0.0<=q92null.exact_upper_tail_pvalue(100,670,5)<=1.0)
 
     def test_rank_matrix_stable_lower_number_tie_break(self):
-        scores=np.asarray([[1.0,2.0],[1.0,0.0],[0.0,2.0]],dtype=np.float64)
+        scores=np.asarray([[1.0,1.0,0.0],[2.0,0.0,2.0]],dtype=np.float64)
         ranks=runner.rank_matrix(scores)
-        self.assertEqual(ranks[:,0].tolist(),[1,2,3])
-        self.assertEqual(ranks[:,1].tolist(),[1,3,2])
+        self.assertEqual(ranks[0,:].tolist(),[1,2,3])
+        self.assertEqual(ranks[1,:].tolist(),[1,3,2])
 
     def test_equal_weight_matrix_has_exactly_ten_features_per_formula(self):
         formulas=[tuple(range(10)),tuple(range(1,11))]
         weights=runner.build_formula_weight_matrix(formulas)
-        self.assertEqual(weights.shape,(27,2))
-        self.assertTrue(np.allclose(weights.sum(axis=0),[1.0,1.0]))
-        self.assertEqual(np.count_nonzero(weights[:,0]),10)
-        self.assertEqual(np.count_nonzero(weights[:,1]),10)
-        self.assertTrue(np.allclose(weights[ list(formulas[0]),0],0.1))
+        self.assertEqual(weights.shape,(2,27))
+        self.assertTrue(np.allclose(weights.sum(axis=1),[1.0,1.0]))
+        self.assertEqual(np.count_nonzero(weights[0,:]),10)
+        self.assertEqual(np.count_nonzero(weights[1,:]),10)
+        self.assertTrue(np.allclose(weights[0,list(formulas[0])],0.1))
 
     def test_main_synthetic_three_target_strict_prefix_replay(self):
         with tempfile.TemporaryDirectory() as tmp:
