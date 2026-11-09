@@ -54,6 +54,12 @@ class Q84PerNumberFieldTests(unittest.TestCase):
             self.assertTrue(all(0<=v<=1 for v in p))
             self.assertTrue(all(p[i+1] <= p[i]+1e-12 for i in range(len(p)-1)))
 
+    def test_raw_float_signature_drift_is_diagnostic_not_rank_acceptance(self):
+        from validate_sonar_per_number_field_dynamics import field_signature_mismatch_is_diagnostic
+        self.assertFalse(field_signature_mismatch_is_diagnostic("abc", "abc"))
+        self.assertTrue(field_signature_mismatch_is_diagnostic("abc", "def"))
+
+
     def test_registered_family_dimensions(self):
         self.assertEqual(len(field.MODEL_IDS),14)
         self.assertEqual(len(field.FIELD_IDS),12)
