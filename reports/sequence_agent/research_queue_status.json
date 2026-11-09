@@ -1,9 +1,9 @@
 {
-  "generated_at_utc": "2026-11-08T20:55:29.423674+00:00",
+  "generated_at_utc": "2026-11-09T00:36:21.623987+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
-  "task_count": 16,
+  "task_count": 17,
   "complete_count": 2,
   "ready_count": 1,
   "active_next_task": "Q84",
@@ -331,6 +331,29 @@
         "report the uniform number-rank baseline and preserve exploratory/null results without automatic promotion",
         "document that this is a finite eight-feature equal-weight grammar; weighted, conditional, nonlinear, interaction and higher-order formula families remain open",
         "preserve immutable freezes and require human review/integration before Q88 is marked COMPLETE"
+      ]
+    },
+    {
+      "id": "Q89",
+      "priority": 89,
+      "title": "Exhaustively evaluate all nine-feature equal-weight combinations with 15 deterministic shards and a frozen paired blind candidate",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+      "depends_on": [
+        "Q00",
+        "Q88"
+      ],
+      "missing_evidence": [],
+      "validation_errors": [],
+      "acceptance_criteria": [
+        "evaluate all 4,686,825 unique nine-feature equal-weight combinations from the 27 registered prior-only features, using combinadic rank/unrank and 15 contiguous deterministic shards of 312,455 formulas each",
+        "walk-forward score all 3,351 targets with at least 50 prior draws; discovery 2,011, validation 670, blind OOS 670; every feature vector uses the strict prefix before the target",
+        "produce 14,060,475 formula-by-split metric rows with exact shard/split formula coverage and a 3,351-target ledger reconciling actual quintets, immediate prior cutoffs, all 27 single-feature ranks and retrospective best formula",
+        "apply global Holm-Bonferroni across all 42,181,425 formula×split×endpoint tests under the registered continuity-corrected summed Hypergeometric(40,k,5) null approximation, labeling it exploratory",
+        "select top 100 formulas on Discovery Top-5 hit share, then select one on Validation using the frozen tie-break; apply the identical rule to accepted Q88 metrics for an eight-feature control; never use Blind OOS for candidate selection",
+        "persist a frozen candidate shortlist/selection record and a paired 670-target blind ledger comparing the selected Q89 formula against the selected Q88 control",
+        "compute 20,000 circular moving-block bootstrap replicates (L=7, seed 890027), 20,000 circular block sign-flip replicates (L=7, seed 890028), and Holm correction across Top-5 primary plus Top-10/Top-20 secondary endpoints",
+        "persist metrics in deterministic gzip chunks with row ranges, byte counts and SHA-256 manifest; validate all outputs and exact-byte reread on the exact commit",
+        "require exact-head CI and human review/integration before Q89 can be marked COMPLETE; no automatic merge, promotion or shadow-stream insertion"
       ]
     }
   ],
