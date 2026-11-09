@@ -111,3 +111,10 @@ Date: 2026-11-09
 - The report is intact after stripping that suffix. The recovery script now writes a real newline and permits only this exact one-time repair; all other immutable paths remain protected.
 - The previous recovery wait job also searched only the latest 30 branch runs. It is now changed to query GitHub Actions by exact `head_sha`, and recovery concurrency is set to cancel stale waiting runs so a new recovery attempt cannot queue behind them indefinitely.
 - All 469 metric parts are already persisted and byte-read back; this recovery reuses them and the original aggregate artifact. No shard rerun.
+
+## Recovery attempt 9 — correct the literal-suffix repair predicate
+
+- Recovery attempt 8 passed exact-head CI, downloaded the original aggregate artifact, and read back all 469 persisted metric parts plus existing metadata. It failed only at the report-repair guard.
+- Root cause: the byte-suffix predicate was over-escaped in Python source and expected a three-byte sequence, while the existing report ends in the two literal bytes backslash + `n`.
+- The guard now parses both the old report (after removing exactly those two bytes) and the corrected report and permits repair only when the JSON objects are exactly equal. A unit test covers the known suffix, semantic equality, and rejection of real-newline/no-suffix cases.
+- All 469 metric parts remain persisted and immutable. Recovery attempt 9 reuses them and the original aggregate artifact; no historical shard rerun.

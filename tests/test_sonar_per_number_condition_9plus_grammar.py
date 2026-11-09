@@ -110,5 +110,12 @@ class Q89NineFeatureTests(unittest.TestCase):
         self.assertFalse(persist.is_repairable_output_path("reports/sequence_agent/per_number_condition_9plus_formula_metrics_manifest.json"))
         self.assertFalse(persist.is_repairable_output_path("reports/sequence_agent/per_number_condition_9plus_target_ledger.csv"))
 
+    def test_known_report_literal_backslash_n_repair_is_semantic_exact(self):
+        old=b'{"status":"ok"}\\n'
+        expected=b'{"status":"ok"}\n'
+        self.assertTrue(persist.is_known_report_suffix_repair(old,expected))
+        self.assertFalse(persist.is_known_report_suffix_repair(b'{"status":"different"}\\n',expected))
+        self.assertFalse(persist.is_known_report_suffix_repair(b'{"status":"ok"}\n',expected))
+
 if __name__=="__main__":
     unittest.main(verbosity=2)

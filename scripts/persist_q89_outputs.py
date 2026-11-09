@@ -64,6 +64,13 @@ def is_mutable_output_path(path):
 REPAIRABLE_OUTPUT_PATHS={"reports/sequence_agent/per_number_condition_9plus_grammar.json"}
 def is_repairable_output_path(path):
     return path in REPAIRABLE_OUTPUT_PATHS
+def is_known_report_suffix_repair(old_data,new_data):
+    if not old_data.endswith(b"\\n"):
+        return False
+    try:
+        return json.loads(old_data[:-2])==json.loads(new_data)
+    except (ValueError,TypeError):
+        return False
 def main():
     head=subprocess.run(["git","rev-parse","HEAD"],cwd=ROOT,check=True,stdout=subprocess.PIPE,text=True).stdout.strip()
     report_path=OUT/"per_number_condition_9plus_grammar.json"
@@ -139,8 +146,8 @@ def main():
         if existing and is_repairable_output_path(rel):
             old_blob=api("GET","/git/blobs/"+existing["sha"])
             old_data=base64.b64decode(old_blob["content"])
-            if not old_data.endswith(b"\\\\n") or old_data[:-2]!=data.rstrip(b"\\n"):
-                raise SystemExit("Q89_PERSIST_BLOCKED: report repair mismatch is not limited to the known literal\\n suffix")
+            if not is_known_report_suffix_repair(old_data,data):
+                raise SystemExit("Q89_PERSIST_BLOCKED: report repair mismatch is not limited to the known literal suffix")
             print("Q89_PERSIST_REPAIRABLE_JSON_NEWLINE: "+rel)
         if existing and not is_mutable_output_path(rel) and not is_repairable_output_path(rel):
             raise SystemExit("Q89_PERSIST_BLOCKED: existing immutable path conflicts with expected output: "+rel)
