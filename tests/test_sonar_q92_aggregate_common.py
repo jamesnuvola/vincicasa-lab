@@ -17,6 +17,13 @@ import sonar_q92_common as q92
 import sonar_q92_null_calibration as q92null
 
 class Q92AggregateCommonTests(unittest.TestCase):
+    def test_aggregate_checkout_sha_uses_environment_and_local_fallback(self):
+        with patch.dict("os.environ", {"GITHUB_SHA":"abc123"}, clear=False):
+            self.assertEqual(q92agg.aggregate_checkout_sha(),"abc123")
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertEqual(q92agg.aggregate_checkout_sha(),"LOCAL_UNPINNED")
+        self.assertEqual(q92agg.aggregate_checkout_sha({"GITHUB_SHA":"override"}),"override")
+
     def test_formula_id_parser_is_canonical_and_fail_closed(self):
         columns=tuple(range(10))
         fid="P10_"+"_".join(f"{value:02d}" for value in columns)
