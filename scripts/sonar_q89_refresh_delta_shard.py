@@ -101,11 +101,12 @@ def main():
     scored_targets=n-MIN_HISTORY
     if n!=EXPECTED_DRAW_COUNT or dates[-1]!=EXPECTED_LAST_DATE or scored_targets!=EXPECTED_TARGET_COUNT:
         raise SystemExit("Q89_REFRESH_BLOCKED: canonical 2026-11-08 archive dimensions/cutoff mismatch")
-    if SHARD_SIZE!=312455 or len(list(q89.iter_formula_slice(SHARD_START,SHARD_END)))!=SHARD_SIZE:
+    if SHARD_SIZE!=312455:
         raise SystemExit("Q89_REFRESH_BLOCKED: deterministic nine-feature shard count mismatch")
     formulas=list(q89.iter_formula_slice(SHARD_START,SHARD_END))
-    formula_ranks=[q89.formula_rank(columns) for columns in formulas]
-    if formula_ranks[0]!=SHARD_START or formula_ranks[-1]!=SHARD_END-1:
+    if len(formulas)!=SHARD_SIZE:
+        raise SystemExit("Q89_REFRESH_BLOCKED: formula shard enumeration count mismatch")
+    if q89.formula_rank(formulas[0])!=SHARD_START or q89.formula_rank(formulas[-1])!=SHARD_END-1:
         raise SystemExit("Q89_REFRESH_BLOCKED: formula rank boundaries mismatch")
     target_ledger=validate_target_delta_ledger(dates,draws,scored_targets)
     standardized_stack=q81.build_feature_stack(draws)
