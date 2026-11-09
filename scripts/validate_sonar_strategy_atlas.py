@@ -60,6 +60,7 @@ def fail(message):
 
 def validate(write_validation):
     dates, draws = archive_rows()
+    date_index = {d: i for i, d in enumerate(dates)}
     total = len(draws) - MIN_HISTORY
     if total <= 0:
         fail("no eligible targets")
@@ -133,9 +134,8 @@ def validate(write_validation):
         for row in reader:
             actual_rows += 1
             target = row["target_date"]
-            try:
-                idx = dates.index(target)
-            except ValueError:
+            idx = date_index.get(target)
+            if idx is None:
                 fail("ledger target not in canonical archive: " + target)
             if idx < MIN_HISTORY:
                 fail("ledger target has insufficient history")
