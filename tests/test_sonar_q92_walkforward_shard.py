@@ -26,6 +26,16 @@ class Q92WalkForwardTests(unittest.TestCase):
         self.assertTrue(all(intervals[index][1]==intervals[index+1][0] for index in range(14)))
         self.assertEqual(len(q92.batch_ranges(q92.SHARD_SIZE)),550)
         self.assertEqual(len(q92.batch_ranges(q92.TOTAL_FORMULA_COUNT)),8_239)
+        sample_ranks=[0,1,1000,q92.TOTAL_FORMULA_COUNT//2,q92.TOTAL_FORMULA_COUNT-1]
+        for rank in sample_ranks:
+            columns=q92.formula_unrank(rank)
+            self.assertEqual(q92.formula_rank(columns),rank)
+            self.assertTrue(q92.formula_id(columns).startswith("P10_"))
+        columns=q92.formula_unrank(1000)
+        for rank in range(1000,1100):
+            self.assertEqual(q92.formula_rank(columns),rank)
+            columns=q92.next_formula(columns)
+        self.assertTrue(0.0<=q92.hypergeom_upper_normal_p(100,670,5)<=1.0)
 
     def test_rank_matrix_stable_lower_number_tie_break(self):
         scores=np.asarray([[1.0,2.0],[1.0,0.0],[0.0,2.0]],dtype=np.float64)
