@@ -61,6 +61,23 @@ def api(method,path,payload=None):
 def sha256(data):
     return hashlib.sha256(data).hexdigest()
 
+def inspect_existing_payloads(payloads,current_map,read_blob,preloaded=None):
+    """Read current Git blobs once; return whether every append-only payload is already exact."""
+    cached=dict(preloaded or {})
+    all_exact=True
+    for relative,data in payloads.items():
+        entry=current_map.get(relative)
+        if not entry:
+            all_exact=False
+            continue
+        remote_bytes=cached.get(relative)
+        if remote_bytes is None:
+            remote_bytes=read_blob(entry["sha"])
+            cached[relative]=remote_bytes
+        if remote_bytes!=data or int(entry.get("size",-1))!=len(data) or sha256(remote_bytes)!=sha256(data):
+            all_exact=False
+    return all_exact,cached
+
 def blob_bytes(sha):
     blob=api("GET","/git/blobs/"+sha)
     if blob.get("encoding")!="base64":
@@ -162,6 +179,7 @@ def main():
     if current_tree.get("truncated"):
         raise SystemExit("Q89_PERSIST_BLOCKED: base tree is truncated")
     current_map={item["path"]:item for item in current_tree.get("tree",[]) if item.get("type")=="blob"}
+    existing_bytes_cache={}
     # Q89 queue status is mutable, unlike immutable target freezes. Allow only a guarded one-task append
     # against the exact preregistered queue blob; an idempotent retry retains the first accepted snapshot.
     queue_relative=QUEUE_STATUS_RELATIVE
@@ -169,6 +187,7 @@ def main():
     if queue_relative in current_map:
         existing_queue_sha=current_map[queue_relative]["sha"]
         remote_queue_bytes=blob_bytes(existing_queue_sha)
+        existing_bytes_cache[queue_relative]=remote_queue_bytes
         remote_queue=json.loads(remote_queue_bytes.decode("utf-8"))
         remote_q89=next((task for task in remote_queue.get("tasks",[]) if task.get("id")=="Q89"),None)
         if remote_q89:
@@ -186,28 +205,58 @@ def main():
     checkpoint_relative="reports/sequence_agent/q89_checkpoint_2026-11-08.json"
     if checkpoint_relative in current_map:
         remote_checkpoint_bytes=blob_bytes(current_map[checkpoint_relative]["sha"])
+        existing_bytes_cache[checkpoint_relative]=remote_checkpoint_bytes
         remote_checkpoint=json.loads(remote_checkpoint_bytes.decode("utf-8"))
         if remote_checkpoint.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION" or remote_checkpoint.get("source_archive_sha256")!=report.get("source_archive_sha256") or remote_checkpoint.get("formula_count")!=report.get("formula_count"):
             raise SystemExit("Q89_PERSIST_BLOCKED: existing checkpoint conflicts with accepted Q89 evidence")
         payloads[checkpoint_relative]=remote_checkpoint_bytes
+    all_payloads_exact,existing_bytes_cache=inspect_existing_payloads(payloads,current_map,blob_bytes,existing_bytes_cache)
+    if all_payloads_exact:
+        verified_bytes=0
+        for relative,data in payloads.items():
+            entry=current_map[relative]
+            reread=existing_bytes_cache[relative]
+            if reread!=data or int(entry.get("size",-1))!=len(data) or sha256(reread)!=sha256(data):
+                raise SystemExit("Q89_PERSIST_BLOCKED: idempotent exact-byte readback mismatch for "+relative)
+            verified_bytes+=len(reread)
+            print("Q89_PERSIST_VERIFIED: "+relative+" bytes="+str(len(data)))
+        output=os.environ.get("GITHUB_OUTPUT")
+        if output:
+            with open(output,"a",encoding="utf-8") as handle:
+                handle.write("commit_created=false\\ncommit_sha="+head+"\\n")
+        print(json.dumps({"task_id":"Q89","persisted_head_sha":head,"parent_sha":head,
+          "verified_file_count":len(payloads),"verified_bytes":verified_bytes,
+          "all_exact_commit_bytes_verified":True,"idempotent_retry":True,
+          "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION"},separators=(",",":")))
+        return
+
     elements=[]
     expected={}
     for relative,data in payloads.items():
         existing=current_map.get(relative)
+        changed=False
         if existing:
-            existing_bytes=blob_bytes(existing["sha"])
+            existing_bytes=existing_bytes_cache.get(relative)
+            if existing_bytes is None:
+                existing_bytes=blob_bytes(existing["sha"])
+                existing_bytes_cache[relative]=existing_bytes
             if existing_bytes==data:
                 blob_sha=existing["sha"]
             elif relative==queue_relative and queue_update_allowed:
                 blob=api("POST","/git/blobs",{"content":base64.b64encode(data).decode("ascii"),"encoding":"base64"})
                 blob_sha=blob["sha"]
+                changed=True
             else:
                 raise SystemExit("Q89_PERSIST_BLOCKED: append-only path already exists with different bytes: "+relative)
         else:
             blob=api("POST","/git/blobs",{"content":base64.b64encode(data).decode("ascii"),"encoding":"base64"})
             blob_sha=blob["sha"]
-        elements.append({"path":relative,"mode":"100644","type":"blob","sha":blob_sha})
+            changed=True
+        if changed:
+            elements.append({"path":relative,"mode":"100644","type":"blob","sha":blob_sha})
         expected[relative]={"blob_sha":blob_sha,"bytes":len(data),"sha256":sha256(data)}
+    if not elements:
+        raise SystemExit("Q89_PERSIST_BLOCKED: no tree changes planned but payload readback was not exact")
     tree=api("POST","/git/trees",{"base_tree":base_tree,"tree":elements})
     commit=api("POST","/git/commits",{"message":"Persist validated Q89 nine-feature formula catalog, global Holm family and paired blind OOS checkpoint [q89-persisted]","tree":tree["sha"],"parents":[head]})
     if api("GET","/git/ref/heads/"+BRANCH).get("object",{}).get("sha")!=head:

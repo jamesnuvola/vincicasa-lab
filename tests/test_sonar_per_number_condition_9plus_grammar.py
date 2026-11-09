@@ -81,6 +81,25 @@ class Q89FormulaUniverseTests(unittest.TestCase):
         self.assertEqual(first["paired_delta_number_hits_top5"],-5)
         self.assertEqual(differences["top5"][0],-5)
 
+    def test_persistence_idempotent_exact_payload_readback(self):
+        payloads={"reports/a.json":b"alpha\\n","reports/b.csv.gz":b"beta"}
+        current_map={
+            "reports/a.json":{"sha":"blob-a","size":len(payloads["reports/a.json"])},
+            "reports/b.csv.gz":{"sha":"blob-b","size":len(payloads["reports/b.csv.gz"])}
+        }
+        blobs={"blob-a":payloads["reports/a.json"],"blob-b":payloads["reports/b.csv.gz"]}
+        exact,cache=q89persist.inspect_existing_payloads(payloads,current_map,lambda sha:blobs[sha])
+        self.assertTrue(exact)
+        self.assertEqual(cache,blobs)
+        missing=dict(current_map)
+        del missing["reports/b.csv.gz"]
+        exact,_=q89persist.inspect_existing_payloads(payloads,missing,lambda sha:blobs[sha])
+        self.assertFalse(exact)
+        altered=dict(blobs)
+        altered["blob-b"]=b"wrong"
+        exact,_=q89persist.inspect_existing_payloads(payloads,current_map,lambda sha:altered[sha])
+        self.assertFalse(exact)
+
     def test_queue_status_append_guard_accepts_only_validated_q89_append(self):
         old={
             "generated_at_utc":"2026-11-08T20:55:29+00:00","project":"VinciCasa SONAR",
