@@ -108,7 +108,7 @@ jobs:
         env:
           PYTHONPATH: scripts
         run: |
-          python -m py_compile scripts/sonar_per_number_condition_9plus_shard.py scripts/aggregate_sonar_q89_shards.py
+          python -m py_compile scripts/sonar_per_number_condition_9plus_shard.py scripts/aggregate_sonar_q89_shards.py scripts/persist_q89_outputs.py scripts/sonar_research_queue.py
           python tests/test_sonar_per_number_condition_9plus_grammar.py -v
           python - <<'PY'
           from sonar_research_queue import validate_q80, validate_q88
