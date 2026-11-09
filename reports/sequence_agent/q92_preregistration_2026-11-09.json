@@ -115,7 +115,10 @@
       "selection_rule_changed": false,
       "primary_paired_comparison_changed": false,
       "technical_acceptance_can_complete_when_gate_fails": true,
-      "engine_promotion_allowed_when_gate_fails": false
+      "engine_promotion_allowed_when_gate_fails": false,
+      "evidence_scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+      "historical_blind_exposure_note": "The earlier failed Q92 run 42615347368 generated all 15 shard artifacts before this amendment; although no aggregate was accepted and these artifacts were not used for selection here, the historical Blind OOS must not be treated as an untouched prospective holdout.",
+      "prospective_confirmation_required": true
     }
   },
   "multiple_testing": {
@@ -156,7 +159,8 @@
     "The uploaded compact metric bundle is downloaded and SHA-256 byte-verified against the upload digest; the dedicated result branch outputs and persistence receipt are Git-tree/blob read back byte-for-byte. Result-branch CI and human review remain required before any promotion.",
     "Expose the Validation-frozen Q92 candidate's raw and global Holm-adjusted p-values for Top-5/Top-10/Top-20 in Discovery, Validation and Blind OOS; acceptance validator must replay these values from the full adjusted p-value vector.",
     "Report absolute Blind OOS Top-5 evidence separately from paired Q92-vs-Q89 lift; absolute above-uniform evidence requires mean number_hits_top5 > 0.125 and the candidate's global Holm-adjusted Blind OOS Top-5 p-value < 0.05.",
-    "A positive paired Q92-vs-Q89 result alone must not be described as absolute predictive advantage when the selected candidate does not pass the registered uniform-baseline gate."
+    "A positive paired Q92-vs-Q89 result alone must not be described as absolute predictive advantage when the selected candidate does not pass the registered uniform-baseline gate.",
+    "Classify all historical Q92 Blind OOS results, including the absolute uniform-baseline gate, as exploratory because the earlier failed run 42615347368 generated shard artifacts before this amendment; a confirmatory claim requires a newly preregistered prospective holdout of 670 new draws."
   ],
   "limitations": [
     "finite equal-weight ten-feature subset grammar only; weighted, nonlinear, conditional and interaction formulas remain untested",
@@ -164,7 +168,8 @@
     "historical blind OOS has prior SONAR exposure and is not independent prospective confirmation",
     "global formula-family p-values are approximate and exploratory",
     "The 0.005 primary paired Top-5 threshold is a practical acceptance gate, not a forecast; historical Blind OOS remains prior-exposed.",
-    "The Q89 comparator is below the uniform Top-5 baseline in the prior accepted refresh; relative improvement over Q89 can remain below uniform. Candidate-specific global Holm-adjusted p-values and the absolute uniform-baseline gate must therefore be reported separately."
+    "The Q89 comparator is below the uniform Top-5 baseline in the prior accepted refresh; relative improvement over Q89 can remain below uniform. Candidate-specific global Holm-adjusted p-values and the absolute uniform-baseline gate must therefore be reported separately.",
+    "The failed earlier Q92 run 42615347368 generated all 15 shard artifacts before the absolute-baseline amendment. The amendment is effective before the corrected replay but after prior historical computation; the historical Blind OOS is exposed to prior SONAR workflow and is not independent prospective confirmation."
   ],
   "guardrails": {
     "no_automatic_merge": true,
@@ -302,7 +307,7 @@
       "amendment_id": "Q92-ABSOLUTE-BASELINE-01",
       "registered_at_utc": "2026-11-09T14:51:32Z",
       "effective_before_corrected_full_walkforward_execution": true,
-      "rationale": "The registered paired primary comparison is against a Q89 candidate whose prior same-archive Blind OOS Top-5 share is below the uniform expectation of 0.125. A positive paired lift of at least 0.005 could therefore still leave Q92 below uniform. The aggregate previously computed the global Holm vector but did not expose the selected candidate's adjusted p-values, making the absolute baseline comparison difficult to audit.",
+      "rationale": "The registered paired primary comparison is against a Q89 candidate whose prior same-archive Blind OOS Top-5 share is below the uniform expectation of 0.125. A positive paired lift of at least 0.005 could therefore still leave Q92 below uniform. The aggregate previously computed the global Holm vector but did not expose the selected candidate's adjusted p-values, making the absolute baseline comparison difficult to audit. The prior failed Q92 run 42615347368 had already generated all 15 shard artifacts before this amendment; no aggregate was accepted and the artifacts were not used to choose this gate in the present cycle, but the historical Blind OOS is therefore treated as exposed/exploratory, not as untouched prospective confirmation.",
       "method": "Persist the selected candidate's raw and global Holm-adjusted p-values for all three endpoints and all three splits. Compute the selected candidate's Blind OOS absolute-baseline evidence from its Top-5 share and its existing globally Holm-adjusted Top-5 p-value.",
       "criterion": "mean number_hits_top5 > 0.125 AND global Holm-adjusted selected-candidate Blind OOS Top-5 p-value < 0.05.",
       "changes_formula_universe": false,
@@ -311,7 +316,13 @@
       "changes_primary_paired_inference": false,
       "changes_global_holm_family": false,
       "changes_only_reporting_and_absolute_claim_gate": true,
-      "blind_oos_used_for_selection": false
+      "blind_oos_used_for_selection": false,
+      "prior_full_shard_run": 42615347368,
+      "prior_shard_artifacts_existed_before_amendment": true,
+      "prior_artifacts_used_for_selection_in_this_cycle": false,
+      "blind_oos_exposure_before_amendment": true,
+      "confirmatory_status": "EXPLORATORY_HISTORICAL_AUDIT_ONLY",
+      "prospective_confirmation_required": true
     }
   ]
 }
