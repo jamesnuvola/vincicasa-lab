@@ -5,6 +5,7 @@ import csv
 import gzip
 import itertools
 import hashlib
+import heapq
 import json
 import math
 from collections import Counter
@@ -42,6 +43,10 @@ Q87_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_7plus_g
 Q87_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_7plus_target_ledger.csv"
 Q88_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_8plus_grammar.json"
 Q88_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_8plus_target_ledger.csv"
+Q89_REPORT = ROOT / "reports" / "sequence_agent" / "per_number_condition_9plus_grammar.json"
+Q89_MANIFEST = ROOT / "reports" / "sequence_agent" / "per_number_condition_9plus_formula_metrics_manifest.json"
+Q89_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_9plus_target_ledger.csv"
+Q89_PROTOCOL = ROOT / "reports" / "sequence_agent" / "q89_protocol_2026-11-09.json"
 Q86_METRICS = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_formula_metrics.csv"
 Q86_MANIFEST = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_formula_metrics_manifest.json"
 Q86_LEDGER = ROOT / "reports" / "sequence_agent" / "per_number_condition_6plus_target_ledger.csv"
@@ -1241,6 +1246,257 @@ def validate_q88():
 
 
 
+
+def validate_q89():
+    errors=[]
+    required_files=(Q89_REPORT,Q89_MANIFEST,Q89_LEDGER,Q89_PROTOCOL,DATA)
+    if not all(p.is_file() for p in required_files):
+        return ["Q89 report, manifest, ledger, protocol or archive missing"]
+    try:
+        report=load_json(Q89_REPORT)
+        manifest=load_json(Q89_MANIFEST)
+        protocol=load_json(Q89_PROTOCOL)
+        archive_fields,archive=load_csv(DATA)
+    except Exception as exc:
+        return ["Q89 acceptance input could not be read: "+str(exc)]
+    total=math.comb(27,9)
+    dates=[r["data"] for r in archive]
+    scored=len(archive)-50
+    source_sha=hashlib.sha256(DATA.read_bytes()).hexdigest()
+    def rank_cols(cols):
+        rank=0
+        previous=-1
+        for pos,value in enumerate(cols):
+            for c in range(previous+1,value):
+                rank+=math.comb(27-c-1,9-pos-1)
+            previous=value
+        return rank
+    def parse_fid(value):
+        prefix,*tokens=value.split("_")
+        cols=[int(x) for x in tokens]
+        if prefix!="P9" or len(cols)!=9 or cols!=sorted(set(cols)) or cols[-1]>=27:
+            raise ValueError("invalid P9 formula id")
+        if value!="P9_"+"_".join(f"{x:02d}" for x in cols):
+            raise ValueError("non-canonical P9 formula id")
+        return cols
+    add_error(errors,report.get("task_id")=="Q89","Q89 report task id mismatch")
+    add_error(errors,report.get("status") in ("AGGREGATED_PENDING_ACCEPTANCE_VALIDATION","VALIDATED_PENDING_HUMAN_REVIEW"),"Q89 report status is not an acceptance-stage status")
+    add_error(errors,report.get("review_status")=="PENDING_HUMAN_REVIEW_INTEGRATION","Q89 human-review gate missing")
+    add_error(errors,report.get("source_archive_sha256")==source_sha==protocol.get("archive_snapshot",{}).get("sha256"),"Q89 archive SHA mismatch")
+    add_error(errors,report.get("protocol_sha256")==hashlib.sha256(Q89_PROTOCOL.read_bytes()).hexdigest(),"Q89 protocol SHA mismatch")
+    add_error(errors,report.get("target_count")==len(archive) and report.get("first_date")==dates[0] and report.get("last_date")==dates[-1],"Q89 archive range mismatch")
+    add_error(errors,report.get("minimum_prior_history")==50 and report.get("scored_targets")==scored,"Q89 strict-prior target count mismatch")
+    add_error(errors,report.get("feature_count")==27 and len(report.get("features",[]))==27 and len(set(report.get("features",[])))==27,"Q89 feature schema mismatch")
+    add_error(errors,report.get("formula_size")==9 and report.get("formula_count")==total and report.get("formula_count_check")==total,"Q89 formula universe mismatch")
+    add_error(errors,report.get("formula_grammar")=="all 9-feature equal-weight combinations","Q89 grammar label mismatch")
+    expected_split={"discovery":math.ceil(.60*scored),"validation":math.ceil(.80*scored)-math.ceil(.60*scored),"blind_oos":scored-math.ceil(.80*scored)}
+    add_error(errors,report.get("split_counts")==expected_split,"Q89 chronological split counts mismatch")
+    expected_shards=[(total*(i+1))//30-(total*i)//30 for i in range(30)]
+    add_error(errors,report.get("shard_count")==30 and report.get("shard_formula_counts")==expected_shards,"Q89 balanced shard partition mismatch")
+    add_error(errors,report.get("formula_batch_size")==1024,"Q89 formula batch size mismatch")
+    batches=report.get("batch_manifest",[])
+    add_error(errors,len(batches)==math.ceil(total/1024) and report.get("formula_batch_count")==len(batches),"Q89 batch count mismatch")
+    cursor=0
+    def unrank(rank):
+        result=[]; previous=-1
+        for pos in range(9):
+            for candidate in range(previous+1,27):
+                block=math.comb(27-candidate-1,9-pos-1)
+                if rank<block:
+                    result.append(candidate); previous=candidate; break
+                rank-=block
+        return tuple(result)
+    for i,batch in enumerate(batches):
+        end=min(cursor+1024,total)
+        add_error(errors,batch.get("batch_index")==i and batch.get("formula_start_inclusive")==cursor and
+                  batch.get("formula_end_exclusive")==end and batch.get("formula_count")==end-cursor,
+                  "Q89 batch manifest gap/overlap at "+str(i))
+        if cursor<end:
+            first="P9_"+"_".join(f"{x:02d}" for x in unrank(cursor))
+            last="P9_"+"_".join(f"{x:02d}" for x in unrank(end-1))
+            add_error(errors,batch.get("formula_id_first")==first and batch.get("formula_id_last")==last,
+                      "Q89 batch formula endpoint mismatch at "+str(i))
+        cursor=end
+    add_error(errors,cursor==total,"Q89 batch manifest does not cover the full universe")
+    expected_rows=total*3
+    add_error(errors,report.get("metrics_storage")=="chunked_csv_gzip_parts" and
+              report.get("metrics_rows")==expected_rows and report.get("target_ledger_rows")==scored,
+              "Q89 output row dimensions mismatch")
+    mt=report.get("multiple_testing",{})
+    add_error(errors,mt.get("method")=="Holm-Bonferroni" and mt.get("test_count")==expected_rows*3 and
+              "Chernoff" in mt.get("p_value_method","") and "Hypergeometric" in mt.get("p_value_method",""),
+              "Q89 global Holm/conditional-null specification mismatch")
+    baseline=report.get("uniform_number_rank_baseline",{})
+    add_error(errors,baseline.get("mean_number_hits_top5")==.125 and baseline.get("mean_number_hits_top10")==.25 and
+              baseline.get("mean_number_hits_top20")==.5 and baseline.get("mean_rank_of_actual_numbers")==20.5,
+              "Q89 uniform baseline mismatch")
+    selection=report.get("selection_protocol",{})
+    candidate=report.get("candidate_selection",{})
+    top=report.get("discovery_top_100",[])
+    top_ids=[x.get("formula_id") for x in top]
+    add_error(errors,selection.get("discovery_top_k")==100 and selection.get("blind_oos_used_for_selection") is False,
+              "Q89 Discovery/Blind guardrail mismatch")
+    add_error(errors,candidate.get("status")=="FROZEN_AFTER_VALIDATION_PENDING_HUMAN_REVIEW" and
+              candidate.get("blind_oos_used_for_selection") is False,"Q89 candidate not frozen by Validation")
+    add_error(errors,len(top)==100 and len(set(top_ids))==100,"Q89 Discovery top-100 invalid")
+    selected_id=candidate.get("selected_formula_id")
+    add_error(errors,selected_id in set(top_ids),"Q89 selected candidate is not in Discovery top-100")
+    parts=report.get("metrics_parts",[])
+    outputs=report.get("outputs",{})
+    parts_sha=hashlib.sha256(json.dumps(parts,sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
+    add_error(errors,outputs.get("metrics_manifest")=="reports/sequence_agent/per_number_condition_9plus_formula_metrics_manifest.json" and
+              outputs.get("target_ledger")=="reports/sequence_agent/per_number_condition_9plus_target_ledger.csv" and
+              outputs.get("metrics_parts_manifest_sha256")==parts_sha,"Q89 report output paths/parts SHA mismatch")
+    add_error(errors,manifest.get("task_id")=="Q89" and manifest.get("storage_format")=="chunked_csv_gzip_parts" and
+              manifest.get("source_archive_sha256")==source_sha and manifest.get("formula_count")==total and
+              manifest.get("metrics_rows")==expected_rows and manifest.get("parts")==parts and
+              manifest.get("parts_manifest_sha256")==parts_sha and manifest.get("part_count")==len(parts),
+              "Q89 metrics manifest identity/dimensions mismatch")
+    add_error(errors,len(parts)==math.ceil(expected_rows/30000),"Q89 metrics part count mismatch")
+    seen={s:bytearray(total) for s in ("discovery","validation","blind_oos")}
+    counts=Counter()
+    heap=[]
+    validation_rows={}
+    selected_blind=None
+    discovery_set=set(top_ids)
+    required={"split","formula_id","feature_count","features","targets","number_hits_top5_total",
+      "number_hits_top10_total","number_hits_top20_total","mean_number_hits_top5","mean_number_hits_top10",
+      "mean_number_hits_top20","mean_rank_of_actual_numbers","p_top5_hypergeom_chernoff_bound",
+      "p_top10_hypergeom_chernoff_bound","p_top20_hypergeom_chernoff_bound","holm_p_max_endpoint_family"}
+    row_cursor=0
+    for part_index,part in enumerate(parts):
+        rel=part.get("path","")
+        path=ROOT/rel
+        if not path.is_file():
+            errors.append("Q89 metrics part missing: "+rel)
+            continue
+        raw=path.read_bytes()
+        add_error(errors,part.get("part_index")==part_index and part.get("bytes")==len(raw) and
+                  part.get("sha256")==hashlib.sha256(raw).hexdigest(),"Q89 part digest/index mismatch: "+rel)
+        add_error(errors,part.get("row_start_inclusive")==row_cursor,"Q89 part row-range gap: "+rel)
+        part_rows=0
+        try:
+            with gzip.open(path,"rt",newline="",encoding="utf-8") as handle:
+                reader=csv.DictReader(handle)
+                if not required.issubset(set(reader.fieldnames or [])):
+                    errors.append("Q89 part schema incomplete: "+rel)
+                for row in reader:
+                    split=row.get("split")
+                    if split not in seen:
+                        errors.append("Q89 invalid split in "+rel)
+                        part_rows+=1
+                        continue
+                    try:
+                        cols=parse_fid(row["formula_id"])
+                        index=rank_cols(cols)
+                        if seen[split][index]:
+                            raise ValueError("duplicate formula id in split")
+                        seen[split][index]=1
+                        if int(row["feature_count"])!=9 or row["features"]!="+".join(report["features"][i] for i in cols):
+                            raise ValueError("formula feature schema mismatch")
+                        targets=int(row["targets"])
+                        if targets!=expected_split[split]:
+                            raise ValueError("split target count mismatch")
+                        for endpoint in ("top5","top10","top20"):
+                            successes=int(row[f"number_hits_{endpoint}_total"])
+                            mean=float(row[f"mean_number_hits_{endpoint}"])
+                            if successes<0 or successes>5*targets or not math.isclose(mean,successes/(5*targets),rel_tol=0,abs_tol=1e-12):
+                                raise ValueError("hit total/mean mismatch")
+                            p=float(row[f"p_{endpoint}_hypergeom_chernoff_bound"])
+                            if not 0<p<=1:
+                                raise ValueError("invalid Chernoff bound")
+                        mean_rank=float(row["mean_rank_of_actual_numbers"])
+                        holm=float(row["holm_p_max_endpoint_family"])
+                        if not 1<=mean_rank<=40 or not 0<=holm<=1:
+                            raise ValueError("rank/Holm value out of range")
+                        counts[split]+=1
+                        if split=="discovery":
+                            key=(float(row["mean_number_hits_top5"]),-mean_rank,-index)
+                            item=(key,row["formula_id"])
+                            if len(heap)<100:
+                                heapq.heappush(heap,item)
+                            elif key>heap[0][0]:
+                                heapq.heapreplace(heap,item)
+                        elif split=="validation" and row["formula_id"] in discovery_set:
+                            validation_rows[row["formula_id"]]=row
+                        elif split=="blind_oos" and row["formula_id"]==selected_id:
+                            selected_blind=row
+                    except Exception as exc:
+                        errors.append("Q89 invalid metric row in "+rel+": "+str(exc))
+                    part_rows+=1
+        except (OSError,EOFError) as exc:
+            errors.append("Q89 cannot read part "+rel+": "+str(exc))
+            continue
+        add_error(errors,part.get("rows")==part_rows and part.get("row_end_exclusive")==row_cursor+part_rows,
+                  "Q89 part row count/range mismatch: "+rel)
+        row_cursor+=part_rows
+    add_error(errors,row_cursor==expected_rows,"Q89 total metric rows mismatch")
+    add_error(errors,dict(counts)=={s:total for s in seen},"Q89 formula/split count mismatch")
+    for split,bitmap in seen.items():
+        add_error(errors,all(bitmap),"Q89 formula universe has gaps in "+split)
+    actual_top=[fid_value for _,fid_value in sorted(heap,key=lambda x:x[0],reverse=True)]
+    add_error(errors,actual_top==top_ids,"Q89 Discovery top-100 does not match metrics")
+    add_error(errors,len(validation_rows)==100,"Q89 Discovery top-100 missing Validation rows")
+    def rank_from_id(fid_value):
+        return rank_cols(parse_fid(fid_value))
+    if len(validation_rows)==100:
+        expected_selected=max(validation_rows,key=lambda fid_value:(
+            float(validation_rows[fid_value]["mean_number_hits_top5"]),
+            -float(validation_rows[fid_value]["mean_rank_of_actual_numbers"]),
+            -rank_from_id(fid_value)))
+        add_error(errors,expected_selected==selected_id,"Q89 selected candidate does not match Validation rule")
+    add_error(errors,selected_blind is not None,"Q89 frozen candidate has no Blind OOS row")
+    add_error(errors,candidate.get("discovery_metrics",{}).get("formula_id")==selected_id and
+              candidate.get("validation_metrics",{}).get("formula_id")==selected_id and
+              candidate.get("blind_oos_metrics",{}).get("formula_id")==selected_id,
+              "Q89 selected candidate metrics do not reconcile")
+    add_error(errors,candidate.get("selected_features")==candidate.get("validation_metrics",{}).get("features"),
+              "Q89 selected features mismatch")
+    if selected_blind is not None:
+        add_error(errors,math.isclose(float(candidate.get("blind_oos_metrics",{}).get("mean_number_hits_top5",-1)),
+                  float(selected_blind["mean_number_hits_top5"]),rel_tol=0,abs_tol=1e-12),
+                  "Q89 selected Blind OOS metric mismatch")
+    # Reconcile the per-target retrospective ledger against the canonical archive.
+    ledger_fields,ledger=load_csv(Q89_LEDGER)
+    ledger_required={"target_date","cutoff_date","prior_draws","actual_quintet","status","formula_count_tested",
+      "best_formula_id","best_formula_features","best_actual_number_ranks","best_number_hits_top5",
+      "best_number_hits_top10","best_number_hits_top20","best_rank_sum","single_feature_rank_ledger"}
+    add_error(errors,ledger_required.issubset(set(ledger_fields)) and len(ledger)==scored,"Q89 target ledger schema/count mismatch")
+    for offset,row in enumerate(ledger):
+        index=offset+50
+        if index>=len(archive):
+            errors.append("Q89 target ledger has excess rows")
+            break
+        actual=" ".join(str(int(archive[index]["n"+str(i)])) for i in range(1,6))
+        add_error(errors,row.get("target_date")==dates[index] and row.get("cutoff_date")==dates[index-1] and
+                  int(row.get("prior_draws",-1))==index,"Q89 strict-prior cutoff/date mismatch")
+        add_error(errors,row.get("actual_quintet")==actual and row.get("status")=="SCORED",
+                  "Q89 actual quintet/status mismatch")
+        add_error(errors,int(row.get("formula_count_tested",-1))==total,"Q89 ledger formula coverage mismatch")
+        try:
+            cols=parse_fid(row["best_formula_id"])
+            names=[report["features"][x] for x in cols]
+            ranks=json.loads(row["best_actual_number_ranks"])
+            singles=json.loads(row["single_feature_rank_ledger"])
+            add_error(errors,row["best_formula_features"]=="+".join(names),"Q89 ledger best formula feature mismatch")
+            add_error(errors,len(ranks)==5 and all(isinstance(x,int) and 1<=x<=40 for x in ranks),
+                      "Q89 ledger actual ranks invalid")
+            add_error(errors,len(singles)==27 and [x.get("feature") for x in singles]==report["features"],
+                      "Q89 ledger single-feature coverage mismatch")
+            for item in singles:
+                values=item.get("ranks",[])
+                add_error(errors,len(values)==5 and all(isinstance(x,int) and 1<=x<=40 for x in values),
+                          "Q89 single-feature ranks invalid")
+            if len(ranks)==5:
+                add_error(errors,int(row["best_number_hits_top5"])==sum(x<=5 for x in ranks) and
+                          int(row["best_number_hits_top10"])==sum(x<=10 for x in ranks) and
+                          int(row["best_number_hits_top20"])==sum(x<=20 for x in ranks) and
+                          int(row["best_rank_sum"])==sum(ranks),"Q89 best-rank ledger metrics mismatch")
+        except Exception as exc:
+            errors.append("Q89 malformed target ledger row: "+str(exc))
+    return errors
+
+
 def main():
     plan = load_json(BACKLOG)
     tasks = plan.get("tasks", [])
@@ -1267,7 +1523,7 @@ def main():
 
     validators = {"Q10": validate_q10, "Q20": validate_q20, "Q30": validate_q30,
                   "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80, "Q81": validate_q81,
-                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87, "Q88": validate_q88}
+                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87, "Q88": validate_q88, "Q89": validate_q89}
     states = {}
     for task in sorted(tasks, key=lambda t: (t["priority"], t["id"])):
         missing_evidence = [p for p in task.get("evidence", []) if not (ROOT / p).is_file()]
@@ -1303,7 +1559,7 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
-            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87", "Q88") and not validation_errors:
+            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87", "Q88", "Q89") and not validation_errors:
                 status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],

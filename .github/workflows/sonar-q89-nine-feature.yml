@@ -1,0 +1,151 @@
+name: SONAR Q89 Nine-Feature Walk-Forward
+on:
+  push:
+    branches: ["research/per-number-condition-q89-nine-feature-20261109"]
+    paths:
+      - "reports/sequence_agent/q89_run_request_2026-11-09.json"
+permissions:
+  actions: read
+  checks: read
+  contents: write
+concurrency:
+  group: sonar-q89-nine-feature
+  cancel-in-progress: false
+jobs:
+  wait-for-exact-head-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Wait for protocol CI on this exact run-request commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          for attempt in $(seq 1 360); do
+            runs=$(curl --fail --silent --show-error -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=$BRANCH&per_page=30")
+            row=$(echo "$runs" | jq -r --arg sha "$HEAD_SHA" '.workflow_runs[] | select(.head_sha == $sha) | [.id,.status,(.conclusion // "")] | @tsv' | head -n1)
+            if [ -n "$row" ]; then
+              read -r run_id status conclusion <<< "$row"
+              if [ "$status" = "completed" ]; then
+                [ "$conclusion" = "success" ] && { echo "Exact-head CI $run_id passed"; exit 0; }
+                echo "Exact-head CI $run_id concluded $conclusion"; exit 1
+              fi
+            fi
+            sleep 60
+          done
+          echo "Timed out waiting for exact-head CI"; exit 1
+  evaluate-shards:
+    needs: wait-for-exact-head-ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 15
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install numpy
+      - name: Evaluate strict-prior nine-feature shard
+        env:
+          SONAR_Q89_SHARD_INDEX: ${{ matrix.shard }}
+          SONAR_Q89_EXPECTED_ARCHIVE_SHA256: "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+        run: |
+          python -m py_compile scripts/sonar_per_number_condition_9plus_shard.py
+          python scripts/sonar_per_number_condition_9plus_shard.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sonar-q89-shard-${{ matrix.shard }}
+          path: reports/sequence_agent/q89_shards/shard_${{ matrix.shard }}_*.csv
+          if-no-files-found: error
+          retention-days: 14
+  aggregate-validate:
+    needs: evaluate-shards
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install numpy
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sonar-q89-shard-*
+          path: reports/sequence_agent/q89_shards
+          merge-multiple: true
+      - name: Aggregate 30 shards, global Holm and Discovery-to-Validation freeze
+        env:
+          SONAR_Q89_EXPECTED_ARCHIVE_SHA256: "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+        run: python scripts/aggregate_sonar_q89_shards.py
+      - name: Fail-closed Q89 acceptance before persistence
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python -c "from sonar_research_queue import validate_q89; errors=validate_q89(); print('Q89_ACCEPTANCE_ERRORS',errors); raise SystemExit(1 if errors else 0)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sonar-q89-aggregate
+          path: |
+            reports/sequence_agent/per_number_condition_9plus_grammar.json
+            reports/sequence_agent/per_number_condition_9plus_formula_metrics_manifest.json
+            reports/sequence_agent/per_number_condition_9plus_formula_metrics_part_*.csv.gz
+            reports/sequence_agent/per_number_condition_9plus_target_ledger.csv
+          if-no-files-found: error
+          retention-days: 14
+  persist-and-verify:
+    needs: aggregate-validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      commit_sha: ${{ steps.persist.outputs.commit_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: sonar-q89-aggregate
+          path: .q89-aggregate
+      - name: Restore aggregate artifacts
+        run: |
+          mkdir -p reports/sequence_agent
+          cp -a .q89-aggregate/. reports/sequence_agent/
+      - name: Persist all outputs through Git Data API with byte-for-byte readback
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q89_outputs.py
+      - name: Wait for exact-head CI after persistence
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSISTED_SHA: ${{ steps.persist.outputs.commit_sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          for attempt in $(seq 1 360); do
+            runs=$(curl --fail --silent --show-error -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=$BRANCH&per_page=30")
+            row=$(echo "$runs" | jq -r --arg sha "$PERSISTED_SHA" '.workflow_runs[] | select(.head_sha == $sha) | [.id,.status,(.conclusion // "")] | @tsv' | head -n1)
+            if [ -n "$row" ]; then
+              read -r run_id status conclusion <<< "$row"
+              if [ "$status" = "completed" ]; then
+                [ "$conclusion" = "success" ] && { echo "Persisted exact-head CI $run_id passed"; exit 0; }
+                echo "Persisted exact-head CI $run_id concluded $conclusion"; exit 1
+              fi
+            fi
+            sleep 60
+          done
+          echo "Timed out waiting for persisted exact-head CI"; exit 1
