@@ -46,6 +46,8 @@ The artifact-backed workflow waits for full project CI on its exact source commi
 
 Registered 2026-11-09 14:51:32 UTC, before the corrected full walk-forward rerun.
 
+**Exposure caveat:** the earlier failed Q92 run `42615347368` had already generated all 15 shard artifacts before this amendment. No aggregate was accepted and those artifacts were not used to choose this gate in the present cycle, but the amendment is after prior historical computation. The historical Blind OOS is therefore classified as exploratory and is not an untouched prospective holdout. Confirmatory evidence requires a new preregistered prospective holdout of 670 new draws.
+
 The paired Q92-vs-Q89 Top-5 comparison is a relative test. Because the same-archive Q89 reference has a prior Blind OOS Top-5 share below the uniform expectation of 0.125, a positive paired lift over Q89 could still leave Q92 below uniform.
 
 The aggregator and acceptance validator will therefore expose and independently replay the selected Validation-frozen Q92 candidate's raw and global Holm-adjusted p-values for Top-5, Top-10 and Top-20 in Discovery, Validation and Blind OOS. The absolute Blind OOS evidence status is PASS only when:
