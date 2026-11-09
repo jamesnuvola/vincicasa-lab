@@ -1,0 +1,97 @@
+name: SONAR Q89 Archive-Aligned Incremental Refresh
+
+on:
+  push:
+    branches:
+      - research/sonar-q92-ten-feature-implementation-20261109
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: q89-refresh-delta-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  refresh-shards:
+    if: contains(github.event.head_commit.message, '[q89-refresh-delta]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile Q89 refresh runner and regression tests
+        run: |
+          python -m py_compile scripts/sonar_q89_refresh_delta_shard.py scripts/sonar_q89_common.py scripts/aggregate_sonar_q89_refresh_delta.py scripts/validate_q89_refresh_delta.py scripts/persist_q89_refresh_delta.py tests/test_sonar_q89_refresh_delta.py tests/test_sonar_q89_refresh_aggregate.py
+          python tests/test_sonar_q89_refresh_delta.py -v
+          python tests/test_sonar_q89_refresh_aggregate.py -v
+      - name: Evaluate exact three-target Q89 strict-prefix delta shard
+        env:
+          SONAR_Q89_REFRESH_SHARD_INDEX: ${{ matrix.shard }}
+        run: python scripts/sonar_q89_refresh_delta_shard.py
+      - name: Upload immutable Q89 refresh delta shard
+        uses: actions/upload-artifact@v4
+        with:
+          name: q89-refresh-delta-shard-${{ matrix.shard }}
+          path: |
+            reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_${{ matrix.shard }}_delta_metrics.csv.gz
+            reports/sequence_agent/q89_refresh_20261108_delta_shards/shard_${{ matrix.shard }}_delta_report.json
+          if-no-files-found: error
+          retention-days: 7
+
+  aggregate-validate-persist:
+    if: contains(github.event.head_commit.message, '[q89-refresh-delta]')
+    needs: refresh-shards
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Download all fifteen immutable delta shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: q89-refresh-delta-shard-*
+          merge-multiple: true
+          path: reports/sequence_agent/q89_refresh_20261108_delta_shards
+      - name: Aggregate exact split deltas, global Holm and Discovery-Validation freeze
+        run: python scripts/aggregate_sonar_q89_refresh_delta.py
+      - name: Validate Q89 refresh acceptance evidence
+        run: python scripts/validate_q89_refresh_delta.py
+      - name: Persist append-only outputs through Git Data API and verify exact bytes
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          SONAR_BRANCH: ${{ github.ref_name }}
+        run: python scripts/persist_q89_refresh_delta.py
+      - name: Request current-head CI after exact-byte persistence
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SONAR_BRANCH: ${{ github.ref_name }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"$SONAR_BRANCH\"}"
