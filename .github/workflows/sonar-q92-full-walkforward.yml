@@ -11,6 +11,8 @@ on:
       - ".github/workflows/sonar-q92-aggregate-core.yml"
       - "scripts/sonar_per_number_condition_10plus_shard.py"
       - "scripts/sonar_q92_common.py"
+      - "scripts/sonar_q92_ci_gate.py"
+      - "tests/test_sonar_q92_ci_gate.py"
       - "scripts/sonar_q92_null_calibration.py"
       - "scripts/sonar_per_number_condition_grammar.py"
       - "scripts/sonar_per_number_condition_4plus_grammar.py"
@@ -65,9 +67,9 @@ jobs:
           deadline=$((SECONDS+7200))
           while (( SECONDS < deadline )); do
             payload="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=100")"
-            state="$(python -c 'import json,os,sys; d=json.load(sys.stdin); r=[x for x in d.get("workflow_runs",[]) if x.get("workflow_id")==381564482 and x.get("head_sha")==os.environ["GITHUB_SHA"]]; r=sorted(r,key=lambda x:(x.get("created_at",""),x.get("run_attempt",0))); x=r[-1] if r else None; print((x.get("status","none")+"|"+(x.get("conclusion") or "null")+"|"+str(x.get("id") or "null")) if x else "none|null|null")' <<< "$payload")"
-            IFS='|' read -r status conclusion run_id <<< "$state"
-            echo "Exact-head full CI: status=$status conclusion=$conclusion run_id=$run_id"
+            state="$(python scripts/sonar_q92_ci_gate.py --expected-sha "$GITHUB_SHA" --expected-branch "$GITHUB_REF_NAME" --workflow-id 381564482 <<< "$payload")"
+            IFS='|' read -r status conclusion run_id event <<< "$state"
+            echo "Exact-head full CI: status=$status conclusion=$conclusion run_id=$run_id event=$event"
             if [[ "$status" == "completed" ]]; then
               if [[ "$conclusion" == "success" ]]; then
                 echo "Exact-head full project CI passed: https://github.com/$GITHUB_REPOSITORY/actions/runs/$run_id"
@@ -81,9 +83,9 @@ jobs:
           echo "Timed out waiting for full project CI on exact source commit $GITHUB_SHA."
           exit 1
       - name: Compile Q92 runner, aggregation, calibration and acceptance
-        run: python -m py_compile scripts/sonar_per_number_condition_10plus_shard.py scripts/sonar_q92_common.py scripts/sonar_q92_null_calibration.py scripts/sonar_q92_aggregate_common.py scripts/aggregate_sonar_q92_ten_feature.py scripts/validate_sonar_q92_ten_feature.py tests/test_sonar_q92_walkforward_shard.py tests/test_sonar_q92_aggregate_common.py tests/test_sonar_q92_null_calibration.py
+        run: python -m py_compile scripts/sonar_per_number_condition_10plus_shard.py scripts/sonar_q92_common.py scripts/sonar_q92_null_calibration.py scripts/sonar_q92_aggregate_common.py scripts/aggregate_sonar_q92_ten_feature.py scripts/validate_sonar_q92_ten_feature.py tests/test_sonar_q92_walkforward_shard.py tests/test_sonar_q92_aggregate_common.py tests/test_sonar_q92_null_calibration.py scripts/sonar_q92_ci_gate.py tests/test_sonar_q92_ci_gate.py
       - name: Run strict-prior, selective-rank, compact-output and discrete-null synthetic regressions
-        run: python tests/test_sonar_q92_walkforward_shard.py -v && python tests/test_sonar_q92_aggregate_common.py -v && python tests/test_sonar_q92_null_calibration.py -v
+        run: python tests/test_sonar_q92_walkforward_shard.py -v && python tests/test_sonar_q92_aggregate_common.py -v && python tests/test_sonar_q92_null_calibration.py -v && python tests/test_sonar_q92_ci_gate.py -v
       - name: Verify canonical archive, same-archive Q89 freeze and pre-execution amendments
         run: |
           python - <<'PY'

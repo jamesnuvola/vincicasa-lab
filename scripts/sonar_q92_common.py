@@ -33,6 +33,9 @@ SOURCE_CODE_HASH_PATHS=(
     ".github/workflows/sonar-q92-ten-feature.yml",
     ".github/workflows/sonar-q92-aggregate-core.yml",
     ".github/workflows/sonar-q92-full-walkforward.yml",
+    # Exact-head CI gate selector and its synthetic regressions.
+    "scripts/sonar_q92_ci_gate.py",
+    "tests/test_sonar_q92_ci_gate.py",
     # Synthetic regressions and preregistered engineering evidence.
     "tests/test_sonar_q92_walkforward_shard.py",
     "tests/test_sonar_q92_aggregate_common.py",

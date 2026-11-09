@@ -72,6 +72,11 @@ jobs:
           python tests/test_sonar_per_number_condition_6plus_grammar.py -v
           python tests/test_sonar_q89_refresh_delta.py -v
           python tests/test_sonar_q89_refresh_aggregate.py -v
+      - name: Test Q92 exact-head CI run selector
+        if: github.head_ref == 'research/sonar-q92-exact-null-calibration-20261109' || github.ref_name == 'research/sonar-q92-exact-null-calibration-20261109'
+        run: |
+          python -m py_compile scripts/sonar_q92_ci_gate.py tests/test_sonar_q92_ci_gate.py
+          python tests/test_sonar_q92_ci_gate.py -v
       - name: Test evolutionary lab syntax and run
         if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108' && github.head_ref != 'research/sonar-q92-ten-feature-implementation-20261109' && github.ref_name != 'research/sonar-q92-ten-feature-implementation-20261109'
         run: |
