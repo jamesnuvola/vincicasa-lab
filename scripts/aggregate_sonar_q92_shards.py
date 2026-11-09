@@ -182,7 +182,7 @@ def validate_q89_refresh_control(dates,draws,source_sha):
         raw_archive=ARCHIVE.read_bytes()
     except Exception as exc:
         fail("Q92 same-archive Q89 refresh control required/readable: "+str(exc))
-    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\\0"+raw_archive).hexdigest()
+    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\0"+raw_archive).hexdigest()
     add=lambda condition,message: fail(message) if not condition else None
     add(report.get("task_id")=="Q89_REFRESH_2026_11_08","Q92 Q89 refresh control task identity mismatch")
     add(report.get("status")=="VALIDATED_PENDING_HUMAN_REVIEW" and report.get("review_status")=="PENDING_HUMAN_REVIEW_INTEGRATION","Q92 Q89 refresh control is not acceptance-validated/pending human review")
@@ -398,7 +398,7 @@ def main():
     validation=math.ceil(.80*scored)
     expected_splits={"discovery":discovery,"validation":validation-discovery,"blind_oos":scored-validation}
     raw_archive=ARCHIVE.read_bytes()
-    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\\0"+raw_archive).hexdigest()
+    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\0"+raw_archive).hexdigest()
     if n!=3402 or dates[-1]!="2026-11-08" or scored!=3352 or expected_splits!={"discovery":2012,"validation":670,"blind_oos":670}:
         fail("Q92 preregistered archive/split dimensions mismatch")
     if archive_git_sha1!=Q92_EXPECTED_ARCHIVE_GIT_BLOB_SHA1:

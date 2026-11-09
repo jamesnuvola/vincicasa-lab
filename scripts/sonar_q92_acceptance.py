@@ -90,7 +90,7 @@ def validate_q92():
         return ["Q92 required report/manifest/archive unreadable: "+str(exc)]
     raw_archive=DATA.read_bytes()
     source_sha=hashlib.sha256(raw_archive).hexdigest()
-    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\\0"+raw_archive).hexdigest()
+    archive_git_sha1=hashlib.sha1(b"blob "+str(len(raw_archive)).encode("ascii")+b"\0"+raw_archive).hexdigest()
     try:
         q89_refresh=q92agg.validate_q89_refresh_control(dates,draws,source_sha)
     except Exception as exc:
@@ -107,7 +107,7 @@ def validate_q92():
     add(report.get("status") in ("AGGREGATED_PENDING_ACCEPTANCE_VALIDATION","VALIDATED_PENDING_HUMAN_REVIEW"),"Q92 report status mismatch")
     add(report.get("review_status")=="PENDING_HUMAN_REVIEW_INTEGRATION","Q92 human-review gate missing")
     add(report.get("protocol_id")=="Q92-ten-feature-equal-weight-catalog-2026-11-09","Q92 protocol identity mismatch")
-    add(report.get("source_archive_sha256")==source_sha and manifest.get("source_archive_sha256")==source_sha and report.get("source_archive_git_blob_sha1")=="77ca692a6082809fcc6c471501617433ec7c36cf","Q92 canonical archive SHA mismatch")
+    add(report.get("source_archive_sha256")==source_sha and manifest.get("source_archive_sha256")==source_sha and report.get("source_archive_git_blob_sha1")=="77ca692a6082809fcc6c471501617433ec7c36cf" and manifest.get("source_archive_git_blob_sha1")=="77ca692a6082809fcc6c471501617433ec7c36cf" and archive_git_sha1=="77ca692a6082809fcc6c471501617433ec7c36cf","Q92 canonical archive SHA mismatch")
     add(report.get("target_count")==n==3402 and report.get("scored_targets")==scored==3352 and report.get("first_date")==dates[0] and report.get("last_date")==dates[-1]=="2026-11-08" and report.get("source_archive_main_commit")=="6cca9022d4311a3f9aba2925fce8c653dc6b63ab","Q92 archive dimensions/date cutoff mismatch")
     add(report.get("minimum_prior_history")==q80.MIN_HISTORY and q80.MIN_HISTORY>=50,"Q92 minimum prior history mismatch")
     add(report.get("feature_count")==27 and len(report.get("features",[]))==27,"Q92 feature schema mismatch")
@@ -223,14 +223,19 @@ def validate_q92():
             if index is None or index<q80.MIN_HISTORY:
                 fail(errors,"Q92 target ledger target missing/too early: "+date); break
             add(row.get("cutoff_date")==dates[index-1] and int(row.get("prior_draws",-1))==index,"Q92 target strict prior cutoff mismatch at "+date)
+            add(int(row.get("target_offset",-1))==index-q80.MIN_HISTORY and row.get("split")==q80.split_name(index-q80.MIN_HISTORY,scored),"Q92 target offset/split mismatch at "+date)
             add(row.get("actual_quintet")==" ".join(map(str,draws[index])),"Q92 target actual quintet mismatch at "+date)
             add(row.get("status")=="SCORED" and int(row.get("formula_count_tested",-1))==q92.TOTAL_FORMULA_COUNT,"Q92 target status/formula count mismatch")
-            columns=parse_formula_id(row.get("best_formula_id",""),"P10_",9)
+            columns=parse_formula_id(row.get("best_formula_id",""),"P10_",10)
             add(row.get("best_formula_features")=="+".join(report["features"][value] for value in columns),"Q92 target best formula feature mismatch")
             try:
                 ranks=json.loads(row["best_actual_number_ranks"])
                 singles=json.loads(row["single_feature_rank_ledger"])
                 add(len(ranks)==5 and all(isinstance(value,int) and 1<=value<=40 for value in ranks),"Q92 best actual ranks invalid")
+                add(int(row.get("best_number_hits_top5",-1))==sum(value<=5 for value in ranks),"Q92 best Top-5 hit count mismatch")
+                add(int(row.get("best_number_hits_top10",-1))==sum(value<=10 for value in ranks),"Q92 best Top-10 hit count mismatch")
+                add(int(row.get("best_number_hits_top20",-1))==sum(value<=20 for value in ranks),"Q92 best Top-20 hit count mismatch")
+                add(int(row.get("best_rank_sum",-1))==sum(ranks),"Q92 best rank sum mismatch")
                 add(len(singles)==27 and {item.get("feature") for item in singles}==set(report["features"]),"Q92 single-feature rank ledger incomplete")
                 for item in singles:
                     add(len(item.get("ranks",[]))==5 and all(isinstance(value,int) and 1<=value<=40 for value in item["ranks"]),"Q92 single-feature ranks invalid")
@@ -238,6 +243,47 @@ def validate_q92():
                 fail(errors,"Q92 target ledger rank evidence invalid at "+date+": "+str(exc)); break
     except Exception as exc:
         fail(errors,"Q92 target ledger validation exception: "+str(exc))
+
+    # Reconcile the global descriptive best-per-target ledger to all 15 shard ledgers.
+    try:
+        global_by_date={row["target_date"]:row for row in ledger}
+        expected_dates=dates[q80.MIN_HISTORY:]
+        best_by_date={}
+        single_by_date={}
+        shard_seen=Counter()
+        for shard in range(q92.SHARD_COUNT):
+            shard_path=OUT/"q92_shards"/f"shard_{shard}_target_ledger.csv"
+            shard_fields,shard_rows=load_csv(shard_path)
+            add(len(shard_rows)==scored and [row.get("target_date") for row in shard_rows]==expected_dates,"Q92 shard target ledger date coverage mismatch shard "+str(shard))
+            for row in shard_rows:
+                date=row["target_date"]
+                index=dates.index(date)
+                add(row.get("cutoff_date")==dates[index-1] and int(row.get("prior_draws",-1))==index,"Q92 shard target strict cutoff mismatch at "+date)
+                add(row.get("actual_quintet")==" ".join(map(str,draws[index])) and int(row.get("formula_count_tested",-1))==q92.TOTAL_FORMULA_COUNT,"Q92 shard target actual/formula-count mismatch at "+date)
+                columns=parse_formula_id(row.get("best_formula_id",""),"P10_",10)
+                add(row.get("best_formula_features")=="+".join(report["features"][value] for value in columns),"Q92 shard target best formula feature mismatch at "+date)
+                ranks=json.loads(row["best_actual_number_ranks"])
+                singles=json.loads(row["single_feature_rank_ledger"])
+                add(len(ranks)==5 and all(isinstance(value,int) and 1<=value<=40 for value in ranks),"Q92 shard target rank vector invalid at "+date)
+                add(len(singles)==27 and {item.get("feature") for item in singles}==set(report["features"]),"Q92 shard single-feature ledger incomplete at "+date)
+                previous_single=single_by_date.get(date)
+                if previous_single is None:
+                    single_by_date[date]=singles
+                else:
+                    add(previous_single==singles,"Q92 single-feature rank ledger differs across shards at "+date)
+                key=(int(row["best_rank_sum"]),int(row["best_number_hits_top20"]),-int(row["best_number_hits_top5"]),row["best_formula_id"])
+                if date not in best_by_date or key<best_by_date[date][0]:
+                    best_by_date[date]=(key,row)
+                shard_seen[date]+=1
+        add(set(best_by_date)==set(expected_dates) and all(shard_seen[date]==15 for date in expected_dates),"Q92 shard target ledger cross-shard coverage mismatch")
+        for date in expected_dates:
+            global_row=global_by_date.get(date,{})
+            best_row=best_by_date[date][1]
+            for field in ("best_formula_id","best_formula_features","best_number_hits_top5","best_number_hits_top10","best_number_hits_top20","best_rank_sum","best_actual_number_ranks","status"):
+                add(global_row.get(field)==best_row.get(field),"Q92 global best target ledger does not reconcile to shard winner at "+date+" / "+field)
+            add(json.loads(global_row.get("single_feature_rank_ledger","[]"))==single_by_date[date],"Q92 global single-feature rank ledger does not reconcile at "+date)
+    except Exception as exc:
+        fail(errors,"Q92 shard/global target ledger reconciliation exception: "+str(exc))
 
     # Candidate selection is Discovery→Validation frozen; the same-archive Q89 control comes from the accepted refresh.
     try:
