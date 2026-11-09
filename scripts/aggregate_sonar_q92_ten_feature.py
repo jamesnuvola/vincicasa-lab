@@ -126,16 +126,15 @@ def validate_q89_control(archive_sha256,dates,draws,feature_stack):
     fields,paired=read_csv_fields_rows(Q89_PAIRED_LEDGER_PATH)
     if report.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW" or report.get("task_id")!="Q89_REFRESH_2026_11_08":
         fail("Q89 same-archive control report is not accepted")
-    if report.get("source_archive_sha256")!=archive_sha256 or report.get("target_count")!=EXPECTED_ARCHIVE_COUNT or report.get("split_counts")!=SPLIT_COUNTS:
-        fail("Q89 same-archive report identity/split mismatch")
+    if report.get("source_archive_sha256")!=archive_sha256 or report.get("target_count")!=EXPECTED_ARCHIVE_COUNT or report.get("split_counts")!=SPLIT_COUNTS or report.get("source_archive_main_commit")!=EXPECTED_ARCHIVE_MAIN_COMMIT:
+        fail("Q89 same-archive report identity/split/canonical commit mismatch")
     if manifest.get("source_archive_sha256")!=archive_sha256 or manifest.get("task_id")!="Q89_REFRESH_2026_11_08":
         fail("Q89 same-archive manifest identity mismatch")
     if selection.get("status")!="CANDIDATE_FROZEN_BEFORE_BLIND_OOS" or selection.get("blind_oos_used_for_selection") is not False or selection.get("selected_candidate_ids_frozen") is not True:
         fail("Q89 control candidate selection freeze/leakage guard mismatch")
     q89_id=selection.get("Q89_candidate",{}).get("formula_id")
-    q89_columns=q89.parse_formula_id(tuple(int(value) for value in q89_id[3:].split("_"))) if False else None
-    if not isinstance(q89_id,str) or not q89_id.startswith("P9_"):
-        fail("Q89 control formula ID prefix mismatch")
+    if not isinstance(q89_id,str) or not q89_id.startswith("P9_") or report.get("candidate_selection",{}).get("selected_candidate_id")!=q89_id:
+        fail("Q89 control formula ID does not reconcile to the accepted report")
     q89_columns=tuple(int(value) for value in q89_id[3:].split("_"))
     if len(q89_columns)!=9 or tuple(sorted(set(q89_columns)))!=q89_columns or q89_columns[0]<0 or q89_columns[-1]>=27:
         fail("Q89 control formula columns are not canonical")
