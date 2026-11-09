@@ -28,16 +28,19 @@ TARGET_LEDGER=SHARD_DIR/f"shard_{SHARD_INDEX}_target_ledger.csv"
 REPORT=SHARD_DIR/f"shard_{SHARD_INDEX}_report.json"
 
 def rank_matrix(scores):
-    """Rank every column; stable sort gives lower number priority on exact ties."""
-    order=np.argsort(-scores,axis=0,kind="stable")
+    """Rank each formula row across numbers; stable sort keeps lower-number tie-break."""
+    if scores.ndim!=2 or scores.shape[1]!=40:
+        raise ValueError("Q92 rank kernel expects formula-by-40-number scores")
+    order=np.argsort(-scores,axis=1,kind="stable")
     ranks=np.empty(order.shape,dtype=np.int16)
-    ranks[order,np.arange(scores.shape[1])]=np.arange(1,scores.shape[0]+1,dtype=np.int16)[:,None]
+    ranks[np.arange(order.shape[0])[:,None],order]=np.arange(1,41,dtype=np.int16)[None,:]
     return ranks
 
 def build_formula_weight_matrix(formulas):
-    weights=np.zeros((FEATURE_COUNT,len(formulas)),dtype=np.float64)
+    """Build contiguous formula-major equal-weight vectors for row-wise ranking."""
+    weights=np.zeros((len(formulas),FEATURE_COUNT),dtype=np.float64)
     for formula_index,columns in enumerate(formulas):
-        weights[list(columns),formula_index]=1.0/FORMULA_SIZE
+        weights[formula_index,list(columns)]=1.0/FORMULA_SIZE
     return weights
 
 def compact_metric(row):
@@ -76,26 +79,26 @@ def main():
         best_index=None
         best_ranks=None
         for batch_start,batch_end in formula_batches:
-            ranks=rank_matrix(standardized@weights[:,batch_start:batch_end])
-            actual_ranks=ranks[actual_indices,:]
-            rank_sum=actual_ranks.sum(axis=0,dtype=np.int64)
-            hits5=np.sum(actual_ranks<=5,axis=0,dtype=np.int64)
-            hits10=np.sum(actual_ranks<=10,axis=0,dtype=np.int64)
-            hits20=np.sum(actual_ranks<=20,axis=0,dtype=np.int64)
+            ranks=rank_matrix(weights[batch_start:batch_end]@standardized.T)
+            actual_ranks=ranks[:,actual_indices]
+            rank_sum=actual_ranks.sum(axis=1,dtype=np.int64)
+            hits5=np.sum(actual_ranks<=5,axis=1,dtype=np.int64)
+            hits10=np.sum(actual_ranks<=10,axis=1,dtype=np.int64)
+            hits20=np.sum(actual_ranks<=20,axis=1,dtype=np.int64)
             bucket["number_hits_top5"][batch_start:batch_end]+=hits5
             bucket["number_hits_top10"][batch_start:batch_end]+=hits10
             bucket["number_hits_top20"][batch_start:batch_end]+=hits20
-            bucket["all5_top5"][batch_start:batch_end]+=np.all(actual_ranks<=5,axis=0)
-            bucket["all5_top10"][batch_start:batch_end]+=np.all(actual_ranks<=10,axis=0)
-            bucket["all5_top20"][batch_start:batch_end]+=np.all(actual_ranks<=20,axis=0)
+            bucket["all5_top5"][batch_start:batch_end]+=np.all(actual_ranks<=5,axis=1)
+            bucket["all5_top10"][batch_start:batch_end]+=np.all(actual_ranks<=10,axis=1)
+            bucket["all5_top20"][batch_start:batch_end]+=np.all(actual_ranks<=20,axis=1)
             bucket["rank_sum"][batch_start:batch_end]+=rank_sum
             local_best=int(np.lexsort((-hits5,hits20,rank_sum))[0])
             candidate=(int(rank_sum[local_best]),int(hits20[local_best]),-int(hits5[local_best]),batch_start+local_best)
             if best_key is None or candidate<best_key:
                 best_key=candidate
                 best_index=batch_start+local_best
-                best_ranks=actual_ranks[:,local_best].astype(int).tolist()
-        single_ranks=rank_matrix(standardized)[actual_indices,:]
+                best_ranks=actual_ranks[local_best,:].astype(int).tolist()
+        single_ranks=rank_matrix(standardized.T)[:,actual_indices].T
         single_ledger=[]
         for column,name in enumerate(FEATURE_NAMES):
             values=single_ranks[:,column].astype(int).tolist()
