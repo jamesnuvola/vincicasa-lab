@@ -41,7 +41,7 @@ permissions:
 concurrency:
   # A newer source SHA invalidates the old source-hash-bound shard artifacts.
   # Cancel stale runs on this branch so they cannot block the corrected exact-head run.
-  group: sonar-q92-full-walkforward-${{ github.ref }}
+  group: sonar-q92-full-walkforward-20261108
   cancel-in-progress: true
 env:
   PYTHONHASHSEED: "0"
