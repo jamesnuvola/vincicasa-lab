@@ -76,3 +76,11 @@ Date: 2026-11-09
 - Persistence is now split into 25 metric-part files per Git tree/commit. Each chunk uses branch-head compare-and-swap, verifies the resulting commit/tree, and reads back every new blob byte-for-byte. Existing paths are accepted only if their immutable Git blob SHA and size match; this supports recovery from partial chunk commits.
 - Report, manifest, target ledger, queue status and checkpoint are held for the final `[q89-persisted]` commit. Intermediate `[q89-persist-chunk]` commits skip the full CI job; the final commit runs the Q89 acceptance validator.
 - Unit tests now cover chunk partitioning and Git blob SHA calculation. The recovery request reuses aggregate artifact from run `42668855015`; no shard is rerun.
+
+## Recovery attempt 4 — explicit mutable queue snapshot
+
+- Recovery attempt 3 passed exact-head CI, restored the accepted aggregate artifact and ran the fail-closed queue validator, but stopped before any Git ref update.
+- The idempotent resume guard found the pre-existing `research_queue_status.json` from the Q89 run-request commit. It differed from the newly generated Q89-validated queue snapshot and was treated as an immutable conflict.
+- Root cause: the queue status is a deliberately mutable generated snapshot, unlike the immutable metrics parts, report, manifest and target ledger.
+- The persistence script now explicitly permits replacement of only `reports/sequence_agent/research_queue_status.json`; every other existing output path remains fail-closed unless SHA and size match exactly. A regression test enforces this allowlist.
+- The 25-file chunked Git Data API strategy remains. The original accepted aggregate artifact is reused; no historical shard is rerun.

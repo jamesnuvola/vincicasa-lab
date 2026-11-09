@@ -100,5 +100,10 @@ class Q89NineFeatureTests(unittest.TestCase):
     def test_git_blob_sha_matches_git_object_format(self):
         self.assertEqual(persist.git_blob_sha(b"test"),"30d74d258442c7c65512eafab474568dd706c430")
 
+    def test_only_queue_snapshot_is_mutable_persist_output(self):
+        self.assertTrue(persist.is_mutable_output_path("reports/sequence_agent/research_queue_status.json"))
+        self.assertFalse(persist.is_mutable_output_path("reports/sequence_agent/per_number_condition_9plus_formula_metrics_part_000.csv.gz"))
+        self.assertFalse(persist.is_mutable_output_path("reports/sequence_agent/per_number_condition_9plus_grammar.json"))
+
 if __name__=="__main__":
     unittest.main(verbosity=2)

@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 BRANCH="research/per-number-condition-q89-nine-feature-20261109"
 OUT=ROOT/"reports/sequence_agent"
+MUTABLE_OUTPUT_PATHS={"reports/sequence_agent/research_queue_status.json"}
 API="https://api.github.com"
 def api(method,path,payload=None):
     token=os.environ.get("GITHUB_TOKEN"); repo=os.environ.get("GITHUB_REPOSITORY","jamesnuvola/vincicasa-lab")
