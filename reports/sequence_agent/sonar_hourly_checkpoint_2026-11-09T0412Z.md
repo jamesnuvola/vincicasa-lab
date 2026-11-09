@@ -13,6 +13,7 @@ PARTIAL. Q89's stored acceptance report is VALIDATED_PENDING_HUMAN_REVIEW; a cur
 - 4,686,825 nine-feature equal-weight formulas; 3,351 targets split Discovery 2,011 / Validation 670 / Blind OOS 670.
 - 14,060,475 formula/split rows; Holm family 42,181,425 tests; 0 rows below adjusted p=0.05.
 - Frozen candidates: Q89 P9_06_09_12_14_15_17_18_19_23; Q88 control P8_00_08_11_12_15_16_19_23.
+- Candidate-selection stage Top-5 shares (descriptive/selection-biased): Q89 Discovery 13.7544%, Validation 12.9851%; Q88 control Discovery 13.7046%, Validation 12.9552%. Blind was not used to select either candidate.
 - Blind OOS Q89: Top-5 11.7612%, Top-10 23.5821%, Top-20 49.5522%, mean rank 20.6137.
 - Blind OOS Q88 control: Top-5 10.9851%, Top-10 24.3881%, Top-20 48.6866%, mean rank 20.7731.
 - Uniform baseline: Top-5 12.5%, Top-10 25%, Top-20 50%, mean rank 20.5.
