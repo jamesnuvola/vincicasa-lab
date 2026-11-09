@@ -34,7 +34,7 @@ PARTIAL. Q89's stored acceptance report is VALIDATED_PENDING_HUMAN_REVIEW; a cur
 - Do not mutate PR #20 while this persistence run is active.
 
 ## Q92 hypothesis and preregistration
-- Protocol: reports/sequence_agent/q92_preregistration_2026-11-09.json, blob e7cc679a5df83def6be0b0aa771617433ec7c36cf? (verify exact SHA before use)
+- Protocol: reports/sequence_agent/q92_preregistration_2026-11-09.json, blob e7cc679a5df83def6be0b0aa771ceca8e688695d
 - Hypothesis: enumerate all C(27,10)=8,436,285 equal-weight ten-feature prior-only formulas and select candidate Discovery→Validation, compare paired blind against refreshed Q89 selection on same archive/splits.
 - 15 shards × 562,419 formulas; 3,352 targets; Discovery 2,012 / Validation 670 / Blind OOS 670; 25,308,855 metric rows; Holm family 75,926,565 tests.
 - Synthetic combinadic test executed locally: 10,007 rank/unrank round-trips passed; exact 15-shard partition checked; endpoints rank 0=(0..9), rank 8,436,284=(17..26).
