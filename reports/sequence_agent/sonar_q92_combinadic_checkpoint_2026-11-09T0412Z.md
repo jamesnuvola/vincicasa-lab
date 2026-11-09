@@ -25,7 +25,7 @@ Exact Git blob readback verified:
 Dedicated CI:
 - [PR check run 42555422405](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42555422405): SUCCESS; compile and synthetic regression steps SUCCESS.
 - [Push check run 42555397913](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42555397913): SUCCESS; same tests.
-- Full project CI current-head runs 42555422447 and 42555397877 were IN_PROGRESS at checkpoint time; their success is not claimed.
+- Full project CI push run 42555397877 on exact head SUCCESS; PR-triggered full CI 42555422447 remains IN_PROGRESS; superseded run 42555496124 cancelled by concurrency.
 
 ## Quantitative Q89 evidence available as baseline context (archive cutoff 2026-11-07)
 Q89 catalog had 4,686,825 nine-feature formulas, 3,351 strict-prefix targets, 14,060,475 formula/split rows, global Holm family 42,181,425, and zero Holm-adjusted rows below 0.05.
