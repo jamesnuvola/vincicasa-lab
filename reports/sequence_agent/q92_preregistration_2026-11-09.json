@@ -135,7 +135,8 @@
     "paired blind ledger target dates, cutoff dates, actual quintets, rank vectors, hit counts, rank sums and deltas replay exactly",
     "paired bootstrap/sign-flip inference replayed from persisted ledger with fixed seeds and Holm over four endpoints",
     "all output files persisted append-only and re-read byte-for-byte; exact-head CI passes; human review/integration remains mandatory",
-    "Catalog-level raw p-values replay from deterministic discrete upper-tail convolution of iid Hypergeometric(40,k,5) counts; method string reconciles across shard reports, aggregate report, manifest and acceptance validator."
+    "Catalog-level raw p-values replay from deterministic discrete upper-tail convolution of iid Hypergeometric(40,k,5) counts; method string reconciles across shard reports, aggregate report, manifest and acceptance validator.",
+    "Persisted metric parts use exact compact_counts_v1 schema; validator reconstructs all metrics and exact raw p-values from seven integer sufficient statistics, recomputes global Holm, and reconciles raw/adjusted vector SHA-256 before acceptance."
   ],
   "limitations": [
     "finite equal-weight ten-feature subset grammar only; weighted, nonlinear, conditional and interaction formulas remain untested",
@@ -151,7 +152,7 @@
     "prs_6_7_8_untouched": true,
     "run_completion_requires_acceptance_persistence_exact_head_ci_and_human_review": true
   },
-  "next_action": "Implement immutable artifact-backed full Q92 shard execution/recovery, then execute only after synthetic acceptance and exact-head CI pass; run global Holm, candidate freeze, paired Blind OOS, acceptance, append-only persistence and exact-byte readback.",
+  "next_action": "Trigger artifact-backed Q92 full walk-forward with exact-head synthetic/full-CI preflight, 15 deterministic shards, global Holm/selection/paired Blind OOS acceptance and append-only compact persistence.",
   "protocol_amendments": [
     {
       "amendment_id": "Q92-NULL-CALIBRATION-01",
@@ -163,6 +164,25 @@
       "audit_report": "reports/sequence_agent/q92_normal_approximation_audit_2026-11-09.json",
       "changes_only_catalog_level_pvalues": true,
       "blind_oos_used_for_method_selection": false
+    },
+    {
+      "amendment_id": "Q92-METRIC-OUTPUT-COMPACT-01",
+      "registered_at_utc": "2026-11-09T07:24:10Z",
+      "effective_before_full_walkforward_execution": true,
+      "storage_schema": "compact_counts_v1",
+      "persisted_fields": [
+        "number_hits_top5",
+        "number_hits_top10",
+        "number_hits_top20",
+        "all5_top5",
+        "all5_top10",
+        "all5_top20",
+        "rank_sum"
+      ],
+      "row_order": "split-major; formula-rank ascending within split; split and formula rank implicit",
+      "replay": "reconstruct mean metrics and discrete exact raw p-values from integer sufficient statistics; replay global Holm in deterministic formula×split×endpoint order and compare raw/adjusted vector SHA-256",
+      "rationale": "Compact sufficient statistics remove redundant formula IDs, feature strings, split/target labels, derived means and row-level adjusted p-values while preserving deterministic replay. Acceptance validator and exact-byte persister remain mandatory.",
+      "blind_oos_used_for_storage_design": false
     }
   ]
 }

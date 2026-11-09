@@ -78,20 +78,22 @@ def validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,sele
     parts=manifest.get("metrics_parts",[])
     if len(parts)!=SHARDS or manifest.get("metrics_part_count")!=SHARDS:
         fail("Q92 metric parts manifest count mismatch")
+    schema=manifest.get("metrics_parts_schema",{})
+    if schema.get("version")!="compact_counts_v1" or schema.get("fields")!=list(q92a.COMPACT_METRIC_FIELDS) or schema.get("row_order")!="split-major; formula-rank ascending within split; split and formula-rank are implicit":
+        fail("Q92 compact metric part schema/order declaration mismatch")
+    if read_json(REPORT_PATH).get("metrics_parts_row_schema")!="compact_counts_v1":
+        fail("Q92 report compact metrics row schema mismatch")
     raw_path=OUT/"q92_20261108_acceptance_raw_pvalues_temp.bin"
-    adjusted_path=OUT/"q92_20261108_acceptance_adjusted_pvalues_temp.bin"
-    for path in (raw_path,adjusted_path):
-        if path.exists():path.unlink()
+    if raw_path.exists():raw_path.unlink()
     raw=np.memmap(raw_path,dtype=np.float64,mode="w+",shape=(EXPECTED_TESTS,))
-    adjusted=np.memmap(adjusted_path,dtype=np.float64,mode="w+",shape=(EXPECTED_TESTS,))
     candidate_pool=[]
     global_metric_row=0
     split_rows={split:0 for split in SPLITS}
     for shard,part in enumerate(parts):
         start,end=q92.shard_bounds(shard)
         expected_part_path=METRICS_PART_DIR/f"shard_{shard}_metrics.csv.gz"
-        if part.get("shard_index")!=shard or part.get("path")!=str(expected_part_path.relative_to(ROOT)) or part.get("rows")!=SHARD_SIZE*3:
-            fail("Q92 metric part manifest identity/count mismatch shard "+str(shard))
+        if part.get("shard_index")!=shard or part.get("path")!=str(expected_part_path.relative_to(ROOT)) or part.get("rows")!=SHARD_SIZE*3 or part.get("row_schema")!="compact_counts_v1":
+            fail("Q92 compact metric part manifest identity/count/schema mismatch shard "+str(shard))
         if part.get("formula_rank_start_inclusive")!=start or part.get("formula_rank_end_exclusive")!=end:
             fail("Q92 metric part formula rank interval mismatch shard "+str(shard))
         if not expected_part_path.is_file() or expected_part_path.stat().st_size!=int(part.get("bytes",-1)) or sha256_file(expected_part_path)!=part.get("sha256"):
@@ -106,12 +108,11 @@ def validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,sele
         local_row=0
         with gzip.open(expected_part_path,"rt",newline="",encoding="utf-8-sig") as handle:
             reader=csv.DictReader(handle)
-            required={"split","formula_id","feature_count","features","targets","formula_rank",
-                "holm_p_top5","holm_p_top10","holm_p_top20","holm_p_max_endpoint_family",*METRIC_FIELDS}
-            if not required.issubset(set(reader.fieldnames or [])):
-                fail("Q92 adjusted metric part schema incomplete shard "+str(shard))
+            if list(reader.fieldnames or [])!=list(q92a.COMPACT_METRIC_FIELDS):
+                fail("Q92 compact metric part exact schema mismatch shard "+str(shard))
             for row in reader:
-                if local_row>=SHARD_SIZE*3:fail("Q92 adjusted metric part has extra rows shard "+str(shard))
+                if local_row>=SHARD_SIZE*3:
+                    fail("Q92 compact metric part has extra rows shard "+str(shard))
                 split_index=local_row//SHARD_SIZE
                 local_rank=local_row%SHARD_SIZE
                 split=SPLITS[split_index]
@@ -119,7 +120,8 @@ def validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,sele
                     expected_formula_iter=q92.iter_formula_slice(start,end)
                     previous_split=split_index
                     if split_index==1:
-                        if len(local_heap)!=100:fail("Q92 acceptance local Discovery top100 incomplete shard "+str(shard))
+                        if len(local_heap)!=100:
+                            fail("Q92 acceptance local Discovery top100 incomplete shard "+str(shard))
                         ordered=sorted(local_heap,key=lambda entry:(-entry[2],entry[3],entry[1]))
                         local_candidate_map={entry[1]:{"formula_id":entry[1],"features":entry[4],"formula_rank":entry[5],
                             "mean_number_hits_top5":entry[2],"mean_rank_of_actual_numbers":entry[3],
@@ -128,75 +130,72 @@ def validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,sele
                     elif split_index==2 and (local_candidate_map is None or len(local_candidate_map)!=100):
                         fail("Q92 acceptance local candidate map missing shard "+str(shard))
                 columns=next(expected_formula_iter,None)
-                if columns is None:fail("Q92 acceptance expected formula iterator ended early shard "+str(shard))
-                expected_id=q92.formula_id(columns)
-                fid=row.get("formula_id","")
-                if row.get("split")!=split or int(row.get("targets",-1))!=SPLIT_COUNTS[split] or int(row.get("feature_count",-1))!=10 or fid!=expected_id:
-                    fail("Q92 adjusted metric formula/split/order mismatch shard "+str(shard)+" local row "+str(local_row))
-                if int(row.get("formula_rank",-1))!=start+local_rank:
-                    fail("Q92 adjusted metric formula rank mismatch shard "+str(shard)+" local row "+str(local_row))
+                if columns is None:
+                    fail("Q92 acceptance expected formula iterator ended early shard "+str(shard))
+                fid=q92.formula_id(columns)
                 expected_features="+".join(q80.FEATURE_NAMES[column] for column in columns)
-                if row.get("features")!=expected_features:fail("Q92 adjusted metric feature string mismatch shard "+str(shard)+" formula "+fid)
                 targets=SPLIT_COUNTS[split]
-                s5=aggregate.integer_from_mean(row["mean_number_hits_top5"],5*targets,"Q92 Top5")
-                s10=aggregate.integer_from_mean(row["mean_number_hits_top10"],5*targets,"Q92 Top10")
-                s20=aggregate.integer_from_mean(row["mean_number_hits_top20"],5*targets,"Q92 Top20")
-                raw_p=[q92null.exact_upper_tail_pvalue(s5,targets,5),q92null.exact_upper_tail_pvalue(s10,targets,10),q92null.exact_upper_tail_pvalue(s20,targets,20)]
-                adjusted_p=[float(row["holm_p_top5"]),float(row["holm_p_top10"]),float(row["holm_p_top20"])]
+                summary=q92a.metric_summary_from_compact_counts(row,targets)
+                raw_p=[summary["p_top5_exact_hypergeom_sum"],summary["p_top10_exact_hypergeom_sum"],summary["p_top20_exact_hypergeom_sum"]]
                 for endpoint_index,p in enumerate(raw_p):
-                    compare_float(row[("p_top5_exact_hypergeom_sum","p_top10_exact_hypergeom_sum","p_top20_exact_hypergeom_sum")[endpoint_index]],p,
-                        "Q92 raw p-value replay shard "+str(shard)+" formula "+fid+" split "+split)
-                    if not 0.0<=adjusted_p[endpoint_index]<=1.0 or not math.isfinite(adjusted_p[endpoint_index]):
-                        fail("Q92 adjusted p-value outside bounds shard "+str(shard)+" formula "+fid)
                     raw[global_metric_row*3+endpoint_index]=p
-                    adjusted[global_metric_row*3+endpoint_index]=adjusted_p[endpoint_index]
-                compare_float(row["holm_p_max_endpoint_family"],max(adjusted_p),"Q92 row max Holm shard "+str(shard)+" formula "+fid)
                 if split_index==0:
-                    summary=aggregate.metric_summary(row)
-                    score=summary["mean_number_hits_top5"];mean_rank=summary["mean_rank_of_actual_numbers"]
+                    score=summary["mean_number_hits_top5"]
+                    mean_rank=summary["mean_rank_of_actual_numbers"]
                     key=(score,-mean_rank,aggregate.invert_id(fid))
                     entry=(key,fid,score,mean_rank,expected_features,start+local_rank,summary)
-                    if len(local_heap)<100:heapq.heappush(local_heap,entry)
-                    elif key>local_heap[0][0]:heapq.heapreplace(local_heap,entry)
-                elif split_index in (1,2):
+                    if len(local_heap)<100:
+                        heapq.heappush(local_heap,entry)
+                    elif key>local_heap[0][0]:
+                        heapq.heapreplace(local_heap,entry)
+                else:
                     item=local_candidate_map.get(fid) if local_candidate_map is not None else None
                     if item is not None:
-                        summary=aggregate.metric_summary(row)
-                        item["validation" if split_index==1 else "blind"]=summary
                         if split_index==1:
+                            item["validation"]=summary
                             item["validation_mean_number_hits_top5"]=summary["mean_number_hits_top5"]
                             item["validation_mean_rank_of_actual_numbers"]=summary["mean_rank_of_actual_numbers"]
-                local_row+=1;global_metric_row+=1;split_rows[split]+=1
+                        else:
+                            item["blind"]=summary
+                local_row+=1
+                global_metric_row+=1
+                split_rows[split]+=1
         if local_row!=SHARD_SIZE*3 or global_metric_row!=(shard+1)*SHARD_SIZE*3:
-            fail("Q92 adjusted metric part row count mismatch shard "+str(shard))
-        if local_candidate_map is None or len(local_candidate_map)!=100:fail("Q92 acceptance local candidate map incomplete shard "+str(shard))
+            fail("Q92 compact metric part row count mismatch shard "+str(shard))
+        if local_candidate_map is None or len(local_candidate_map)!=100:
+            fail("Q92 acceptance local candidate map incomplete shard "+str(shard))
         for item in local_candidate_map.values():
-            if "validation" not in item or "blind" not in item:fail("Q92 acceptance candidate missing Validation/Blind shard "+str(shard))
+            if "validation" not in item or "blind" not in item:
+                fail("Q92 acceptance candidate missing Validation/Blind shard "+str(shard))
             candidate_pool.append(item)
     if global_metric_row!=TOTAL*3 or split_rows!={split:TOTAL for split in SPLITS}:
-        fail("Q92 adjusted metric global coverage mismatch")
-    raw.flush();adjusted.flush()
-    raw_hash=aggregate.sha256_memmap(raw);adjusted_hash=aggregate.sha256_memmap(adjusted)
+        fail("Q92 compact metric global coverage mismatch")
+    raw.flush()
+    raw_hash=aggregate.sha256_memmap(raw)
     mt=manifest.get("multiple_testing",{})
-    if mt.get("test_count")!=EXPECTED_TESTS or mt.get("raw_pvalue_vector_sha256")!=raw_hash or mt.get("adjusted_pvalue_vector_sha256")!=adjusted_hash:
-        fail("Q92 raw/adjusted p-value vector hashes or Holm family size mismatch")
+    if mt.get("test_count")!=EXPECTED_TESTS or mt.get("raw_pvalue_vector_sha256")!=raw_hash:
+        fail("Q92 raw p-value vector hash or Holm family size mismatch")
     q92a.holm_adjust_in_place(raw,chunk_size=500_000)
     raw.flush()
-    for start in range(0,EXPECTED_TESTS,1_000_000):
-        end=min(start+1_000_000,EXPECTED_TESTS)
-        if not np.array_equal(raw[start:end],adjusted[start:end]):
-            fail("Q92 global Holm replay mismatch at p-value index "+str(start))
-    holm_below=0;minimum_holm=1.0
+    adjusted_hash=aggregate.sha256_memmap(raw)
+    if mt.get("adjusted_pvalue_vector_sha256")!=adjusted_hash:
+        fail("Q92 global Holm adjusted p-value vector hash mismatch")
+    report=read_json(REPORT_PATH)
+    report_mt=report.get("multiple_testing",{})
+    if report_mt.get("raw_pvalue_vector_sha256")!=raw_hash or report_mt.get("adjusted_pvalue_vector_sha256")!=adjusted_hash:
+        fail("Q92 report raw/adjusted p-value vector SHA mismatch")
+    holm_below=0
+    minimum_holm=1.0
     for row_start in range(0,TOTAL*3,1_000_000):
         row_end=min(row_start+1_000_000,TOTAL*3)
-        chunk=np.asarray(adjusted[row_start*3:row_end*3],dtype=np.float64).reshape(-1,3)
+        chunk=np.asarray(raw[row_start*3:row_end*3],dtype=np.float64).reshape(-1,3)
         row_max=chunk.max(axis=1)
-        holm_below+=int(np.sum(row_max<0.05));minimum_holm=min(minimum_holm,float(row_max.min()))
-    report=read_json(REPORT_PATH)
+        holm_below+=int(np.sum(row_max<0.05))
+        minimum_holm=min(minimum_holm,float(row_max.min()))
     if report.get("multiple_testing",{}).get("holm_adjusted_formula_split_rows_below_0_05")!=holm_below or abs(float(report.get("multiple_testing",{}).get("minimum_holm_p_max_endpoint_family",-1))-minimum_holm)>1e-15:
-        fail("Q92 report Holm summary does not reconcile to persisted adjusted vector")
-    del raw,adjusted
-    raw_path.unlink(missing_ok=True);adjusted_path.unlink(missing_ok=True)
+        fail("Q92 report Holm summary does not reconcile to replayed adjusted vector")
+    del raw
+    raw_path.unlink(missing_ok=True)
     return candidate_pool,holm_below,minimum_holm
 
 def validate_candidate_freeze(candidate_pool,selection):
@@ -363,7 +362,7 @@ def validate():
     if report.get("source_archive_sha256")!=archive_sha256 or manifest.get("source_archive_sha256")!=archive_sha256 or report.get("source_archive_git_blob_sha1")!=archive_sha1 or manifest.get("source_archive_git_blob_sha1")!=archive_sha1:
         fail("Q92 report/manifest archive SHA mismatch")
     expected_report={"target_count":3402,"scored_targets":3352,"formula_count":TOTAL,"formula_size":10,"feature_count":27,
-        "metrics_rows":TOTAL*3,"split_counts":SPLIT_COUNTS,"shard_count":SHARDS,"shard_formula_count":SHARD_SIZE}
+        "metrics_rows":TOTAL*3,"metrics_parts_row_schema":"compact_counts_v1","split_counts":SPLIT_COUNTS,"shard_count":SHARDS,"shard_formula_count":SHARD_SIZE}
     for key,value in expected_report.items():
         if report.get(key)!=value:fail("Q92 report dimension/split mismatch field "+key)
     if manifest.get("formula_count")!=TOTAL or manifest.get("formula_size")!=10 or manifest.get("feature_count")!=27 or manifest.get("metrics_rows")!=TOTAL*3 or manifest.get("formula_rank_coverage")!="0..8436284 exactly once":
@@ -376,7 +375,15 @@ def validate():
         fail("Q92 report discrete null-calibration method mismatch")
     feature_stack=q81.build_feature_stack(draws)
     q89_report,q89_selection,q89_paired,q89_id,q89_columns=validate_q89_control(archive_sha256,dates,draws,feature_stack)
-    for shard in range(SHARDS):aggregate.validate_shard_report(shard,archive_sha256,dates)
+    shard_reports=[aggregate.validate_shard_report(shard,archive_sha256,dates) for shard in range(SHARDS)]
+    source_code_hashes=shard_reports[0].get("source_code_sha256")
+    if not isinstance(source_code_hashes,dict) or any(item.get("source_code_sha256")!=source_code_hashes for item in shard_reports):
+        fail("Q92 acceptance shard source-code hash manifests differ")
+    source_checkout_shas=sorted({str(item.get("source_checkout_sha")) for item in shard_reports})
+    if manifest.get("shard_source_code_sha256")!=source_code_hashes or report.get("source_code_sha256")!=source_code_hashes:
+        fail("Q92 report/manifest source-code hash manifest mismatch")
+    if manifest.get("shard_source_checkout_shas")!=source_checkout_shas or report.get("shard_source_checkout_shas")!=source_checkout_shas:
+        fail("Q92 report/manifest shard checkout provenance mismatch")
     candidate_pool,holm_below,minimum_holm=validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,selection)
     selected=validate_candidate_freeze(candidate_pool,selection)
     if report.get("candidate_selection",{}).get("selected_candidate_id")!=selected["formula_id"] or report.get("candidate_selection",{}).get("Q89_control_candidate_id")!=q89_id:

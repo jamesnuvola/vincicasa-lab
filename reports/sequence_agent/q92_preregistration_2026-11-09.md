@@ -30,10 +30,14 @@ Catalog-level p-values use the discrete upper-tail convolution of iid Hypergeome
 
 `Q92-NULL-CALIBRATION-01` replaces the continuity-corrected normal approximation before the full walk-forward run. A full-support audit over the 75,926,565-test family found relative tail discrepancies up to 68.22% for Top-5 with 670 targets and 49.48% for Top-5 with 2,012 targets near the first Holm step (`alpha/m = 6.58531e-10`). Formula universe, feature stack, strict-prior cutoff, chronological splits, candidate selection, paired endpoints and seeds are unchanged. See the amendment JSON and audit report in `reports/sequence_agent/`.
 
+## Pre-execution compact-output amendment — 2026-11-09
+
+`Q92-METRIC-OUTPUT-COMPACT-01` defines `compact_counts_v1`: seven integer sufficient statistics per formula×split row (`number_hits_top5`, `number_hits_top10`, `number_hits_top20`, `all5_top5`, `all5_top10`, `all5_top20`, `rank_sum`). Split and formula rank are implicit in deterministic split-major/formula-rank order. The acceptance validator reconstructs means and discrete exact raw p-values, recomputes global Holm, and checks raw/adjusted p-value vector SHA-256. Per-row adjusted p-values and redundant formula/feature labels are not persisted; the global adjusted vector is replayable from the counts and registered method.
+
 ## Acceptance and guardrails
 Acceptance requires exact formula/shard coverage, strict-prefix reconciliation, all metric and ledger dimensions, global Holm family, frozen candidate IDs, paired ledger arithmetic and inference replay, append-only persistence with byte-for-byte readback, exact-head CI, and human review/integration. No automatic merge, promotion or shadow insertion. PRs #6, #7 and #8 remain untouched; the 2026-10-25 freeze is immutable.
 
 Limitations: this finite equal-weight subset catalog does not exhaust weighted, nonlinear, conditional, interaction or infinite formula spaces. Historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation.
 
 ## Next action
-Implement immutable artifact-backed full Q92 shard execution/recovery, then execute only after synthetic acceptance and exact-head CI pass; run global Holm, candidate freeze, paired Blind OOS, acceptance, append-only persistence and exact-byte readback.
+Trigger the artifact-backed Q92 full walk-forward workflow with exact-head synthetic/full-CI preflight, 15 deterministic shards, global Holm/selection/paired Blind OOS acceptance and append-only compact persistence.

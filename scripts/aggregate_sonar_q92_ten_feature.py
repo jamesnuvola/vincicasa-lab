@@ -202,6 +202,10 @@ def validate_shard_report(shard,archive_sha256,dates):
             fail("Q92 shard report field mismatch shard "+str(shard)+" field "+key)
     if report.get("first_date")!=dates[0] or report.get("last_date")!=dates[-1]:
         fail("Q92 shard archive date bounds mismatch shard "+str(shard))
+    if report.get("source_checkout_sha") is None or report.get("source_checkout_sha")=="":
+        fail("Q92 shard source checkout SHA missing shard "+str(shard))
+    if report.get("source_code_sha256")!=q92.source_code_hashes(ROOT):
+        fail("Q92 shard source-code hash manifest mismatch shard "+str(shard))
     if report.get("multiple_testing",{}).get("method")!="GLOBAL_HOLM_PENDING_AGGREGATION" or report.get("multiple_testing",{}).get("test_count")!=SHARD_SIZE*3*3:
         fail("Q92 shard raw Holm family declaration mismatch shard "+str(shard))
     if report.get("multiple_testing",{}).get("p_value_method")!="discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws":
@@ -352,6 +356,10 @@ def main():
     shard_reports=[]
     for shard in range(SHARDS):
         shard_reports.append(validate_shard_report(shard,archive_sha256,dates))
+    source_code_hashes=shard_reports[0].get("source_code_sha256")
+    if not isinstance(source_code_hashes,dict) or any(item.get("source_code_sha256")!=source_code_hashes for item in shard_reports):
+        fail("Q92 shard source-code hashes differ across shard artifacts")
+    source_checkout_shas=sorted({str(item.get("source_checkout_sha")) for item in shard_reports})
 
     tests=TOTAL*3*3
     pvalue_path=OUT/"q92_20261108_holm_vector_temp.bin"
@@ -521,33 +529,27 @@ def main():
         raw_sha=sha256_file(raw_path)
         with raw_path.open(newline="",encoding="utf-8-sig") as source:
             reader=csv.DictReader(source)
-            fieldnames=list(reader.fieldnames or [])
-            if "formula_rank" not in fieldnames: fieldnames.append("formula_rank")
-            for field in ("holm_p_top5","holm_p_top10","holm_p_top20"):
-                if field not in fieldnames: fieldnames.append(field)
-            if "holm_p_max_endpoint_family" not in fieldnames: fieldnames.append("holm_p_max_endpoint_family")
+            fieldnames=list(q92.COMPACT_METRIC_FIELDS)
             with output_path.open("wb") as raw_output:
-                with gzip.GzipFile(fileobj=raw_output,mode="wb",filename="",mtime=0,compresslevel=6) as compressed:
+                with gzip.GzipFile(fileobj=raw_output,mode="wb",filename="",mtime=0,compresslevel=9) as compressed:
                     with io.TextIOWrapper(compressed,encoding="utf-8",newline="") as text:
-                        writer=csv.DictWriter(text,fieldnames=fieldnames,lineterminator="\n")
+                        writer=csv.DictWriter(text,fieldnames=fieldnames,lineterminator="\\n")
                         writer.writeheader()
                         row_count=0
                         for row in reader:
+                            if row_count>=SHARD_SIZE*3:
+                                fail("Q92 raw metrics shard has extra rows while compacting shard "+str(shard))
                             split_index=row_count//SHARD_SIZE
-                            local_rank=row_count%SHARD_SIZE
-                            global_row=shard*SHARD_SIZE*3+split_index*SHARD_SIZE+local_rank
-                            adjusted=pvalues[global_row*3:global_row*3+3]
-                            row["formula_rank"]=start+local_rank
-                            row["holm_p_top5"]=float(adjusted[0])
-                            row["holm_p_top10"]=float(adjusted[1])
-                            row["holm_p_top20"]=float(adjusted[2])
-                            row["holm_p_max_endpoint_family"]=float(max(adjusted))
-                            writer.writerow(row)
+                            expected_split=SPLITS[split_index]
+                            targets=SPLIT_COUNTS[expected_split]
+                            if row.get("split")!=expected_split or int(row.get("targets",-1))!=targets:
+                                fail("Q92 raw metrics split/target order mismatch while compacting shard "+str(shard)+" row "+str(row_count))
+                            writer.writerow(q92.compact_counts_from_raw_metrics(row,targets))
                             row_count+=1
                         if row_count!=SHARD_SIZE*3:
-                            fail("Q92 adjusted metrics part row count mismatch shard "+str(shard))
+                            fail("Q92 compact metrics part row count mismatch shard "+str(shard))
         metrics_parts.append({"shard_index":shard,"path":str(output_path.relative_to(ROOT)),"rows":SHARD_SIZE*3,
-            "formula_rank_start_inclusive":start,"formula_rank_end_exclusive":end,"bytes":output_path.stat().st_size,
+            "formula_rank_start_inclusive":start,"formula_rank_end_exclusive":end,"row_schema":"compact_counts_v1","bytes":output_path.stat().st_size,
             "sha256":sha256_file(output_path),"source_artifact_sha256":raw_sha})
 
     target_parts=validate_and_persist_target_ledger_parts(dates,draws,archive_sha256,feature_stack)
@@ -562,6 +564,10 @@ def main():
             "raw_pvalue_vector_sha256":raw_pvalue_sha256,"adjusted_pvalue_vector_sha256":adjusted_pvalue_sha256,
             "p_value_method":"discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws"},
         "metrics_parts":metrics_parts,"metrics_part_count":len(metrics_parts),
+        "metrics_parts_schema":{"version":"compact_counts_v1","fields":list(q92.COMPACT_METRIC_FIELDS),
+            "row_order":"split-major; formula-rank ascending within split; split and formula-rank are implicit",
+            "replay":"integer sufficient statistics reconstruct mean metrics and exact raw p-values; global Holm is replayed and compared by vector SHA"},
+        "shard_source_code_sha256":source_code_hashes,"shard_source_checkout_shas":source_checkout_shas,
         "target_ledger_parts":target_parts,"target_ledger_part_count":len(target_parts),"target_ledger_rows_per_shard":scored,
         "supplemental_outputs":{"candidate_shortlist":{"path":str(SHORTLIST_PATH.relative_to(ROOT)),"rows":100,"bytes":SHORTLIST_PATH.stat().st_size,"sha256":sha256_file(SHORTLIST_PATH)},
             "candidate_selection":{"path":str(SELECTION_PATH.relative_to(ROOT)),"bytes":SELECTION_PATH.stat().st_size,"sha256":sha256_file(SELECTION_PATH)},
@@ -574,7 +580,8 @@ def main():
             "per-target best formula within each shard is retrospective descriptive only, never a candidate-selection rule",
             "no automatic merge, engine promotion or shadow insertion; human review remains required"],
         "limitations":["finite equal-weight ten-feature grammar only; weighted/nonlinear/conditional/interaction formulas remain untested",
-            "global formula-family p-values use an approximate normal tail and are exploratory",
+            "global formula-family p-values use discrete float64 convolution under the independent uniform 5-of-40 null; extreme underflow tails use the smallest positive subnormal floor",
+            "compact metric parts store seven integer sufficient statistics; exact raw p-values and global Holm adjusted vector are replayed from these counts",
             "historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation",
             "the finite formula catalog does not exhaust the infinite mathematical formula universe"]}
     MANIFEST_PATH.write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
@@ -583,9 +590,11 @@ def main():
         "schema_version":"1.0","task_id":"Q92_2026_11_08","status":"AGGREGATED_PENDING_ACCEPTANCE_VALIDATION",
         "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-09",
         "source_archive":"data/storico_daily.csv","source_archive_sha256":archive_sha256,"source_archive_git_blob_sha1":archive_sha1,
-        "source_archive_main_commit":EXPECTED_ARCHIVE_MAIN_COMMIT,"target_count":EXPECTED_ARCHIVE_COUNT,"first_date":dates[0],"last_date":dates[-1],
+        "source_archive_main_commit":EXPECTED_ARCHIVE_MAIN_COMMIT,"aggregate_checkout_sha":os.environ.get("GITHUB_SHA") or "LOCAL_UNPINNED",
+        "source_code_sha256":source_code_hashes,"shard_source_checkout_shas":source_checkout_shas,
+        "target_count":EXPECTED_ARCHIVE_COUNT,"first_date":dates[0],"last_date":dates[-1],
         "minimum_prior_history":q80.MIN_HISTORY,"scored_targets":scored,"feature_count":27,"formula_size":10,"formula_count":TOTAL,
-        "shard_count":SHARDS,"shard_formula_count":SHARD_SIZE,"metrics_rows":TOTAL*3,"split_counts":SPLIT_COUNTS,
+        "shard_count":SHARDS,"shard_formula_count":SHARD_SIZE,"metrics_rows":TOTAL*3,"metrics_parts_row_schema":"compact_counts_v1","split_counts":SPLIT_COUNTS,
         "target_ledger_rows_per_shard":scored,"target_ledger_rows_total":scored*SHARDS,
         "multiple_testing":{"method":"Global Holm-Bonferroni","test_count":tests,"formula_split_endpoint_family_size":tests,
             "raw_pvalue_vector_sha256":raw_pvalue_sha256,"adjusted_pvalue_vector_sha256":adjusted_pvalue_sha256,

@@ -10,6 +10,8 @@ on:
       - "scripts/validate_sonar_q92_ten_feature.py"
       - "tests/test_sonar_q92_aggregate_common.py"
       - "scripts/sonar_q92_null_calibration.py"
+      - "scripts/sonar_q92_common.py"
+      - "reports/sequence_agent/q92_preregistration_2026-11-09.json"
       - "tests/test_sonar_q92_null_calibration.py"
       - ".github/workflows/sonar-q92-aggregate-core.yml"
 permissions:
@@ -31,6 +33,6 @@ jobs:
       - name: Install numerical dependency
         run: python -m pip install --disable-pip-version-check numpy
       - name: Compile Q92 aggregate helpers and regressions
-        run: python -m py_compile scripts/sonar_q92_null_calibration.py tests/test_sonar_q92_null_calibration.py scripts/sonar_q92_aggregate_common.py scripts/aggregate_sonar_q92_ten_feature.py scripts/validate_sonar_q92_ten_feature.py tests/test_sonar_q92_aggregate_common.py
+        run: python -m py_compile scripts/sonar_q92_null_calibration.py scripts/sonar_q92_common.py tests/test_sonar_q92_null_calibration.py scripts/sonar_q92_aggregate_common.py scripts/aggregate_sonar_q92_ten_feature.py scripts/validate_sonar_q92_ten_feature.py tests/test_sonar_q92_aggregate_common.py
       - name: Run Q92 Holm, selection and paired-inference synthetic regressions
         run: python tests/test_sonar_q92_aggregate_common.py -v && python tests/test_sonar_q92_null_calibration.py -v
