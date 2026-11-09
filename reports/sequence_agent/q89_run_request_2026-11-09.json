@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q89",
+  "request_id": "Q89-2026-11-09-run-01",
+  "status": "RUN_REQUESTED",
+  "requested_at_utc": "2026-11-09T17:52:26.342Z",
+  "protocol_path": "reports/sequence_agent/q89_protocol_2026-11-09.json",
+  "protocol_git_blob_sha": "cd2f9af7e78e943949443646f453515ca5e59ece",
+  "archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+  "expected_formula_count": 4686825,
+  "expected_shards": 30,
+  "expected_scored_targets": 3351,
+  "exact_head_ci_prerequisite": {
+    "parent_head_sha": "3bd82d03343dc85871b237c96b5ae0ecc7eff189",
+    "run_id": 42668311363,
+    "conclusion": "success"
+  },
+  "start_condition": "The Q89 workflow waits for a SUCCESS ci.yml run on the exact run-request commit SHA before launching any shard.",
+  "completion_policy": "Do not mark Q89 COMPLETE until all 30 shards, global aggregation, fail-closed acceptance, Git Data API persistence/readback, persisted exact-head CI and human review/integration are complete.",
+  "automatic_promotion": false,
+  "automatic_merge": false
+}

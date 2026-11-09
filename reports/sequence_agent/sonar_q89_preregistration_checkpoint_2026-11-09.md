@@ -40,3 +40,12 @@ Date: 2026-11-09
 - The subsequent exact-head push CI run `42668177660` was CANCELLED at job setup when concurrent pull_request runs for draft PR #24 entered the same branch concurrency group. This was an orchestration cancellation, not a test failure.
 - PR #24 is temporarily closed (not merged) while the push-only exact-head CI and Q89 run-request workflow execute. Reopen it for human review after the run/persistence gates; no merge is authorized.
 - Next: run the exact-head CI on the current checkpoint commit; only after SUCCESS, add the Q89 run-request file with a `[q89-run]` commit message. The Q89 workflow then waits for CI on that exact SHA before launching the 30 shards.
+
+## Q89 full walk-forward request
+
+- The exact-head CI on parent `3bd82d03343dc85871b237c96b5ae0ecc7eff189` completed SUCCESS in run `42668311363`.
+- The CI step compiled the Q89 runner, aggregator, persistence script and queue validator; ran the nine Q89 unit tests; and ran the Q80 and Q88 acceptance validators. The overall workflow concluded SUCCESS.
+- A separate run request is now committed as `reports/sequence_agent/q89_run_request_2026-11-09.json` with status `RUN_REQUESTED`.
+- The request pins the protocol blob `cd2f9af7e78e943949443646f453515ca5e59ece`, archive SHA `3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed`, 4,686,825 formulas, 30 shards and 3,351 scored targets.
+- The Q89 workflow must wait for SUCCESS of `ci.yml` on the exact run-request commit SHA before starting any shard. The parent CI success does not substitute for this exact-head gate.
+- At checkpoint time no Q89 shard has been launched and no Q89 predictive result exists.
