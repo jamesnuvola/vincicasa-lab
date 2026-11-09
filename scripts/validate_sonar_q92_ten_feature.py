@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Fail-closed acceptance replay for the Q92 2026-11-08 ten-feature walk-forward."""
 from __future__ import annotations
-import csv,gzip,hashlib,json,math
+import csv,gzip,hashlib,heapq,json,math
 from pathlib import Path
 import numpy as np
 import sonar_per_number_condition_grammar as q80
