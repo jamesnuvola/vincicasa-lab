@@ -1,0 +1,49 @@
+name: SONAR Q84 Event-Level Strategy Atlas
+on:
+  push:
+    branches: [research/q84-event-strategy-atlas-20261109]
+    paths:
+      - scripts/sonar_strategy_atlas.py
+      - tests/test_sonar_strategy_atlas.py
+      - scripts/validate_q84_strategy_atlas.py
+      - data/storico_daily.csv
+      - .github/workflows/sonar-q84-atlas.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: sonar-q84-atlas
+  cancel-in-progress: false
+jobs:
+  compute-validate-persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q84-event-strategy-atlas-20261109
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile and run synthetic acceptance tests
+        run: |
+          python -m py_compile scripts/sonar_strategy_atlas.py scripts/validate_q84_strategy_atlas.py
+          python tests/test_sonar_strategy_atlas.py -v
+      - name: Compute Q84 prior-only event atlas
+        run: python scripts/sonar_strategy_atlas.py
+      - name: Validate target cutoffs, rank permutations, formula coverage and checksums
+        run: python scripts/validate_q84_strategy_atlas.py
+      - name: Persist validated Q84 evidence to research branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/strategy_atlas_report.json reports/sequence_agent/strategy_atlas_catalog.jsonl reports/sequence_agent/strategy_atlas_target_ledger.csv reports/sequence_agent/strategy_atlas_lifecycle.json
+          if git diff --cached --quiet; then
+            echo "Q84 artifacts already byte-identical; no commit needed."
+          else
+            git commit -m "[q84-persisted] validated event-level strategy atlas evidence"
+            git push origin HEAD:research/q84-event-strategy-atlas-20261109
+          fi
