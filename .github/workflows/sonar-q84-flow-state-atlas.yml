@@ -1,0 +1,88 @@
+name: SONAR Q84 Flow-State Strategy Atlas
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Run the registered experiment or validate the exact persisted head"
+        required: false
+        default: run
+        type: choice
+        options:
+          - run
+          - validate
+  push:
+    branches:
+      - research/q84-flow-state-atlas-20261109
+    paths:
+      - "scripts/sonar_strategy_atlas.py"
+      - "scripts/validate_sonar_strategy_atlas.py"
+      - "tests/test_sonar_strategy_atlas.py"
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: sonar-q84-flow-state-atlas
+  cancel-in-progress: false
+
+jobs:
+  q84:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q84-flow-state-atlas-20261109
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile Q84 implementation and validator
+        run: python -m py_compile scripts/sonar_strategy_atlas.py scripts/validate_sonar_strategy_atlas.py
+      - name: Run Q84 regression tests
+        run: python tests/test_sonar_strategy_atlas.py -v
+      - name: Validate exact persisted head
+        if: \${{ github.event_name == 'workflow_dispatch' && inputs.mode == 'validate' }}
+        run: python scripts/validate_sonar_strategy_atlas.py --validate-only
+      - name: Execute registered causal flow-state walk-forward
+        if: \${{ github.event_name != 'workflow_dispatch' || inputs.mode != 'validate' }}
+        run: python scripts/sonar_strategy_atlas.py
+      - name: Run fail-closed Q84 acceptance validator
+        if: \${{ github.event_name != 'workflow_dispatch' || inputs.mode != 'validate' }}
+        run: python scripts/validate_sonar_strategy_atlas.py
+      - name: Persist Q84 outputs and dispatch exact-head validation
+        if: \${{ github.event_name != 'workflow_dispatch' || inputs.mode != 'validate' }}
+        env:
+          GITHUB_TOKEN: \${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/strategy_atlas_catalog.jsonl \
+            reports/sequence_agent/strategy_atlas_target_ledger.csv.gz \
+            reports/sequence_agent/strategy_atlas_lifecycle.json \
+            reports/sequence_agent/strategy_atlas_report.json \
+            reports/sequence_agent/strategy_atlas_manifest.json \
+            reports/sequence_agent/strategy_atlas_checkpoint_2026-11-09.json \
+            reports/sequence_agent/strategy_atlas_validation.json
+          git commit -m "Persist validated Q84 flow-state atlas [q84-persisted]"
+          git push origin HEAD:research/q84-flow-state-atlas-20261109
+
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d '{"ref":"research/q84-flow-state-atlas-20261109"}'
+
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/sonar-q84-flow-state-atlas.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d '{"ref":"research/q84-flow-state-atlas-20261109","inputs":{"mode":"validate"}}'
