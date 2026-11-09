@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Synthetic regressions for Q92 global Holm, candidate freeze and paired inference."""
 from __future__ import annotations
-import unittest
+import csv,gzip,unittest
 import numpy as np
 import sys
 from pathlib import Path
@@ -104,6 +104,44 @@ class Q92AggregateCommonTests(unittest.TestCase):
         p=q92a.circular_block_signflip_pvalue(values,replicates=100,block_length=7)
         self.assertEqual((low,high),(0.0,0.0))
         self.assertEqual(p,1.0)
+
+    def test_compact_metrics_part_writes_readable_gzip_csv_with_canonical_lf(self):
+        fields=["split","targets","mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20",
+            "all5_top5_rate","all5_top10_rate","all5_top20_rate","mean_rank_of_actual_numbers"]
+        splits=("discovery","validation","blind_oos")
+        split_counts={split:2 for split in splits}
+        rows=[]
+        for split in splits:
+            for index in range(2):
+                rows.append({"split":split,"targets":2,
+                    "mean_number_hits_top5":(1+index)/10,
+                    "mean_number_hits_top10":(2+index)/10,
+                    "mean_number_hits_top20":(3+index)/10,
+                    "all5_top5_rate":index/2,
+                    "all5_top10_rate":index/2,
+                    "all5_top20_rate":index/2,
+                    "mean_rank_of_actual_numbers":20+index})
+        with tempfile.TemporaryDirectory() as temporary:
+            root=Path(temporary)
+            raw_path=root/"raw_metrics.csv"
+            compact_path=root/"compact_metrics.csv.gz"
+            with raw_path.open("w",newline="",encoding="utf-8") as handle:
+                writer=csv.DictWriter(handle,fieldnames=fields,lineterminator="\n")
+                writer.writeheader();writer.writerows(rows)
+            identity=q92agg.compact_metrics_part(raw_path,compact_path,shard_index=0,
+                shard_size=2,splits=splits,split_counts=split_counts)
+            with gzip.open(compact_path,"rt",newline="",encoding="utf-8") as handle:
+                reader=csv.DictReader(handle)
+                self.assertEqual(reader.fieldnames,list(q92.COMPACT_METRIC_FIELDS))
+                compact_rows=list(reader)
+            decompressed=gzip.open(compact_path,"rb").read()
+            self.assertEqual(len(compact_rows),6)
+            self.assertEqual([row["split"] for row in rows],[split for split in splits for _ in range(2)])
+            self.assertEqual(decompressed.count(bytes((10,))),7)
+            self.assertNotIn(bytes((92,110)),decompressed)
+            self.assertEqual(identity["rows"],6)
+            self.assertEqual(identity["bytes"],compact_path.stat().st_size)
+            self.assertEqual(identity["sha256"],hashlib.sha256(compact_path.read_bytes()).hexdigest())
 
     def test_compact_metric_count_roundtrip_preserves_raw_summary(self):
         targets=10

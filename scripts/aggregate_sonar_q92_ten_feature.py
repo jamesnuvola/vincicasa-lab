@@ -97,6 +97,39 @@ def write_gzip_csv(path,fieldnames,rows):
                 writer.writeheader()
                 writer.writerows(rows)
 
+def compact_metrics_part(raw_path,output_path,shard_index,shard_size=SHARD_SIZE,splits=SPLITS,split_counts=SPLIT_COUNTS):
+    """Write deterministic gzip CSV sufficient statistics using canonical LF records."""
+    shard_size=int(shard_size)
+    splits=tuple(splits)
+    if shard_size<=0 or not splits or set(splits)!=set(split_counts):
+        raise ValueError("Q92 compact metrics part split/count contract invalid")
+    raw_sha=sha256_file(raw_path)
+    with Path(raw_path).open(newline="",encoding="utf-8-sig") as source:
+        reader=csv.DictReader(source)
+        fieldnames=list(q92.COMPACT_METRIC_FIELDS)
+        with Path(output_path).open("wb") as raw_output:
+            with gzip.GzipFile(fileobj=raw_output,mode="wb",filename="",mtime=0,compresslevel=9) as compressed:
+                with io.TextIOWrapper(compressed,encoding="utf-8",newline="") as text:
+                    writer=csv.DictWriter(text,fieldnames=fieldnames,lineterminator="\n")
+                    writer.writeheader()
+                    row_count=0
+                    expected_rows=shard_size*len(splits)
+                    for row in reader:
+                        if row_count>=expected_rows:
+                            fail("Q92 raw metrics shard has extra rows while compacting shard "+str(shard_index))
+                        split_index=row_count//shard_size
+                        expected_split=splits[split_index]
+                        targets=int(split_counts[expected_split])
+                        if row.get("split")!=expected_split or int(row.get("targets",-1))!=targets:
+                            fail("Q92 raw metrics split/target order mismatch while compacting shard "+str(shard_index)+" row "+str(row_count))
+                        writer.writerow(q92.compact_counts_from_raw_metrics(row,targets))
+                        row_count+=1
+                    if row_count!=expected_rows:
+                        fail("Q92 compact metrics part row count mismatch shard "+str(shard_index))
+    output_path=Path(output_path)
+    return {"rows":row_count,"bytes":output_path.stat().st_size,"sha256":sha256_file(output_path),
+        "source_artifact_sha256":raw_sha}
+
 def sha256_file(path):
     digest=hashlib.sha256()
     with path.open("rb") as handle:
@@ -560,31 +593,11 @@ def main():
         raw_path=SHARD_INPUT_DIR/f"shard_{shard}_metrics.csv"
         output_path=METRICS_PART_DIR/f"shard_{shard}_metrics.csv.gz"
         output_path.parent.mkdir(parents=True,exist_ok=True)
-        raw_sha=sha256_file(raw_path)
-        with raw_path.open(newline="",encoding="utf-8-sig") as source:
-            reader=csv.DictReader(source)
-            fieldnames=list(q92.COMPACT_METRIC_FIELDS)
-            with output_path.open("wb") as raw_output:
-                with gzip.GzipFile(fileobj=raw_output,mode="wb",filename="",mtime=0,compresslevel=9) as compressed:
-                    with io.TextIOWrapper(compressed,encoding="utf-8",newline="") as text:
-                        writer=csv.DictWriter(text,fieldnames=fieldnames,lineterminator="\\n")
-                        writer.writeheader()
-                        row_count=0
-                        for row in reader:
-                            if row_count>=SHARD_SIZE*3:
-                                fail("Q92 raw metrics shard has extra rows while compacting shard "+str(shard))
-                            split_index=row_count//SHARD_SIZE
-                            expected_split=SPLITS[split_index]
-                            targets=SPLIT_COUNTS[expected_split]
-                            if row.get("split")!=expected_split or int(row.get("targets",-1))!=targets:
-                                fail("Q92 raw metrics split/target order mismatch while compacting shard "+str(shard)+" row "+str(row_count))
-                            writer.writerow(q92.compact_counts_from_raw_metrics(row,targets))
-                            row_count+=1
-                        if row_count!=SHARD_SIZE*3:
-                            fail("Q92 compact metrics part row count mismatch shard "+str(shard))
-        metrics_parts.append({"shard_index":shard,"path":str(output_path.relative_to(ROOT)),"rows":SHARD_SIZE*3,
-            "formula_rank_start_inclusive":start,"formula_rank_end_exclusive":end,"row_schema":"compact_counts_v1","bytes":output_path.stat().st_size,
-            "sha256":sha256_file(output_path),"source_artifact_sha256":raw_sha})
+        part_identity=compact_metrics_part(raw_path,output_path,shard)
+        metrics_parts.append({"shard_index":shard,"path":str(output_path.relative_to(ROOT)),"rows":part_identity["rows"],
+            "formula_rank_start_inclusive":start,"formula_rank_end_exclusive":end,"row_schema":"compact_counts_v1",
+            "bytes":part_identity["bytes"],"sha256":part_identity["sha256"],
+            "source_artifact_sha256":part_identity["source_artifact_sha256"]})
 
     target_parts=validate_and_persist_target_ledger_parts(dates,draws,archive_sha256,feature_stack)
     manifest={
