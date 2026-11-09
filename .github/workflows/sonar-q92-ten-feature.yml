@@ -1,6 +1,13 @@
 name: SONAR Q92 Ten-Feature Catalog Unit Tests
 
 on:
+  push:
+    branches:
+      - research/sonar-q92-ten-feature-prereg-20261109
+    paths:
+      - ".github/workflows/sonar-q92-ten-feature.yml"
+      - "scripts/sonar_q92_common.py"
+      - "tests/test_sonar_q92_formula_universe.py"
   workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, edited]
