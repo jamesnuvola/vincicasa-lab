@@ -284,12 +284,6 @@ def rank_actual_for_formula(standardized,columns,actual_indices):
     ranks[order]=np.arange(1,41,dtype=np.int16)
     return ranks[actual_indices].astype(int).tolist()
 
-def paired_rank_evidence(q89_ranks,q89_ranks):
-    return {
-        "q89_hits":{k:sum(value<=k for value in q89_ranks) for k in (5,10,20)},
-        "q89_hits":{k:sum(value<=k for value in q89_ranks) for k in (5,10,20)}
-    }
-
 def paired_blind_ledger(selection,dates,draws,q89_refresh):
     q92_id=selection["Q92_candidate"]["formula_id"]
     q89_id=selection["Q89_control"]["formula_id"]
