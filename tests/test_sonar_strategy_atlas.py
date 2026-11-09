@@ -89,3 +89,5 @@ class Q84FlowStateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+# Q84 isolated workflow trigger: regression suite is intentionally branch-scoped.
