@@ -142,6 +142,22 @@ def transition_metrics(features, edge, previous_features, previous_edge, previou
     return node_speed, node_acceleration, graph_speed, graph_acceleration, node_delta, edge_delta
 
 
+def transition_ledger_values(transition, offset):
+    columns = {
+        "node_speed": "node_speed",
+        "node_acceleration": "node_acceleration",
+        "graph_speed": "graph_speed",
+        "graph_acceleration": "graph_acceleration",
+        "node_percentile": "node_acceleration_percentile",
+        "graph_percentile": "graph_acceleration_percentile",
+        "alpha_rev_up": "alpha_rev_node_up",
+        "alpha_rev_down": "alpha_rev_node_down",
+        "alpha_graph_up": "alpha_graph_up",
+        "alpha_graph_down": "alpha_graph_down",
+    }
+    return {column: format(float(transition[source][offset]), ".12g") for source, column in columns.items()}
+
+
 def _metric_row(model, split, indices, hits, actual_ranks, tests):
     selected = hits[indices, MODEL_IDS.index(model), :]
     ranks = actual_ranks[indices, MODEL_IDS.index(model), :]
@@ -437,8 +453,7 @@ def write_outputs(result, archive_sha1, archive_sha256):
                         "split": result["split_labels"][offset],
                         "field_state_sha256": result["signatures"][offset],
                     }
-                    for name, values in result["transition"].items():
-                        row[name] = format(float(values[offset]), ".12g")
+                    row.update(transition_ledger_values(result["transition"], offset))
                     for model_index, model in enumerate(MODEL_IDS):
                         for number, rank in enumerate(result["ranks"][offset, model_index], 1):
                             row[f"rank_{slug(model)}_{number:02d}"] = int(rank)
