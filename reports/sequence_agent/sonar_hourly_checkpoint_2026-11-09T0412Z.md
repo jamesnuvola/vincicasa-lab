@@ -26,6 +26,7 @@ PARTIAL. Q89's stored acceptance report is VALIDATED_PENDING_HUMAN_REVIEW; a cur
 - per_number_condition_9plus_candidate_selection.json — 3fdf178eff9186b49732664a5e82763bfda8343f
 - per_number_condition_9plus_formula_metrics_manifest.json — 9a993568bf7863396dbab0d27bc63f7115f5ccac
 - per_number_condition_9plus_target_ledger.csv — fe4aba358fcd103eb3c5b74ad3aaa4b360552933
+- Manifest/tree readback audit: all 469 metric gzip parts present; each Git tree size matches manifest bytes; 0 missing/size mismatches; total compressed bytes 506,333,922; contiguous manifest ranges sum exactly 14,060,475 rows.
 
 ## Q89 workflow gates
 - Earlier exact-head recovery run 42538247699: SUCCESS, including acceptance, append-only persistence/readback and current-head CI dispatch.
