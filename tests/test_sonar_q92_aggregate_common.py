@@ -159,20 +159,23 @@ class Q92AggregateCommonTests(unittest.TestCase):
                     self._load_archive_with_fixture_draws(draws)
 
 
-    def test_selected_formula_global_holm_values_use_split_major_family_order(self):
-        adjusted=np.arange(36,dtype=np.float64)/36.0
-        observed=q92a.selected_formula_holm_pvalues(adjusted,formula_rank=2,formula_count=4,split_index=1)
+    def test_selected_formula_global_holm_values_use_shard_major_family_order(self):
+        adjusted=np.arange(108,dtype=np.float64)/108.0
+        observed=q92a.selected_formula_holm_pvalues(
+            adjusted,formula_rank=6,formula_count=12,split_index=1,shard_count=3)
         self.assertEqual(observed,{
-            "top5":18/36,
-            "top10":19/36,
-            "top20":20/36,
+            "top5":54/108,
+            "top10":55/108,
+            "top20":56/108,
         })
         with self.assertRaises(ValueError):
-            q92a.selected_formula_holm_pvalues(adjusted[:-1],2,4,1)
+            q92a.selected_formula_holm_pvalues(adjusted[:-1],6,12,1,shard_count=3)
         with self.assertRaises(ValueError):
-            q92a.selected_formula_holm_pvalues(adjusted,4,4,1)
+            q92a.selected_formula_holm_pvalues(adjusted,12,12,1,shard_count=3)
         with self.assertRaises(ValueError):
-            q92a.selected_formula_holm_pvalues(adjusted,2,4,3)
+            q92a.selected_formula_holm_pvalues(adjusted,6,12,3,shard_count=3)
+        with self.assertRaises(ValueError):
+            q92a.selected_formula_holm_pvalues(adjusted,6,12,1,shard_count=5)
 
     def test_absolute_uniform_baseline_requires_both_lift_and_global_holm(self):
         passed=q92a.uniform_baseline_evidence(0.14,0.01,0.04,baseline=0.125,alpha=0.05,targets=670)
