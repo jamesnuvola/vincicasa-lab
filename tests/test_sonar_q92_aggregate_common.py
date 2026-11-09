@@ -158,5 +158,33 @@ class Q92AggregateCommonTests(unittest.TestCase):
                 with self.assertRaises(SystemExit):
                     self._load_archive_with_fixture_draws(draws)
 
+
+    def test_selected_formula_global_holm_values_use_split_major_family_order(self):
+        adjusted=np.arange(36,dtype=np.float64)/36.0
+        observed=q92a.selected_formula_holm_pvalues(adjusted,formula_rank=2,formula_count=4,split_index=1)
+        self.assertEqual(observed,{
+            "top5":18/36,
+            "top10":19/36,
+            "top20":20/36,
+        })
+        with self.assertRaises(ValueError):
+            q92a.selected_formula_holm_pvalues(adjusted[:-1],2,4,1)
+        with self.assertRaises(ValueError):
+            q92a.selected_formula_holm_pvalues(adjusted,4,4,1)
+        with self.assertRaises(ValueError):
+            q92a.selected_formula_holm_pvalues(adjusted,2,4,3)
+
+    def test_absolute_uniform_baseline_requires_both_lift_and_global_holm(self):
+        passed=q92a.uniform_baseline_evidence(0.14,0.01,0.04,baseline=0.125,alpha=0.05,targets=670)
+        self.assertEqual(passed["status"],"ABSOLUTE_LIFT_SUPPORTED")
+        self.assertTrue(passed["absolute_baseline_pass"])
+        self.assertAlmostEqual(passed["absolute_lift"],0.015)
+        below=q92a.uniform_baseline_evidence(0.124,0.001,0.001,baseline=0.125,alpha=0.05,targets=670)
+        self.assertEqual(below["status"],"NOT_DEMONSTRATED")
+        self.assertFalse(below["absolute_baseline_pass"])
+        uncorrected=q92a.uniform_baseline_evidence(0.14,0.001,0.05,baseline=0.125,alpha=0.05,targets=670)
+        self.assertEqual(uncorrected["status"],"NOT_DEMONSTRATED")
+        self.assertFalse(uncorrected["absolute_baseline_pass"])
+
 if __name__=="__main__":
     unittest.main()
