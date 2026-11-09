@@ -497,9 +497,11 @@ def main():
             },
             "flow_vs_discovery_selected_fixed": {
                 "comparator_strategy_id": selected_fixed_id,
-                endpoint: bootstrap_paired(hits_all[idx, len(CONFIGS) + 1, j],
-                                           hits_all[idx, selected_fixed_index, j], SEED + 100 + j + len(idx))
-                for j, (endpoint, _) in enumerate(ENDPOINTS)
+                "endpoints": {
+                    endpoint: bootstrap_paired(hits_all[idx, len(CONFIGS) + 1, j],
+                                               hits_all[idx, selected_fixed_index, j], SEED + 100 + j + len(idx))
+                    for j, (endpoint, _) in enumerate(ENDPOINTS)
+                },
             },
         }
 
