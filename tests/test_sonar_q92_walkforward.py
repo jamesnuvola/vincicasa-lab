@@ -54,6 +54,8 @@ class Q92WalkForwardTests(unittest.TestCase):
     def test_main_synthetic_walkforward_outputs_reconcile(self):
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp)
+            archive_path=root/"archive.csv"
+            archive_path.write_text("synthetic archive\\n",encoding="utf-8")
             dates=[(dt.date(2020,1,1)+dt.timedelta(days=i)).isoformat() for i in range(53)]
             rng=random.Random(920093)
             draws=[tuple(sorted(rng.sample(range(1,41),5))) for _ in range(53)]
@@ -69,7 +71,7 @@ class Q92WalkForwardTests(unittest.TestCase):
             metrics=shard_dir/"shard_0_metrics.csv"
             ledger=shard_dir/"shard_0_target_ledger.csv"
             report_path=shard_dir/"shard_0_report.json"
-            with patch.multiple(runner,ROOT=root,OUT=report_dir,ARCHIVE=root/"archive.csv",
+            with patch.multiple(runner,ROOT=root,OUT=report_dir,ARCHIVE=archive_path,
                     MIN_HISTORY=50,SHARD_INDEX=0,SHARD_START=0,SHARD_END=2,SHARD_SIZE=2,
                     EXPECTED_SHARD_SIZE=2,SHARD_DIR=shard_dir,METRICS=metrics,
                     TARGET_LEDGER=ledger,REPORT=report_path), \
