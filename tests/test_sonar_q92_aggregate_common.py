@@ -9,6 +9,10 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import sonar_q92_aggregate_common as q92a
+import aggregate_sonar_q92_ten_feature as q92agg
+import hashlib
+import tempfile
+from unittest.mock import patch
 import sonar_q92_common as q92
 import sonar_q92_null_calibration as q92null
 
@@ -119,6 +123,40 @@ class Q92AggregateCommonTests(unittest.TestCase):
         first=q92.source_code_hashes(root);second=q92.source_code_hashes(root)
         self.assertEqual(first,second);self.assertEqual(tuple(first),q92.SOURCE_CODE_HASH_PATHS)
         self.assertTrue(all(len(value)==64 and all(character in "0123456789abcdef" for character in value) for value in first.values()))
+
+
+    def _load_archive_with_fixture_draws(self, draws):
+        payload=b"Q92 canonical archive tuple regression fixture\n"
+        dates=["2017-07-17","2026-11-08"]
+        with tempfile.TemporaryDirectory() as temporary:
+            archive=Path(temporary)/"storico_daily.csv"
+            archive.write_bytes(payload)
+            with patch.object(q92agg,"ARCHIVE",archive), \
+                 patch.object(q92agg,"EXPECTED_ARCHIVE_SHA1",q92agg.git_blob_sha1(payload)), \
+                 patch.object(q92agg,"EXPECTED_ARCHIVE_SHA256",hashlib.sha256(payload).hexdigest()), \
+                 patch.object(q92agg,"EXPECTED_ARCHIVE_COUNT",2), \
+                 patch.object(q92agg,"EXPECTED_ARCHIVE_LAST_DATE","2026-11-08"), \
+                 patch.object(q92agg.q80,"load_archive",return_value=(dates,draws)):
+                return q92agg.load_archive()
+
+    def test_archive_quintet_validation_accepts_tuple_and_list_containers(self):
+        draws=[(1,2,3,4,5),[3,7,10,16,27]]
+        dates,loaded,_,_=self._load_archive_with_fixture_draws(draws)
+        self.assertEqual(dates,["2017-07-17","2026-11-08"])
+        self.assertEqual(loaded,draws)
+
+    def test_archive_quintet_validation_rejects_noncanonical_values(self):
+        invalid_draw_sets=[
+            [(1,3,2,4,5),(3,7,10,16,27)],
+            [(1,2,2,4,5),(3,7,10,16,27)],
+            [(0,2,3,4,5),(3,7,10,16,27)],
+            [(1,2,3,4),(3,7,10,16,27)],
+            [(1,2,3,4,41),(3,7,10,16,27)],
+        ]
+        for draws in invalid_draw_sets:
+            with self.subTest(draws=draws):
+                with self.assertRaises(SystemExit):
+                    self._load_archive_with_fixture_draws(draws)
 
 if __name__=="__main__":
     unittest.main()
