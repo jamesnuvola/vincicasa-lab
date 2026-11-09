@@ -1,0 +1,79 @@
+name: SONAR Q85 Causal Regime Transition Gates
+
+on:
+  pull_request:
+    branches:
+      - research/q84-flow-state-k-sensitivity-20261109
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sonar-q85-regime-transition
+  cancel-in-progress: false
+
+jobs:
+  evaluate-validate-persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Detect persisted Q85 outputs
+        id: state
+        run: |
+          subject="$(git log -1 --format=%s)"
+          if [[ "$subject" == *"[q85-regime-persisted]"* ]]; then
+            echo "persisted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "persisted=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Compile Q85 model and validator
+        run: |
+          python -m py_compile scripts/sonar_q85_regime_dynamics.py scripts/validate_sonar_q85_regime_dynamics.py
+      - name: Run causal transition, percentile and prefix-invariance tests
+        run: python tests/test_sonar_q85_regime_dynamics.py -v
+      - name: Execute registered Q85 causal transition walk-forward
+        if: steps.state.outputs.persisted != 'true'
+        env:
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python scripts/sonar_q85_regime_dynamics.py
+      - name: Replay every target, rank vector, percentile and multiple-testing family
+        if: steps.state.outputs.persisted != 'true'
+        run: python scripts/validate_sonar_q85_regime_dynamics.py
+      - name: Persist append-only Q85 artifacts and verify exact Git readback
+        if: steps.state.outputs.persisted != 'true'
+        env:
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q85_regime_dynamics_catalog.jsonl \
+                  reports/sequence_agent/q85_regime_dynamics_target_ledger.csv.gz \
+                  reports/sequence_agent/q85_regime_dynamics_report.json \
+                  reports/sequence_agent/q85_regime_dynamics_manifest.json \
+                  reports/sequence_agent/q85_regime_dynamics_checkpoint_2026-11-09.json \
+                  reports/sequence_agent/q85_regime_dynamics_validation.json
+          git commit -m "Persist Q85 causal regime transition results [q84-field-persisted] [q85-regime-persisted]"
+          git push origin "HEAD:$TARGET_BRANCH"
+          for f in \
+            reports/sequence_agent/q85_regime_dynamics_catalog.jsonl \
+            reports/sequence_agent/q85_regime_dynamics_target_ledger.csv.gz \
+            reports/sequence_agent/q85_regime_dynamics_report.json \
+            reports/sequence_agent/q85_regime_dynamics_manifest.json \
+            reports/sequence_agent/q85_regime_dynamics_checkpoint_2026-11-09.json \
+            reports/sequence_agent/q85_regime_dynamics_validation.json; do
+            git show "HEAD:$f" > /tmp/q85-readback
+            cmp "$f" /tmp/q85-readback
+          done
+      - name: Revalidate persisted exact-head outputs without modifying them
+        if: steps.state.outputs.persisted == 'true'
+        run: python scripts/validate_sonar_q85_regime_dynamics.py --read-only
