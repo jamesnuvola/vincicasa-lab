@@ -62,7 +62,7 @@
       "Q88 control metric replay mismatch Top5/Top10/Top20 and rank"
     ],
     "status": "PROVISIONAL_NOT_ACCEPTED_NOT_PERSISTED",
-    "root_cause_work": "Exact-head paired-ledger/metric replay still requires diagnostics. The Q88 rank-vector and rank-sum fields in the retrieved aggregator blob are inconsistent with the independently computed Q88 ranks; investigate the Q89 metric replay discrepancies separately."
+    "root_cause_work": "Exact-head paired-ledger/metric replay still requires diagnostics. One source readback appeared to show Q88 rank-vector/rank-sum fields sourced from Q89 ranks, but repeated reads of the same commit/blob returned inconsistent content. Treat this as an unresolved GitHub readback inconsistency, not a confirmed source defect; verify against current workflow outputs and acceptance diagnostics. Investigate Q89 metric replay discrepancies separately."
   },
   "guardrails": {
     "no_merge": true,
@@ -75,7 +75,7 @@
   "next_actions": [
     "Wait for current recovery aggregation run 42538247699 to finish.",
     "Inspect acceptance replay values and exact paired ledger rows; diagnose Q89 and Q88 mismatches independently.",
-    "Correct paired ledger field mapping and add a targeted regression; rerun exact-head tests.",
+    "Use current acceptance output and stable Git-blob readback to determine whether paired ledger fields are wrong; only then patch and add a targeted regression, followed by exact-head tests.",
     "After Q89 acceptance passes, persist outputs append-only, read back every Git blob byte-for-byte, and pass current-head CI.",
     "Reconcile the Q89 archive with main's 2026-11-08 draw before declaring current-canonical coverage; do not overwrite frozen targets.",
     "Then preregister Q92 (10-feature combinations) only after Q89's acceptance/persistence/CI gates and human review."
