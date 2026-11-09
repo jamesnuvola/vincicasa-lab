@@ -156,7 +156,8 @@ def main():
     source_sha=hashlib.sha256(ARCHIVE.read_bytes()).hexdigest()
     report={"schema_version":"1.0","task_id":"Q92","status":"SHARD_COMPLETE_NOT_TASK_COMPLETE",
         "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION","source_archive":"data/storico_daily.csv",
-        "source_archive_sha256":source_sha,"target_count":n,"first_date":dates[0],"last_date":dates[-1],
+        "source_archive_sha256":source_sha,"source_checkout_sha":os.environ.get("GITHUB_SHA") or "LOCAL_UNPINNED",
+        "source_code_sha256":q92.source_code_hashes(ROOT),"target_count":n,"first_date":dates[0],"last_date":dates[-1],
         "minimum_prior_history":MIN_HISTORY,"scored_targets":len(target_rows),"feature_count":FEATURE_COUNT,
         "features":FEATURE_NAMES,"formula_count":len(formulas),"total_formula_count":q92.TOTAL_FORMULA_COUNT,
         "formula_count_check":math.comb(FEATURE_COUNT,FORMULA_SIZE),"formula_size":FORMULA_SIZE,

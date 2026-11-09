@@ -9,6 +9,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import sonar_q92_aggregate_common as q92a
+import sonar_q92_common as q92
+import sonar_q92_null_calibration as q92null
 
 class Q92AggregateCommonTests(unittest.TestCase):
     def test_formula_id_parser_is_canonical_and_fail_closed(self):
@@ -72,6 +74,32 @@ class Q92AggregateCommonTests(unittest.TestCase):
         p=q92a.circular_block_signflip_pvalue(values,replicates=100,block_length=7)
         self.assertEqual((low,high),(0.0,0.0))
         self.assertEqual(p,1.0)
+
+    def test_compact_metric_count_roundtrip_preserves_raw_summary(self):
+        targets=10
+        raw={"mean_number_hits_top5":6/(5*targets),"mean_number_hits_top10":12/(5*targets),"mean_number_hits_top20":20/(5*targets),
+             "all5_top5_rate":1/targets,"all5_top10_rate":2/targets,"all5_top20_rate":3/targets,"mean_rank_of_actual_numbers":1000/(5*targets)}
+        compact=q92.compact_counts_from_raw_metrics(raw,targets)
+        self.assertEqual(compact,{"number_hits_top5":6,"number_hits_top10":12,"number_hits_top20":20,"all5_top5":1,"all5_top10":2,"all5_top20":3,"rank_sum":1000})
+        summary=q92.metric_summary_from_compact_counts(compact,targets)
+        for field,value in raw.items():self.assertAlmostEqual(summary[field],value,places=15)
+        self.assertEqual(summary["p_top5_exact_hypergeom_sum"],q92null.exact_upper_tail_pvalue(6,targets,5))
+        self.assertEqual(summary["p_top10_exact_hypergeom_sum"],q92null.exact_upper_tail_pvalue(12,targets,10))
+        self.assertEqual(summary["p_top20_exact_hypergeom_sum"],q92null.exact_upper_tail_pvalue(20,targets,20))
+
+    def test_compact_metric_count_domains_fail_closed(self):
+        compact={"number_hits_top5":51,"number_hits_top10":12,"number_hits_top20":20,"all5_top5":1,"all5_top10":2,"all5_top20":3,"rank_sum":1000}
+        with self.assertRaises(ValueError):q92.metric_summary_from_compact_counts(compact,10)
+        compact["number_hits_top5"]=6;compact["rank_sum"]=49
+        with self.assertRaises(ValueError):q92.metric_summary_from_compact_counts(compact,10)
+        compact["rank_sum"]=1000;compact["all5_top20"]=11
+        with self.assertRaises(ValueError):q92.metric_summary_from_compact_counts(compact,10)
+
+    def test_source_code_hash_manifest_is_deterministic(self):
+        root=Path(__file__).resolve().parents[1]
+        first=q92.source_code_hashes(root);second=q92.source_code_hashes(root)
+        self.assertEqual(first,second);self.assertEqual(tuple(first),q92.SOURCE_CODE_HASH_PATHS)
+        self.assertTrue(all(len(value)==64 and all(character in "0123456789abcdef" for character in value) for value in first.values()))
 
 if __name__=="__main__":
     unittest.main()

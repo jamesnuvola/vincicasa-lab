@@ -7,6 +7,7 @@ import numpy as np
 FEATURE_COUNT = 27
 FORMULA_SIZE = 10
 FORMULA_PREFIX = "P10_"
+COMPACT_METRIC_FIELDS=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
 
 def parse_formula_id(formula_id: str) -> tuple[int, ...]:
     if not isinstance(formula_id, str) or not formula_id.startswith(FORMULA_PREFIX):

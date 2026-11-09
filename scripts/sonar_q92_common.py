@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Deterministic combinadic utilities for the preregistered Q92 ten-feature catalog."""
 from __future__ import annotations
+import hashlib
 import itertools
 import math
+from pathlib import Path
+import sonar_q92_null_calibration as q92null
 
 FEATURE_COUNT = 27
 FORMULA_SIZE = 10
@@ -12,6 +15,65 @@ if TOTAL_FORMULA_COUNT % SHARD_COUNT:
     raise RuntimeError("Q92 formula universe is not evenly shardable")
 SHARD_SIZE = TOTAL_FORMULA_COUNT // SHARD_COUNT
 FORMULA_BATCH_SIZE = 1024
+
+COMPACT_METRIC_FIELDS=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
+SOURCE_CODE_HASH_PATHS=(
+    "scripts/sonar_per_number_condition_10plus_shard.py",
+    "scripts/sonar_q92_common.py",
+    "scripts/sonar_q92_null_calibration.py",
+    "scripts/sonar_per_number_condition_grammar.py",
+    "scripts/sonar_per_number_condition_4plus_grammar.py",
+    "data/storico_daily.csv",
+    "reports/sequence_agent/q92_preregistration_2026-11-09.json",
+)
+
+def source_code_hashes(root: Path):
+    root=Path(root)
+    return {relative:hashlib.sha256((root/relative).read_bytes()).hexdigest() for relative in SOURCE_CODE_HASH_PATHS}
+
+def integer_from_mean(value,denominator,label,tolerance=2e-6):
+    raw=float(value)*int(denominator);rounded=int(round(raw))
+    if not math.isfinite(raw) or abs(raw-rounded)>float(tolerance):
+        raise ValueError(str(label)+" cannot be reconstructed as an exact integer count")
+    return rounded
+
+def compact_counts_from_raw_metrics(row,targets):
+    targets=int(targets)
+    if targets<=0:raise ValueError("compact metrics target count must be positive")
+    return {
+        "number_hits_top5":integer_from_mean(row["mean_number_hits_top5"],5*targets,"Top5 hits"),
+        "number_hits_top10":integer_from_mean(row["mean_number_hits_top10"],5*targets,"Top10 hits"),
+        "number_hits_top20":integer_from_mean(row["mean_number_hits_top20"],5*targets,"Top20 hits"),
+        "all5_top5":integer_from_mean(row["all5_top5_rate"],targets,"All-five Top5"),
+        "all5_top10":integer_from_mean(row["all5_top10_rate"],targets,"All-five Top10"),
+        "all5_top20":integer_from_mean(row["all5_top20_rate"],targets,"All-five Top20"),
+        "rank_sum":integer_from_mean(row["mean_rank_of_actual_numbers"],5*targets,"rank sum"),
+    }
+
+def metric_summary_from_compact_counts(counts,targets):
+    targets=int(targets)
+    if targets<=0:raise ValueError("compact metrics target count must be positive")
+    def read_count(field,low,high):
+        value=counts[field]
+        if isinstance(value,bool):raise ValueError(field+" must be an integer, not bool")
+        try:integer=int(value)
+        except Exception as exc:raise ValueError(field+" must be an integer") from exc
+        if isinstance(value,str) and value!=str(integer):raise ValueError(field+" is not canonical integer text")
+        if isinstance(value,float) and (not math.isfinite(value) or value!=integer):raise ValueError(field+" is not an exact integer")
+        if int(low)<=integer<=int(high):return integer
+        raise ValueError(field+" outside declared range")
+    s5=read_count("number_hits_top5",0,5*targets);s10=read_count("number_hits_top10",0,5*targets);s20=read_count("number_hits_top20",0,5*targets)
+    a5=read_count("all5_top5",0,targets);a10=read_count("all5_top10",0,targets);a20=read_count("all5_top20",0,targets)
+    rank_sum=read_count("rank_sum",5*targets,200*targets)
+    return {
+        "mean_number_hits_top5":s5/(5*targets),"mean_number_hits_top10":s10/(5*targets),"mean_number_hits_top20":s20/(5*targets),
+        "all5_top5_rate":a5/targets,"all5_top10_rate":a10/targets,"all5_top20_rate":a20/targets,
+        "mean_rank_of_actual_numbers":rank_sum/(5*targets),
+        "p_top5_exact_hypergeom_sum":q92null.exact_upper_tail_pvalue(s5,targets,5),
+        "p_top10_exact_hypergeom_sum":q92null.exact_upper_tail_pvalue(s10,targets,10),
+        "p_top20_exact_hypergeom_sum":q92null.exact_upper_tail_pvalue(s20,targets,20),
+    }
+
 
 def formula_id(columns):
     columns = tuple(columns)
