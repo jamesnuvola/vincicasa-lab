@@ -105,5 +105,10 @@ class Q89NineFeatureTests(unittest.TestCase):
         self.assertFalse(persist.is_mutable_output_path("reports/sequence_agent/per_number_condition_9plus_formula_metrics_part_000.csv.gz"))
         self.assertFalse(persist.is_mutable_output_path("reports/sequence_agent/per_number_condition_9plus_grammar.json"))
 
+    def test_only_known_report_serialization_repair_is_allowed(self):
+        self.assertTrue(persist.is_repairable_output_path("reports/sequence_agent/per_number_condition_9plus_grammar.json"))
+        self.assertFalse(persist.is_repairable_output_path("reports/sequence_agent/per_number_condition_9plus_formula_metrics_manifest.json"))
+        self.assertFalse(persist.is_repairable_output_path("reports/sequence_agent/per_number_condition_9plus_target_ledger.csv"))
+
 if __name__=="__main__":
     unittest.main(verbosity=2)

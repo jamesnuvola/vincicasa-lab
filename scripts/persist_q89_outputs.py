@@ -60,6 +60,10 @@ def chunk_items(items,size):
 
 def is_mutable_output_path(path):
     return path in MUTABLE_OUTPUT_PATHS
+
+REPAIRABLE_OUTPUT_PATHS={"reports/sequence_agent/per_number_condition_9plus_grammar.json"}
+def is_repairable_output_path(path):
+    return path in REPAIRABLE_OUTPUT_PATHS
 def main():
     head=subprocess.run(["git","rev-parse","HEAD"],cwd=ROOT,check=True,stdout=subprocess.PIPE,text=True).stdout.strip()
     report_path=OUT/"per_number_condition_9plus_grammar.json"
@@ -80,7 +84,7 @@ def main():
     report["status"]="VALIDATED_PENDING_HUMAN_REVIEW"
     report["experiment_run_request_head_sha"]=run_request.get("run_request_commit_sha","be94053cd5c2a81bf2cca6ec8b74bee765a11d90")
     report["experiment_workflow_run_id"]=run_request.get("workflow_run_id",42668855015)
-    report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
+    report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     run_id=os.environ.get("GITHUB_RUN_ID","unknown")
     archive_cutoff=report["last_date"]
     checkpoint={
@@ -132,7 +136,13 @@ def main():
             already_verified.add(rel)
             print("Q89_PERSIST_ALREADY_VERIFIED: "+rel+" bytes="+str(len(data)))
             continue
-        if existing and not is_mutable_output_path(rel):
+        if existing and is_repairable_output_path(rel):
+            old_blob=api("GET","/git/blobs/"+existing["sha"])
+            old_data=base64.b64decode(old_blob["content"])
+            if not old_data.endswith(b"\\\\n") or old_data[:-2]!=data.rstrip(b"\\n"):
+                raise SystemExit("Q89_PERSIST_BLOCKED: report repair mismatch is not limited to the known literal\\n suffix")
+            print("Q89_PERSIST_REPAIRABLE_JSON_NEWLINE: "+rel)
+        if existing and not is_mutable_output_path(rel) and not is_repairable_output_path(rel):
             raise SystemExit("Q89_PERSIST_BLOCKED: existing immutable path conflicts with expected output: "+rel)
         if existing and is_mutable_output_path(rel):
             print("Q89_PERSIST_MUTABLE_REPLACEMENT: "+rel)

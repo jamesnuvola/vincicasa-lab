@@ -96,3 +96,11 @@ Date: 2026-11-09
 - Readback showed the mutable-path helper and allowlist existed, but the existing-path loop still contained the old unconditional conflict check; the helper was not wired into that branch.
 - Corrected the loop: exact SHA/size matches are read back and reused; mismatches are allowed only for the explicit queue-status path; all other existing outputs remain immutable and fail closed.
 - The original aggregate artifact/run and all 30 successful shards remain unchanged. Recovery attempt 6 will reuse them; no shard rerun.
+
+## Recovery attempt 7 — report JSON newline serialization repair
+
+- Recovery attempt 6 completed all 19 metric-part chunks and committed `[q89-persisted]` at `63d213b13fc6e332c6257bcce0437d23c55b951c`.
+- Independent Git Blob readback found the report file ended with the two literal bytes `\\n` rather than a real newline. Removing that suffix makes the JSON parse successfully; the report data itself is intact. The queue snapshot and checkpoint JSON have normal newline endings.
+- This was a serialization defect in `persist_q89_outputs.py`, not a metrics/manifest/ledger mismatch. The persisted exact-head CI is expected to fail closed until repaired.
+- The persistence script now writes a real newline and permits a one-time report-path repair only if the old bytes are exactly the expected JSON plus the known two-byte literal `\\n` suffix. All other immutable output paths remain fail-closed; all 469 metric parts are reused and revalidated, not recomputed.
+- Recovery attempt 7 will reuse the original aggregate artifact and the already persisted metric parts. No historical shard rerun.
