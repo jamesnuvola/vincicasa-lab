@@ -210,8 +210,9 @@ def validate_candidate_freeze(candidate_pool,selection):
         fail("Q92 Validation-selected formula ID does not replay")
     if selection.get("Q92_candidate",{}).get("formula_rank")!=selected["formula_rank"]:
         fail("Q92 Validation-selected formula rank does not replay")
-    if selection.get("Q89_control",{}).get("formula_id")!=selection.get("Q89_control_candidate_id",selection.get("Q89_control",{}).get("formula_id")):
-        pass
+    compare_json_numeric(selection["Q92_candidate"].get("discovery_metrics"),selected["discovery"],"Q92 frozen Discovery metrics")
+    compare_json_numeric(selection["Q92_candidate"].get("validation_metrics"),selected["validation"],"Q92 frozen Validation metrics")
+    compare_json_numeric(selection["Q92_candidate"].get("blind_oos_metrics_descriptive_only"),selected["blind"],"Q92 frozen Blind OOS descriptive metrics")
     shortlist_fields,shortlist=read_csv_fields_rows(SHORTLIST_PATH)
     required={"formula_id","features","discovery_rank","discovery_mean_number_hits_top5","discovery_mean_rank_of_actual_numbers",
         "validation_mean_number_hits_top5","validation_mean_rank_of_actual_numbers","validation_selection_rank","selected"}
@@ -341,9 +342,11 @@ def validate_paired_ledger_and_inference(dates,draws,feature_stack,q89_selection
         endpoint_deltas["top20_hit_share"].append(delta[20]/5.0)
         endpoint_deltas["mean_rank_actual_numbers"].append(delta_rank/5.0)
     replay=q92a.paired_endpoint_inference(endpoint_deltas,replicates=20_000,block_length=7,bootstrap_seed=920027,signflip_seed=920028,confidence_level=0.95)
-    compare_json_numeric(inference,replay,"Q92 paired inference replay",tolerance=1e-12)
+    inference_core={key:inference[key] for key in replay}
+    compare_json_numeric(inference_core,replay,"Q92 paired inference replay",tolerance=1e-12)
     report=read_json(REPORT_PATH)
-    compare_json_numeric(report.get("paired_blind_inference"),replay,"Q92 report paired inference replay",tolerance=1e-12)
+    report_core={key:report["paired_blind_inference"][key] for key in replay}
+    compare_json_numeric(report_core,replay,"Q92 report paired inference replay",tolerance=1e-12)
     return replay
 
 def validate():
@@ -371,6 +374,17 @@ def validate():
     for shard in range(SHARDS):aggregate.validate_shard_report(shard,archive_sha256,dates)
     candidate_pool,holm_below,minimum_holm=validate_metric_parts(archive_sha256,dates,draws,feature_stack,manifest,selection)
     selected=validate_candidate_freeze(candidate_pool,selection)
+    if report.get("candidate_selection",{}).get("selected_candidate_id")!=selected["formula_id"] or report.get("candidate_selection",{}).get("Q89_control_candidate_id")!=q89_id:
+        fail("Q92 report candidate/control IDs do not reconcile")
+    if selection.get("Q89_control",{}).get("formula_id")!=q89_id:
+        fail("Q92 selection Q89 control candidate ID mismatch")
+    report_metrics=report.get("selected_candidate_metrics",{})
+    compare_json_numeric(report_metrics.get("Q92_candidate",{}).get("discovery"),selection["Q92_candidate"]["discovery_metrics"],"Q92 report Discovery metrics")
+    compare_json_numeric(report_metrics.get("Q92_candidate",{}).get("validation"),selection["Q92_candidate"]["validation_metrics"],"Q92 report Validation metrics")
+    compare_json_numeric(report_metrics.get("Q92_candidate",{}).get("blind_oos_descriptive_only"),selection["Q92_candidate"]["blind_oos_metrics_descriptive_only"],"Q92 report Blind OOS metrics")
+    compare_json_numeric(report_metrics.get("Q89_control",{}).get("discovery"),q89_report["selected_candidate_metrics"]["discovery"],"Q92 report Q89 Discovery control metrics")
+    compare_json_numeric(report_metrics.get("Q89_control",{}).get("validation"),q89_report["selected_candidate_metrics"]["validation"],"Q92 report Q89 Validation control metrics")
+    compare_json_numeric(report_metrics.get("Q89_control",{}).get("blind_oos_descriptive_only"),q89_report["selected_candidate_metrics"]["blind_oos_descriptive_only"],"Q92 report Q89 Blind OOS control metrics")
     target_rows=validate_target_ledger_parts(dates,draws,feature_stack,manifest)
     paired_replay=validate_paired_ledger_and_inference(dates,draws,feature_stack,q89_selection,q89_paired,q89_id,q89_columns,selection,inference)
     report=read_json(REPORT_PATH)
