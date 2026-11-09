@@ -37,7 +37,7 @@ def rank_matrix(scores):
 def build_formula_weight_matrix(formulas):
     """Build a dense feature×formula matrix with vectorized ten-feature weights."""
     columns=np.asarray(formulas,dtype=np.int16)
-    if columns.shape!=(FORMULA_SIZE,len(formulas)):
+    if columns.shape!=(len(formulas),FORMULA_SIZE):
         raise SystemExit("Q92_BLOCKED: formula weight matrix input dimensions mismatch")
     weights=np.zeros((FEATURE_COUNT,len(formulas)),dtype=np.float64)
     weights[columns.T,np.arange(len(formulas))[None,:]]=1.0/FORMULA_SIZE
