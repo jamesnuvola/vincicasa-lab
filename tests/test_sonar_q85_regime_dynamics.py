@@ -58,6 +58,20 @@ class Q85RegimeDynamicsTests(unittest.TestCase):
         self.assertAlmostEqual(result[1], 1.0)
         self.assertAlmostEqual(result[3], 2.0)
 
+    def test_transition_ledger_columns_match_registered_schema(self):
+        transition = {name: np.asarray([float(index + 1)]) for index, name in enumerate((
+            "node_speed", "node_acceleration", "graph_speed", "graph_acceleration",
+            "node_percentile", "graph_percentile", "alpha_rev_up", "alpha_rev_down",
+            "alpha_graph_up", "alpha_graph_down",
+        ))}
+        values = q85.transition_ledger_values(transition, 0)
+        self.assertEqual(set(values), set(q85.ledger_fields()[:16]) - {
+            "target_date", "cutoff_date", "prior_draws", "actual_quintet", "split", "field_state_sha256"
+        })
+        self.assertEqual(values["node_acceleration_percentile"], "5")
+        self.assertEqual(values["alpha_rev_node_up"], "7")
+
+
     def test_rank_helper_is_stable_permutation(self):
         scores = np.linspace(-1.0, 1.0, 40)
         rank = field.rank_from_scores(scores)
