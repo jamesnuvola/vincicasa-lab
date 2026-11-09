@@ -396,8 +396,8 @@ def compute_experiment(draws=None):
     }
 
     regime_diagnostics = []
-    for axis, values in (("node_acceleration", transition["node_percentile"]), ("graph_acceleration", transition["graph_percentile"])):
-        labels = np.where(values < (1.0 / 3.0), "low", np.where(values < (2.0 / 3.0), "middle", "high"))
+    for axis, values in (("node_directional_alignment", transition["node_alignment"].mean(axis=1)), ("graph_directional_alignment", transition["graph_alignment"].mean(axis=1))):
+        labels = np.where(values < (-1.0 / 3.0), "negative", np.where(values < (1.0 / 3.0), "neutral", "positive"))
         for split in ("validation", "blind_oos"):
             for regime in ("low", "middle", "high"):
                 idx = split_indices[split]
