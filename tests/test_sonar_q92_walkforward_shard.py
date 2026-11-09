@@ -39,10 +39,14 @@ class Q92WalkForwardTests(unittest.TestCase):
         self.assertTrue(0.0<=q92null.exact_upper_tail_pvalue(100,670,5)<=1.0)
 
     def test_rank_matrix_stable_lower_number_tie_break(self):
-        scores=np.asarray([[1.0,1.0,0.0],[2.0,0.0,2.0]],dtype=np.float64)
+        scores=np.zeros((2,40),dtype=np.float64)
+        scores[0,:3]=[1.0,1.0,0.0]
+        scores[1,:3]=[2.0,0.0,2.0]
         ranks=runner.rank_matrix(scores)
-        self.assertEqual(ranks[0,:].tolist(),[1,2,3])
-        self.assertEqual(ranks[1,:].tolist(),[1,3,2])
+        self.assertEqual(ranks[0,:3].tolist(),[1,2,3])
+        self.assertEqual(ranks[1,:3].tolist(),[1,3,2])
+        self.assertEqual(ranks[0,3:].tolist(),list(range(4,41)))
+        self.assertEqual(ranks[1,3:].tolist(),list(range(4,41)))
 
     def test_equal_weight_matrix_has_exactly_ten_features_per_formula(self):
         formulas=[tuple(range(10)),tuple(range(1,11))]
@@ -120,6 +124,8 @@ class Q92WalkForwardTests(unittest.TestCase):
             self.assertEqual(report["total_formula_count"],2)
             self.assertEqual(report["formula_size"],10)
             self.assertEqual(report["split_counts"],{"discovery":1,"validation":1,"blind_oos":1})
+            self.assertEqual(report["formula_batch_size"],q92.FORMULA_BATCH_SIZE)
+            self.assertEqual(report["formula_batch_count"],1)
 
 if __name__=="__main__":
     unittest.main()

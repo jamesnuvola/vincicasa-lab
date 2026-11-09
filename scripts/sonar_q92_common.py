@@ -32,6 +32,7 @@ SOURCE_CODE_HASH_PATHS=(
     ".github/workflows/sonar-q92-ten-feature.yml",
     ".github/workflows/sonar-q92-aggregate-core.yml",
     "tests/benchmark_sonar_q92_rank_kernel.py",
+    "tests/test_sonar_q92_walkforward_shard.py",
     "reports/sequence_agent/q92_preregistration_2026-11-09.json",
     # Canonical input archive; its Git/SHA-256 identities are recorded separately too.
     "data/storico_daily.csv",
