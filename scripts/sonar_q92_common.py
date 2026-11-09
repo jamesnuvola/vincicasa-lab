@@ -14,7 +14,7 @@ SHARD_COUNT = 15
 if TOTAL_FORMULA_COUNT % SHARD_COUNT:
     raise RuntimeError("Q92 formula universe is not evenly shardable")
 SHARD_SIZE = TOTAL_FORMULA_COUNT // SHARD_COUNT
-FORMULA_BATCH_SIZE = 1024
+FORMULA_BATCH_SIZE = 4096
 
 COMPACT_METRIC_FIELDS=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
 SOURCE_CODE_HASH_PATHS=(
@@ -31,6 +31,7 @@ SOURCE_CODE_HASH_PATHS=(
     # Workflow definitions and preregistration are part of reproducibility.
     ".github/workflows/sonar-q92-ten-feature.yml",
     ".github/workflows/sonar-q92-aggregate-core.yml",
+    "tests/benchmark_sonar_q92_rank_kernel.py",
     "reports/sequence_agent/q92_preregistration_2026-11-09.json",
     # Canonical input archive; its Git/SHA-256 identities are recorded separately too.
     "data/storico_daily.csv",
