@@ -28,7 +28,8 @@ SOURCE_CODE_HASH_PATHS=(
     "scripts/sonar_q92_aggregate_common.py",
     "scripts/aggregate_sonar_q92_ten_feature.py",
     "scripts/validate_sonar_q92_ten_feature.py",
-    # CI and artifact-backed execution workflows.
+    # CI and artifact-backed execution workflows; include the exact-head gate in the source digest.
+    ".github/workflows/ci.yml",
     ".github/workflows/sonar-q92-ten-feature.yml",
     ".github/workflows/sonar-q92-aggregate-core.yml",
     ".github/workflows/sonar-q92-full-walkforward.yml",
