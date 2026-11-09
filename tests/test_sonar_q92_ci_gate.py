@@ -2,6 +2,10 @@
 """Synthetic regressions for exact-head CI run selection in Q92 preflight."""
 from __future__ import annotations
 import unittest
+from pathlib import Path
+import sys
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
 from scripts.sonar_q92_ci_gate import format_state, select_exact_head_run
 
 class ExactHeadRunSelectionTests(unittest.TestCase):
