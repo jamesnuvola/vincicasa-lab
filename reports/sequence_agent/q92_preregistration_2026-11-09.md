@@ -41,3 +41,17 @@ Limitations: this finite equal-weight subset catalog does not exhaust weighted, 
 
 ## Next action
 The artifact-backed workflow waits for full project CI on its exact source commit, reruns the Q92 synthetic regressions, then evaluates all 15 immutable strict-prior shards. It aggregates global Holm, freezes Discovery→Validation candidates, validates paired Blind OOS against the same-archive Q89 control, downloads and SHA-256-verifies the uploaded compact bundle, and persists an append-only result receipt with Git-tree/blob byte readback. Human review remains mandatory.
+
+## Pre-execution amendment — Q92-ABSOLUTE-BASELINE-01
+
+Registered 2026-11-09 14:51:32 UTC, before the corrected full walk-forward rerun.
+
+The paired Q92-vs-Q89 Top-5 comparison is a relative test. Because the same-archive Q89 reference has a prior Blind OOS Top-5 share below the uniform expectation of 0.125, a positive paired lift over Q89 could still leave Q92 below uniform.
+
+The aggregator and acceptance validator will therefore expose and independently replay the selected Validation-frozen Q92 candidate's raw and global Holm-adjusted p-values for Top-5, Top-10 and Top-20 in Discovery, Validation and Blind OOS. The absolute Blind OOS evidence status is PASS only when:
+
+1. the selected candidate's Blind OOS mean number-hits Top-5 share is strictly greater than 0.125; and
+2. its Top-5 p-value, adjusted in the already registered global family of 75,926,565 formula×split×endpoint tests, is below 0.05.
+
+This amendment does not change the formula universe, feature stack, Discovery→Validation selection, paired Q89 inference, global Holm family, or Blind OOS isolation. It changes reporting and the threshold for making an absolute above-uniform claim. Technical acceptance may complete while the absolute gate is NOT_DEMONSTRATED; that outcome does not justify engine promotion.
+
