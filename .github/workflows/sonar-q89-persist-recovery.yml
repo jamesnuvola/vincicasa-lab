@@ -1,0 +1,90 @@
+name: SONAR Q89 Persistence Recovery
+on:
+  push:
+    branches: ["research/per-number-condition-q89-nine-feature-20261109"]
+    paths:
+      - "reports/sequence_agent/q89_persist_recovery_request_2026-11-09.json"
+permissions:
+  actions: read
+  checks: read
+  contents: write
+concurrency:
+  group: sonar-q89-persistence-recovery
+  cancel-in-progress: false
+jobs:
+  wait-for-exact-head-ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Wait for CI on this exact recovery commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          for attempt in $(seq 1 360); do
+            runs=$(curl --fail --silent --show-error -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=$BRANCH&per_page=30")
+            row=$(echo "$runs" | jq -r --arg sha "$HEAD_SHA" '.workflow_runs[] | select(.head_sha == $sha) | [.id,.status,(.conclusion // "")] | @tsv' | head -n1)
+            if [ -n "$row" ]; then
+              read -r run_id status conclusion <<< "$row"
+              if [ "$status" = "completed" ]; then
+                [ "$conclusion" = "success" ] && { echo "Exact-head recovery CI $run_id passed"; exit 0; }
+                echo "Exact-head recovery CI $run_id concluded $conclusion"; exit 1
+              fi
+            fi
+            sleep 60
+          done
+          echo "Timed out waiting for exact-head recovery CI"; exit 1
+  persist:
+    needs: wait-for-exact-head-ci
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    permissions:
+      contents: write
+      actions: read
+    outputs:
+      commit_sha: ${{ steps.persist.outputs.commit_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download the already accepted aggregate artifact from the original Q89 run
+        uses: actions/download-artifact@v4
+        with:
+          name: sonar-q89-aggregate
+          run-id: 42668855015
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: .q89-aggregate
+      - name: Restore aggregate outputs
+        run: |
+          mkdir -p reports/sequence_agent
+          cp -a .q89-aggregate/. reports/sequence_agent/
+      - name: Compile recovery persistence and queue validator
+        run: python -m py_compile scripts/persist_q89_outputs.py scripts/sonar_research_queue.py
+      - name: Persist and verify all Q89 outputs via Git Data API
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q89_outputs.py
+      - name: Wait for persisted exact-head CI and full Q89 acceptance
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PERSISTED_SHA: ${{ steps.persist.outputs.commit_sha }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          for attempt in $(seq 1 360); do
+            runs=$(curl --fail --silent --show-error -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=$BRANCH&per_page=30")
+            row=$(echo "$runs" | jq -r --arg sha "$PERSISTED_SHA" '.workflow_runs[] | select(.head_sha == $sha) | [.id,.status,(.conclusion // "")] | @tsv' | head -n1)
+            if [ -n "$row" ]; then
+              read -r run_id status conclusion <<< "$row"
+              if [ "$status" = "completed" ]; then
+                [ "$conclusion" = "success" ] && { echo "Persisted exact-head CI $run_id passed"; exit 0; }
+                echo "Persisted exact-head CI $run_id concluded $conclusion"; exit 1
+              fi
+            fi
+            sleep 60
+          done
+          echo "Timed out waiting for persisted exact-head CI"; exit 1

@@ -1263,12 +1263,15 @@ def validate_q89():
     dates=[r["data"] for r in archive]
     scored=len(archive)-50
     source_sha=hashlib.sha256(DATA.read_bytes()).hexdigest()
+    rank_prefix=[[0]*28 for _ in range(9)]
+    for pos in range(9):
+        for value in range(1,28):
+            rank_prefix[pos][value]=rank_prefix[pos][value-1]+math.comb(27-value,8-pos)
     def rank_cols(cols):
         rank=0
         previous=-1
         for pos,value in enumerate(cols):
-            for c in range(previous+1,value):
-                rank+=math.comb(27-c-1,9-pos-1)
+            rank+=rank_prefix[pos][value]-rank_prefix[pos][previous+1]
             previous=value
         return rank
     def parse_fid(value):

@@ -49,3 +49,14 @@ Date: 2026-11-09
 - The request pins the protocol blob `cd2f9af7e78e943949443646f453515ca5e59ece`, archive SHA `3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed`, 4,686,825 formulas, 30 shards and 3,351 scored targets.
 - The Q89 workflow must wait for SUCCESS of `ci.yml` on the exact run-request commit SHA before starting any shard. The parent CI success does not substitute for this exact-head gate.
 - At checkpoint time no Q89 shard has been launched and no Q89 predictive result exists.
+
+## Persistence failure and recovery checkpoint
+
+- Full Q89 walk-forward run `42668855015`: all 30 shard jobs SUCCESS; aggregate job SUCCESS; fail-closed Q89 acceptance returned an empty error list.
+- Aggregate artifact `sonar-q89-aggregate`: 495,303,500 bytes; archive digest `sha256:82e08396f62e33f469f601a20732688133baa633fbb22ae79a2d67bdb375c88e`.
+- The persistence job `129359549834` failed before branch-ref update. Its log ends with GitHub API HTTP 502 after six retries; the branch remains at the run-request head `be94053cd5c2a81bf2cca6ec8b74bee765a11d90`. No aggregate outputs were committed to the experiment branch by that failed job.
+- This is an infrastructure/API failure after successful shard computation and aggregate acceptance, not a statistical or data-validation failure.
+- Recovery reuses the immutable aggregate artifact from run `42668855015`; it does not rerun the 30 shards.
+- The Q89 acceptance validator's combinadic rank calculation is optimized with precomputed prefix sums. The persistence script now relies on one queue-driven fail-closed validation pass, adds API method/path diagnostics, throttles writes slightly, and retries transient 5xx/429 responses for a longer bounded window.
+- The recovery workflow waits for exact-head CI, downloads the original aggregate artifact by run ID, persists report/manifest/469 metric parts/ledger/queue/checkpoint through Git Data API, verifies every blob's SHA and bytes, then waits for persisted exact-head CI.
+- Q89 remains pending repository persistence and persisted-head CI. It is not COMPLETE and not promoted.

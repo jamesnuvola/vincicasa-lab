@@ -12,43 +12,44 @@ def api(method,path,payload=None):
     token=os.environ.get("GITHUB_TOKEN"); repo=os.environ.get("GITHUB_REPOSITORY","jamesnuvola/vincicasa-lab")
     if not token: raise SystemExit("Q89_PERSIST_BLOCKED: missing GITHUB_TOKEN")
     data=None if payload is None else json.dumps(payload,separators=(",",":"),ensure_ascii=False).encode()
-    for attempt in range(7):
+    for attempt in range(10):
         req=urllib.request.Request(API+"/repos/"+repo+path,data=data,method=method,headers={
             "Accept":"application/vnd.github+json","Authorization":"Bearer "+token,"X-GitHub-Api-Version":"2022-11-28",
             "Content-Type":"application/json","User-Agent":"VinciCasa-SONAR-Q89-persistence"})
         try:
             with urllib.request.urlopen(req,timeout=300) as response: raw=response.read()
+            if method in ("POST","PATCH"): time.sleep(0.05)
             return json.loads(raw.decode()) if raw else {}
         except urllib.error.HTTPError as exc:
             detail=exc.read().decode("utf-8",errors="replace")[:2000]
             retryable=exc.code in (429,500,502,503,504) or (exc.code==403 and ("rate limit" in detail.lower() or exc.headers.get("X-RateLimit-Remaining")=="0"))
-            if retryable and attempt<6:
+            if retryable and attempt<9:
                 retry_after=exc.headers.get("Retry-After")
-                try: delay=float(retry_after) if retry_after else min(2**attempt,60)
+                try: delay=float(retry_after) if retry_after else min(2**attempt,120)
                 except (TypeError,ValueError): delay=min(2**attempt,60)
                 reset=exc.headers.get("X-RateLimit-Reset")
                 if exc.code==403 and reset:
-                    try: delay=max(delay,min(max(0,float(reset)-time.time()),60))
+                    try: delay=max(delay,min(max(0,float(reset)-time.time()),120))
                     except (TypeError,ValueError): pass
-                delay=max(1,min(delay,60))
-                print("Q89_PERSIST_RETRY: HTTP "+str(exc.code)+" attempt "+str(attempt+1)+"/7 sleep="+str(delay)+"s")
+                delay=max(1,min(delay,120))
+                print("Q89_PERSIST_RETRY: HTTP "+str(exc.code)+" "+method+" "+path+" attempt "+str(attempt+1)+"/10 sleep="+str(delay)+"s")
                 time.sleep(delay)
                 continue
-            raise SystemExit("Q89_PERSIST_BLOCKED: GitHub API "+str(exc.code)+" "+detail) from exc
+            raise SystemExit("Q89_PERSIST_BLOCKED: GitHub API "+str(exc.code)+" "+method+" "+path+" "+detail) from exc
         except (http.client.IncompleteRead, http.client.RemoteDisconnected, ConnectionError, TimeoutError) as exc:
-            if attempt<6:
+            if attempt<9:
                 delay=min(2**attempt,60)
-                print("Q89_PERSIST_RETRY: incomplete response attempt "+str(attempt+1)+"/7 sleep="+str(delay)+"s error="+repr(exc))
+                print("Q89_PERSIST_RETRY: incomplete response "+method+" "+path+" attempt "+str(attempt+1)+"/10 sleep="+str(delay)+"s error="+repr(exc))
                 time.sleep(delay)
                 continue
-            raise SystemExit("Q89_PERSIST_BLOCKED: incomplete response after retries "+repr(exc)) from exc
+            raise SystemExit("Q89_PERSIST_BLOCKED: incomplete response after retries "+method+" "+path+" "+repr(exc)) from exc
         except urllib.error.URLError as exc:
             if attempt<6:
                 delay=min(2**attempt,60)
-                print("Q89_PERSIST_RETRY: network attempt "+str(attempt+1)+"/7 sleep="+str(delay)+"s error="+str(exc))
+                print("Q89_PERSIST_RETRY: network "+method+" "+path+" attempt "+str(attempt+1)+"/7 sleep="+str(delay)+"s error="+str(exc))
                 time.sleep(delay)
                 continue
-            raise SystemExit("Q89_PERSIST_BLOCKED: network error "+str(exc)) from exc
+            raise SystemExit("Q89_PERSIST_BLOCKED: network error "+method+" "+path+" "+str(exc)) from exc
     raise SystemExit("Q89_PERSIST_BLOCKED: API retry budget exhausted")
 def sha256(data): return hashlib.sha256(data).hexdigest()
 def main():
@@ -59,21 +60,19 @@ def main():
         raise SystemExit("Q89_PERSIST_BLOCKED: aggregate report not awaiting accepted validation")
     sys_path=str(ROOT/"scripts")
     import sys; sys.path.insert(0,sys_path)
-    from sonar_research_queue import validate_q89
-    errors=validate_q89()
-    if errors: raise SystemExit("Q89_PERSIST_BLOCKED: acceptance validation failed: "+"; ".join(errors[:30]))
-    # Promote only the technical evidence status after the fail-closed validator passes.
-    report["status"]="VALIDATED_PENDING_HUMAN_REVIEW"
-    report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    errors=validate_q89()
-    if errors: raise SystemExit("Q89_PERSIST_BLOCKED: post-status acceptance validation failed: "+"; ".join(errors[:30]))
-    # Refresh the queue after Q89 acceptance status is set; the previous snapshot
-    # was generated before this report became validator-clean.
+    # Run the queue's fail-closed validator exactly once on the aggregate artifact.
+    # Q89 is still AGGREGATED_PENDING_ACCEPTANCE_VALIDATION here; the validator accepts
+    # that state and the queue marks it VALIDATED_PENDING_HUMAN_REVIEW only on success.
     subprocess.run(["python", str(ROOT/"scripts/sonar_research_queue.py")], cwd=ROOT, check=True)
     queue=json.loads((OUT/"research_queue_status.json").read_text(encoding="utf-8"))
     task=next((x for x in queue.get("tasks",[]) if x.get("id")=="Q89"),None)
     if queue.get("queue_status")!="QUEUE_VALID" or not task or task.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW" or task.get("validation_errors"):
-        raise SystemExit("Q89_PERSIST_BLOCKED: queue is not validated/pending human review")
+        raise SystemExit("Q89_PERSIST_BLOCKED: queue acceptance did not validate Q89")
+    run_request=json.loads((OUT/"q89_run_request_2026-11-09.json").read_text(encoding="utf-8"))
+    report["status"]="VALIDATED_PENDING_HUMAN_REVIEW"
+    report["experiment_run_request_head_sha"]=run_request.get("run_request_commit_sha","be94053cd5c2a81bf2cca6ec8b74bee765a11d90")
+    report["experiment_workflow_run_id"]=run_request.get("workflow_run_id",42668855015)
+    report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\\n",encoding="utf-8")
     run_id=os.environ.get("GITHUB_RUN_ID","unknown")
     archive_cutoff=report["last_date"]
     checkpoint={
@@ -81,7 +80,7 @@ def main():
       "checkpoint_id":"SONAR-Q89-"+archive_cutoff+"-RUN-"+run_id,
       "status":"VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION","task_id":"Q89",
       "workflow_run_id":run_id,"created_at_utc":datetime.now(timezone.utc).isoformat(),
-      "source_checkout_head_sha":head,"source_archive_sha256":report["source_archive_sha256"],
+      "source_checkout_head_sha":head,"experiment_run_request_head_sha":report.get("experiment_run_request_head_sha"),"experiment_workflow_run_id":report.get("experiment_workflow_run_id"),"source_archive_sha256":report["source_archive_sha256"],
       "target_count":report["target_count"],"scored_targets":report["scored_targets"],
       "first_date":report["first_date"],"last_date":archive_cutoff,"formula_count":report["formula_count"],
       "metrics_rows":report["metrics_rows"],"target_ledger_rows":report["target_ledger_rows"],
