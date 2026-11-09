@@ -83,7 +83,7 @@ jobs:
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
       - name: Test exhaustive per-number condition grammars (Q80/Q81/Q82/Q83/Q86)
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108' && github.head_ref != 'research/sonar-q92-ten-feature-implementation-20261109' && github.ref_name != 'research/sonar-q92-ten-feature-implementation-20261109'
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108' && github.head_ref != 'research/sonar-q92-ten-feature-implementation-20261109' && github.ref_name != 'research/sonar-q92-ten-feature-implementation-20261109' && github.head_ref != 'research/sonar-q92-exact-null-calibration-20261109' && github.ref_name != 'research/sonar-q92-exact-null-calibration-20261109'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_RESEARCH_BRANCH: ${{ github.head_ref || github.ref_name }}
@@ -108,7 +108,7 @@ jobs:
           fi
           python scripts/sonar_research_queue.py
       - name: Validate persisted Q80/Q81/Q82/Q83/Q86 outputs on exact head
-        if: (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108' && github.head_ref != 'research/sonar-q92-ten-feature-implementation-20261109' && github.ref_name != 'research/sonar-q92-ten-feature-implementation-20261109'
+        if: (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108' && github.head_ref != 'research/sonar-q92-ten-feature-implementation-20261109' && github.ref_name != 'research/sonar-q92-ten-feature-implementation-20261109' && github.head_ref != 'research/sonar-q92-exact-null-calibration-20261109' && github.ref_name != 'research/sonar-q92-exact-null-calibration-20261109'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -138,7 +138,7 @@ jobs:
         run: npm install && npm run build
 
       - name: Upload validated Q80-Q86 formula persistence bundle
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108' && github.head_ref != 'research/sonar-q92-ten-feature-implementation-20261109' && github.ref_name != 'research/sonar-q92-ten-feature-implementation-20261109'
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108' && github.head_ref != 'research/sonar-q92-ten-feature-implementation-20261109' && github.ref_name != 'research/sonar-q92-ten-feature-implementation-20261109' && github.head_ref != 'research/sonar-q92-exact-null-calibration-20261109' && github.ref_name != 'research/sonar-q92-exact-null-calibration-20261109'
         uses: actions/upload-artifact@v4
         with:
           name: q80-q86-persistence-bundle
