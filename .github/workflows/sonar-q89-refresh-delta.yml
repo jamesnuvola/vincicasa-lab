@@ -33,9 +33,10 @@ jobs:
         run: python -m pip install --disable-pip-version-check numpy
       - name: Compile Q89 refresh runner and regression tests
         run: |
-          python -m py_compile scripts/sonar_q89_refresh_delta_shard.py scripts/sonar_q89_common.py scripts/aggregate_sonar_q89_refresh_delta.py scripts/validate_q89_refresh_delta.py scripts/persist_q89_refresh_delta.py tests/test_sonar_q89_refresh_delta.py tests/test_sonar_q89_refresh_aggregate.py
+          python -m py_compile scripts/sonar_q89_refresh_delta_shard.py scripts/sonar_q89_common.py scripts/aggregate_sonar_q89_refresh_delta.py scripts/validate_q89_refresh_delta.py scripts/persist_q89_refresh_delta.py tests/test_sonar_q89_refresh_delta.py tests/test_sonar_q89_refresh_aggregate.py tests/test_sonar_q89_refresh_acceptance_io.py
           python tests/test_sonar_q89_refresh_delta.py -v
           python tests/test_sonar_q89_refresh_aggregate.py -v
+          python tests/test_sonar_q89_refresh_acceptance_io.py -v
       - name: Evaluate exact three-target Q89 strict-prefix delta shard
         env:
           SONAR_Q89_REFRESH_SHARD_INDEX: ${{ matrix.shard }}
