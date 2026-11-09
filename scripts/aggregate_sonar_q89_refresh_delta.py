@@ -402,7 +402,7 @@ def main():
         "source_archive":"data/storico_daily.csv","source_archive_sha256":new_sha256,"source_archive_git_blob_sha1":new_blob_sha1,
         "source_archive_main_commit":EXPECTED_NEW_COMMIT,"target_count":len(draws),"first_date":dates[0],"last_date":dates[-1],
         "minimum_prior_history":q80.MIN_HISTORY,"scored_targets":scored,"feature_count":27,"formula_size":9,"formula_count":TOTAL,
-        "shard_count":SHARDS,"shard_formula_count":SHARD_SIZE,"metrics_rows":TOTAL,"delta_shard_rows":TOTAL,
+        "shard_count":SHARDS,"shard_formula_count":SHARD_SIZE,"metrics_rows":TOTAL*3,"delta_shard_rows":TOTAL,
         "old_split_counts":OLD_SPLIT_COUNTS,"split_counts":NEW_SPLIT_COUNTS,
         "target_delta_ledger_rows":len(target_ledger),"target_delta_ledger":target_ledger,
         "multiple_testing":{"method":"Global Holm-Bonferroni","test_count":tests,"formula_split_endpoint_family_size":tests,
