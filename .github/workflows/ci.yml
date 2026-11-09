@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   validate:
-    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[q80-reuse-artifact]')
+    if: github.event_name != 'push' || (!contains(github.event.head_commit.message, '[q80-reuse-artifact]') && !contains(github.event.head_commit.message, '[q89-persist-chunk]'))
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:

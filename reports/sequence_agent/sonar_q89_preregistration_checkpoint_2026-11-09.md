@@ -67,3 +67,12 @@ Date: 2026-11-09
 - Its exact-head CI nevertheless failed because a broad string replacement accidentally added `[q89-persist-recovery]` to the persisted-output validator step. That step therefore ran before the aggregate artifact was restored and correctly failed closed with missing report/manifest/ledger and unvalidated queue status.
 - Corrected the CI condition: the full persisted-output validator now runs only for `[q89-persisted]` commits (or a PR head that actually contains the persisted report). The recovery marker still runs protocol tests and compiles the persistence code, but does not pretend outputs are already persisted.
 - The original aggregate artifact from run `42668855015` remains the source; no shards are rerun. Recovery request attempt 2 is now registered.
+
+## Recovery attempt 3 — incremental Git tree persistence
+
+- Recovery attempt 2 downloaded the original aggregate artifact and passed exact-head CI, but failed at `POST /git/trees` with HTTP 422: GitHub timed out on one request containing all 469 metric-part paths.
+- All blob creation and the earlier aggregate acceptance succeeded; the branch ref was not advanced, so no aggregate outputs were partially committed.
+- Root cause is the oversized single tree request, not a data/metric failure.
+- Persistence is now split into 25 metric-part files per Git tree/commit. Each chunk uses branch-head compare-and-swap, verifies the resulting commit/tree, and reads back every new blob byte-for-byte. Existing paths are accepted only if their immutable Git blob SHA and size match; this supports recovery from partial chunk commits.
+- Report, manifest, target ledger, queue status and checkpoint are held for the final `[q89-persisted]` commit. Intermediate `[q89-persist-chunk]` commits skip the full CI job; the final commit runs the Q89 acceptance validator.
+- Unit tests now cover chunk partitioning and Git blob SHA calculation. The recovery request reuses aggregate artifact from run `42668855015`; no shard is rerun.

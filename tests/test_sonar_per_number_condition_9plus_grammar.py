@@ -7,6 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
 import sonar_per_number_condition_9plus_shard as q89
 import aggregate_sonar_q89_shards as agg
+import persist_q89_outputs as persist
 
 class Q89NineFeatureTests(unittest.TestCase):
     def test_declared_universe_and_balanced_shards(self):
@@ -86,6 +87,18 @@ class Q89NineFeatureTests(unittest.TestCase):
           top[1]["formula_id"]:{"mean_number_hits_top5":"0.22","mean_rank_of_actual_numbers":"19.5"},
           top[2]["formula_id"]:{"mean_number_hits_top5":"0.21","mean_rank_of_actual_numbers":"18.0"}}
         self.assertEqual(agg.select_validation_candidate(top,rows),top[1]["formula_id"])
+
+    def test_persistence_chunk_partition_has_no_gaps_or_overlaps(self):
+        items=list(range(103))
+        chunks=persist.chunk_items(items,25)
+        self.assertEqual([len(x) for x in chunks],[25,25,25,25,3])
+        self.assertEqual([value for chunk in chunks for value in chunk],items)
+        self.assertEqual(persist.chunk_items([],25),[])
+        with self.assertRaises(ValueError):
+            persist.chunk_items(items,0)
+
+    def test_git_blob_sha_matches_git_object_format(self):
+        self.assertEqual(persist.git_blob_sha(b"test"),"30d74d258442c7c65512eafab474568dd706c430")
 
 if __name__=="__main__":
     unittest.main(verbosity=2)

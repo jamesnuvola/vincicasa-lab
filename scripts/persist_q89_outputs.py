@@ -44,14 +44,18 @@ def api(method,path,payload=None):
                 continue
             raise SystemExit("Q89_PERSIST_BLOCKED: incomplete response after retries "+method+" "+path+" "+repr(exc)) from exc
         except urllib.error.URLError as exc:
-            if attempt<6:
-                delay=min(2**attempt,60)
-                print("Q89_PERSIST_RETRY: network "+method+" "+path+" attempt "+str(attempt+1)+"/7 sleep="+str(delay)+"s error="+str(exc))
+            if attempt<9:
+                delay=min(2**attempt,120)
+                print("Q89_PERSIST_RETRY: network "+method+" "+path+" attempt "+str(attempt+1)+"/10 sleep="+str(delay)+"s error="+str(exc))
                 time.sleep(delay)
                 continue
             raise SystemExit("Q89_PERSIST_BLOCKED: network error "+method+" "+path+" "+str(exc)) from exc
     raise SystemExit("Q89_PERSIST_BLOCKED: API retry budget exhausted")
 def sha256(data): return hashlib.sha256(data).hexdigest()
+def git_blob_sha(data): return hashlib.sha1(b"blob "+str(len(data)).encode("ascii")+b"\0"+data).hexdigest()
+def chunk_items(items,size):
+    if size<1: raise ValueError("chunk size must be positive")
+    return [items[i:i+size] for i in range(0,len(items),size)]
 def main():
     head=subprocess.run(["git","rev-parse","HEAD"],cwd=ROOT,check=True,stdout=subprocess.PIPE,text=True).stdout.strip()
     report_path=OUT/"per_number_condition_9plus_grammar.json"
@@ -91,51 +95,95 @@ def main():
     }
     checkpoint_path=OUT/f"q89_checkpoint_{archive_cutoff}_run_{run_id}.json"
     checkpoint_path.write_text(json.dumps(checkpoint,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
-    paths=[str(report_path.relative_to(ROOT)),
+    part_paths=[x["path"] for x in report.get("metrics_parts",[])]
+    metadata_paths=[str(report_path.relative_to(ROOT)),
       "reports/sequence_agent/per_number_condition_9plus_formula_metrics_manifest.json",
       "reports/sequence_agent/per_number_condition_9plus_target_ledger.csv",
       "reports/sequence_agent/research_queue_status.json",
       str(checkpoint_path.relative_to(ROOT))]
-    paths.extend(x["path"] for x in report.get("metrics_parts",[]))
+    paths=part_paths+metadata_paths
     payloads={}
     for rel in paths:
         p=ROOT/rel
-        if not p.is_file(): raise SystemExit("Q89_PERSIST_BLOCKED: missing output "+rel)
+        if not p.is_file():
+            raise SystemExit("Q89_PERSIST_BLOCKED: missing output "+rel)
         payloads[rel]=p.read_bytes()
     ref=api("GET","/git/ref/heads/"+BRANCH)
-    if ref.get("object",{}).get("sha")!=head: raise SystemExit("Q89_PERSIST_BLOCKED: branch head differs from exact checkout; refusing stale write")
-    base_tree=api("GET","/git/commits/"+head)["tree"]["sha"]
-    elements=[]; expected={}
+    if ref.get("object",{}).get("sha")!=head:
+        raise SystemExit("Q89_PERSIST_BLOCKED: branch head differs from exact checkout; refusing stale write")
+    current_tree=api("GET","/git/commits/"+head)["tree"]["sha"]
+    current_doc=api("GET","/git/trees/"+current_tree+"?recursive=1")
+    if current_doc.get("truncated"):
+        raise SystemExit("Q89_PERSIST_BLOCKED: current tree truncated; cannot resume safely")
+    current_map={x["path"]:x for x in current_doc.get("tree",[]) if x.get("type")=="blob"}
+    expected={}; items=[]; already_verified=set()
     for rel,data in payloads.items():
+        blob_sha=git_blob_sha(data)
+        expected[rel]={"blob_sha":blob_sha,"bytes":len(data),"sha256":sha256(data)}
+        existing=current_map.get(rel)
+        if existing:
+            if existing.get("sha")!=blob_sha or int(existing.get("size",-1))!=len(data):
+                raise SystemExit("Q89_PERSIST_BLOCKED: existing immutable path conflicts with expected output: "+rel)
+            blob=api("GET","/git/blobs/"+blob_sha); reread=base64.b64decode(blob["content"])
+            if reread!=data or sha256(reread)!=sha256(data):
+                raise SystemExit("Q89_PERSIST_BLOCKED: existing blob byte mismatch for "+rel)
+            already_verified.add(rel)
+            print("Q89_PERSIST_ALREADY_VERIFIED: "+rel+" bytes="+str(len(data)))
+            continue
         blob=api("POST","/git/blobs",{"content":base64.b64encode(data).decode("ascii"),"encoding":"base64"})
-        elements.append({"path":rel,"mode":"100644","type":"blob","sha":blob["sha"]})
-        expected[rel]={"blob_sha":blob["sha"],"bytes":len(data),"sha256":sha256(data)}
-    tree=api("POST","/git/trees",{"base_tree":base_tree,"tree":elements})
-    commit=api("POST","/git/commits",{"message":"Persist validated Q89 nine-feature outputs [q89-persisted]","tree":tree["sha"],"parents":[head]})
-    if api("GET","/git/ref/heads/"+BRANCH)["object"]["sha"]!=head:
-        raise SystemExit("Q89_PERSIST_BLOCKED: branch advanced during persistence; refusing ref update")
-    try:
-        api("PATCH","/git/refs/heads/"+BRANCH,{"sha":commit["sha"],"force":False})
-    except SystemExit:
-        current_ref=api("GET","/git/ref/heads/"+BRANCH)
-        if current_ref.get("object",{}).get("sha")!=commit["sha"]: raise
-        print("Q89_PERSIST_REF_UPDATE_VERIFIED_AFTER_TRANSIENT_RESPONSE")
-    committed=api("GET","/git/commits/"+commit["sha"])
-    tree_doc=api("GET","/git/trees/"+committed["tree"]["sha"]+"?recursive=1")
-    if tree_doc.get("truncated"): raise SystemExit("Q89_PERSIST_BLOCKED: persisted tree truncated")
-    tree_map={x["path"]:x for x in tree_doc.get("tree",[]) if x.get("type")=="blob"}
+        if blob.get("sha")!=blob_sha:
+            raise SystemExit("Q89_PERSIST_BLOCKED: Git blob SHA mismatch for "+rel)
+        items.append({"path":rel,"data":data,"sha":blob_sha,"sha256":sha256(data)})
+    def commit_chunk(parent_sha,base_tree,chunk,message):
+        entries=[{"path":x["path"],"mode":"100644","type":"blob","sha":x["sha"]} for x in chunk]
+        tree=api("POST","/git/trees",{"base_tree":base_tree,"tree":entries}) if entries else {"sha":base_tree}
+        commit=api("POST","/git/commits",{"message":message,"tree":tree["sha"],"parents":[parent_sha]})
+        if api("GET","/git/ref/heads/"+BRANCH)["object"]["sha"]!=parent_sha:
+            raise SystemExit("Q89_PERSIST_BLOCKED: branch advanced before chunk ref update")
+        try:
+            api("PATCH","/git/refs/heads/"+BRANCH,{"sha":commit["sha"],"force":False})
+        except SystemExit:
+            current=api("GET","/git/ref/heads/"+BRANCH)["object"]["sha"]
+            if current!=commit["sha"]:
+                raise
+            print("Q89_PERSIST_REF_UPDATE_VERIFIED_AFTER_TRANSIENT_RESPONSE")
+        if api("GET","/git/ref/heads/"+BRANCH)["object"]["sha"]!=commit["sha"]:
+            raise SystemExit("Q89_PERSIST_BLOCKED: chunk ref update did not persist")
+        commit_doc=api("GET","/git/commits/"+commit["sha"])
+        if commit_doc.get("tree",{}).get("sha")!=tree["sha"]:
+            raise SystemExit("Q89_PERSIST_BLOCKED: chunk commit tree mismatch")
+        for item in chunk:
+            blob=api("GET","/git/blobs/"+item["sha"]); reread=base64.b64decode(blob["content"])
+            if reread!=item["data"] or sha256(reread)!=item["sha256"]:
+                raise SystemExit("Q89_PERSIST_BLOCKED: exact-byte reread mismatch for "+item["path"])
+            print("Q89_PERSIST_VERIFIED: "+item["path"]+" bytes="+str(len(reread))+" commit="+commit["sha"])
+        return commit["sha"],tree["sha"]
+    metric_items=[x for x in items if "_formula_metrics_part_" in x["path"]]
+    metadata_items=[x for x in items if x not in metric_items]
+    chunks=chunk_items(metric_items,25)
+    current_head=head
+    for index,chunk in enumerate(chunks,1):
+        current_head,current_tree=commit_chunk(current_head,current_tree,chunk,
+            "Persist Q89 metric chunk "+str(index)+"/"+str(len(chunks))+" [q89-persist-chunk]")
+        for item in chunk:
+            current_map[item["path"]]={"path":item["path"],"type":"blob","sha":item["sha"],"size":len(item["data"])}
+        print("Q89_PERSIST_CHUNK_COMPLETE: "+str(index)+"/"+str(len(chunks))+" head="+current_head)
+    current_head,current_tree=commit_chunk(current_head,current_tree,metadata_items,
+        "Persist validated Q89 nine-feature outputs [q89-persisted]")
+    final_tree=api("GET","/git/trees/"+current_tree+"?recursive=1")
+    if final_tree.get("truncated"):
+        raise SystemExit("Q89_PERSIST_BLOCKED: final persisted tree truncated")
+    final_map={x["path"]:x for x in final_tree.get("tree",[]) if x.get("type")=="blob"}
     for rel,data in payloads.items():
-        entry=tree_map.get(rel)
+        entry=final_map.get(rel)
         if not entry or entry.get("sha")!=expected[rel]["blob_sha"] or int(entry.get("size",-1))!=len(data):
-            raise SystemExit("Q89_PERSIST_BLOCKED: exact-commit tree mismatch for "+rel)
-        blob=api("GET","/git/blobs/"+entry["sha"]); reread=base64.b64decode(blob["content"])
-        if reread!=data or sha256(reread)!=expected[rel]["sha256"]:
-            raise SystemExit("Q89_PERSIST_BLOCKED: exact-byte reread mismatch for "+rel)
-        print("Q89_PERSIST_VERIFIED: "+rel+" bytes="+str(len(data)))
+            raise SystemExit("Q89_PERSIST_BLOCKED: final commit tree mismatch for "+rel)
     output=os.environ.get("GITHUB_OUTPUT")
     if output:
-        with open(output,"a",encoding="utf-8") as h: h.write("commit_created=true\ncommit_sha="+commit["sha"]+"\n")
-    print(json.dumps({"task_id":"Q89","persisted_head_sha":commit["sha"],"parent_sha":head,
-      "verified_file_count":len(payloads),"verified_bytes":sum(map(len,payloads.values())),
-      "all_exact_commit_bytes_verified":True,"review_status":"PENDING_HUMAN_REVIEW_INTEGRATION"},separators=(",",":")))
+        with open(output,"a",encoding="utf-8") as h:
+            h.write("commit_created=true\ncommit_sha="+current_head+"\n")
+    print(json.dumps({"task_id":"Q89","persisted_head_sha":current_head,"parent_sha":head,
+      "verified_file_count":len(payloads),"already_present_count":len(already_verified),
+      "verified_bytes":sum(map(len,payloads.values())),"all_exact_commit_bytes_verified":True,
+      "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION"},separators=(",",":")))
 if __name__=="__main__": main()

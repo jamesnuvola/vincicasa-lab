@@ -3,7 +3,7 @@
   "task_id": "Q89",
   "status": "PERSIST_RECOVERY_REQUESTED",
   "recovery_request_id": "Q89-PERSIST-RECOVERY-2026-11-09-01",
-  "requested_at_utc": "2026-11-09T19:21:56.921Z",
+  "requested_at_utc": "2026-11-09T19:45:03.861Z",
   "experiment_run_request_head_sha": "be94053cd5c2a81bf2cca6ec8b74bee765a11d90",
   "source_workflow_run_id": 42668855015,
   "source_aggregate_artifact": "sonar-q89-aggregate",
@@ -11,9 +11,10 @@
   "archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
   "protocol_path": "reports/sequence_agent/q89_protocol_2026-11-09.json",
   "policy": "Reuse the already accepted immutable aggregate artifact. Do not rerun any of the 30 historical shards. Persistence recovery must validate, Git-Data-API persist all aggregate outputs, byte-readback every blob, then pass exact-head CI.",
-  "recovery_attempt": 2,
-  "previous_recovery_commit": "ae271ee786d68d0b4d0212fb8deced9edc42f884",
+  "recovery_attempt": 3,
+  "previous_recovery_commit": "6187e2782663d64ba0f680d7fb4afdbaa5bec016",
   "previous_exact_head_ci_run": 42682150720,
-  "previous_recovery_workflow_run": 42682150965,
-  "previous_failure": "The exact-head Q89 persisted-output validator was accidentally conditioned on the recovery marker; it ran before the aggregate files were restored and correctly failed closed."
+  "previous_recovery_workflow_run": 42682696879,
+  "previous_failure": "POST /git/trees returned HTTP 422 because one tree request containing all 469 metric-part paths timed out. Blob creation and aggregate acceptance had succeeded; branch ref was not updated.",
+  "persistence_strategy": "Resume-safe incremental Git Data API commits: 25 metric-part blobs per tree/commit; branch-head check before each ref update; exact blob readback after each chunk; report/manifest/ledger/queue/checkpoint only in final [q89-persisted] commit; final recursive tree reconciliation. Reuse original aggregate artifact; do not rerun shards."
 }
