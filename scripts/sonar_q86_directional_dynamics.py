@@ -135,6 +135,14 @@ def directional_state_hash(node_alignment, graph_alignment, coherence):
     return hashlib.sha256(values.tobytes()).hexdigest()
 
 
+def directional_regime_labels(values):
+    """Describe signed mean alignment as negative, neutral or positive; diagnostic only."""
+    values = np.asarray(values, dtype=np.float64)
+    if values.ndim != 1 or not np.isfinite(values).all() or np.any(np.abs(values) > 1.0 + 1e-10):
+        raise ValueError("directional regime input must be a finite vector in [-1,1]")
+    return np.where(values < (-1.0 / 3.0), "negative", np.where(values < (1.0 / 3.0), "neutral", "positive"))
+
+
 def transition_metrics(features, edge, previous_features, previous_edge, previous_node_delta, previous_edge_delta):
     """Return causal node/graph speeds, accelerations and signed directional cosines."""
     features = np.asarray(features, dtype=np.float64)
@@ -397,9 +405,9 @@ def compute_experiment(draws=None):
 
     regime_diagnostics = []
     for axis, values in (("node_directional_alignment", transition["node_alignment"].mean(axis=1)), ("graph_directional_alignment", transition["graph_alignment"].mean(axis=1))):
-        labels = np.where(values < (-1.0 / 3.0), "negative", np.where(values < (1.0 / 3.0), "neutral", "positive"))
+        labels = directional_regime_labels(values)
         for split in ("validation", "blind_oos"):
-            for regime in ("low", "middle", "high"):
+            for regime in ("negative", "neutral", "positive"):
                 idx = split_indices[split]
                 selected = idx[labels[idx] == regime]
                 if len(selected) == 0:
