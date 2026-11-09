@@ -47,15 +47,30 @@ class Q92WalkForwardTests(unittest.TestCase):
         self.assertEqual(ranks[1,:3].tolist(),[1,3,2])
         self.assertEqual(ranks[0,3:].tolist(),list(range(4,41)))
         self.assertEqual(ranks[1,3:].tolist(),list(range(4,41)))
+    def test_rank_actual_numbers_matches_full_stable_rank_kernel(self):
+        rng=np.random.default_rng(920092)
+        scores=rng.normal(size=(40,4096)).astype(np.float64)
+        actual_indices=np.asarray([0,1,2,17,39],dtype=np.int64)
+        full=runner.rank_matrix(scores.T)
+        observed=runner.rank_actual_numbers(scores,actual_indices)
+        self.assertTrue(np.array_equal(observed,full[:,actual_indices].T))
+        tied=np.zeros((40,3),dtype=np.float64)
+        tied[0,:]=1.0
+        tied[1,:]=1.0
+        tied[2,:]=0.0
+        actual_tied=np.asarray([0,1,2,10,39],dtype=np.int64)
+        full_tied=runner.rank_matrix(tied.T)
+        self.assertTrue(np.array_equal(runner.rank_actual_numbers(tied,actual_tied),full_tied[:,actual_tied].T))
+
 
     def test_equal_weight_matrix_has_exactly_ten_features_per_formula(self):
         formulas=[tuple(range(10)),tuple(range(1,11))]
         weights=runner.build_formula_weight_matrix(formulas)
-        self.assertEqual(weights.shape,(2,27))
-        self.assertTrue(np.allclose(weights.sum(axis=1),[1.0,1.0]))
-        self.assertEqual(np.count_nonzero(weights[0,:]),10)
-        self.assertEqual(np.count_nonzero(weights[1,:]),10)
-        self.assertTrue(np.allclose(weights[0,list(formulas[0])],0.1))
+        self.assertEqual(weights.shape,(27,2))
+        self.assertTrue(np.allclose(weights.sum(axis=0),[1.0,1.0]))
+        self.assertEqual(np.count_nonzero(weights[:,0]),10)
+        self.assertEqual(np.count_nonzero(weights[:,1]),10)
+        self.assertTrue(np.allclose(weights[list(formulas[0]),0],0.1))
 
     def test_main_synthetic_three_target_strict_prefix_replay(self):
         with tempfile.TemporaryDirectory() as tmp:

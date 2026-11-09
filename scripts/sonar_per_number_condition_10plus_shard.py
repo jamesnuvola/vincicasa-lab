@@ -37,11 +37,32 @@ def rank_matrix(scores):
     return ranks
 
 def build_formula_weight_matrix(formulas):
-    """Build contiguous formula-major equal-weight vectors for row-wise ranking."""
-    weights=np.zeros((len(formulas),FEATURE_COUNT),dtype=np.float64)
+    """Build number-major equal-weight vectors for the BLAS-friendly score kernel."""
+    weights=np.zeros((FEATURE_COUNT,len(formulas)),dtype=np.float64)
     for formula_index,columns in enumerate(formulas):
-        weights[formula_index,list(columns)]=1.0/FORMULA_SIZE
+        weights[list(columns),formula_index]=1.0/FORMULA_SIZE
     return weights
+
+def rank_actual_numbers(scores,actual_indices):
+    """Return exact stable ranks for actual numbers against all 40 prior-only scores.
+
+    scores has shape (40, formula_batch). This selective kernel is algebraically
+    identical to a full stable argsort rank matrix, but materializes only the five
+    rank rows needed by the registered metrics.
+    """
+    if scores.ndim!=2 or scores.shape[0]!=40 or scores.shape[1]<=0:
+        raise ValueError("Q92 selective rank kernel expects non-empty 40-number-by-formula scores")
+    if not np.isfinite(scores).all():
+        raise ValueError("Q92 selective rank kernel rejects non-finite scores")
+    actual_indices=np.asarray(actual_indices,dtype=np.int64)
+    if actual_indices.ndim!=1 or actual_indices.size!=5 or np.unique(actual_indices).size!=5 or np.any(actual_indices<0) or np.any(actual_indices>=40):
+        raise ValueError("Q92 selective rank kernel requires five unique actual indices in 0..39")
+    actual_scores=scores[actual_indices,:]
+    number_ids=np.arange(40,dtype=np.int64)
+    greater=(scores[None,:,:]>actual_scores[:,None,:]).sum(axis=1,dtype=np.int16)
+    equal_lower=((scores[None,:,:]==actual_scores[:,None,:]) & (number_ids[None,:,None]<actual_indices[:,None,None])).sum(axis=1,dtype=np.int16)
+    return (1+greater+equal_lower).astype(np.int16,copy=False)
+
 
 def compact_metric(row):
     keys=("formula_id","features","mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20",
@@ -79,26 +100,25 @@ def main():
         best_index=None
         best_ranks=None
         for batch_start,batch_end in formula_batches:
-            ranks=rank_matrix(weights[batch_start:batch_end]@standardized.T)
-            actual_ranks=ranks[:,actual_indices]
-            rank_sum=actual_ranks.sum(axis=1,dtype=np.int64)
-            hits5=np.sum(actual_ranks<=5,axis=1,dtype=np.int64)
-            hits10=np.sum(actual_ranks<=10,axis=1,dtype=np.int64)
-            hits20=np.sum(actual_ranks<=20,axis=1,dtype=np.int64)
+            actual_ranks=rank_actual_numbers(standardized@weights[:,batch_start:batch_end],actual_indices)
+            rank_sum=actual_ranks.sum(axis=0,dtype=np.int64)
+            hits5=np.sum(actual_ranks<=5,axis=0,dtype=np.int64)
+            hits10=np.sum(actual_ranks<=10,axis=0,dtype=np.int64)
+            hits20=np.sum(actual_ranks<=20,axis=0,dtype=np.int64)
             bucket["number_hits_top5"][batch_start:batch_end]+=hits5
             bucket["number_hits_top10"][batch_start:batch_end]+=hits10
             bucket["number_hits_top20"][batch_start:batch_end]+=hits20
-            bucket["all5_top5"][batch_start:batch_end]+=np.all(actual_ranks<=5,axis=1)
-            bucket["all5_top10"][batch_start:batch_end]+=np.all(actual_ranks<=10,axis=1)
-            bucket["all5_top20"][batch_start:batch_end]+=np.all(actual_ranks<=20,axis=1)
+            bucket["all5_top5"][batch_start:batch_end]+=np.all(actual_ranks<=5,axis=0)
+            bucket["all5_top10"][batch_start:batch_end]+=np.all(actual_ranks<=10,axis=0)
+            bucket["all5_top20"][batch_start:batch_end]+=np.all(actual_ranks<=20,axis=0)
             bucket["rank_sum"][batch_start:batch_end]+=rank_sum
             local_best=int(np.lexsort((-hits5,hits20,rank_sum))[0])
             candidate=(int(rank_sum[local_best]),int(hits20[local_best]),-int(hits5[local_best]),batch_start+local_best)
             if best_key is None or candidate<best_key:
                 best_key=candidate
                 best_index=batch_start+local_best
-                best_ranks=actual_ranks[local_best,:].astype(int).tolist()
-        single_ranks=rank_matrix(standardized.T)[:,actual_indices].T
+                best_ranks=actual_ranks[:,local_best].astype(int).tolist()
+        single_ranks=rank_actual_numbers(standardized,actual_indices)
         single_ledger=[]
         for column,name in enumerate(FEATURE_NAMES):
             values=single_ranks[:,column].astype(int).tolist()
@@ -179,7 +199,7 @@ def main():
         "best_blind_oos_by_mean_rank":[compact_metric(row) for row in best_rank],
         "best_blind_oos_by_mean_top5_hits":[compact_metric(row) for row in best_top5],
         "guardrails":["all features for target i use only draws[0:i]; target i is not in its feature state",
-            "rank all 40 numbers before scoring the target quintet","finite ten-feature equal-weight grammar only",
+            "compute all 40 prior-only number scores; extract exact actual-number ranks by comparison against all 40 with stable lower-number tie-break","finite ten-feature equal-weight grammar only",
             "best-per-target formula is retrospective/descriptive and is never used for ex-ante candidate selection",
             "global Holm correction is applied across all 15 shards, three chronological splits and three endpoints",
             "no immutable freeze is overwritten; no automatic engine promotion"],
