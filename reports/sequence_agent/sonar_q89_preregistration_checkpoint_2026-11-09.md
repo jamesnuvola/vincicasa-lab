@@ -32,3 +32,11 @@ Date: 2026-11-09
 - Q89 exact-head CI must pass before a run-request commit starts the 30-shard walk-forward.
 - Acceptance, chunked Git Data API persistence/readback, exact-head CI and human review/integration are separate gates.
 - No merge, automatic promotion or shadow insertion.
+
+## Exact-head CI and concurrency checkpoint (2026-11-09)
+
+- Exact-head push CI run `42667513762` on commit `513b9a91db1d34b0609ce1176f076722244cbaac` completed SUCCESS. The Q89 protocol test step succeeded (9 unit tests), and the existing Q80 and Q88 acceptance validators both returned no errors.
+- Added a further preflight compile gate for `persist_q89_outputs.py` and `sonar_research_queue.py` in CI; the change is on commit `87d2be3061e0eeaeac7380041d6f342e99c43da9`.
+- The subsequent exact-head push CI run `42668177660` was CANCELLED at job setup when concurrent pull_request runs for draft PR #24 entered the same branch concurrency group. This was an orchestration cancellation, not a test failure.
+- PR #24 is temporarily closed (not merged) while the push-only exact-head CI and Q89 run-request workflow execute. Reopen it for human review after the run/persistence gates; no merge is authorized.
+- Next: run the exact-head CI on the current checkpoint commit; only after SUCCESS, add the Q89 run-request file with a `[q89-run]` commit message. The Q89 workflow then waits for CI on that exact SHA before launching the 30 shards.
