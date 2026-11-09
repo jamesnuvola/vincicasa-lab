@@ -10,7 +10,7 @@ permissions:
   contents: write
 concurrency:
   group: sonar-q89-persistence-recovery
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   wait-for-exact-head-ci:
     runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
           BRANCH: ${{ github.ref_name }}
         run: |
           for attempt in $(seq 1 360); do
-            runs=$(curl --fail --silent --show-error -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=$BRANCH&per_page=30")
+            runs=$(curl --fail --silent --show-error -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$HEAD_SHA&per_page=30")
             row=$(echo "$runs" | jq -r --arg sha "$HEAD_SHA" '.workflow_runs[] | select(.head_sha == $sha) | [.id,.status,(.conclusion // "")] | @tsv' | head -n1)
             if [ -n "$row" ]; then
               read -r run_id status conclusion <<< "$row"
@@ -76,7 +76,7 @@ jobs:
           BRANCH: ${{ github.ref_name }}
         run: |
           for attempt in $(seq 1 360); do
-            runs=$(curl --fail --silent --show-error -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=$BRANCH&per_page=30")
+            runs=$(curl --fail --silent --show-error -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $GITHUB_TOKEN" "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?head_sha=$PERSISTED_SHA&per_page=30")
             row=$(echo "$runs" | jq -r --arg sha "$PERSISTED_SHA" '.workflow_runs[] | select(.head_sha == $sha) | [.id,.status,(.conclusion // "")] | @tsv' | head -n1)
             if [ -n "$row" ]; then
               read -r run_id status conclusion <<< "$row"

@@ -3,7 +3,7 @@
   "task_id": "Q89",
   "status": "PERSIST_RECOVERY_REQUESTED",
   "recovery_request_id": "Q89-PERSIST-RECOVERY-2026-11-09-01",
-  "requested_at_utc": "2026-11-09T20:56:15.910Z",
+  "requested_at_utc": "2026-11-09T21:01:20.507Z",
   "experiment_run_request_head_sha": "be94053cd5c2a81bf2cca6ec8b74bee765a11d90",
   "source_workflow_run_id": 42668855015,
   "source_aggregate_artifact": "sonar-q89-aggregate",
@@ -11,10 +11,11 @@
   "archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
   "protocol_path": "reports/sequence_agent/q89_protocol_2026-11-09.json",
   "policy": "Reuse the already accepted immutable aggregate artifact. Do not rerun any of the 30 historical shards. Persistence recovery must validate, Git-Data-API persist all aggregate outputs, byte-readback every blob, then pass exact-head CI.",
-  "recovery_attempt": 7,
-  "previous_recovery_commit": "63d213b13fc6e332c6257bcce0437d23c55b951c",
+  "recovery_attempt": 8,
+  "previous_recovery_commit": "a71673b38394e33026f373b67ea74a1e52a82276",
   "previous_exact_head_ci_run": 42682150720,
-  "previous_recovery_workflow_run": 42693221585,
-  "previous_failure": "The chunked Git Data API persistence succeeded and exact tree mapping was present, but report JSON was serialized with a literal backslash-n suffix (invalid JSON). Checkpoint and queue JSON used normal newlines. The persisted exact-head CI must fail closed on this malformed report.",
-  "persistence_strategy": "Repair only the known report serialization defect: rewrite the report with a real newline, permit replacement only when the existing report bytes equal the expected JSON plus the two-byte literal \\\\n suffix, preserve all other immutable files, and reuse all 469 persisted metric parts. Final exact-head CI must validate the corrected report."
+  "previous_recovery_workflow_run": 42697742514,
+  "previous_failure": "The persisted report contained a literal backslash-n suffix and failed JSON parsing. The old recovery workflow's wait loop also searched only the latest 30 branch runs and could remain queued behind stale recovery runs. The script now repairs only the known suffix; workflow concurrency cancels stale recovery runs and exact-head waits query by head_sha.",
+  "persistence_strategy": "Reuse all 469 persisted metric parts and the accepted aggregate artifact. Repair report JSON only when the existing bytes are exactly the expected JSON plus literal backslash-n; update mutable queue snapshot; commit corrected metadata with [q89-persisted]; exact-head CI must pass.",
+  "previous_persisted_head": "63d213b13fc6e332c6257bcce0437d23c55b951c"
 }

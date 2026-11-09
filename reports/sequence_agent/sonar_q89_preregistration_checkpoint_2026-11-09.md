@@ -104,3 +104,10 @@ Date: 2026-11-09
 - This was a serialization defect in `persist_q89_outputs.py`, not a metrics/manifest/ledger mismatch. The persisted exact-head CI is expected to fail closed until repaired.
 - The persistence script now writes a real newline and permits a one-time report-path repair only if the old bytes are exactly the expected JSON plus the known two-byte literal `\\n` suffix. All other immutable output paths remain fail-closed; all 469 metric parts are reused and revalidated, not recomputed.
 - Recovery attempt 7 will reuse the original aggregate artifact and the already persisted metric parts. No historical shard rerun.
+
+## Recovery attempt 8 — correct report JSON and make recovery waits exact-head
+
+- Recovery attempt 7 persisted all metric parts and metadata, but the report file was invalid JSON because the persistence script appended the literal two-byte suffix `\\n`. The checkpoint and queue JSON were valid.
+- The report is intact after stripping that suffix. The recovery script now writes a real newline and permits only this exact one-time repair; all other immutable paths remain protected.
+- The previous recovery wait job also searched only the latest 30 branch runs. It is now changed to query GitHub Actions by exact `head_sha`, and recovery concurrency is set to cancel stale waiting runs so a new recovery attempt cannot queue behind them indefinitely.
+- All 469 metric parts are already persisted and byte-read back; this recovery reuses them and the original aggregate artifact. No shard rerun.
