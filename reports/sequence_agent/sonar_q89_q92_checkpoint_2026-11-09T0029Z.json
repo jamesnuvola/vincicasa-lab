@@ -1,0 +1,68 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-Q92-STATE-2026-11-09T0029Z",
+  "recorded_at_utc": "2026-11-09T00:29:24Z",
+  "status": "Q89_ACCEPTANCE_PASS_PERSISTENCE_IN_PROGRESS_Q92_PREREGISTERED",
+  "previous_checkpoint": "reports/sequence_agent/sonar_q89_q92_checkpoint_2026-11-09T0026Z.json",
+  "q89": {
+    "recovery_run_id": 42538247699,
+    "head": "d062bf9ea5068235a136c8adf011108c89440274",
+    "aggregation_step": "SUCCESS",
+    "acceptance_step": "SUCCESS",
+    "persistence_step": "IN_PROGRESS",
+    "exact_head_ci_step": "PENDING",
+    "full_ci_run_id": 42538247764,
+    "full_ci_status": "IN_PROGRESS",
+    "current_run_aggregate_metrics": "Not yet retrieved from completed job logs; do not report numerical metrics until readback.",
+    "previous_provisional_run_id": 42534331468,
+    "previous_provisional_result": {
+      "formula_count": 4686825,
+      "targets": 3351,
+      "metrics_rows": 14060475,
+      "holm_family_size": 42181425,
+      "holm_rows_below_0_05": 0,
+      "minimum_holm_p_max_endpoint_family": 1,
+      "q89_candidate": "P9_06_09_12_14_15_17_18_19_23",
+      "q88_control": "P8_00_08_11_12_15_16_19_23",
+      "acceptance_failed": true,
+      "outputs_persisted": false
+    },
+    "archive_source_last_date": "2026-11-07",
+    "canonical_main_last_date": "2026-11-08",
+    "canonical_main_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf"
+  },
+  "q92": {
+    "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "branch": "research/sonar-q92-ten-feature-prereg-20261109",
+    "commit": "758cf9ed15b7e2073358ed139b4e34dd75c9365f",
+    "json_blob_sha": "e7cc679a5df83def6be0b0aa771ceca8e688695d",
+    "markdown_blob_sha": "df97d139dab50aa23490310a480854a902aad7d6",
+    "formula_count": 8436285,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "target_count": 3352,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 25308855,
+    "holm_family_size": 75926565,
+    "execution": "NOT_STARTED"
+  },
+  "guardrails": {
+    "no_merge": true,
+    "no_promotion": true,
+    "no_shadow_insertion": true,
+    "prs_6_7_8_untouched": true,
+    "preserve_immutable_2026_10_25_freeze": true
+  },
+  "next_actions": [
+    "Wait for Q89 append-only persistence and exact Git blob readback in run 42538247699.",
+    "After persistence, verify current-head CI and full CI; only then report Q89 as technically validated pending human review.",
+    "Retrieve completed runner logs and report the current recovery aggregate metrics, paired endpoints and inference exactly as emitted.",
+    "Refresh Q89 on canonical main archive through 2026-11-08 before it can be the Q92 comparator.",
+    "Implement Q92 deterministic combinadic evaluator, distributed shards, fail-closed validator and synthetic tests; execution remains gated on the same-archive Q89 control."
+  ]
+}
