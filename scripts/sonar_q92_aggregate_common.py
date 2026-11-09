@@ -175,25 +175,28 @@ def paired_endpoint_inference(endpoint_deltas, replicates: int = 20_000,
 
 def selected_formula_holm_pvalues(adjusted_pvalues, formula_rank: int,
                                    formula_count: int, split_index: int,
-                                   endpoint_count: int = 3):
+                                   endpoint_count: int = 3, shard_count: int = 15):
     """Extract one formula's globally Holm-adjusted endpoint p-values.
 
-    The global vector is split-major, formula-rank ascending, then endpoint
-    order Top-5/Top-10/Top-20. This helper makes the selected candidate's
-    family-wise evidence explicit instead of reporting only a family minimum.
+    The aggregate vector is written shard-major, then split-major within each
+    shard, formula-rank ascending within that split, then Top-5/Top-10/Top-20.
     """
     values = np.asarray(adjusted_pvalues, dtype=np.float64)
     rank = int(formula_rank)
     count = int(formula_count)
     split = int(split_index)
     endpoints = int(endpoint_count)
-    if count <= 0 or endpoints <= 0 or not 0 <= rank < count or not 0 <= split < 3:
+    shards = int(shard_count)
+    if (count <= 0 or endpoints <= 0 or shards <= 0 or count % shards != 0
+            or not 0 <= rank < count or not 0 <= split < 3):
         raise ValueError("selected formula Holm index is outside the declared family")
     if values.ndim != 1 or values.size != count * 3 * endpoints:
         raise ValueError("selected formula Holm vector dimensions do not match the family")
     if not np.isfinite(values).all() or float(values.min()) < 0.0 or float(values.max()) > 1.0:
         raise ValueError("selected formula Holm vector contains invalid p-values")
-    offset = (split * count + rank) * endpoints
+    shard_size = count // shards
+    shard_index, local_rank = divmod(rank, shard_size)
+    offset = (shard_index * shard_size * 3 + split * shard_size + local_rank) * endpoints
     selected = values[offset:offset + endpoints]
     if selected.size != endpoints:
         raise ValueError("selected formula Holm endpoint slice is incomplete")
