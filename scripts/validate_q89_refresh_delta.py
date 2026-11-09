@@ -23,6 +23,14 @@ EXPECTED_SHA256=""
 def fail(errors,message):
     errors.append(message)
 
+def read_csv_fields_rows(path):
+    """Read one CSV header and all rows from the same DictReader instance."""
+    with path.open(newline="",encoding="utf-8-sig") as handle:
+        reader=csv.DictReader(handle)
+        fields=reader.fieldnames
+        rows=list(reader)
+    return fields,rows
+
 def git_blob_sha1(data):
     return hashlib.sha1(b"blob "+str(len(data)).encode("ascii")+b"\0"+data).hexdigest()
 
@@ -42,15 +50,9 @@ def validate():
         report=json.loads(REPORT_PATH.read_text(encoding="utf-8"))
         manifest=json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
         selection=json.loads(SELECTION_PATH.read_text(encoding="utf-8"))
-        with SHORTLIST_PATH.open(newline="",encoding="utf-8-sig") as handle:
-            shortlist_fields=csv.DictReader(handle).fieldnames
-            shortlist=list(csv.DictReader(handle))
-        with LEDGER_PATH.open(newline="",encoding="utf-8-sig") as handle:
-            ledger_fields=csv.DictReader(handle).fieldnames
-            ledger=list(csv.DictReader(handle))
-        with PAIRED_LEDGER_PATH.open(newline="",encoding="utf-8-sig") as handle:
-            paired_fields=csv.DictReader(handle).fieldnames
-            paired=list(csv.DictReader(handle))
+        shortlist_fields,shortlist=read_csv_fields_rows(SHORTLIST_PATH)
+        ledger_fields,ledger=read_csv_fields_rows(LEDGER_PATH)
+        paired_fields,paired=read_csv_fields_rows(PAIRED_LEDGER_PATH)
         raw_archive=ARCHIVE.read_bytes()
         archive_sha256=hashlib.sha256(raw_archive).hexdigest()
         with ARCHIVE.open(newline="",encoding="utf-8-sig") as handle:
