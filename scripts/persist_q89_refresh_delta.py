@@ -128,7 +128,8 @@ def main():
         path=ROOT/relative
         if not path.is_file(): raise SystemExit("Q89_REFRESH_PERSIST_BLOCKED: missing output "+relative)
         payloads[relative]=path.read_bytes()
-    run_attempt=os.environ.get("GITHUB_RUN_ATTEMPT","1")\n    checkpoint_relative="reports/sequence_agent/q89_refresh_20261108_checkpoint_run_"+run_id+"_attempt_"+run_attempt+"_pre_readback.json"
+    run_attempt=os.environ.get("GITHUB_RUN_ATTEMPT","1")
+    checkpoint_relative="reports/sequence_agent/q89_refresh_20261108_checkpoint_run_"+run_id+"_attempt_"+run_attempt+"_pre_readback.json"
     checkpoint={
       "schema_version":"1.0","project":"VinciCasa SONAR","task_id":"Q89_REFRESH_2026_11_08",
       "checkpoint_id":"SONAR-Q89-REFRESH-2026-11-08-RUN-"+run_id+"-ATTEMPT-"+run_attempt,
