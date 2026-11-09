@@ -3,7 +3,7 @@
   "task_id": "Q89",
   "status": "PERSIST_RECOVERY_REQUESTED",
   "recovery_request_id": "Q89-PERSIST-RECOVERY-2026-11-09-01",
-  "requested_at_utc": "2026-11-09T20:03:36.000Z",
+  "requested_at_utc": "2026-11-09T20:27:38.320Z",
   "experiment_run_request_head_sha": "be94053cd5c2a81bf2cca6ec8b74bee765a11d90",
   "source_workflow_run_id": 42668855015,
   "source_aggregate_artifact": "sonar-q89-aggregate",
@@ -11,10 +11,10 @@
   "archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
   "protocol_path": "reports/sequence_agent/q89_protocol_2026-11-09.json",
   "policy": "Reuse the already accepted immutable aggregate artifact. Do not rerun any of the 30 historical shards. Persistence recovery must validate, Git-Data-API persist all aggregate outputs, byte-readback every blob, then pass exact-head CI.",
-  "recovery_attempt": 5,
-  "previous_recovery_commit": "812b1a31313f2c65ae68e0f5dd045bd84eb2eaab",
+  "recovery_attempt": 6,
+  "previous_recovery_commit": "74859cbce88cb8c2fff9d6e0493b75d2c5020953",
   "previous_exact_head_ci_run": 42682150720,
-  "previous_recovery_workflow_run": 42689164201,
-  "previous_failure": "Preflight code review found is_mutable_output_path referenced by the new mutable-queue allowlist but its helper definition was absent. The current exact-head CI may therefore fail its new unit test; fix is added before any persistence ref update.",
-  "persistence_strategy": "Incremental 25-file Git Data API commits; only research_queue_status.json is mutable; all other existing outputs require exact SHA/size. Resume-safe, exact-byte readback, final [q89-persisted] commit."
+  "previous_recovery_workflow_run": 42689335170,
+  "previous_failure": "The queue snapshot mutable allowlist helper existed, but the existing-path branch still used the old unconditional immutable conflict check. The mutable path branch was not wired into the loop.",
+  "persistence_strategy": "Incremental 25-file Git Data API commits with resume detection. The existing-path loop now invokes is_mutable_output_path: only research_queue_status.json may be replaced; all metric/report/manifest/ledger paths remain immutable. Reuse aggregate artifact; no shard rerun."
 }

@@ -89,3 +89,10 @@ Date: 2026-11-09
 
 - The previous recovery commit `812b1a31313f2c65ae68e0f5dd045bd84eb2eaab` added the mutable queue snapshot allowlist and regression test, but readback showed the helper `is_mutable_output_path` had not been inserted into the persistence script.
 - Corrected before any persistence ref update. The recovery request is incremented to attempt 5; original accepted aggregate artifact/run remains unchanged.
+
+## Recovery attempt 6 — wire the mutable queue allowlist into the path loop
+
+- Recovery attempt 5 passed exact-head CI and the recovery preflight, but the persistence job still failed closed on the pre-existing `research_queue_status.json`.
+- Readback showed the mutable-path helper and allowlist existed, but the existing-path loop still contained the old unconditional conflict check; the helper was not wired into that branch.
+- Corrected the loop: exact SHA/size matches are read back and reused; mismatches are allowed only for the explicit queue-status path; all other existing outputs remain immutable and fail closed.
+- The original aggregate artifact/run and all 30 successful shards remain unchanged. Recovery attempt 6 will reuse them; no shard rerun.

@@ -125,15 +125,17 @@ def main():
         blob_sha=git_blob_sha(data)
         expected[rel]={"blob_sha":blob_sha,"bytes":len(data),"sha256":sha256(data)}
         existing=current_map.get(rel)
-        if existing:
-            if existing.get("sha")!=blob_sha or int(existing.get("size",-1))!=len(data):
-                raise SystemExit("Q89_PERSIST_BLOCKED: existing immutable path conflicts with expected output: "+rel)
+        if existing and existing.get("sha")==blob_sha and int(existing.get("size",-1))==len(data):
             blob=api("GET","/git/blobs/"+blob_sha); reread=base64.b64decode(blob["content"])
             if reread!=data or sha256(reread)!=sha256(data):
                 raise SystemExit("Q89_PERSIST_BLOCKED: existing blob byte mismatch for "+rel)
             already_verified.add(rel)
             print("Q89_PERSIST_ALREADY_VERIFIED: "+rel+" bytes="+str(len(data)))
             continue
+        if existing and not is_mutable_output_path(rel):
+            raise SystemExit("Q89_PERSIST_BLOCKED: existing immutable path conflicts with expected output: "+rel)
+        if existing and is_mutable_output_path(rel):
+            print("Q89_PERSIST_MUTABLE_REPLACEMENT: "+rel)
         blob=api("POST","/git/blobs",{"content":base64.b64encode(data).decode("ascii"),"encoding":"base64"})
         if blob.get("sha")!=blob_sha:
             raise SystemExit("Q89_PERSIST_BLOCKED: Git blob SHA mismatch for "+rel)
