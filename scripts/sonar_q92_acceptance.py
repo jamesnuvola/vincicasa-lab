@@ -2,6 +2,7 @@
 """Fail-closed acceptance validator for Q92 persisted ten-feature formula evidence."""
 from __future__ import annotations
 import csv, gzip, hashlib, json, math
+from collections import Counter
 from pathlib import Path
 import sonar_per_number_condition_grammar as q80
 import sonar_per_number_condition_4plus_grammar as q81
@@ -172,7 +173,7 @@ def validate_q92():
                         break
                     expected_fid=q92.formula_id(expected_columns)
                     add(row.get("formula_id")==expected_fid,"Q92 formula coverage/order mismatch at metric row "+str(global_row))
-                    add(int(row.get("feature_count",-1))==9,"Q92 metric feature_count mismatch")
+                    add(int(row.get("feature_count",-1))==10,"Q92 metric feature_count mismatch")
                     add(row.get("features")=="+".join(report["features"][index] for index in expected_columns),"Q92 metric feature names do not match formula ID")
                     add(int(row.get("targets",-1))==expected_splits[split],"Q92 split target count mismatch")
                     for field in ("mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","all5_top5_rate","all5_top10_rate","all5_top20_rate","mean_rank_of_actual_numbers",
