@@ -58,6 +58,12 @@ class Q92WalkForwardTests(unittest.TestCase):
             root=Path(tmp)
             archive=root/"archive.csv"
             archive.write_text("synthetic archive\n",encoding="utf-8")
+            # source_code_hashes() covers the full Q92 execution/acceptance envelope.
+            # Supply deterministic placeholder files for every declared path in this isolated fixture.
+            for relative in q92.SOURCE_CODE_HASH_PATHS:
+                fixture=root/relative
+                fixture.parent.mkdir(parents=True,exist_ok=True)
+                fixture.write_bytes(("synthetic source fixture: "+relative+"\n").encode("utf-8"))
             dates=[f"2020-01-{i+1:02d}" for i in range(53)]
             draws=[tuple(sorted(set(((i+j)%40)+1 for j in range(5)))) for i in range(53)]
             draws[50]=tuple(range(1,6))
