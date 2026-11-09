@@ -18,13 +18,22 @@ FORMULA_BATCH_SIZE = 1024
 
 COMPACT_METRIC_FIELDS=("number_hits_top5","number_hits_top10","number_hits_top20","all5_top5","all5_top10","all5_top20","rank_sum")
 SOURCE_CODE_HASH_PATHS=(
+    # Execution engine and strict-prior feature stack.
     "scripts/sonar_per_number_condition_10plus_shard.py",
     "scripts/sonar_q92_common.py",
     "scripts/sonar_q92_null_calibration.py",
     "scripts/sonar_per_number_condition_grammar.py",
     "scripts/sonar_per_number_condition_4plus_grammar.py",
-    "data/storico_daily.csv",
+    # Global selection, Holm replay and acceptance.
+    "scripts/sonar_q92_aggregate_common.py",
+    "scripts/aggregate_sonar_q92_ten_feature.py",
+    "scripts/validate_sonar_q92_ten_feature.py",
+    # Workflow definitions and preregistration are part of reproducibility.
+    ".github/workflows/sonar-q92-ten-feature.yml",
+    ".github/workflows/sonar-q92-aggregate-core.yml",
     "reports/sequence_agent/q92_preregistration_2026-11-09.json",
+    # Canonical input archive; its Git/SHA-256 identities are recorded separately too.
+    "data/storico_daily.csv",
 )
 
 def source_code_hashes(root: Path):
