@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Aggregate, globally Holm-correct and freeze the preregistered Q92 ten-feature walk-forward."""
 from __future__ import annotations
-import csv, gzip, hashlib, heapq, io, json, math
+import csv, gzip, hashlib, heapq, io, json, math, os
 from pathlib import Path
 import numpy as np
 import sonar_per_number_condition_grammar as q80
@@ -33,6 +33,12 @@ SPLIT_COUNTS={"discovery":2012,"validation":670,"blind_oos":670}
 TOTAL=q92.TOTAL_FORMULA_COUNT
 SHARDS=q92.SHARD_COUNT
 SHARD_SIZE=q92.SHARD_SIZE
+
+
+def aggregate_checkout_sha(environ=None):
+    """Return the exact checkout SHA, with an explicit local fallback."""
+    source=os.environ if environ is None else environ
+    return source.get("GITHUB_SHA") or "LOCAL_UNPINNED"
 EXPECTED_ARCHIVE_SHA1="77ca692a6082809fcc6c471501617433ec7c36cf"
 EXPECTED_ARCHIVE_SHA256="5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
 EXPECTED_ARCHIVE_MAIN_COMMIT="6cca9022d4311a3f9aba2925fce8c653dc6b63ab"
@@ -623,7 +629,7 @@ def main():
         "schema_version":"1.0","task_id":"Q92_2026_11_08","status":"AGGREGATED_PENDING_ACCEPTANCE_VALIDATION",
         "review_status":"PENDING_HUMAN_REVIEW_INTEGRATION","protocol_id":"Q92-ten-feature-equal-weight-catalog-2026-11-09",
         "source_archive":"data/storico_daily.csv","source_archive_sha256":archive_sha256,"source_archive_git_blob_sha1":archive_sha1,
-        "source_archive_main_commit":EXPECTED_ARCHIVE_MAIN_COMMIT,"aggregate_checkout_sha":os.environ.get("GITHUB_SHA") or "LOCAL_UNPINNED",
+        "source_archive_main_commit":EXPECTED_ARCHIVE_MAIN_COMMIT,"aggregate_checkout_sha":aggregate_checkout_sha(),
         "source_code_sha256":source_code_hashes,"shard_source_checkout_shas":source_checkout_shas,
         "target_count":EXPECTED_ARCHIVE_COUNT,"first_date":dates[0],"last_date":dates[-1],
         "minimum_prior_history":q80.MIN_HISTORY,"scored_targets":scored,"feature_count":27,"formula_size":10,"formula_count":TOTAL,
