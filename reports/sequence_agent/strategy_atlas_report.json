@@ -8970,7 +8970,11 @@
       "overlap_dispersion_delta_20_80"
     ],
     "lookback_targets": 250,
+    "mean_absolute_weight_deviation_from_one": 0.2209895920373186,
     "mean_analog_effective_n": 48.72144583817189,
+    "mean_maximum_rule_weight": 1.650968741573577,
+    "mean_minimum_rule_weight": 0.6353425718777309,
+    "mean_weight_cv": 0.22334433397023054,
     "minimum_prior_analogs": 30,
     "nearest_neighbors": 50,
     "regime_counts": {
@@ -8983,10 +8987,11 @@
       0.2,
       0.8
     ],
+    "share_of_rule_weights_at_clip": 0.011674251212040094,
     "shrinkage_pseudocount": 30.0,
     "temperature": 0.35
   },
-  "generated_at_utc": "2026-11-09T19:19:55.666183+00:00",
+  "generated_at_utc": "2026-11-09T19:25:07.370930+00:00",
   "global_metrics": [
     {
       "family_kind": "GLOBAL",
@@ -13595,6 +13600,7 @@
       }
     }
   },
+  "paired_bootstrap_inference_note": "These paired block-bootstrap p-values and intervals are descriptive comparisons; they are not part of the 1,152-test Holm family and must not be treated as adjusted significance.",
   "promotion_guardrail": "No automatic promotion. Prospective shadow evidence and human review remain required.",
   "registered_test_family": {
     "conditional_variants": 84,
@@ -13605,9 +13611,17 @@
     "splits": 3,
     "tests": 1152
   },
+  "relationship_method": {
+    "amendment_reason": "The initial any-unique-hit rule was too permissive and labelled almost every pair complementary; v2 requires measurable paired-miss conditional lift.",
+    "complementarity_rule": "at least 30 paired targets where the counterpart has <=2 Top20 hits; the candidate must average >=2.5 Top20 hits and exceed its own full-period mean by >=0.10 on those targets",
+    "status": "DESCRIPTIVE_EXPLORATORY_NOT_INFERENTIAL",
+    "version": "Q84_RELATIONSHIP_DIAGNOSTIC_V2"
+  },
   "relationship_summary": {
     "antagonistic_pairs": 50,
-    "complementary_pairs": 896,
+    "complementary_both_ways": 0,
+    "complementary_one_way": 0,
+    "complementary_pairs": 0,
     "near_equivalent_pairs": 0,
     "pairwise_global_strategy_relationships": 946
   },
