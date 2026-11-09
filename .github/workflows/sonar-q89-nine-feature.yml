@@ -1,8 +1,20 @@
 name: SONAR Q89 Nine-Feature Formula Grammar
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - research/sonar-q89-nine-feature-20261108
+    paths:
+      - "scripts/sonar_q89_common.py"
+      - "scripts/sonar_per_number_condition_9plus_shard.py"
+      - "scripts/aggregate_sonar_q89_shards.py"
+      - "scripts/sonar_q89_acceptance.py"
+      - "scripts/persist_q89_outputs.py"
+      - "tests/test_sonar_per_number_condition_9plus_grammar.py"
+      - "reports/sequence_agent/q89_preregistration_2026-11-08.json"
+      - "data/storico_daily.csv"
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types: [opened, reopened, edited]
     branches:
       - research/per-number-condition-grammar-20261026
     paths:
@@ -23,7 +35,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   evaluate-shards:
-    if: "${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && !contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687')) }}"
+    if: "${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && !contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687')) }}"
     name: Evaluate shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
