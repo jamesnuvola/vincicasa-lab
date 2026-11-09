@@ -3,12 +3,12 @@ import sys
 import unittest
 from pathlib import Path
 import numpy as np
-import validate_sonar_strategy_atlas_k_sensitivity as validator
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 import sonar_strategy_atlas as q84
 import sonar_strategy_atlas_k_sensitivity as sens
+import validate_sonar_strategy_atlas_k_sensitivity as validator
 
 
 class Q84KSensitivityTests(unittest.TestCase):
