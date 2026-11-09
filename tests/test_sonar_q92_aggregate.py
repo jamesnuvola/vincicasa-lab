@@ -10,6 +10,7 @@ import sys
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import aggregate_sonar_q92_shards as q92agg
+import persist_sonar_q92_outputs as q92persist
 import sonar_q92_common as q92
 
 class Q92AggregateTests(unittest.TestCase):
@@ -63,6 +64,32 @@ class Q92AggregateTests(unittest.TestCase):
         self.assertEqual(ci1,ci2)
         self.assertEqual(p1,p2)
         self.assertTrue(0<=p1<=1)
+
+    def test_tree_batches_are_bounded_and_order_preserving(self):
+        elements=[{"path":"p"+str(index),"mode":"100644","type":"blob","sha":"s"+str(index)} for index in range(121)]
+        batches=q92persist.tree_batches(elements,50)
+        self.assertEqual([len(batch) for batch in batches],[50,50,21])
+        self.assertEqual([item["path"] for batch in batches for item in batch],[item["path"] for item in elements])
+
+    def test_append_only_payload_plan_exact_retry_and_conflict_guard(self):
+        payloads={"a.txt":b"alpha","b.txt":b"beta"}
+        existing_bytes={"a.txt":b"alpha"}
+        current_map={"a.txt":{"sha":q92persist.git_blob_sha1(b"alpha"),"size":5}}
+        read_blob=lambda sha: next(value for value in existing_bytes.values() if q92persist.git_blob_sha1(value)==sha)
+        create_blob=lambda data:q92persist.git_blob_sha1(data)
+        expected,elements,all_exact=q92persist.plan_payloads(payloads,current_map,read_blob,create_blob)
+        self.assertFalse(all_exact)
+        self.assertEqual([item["path"] for item in elements],["b.txt"])
+        self.assertEqual(expected["a.txt"]["sha256"],q92persist.sha256(b"alpha"))
+        current_map={"a.txt":{"sha":expected["a.txt"]["blob_sha"],"size":5},"b.txt":{"sha":expected["b.txt"]["blob_sha"],"size":4}}
+        existing_bytes={"a.txt":b"alpha","b.txt":b"beta"}
+        expected2,elements2,all_exact2=q92persist.plan_payloads(payloads,current_map,read_blob,create_blob)
+        self.assertTrue(all_exact2)
+        self.assertEqual(elements2,[])
+        self.assertEqual(expected2,expected)
+        conflicting={"a.txt":{"sha":q92persist.git_blob_sha1(b"other"),"size":5}}
+        with self.assertRaises(SystemExit):
+            q92persist.plan_payloads({"a.txt":b"alpha"},conflicting,lambda sha:b"other",create_blob)
 
     def test_q89_refresh_control_gate_fails_closed_when_outputs_missing(self):
         with tempfile.TemporaryDirectory() as directory:
