@@ -5,6 +5,7 @@ on:
       - research/sonar-q92-aggregate-prep-20261109
     paths:
       - "scripts/sonar_q92_aggregate_common.py"
+      - "scripts/aggregate_sonar_q92_ten_feature.py"
       - "tests/test_sonar_q92_aggregate_common.py"
       - ".github/workflows/sonar-q92-aggregate-core.yml"
 permissions:
@@ -26,6 +27,6 @@ jobs:
       - name: Install numerical dependency
         run: python -m pip install --disable-pip-version-check numpy
       - name: Compile Q92 aggregate helpers and regressions
-        run: python -m py_compile scripts/sonar_q92_aggregate_common.py tests/test_sonar_q92_aggregate_common.py
+        run: python -m py_compile scripts/sonar_q92_aggregate_common.py scripts/aggregate_sonar_q92_ten_feature.py tests/test_sonar_q92_aggregate_common.py
       - name: Run Q92 Holm, selection and paired-inference synthetic regressions
         run: python tests/test_sonar_q92_aggregate_common.py -v
