@@ -62,8 +62,8 @@ class Q92AggregateCommonTests(unittest.TestCase):
         self.assertEqual(first["multiple_testing"]["family_size"],4)
         self.assertEqual(first["primary_decision"],"NO_SIGNIFICANT_GAIN")
         self.assertEqual(first["endpoints"]["top5"]["n_targets"],14)
-        self.assertEqual(first["endpoints"]["top5"]["bootstrap_ci_95_low"],0.2)
-        self.assertEqual(first["endpoints"]["top5"]["bootstrap_ci_95_high"],0.2)
+        self.assertAlmostEqual(first["endpoints"]["top5"]["bootstrap_ci_95_low"],0.2,places=12)
+        self.assertAlmostEqual(first["endpoints"]["top5"]["bootstrap_ci_95_high"],0.2,places=12)
         self.assertGreaterEqual(first["endpoints"]["top5"]["signflip_p_holm"],first["endpoints"]["top5"]["signflip_p_raw"])
 
     def test_zero_deltas_have_null_ci_and_pvalue_one(self):
