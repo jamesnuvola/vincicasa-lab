@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q89",
+  "checkpoint_id": "Q89-RECOVERY-2026-11-09T0021Z",
+  "recorded_at_utc": "2026-11-09T00:21:01Z",
+  "status": "AGGREGATION_IN_PROGRESS_ACCEPTANCE_PERSISTENCE_PENDING",
+  "previous_checkpoint": "reports/sequence_agent/q89_recovery_checkpoint_2026-11-09T0008Z.json",
+  "preregistered_hypothesis": {
+    "text": "Extend the finite 27-feature equal-weight grammar from eight to nine features. Select the Q89 candidate and Q88 control using Discovery top-100 then Validation only, freeze both before blind OOS, and compare paired number-hit ranking on Top-5/10/20.",
+    "formula_count": 4686825,
+    "target_count": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 14060475,
+    "holm_family_size": 42181425,
+    "p_value_method": "Continuity-corrected normal approximation to aggregate Hypergeometric(40,k,5) null; exploratory, not exact."
+  },
+  "measured_provisional_aggregate": {
+    "run_id": 42534331468,
+    "aggregate_completed_at_utc": "2026-11-08T23:34:38Z",
+    "acceptance_failed_at_utc": "2026-11-08T23:39:11Z",
+    "target_count": 3401,
+    "last_date": "2026-11-07",
+    "scored_targets": 3351,
+    "formula_count": 4686825,
+    "metrics_rows": 14060475,
+    "target_ledger_rows": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "holm_test_count": 42181425,
+    "holm_adjusted_formula_split_rows_below_0_05": 0,
+    "minimum_holm_p_max_endpoint_family": 1,
+    "frozen_candidate_ids_from_aggregate": {
+      "q89": "P9_06_09_12_14_15_17_18_19_23",
+      "q88_control": "P8_00_08_11_12_15_16_19_23"
+    },
+    "acceptance_errors": [
+      "Q89 blind candidate metric replay mismatch Q89_candidate Top5",
+      "Q89 blind candidate metric replay mismatch Q89_candidate Top10",
+      "Q89 blind candidate metric replay mismatch Q89_candidate Top20",
+      "Q89 blind candidate rank metric replay mismatch Q89_candidate",
+      "Q89 blind candidate metric replay mismatch Q88_control Top5",
+      "Q89 blind candidate metric replay mismatch Q88_control Top10",
+      "Q89 blind candidate metric replay mismatch Q88_control Top20",
+      "Q89 blind candidate rank metric replay mismatch Q88_control"
+    ],
+    "interpretation": "Aggregate numbers and candidate IDs were measured in the runner log, but acceptance failed. These are provisional, not accepted or persisted results. No paired endpoint p-values or confidence intervals are claimed from this run."
+  },
+  "current_recovery": {
+    "run_id": 42538247699,
+    "head": "d062bf9ea5068235a136c8adf011108c89440274",
+    "status": "IN_PROGRESS",
+    "current_step": "Aggregate shards, apply global Holm, freeze candidates and run paired blind OOS",
+    "acceptance": "PENDING",
+    "persisted_outputs": "PENDING",
+    "exact_head_ci": "PENDING",
+    "full_ci_run_id": 42538247764,
+    "full_ci_status": "IN_PROGRESS"
+  },
+  "archive_reconciliation": {
+    "main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+    "main_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "main_draw_count": 3402,
+    "main_last_date": "2026-11-08",
+    "main_last_quintet": [
+      3,
+      7,
+      10,
+      16,
+      27
+    ],
+    "q89_branch_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q89_branch_draw_count": 3401,
+    "q89_branch_last_date": "2026-11-07",
+    "shard_source_run_id": 42524743687,
+    "limitation": "Current Q89 shards and recovery aggregate are tied to the 2026-11-07 archive; a canonical 2026-11-08 refresh is still required."
+  },
+  "diagnosis": {
+    "status": "ROOT_CAUSE_NOT_YET_CONFIRMED",
+    "note": "Previous acceptance failures are verified. Numeric expected/actual replay values were not emitted. GitHub connector reads of the same claimed aggregator blob SHA returned inconsistent field contents; do not infer a source defect from those inconsistent reads. Verify with stable Git-object readback and current workflow evidence before patching."
+  },
+  "guardrails": {
+    "no_merge": true,
+    "no_promotion": true,
+    "no_shadow_insertion": true,
+    "preserve_immutable_2026_10_25_freeze": true,
+    "prs_6_7_8_untouched": true,
+    "historical_blind_oos_not_independent_prospective_confirmation": true
+  },
+  "next_actions": [
+    "Wait for recovery run 42538247699 to finish aggregation and acceptance.",
+    "If acceptance fails, obtain numeric expected/actual replay diagnostics for each Q89/Q88 metric and rank endpoint; verify exact source blobs before correcting code.",
+    "If acceptance passes, persist outputs append-only, read back all artifact bytes, and verify current-head CI.",
+    "Refresh Q89 against canonical main's 2026-11-08 draw; do not claim the 2026-11-07 shard run covers the latest archive.",
+    "After Q89 refresh and review gates, preregister Q92 ten-feature grammar (C(27,10)=8,436,285 formulas; 25,308,855 formula-split rows; Holm family 75,926,565) and compare against a Q89 control on identical archive/splits."
+  ]
+}
