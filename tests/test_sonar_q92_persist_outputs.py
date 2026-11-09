@@ -64,8 +64,8 @@ def make_bundle(bundle:Path):
         "formula_split_endpoint_holm_family_size":75926565,
         "metrics_parts":metrics,"target_ledger_parts":target_parts,"supplemental_outputs":supplemental
     }
-    report_path=bundle/base+"q92_20261108_report.json"
-    manifest_path=bundle/base+"q92_20261108_manifest.json"
+    report_path=base+"q92_20261108_report.json"
+    manifest_path=base+"q92_20261108_manifest.json"
     for path,obj in ((report_path,report),(manifest_path,manifest)):
         p=bundle/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(obj,indent=2)+"\n",encoding="utf-8")
         expected_paths.append(path)
@@ -74,7 +74,7 @@ def make_bundle(bundle:Path):
         "task_id":TASK_ID,"source_archive_sha256":ARCHIVE_SHA,"source_commit":"synthetic-commit","run_id":123,
         "report_sha256":sha((bundle/report_path).read_bytes()),"manifest_sha256":sha((bundle/manifest_path).read_bytes())
     }
-    marker_path=bundle/base+"q92_20261108_acceptance_pass_marker.json"
+    marker_path=base+"q92_20261108_acceptance_pass_marker.json"
     p=bundle/marker_path;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(json.dumps(marker,indent=2)+"\n",encoding="utf-8")
     expected_paths.append(marker_path)
     return expected_paths
