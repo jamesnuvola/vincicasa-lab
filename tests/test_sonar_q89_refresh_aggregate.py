@@ -34,14 +34,16 @@ class Q89RefreshAggregatorTests(unittest.TestCase):
         self.assertEqual(delta.holm_adjust_global([0.5,0.7]).tolist(),[1.0,1.0])
 
     def test_metric_denominators_and_bounds(self):
-        counts={"number_hits_top5":251,"number_hits_top10":502,"number_hits_top20":1004,
-            "all5_top5":1,"all5_top10":2,"all5_top20":3,"rank_sum":20100}
+        counts={"number_hits_top5":251,"number_hits_top10":125,"number_hits_top20":250,
+            "all5_top5":1,"all5_top10":2,"all5_top20":3,"rank_sum":10050}
         metrics=delta.metrics_from_counts(counts,100)
         self.assertAlmostEqual(metrics["mean_number_hits_top5"],0.502)
-        self.assertAlmostEqual(metrics["mean_number_hits_top10"],1.004)
-        self.assertAlmostEqual(metrics["mean_number_hits_top20"],2.008)
-        self.assertAlmostEqual(metrics["mean_rank_of_actual_numbers"],40.2)
-
+        self.assertAlmostEqual(metrics["mean_number_hits_top10"],0.25)
+        self.assertAlmostEqual(metrics["mean_number_hits_top20"],0.5)
+        self.assertAlmostEqual(metrics["mean_rank_of_actual_numbers"],20.1)
+        for name in ("mean_number_hits_top5","mean_number_hits_top10","mean_number_hits_top20","all5_top5_rate","all5_top10_rate","all5_top20_rate"):
+            self.assertTrue(0.0<=metrics[name]<=1.0)
+        self.assertTrue(1.0<=metrics["mean_rank_of_actual_numbers"]<=40.0)
     def test_git_blob_sha1_uses_nul_header(self):
         data=b"abc"
         expected=hashlib.sha1(b"blob 3\0abc").hexdigest()
