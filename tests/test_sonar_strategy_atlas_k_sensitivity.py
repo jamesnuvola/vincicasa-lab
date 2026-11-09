@@ -3,6 +3,7 @@ import sys
 import unittest
 from pathlib import Path
 import numpy as np
+import validate_sonar_strategy_atlas_k_sensitivity as validator
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -62,6 +63,10 @@ class Q84KSensitivityTests(unittest.TestCase):
     def test_fixed_comparator_is_not_in_inferential_family(self):
         self.assertEqual(len(sens.MODEL_IDS), 4)
         self.assertNotIn(sens.FIXED_MODEL_ID, sens.MODEL_IDS)
+
+    def test_validator_datetime_symbols_are_imported(self):
+        self.assertTrue(callable(validator.datetime.now))
+        self.assertTrue(validator.timezone.utc)
 
 
 if __name__ == "__main__":

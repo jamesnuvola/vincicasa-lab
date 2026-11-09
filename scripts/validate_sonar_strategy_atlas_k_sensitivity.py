@@ -2,6 +2,7 @@
 """Fail-closed validator for Q84 K=10/20/50 sensitivity outputs."""
 from __future__ import annotations
 import argparse, csv, gzip, hashlib, json, math
+from datetime import datetime, timezone
 from collections import Counter
 from pathlib import Path
 import numpy as np
