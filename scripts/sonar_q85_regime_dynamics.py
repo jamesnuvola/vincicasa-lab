@@ -107,6 +107,13 @@ def alpha_down(percentile):
     return 0.30 - 0.20 * p
 
 
+def field_state_for_target(draws, target_index):
+    """Build a field state from the target's strict prior prefix only."""
+    if target_index <= 0 or target_index > len(draws):
+        raise ValueError("invalid target prefix boundary")
+    return field.field_state(draws[:target_index])
+
+
 def transition_metrics(features, edge, previous_features, previous_edge, previous_node_delta, previous_edge_delta):
     """Return current transition energies and deltas using only current and previous states."""
     features = np.asarray(features, dtype=np.float64)
