@@ -321,9 +321,33 @@ jobs:
             reports/sequence_agent/q92_20261108_shard_artifact_manifest.json
           retention-days: 90
           compression-level: 6
+      - name: Verify uploaded bundle by byte readback
+        id: bundle_verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.bundle.outputs.artifact-id }}
+          EXPECTED_DIGEST: ${{ steps.bundle.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          curl --retry 3 --retry-all-errors --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" \
+            --output /tmp/q92-accepted-bundle.zip
+          actual="$(sha256sum /tmp/q92-accepted-bundle.zip | awk '{print $1}')"
+          expected="$(printf '%s' "$EXPECTED_DIGEST" | sed 's/^sha256://')"
+          if [[ "$actual" != "$expected" ]]; then
+            echo "Q92_ARTIFACT_READBACK_BLOCKED: uploaded bundle SHA-256 mismatch."
+            exit 1
+          fi
+          echo "sha256=$actual" >> "$GITHUB_OUTPUT"
+          echo "bytes=$(stat -c%s /tmp/q92-accepted-bundle.zip)" >> "$GITHUB_OUTPUT"
+          echo "Q92_ARTIFACT_BYTE_READBACK_PASS: digest=$actual"
       - name: Create append-only persistence receipt
         env:
           GITHUB_SHA: ${{ github.sha }}
+          BUNDLE_READBACK_SHA256: ${{ steps.bundle_verify.outputs.sha256 }}
+          BUNDLE_READBACK_BYTES: ${{ steps.bundle_verify.outputs.bytes }}
         run: |
           python - <<'PY'
           import hashlib,json,os
@@ -339,7 +363,8 @@ jobs:
             "report_sha256":sha(root/"q92_20261108_report.json"),"manifest_sha256":sha(root/"q92_20261108_manifest.json"),
             "summary_sha256":sha(root/"q92_20261108_acceptance_summary.json"),"output_sha256":summary["output_sha256"],
             "run":metadata,"artifact_bundle":{"name":"q92-20261108-accepted-bundle-attempt-${{ github.run_attempt }}",
-              "id":"${{ steps.bundle.outputs.artifact-id }}","url":"${{ steps.bundle.outputs.artifact-url }}","digest":"${{ steps.bundle.outputs.artifact-digest }}","retention_days":90},
+              "id":"${{ steps.bundle.outputs.artifact-id }}","url":"${{ steps.bundle.outputs.artifact-url }}","digest":"${{ steps.bundle.outputs.artifact-digest }}","retention_days":90,
+              "byte_readback_verified":True,"byte_readback_sha256":os.environ["BUNDLE_READBACK_SHA256"],"byte_readback_bytes":int(os.environ["BUNDLE_READBACK_BYTES"])},
             "result_branch":"research/sonar-q92-results-20261108"}
           (root/"q92_20261108_persistence_receipt.json").write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
           PY
@@ -375,6 +400,8 @@ jobs:
             core=("task_id","source_checkout_sha","source_archive_sha256","report_sha256","manifest_sha256","summary_sha256","output_sha256")
             if any(old.get(key)!=new.get(key) for key in core):
                 raise SystemExit("Q92_APPEND_ONLY_BLOCKED: existing receipt core differs")
+            if old.get("artifact_bundle",{}).get("byte_readback_verified") is not True:
+                raise SystemExit("Q92_APPEND_ONLY_BLOCKED: existing receipt lacks uploaded-bundle byte readback")
             print("Q92_APPEND_ONLY_PASS: identical accepted outputs already persisted; no branch update.")
             PY
           else
@@ -384,3 +411,44 @@ jobs:
             git push origin "$RESULT_BRANCH"
             echo "Q92_APPEND_ONLY_PASS: accepted outputs committed and pushed without merge."
           fi
+      - name: Verify result branch Git-tree/blob byte readback
+        env:
+          RESULT_BRANCH: research/sonar-q92-results-20261108
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          git merge-base --is-ancestor "$GITHUB_SHA" "origin/$RESULT_BRANCH"
+          python - <<'PY'
+          import hashlib,json,subprocess,os
+          from pathlib import Path
+          branch="origin/research/sonar-q92-results-20261108"
+          paths=["reports/sequence_agent/q92_20261108_report.json","reports/sequence_agent/q92_20261108_manifest.json",
+            "reports/sequence_agent/q92_20261108_candidate_shortlist.csv","reports/sequence_agent/q92_20261108_candidate_selection.json",
+            "reports/sequence_agent/q92_20261108_paired_blind_ledger.csv","reports/sequence_agent/q92_20261108_paired_inference.json",
+            "reports/sequence_agent/q92_20261108_shard_artifact_manifest.json","reports/sequence_agent/q92_20261108_acceptance_summary.json"]
+          def show(path):
+              result=subprocess.run(["git","show",branch+":"+path],capture_output=True)
+              if result.returncode:raise SystemExit("Q92_GIT_READBACK_BLOCKED: missing result-branch path "+path)
+              return result.stdout
+          def blob_sha(raw):
+              return hashlib.sha1(b"blob "+str(len(raw)).encode("ascii")+bytes([0])+raw).hexdigest()
+          def tree_sha(path):
+              result=subprocess.run(["git","ls-tree",branch,path],capture_output=True,text=True)
+              if result.returncode or not result.stdout.strip():raise SystemExit("Q92_GIT_READBACK_BLOCKED: missing Git tree entry "+path)
+              return result.stdout.split()[2]
+          for path in paths:
+              raw=show(path)
+              if raw!=Path(path).read_bytes():raise SystemExit("Q92_GIT_READBACK_BLOCKED: byte mismatch "+path)
+              if tree_sha(path)!=blob_sha(raw):raise SystemExit("Q92_GIT_READBACK_BLOCKED: Git blob SHA mismatch "+path)
+          receipt_path="reports/sequence_agent/q92_20261108_persistence_receipt.json"
+          receipt_raw=show(receipt_path);receipt=json.loads(receipt_raw)
+          summary=json.loads(Path("reports/sequence_agent/q92_20261108_acceptance_summary.json").read_text(encoding="utf-8"))
+          if receipt.get("source_checkout_sha")!=os.environ["GITHUB_SHA"] or receipt.get("source_archive_sha256")!=summary["source_archive_sha256"] or receipt.get("output_sha256")!=summary["output_sha256"]:
+              raise SystemExit("Q92_GIT_READBACK_BLOCKED: persisted receipt core mismatch")
+          if receipt.get("artifact_bundle",{}).get("byte_readback_verified") is not True:
+              raise SystemExit("Q92_GIT_READBACK_BLOCKED: receipt does not attest verified artifact byte readback")
+          if tree_sha(receipt_path)!=blob_sha(receipt_raw):
+              raise SystemExit("Q92_GIT_READBACK_BLOCKED: persistence receipt Git blob SHA mismatch")
+          print("Q92_GIT_TREE_BLOB_READBACK_PASS: result branch "+branch+"; core files and receipt byte-identical; artifact digest readback recorded.")
+          PY

@@ -1,6 +1,6 @@
 # Q92 preregistration — ten-feature equal-weight formula catalog
 
-**Status: preregistered with pre-execution amendment; full walk-forward execution pending.** This protocol does not mark Q92 complete.
+**Status: preregistered with pre-execution amendments; full walk-forward execution pending.** This protocol does not mark Q92 complete.
 
 ## Quantitative hypothesis
 Exhaustively extend the finite 27-feature equal-weight formula grammar from nine to ten prior-only features. A Discovery→Validation-selected ten-feature formula may improve Blind OOS number-hit ranking over a nine-feature candidate selected by the identical procedure on the same canonical archive and split boundaries. Blind OOS is excluded from candidate selection.
@@ -15,7 +15,7 @@ Exhaustively extend the finite 27-feature equal-weight formula grammar from nine
 ## Formula universe and compute plan
 - Feature count: 27; formula size: 10; exact catalog: **C(27,10) = 8,436,285** equal-weight subsets.
 - Deterministic lexicographic combinadic ranks 0..8,436,284.
-- 15 contiguous shards × 562,419 formulas; batch size 1,024; 8,239 batches.
+- 15 contiguous shards × 562,419 formulas; selected batch size **2,048**; 275 batches per shard, 4,120 batches globally.
 - Metric rows: 25,308,855; target ledger rows: 3,352.
 - Global Holm family: **75,926,565** formula×split×endpoint tests (3 endpoints).
 
@@ -24,20 +24,20 @@ Discovery ranks each catalog's top 100 by Top-5 hit share; tie-break lower mean 
 
 Primary endpoint: paired Blind OOS Top-5 hit-share difference (Q92−Q89). Secondary endpoints: Top-10, Top-20 hit-share and mean rank. Inference: circular block bootstrap 20,000 reps (block 7, seed 920027), block sign-flip 20,000 reps (block 7, seed 920028), and Holm correction over four paired endpoints. Uniform baselines: Top-5 12.5%, Top-10 25%, Top-20 50%, mean rank 20.5.
 
+**Practical-effect gate preregistered before Q92 Blind OOS:** the primary decision requires mean Top-5 paired delta ≥ **0.005** (0.5 percentage points), Holm-adjusted block sign-flip p < 0.05, and the 95% block-bootstrap lower bound > 0. At 670 draws this is approximately 17 additional number hits over 3,350 actual-number observations. It is a decision threshold, not a forecast.
+
 Catalog-level p-values use the discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts for each registered split size and Top-k endpoint. The null assumes independent uniform 5-of-40 draws; convolution is deterministic float64, with underflowed extreme tails floored to the smallest positive subnormal. This calibrates the catalog-level null, not predictive skill.
 
-## Pre-execution protocol amendment — 2026-11-09
-
-`Q92-NULL-CALIBRATION-01` replaces the continuity-corrected normal approximation before the full walk-forward run. A full-support audit over the 75,926,565-test family found relative tail discrepancies up to 68.22% for Top-5 with 670 targets and 49.48% for Top-5 with 2,012 targets near the first Holm step (`alpha/m = 6.58531e-10`). Formula universe, feature stack, strict-prior cutoff, chronological splits, candidate selection, paired endpoints and seeds are unchanged. See the amendment JSON and audit report in `reports/sequence_agent/`.
-
-## Pre-execution compact-output amendment — 2026-11-09
-
-`Q92-METRIC-OUTPUT-COMPACT-01` defines `compact_counts_v1`: seven integer sufficient statistics per formula×split row (`number_hits_top5`, `number_hits_top10`, `number_hits_top20`, `all5_top5`, `all5_top10`, `all5_top20`, `rank_sum`). Split and formula rank are implicit in deterministic split-major/formula-rank order. The acceptance validator reconstructs means and discrete exact raw p-values, recomputes global Holm, and checks raw/adjusted p-value vector SHA-256. Per-row adjusted p-values and redundant formula/feature labels are not persisted; the global adjusted vector is replayable from the counts and registered method.
+## Pre-execution engineering amendments — 2026-11-09
+- `Q92-NULL-CALIBRATION-01` replaces the continuity-corrected normal approximation before full walk-forward. The full-support audit found relative tail discrepancies up to 68.22% for Top-5 at 670 targets and 49.48% for Top-5 at 2,012 targets near the first Holm step (`alpha/m = 6.58531e-10`). Formula universe, feature state, splits and selection are unchanged.
+- `Q92-METRIC-OUTPUT-COMPACT-01` defines `compact_counts_v1`: seven integer sufficient statistics per formula×split row. Acceptance reconstructs means and discrete p-values, recomputes global Holm, and checks raw/adjusted vector SHA-256.
+- `Q92-RANK-KERNEL-02/03` replaces full 40-number argsort materialization with exact selective ranks for the five actual numbers. The preregistered 4,096-formula/25-repetition sweep selected batch 2,048 at **8.0883×** median throughput versus full stable argsort (0.001478670 s vs 0.011959963 s); exact rank parity was observed. Batch 4,096 was slightly slower (8.0143×). This is synthetic engineering evidence only; no historical target or split outcome was used.
+- `Q92-MINIMUM-PRACTICAL-EFFECT-01` adds the 0.005 primary effect-size threshold. The candidate selection procedure is unchanged and Blind OOS is not used for tuning.
 
 ## Acceptance and guardrails
-Acceptance requires exact formula/shard coverage, strict-prefix reconciliation, all metric and ledger dimensions, global Holm family, frozen candidate IDs, paired ledger arithmetic and inference replay, append-only persistence with byte-for-byte readback, exact-head CI, and human review/integration. No automatic merge, promotion or shadow insertion. PRs #6, #7 and #8 remain untouched; the 2026-10-25 freeze is immutable.
+Acceptance requires exact formula/shard/batch coverage, strict-prefix reconciliation, all metric and ledger dimensions, global Holm family, frozen candidate IDs, paired ledger arithmetic and inference replay, append-only persistence, uploaded-bundle SHA-256 byte readback, Git-tree/blob byte readback of result-branch files, exact-head full project CI and human review/integration. The compact metric bundle and shard outputs remain in immutable GitHub Actions artifacts with a repository-persisted receipt; summary/manifest/selection/inference files are committed to a dedicated result branch. Result-branch CI remains pending until observed. No automatic merge, promotion or shadow insertion. PRs #6, #7 and #8 remain untouched; the 2026-10-25 freeze is immutable.
 
-Limitations: this finite equal-weight subset catalog does not exhaust weighted, nonlinear, conditional, interaction or infinite formula spaces. Historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation.
+Limitations: this finite equal-weight subset catalog does not exhaust weighted, nonlinear, conditional, interaction or infinite formula spaces. The discrete null assumes independent uniform draws. Historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation. Per-target retrospective-best formulas are descriptive upper bounds only and are never used for ex-ante selection. The minimum effect threshold is a decision gate, not a predictive forecast.
 
 ## Next action
-Trigger the artifact-backed Q92 full walk-forward workflow with exact-head synthetic/full-CI preflight, 15 deterministic shards, global Holm/selection/paired Blind OOS acceptance and append-only compact persistence.
+The artifact-backed workflow waits for full project CI on its exact source commit, reruns the Q92 synthetic regressions, then evaluates all 15 immutable strict-prior shards. It aggregates global Holm, freezes Discovery→Validation candidates, validates paired Blind OOS against the same-archive Q89 control, downloads and SHA-256-verifies the uploaded compact bundle, and persists an append-only result receipt with Git-tree/blob byte readback. Human review remains mandatory.

@@ -42,6 +42,7 @@ SOURCE_CODE_HASH_PATHS=(
     "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_result_2026-11-09.json",
     "reports/sequence_agent/q92_minimum_practical_effect_amendment_2026-11-09.json",
     "reports/sequence_agent/q92_preregistration_2026-11-09.json",
+    "reports/sequence_agent/q92_preregistration_2026-11-09.md",
     # Canonical input archive; its Git/SHA-256 identities are recorded separately too.
     "data/storico_daily.csv",
 )
