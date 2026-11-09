@@ -1,9 +1,10 @@
 name: SONAR Q86-DIR Directional Field Kinematics
 
 on:
-  push:
+  pull_request:
     branches:
-      - research/q86-directional-field-kinematics-20261110
+      - research/q86-directional-base-20261110
+    types: [opened, synchronize, reopened]
 permissions:
   contents: write
 concurrency:
@@ -16,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.ref_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -35,13 +36,15 @@ jobs:
       - name: Execute preregistered Q86-DIR strict-prior walk-forward
         if: steps.state.outputs.persisted != 'true'
         env:
-          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
         run: python scripts/sonar_q86_directional_dynamics.py
       - name: Replay every target, rank vector, directional vector and Holm family
         if: steps.state.outputs.persisted != 'true'
         run: python scripts/validate_sonar_q86_directional_dynamics.py
       - name: Persist append-only Q86-DIR artifacts and verify exact Git readback
         if: steps.state.outputs.persisted != 'true'
+        env:
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -52,7 +55,7 @@ jobs:
                   reports/sequence_agent/q86_directional_dynamics_checkpoint_2026-11-10.json \
                   reports/sequence_agent/q86_directional_dynamics_validation.json
           git commit -m "Persist Q86-DIR directional field kinematics [q86-dir-persisted]"
-          git push origin "HEAD:${{ github.ref_name }}"
+          git push origin "HEAD:$TARGET_BRANCH"
           for f in \
             reports/sequence_agent/q86_directional_dynamics_catalog.jsonl \
             reports/sequence_agent/q86_directional_dynamics_target_ledger.csv.gz \
