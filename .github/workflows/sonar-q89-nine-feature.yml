@@ -1,0 +1,153 @@
+name: SONAR Q89 Nine-Feature Formula Grammar
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - research/sonar-q89-nine-feature-20261108
+    paths:
+      - "scripts/sonar_q89_common.py"
+      - "scripts/sonar_per_number_condition_9plus_shard.py"
+      - "reports/sequence_agent/q89_preregistration_2026-11-08.json"
+      - "data/storico_daily.csv"
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches:
+      - research/per-number-condition-grammar-20261026
+permissions:
+  contents: write
+  actions: write
+  pull-requests: read
+concurrency:
+  group: sonar-q89-nine-feature-${{ github.event_name }}-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: false
+jobs:
+  evaluate-shards:
+    if: "${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' }}"
+    name: Evaluate shard ${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Check Q89 evaluator and acceptance tests
+        run: |
+          python -m py_compile scripts/sonar_q89_common.py scripts/sonar_per_number_condition_9plus_shard.py scripts/aggregate_sonar_q89_shards.py scripts/sonar_q89_acceptance.py scripts/persist_q89_outputs.py scripts/sonar_research_queue.py
+          python tests/test_sonar_per_number_condition_9plus_grammar.py -v
+      - name: Evaluate deterministic nine-feature shard
+        env:
+          SONAR_Q89_SHARD_INDEX: ${{ matrix.shard }}
+        run: python scripts/sonar_per_number_condition_9plus_shard.py
+      - name: Upload Q89 shard metrics, target ledger and report
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-q89-shard-${{ matrix.shard }}
+          path: |
+            reports/sequence_agent/q89_shards/shard_${{ matrix.shard }}_metrics.csv
+            reports/sequence_agent/q89_shards/shard_${{ matrix.shard }}_target_ledger.csv
+            reports/sequence_agent/q89_shards/shard_${{ matrix.shard }}_report.json
+          if-no-files-found: error
+          retention-days: 14
+
+  recover-aggregate-validate-persist:
+    if: "${{ github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.action == 'reopened' || github.event.action == 'edited') && contains(github.event.pull_request.body, 'Q89-AGGREGATE-RECOVERY: 42524743687') }}"
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Check Q89 aggregator and acceptance tests
+        run: |
+          python -m py_compile scripts/sonar_q89_common.py scripts/sonar_per_number_condition_9plus_shard.py scripts/aggregate_sonar_q89_shards.py scripts/sonar_q89_acceptance.py scripts/persist_q89_outputs.py scripts/sonar_research_queue.py
+          python tests/test_sonar_per_number_condition_9plus_grammar.py -v
+      - name: Download immutable Q89 shard artifacts from run 42524743687
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sonar-q89-shard-*
+          merge-multiple: true
+          path: reports/sequence_agent/q89_shards
+          repository: jamesnuvola/vincicasa-lab
+          run-id: 42524743687
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Aggregate shards, apply global Holm, freeze candidates and run paired blind OOS
+        run: python scripts/aggregate_sonar_q89_shards.py
+      - name: Validate complete Q89 acceptance evidence before persistence
+        run: python scripts/sonar_q89_acceptance.py
+      - name: Persist Q89 outputs append-only and verify exact committed bytes
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q89_outputs.py
+      - name: Request current-head CI for the persisted Q89 commit
+        if: ${{ steps.persist.outputs.commit_created == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"research/sonar-q89-nine-feature-20261108\"}"
+
+  aggregate-validate-persist:
+    needs: evaluate-shards
+    if: ${{ needs.evaluate-shards.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Download all 15 deterministic Q89 shard artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: sonar-q89-shard-*
+          merge-multiple: true
+          path: reports/sequence_agent/q89_shards
+      - name: Aggregate shards, apply global Holm, freeze candidates and run paired blind OOS
+        run: python scripts/aggregate_sonar_q89_shards.py
+      - name: Validate complete Q89 acceptance evidence before persistence
+        run: python scripts/sonar_q89_acceptance.py
+      - name: Persist Q89 outputs append-only and verify exact committed bytes
+        id: persist
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/persist_q89_outputs.py
+      - name: Request current-head CI for the persisted Q89 commit
+        if: ${{ steps.persist.outputs.commit_created == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"research/sonar-q89-nine-feature-20261108\"}"

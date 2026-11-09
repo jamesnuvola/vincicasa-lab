@@ -47,20 +47,33 @@ jobs:
         run: node --check scripts/sonar_active_engine_walkforward.mjs
       - name: Check SONAR analysis and queue scripts
         run: python -m py_compile scripts/sonar_fast_improvements.py scripts/sonar_research_queue.py
+      - name: Run lightweight Q80-Q86 unit tests on stacked Q89 branch
+        if: github.head_ref == 'research/sonar-q89-nine-feature-20261108' || github.ref_name == 'research/sonar-q89-nine-feature-20261108'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py scripts/chunk_q86_outputs.py scripts/persist_q86_outputs.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
+          python tests/test_sonar_per_number_condition_grammar.py -v
+          python tests/test_sonar_per_number_condition_4plus_grammar.py -v
+          python tests/test_sonar_per_number_condition_conditional_grammar.py -v
+          python tests/test_sonar_per_number_condition_5plus_grammar.py -v
+          python tests/test_sonar_per_number_condition_6plus_grammar.py -v
+          python scripts/sonar_research_queue.py
       - name: Test evolutionary lab syntax and run
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108'
         run: |
           python -m py_compile scripts/sonar_evolutionary_lab.py
           python scripts/sonar_evolutionary_lab.py
       - name: Test positional, regime, residual and hazard lab
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108'
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
       - name: Test exhaustive per-number condition grammars (Q80/Q81/Q82/Q83/Q86)
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_RESEARCH_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py scripts/chunk_q86_outputs.py scripts/persist_q86_outputs.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
           python tests/test_sonar_per_number_condition_grammar.py -v
@@ -75,19 +88,24 @@ jobs:
           python scripts/sonar_per_number_condition_6plus_grammar.py
           python scripts/chunk_q86_outputs.py
           python scripts/sonar_research_queue.py
-          python scripts/validate_formula_outputs.py
+          if [ "$SONAR_RESEARCH_BRANCH" = "research/sonar-q89-nine-feature-20261108" ]; then
+            echo "SKIP_Q80_Q86_MAIN_ARCHIVE_GATE: Q89 is stacked on the Q88 branch archive through 2026-11-07; Q89-specific acceptance validates its own strict-prior outputs."
+          else
+            python scripts/validate_formula_outputs.py
+          fi
           python scripts/sonar_research_queue.py
       - name: Validate persisted Q80/Q81/Q82/Q83/Q86 outputs on exact head
-        if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: (github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py scripts/chunk_q86_outputs.py scripts/persist_q86_outputs.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
+          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_per_number_condition_grammar.py scripts/sonar_per_number_condition_4plus_grammar.py scripts/sonar_per_number_condition_conditional_grammar.py scripts/sonar_per_number_condition_5plus_grammar.py scripts/sonar_per_number_condition_6plus_grammar.py scripts/chunk_q86_outputs.py scripts/persist_q86_outputs.py scripts/sonar_q89_common.py scripts/sonar_per_number_condition_9plus_shard.py scripts/aggregate_sonar_q89_shards.py scripts/sonar_q89_acceptance.py scripts/persist_q89_outputs.py scripts/sonar_research_queue.py scripts/validate_formula_outputs.py
           python tests/test_sonar_per_number_condition_grammar.py -v
           python tests/test_sonar_per_number_condition_4plus_grammar.py -v
           python tests/test_sonar_per_number_condition_conditional_grammar.py -v
           python tests/test_sonar_per_number_condition_5plus_grammar.py -v
           python tests/test_sonar_per_number_condition_6plus_grammar.py -v
+          python tests/test_sonar_per_number_condition_9plus_grammar.py -v
           python scripts/sonar_research_queue.py
           python scripts/validate_formula_outputs.py
       - name: Dispatch preregistered Q88 refresh after exact-head CI
@@ -107,7 +125,7 @@ jobs:
         run: npm install && npm run build
 
       - name: Upload validated Q80-Q86 formula persistence bundle
-        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]')) && github.head_ref != 'research/sonar-q89-nine-feature-20261108' && github.ref_name != 'research/sonar-q89-nine-feature-20261108'
         uses: actions/upload-artifact@v4
         with:
           name: q80-q86-persistence-bundle

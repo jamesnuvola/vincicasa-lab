@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q89",
+  "protocol_id": "Q89-nine-feature-equal-weight-catalog-2026-11-08",
+  "blind_oos_targets": 670,
+  "bootstrap": {
+    "method": "circular moving-block bootstrap percentile CI",
+    "replicates": 20000,
+    "block_length": 7,
+    "seed": 890027,
+    "confidence_level": 0.95
+  },
+  "signflip": {
+    "method": "circular block sign-flip randomization, two-sided",
+    "replicates": 20000,
+    "block_length": 7,
+    "seed": 890028
+  },
+  "multiple_testing": {
+    "method": "Holm-Bonferroni",
+    "family_size": 3,
+    "endpoints": [
+      "top5 primary",
+      "top10 secondary",
+      "top20 secondary"
+    ]
+  },
+  "uniform_number_rank_baseline": {
+    "mean_number_hits_top5": 0.125,
+    "mean_number_hits_top10": 0.25,
+    "mean_number_hits_top20": 0.5,
+    "mean_rank_of_actual_numbers": 20.5
+  },
+  "Q89_candidate_blind_metrics": {
+    "mean_number_hits_top5": 0.11761194029850747,
+    "mean_number_hits_top10": 0.23582089552238805,
+    "mean_number_hits_top20": 0.4955223880597015,
+    "mean_rank_of_actual_numbers": 20.613731343283582
+  },
+  "Q88_control_blind_metrics": {
+    "mean_number_hits_top5": 0.10985074626865672,
+    "mean_number_hits_top10": 0.24388059701492537,
+    "mean_number_hits_top20": 0.48686567164179106,
+    "mean_rank_of_actual_numbers": 20.77313432835821
+  },
+  "paired_endpoints": {
+    "top5": {
+      "mean_paired_delta_number_hits": 0.03880597014925373,
+      "mean_paired_delta_hit_share": 0.007761194029850746,
+      "mean_paired_delta_hit_share_percentage_points": 0.7761194029850746,
+      "bootstrap_95_percentile_ci_number_hits": [
+        -0.014925373134328358,
+        0.09253731343283582
+      ],
+      "bootstrap_95_percentile_ci_hit_share": [
+        -0.0029850746268656717,
+        0.018507462686567163
+      ],
+      "block_signflip_p_raw_two_sided": 0.17984100794960253,
+      "holm_p": 0.5395230238488076,
+      "primary_endpoint": true,
+      "secondary_endpoint": false
+    },
+    "top10": {
+      "mean_paired_delta_number_hits": -0.04029850746268657,
+      "mean_paired_delta_hit_share": -0.008059701492537314,
+      "mean_paired_delta_hit_share_percentage_points": -0.8059701492537313,
+      "bootstrap_95_percentile_ci_number_hits": [
+        -0.11343283582089553,
+        0.03134328358208955
+      ],
+      "bootstrap_95_percentile_ci_hit_share": [
+        -0.022686567164179106,
+        0.00626865671641791
+      ],
+      "block_signflip_p_raw_two_sided": 0.3008349582520874,
+      "holm_p": 0.6016699165041748,
+      "primary_endpoint": false,
+      "secondary_endpoint": true
+    },
+    "top20": {
+      "mean_paired_delta_number_hits": 0.04328358208955224,
+      "mean_paired_delta_hit_share": 0.008656716417910448,
+      "mean_paired_delta_hit_share_percentage_points": 0.8656716417910447,
+      "bootstrap_95_percentile_ci_number_hits": [
+        -0.04029850746268657,
+        0.12686567164179105
+      ],
+      "bootstrap_95_percentile_ci_hit_share": [
+        -0.008059701492537314,
+        0.02537313432835821
+      ],
+      "block_signflip_p_raw_two_sided": 0.32693365331733415,
+      "holm_p": 0.6016699165041748,
+      "primary_endpoint": false,
+      "secondary_endpoint": true
+    }
+  },
+  "decision": "NO_SIGNIFICANT_GAIN",
+  "blind_oos_used_for_candidate_selection": false,
+  "limitations": [
+    "finite equal-weight nine-feature grammar only",
+    "global formula-family p-values use an exploratory continuity-corrected normal approximation to summed hypergeometric hit counts",
+    "historical blind OOS has prior SONAR exposure and is not independent prospective confirmation",
+    "no engine promotion or shadow-stream insertion"
+  ]
+}
