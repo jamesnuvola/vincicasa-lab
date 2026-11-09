@@ -163,6 +163,12 @@ class Q92AggregateCommonTests(unittest.TestCase):
         compact["rank_sum"]=1000;compact["all5_top20"]=11
         with self.assertRaises(ValueError):q92.metric_summary_from_compact_counts(compact,10)
 
+    def test_q92_acceptance_validator_uses_metric_summary_from_common_module(self):
+        validator = (ROOT / "scripts/validate_sonar_q92_ten_feature.py").read_text(encoding="utf-8")
+        self.assertIn("q92.metric_summary_from_compact_counts(row,targets)", validator)
+        self.assertNotIn("q92a.metric_summary_from_compact_counts", validator)
+        self.assertTrue(callable(q92.metric_summary_from_compact_counts))
+
     def test_source_code_hash_manifest_is_deterministic(self):
         root=Path(__file__).resolve().parents[1]
         first=q92.source_code_hashes(root);second=q92.source_code_hashes(root)
