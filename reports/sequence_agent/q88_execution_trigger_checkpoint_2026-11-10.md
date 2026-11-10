@@ -7,3 +7,5 @@ The experiment remains PREREGISTERED_PENDING_EXECUTION until the workflow comple
 No source archive, historical freeze, PR #6, PR #7, or PR #8 was modified.
 
 The isolated execution base now also runs the Q88 strict-prior experiment as a guarded step in its existing Test VinciCasa Lab CI workflow. This provides a second execution path if the dedicated research workflow remains queued. The step is restricted to this Q88 head branch, performs the same registered tests and independent replay, persists only Q88 append-only artifacts, verifies Git readback, and dispatches a full CI/read-only replay on the persisted branch. The PR remains draft and no merge is requested.
+
+A trusted push-only compute/persist workflow has been added. Pull-request workflows remain read-only. The push workflow is restricted to changes to this checkpoint path, runs the registered Q88 walk-forward and independent validator, uploads a recovery artifact, persists the six artifacts with a dedicated commit marker, verifies byte-for-byte Git readback, and runs a read-only replay. The subsequent PR synchronize event is responsible for read-only replay and general CI on the persisted head.
