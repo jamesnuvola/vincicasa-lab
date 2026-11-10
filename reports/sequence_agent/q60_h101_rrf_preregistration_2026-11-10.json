@@ -1,0 +1,76 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q60-H101-RRF-2026-11-10",
+  "registered_at": "2026-11-10T12:49:26+01:00",
+  "status": "PREREGISTERED_RESEARCH_ONLY",
+  "hypothesis": "A deterministic reciprocal-rank fusion of the frozen global freq_100 Top20 and positional position_seed_mix_top20_v1 Top20 may improve prospective Top20 hit count without retuning either parent engine.",
+  "inputs": {
+    "global_engine": "freq_100",
+    "positional_engine": "position_seed_mix_top20_v1",
+    "required_history_cutoff": "previous canonical draw date",
+    "both_parent_freezes_must_precede_fusion_freeze": true,
+    "nominal_draw_time_local": "19:00",
+    "timezone": "Europe/Rome"
+  },
+  "algorithm": {
+    "candidate_universe": "union of the two parent Top20 sets",
+    "score": "S(n) = 1/(20 + rank_global(n)) + 1/(20 + rank_positional(n)); a missing rank contributes 0",
+    "k": 20,
+    "rank_origin": 1,
+    "selection": "sort by descending S(n), then ascending numeric value; take first 20",
+    "nested_top10_top5": true,
+    "parameter_tuning": "none",
+    "parent_models_modified": false
+  },
+  "historical_exploratory_audit": {
+    "target_dates": "2026-10-19 through 2026-11-09",
+    "n": 22,
+    "confirmatory_eligibility": false,
+    "reason": "These outcomes have already been inspected in H97-H100; all H101 results on these rows are exploratory and excluded from prospective confirmation."
+  },
+  "prospective_confirmation": {
+    "required_complete_targets": 200,
+    "first_target": "2026-11-10",
+    "first_target_eligibility": "Only if a new H101 row is frozen after this preregistration and before the nominal target draw; existing parent freezes are not edited.",
+    "chronological_reporting_splits": {
+      "discovery": 100,
+      "validation": 50,
+      "blind_oos": 50
+    },
+    "interim_look": "No inferential interim looks and no retuning; final analysis only after all 200 outcomes are complete.",
+    "primary_endpoint": "paired mean Top20 hits: H101 RRF minus freq_100",
+    "minimum_practical_effect_top20_hits_per_target": 0.1,
+    "primary_test": "two-sided exact paired sign-flip randomization; a positive estimate and adjusted p < 0.05 are required for superiority",
+    "secondary_endpoints": [
+      "paired mean Top20 hits: H101 RRF minus position_seed_mix_top20_v1",
+      "absolute H101 Top20 hit count versus exact iid-uniform Hypergeometric(40,20,5) convolution"
+    ],
+    "multiple_testing": "Holm step-down across the three registered H101 Top20 endpoints",
+    "uncertainty": "circular moving-block bootstrap, block length 20, 10000 replicates, fixed seed 1012026",
+    "descriptive_only": [
+      "Top5 hit count",
+      "Top10 hit count",
+      "5-of-5 count"
+    ],
+    "q60_primary_gate": "The existing global-vs-positional Q60 gate remains separate and unchanged; no promotion until its 200-pair gate and human review pass."
+  },
+  "leakage_and_integrity_guards": [
+    "The H101 forecast may use only the two parent lists frozen from data through the previous canonical draw.",
+    "Fusion freeze timestamp must be later than both parent freeze timestamps and earlier than 19:00 Europe/Rome on the target date.",
+    "Target outcome fields are never read by the freeze-generation script.",
+    "The canonical archive must end exactly at the declared history_cutoff.",
+    "No missing freeze is reconstructed and no existing forecast row is modified.",
+    "All outputs are append-only and research-only."
+  ],
+  "source_blob_shas": {
+    "global_shadow_forecasts": "afe538cb835dbe561983eaa6972899ce8bd97df7",
+    "positional_shadow_forecasts": "e63f35394e916ca7688fc7b41457c1032b9b7be0",
+    "canonical_archive": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "q60_gate": "bce911528ccecb93d2efaccbf76c45cd22c07ae7"
+  },
+  "decision_policy": {
+    "promotion_allowed": false,
+    "merge_allowed": false,
+    "human_review_required": true
+  }
+}
