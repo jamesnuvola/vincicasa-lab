@@ -148,7 +148,7 @@ function runQ99(csvText) {
     return (extreme+1)/(SIGNFLIP_REPS+1);
   }
   function holm(tests) {
-    const order=tests.map((x,i)=>({i,p:x.raw_p})).sort((a,b)=>a.p-b.p);
+    const order=tests.map((x,i)=>({i,p:x.block_signflip_p_one_sided})).sort((a,b)=>a.p-b.p);
     let running=0;
     const adj=new Array(tests.length);
     for(let r=0;r<order.length;r++) {
