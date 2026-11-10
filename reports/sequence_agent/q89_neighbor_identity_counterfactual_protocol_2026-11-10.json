@@ -1,0 +1,54 @@
+{
+  "task_id": "Q89-NEIGHBOR-IDENTITY-COUNTERFACTUAL-01",
+  "title": "Counterfactual neighbor-identity specificity of signed node-to-graph transfer",
+  "registered_at_utc": "2026-11-10T02:46:41+01:00",
+  "status": "PREREGISTERED_PENDING_EXECUTION",
+  "source_archive": {
+    "draws": 3402,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-08",
+    "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+  },
+  "target_design": {
+    "minimum_prior_draws": 200,
+    "targets": 3202,
+    "discovery": 1921,
+    "validation": 640,
+    "historical_blind_oos": 641,
+    "cutoff_rule": "For target i, compute field and graph from draws[:i], freeze every ranking, then read draw i."
+  },
+  "hypothesis": "Q88 transfer should depend on the true mapping from graph neighbors to their prior six-feature states. Randomly reassigned neighbor-feature labels should weaken identity-specific signal if that mapping matters. A graph-free node-inertia control tests whether graph information adds anything beyond node autoregression.",
+  "identity_operator": {
+    "definition": "Frozen Q88 operator: base_z + 0.20*0.5*(reversion+graph_signal)*z(EWMA20,0.80 signed cosine(node_delta_i, edge_delta_i @ prior_neighbor_features / sqrt(39))).",
+    "alpha": 0.2,
+    "window": 20,
+    "decay": 0.8
+  },
+  "counterfactuals": {
+    "count": 39,
+    "seed": 8901,
+    "generator": "Python random.Random MT19937; sample(range(40),40); 39 unique non-identity permutations plus identity at index 0.",
+    "sha256": "65550b9161304f61ea7899ad3e2545b8321523ebf9307717b1d28e48cd635bcb",
+    "mapping": "Permute only rows of prior neighbor-feature matrix; do not modify edge_delta. Graph edge weights and every row strength remain unchanged."
+  },
+  "node_only_control": {
+    "definition": "Signed cosine between current and previous six-feature node deltas; EWMA20 decay .80; score base_z + .20*reversion*z(node_inertia); no graph input."
+  },
+  "selection": "No candidate selection or parameter tuning. Q88 identity formula, 39 counterfactual mappings and node-only control are fixed before execution.",
+  "statistics": {
+    "exact_null": "Global Holm across 42 models x 3 splits x 3 endpoints = 378 tests using iid Hypergeometric(40,k,5) upper-tail convolution.",
+    "paired": "Moving-block bootstrap block 20, 2,000 replications; 24 tests on Validation/Blind OOS across permutation mean, node-only and Equal42, Top5/Top10/Top20/mean actual rank; one global Holm family.",
+    "randomization": "Monte Carlo p=(1 + number of 39 permuted split means >= identity split mean)/40; 9 tests across 3 splits x 3 endpoints; one global Holm family.",
+    "primary_gate": "Historical Blind OOS identity must lift Top20 >=0.10 versus Equal42 with paired CI lower >0 and paired Holm p<0.05 and exact-null Holm p<0.05; it must also beat permutation-mean with paired CI lower >0, paired Holm p<0.05 and neighbor-randomization Holm p<0.05."
+  },
+  "safeguards": [
+    "Strict-prior cutoff per target; rankings frozen before reading target quintet.",
+    "Permutation family and hash fixed before outcomes; no result-dependent resampling.",
+    "Edge-delta matrix is unchanged; edge weights and row strengths are exactly preserved.",
+    "No Validation or Blind OOS tuning.",
+    "Independent validator replays every cutoff, signal, ranking and multiplicity family.",
+    "Historical Blind OOS is already exposed and exploratory, not virgin holdout.",
+    "No freeze modification, prospective shadow insertion, engine promotion or automatic merge."
+  ]
+}
