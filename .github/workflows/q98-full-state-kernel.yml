@@ -21,6 +21,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Verify canonical source archive Git blob
+        run: test "$(git hash-object data/storico_daily.csv)" = "8d3e19f0b417024ba32e576697eac0648d12ab86"
       - name: Exact deterministic replay and synthetic leakage tests
         run: node scripts/sonar_q98_full_state_kernel.mjs --verify
       - name: Independent persisted report and ledger validation
