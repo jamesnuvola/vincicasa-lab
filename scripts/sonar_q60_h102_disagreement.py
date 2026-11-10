@@ -291,7 +291,7 @@ def summarize_split(records):
     }
 
 
-def build_report(records, pending, latest_archive_date):
+def build_report(records, pending, latest_archive_date, permutations=9999, bootstrap_replicates=10000):
     report = {
         "schema_version": "1.0",
         "experiment_id": "Q60-H102-RRF-DISAGREEMENT-2026-11-10",
@@ -333,10 +333,10 @@ def build_report(records, pending, latest_archive_date):
         exact_signflip_p(y_global),
         exact_signflip_p(y_pos),
         hypergeom_upper_p(sum(r["h101_hits"] for r in records), len(records)),
-        block_permutation_slope_p(x, y_global),
+        block_permutation_slope_p(x, y_global, permutations=permutations),
     ]
     adjusted = holm_adjust(raw_p)
-    ci = circular_block_bootstrap_slope_ci(x, y_global)
+    ci = circular_block_bootstrap_slope_ci(x, y_global, replicates=bootstrap_replicates)
     report["inference_executed"] = True
     report["inference"] = {
         "n": REQUIRED,
