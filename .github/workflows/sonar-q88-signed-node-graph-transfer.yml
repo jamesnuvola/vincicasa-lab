@@ -1,6 +1,15 @@
 name: SONAR Q88 Signed Node-Graph Transfer
 
 on:
+  push:
+    branches:
+      - research/q88-signed-node-graph-transfer-20261110
+    paths:
+      - ".github/workflows/sonar-q88-signed-node-graph-transfer.yml"
+      - "scripts/sonar_q88_signed_node_graph_transfer.py"
+      - "scripts/validate_sonar_q88_signed_node_graph_transfer.py"
+      - "tests/test_sonar_q88_signed_node_graph_transfer.py"
+      - "reports/sequence_agent/q88_signed_node_graph_transfer_protocol_2026-11-10.json"
   pull_request:
     branches:
       - research/q87-node-graph-phase-lag-20261110
