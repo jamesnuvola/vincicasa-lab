@@ -89,7 +89,7 @@ def validate(read_only=False):
         if reader.fieldnames!=expected_fields: raise ValueError("Q90 ledger schema mismatch")
         rows=list(reader)
     if len(rows)!=total or total!=3203: raise ValueError("Q90 ledger row count mismatch")
-    decomposition_keys=("mu","edge_rms","main_rms","interaction_rms","interaction_energy_fraction",
+    decomposition_keys=("mu","main_effect_sum","edge_rms","main_rms","interaction_rms","interaction_energy_fraction",
         "main_energy_fraction","residual_row_sum_max_abs","reconstruction_max_abs","main_interaction_inner_product")
     for t,row in enumerate(rows):
         i=q90.MIN_HISTORY+t
@@ -98,7 +98,7 @@ def validate(read_only=False):
         if row["actual_quintet"]!=" ".join(map(str,sorted(draws[i]["nums"]))):
             raise ValueError("Q90 actual quintet mismatch row "+str(t))
         for key in decomposition_keys:
-            col={"mu":"edge_delta_mu","edge_rms":"edge_delta_rms","main_rms":"edge_main_rms",
+            col={"mu":"edge_delta_mu","main_effect_sum":"main_effect_sum","edge_rms":"edge_delta_rms","main_rms":"edge_main_rms",
                  "interaction_rms":"edge_interaction_rms","interaction_energy_fraction":"interaction_energy_fraction",
                  "main_energy_fraction":"main_energy_fraction","residual_row_sum_max_abs":"residual_row_sum_max_abs",
                  "reconstruction_max_abs":"reconstruction_max_abs","main_interaction_inner_product":"main_interaction_inner_product"}[key]
