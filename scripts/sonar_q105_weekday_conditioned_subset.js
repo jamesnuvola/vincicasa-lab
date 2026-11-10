@@ -18,7 +18,7 @@ const FILES = {
 };
 const ALPHA = 200, PRIOR_HITS = 25, WARMUP = 200;
 const DISCOVERY = 1921, VALIDATION = 641, BLIND = 641;
-const BLOCK = 21, SIGN_REPS = 50000, BOOT_REPS = 10000, SEED = 20261110;
+const BLOCK = 20, SIGN_REPS = 50000, BOOT_REPS = 10000, SEED = 20261110;
 const SUBSETS = 658008;
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
