@@ -4,9 +4,9 @@
 **EXPLORATORY_NO_PREDICTIVE_LIFT_DEMONSTRATED.** No engine change, no merge, no promotion.
 
 ## Recovery state
-- Protocol committed before Q100 scoring.
+- Protocol was committed before Q100 scoring.
 - Canonical archive cutoff: 2026-11-09; 3403 draws; 3203 target forecasts after 200-draw warmup.
-- Exact active scorer source and archive blobs checked against the active engine report.
+- Exact active scorer source and archive blobs were checked against the active engine report.
 - All 3203 Top5/Top10/Top20 split summaries reconcile to the existing report.
 
 ## Measured result
