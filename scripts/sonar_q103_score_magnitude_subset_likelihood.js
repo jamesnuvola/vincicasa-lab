@@ -556,7 +556,7 @@ function main() {
       archive_draws: draws.length,
       targets: targetRows.length,
       discovery: discovery.length,
-      validation: validation.length,
+      validation: validationRows.length,
       historical_blind_oos: blind.length,
       future_mutation_comparisons: futureMutationComparisons,
       deterministic_replay_comparisons: deterministicReplayComparisons
