@@ -126,6 +126,17 @@ def build_ledger(global_rows, positional_rows, h101_rows, archive_rows):
             raise ValueError(f"{target}: H101 freeze must follow both parent freezes")
         if grow.get("history_cutoff") != cutoff or prow.get("history_cutoff") != cutoff:
             raise ValueError(f"{target}: parent cutoff mismatch")
+        if hrow.get("rrf_k") != str(N):
+            raise ValueError(f"{target}: H101 RRF K is not the preregistered value 20")
+        source_checks = {
+            "source_global_frozen_at": grow["frozen_at"],
+            "source_positional_frozen_at": prow["frozen_at"],
+            "source_global_history_cutoff": cutoff,
+            "source_positional_history_cutoff": cutoff,
+        }
+        for field, expected in source_checks.items():
+            if hrow.get(field) != expected:
+                raise ValueError(f"{target}: H101 provenance field {field} does not match the frozen parent")
 
         gtop = parse_nums(grow["top20"], N, f"{target} global Top20")
         ptop = parse_nums(prow["top20"], N, f"{target} positional Top20")
@@ -343,7 +354,7 @@ def build_report(records, pending, latest_archive_date):
         "holm_adjusted_p_values": adjusted,
         "decision": (
             "MECHANISTIC_SUPPORT_ONLY"
-            if beta5 >= 0.10 and adjusted[3] < 0.05 and ci[0] > 0 and blind_slope is not None and blind_slope > 0
+            if beta5 >= 0.10 and adjusted[3] < 0.05 and ci is not None and ci[0] > 0 and blind_slope is not None and blind_slope > 0
             else "NOT_SUPPORTED"
         ),
         "engine_promotion_allowed": False,
