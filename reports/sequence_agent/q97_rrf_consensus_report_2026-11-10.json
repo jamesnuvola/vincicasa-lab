@@ -404,7 +404,8 @@
       "p_holm_global_15": 1,
       "p_raw": 0.7077458450830983,
       "status": "NOT_MET"
-    }
+    },
+    "family_scope": "Q97-only; does not correct across all prior SONAR research branches."
   },
   "consensus_diagnostics": {
     "component_top20_union_size_max": 23,
@@ -433,7 +434,8 @@
       "Q93_SPECTRAL_K2": 1,
       "Q94_INSTABILITY": 1,
       "Q94_STABILITY": 1
-    }
+    },
+    "baseline_is_included_as_one_of_five_sources": true
   },
   "hypothesis": "Equal-weight RRF of five prior-only rankings improves Top-20 mean hits over Equal42 and is not materially inferior to its components.",
   "integrity": {
@@ -450,7 +452,9 @@
     "Historical Blind OOS is prior-exposed and is not a virgin prospective holdout.",
     "Block sign-flip assumes exchangeability of contiguous 20-target block signs under the null.",
     "RRF is a ranking aggregation, not a physical or causal mechanism.",
-    "No historical result establishes an advantage for future random draws."
+    "No historical result establishes an advantage for future random draws.",
+    "BASE_EQUAL42 is one of the five fused inputs; the RRF-vs-baseline comparison is an anchored/nested comparison, not an independent head-to-head.",
+    "Holm correction covers the 15 Q97 comparisons only, not the full historical SONAR search family."
   ],
   "next_action": "Stop retrospective RRF tuning; continue Q60 append-only prospective collection until at least 200 complete paired targets.",
   "registration_status": "POST_HOC_FIXED_FORMULA; COMPONENT_FAMILIES_WERE_PREVIOUSLY_EXPOSED",
