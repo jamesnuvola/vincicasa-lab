@@ -17,6 +17,8 @@ concurrency:
 
 jobs:
   validate:
+    outputs:
+      q93_preexisting: ${{ steps.q93-state.outputs.preexisting }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -51,8 +53,17 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
-      - name: Run Q93 spectral-coherence walk-forward and independent acceptance
+      - name: Detect whether Q93 outputs are already accepted and persisted
+        id: q93-state
         if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110'
+        run: |
+          if [ -f reports/sequence_agent/q93_spectral_coherence_validation.json ] && [ -f reports/sequence_agent/q93_spectral_coherence_manifest.json ]; then
+            echo "preexisting=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "preexisting=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Run Q93 tests, walk-forward and acceptance when outputs are not yet persisted
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110' && steps.q93-state.outputs.preexisting == 'false'
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
@@ -63,8 +74,13 @@ jobs:
           python -m pytest -q tests/test_sonar_q93_spectral_coherence.py
           python scripts/sonar_q93_spectral_coherence.py
           python scripts/validate_sonar_q93_spectral_coherence.py
+      - name: Replay previously accepted Q93 outputs read-only
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110' && steps.q93-state.outputs.preexisting == 'true'
+        run: |
+          python -m py_compile scripts/sonar_q93_spectral_coherence.py scripts/validate_sonar_q93_spectral_coherence.py
+          python scripts/validate_sonar_q93_spectral_coherence.py --read-only
       - name: Upload Q93 accepted output bundle
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110'
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110' && steps.q93-state.outputs.preexisting == 'false'
         uses: actions/upload-artifact@v4
         with:
           name: q93-spectral-coherence-bundle
@@ -83,7 +99,7 @@ jobs:
 
   persist-q93:
     needs: validate
-    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110' && needs.validate.result == 'success'
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110' && needs.validate.result == 'success' && needs.validate.outputs.q93_preexisting == 'false'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
