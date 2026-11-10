@@ -1,0 +1,113 @@
+{
+  "experiment_id": "Q101",
+  "title": "Nonlinear rank-band shape audit of the active SONAR ranking",
+  "preregistered_date": "2026-11-10",
+  "status": "PREREGISTERED_BEFORE_Q101_SCORING",
+  "hypothesis": {
+    "null": "Conditional on all information available before target t, the five target numbers map to a uniformly random 5-subset of the 40 ranks. After removing the linear rank trend, the eight consecutive 5-rank bands have no systematic shape departure.",
+    "alternative": "The active SONAR ranking induces a reproducible nonlinear rank-band shape: rank-band counts depart from the uniform 5-of-40 null even after removing the linear mean-rank component.",
+    "estimand": "For each split, aggregate counts C_b of actual numbers in rank bands [1-5],[6-10],...,[36-40]. Let x_b=C_b-0.625*T, l_b=band_center_b-20.5, beta=(x·l)/(l·l), r=x-beta*l. The nonlinear shape statistic is Q=sum_b(r_b^2)/(T*175/312).",
+    "direction": "Two-sided shape departure represented by the upper tail of Q; linear rank trend is projected out and separately addressed by Q100."
+  },
+  "source": {
+    "archive": "data/storico_daily.csv",
+    "archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "rank_ledger": "reports/sequence_agent/q100_prequential_rank_calibration_target_ledger_2026-11-10.csv",
+    "rank_ledger_blob_sha": "50f384ec3fec77ba505d30374daa7e0ddd54afbe",
+    "source_experiment": "Q100",
+    "source_protocol_blob_sha": "927266f5f5cb3906b0faec7e67ce8955edb1e643",
+    "source_validation_blob_sha": "b3498f334007e7b7dd135e9a407409f0f15523ad",
+    "source_engine": "src/VinciCasaLab.jsx",
+    "source_engine_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304"
+  },
+  "data": {
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "warmup_draws": 200,
+    "targets": 3203,
+    "rank_bands": [
+      [
+        1,
+        5
+      ],
+      [
+        6,
+        10
+      ],
+      [
+        11,
+        15
+      ],
+      [
+        16,
+        20
+      ],
+      [
+        21,
+        25
+      ],
+      [
+        26,
+        30
+      ],
+      [
+        31,
+        35
+      ],
+      [
+        36,
+        40
+      ]
+    ],
+    "band_centers": [
+      3,
+      8,
+      13,
+      18,
+      23,
+      28,
+      33,
+      38
+    ]
+  },
+  "splits": {
+    "rule": "Reuse Q100's frozen chronological split; no target or cutoff changes.",
+    "discovery": 1921,
+    "validation": 641,
+    "historical_blind_oos": 641
+  },
+  "exact_conditional_null": {
+    "per_target_draw": "Uniform 5-subset of 40 ranks, independent conditional on the pre-target history under the lottery null.",
+    "expected_count_per_band_per_target": 0.625,
+    "covariance": {
+      "diagonal_variance_per_target": "5*(5/40)*(35/40)*(35/39)",
+      "off_diagonal_covariance_per_target": "-5*(5/40)^2*(35/39)",
+      "residual_subspace_eigenvalue": "175/312"
+    },
+    "statistic_degrees_of_freedom": 6,
+    "inference": "Monte Carlo conditional randomization by sampling 5 distinct ranks from 1..40 for each target; compute the same residualized Q. Fixed seed 0x5100A101; 20000 replicates; add-one upper-tail p-value."
+  },
+  "inference": {
+    "primary_endpoint": "Residualized nonlinear rank-band shape Q on historical Blind OOS (641 targets).",
+    "discovery_validation": "Descriptive split comparisons only; no parameter selection and no independent confirmatory claims.",
+    "multiple_testing": "Bonferroni ×43 as a conservative screen for the catalogued SONAR configuration family; this does not cover unknown analyst degrees of freedom. One primary statistic is used; no per-band post-hoc tests.",
+    "uncertainty": "Report observed residualized band profile and conditional-null Monte Carlo p-value. No stationarity claim."
+  },
+  "integrity_checks": [
+    "Q100 source ledger blob SHA matches the pinned Git blob.",
+    "All 3203 ledger targets reconcile to canonical archive target index, date, prior-day cutoff, max training outcome index and actual quintet.",
+    "All 3203 rank vectors contain five distinct integers in 1..40.",
+    "Recompute rank sum, mean rank, Top5/Top10/Top20 and all eight band counts from draw_ranks and reconcile to the ledger.",
+    "Recompute discovery/validation/historical blind split assignment from frozen ordinal boundaries.",
+    "Conditional null simulation uses only the fixed 5-of-40 rank subset law and a fixed deterministic seed.",
+    "Replay with the same seed returns identical extreme counts and p-value."
+  ],
+  "guardrails": [
+    "This is a post-hoc diagnostic of Q100's already exposed historical rank ledger, not a virgin holdout or independent predictive validation.",
+    "No engine weights, ranking, forecasts or prospective freezes are changed.",
+    "No target outcome or future data is used to construct the source forecasts; Q101 only audits the Q100 prior-only ledger.",
+    "No automatic model promotion, merge or production change; human review required."
+  ],
+  "next_action": "If no stable nonlinear shape departure is found, stop retrospective rank-shape tuning and continue Q60 append-only prospective collection. Do not score the 2026-11-10 pending freezes until the official result is verified and appended to the canonical archive."
+}
