@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q92",
+  "amendment_id": "Q92-NULL-CALIBRATION-01",
+  "registered_at_utc": "2026-11-09T07:14:33Z",
+  "effective_before_full_walkforward_execution": true,
+  "original_method": "Continuity-corrected normal upper-tail approximation to summed Hypergeometric(40,k,5) number-hit counts.",
+  "amended_method": "discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws",
+  "measured_rationale": {
+    "formula_split_endpoint_family_size": 75926565,
+    "holm_first_step_alpha_over_m": 6.585310424618841e-10,
+    "max_relative_tail_error_near_holm_first_step": {
+      "discovery_top5_at_670_targets": 0.6821865556938973,
+      "discovery_top10_at_670_targets": 0.4411086641222485,
+      "discovery_top5_at_2012_targets": 0.49479259771390277,
+      "discovery_top10_at_2012_targets": 0.2909335892468946
+    },
+    "audit_report": "reports/sequence_agent/q92_normal_approximation_audit_2026-11-09.json"
+  },
+  "unchanged": {
+    "formula_universe": "C(27,10)=8,436,285",
+    "chronological_splits": "Discovery 2,012 / Validation 670 / Blind OOS 670",
+    "strict_prior_cutoff": true,
+    "candidate_selection": "Discovery top-100, Validation freeze; Blind OOS never used for selection",
+    "paired_endpoints": [
+      "Top-5 primary",
+      "Top-10 secondary",
+      "Top-20 secondary",
+      "mean rank secondary"
+    ],
+    "paired_inference": "20,000 circular moving-block bootstrap/sign-flip replicates, block length 7, seeds 920027/920028; Holm family size 4"
+  },
+  "limitations": [
+    "The null assumes independent uniform 5-of-40 draws across target dates.",
+    "Float64 convolution is deterministic but not exact arithmetic; extreme tails below float64 range use a positive subnormal floor.",
+    "This amendment changes catalog-level p-value calibration only; it does not claim predictive skill."
+  ],
+  "guardrails": {
+    "no_auto_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "prs_6_7_8_untouched": true,
+    "human_review_required": true
+  }
+}

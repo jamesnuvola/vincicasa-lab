@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q92",
+  "amendment_id": "Q92-MINIMUM-PRACTICAL-EFFECT-01",
+  "registered_at_utc": "2026-11-09T10:40:38Z",
+  "effective_before_full_walkforward_execution": true,
+  "hypothesis": "The Validation-frozen Q92 candidate must improve paired Blind OOS Top-5 hit-share over the same-archive Q89 control by at least 0.005 absolute, with a positive 95% block-bootstrap lower bound and Holm-adjusted block sign-flip p below 0.05.",
+  "primary_endpoint": "paired Blind OOS Top-5 hit-share difference Q92 minus same-archive Q89",
+  "minimum_absolute_effect_size": 0.005,
+  "decision_rule": {
+    "mean_delta_top5_minimum": 0.005,
+    "bootstrap_ci_95_low_must_exceed": 0,
+    "signflip_p_holm_maximum_exclusive": 0.05,
+    "multiple_testing": {
+      "method": "Holm-Bonferroni",
+      "family_size": 4,
+      "endpoints": [
+        "Top-5",
+        "Top-10",
+        "Top-20",
+        "mean rank"
+      ]
+    }
+  },
+  "practical_interpretation": "0.5 percentage-point Top-5 hit-share gain, approximately 17 additional number hits over 670 Blind OOS draws (3,350 actual-number observations).",
+  "rationale": "Prevent acceptance of a statistically significant but practically negligible effect; register the threshold before the Q92 Blind OOS is observed.",
+  "candidate_selection_rule_unchanged": true,
+  "blind_oos_used_for_selection": false,
+  "formula_universe_or_feature_state_changed": false,
+  "limitations": [
+    "This is a decision gate, not a forecast or claim of expected predictive gain.",
+    "The paired Blind OOS is historical and has prior SONAR exposure."
+  ]
+}

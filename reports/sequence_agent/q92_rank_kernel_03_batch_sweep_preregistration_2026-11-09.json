@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q92",
+  "amendment_id": "Q92-RANK-KERNEL-03",
+  "status": "PRE_EXECUTION_ENGINEERING_AMENDMENT",
+  "registered_on": "2026-11-09",
+  "hypothesis": "The selective exact actual-number rank kernel may have a batch-size-dependent throughput optimum on the hosted CI CPU. A fixed 4,096-formula synthetic sample processed by the same number-major score kernel and selective rank extraction, with candidate batch sizes 512,1024,2048,4096, will yield at least 1.25x throughput over the baseline full stable rank kernel at batch 1024 for at least one candidate size.",
+  "baseline": {
+    "kernel": "number-major scores 40xB plus stable full argsort for all 40 numbers; only the five actual-number ranks are extracted",
+    "batch_size": 1024,
+    "fixed_formula_sample_count": 4096,
+    "total_batches": 4
+  },
+  "candidate": {
+    "kernel": "unchanged number-major score matrix; exact selective actual-number rank against all 40 scores; stable lower-number tie-break",
+    "batch_sizes": [
+      512,
+      1024,
+      2048,
+      4096
+    ],
+    "fixed_formula_sample_count": 4096,
+    "batch_counts": [
+      8,
+      4,
+      2,
+      1
+    ]
+  },
+  "quantitative_acceptance": {
+    "formula_sample_seed": 920092,
+    "actual_number_seed": 920093,
+    "timed_repetitions": 25,
+    "minimum_throughput_speedup": 1.25,
+    "exact_rank_parity_required": true,
+    "rank_parity_scope": "five actual-number ranks for all 4,096 formulas at each candidate batch size; zero mismatches",
+    "selection_rule": "select the batch size with maximum median formula throughput among the four preregistered sizes; if maximum speedup is below 1.25x, reject the optimization"
+  },
+  "strict_prior_and_leakage_guardrails": {
+    "feature_state": "all 27 features for each target i use draws[0:i] only",
+    "target_use": "target quintet is used only for metric extraction after the 40 number scores from prior-only features are computed",
+    "tie_break": "stable lower-number priority exactly matches full argsort",
+    "formula_universe": "C(27,10)=8,436,285 unchanged",
+    "chronological_splits": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "selection": "Discovery top-100 then one Validation freeze; Blind OOS excluded"
+  },
+  "limitations": [
+    "this is a synthetic compute-performance experiment, not predictive evidence",
+    "no historic outcome, split metric, formula shortlist or blind target is used to select the batch size",
+    "full Q92 historical walk-forward and append-only persistence remain pending"
+  ],
+  "next_action": "Run the fixed-sample batch sweep on GitHub Actions; record all four throughput results and exact parity before changing the Q92 runner batch size or starting historical shards."
+}

@@ -3,11 +3,16 @@ on:
   push:
     branches:
       - research/sonar-q92-ten-feature-implementation-20261109
+      - research/sonar-q92-exact-null-calibration-20261109
     paths:
       - "scripts/sonar_q92_common.py"
       - "scripts/sonar_per_number_condition_10plus_shard.py"
       - "tests/test_sonar_q92_walkforward_shard.py"
+      - "scripts/sonar_q92_null_calibration.py"
+      - "tests/test_sonar_q92_null_calibration.py"
       - "reports/sequence_agent/q92_preregistration_2026-11-09.json"
+      - "scripts/sonar_q92_aggregate_common.py"
+      - "tests/test_sonar_q92_aggregate_common.py"
 permissions:
   contents: read
 concurrency:
@@ -27,6 +32,6 @@ jobs:
       - name: Install numerical dependency
         run: python -m pip install --disable-pip-version-check numpy
       - name: Compile Q92 combinadic and walk-forward runner
-        run: python -m py_compile scripts/sonar_q92_common.py scripts/sonar_per_number_condition_10plus_shard.py tests/test_sonar_q92_walkforward_shard.py
+        run: python -m py_compile scripts/sonar_q92_null_calibration.py scripts/sonar_q92_common.py scripts/sonar_per_number_condition_10plus_shard.py tests/test_sonar_q92_null_calibration.py tests/test_sonar_q92_walkforward_shard.py
       - name: Run Q92 catalog and strict-prefix synthetic regressions
-        run: python tests/test_sonar_q92_walkforward_shard.py -v
+        run: python tests/test_sonar_q92_walkforward_shard.py -v && python tests/test_sonar_q92_null_calibration.py -v

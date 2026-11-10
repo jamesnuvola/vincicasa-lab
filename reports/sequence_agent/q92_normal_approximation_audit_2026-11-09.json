@@ -1,0 +1,90 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q92-NULL-CALIBRATION-01",
+  "recorded_at_utc": "2026-11-09T07:14:33Z",
+  "status": "CALIBRATION_AUDIT_COMPLETE_PRE_EXECUTION",
+  "hypothesis": "The continuity-corrected normal approximation to summed Hypergeometric(40,k,5) number-hit counts can have material relative error near the first Holm threshold for the registered split sizes; deterministic discrete convolution should improve p-value calibration.",
+  "formula_split_endpoint_family_size": 75926565,
+  "alpha": 0.05,
+  "holm_first_step_alpha_over_m": 6.585310424618841e-10,
+  "target_counts": [
+    670,
+    2012
+  ],
+  "endpoints_top_k": [
+    5,
+    10,
+    20
+  ],
+  "comparison": "Full attainable integer support 0..5N; discrete upper-tail from deterministic float64 convolution versus continuity-corrected normal approximation.",
+  "rows": [
+    {
+      "targets": 670,
+      "top_k": 5,
+      "max_absolute_difference_all_support": 0.0021714518380312464,
+      "max_absolute_difference_at_successes": 419,
+      "max_relative_difference_exact_tail_ge_holm_first_step": 0.6821865556938973,
+      "max_relative_difference_at_successes": 532,
+      "exact_p_at_max_relative_difference": 7.934337625211848e-10,
+      "normal_p_at_max_relative_difference": 2.521639168956081e-10
+    },
+    {
+      "targets": 670,
+      "top_k": 10,
+      "max_absolute_difference_all_support": 0.001105615818732364,
+      "max_absolute_difference_at_successes": 838,
+      "max_relative_difference_exact_tail_ge_holm_first_step": 0.4411086641222485,
+      "max_relative_difference_at_successes": 984,
+      "exact_p_at_max_relative_difference": 6.961001372301098e-10,
+      "normal_p_at_max_relative_difference": 3.8904433560122223e-10
+    },
+    {
+      "targets": 670,
+      "top_k": 20,
+      "max_absolute_difference_all_support": 0.000008563087787384627,
+      "max_absolute_difference_at_successes": 1724,
+      "max_relative_difference_exact_tail_ge_holm_first_step": 0.027408296666168865,
+      "max_relative_difference_at_successes": 1841,
+      "exact_p_at_max_relative_difference": 7.652256487766228e-10,
+      "normal_p_at_max_relative_difference": 7.861991803748541e-10
+    },
+    {
+      "targets": 2012,
+      "top_k": 5,
+      "max_absolute_difference_all_support": 0.0012529693689293242,
+      "max_absolute_difference_at_successes": 1258,
+      "max_relative_difference_exact_tail_ge_holm_first_step": 0.49479259771390277,
+      "max_relative_difference_at_successes": 1452,
+      "exact_p_at_max_relative_difference": 6.604344940475981e-10,
+      "normal_p_at_max_relative_difference": 3.3365639511792e-10
+    },
+    {
+      "targets": 2012,
+      "top_k": 10,
+      "max_absolute_difference_all_support": 0.0006378400663223927,
+      "max_absolute_difference_at_successes": 2515,
+      "max_relative_difference_exact_tail_ge_holm_first_step": 0.2909335892468946,
+      "max_relative_difference_at_successes": 2767,
+      "exact_p_at_max_relative_difference": 6.905462882407305e-10,
+      "normal_p_at_max_relative_difference": 4.896431780617341e-10
+    },
+    {
+      "targets": 2012,
+      "top_k": 20,
+      "max_absolute_difference_all_support": 0.0000028513632079132933,
+      "max_absolute_difference_at_successes": 5115,
+      "max_relative_difference_exact_tail_ge_holm_first_step": 0.00910991272695478,
+      "max_relative_difference_at_successes": 5318,
+      "exact_p_at_max_relative_difference": 7.10786876616995e-10,
+      "normal_p_at_max_relative_difference": 7.172620830304406e-10
+    }
+  ],
+  "decision": "REPLACE_NORMAL_APPROXIMATION_WITH_DISCRETE_CONVOLUTION_BEFORE_Q92_EXECUTION",
+  "limits": [
+    "Null calibration assumes independent uniform 5-of-40 draws across target dates.",
+    "Convolution uses deterministic float64 arithmetic; mathematical tails below float64 range are floored to the smallest positive subnormal to avoid zero p-values.",
+    "The audit contains no Q92 formula walk-forward metrics and is not evidence of predictive advantage."
+  ],
+  "next_action": "Run synthetic CI for exact calibration and Q92 runner/aggregator/validator; then implement immutable full-shard workflow and execute Q92 only after exact-head CI."
+}

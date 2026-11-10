@@ -3,7 +3,7 @@
   "project": "VinciCasa SONAR",
   "task_id": "Q92",
   "protocol_id": "Q92-ten-feature-equal-weight-catalog-2026-11-09",
-  "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+  "status": "PREREGISTERED_WITH_PRE_EXECUTION_AMENDMENTS",
   "registered_at_utc": "2026-11-09T00:21:01Z",
   "source_archive": {
     "path": "data/storico_daily.csv",
@@ -29,8 +29,8 @@
     "formula_count_check": "C(27,10)=8436285",
     "enumeration": "lexicographic combinations over the registered 27 prior-only feature columns",
     "formula_id_prefix": "P10_",
-    "formula_batch_size": 1024,
-    "formula_batch_count": 8239,
+    "formula_batch_size": 2048,
+    "formula_batch_count": 4120,
     "shard_count": 15,
     "formulas_per_shard": 562419,
     "shard_partition": "contiguous lexicographic formula-rank intervals; ranks 0..8436284 exactly once, no gaps/overlaps"
@@ -96,20 +96,36 @@
           "Top-20 secondary",
           "mean rank secondary"
         ]
-      }
+      },
+      "minimum_practical_effect_size_top5": 0.005
     },
     "uniform_number_rank_baseline": {
       "mean_number_hits_top5": 0.125,
       "mean_number_hits_top10": 0.25,
       "mean_number_hits_top20": 0.5,
       "mean_rank_of_actual_numbers": 20.5
+    },
+    "absolute_uniform_baseline_gate": {
+      "endpoint": "Selected Q92 candidate Blind OOS mean number_hits_top5",
+      "baseline_mean_number_hits_top5": 0.125,
+      "raw_p_value_method": "Discrete upper-tail convolution of iid Hypergeometric(40,5,5) hit counts over the 670 fixed Blind OOS targets.",
+      "multiplicity": "Use the selected candidate's Top-5 adjusted p-value from the already registered global Holm family of 75,926,565 formula×split×endpoint tests; do not create a second uncorrected test.",
+      "criterion": "Mean number_hits_top5 must be strictly greater than 0.125 AND the selected candidate's global Holm-adjusted Blind OOS Top-5 p-value must be <0.05.",
+      "interpretation": "A paired lift over Q89 alone is relative evidence and does not establish absolute above-uniform predictive value.",
+      "selection_rule_changed": false,
+      "primary_paired_comparison_changed": false,
+      "technical_acceptance_can_complete_when_gate_fails": true,
+      "engine_promotion_allowed_when_gate_fails": false,
+      "evidence_scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+      "historical_blind_exposure_note": "The earlier failed Q92 run 42615347368 generated all 15 shard artifacts before this amendment; although no aggregate was accepted and these artifacts were not used for selection here, the historical Blind OOS must not be treated as an untouched prospective holdout.",
+      "prospective_confirmation_required": true
     }
   },
   "multiple_testing": {
     "method": "Global Holm-Bonferroni across the complete formula×split×endpoint family",
     "family_size": 75926565,
     "calculation": "8436285 formulas × 3 chronological splits × 3 primary catalog endpoints",
-    "p_value_method": "For each target, X_k~Hypergeometric(N=40,K=k,n=5); aggregate split-level means/variances and use continuity-corrected normal upper-tail approximation. Exploratory approximation, not exact.",
+    "p_value_method": "discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws",
     "endpoints": [
       {
         "name": "number_hits_top5",
@@ -134,13 +150,26 @@
     "Discovery top-100 and Validation selection deterministic; Q92 and refreshed Q89 candidate IDs frozen before Blind OOS",
     "paired blind ledger target dates, cutoff dates, actual quintets, rank vectors, hit counts, rank sums and deltas replay exactly",
     "paired bootstrap/sign-flip inference replayed from persisted ledger with fixed seeds and Holm over four endpoints",
-    "all output files persisted append-only and re-read byte-for-byte; exact-head CI passes; human review/integration remains mandatory"
+    "all output files persisted append-only and re-read byte-for-byte; exact-head CI passes; human review/integration remains mandatory",
+    "Catalog-level raw p-values replay from deterministic discrete upper-tail convolution of iid Hypergeometric(40,k,5) counts; method string reconciles across shard reports, aggregate report, manifest and acceptance validator.",
+    "Persisted metric parts use exact compact_counts_v1 schema; validator reconstructs all metrics and exact raw p-values from seven integer sufficient statistics, recomputes global Holm, and reconciles raw/adjusted vector SHA-256 before acceptance.",
+    "Each shard reports formula_batch_size=2048 and formula_batch_count=275; the global formula batch count is 4,120 and all batch boundaries reconcile exactly.",
+    "The selective actual-number rank kernel exactly matches full stable argsort ranks on the seeded 4,096-formula synthetic sample, including lower-number tie-break cases; the preregistered batch sweep selects 2,048 by maximum median throughput.",
+    "The primary paired Blind OOS Top-5 decision requires mean delta >= 0.005 absolute hit-share (0.5 percentage points), Holm-adjusted block sign-flip p < 0.05, and the 95% block-bootstrap lower bound > 0.",
+    "The uploaded compact metric bundle is downloaded and SHA-256 byte-verified against the upload digest; the dedicated result branch outputs and persistence receipt are Git-tree/blob read back byte-for-byte. Result-branch CI and human review remain required before any promotion.",
+    "Expose the Validation-frozen Q92 candidate's raw and global Holm-adjusted p-values for Top-5/Top-10/Top-20 in Discovery, Validation and Blind OOS; acceptance validator must replay these values from the full adjusted p-value vector.",
+    "Report absolute Blind OOS Top-5 evidence separately from paired Q92-vs-Q89 lift; absolute above-uniform evidence requires mean number_hits_top5 > 0.125 and the candidate's global Holm-adjusted Blind OOS Top-5 p-value < 0.05.",
+    "A positive paired Q92-vs-Q89 result alone must not be described as absolute predictive advantage when the selected candidate does not pass the registered uniform-baseline gate.",
+    "Classify all historical Q92 Blind OOS results, including the absolute uniform-baseline gate, as exploratory because the earlier failed run 42615347368 generated shard artifacts before this amendment; a confirmatory claim requires a newly preregistered prospective holdout of 670 new draws."
   ],
   "limitations": [
     "finite equal-weight ten-feature subset grammar only; weighted, nonlinear, conditional and interaction formulas remain untested",
     "this finite catalog does not exhaust the infinite mathematical formula universe",
     "historical blind OOS has prior SONAR exposure and is not independent prospective confirmation",
-    "global formula-family p-values are approximate and exploratory"
+    "global formula-family p-values are approximate and exploratory",
+    "The 0.005 primary paired Top-5 threshold is a practical acceptance gate, not a forecast; historical Blind OOS remains prior-exposed.",
+    "The Q89 comparator is below the uniform Top-5 baseline in the prior accepted refresh; relative improvement over Q89 can remain below uniform. Candidate-specific global Holm-adjusted p-values and the absolute uniform-baseline gate must therefore be reported separately.",
+    "The failed earlier Q92 run 42615347368 generated all 15 shard artifacts before the absolute-baseline amendment. The amendment is effective before the corrected replay but after prior historical computation; the historical Blind OOS is exposed to prior SONAR workflow and is not independent prospective confirmation."
   ],
   "guardrails": {
     "no_automatic_merge": true,
@@ -150,5 +179,150 @@
     "prs_6_7_8_untouched": true,
     "run_completion_requires_acceptance_persistence_exact_head_ci_and_human_review": true
   },
-  "next_action": "Implement deterministic Q92 combinadic enumeration, shard runner, acceptance validator and synthetic regression tests. Execute only after Q89 recovery is accepted and the Q89 control is refreshed on the same canonical 2026-11-08 archive/splits."
+  "next_action": "Run the corrected exact-head full CI and Q92 synthetic regressions; rerun all 15 source-hash-bound shards; expose/replay selected-candidate global Holm p-values and the absolute uniform-baseline gate; then complete Discovery-to-Validation freeze, paired Blind OOS inference, acceptance and append-only byte readback. Require human review.",
+  "protocol_amendments": [
+    {
+      "amendment_id": "Q92-NULL-CALIBRATION-01",
+      "registered_at_utc": "2026-11-09T07:14:33Z",
+      "effective_before_full_walkforward_execution": true,
+      "supersedes": "Continuity-corrected normal upper-tail approximation to summed Hypergeometric(40,k,5) number-hit counts.",
+      "amended_method": "discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws",
+      "rationale": "Full-support audit found relative tail errors near first Holm threshold up to 68.22% for Top-5 at 670 targets and 49.48% for Top-5 at 2012 targets. Discrete convolution improves calibration without changing formula universe, features, chronological split, selection or paired endpoints.",
+      "audit_report": "reports/sequence_agent/q92_normal_approximation_audit_2026-11-09.json",
+      "changes_only_catalog_level_pvalues": true,
+      "blind_oos_used_for_method_selection": false
+    },
+    {
+      "amendment_id": "Q92-METRIC-OUTPUT-COMPACT-01",
+      "registered_at_utc": "2026-11-09T07:24:10Z",
+      "effective_before_full_walkforward_execution": true,
+      "storage_schema": "compact_counts_v1",
+      "persisted_fields": [
+        "number_hits_top5",
+        "number_hits_top10",
+        "number_hits_top20",
+        "all5_top5",
+        "all5_top10",
+        "all5_top20",
+        "rank_sum"
+      ],
+      "row_order": "split-major; formula-rank ascending within split; split and formula rank implicit",
+      "replay": "reconstruct mean metrics and discrete exact raw p-values from integer sufficient statistics; replay global Holm in deterministic formula×split×endpoint order and compare raw/adjusted vector SHA-256",
+      "rationale": "Compact sufficient statistics remove redundant formula IDs, feature strings, split/target labels, derived means and row-level adjusted p-values while preserving deterministic replay. Acceptance validator and exact-byte persister remain mandatory.",
+      "blind_oos_used_for_storage_design": false
+    },
+    {
+      "amendment_id": "Q92-RANK-KERNEL-02",
+      "registered_on": "2026-11-09",
+      "effective_before_full_walkforward_execution": true,
+      "supersedes": "Full stable argsort rank matrix for all 40 numbers per formula batch.",
+      "amended_method": "Exact selective rank extraction for each of the five actual numbers against all 40 prior-only number scores; lower-number priority on exact ties.",
+      "candidate_batch_size": 4096,
+      "quantitative_acceptance": {
+        "synthetic_benchmark_seed": 920092,
+        "actual_number_seed": 920093,
+        "formula_sample_count": 4096,
+        "timed_repetitions": 25,
+        "minimum_formula_throughput_speedup": 1.25,
+        "exact_rank_parity_required": true,
+        "batch_count_per_562419_formula_shard": 138,
+        "previous_batch_count": 550
+      },
+      "result_reference": {
+        "experiment_id": "Q92-RANK-KERNEL-03",
+        "benchmark_run_id": 42597830310,
+        "synthetic_acceptance_run_id": 42598046222,
+        "result_path": "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_result_2026-11-09.json"
+      },
+      "superseded_by": "Q92-RANK-KERNEL-03 batch sweep selection (2,048)",
+      "changes_formula_universe_or_feature_state": false,
+      "blind_oos_used_for_method_selection": false,
+      "limitation": "Synthetic compute-performance evidence only; no historical lottery outcome or split metric used."
+    },
+    {
+      "amendment_id": "Q92-RANK-KERNEL-03",
+      "registered_on": "2026-11-09",
+      "effective_before_full_walkforward_execution": true,
+      "hypothesis": "Among the preregistered selective-rank batch sizes 512, 1024, 2048 and 4096, batch 2048 maximizes median throughput against the full stable argsort baseline while preserving exact rank parity.",
+      "benchmark_run_id": 42597830310,
+      "benchmark_source_commit": "8428d599896eff6f23f30375b82fdbe5813ab949",
+      "synthetic_acceptance_run_id": 42598046222,
+      "formula_sample_count": 4096,
+      "timed_repetitions": 25,
+      "baseline_batch_size": 1024,
+      "baseline_median_seconds": 0.01195996300000246,
+      "candidate_results": [
+        {
+          "batch_size": 512,
+          "batch_count": 8,
+          "median_seconds": 0.002047234999999148,
+          "speedup_vs_baseline": 5.8420078789232495,
+          "exact_rank_parity": true
+        },
+        {
+          "batch_size": 1024,
+          "batch_count": 4,
+          "median_seconds": 0.0015973619999982702,
+          "speedup_vs_baseline": 7.4873215964918485,
+          "exact_rank_parity": true
+        },
+        {
+          "batch_size": 2048,
+          "batch_count": 2,
+          "median_seconds": 0.0014786700000044561,
+          "speedup_vs_baseline": 8.088324643068717,
+          "exact_rank_parity": true
+        },
+        {
+          "batch_size": 4096,
+          "batch_count": 1,
+          "median_seconds": 0.001492336000005423,
+          "speedup_vs_baseline": 8.014256172845123,
+          "exact_rank_parity": true
+        }
+      ],
+      "selected_batch_size": 2048,
+      "selected_speedup_vs_full_argsort": 8.088324643068717,
+      "selected_median_seconds": 0.0014786700000044561,
+      "exact_rank_parity": true,
+      "result_path": "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_result_2026-11-09.json",
+      "changes_formula_universe_or_feature_state": false,
+      "blind_oos_used_for_method_selection": false,
+      "limitation": "Hosted-runner timing is environment-specific and is not predictive evidence."
+    },
+    {
+      "amendment_id": "Q92-MINIMUM-PRACTICAL-EFFECT-01",
+      "registered_at_utc": "2026-11-09T10:40:38Z",
+      "effective_before_full_walkforward_execution": true,
+      "primary_endpoint": "paired Blind OOS Top-5 hit-share difference Q92 minus same-archive Q89 control",
+      "minimum_absolute_effect_size": 0.005,
+      "decision_rule": "mean_delta_top5 >= 0.005 AND Holm-adjusted block sign-flip p < 0.05 AND 95% circular moving-block bootstrap CI lower > 0",
+      "practical_interpretation": "0.5 percentage-point Top-5 hit-share gain, approximately 17 additional number hits over 670 Blind OOS draws (3,350 actual-number observations).",
+      "rationale": "Avoid accepting a statistically significant but practically negligible gain; require a preregistered minimum effect before examining Q92 Blind OOS.",
+      "candidate_selection_rule_unchanged": true,
+      "blind_oos_used_for_selection": false,
+      "limitation": "This is a decision gate, not a claim of expected predictive gain."
+    },
+    {
+      "amendment_id": "Q92-ABSOLUTE-BASELINE-01",
+      "registered_at_utc": "2026-11-09T14:51:32Z",
+      "effective_before_corrected_full_walkforward_execution": true,
+      "rationale": "The registered paired primary comparison is against a Q89 candidate whose prior same-archive Blind OOS Top-5 share is below the uniform expectation of 0.125. A positive paired lift of at least 0.005 could therefore still leave Q92 below uniform. The aggregate previously computed the global Holm vector but did not expose the selected candidate's adjusted p-values, making the absolute baseline comparison difficult to audit. The prior failed Q92 run 42615347368 had already generated all 15 shard artifacts before this amendment; no aggregate was accepted and the artifacts were not used to choose this gate in the present cycle, but the historical Blind OOS is therefore treated as exposed/exploratory, not as untouched prospective confirmation.",
+      "method": "Persist the selected candidate's raw and global Holm-adjusted p-values for all three endpoints and all three splits. Compute the selected candidate's Blind OOS absolute-baseline evidence from its Top-5 share and its existing globally Holm-adjusted Top-5 p-value.",
+      "criterion": "mean number_hits_top5 > 0.125 AND global Holm-adjusted selected-candidate Blind OOS Top-5 p-value < 0.05.",
+      "changes_formula_universe": false,
+      "changes_feature_stack": false,
+      "changes_candidate_selection": false,
+      "changes_primary_paired_inference": false,
+      "changes_global_holm_family": false,
+      "changes_only_reporting_and_absolute_claim_gate": true,
+      "blind_oos_used_for_selection": false,
+      "prior_full_shard_run": 42615347368,
+      "prior_shard_artifacts_existed_before_amendment": true,
+      "prior_artifacts_used_for_selection_in_this_cycle": false,
+      "blind_oos_exposure_before_amendment": true,
+      "confirmatory_status": "EXPLORATORY_HISTORICAL_AUDIT_ONLY",
+      "prospective_confirmation_required": true
+    }
+  ]
 }

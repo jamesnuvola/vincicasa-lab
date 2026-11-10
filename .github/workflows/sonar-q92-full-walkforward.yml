@@ -1,0 +1,482 @@
+name: SONAR Q92 Artifact-Backed Full Walk-Forward
+run-name: Q92 full walk-forward 2026-11-08 (${{ github.sha }})
+on:
+  push:
+    branches:
+      - research/sonar-q92-exact-null-calibration-20261109
+    paths:
+      - ".github/workflows/sonar-q92-ten-feature.yml"
+      - ".github/workflows/sonar-q92-aggregate-core.yml"
+      - "scripts/sonar_per_number_condition_10plus_shard.py"
+      - "scripts/sonar_q92_common.py"
+      - "scripts/sonar_q92_ci_gate.py"
+      - "tests/test_sonar_q92_ci_gate.py"
+      - "scripts/sonar_q92_null_calibration.py"
+      - "scripts/sonar_per_number_condition_grammar.py"
+      - "scripts/sonar_per_number_condition_4plus_grammar.py"
+      - "scripts/sonar_q92_aggregate_common.py"
+      - "scripts/aggregate_sonar_q92_ten_feature.py"
+      - "scripts/validate_sonar_q92_ten_feature.py"
+      - "tests/test_sonar_q92_walkforward_shard.py"
+      - "tests/test_sonar_q92_aggregate_common.py"
+      - "tests/test_sonar_q92_null_calibration.py"
+      - "tests/benchmark_sonar_q92_rank_kernel.py"
+      - "reports/sequence_agent/q92_rank_kernel_02_preregistration_2026-11-09.json"
+      - "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_preregistration_2026-11-09.json"
+      - "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_result_2026-11-09.json"
+      - "reports/sequence_agent/q92_minimum_practical_effect_amendment_2026-11-09.json"
+      - "reports/sequence_agent/q92_preregistration_2026-11-09.json"
+      - "reports/sequence_agent/q92_preregistration_2026-11-09.md"
+      - "reports/sequence_agent/q89_refresh_20261108_report.json"
+      - "reports/sequence_agent/q89_refresh_20261108_manifest.json"
+      - "reports/sequence_agent/q89_refresh_20261108_candidate_selection.json"
+      - "reports/sequence_agent/q89_refresh_20261108_selected_candidate_blind_ledger.csv"
+      - "data/storico_daily.csv"
+  workflow_dispatch:
+permissions:
+  actions: read
+  contents: write
+concurrency:
+  # A newer source SHA invalidates the old source-hash-bound shard artifacts.
+  # Cancel stale runs on this branch so they cannot block the corrected exact-head run.
+  group: sonar-q92-full-walkforward-20261108
+  cancel-in-progress: true
+env:
+  PYTHONHASHSEED: "0"
+  OMP_NUM_THREADS: "1"
+  OPENBLAS_NUM_THREADS: "1"
+  MKL_NUM_THREADS: "1"
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Wait for full project CI on this exact source commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          deadline=$((SECONDS+7200))
+          while (( SECONDS < deadline )); do
+            payload="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?head_sha=$GITHUB_SHA&per_page=100")"
+            state="$(python scripts/sonar_q92_ci_gate.py --expected-sha "$GITHUB_SHA" --expected-branch "$GITHUB_REF_NAME" --workflow-id 381564482 <<< "$payload")"
+            IFS='|' read -r status conclusion run_id event <<< "$state"
+            echo "Exact-head full CI: status=$status conclusion=$conclusion run_id=$run_id event=$event"
+            if [[ "$status" == "completed" ]]; then
+              if [[ "$conclusion" == "success" ]]; then
+                echo "Exact-head full project CI passed: https://github.com/$GITHUB_REPOSITORY/actions/runs/$run_id"
+                exit 0
+              fi
+              echo "Exact-head full project CI did not pass; shard execution is blocked."
+              exit 1
+            fi
+            sleep 60
+          done
+          echo "Timed out waiting for full project CI on exact source commit $GITHUB_SHA."
+          exit 1
+      - name: Compile Q92 runner, aggregation, calibration and acceptance
+        run: python -m py_compile scripts/sonar_per_number_condition_10plus_shard.py scripts/sonar_q92_common.py scripts/sonar_q92_null_calibration.py scripts/sonar_q92_aggregate_common.py scripts/aggregate_sonar_q92_ten_feature.py scripts/validate_sonar_q92_ten_feature.py tests/test_sonar_q92_walkforward_shard.py tests/test_sonar_q92_aggregate_common.py tests/test_sonar_q92_null_calibration.py scripts/sonar_q92_ci_gate.py tests/test_sonar_q92_ci_gate.py
+      - name: Run strict-prior, selective-rank, compact-output and discrete-null synthetic regressions
+        run: python tests/test_sonar_q92_walkforward_shard.py -v && python tests/test_sonar_q92_aggregate_common.py -v && python tests/test_sonar_q92_null_calibration.py -v && python tests/test_sonar_q92_ci_gate.py -v
+      - name: Verify canonical archive, same-archive Q89 freeze and pre-execution amendments
+        run: |
+          python - <<'PY'
+          import csv, hashlib, json
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,"scripts")
+          import sonar_per_number_condition_grammar as q80
+          root=Path(".")
+          raw=(root/"data/storico_daily.csv").read_bytes()
+          sha256=hashlib.sha256(raw).hexdigest()
+          sha1=hashlib.sha1(b"blob "+str(len(raw)).encode("ascii")+bytes([0])+raw).hexdigest()
+          expected_sha256="5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+          expected_sha1="77ca692a6082809fcc6c471501617433ec7c36cf"
+          if sha256!=expected_sha256 or sha1!=expected_sha1:
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: canonical archive SHA mismatch")
+          dates,draws=q80.load_archive()
+          if len(draws)!=3402 or dates[0]!="2017-07-17" or dates[-1]!="2026-11-08":
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: canonical archive dimensions/date mismatch")
+          if draws[-1]!=(3,7,10,16,27):
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: canonical final quintet mismatch")
+          out=root/"reports/sequence_agent"
+          report=json.loads((out/"q89_refresh_20261108_report.json").read_text(encoding="utf-8"))
+          manifest=json.loads((out/"q89_refresh_20261108_manifest.json").read_text(encoding="utf-8"))
+          selection=json.loads((out/"q89_refresh_20261108_candidate_selection.json").read_text(encoding="utf-8"))
+          if report.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW" or report.get("source_archive_sha256")!=sha256 or report.get("target_count")!=3402 or report.get("scored_targets")!=3352 or report.get("split_counts")!={"discovery":2012,"validation":670,"blind_oos":670}:
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: Q89 report identity/split mismatch")
+          if manifest.get("status")!="VALIDATED_PENDING_HUMAN_REVIEW" or manifest.get("source_archive_sha256")!=sha256 or manifest.get("source_archive_git_blob_sha1")!=sha1:
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: Q89 manifest archive identity mismatch")
+          q89_id=selection.get("Q89_candidate",{}).get("formula_id")
+          if selection.get("status")!="CANDIDATE_FROZEN_BEFORE_BLIND_OOS" or selection.get("blind_oos_used_for_selection") is not False or selection.get("selected_candidate_ids_frozen") is not True or report.get("candidate_selection",{}).get("selected_candidate_id")!=q89_id:
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: Q89 candidate freeze mismatch")
+          with (out/"q89_refresh_20261108_selected_candidate_blind_ledger.csv").open(newline="",encoding="utf-8-sig") as handle:
+              paired=list(csv.DictReader(handle))
+          if len(paired)!=670:
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: Q89 paired Blind OOS ledger count mismatch")
+          for row in paired:
+              index=dates.index(row["target_date"])
+              if row.get("cutoff_date")!=dates[index-1] or int(row.get("prior_draws",-1))!=index or row.get("actual_quintet")!=" ".join(map(str,draws[index])) or row.get("Q89_formula_id")!=q89_id:
+                  raise SystemExit("Q92_PREFLIGHT_BLOCKED: Q89 paired ledger strict-prior replay mismatch "+row.get("target_date",""))
+          prereg=json.loads((out/"q92_preregistration_2026-11-09.json").read_text(encoding="utf-8"))
+          effect=json.loads((out/"q92_minimum_practical_effect_amendment_2026-11-09.json").read_text(encoding="utf-8"))
+          batch_result=json.loads((out/"q92_rank_kernel_03_batch_sweep_result_2026-11-09.json").read_text(encoding="utf-8"))
+          if prereg.get("formula_universe",{}).get("formula_batch_size")!=2048 or prereg.get("formula_universe",{}).get("formula_batch_count")!=4120:
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: preregistered batch size/count mismatch")
+          threshold=prereg.get("primary_comparison",{}).get("inference",{}).get("minimum_practical_effect_size_top5")
+          if threshold!=0.005 or effect.get("effective_before_full_walkforward_execution") is not True or effect.get("minimum_absolute_effect_size")!=0.005:
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: practical-effect amendment mismatch")
+          amendment_ids={item.get("amendment_id") for item in prereg.get("protocol_amendments",[])}
+          required_ids={"Q92-RANK-KERNEL-02","Q92-RANK-KERNEL-03","Q92-MINIMUM-PRACTICAL-EFFECT-01"}
+          if not required_ids.issubset(amendment_ids):
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: required pre-execution amendments missing")
+          if batch_result.get("status")!="SYNTHETIC_ACCEPTANCE_PASS" or batch_result.get("selected_batch_size")!=2048 or batch_result.get("full_sample_rank_vectors_exactly_equal") is not True or float(batch_result.get("selected_batch_speedup",0))<1.25:
+              raise SystemExit("Q92_PREFLIGHT_BLOCKED: selective-rank benchmark evidence mismatch")
+          print("Q92_PREFLIGHT_PASS: archive SHA, Q89 same-archive freeze/ledger strict-prior replay, batch-2048 rank-kernel evidence and 0.005 Top-5 practical-effect gate reconciled.")
+          PY
+  shards:
+    needs: preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile exact-head shard runner
+        run: python -m py_compile scripts/sonar_per_number_condition_10plus_shard.py scripts/sonar_q92_common.py scripts/sonar_q92_null_calibration.py
+      - name: Run immutable strict-prior formula shard
+        env:
+          SONAR_Q92_SHARD_INDEX: ${{ matrix.shard }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python scripts/sonar_per_number_condition_10plus_shard.py
+      - name: Validate shard dimensions, split coverage and exact source hashes
+        env:
+          SONAR_Q92_SHARD_INDEX: ${{ matrix.shard }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          import sys
+          sys.path.insert(0,"scripts")
+          import sonar_q92_common as q92
+          index=int(os.environ["SONAR_Q92_SHARD_INDEX"])
+          out=Path("reports/sequence_agent/q92_shards")
+          report=json.loads((out/f"shard_{index}_report.json").read_text(encoding="utf-8"))
+          expected_start,expected_end=q92.shard_bounds(index)
+          expected={
+            "task_id":"Q92","status":"SHARD_COMPLETE_NOT_TASK_COMPLETE",
+            "source_archive_sha256":"5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b",
+            "source_checkout_sha":os.environ["GITHUB_SHA"],
+            "target_count":3402,"scored_targets":3352,"feature_count":27,
+            "formula_count":562419,"total_formula_count":8436285,"formula_size":10,
+            "shard_index":index,"shard_count":15,"shard_formula_start_inclusive":expected_start,
+            "shard_formula_end_exclusive":expected_end,"shard_formula_count":562419,
+            "formula_batch_size":2048,"formula_batch_count":275,"metrics_rows":1687257,
+            "target_ledger_rows":3352,"split_counts":{"discovery":2012,"validation":670,"blind_oos":670}}
+          for key,value in expected.items():
+              if report.get(key)!=value:
+                  raise SystemExit("Q92_SHARD_BLOCKED: report field mismatch "+key)
+          hashes=report.get("source_code_sha256")
+          if hashes!=q92.source_code_hashes(Path(".")):
+              raise SystemExit("Q92_SHARD_BLOCKED: source code hash manifest mismatch")
+          files={}
+          for suffix in ("metrics.csv","target_ledger.csv","report.json"):
+              path=out/f"shard_{index}_{suffix}"
+              raw=path.read_bytes()
+              files[path.name]={"bytes":len(raw),"sha256":hashlib.sha256(raw).hexdigest()}
+          receipt={"schema_version":"1.0","task_id":"Q92_2026_11_08","shard_index":index,
+              "formula_rank_start_inclusive":expected_start,"formula_rank_end_exclusive":expected_end,
+              "source_checkout_sha":os.environ["GITHUB_SHA"],"source_archive_sha256":expected["source_archive_sha256"],
+              "source_code_sha256":hashes,"files":files}
+          (out/f"shard_{index}_artifact_manifest.json").write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
+          PY
+      - name: Upload immutable shard artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: q92-20261108-shard-${{ matrix.shard }}-attempt-${{ github.run_attempt }}
+          path: |
+            reports/sequence_agent/q92_shards/shard_${{ matrix.shard }}_metrics.csv
+            reports/sequence_agent/q92_shards/shard_${{ matrix.shard }}_target_ledger.csv
+            reports/sequence_agent/q92_shards/shard_${{ matrix.shard }}_report.json
+            reports/sequence_agent/q92_shards/shard_${{ matrix.shard }}_artifact_manifest.json
+          retention-days: 90
+          compression-level: 6
+  aggregate:
+    needs: [preflight, shards]
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Download immutable shard artifacts without flattening
+        uses: actions/download-artifact@v4
+        with:
+          pattern: q92-20261108-shard-*
+          path: /tmp/q92-shard-artifacts
+      - name: Reconcile and recover one exact artifact per shard
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os,re,shutil
+          from pathlib import Path
+          root=Path("/tmp/q92-shard-artifacts")
+          out=Path("reports/sequence_agent/q92_shards");out.mkdir(parents=True,exist_ok=True)
+          grouped={}
+          for directory in sorted(x for x in root.iterdir() if x.is_dir()):
+              match=re.search(r"-shard-(\d+)-attempt-(\d+)$",directory.name)
+              if not match: raise SystemExit("Q92_ARTIFACT_BLOCKED: unrecognized artifact name "+directory.name)
+              index,attempt=map(int,match.groups())
+              receipt_path=directory/f"shard_{index}_artifact_manifest.json"
+              receipt=json.loads(receipt_path.read_text(encoding="utf-8"))
+              if receipt.get("shard_index")!=index or receipt.get("source_checkout_sha")!=os.environ["GITHUB_SHA"]:
+                  raise SystemExit("Q92_ARTIFACT_BLOCKED: shard receipt identity mismatch "+directory.name)
+              for filename,identity in receipt["files"].items():
+                  raw=(directory/filename).read_bytes()
+                  if len(raw)!=identity["bytes"] or hashlib.sha256(raw).hexdigest()!=identity["sha256"]:
+                      raise SystemExit("Q92_ARTIFACT_BLOCKED: artifact byte/hash mismatch "+directory.name+"/"+filename)
+              grouped.setdefault(index,[]).append((attempt,directory,receipt))
+          if sorted(grouped)!=list(range(15)):
+              raise SystemExit("Q92_ARTIFACT_BLOCKED: shard coverage not exactly 0..14")
+          for index,candidates in grouped.items():
+              candidates=sorted(candidates,key=lambda item:item[0],reverse=True)
+              reference=candidates[0][2]["files"]
+              for attempt,directory,receipt in candidates[1:]:
+                  if receipt["files"]!=reference:
+                      raise SystemExit("Q92_ARTIFACT_BLOCKED: rerun artifacts differ for shard "+str(index))
+              selected=candidates[0][1]
+              for suffix in ("metrics.csv","target_ledger.csv","report.json","artifact_manifest.json"):
+                  source=selected/f"shard_{index}_{suffix}"
+                  shutil.copyfile(source,out/source.name)
+          reports=[json.loads((out/f"shard_{i}_report.json").read_text(encoding="utf-8")) for i in range(15)]
+          if len({item.get("source_checkout_sha") for item in reports})!=1 or reports[0].get("source_checkout_sha")!=os.environ["GITHUB_SHA"]:
+              raise SystemExit("Q92_ARTIFACT_BLOCKED: exact source checkout SHA differs across shards")
+          print("Q92_ARTIFACT_RECONCILIATION_PASS: all 15 shards covered; rerun artifacts byte-identical.")
+          PY
+      - name: Run global Holm aggregation and Discovery-to-Validation freeze
+        run: |
+          set -o pipefail
+          python scripts/aggregate_sonar_q92_ten_feature.py | tee reports/sequence_agent/q92_20261108_aggregate_stdout.txt
+      - name: Run fail-closed acceptance replay
+        run: |
+          set -o pipefail
+          python scripts/validate_sonar_q92_ten_feature.py | tee reports/sequence_agent/q92_20261108_acceptance_stdout.txt
+      - name: Build stable shard manifest and acceptance summary
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path("reports/sequence_agent")
+          def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+          report=json.loads((root/"q92_20261108_report.json").read_text(encoding="utf-8"))
+          manifest=json.loads((root/"q92_20261108_manifest.json").read_text(encoding="utf-8"))
+          selection=json.loads((root/"q92_20261108_candidate_selection.json").read_text(encoding="utf-8"))
+          inference=json.loads((root/"q92_20261108_paired_inference.json").read_text(encoding="utf-8"))
+          acceptance=(root/"q92_20261108_acceptance_stdout.txt").read_text(encoding="utf-8")
+          if "Q92_ACCEPTANCE_PASS:" not in acceptance or report.get("status")!="AGGREGATED_PENDING_ACCEPTANCE_VALIDATION":
+              raise SystemExit("Q92_PERSIST_BLOCKED: acceptance marker/report status mismatch")
+          shard_dir=root/"q92_shards";shards=[]
+          for index in range(15):
+              receipt=json.loads((shard_dir/f"shard_{index}_artifact_manifest.json").read_text(encoding="utf-8"))
+              shards.append({"shard_index":index,"formula_rank_start_inclusive":receipt["formula_rank_start_inclusive"],
+                "formula_rank_end_exclusive":receipt["formula_rank_end_exclusive"],"source_checkout_sha":receipt["source_checkout_sha"],
+                "source_archive_sha256":receipt["source_archive_sha256"],"files":receipt["files"]})
+          stable={"schema_version":"1.0","task_id":"Q92_2026_11_08","source_checkout_sha":os.environ["GITHUB_SHA"],
+            "source_archive_sha256":manifest["source_archive_sha256"],"shard_count":15,"shards":shards}
+          (root/"q92_20261108_shard_artifact_manifest.json").write_text(json.dumps(stable,ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
+          core=["q92_20261108_report.json","q92_20261108_manifest.json","q92_20261108_candidate_shortlist.csv",
+            "q92_20261108_candidate_selection.json","q92_20261108_paired_blind_ledger.csv","q92_20261108_paired_inference.json",
+            "q92_20261108_shard_artifact_manifest.json"]
+          hashes={p:{"bytes":(root/p).stat().st_size,"sha256":sha(root/p)} for p in core}
+          summary={"schema_version":"1.0","task_id":"Q92_2026_11_08","status":"ACCEPTANCE_PASS_PENDING_ARTIFACT_PERSISTENCE",
+            "source_checkout_sha":os.environ["GITHUB_SHA"],"source_archive_sha256":manifest["source_archive_sha256"],
+            "source_archive_git_blob_sha1":manifest["source_archive_git_blob_sha1"],"formula_count":manifest["formula_count"],
+            "metrics_rows":manifest["metrics_rows"],"holm_family_size":manifest["formula_split_endpoint_holm_family_size"],
+            "split_counts":manifest["split_counts"],"selected_q92_candidate_id":selection["Q92_candidate"]["formula_id"],
+            "q89_control_candidate_id":selection["Q89_control"]["formula_id"],"paired_primary_decision":inference["primary_decision"],
+            "paired_top5_mean_delta":inference["endpoints"]["top5_hit_share"]["mean_delta"],
+            "paired_top5_bootstrap_ci_95":[inference["endpoints"]["top5_hit_share"]["bootstrap_ci_95_low"],inference["endpoints"]["top5_hit_share"]["bootstrap_ci_95_high"]],
+            "paired_top5_signflip_p_holm":inference["endpoints"]["top5_hit_share"]["signflip_p_holm"],
+            "minimum_practical_effect_top5":inference["minimum_practical_effect"]["absolute_delta_threshold"],
+            "selected_candidate_global_holm_adjusted_pvalues":selection["Q92_candidate"]["global_holm_adjusted_pvalues"],
+            "blind_oos_uniform_baseline_evidence":selection["Q92_candidate"]["blind_oos_uniform_baseline_evidence"],
+            "metrics_parts_storage":"GitHub Actions artifact bundle; manifest SHA-256 and part sizes are recorded in the aggregate manifest.",
+            "output_sha256":hashes}
+          (root/"q92_20261108_acceptance_summary.json").write_text(json.dumps(summary,ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
+          PY
+      - name: Upload accepted compact metric and inference bundle
+        id: bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q92-20261108-accepted-bundle-attempt-${{ github.run_attempt }}
+          path: |
+            reports/sequence_agent/q92_20261108_metrics_parts/
+            reports/sequence_agent/q92_20261108_target_ledger_parts/
+            reports/sequence_agent/q92_20261108_report.json
+            reports/sequence_agent/q92_20261108_manifest.json
+            reports/sequence_agent/q92_20261108_candidate_shortlist.csv
+            reports/sequence_agent/q92_20261108_candidate_selection.json
+            reports/sequence_agent/q92_20261108_paired_blind_ledger.csv
+            reports/sequence_agent/q92_20261108_paired_inference.json
+            reports/sequence_agent/q92_20261108_aggregate_stdout.txt
+            reports/sequence_agent/q92_20261108_acceptance_stdout.txt
+            reports/sequence_agent/q92_20261108_acceptance_summary.json
+            reports/sequence_agent/q92_20261108_shard_artifact_manifest.json
+          retention-days: 90
+          compression-level: 6
+      - name: Verify uploaded bundle by byte readback
+        id: bundle_verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.bundle.outputs.artifact-id }}
+          EXPECTED_DIGEST: ${{ steps.bundle.outputs.artifact-digest }}
+        run: |
+          set -euo pipefail
+          curl --retry 3 --retry-all-errors --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/$ARTIFACT_ID/zip" \
+            --output /tmp/q92-accepted-bundle.zip
+          actual="$(sha256sum /tmp/q92-accepted-bundle.zip | awk '{print $1}')"
+          expected="$(printf '%s' "$EXPECTED_DIGEST" | sed 's/^sha256://')"
+          if [[ "$actual" != "$expected" ]]; then
+            echo "Q92_ARTIFACT_READBACK_BLOCKED: uploaded bundle SHA-256 mismatch."
+            exit 1
+          fi
+          echo "sha256=$actual" >> "$GITHUB_OUTPUT"
+          echo "bytes=$(stat -c%s /tmp/q92-accepted-bundle.zip)" >> "$GITHUB_OUTPUT"
+          echo "Q92_ARTIFACT_BYTE_READBACK_PASS: digest=$actual"
+      - name: Create append-only persistence receipt
+        env:
+          GITHUB_SHA: ${{ github.sha }}
+          BUNDLE_READBACK_SHA256: ${{ steps.bundle_verify.outputs.sha256 }}
+          BUNDLE_READBACK_BYTES: ${{ steps.bundle_verify.outputs.bytes }}
+        run: |
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path("reports/sequence_agent")
+          def sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+          summary=json.loads((root/"q92_20261108_acceptance_summary.json").read_text(encoding="utf-8"))
+          metadata={"run_id":int(os.environ["GITHUB_RUN_ID"]),"run_attempt":int(os.environ["GITHUB_RUN_ATTEMPT"]),
+            "shard_artifact_names":[f"q92-20261108-shard-{i}-attempt-{os.environ['GITHUB_RUN_ATTEMPT']}" for i in range(15)]}
+          receipt={"schema_version":"1.0","task_id":"Q92_2026_11_08",
+            "status":"ACCEPTANCE_PASS_ARTIFACT_PERSISTED_PENDING_RESULT_BRANCH_CI_AND_HUMAN_REVIEW",
+            "source_checkout_sha":os.environ["GITHUB_SHA"],"source_archive_sha256":summary["source_archive_sha256"],
+            "report_sha256":sha(root/"q92_20261108_report.json"),"manifest_sha256":sha(root/"q92_20261108_manifest.json"),
+            "summary_sha256":sha(root/"q92_20261108_acceptance_summary.json"),"output_sha256":summary["output_sha256"],
+            "run":metadata,"artifact_bundle":{"name":"q92-20261108-accepted-bundle-attempt-${{ github.run_attempt }}",
+              "id":"${{ steps.bundle.outputs.artifact-id }}","url":"${{ steps.bundle.outputs.artifact-url }}","digest":"${{ steps.bundle.outputs.artifact-digest }}","retention_days":90,
+              "byte_readback_verified":True,"byte_readback_sha256":os.environ["BUNDLE_READBACK_SHA256"],"byte_readback_bytes":int(os.environ["BUNDLE_READBACK_BYTES"])},
+            "result_branch":"research/sonar-q92-results-20261108-"+os.environ["GITHUB_SHA"]}
+          (root/"q92_20261108_persistence_receipt.json").write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
+          PY
+      - name: Upload persistence receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: q92-20261108-persistence-receipt-attempt-${{ github.run_attempt }}
+          path: reports/sequence_agent/q92_20261108_persistence_receipt.json
+          retention-days: 90
+          compression-level: 6
+      - name: Persist outputs append-only to dedicated result branch
+        env:
+          RESULT_BRANCH: research/sonar-q92-results-20261108-${{ github.sha }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          paths=(
+            reports/sequence_agent/q92_20261108_report.json
+            reports/sequence_agent/q92_20261108_manifest.json
+            reports/sequence_agent/q92_20261108_candidate_shortlist.csv
+            reports/sequence_agent/q92_20261108_candidate_selection.json
+            reports/sequence_agent/q92_20261108_paired_blind_ledger.csv
+            reports/sequence_agent/q92_20261108_paired_inference.json
+            reports/sequence_agent/q92_20261108_shard_artifact_manifest.json
+            reports/sequence_agent/q92_20261108_acceptance_summary.json
+            reports/sequence_agent/q92_20261108_persistence_receipt.json
+          )
+          if git ls-remote --exit-code --heads origin "$RESULT_BRANCH" >/dev/null 2>&1; then
+            git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+            for path in "${paths[@]}"; do
+              git show "origin/$RESULT_BRANCH:$path" | cmp -s - "$path" || { echo "Q92_APPEND_ONLY_BLOCKED: existing result differs: $path"; exit 1; }
+              local_sha="$(git hash-object "$path")"
+              remote_sha="$(git rev-parse "origin/$RESULT_BRANCH:$path")"
+              [[ "$local_sha" == "$remote_sha" ]] || { echo "Q92_APPEND_ONLY_BLOCKED: Git blob differs: $path"; exit 1; }
+            done
+            old_core="$(git show "origin/$RESULT_BRANCH:reports/sequence_agent/q92_20261108_persistence_receipt.json" | jq -c '[.task_id,.source_checkout_sha,.source_archive_sha256,.report_sha256,.manifest_sha256,.summary_sha256,.output_sha256]')"
+            new_core="$(jq -c '[.task_id,.source_checkout_sha,.source_archive_sha256,.report_sha256,.manifest_sha256,.summary_sha256,.output_sha256]' reports/sequence_agent/q92_20261108_persistence_receipt.json)"
+            [[ "$old_core" == "$new_core" ]] || { echo "Q92_APPEND_ONLY_BLOCKED: receipt core differs"; exit 1; }
+            git show "origin/$RESULT_BRANCH:reports/sequence_agent/q92_20261108_persistence_receipt.json" | jq -e '.artifact_bundle.byte_readback_verified == true and .artifact_bundle.digest == .artifact_bundle.byte_readback_sha256' >/dev/null
+            echo "Q92_APPEND_ONLY_PASS: identical accepted outputs already persisted; no branch update."
+          else
+            git checkout -b "$RESULT_BRANCH" "$GITHUB_SHA"
+            git add "${paths[@]}"
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Persist accepted Q92 2026-11-08 outputs from $GITHUB_SHA"
+            git push origin "$RESULT_BRANCH"
+            echo "Q92_APPEND_ONLY_PASS: accepted outputs committed and pushed without merge."
+          fi
+      - name: Verify result branch Git-tree/blob byte readback
+        env:
+          RESULT_BRANCH: research/sonar-q92-results-20261108-${{ github.sha }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          git merge-base --is-ancestor "$GITHUB_SHA" "origin/$RESULT_BRANCH"
+          paths=(
+            reports/sequence_agent/q92_20261108_report.json
+            reports/sequence_agent/q92_20261108_manifest.json
+            reports/sequence_agent/q92_20261108_candidate_shortlist.csv
+            reports/sequence_agent/q92_20261108_candidate_selection.json
+            reports/sequence_agent/q92_20261108_paired_blind_ledger.csv
+            reports/sequence_agent/q92_20261108_paired_inference.json
+            reports/sequence_agent/q92_20261108_shard_artifact_manifest.json
+            reports/sequence_agent/q92_20261108_acceptance_summary.json
+            reports/sequence_agent/q92_20261108_persistence_receipt.json
+          )
+          for path in "${paths[@]}"; do
+            git show "origin/$RESULT_BRANCH:$path" | cmp -s - "$path" || { echo "Q92_GIT_READBACK_BLOCKED: byte mismatch $path"; exit 1; }
+            local_sha="$(git hash-object "$path")"
+            remote_sha="$(git rev-parse "origin/$RESULT_BRANCH:$path")"
+            [[ "$local_sha" == "$remote_sha" ]] || { echo "Q92_GIT_READBACK_BLOCKED: Git blob mismatch $path"; exit 1; }
+          done
+          receipt_path=reports/sequence_agent/q92_20261108_persistence_receipt.json
+          summary_path=reports/sequence_agent/q92_20261108_acceptance_summary.json
+          expected_archive="$(jq -r '.source_archive_sha256' "$summary_path")"
+          expected_output="$(jq -c '.output_sha256' "$summary_path")"
+          jq -e --arg sha "$GITHUB_SHA" --arg branch "$RESULT_BRANCH" --arg archive "$expected_archive" --arg output "$expected_output" '
+            .source_checkout_sha == $sha and
+            .result_branch == $branch and
+            .source_archive_sha256 == $archive and
+            (.output_sha256|tojson) == $output and
+            .artifact_bundle.byte_readback_verified == true and
+            .artifact_bundle.digest == .artifact_bundle.byte_readback_sha256
+          ' "$receipt_path" >/dev/null
+          echo "Q92_GIT_TREE_BLOB_READBACK_PASS: result branch $RESULT_BRANCH; nine core files and receipt are byte-identical."
