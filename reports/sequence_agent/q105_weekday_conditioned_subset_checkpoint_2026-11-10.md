@@ -6,6 +6,7 @@
 - Runner: strict-prior global and weekday counts; fixed-cardinality e5 normalization.
 - Blind weekday-minus-global mean gain: -0.009791683281; Holm p=1.
 - Blind weekday-minus-uniform mean gain: -0.012825918263; Holm p=1.
-- Validation checks: 11/11 structural/replay/leakage checks passed.
-- Recovery: run the Q105 Node script with --write, then with --check; no freeze or production file is modified.
+- Validation checks: 12/12 structural/replay/leakage/preregistration checks passed.
+- Recovery: an initial draft used 21-day blocks against the preregistered 20; that run was invalidated. Final runner enforces protocol equality and uses 20-day blocks.
+- Recovery command: run the Q105 Node script with --write, then with --check; no freeze or production file is modified.
 - Next: await official contest 314 publication; append-only Q60 evaluation only.

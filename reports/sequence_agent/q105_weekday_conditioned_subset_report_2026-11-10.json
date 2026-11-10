@@ -209,11 +209,21 @@
         "detail": "All global and weekday models have finite positive weights and normalizers."
       },
       {
+        "id": "inference_preregistration_match",
+        "status": "PASS",
+        "detail": "Block length, sign-flip replicates, bootstrap replicates and seed match the preregistered protocol exactly."
+      },
+      {
         "id": "multiplicity_family",
         "status": "PASS",
         "detail": "Exactly two preregistered Blind OOS endpoints receive Holm correction; weekday subgroup summaries are descriptive only."
       }
     ]
+  },
+  "recovery": {
+    "initial_attempt_issue": "The first runner draft used 21-target inference blocks while the preregistered protocol specified 20. That first run is invalidated and its inferential outputs are superseded.",
+    "correction": "The runner was changed to block length 20 before the final successful run; the final runner now fails closed if any inference constant differs from the protocol.",
+    "final_run": "The final dedicated workflow run uses 20-target blocks, 50000 sign-flips, 10000 bootstrap replicates and the preregistered seed."
   },
   "limitations": [
     "Historical blind OOS has been exposed to prior SONAR research and is not a virgin holdout.",
