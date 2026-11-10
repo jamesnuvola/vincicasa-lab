@@ -6,6 +6,6 @@
 - Full scorer is extracted from exact committed UI source; ablation changes only analog coefficient 0.10 to zero and renormalizes remaining weights.
 - Decision: NO_INCREMENTAL_ANALOG_LIFT_DEMONSTRATED.
 - Validation: 14/14 checks PASS.
-- Recovery: no failed run checkpoint required; if workflow fails, inspect job logs, preserve protocol, correct runner only, then rerun --write and --check.
+- Recovery: initial run 42926494444 failed only because the runner expected 13 checks while 14 were registered; no output was persisted. Corrected the assertion to 14; final dedicated run 42926572373 passed generation, persistence and byte-for-byte replay.
 - Recovery commands: node scripts/sonar_q106_analog_ablation.js --write; node scripts/sonar_q106_analog_ablation.js --check.
 - Next: await official contest 314 publication; append-only freeze evaluation and Q60 progression only.
