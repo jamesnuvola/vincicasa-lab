@@ -71,9 +71,8 @@ def validate(read_only=False):
         raise ValueError("Q87 protocol/archive identity mismatch")
     if manifest.get("source_archive_sha256") != archive_sha256 or manifest.get("source_archive_git_blob_sha1") != archive_sha1:
         raise ValueError("Q87 manifest/archive identity mismatch")
-    for key, path in paths.items():
-        if key == "manifest":
-            continue
+    for key in ("catalog", "target_ledger", "report"):
+        path = paths[key]
         identity = manifest["files"][key]
         if identity.get("sha256") != q87.sha256_file(path) or identity.get("bytes") != path.stat().st_size:
             raise ValueError("Q87 persisted byte/hash mismatch: " + key)
