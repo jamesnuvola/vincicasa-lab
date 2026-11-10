@@ -16,6 +16,7 @@ NO_INCREMENTAL_SCORE_MAGNITUDE_LIFT_DEMONSTRATED. Research-only; no production e
 - Paired 50,000 block sign-flips p=1; Holm across 100 pairs p=1.
 - Circular block-bootstrap 95% CI: [0, 0].
 - Minimum Holm p across the 100 pair family: 0.0099990001.
+- Holm-significant relative pairs: 50/100; all 18 e-process comparisons versus uniform have Holm p=1, so this is a sharpness/overconfidence contrast, not predictive lift.
 
 ## Integrity
 - 11/11 checks PASS; 3203 strict-prior score vectors.
