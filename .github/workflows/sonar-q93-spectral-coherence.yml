@@ -32,6 +32,8 @@ concurrency:
 
 jobs:
   evaluate:
+    outputs:
+      q93_preexisting: ${{ steps.q93-state.outputs.preexisting }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
@@ -52,13 +54,26 @@ jobs:
           python -m py_compile scripts/persist_sonar_q93_outputs.py
       - name: Run Q93 spectral, permutation and strict-prefix regression tests
         run: python -m pytest -q tests/test_sonar_q93_spectral_coherence.py
-      - name: Execute Q93 strict-prior spectral walk-forward
+      - name: Detect whether Q93 outputs are already accepted and persisted
+        id: q93-state
+        run: |
+          if [ -f reports/sequence_agent/q93_spectral_coherence_validation.json ] && [ -f reports/sequence_agent/q93_spectral_coherence_manifest.json ]; then
+            echo "preexisting=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "preexisting=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Execute Q93 strict-prior spectral walk-forward when outputs are absent
+        if: steps.q93-state.outputs.preexisting == 'false'
         run: python scripts/sonar_q93_spectral_coherence.py
-      - name: Independently replay Q93 rankings, permutations and statistical families
+      - name: Independently accept newly computed Q93 outputs
+        if: steps.q93-state.outputs.preexisting == 'false'
         env:
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_SHA: ${{ github.sha }}
         run: python scripts/validate_sonar_q93_spectral_coherence.py
+      - name: Replay previously accepted Q93 outputs read-only
+        if: steps.q93-state.outputs.preexisting == 'true'
+        run: python scripts/validate_sonar_q93_spectral_coherence.py --read-only
       - name: Upload accepted Q93 output bundle
         uses: actions/upload-artifact@v4
         with:
@@ -76,7 +91,7 @@ jobs:
 
   persist:
     needs: evaluate
-    if: ${{ needs.evaluate.result == 'success' }}
+    if: ${{ needs.evaluate.result == 'success' && needs.evaluate.outputs.q93_preexisting == 'false' }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
