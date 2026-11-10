@@ -11,7 +11,6 @@ import argparse
 import csv
 import json
 import math
-import random
 from pathlib import Path
 
 BANDWIDTHS = (1.5, 3.0, 6.0, 12.0)
@@ -186,6 +185,35 @@ def holm_adjust(p_values: list[float]) -> list[float]:
     return adjusted
 
 
+class XorShift32:
+    """Small cross-language deterministic PRNG shared with the V8 replay."""
+
+    def __init__(self, seed: int):
+        self.state = seed & 0xFFFFFFFF
+        if self.state == 0:
+            self.state = 0x9E3779B9
+
+    def next_uint32(self) -> int:
+        x = self.state
+        x ^= (x << 13) & 0xFFFFFFFF
+        x ^= x >> 17
+        x ^= (x << 5) & 0xFFFFFFFF
+        self.state = x & 0xFFFFFFFF
+        return self.state
+
+    def getrandbits(self, bits: int) -> int:
+        return self.next_uint32() >> (32 - bits)
+
+    def randrange(self, stop: int) -> int:
+        if stop <= 0:
+            raise ValueError("stop must be positive")
+        bits = stop.bit_length()
+        while True:
+            value = self.getrandbits(bits)
+            if value < stop:
+                return value
+
+
 def block_signflip_family(
     endpoints: dict[str, list[float]],
     block_length: int = BLOCK_LENGTH,
@@ -210,7 +238,7 @@ def block_signflip_family(
     }
     observed = {name: math.fsum(values) for name, values in endpoints.items()}
     extreme = {name: 0 for name in names}
-    rng = random.Random(seed)
+    rng = XorShift32(seed)
 
     for _ in range(replicates):
         statistics = {name: 0.0 for name in names}
