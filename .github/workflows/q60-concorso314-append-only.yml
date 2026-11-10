@@ -46,10 +46,6 @@ jobs:
         run: python scripts/sonar_sequence_agent.py
       - name: Reconcile exact-source app freeze without reconstructing it
         run: node scripts/sonar_active_engine_walkforward.mjs
-      - name: Refresh fixed-rule and evolutionary diagnostics
-        run: |
-          python scripts/sonar_fast_improvements.py
-          python scripts/sonar_evolutionary_lab.py
       - name: Evaluate existing position freeze and paired Q60 gate
         run: python scripts/sonar_position_regime_residual_lab.py
       - name: Validate research queue
