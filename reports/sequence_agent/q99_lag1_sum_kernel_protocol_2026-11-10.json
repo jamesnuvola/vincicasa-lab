@@ -1,0 +1,71 @@
+{
+  "experiment_id": "Q99",
+  "title": "Lag-1 continuous sum-state kernel for next-draw sum distribution",
+  "status": "PREREGISTERED_BEFORE_SCORING",
+  "registered_date": "2026-11-10",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "draws": 3403
+  },
+  "hypothesis": "The previous draw's total sum may contain incremental one-step information about the next draw's total-sum distribution beyond the exact 5-of-40 combinatorial null. This is a single lag-1 state test, distinct from PSR-10 (previous sum conditioning next position marginals) and Q98 (previous full geometry conditioning next position marginals).",
+  "target": "Next draw total sum, support 15..190 inclusive (176 categories).",
+  "exact_null": {
+    "distribution": "p0(s) = number of 5-subsets of {1,...,40} summing to s divided by C(40,5)",
+    "subset_count": 658008,
+    "construction": "integer dynamic programming over k=0..5 and sums 0..190; no normal approximation"
+  },
+  "model": {
+    "state": "previous draw total sum, standardized by exact-null mean and standard deviation",
+    "kernel": "w_i(h) = exp(-0.5 * ((S_i - S_(t-1))/SD0)^2 / h^2)",
+    "conditional_probability": "p_t(s|S_(t-1)) = [alpha*p0(s) + sum_{i=0}^{t-2} w_i(h)*1(S_(i+1)=s)] / [alpha + sum_{i=0}^{t-2} w_i(h)]",
+    "prior_strength_alpha": 200,
+    "bandwidth_grid": [
+      0.25,
+      0.5,
+      1,
+      2
+    ],
+    "tie_break": "smallest h if Validation Brier scores tie"
+  },
+  "chronology": {
+    "minimum_prior_draws": 300,
+    "targets": 3103,
+    "discovery": 1400,
+    "validation": 850,
+    "blind_oos_historical": 853,
+    "split_rule": "chronological contiguous splits; no shuffling",
+    "cutoff_rule": "for target index t, only transitions i -> i+1 with i+1 < t are eligible; current state is S_(t-1)"
+  },
+  "selection": "Select exactly one bandwidth on Validation by minimum mean multiclass Brier score. No parameter or endpoint selection on Blind OOS.",
+  "endpoints": {
+    "primary": "multiclass Brier gain versus exact-null PMF; gain = Brier_exact - Brier_model, positive is better",
+    "secondary": "log-loss gain versus exact-null PMF; gain = logloss_exact - logloss_model, positive is better"
+  },
+  "inference": {
+    "blind_only": true,
+    "bootstrap": "circular moving-block bootstrap, block length 20, 10000 replicates, percentile 95% CI",
+    "randomization": "block sign-flip test, contiguous blocks of 20 (last block shorter), 50000 replicates, one-sided alternative gain > 0",
+    "multiple_testing": "Holm step-down across all 4 bandwidths x 2 endpoints (8 tests) on historical Blind OOS",
+    "seed": "fixed deterministic xorshift32 seed per endpoint"
+  },
+  "integrity_checks": [
+    "archive dates unique and strictly increasing",
+    "each draw is five unique sorted integers in [1,40]",
+    "exact null sums to one and counts exactly 658008 five-subsets",
+    "every transition outcome index used for target t is strictly less than t",
+    "all forecast probability vectors sum to one within 1e-12",
+    "changing target/future outcomes cannot alter that target's forecast",
+    "deterministic full replay must match persisted report and ledger"
+  ],
+  "guardrails": [
+    "Historical Blind OOS is exposed to prior SONAR research and is not a virgin prospective holdout.",
+    "This experiment predicts only the sum marginal, not a coherent quintet distribution.",
+    "No freeze, active engine, Q60 ledger, or production artifact may be modified.",
+    "No merge or promotion; human review required.",
+    "PR #6, #7, and #8 must remain untouched."
+  ],
+  "next_action": "Run the frozen protocol once; if no positive evidence, close this specific lag-1 sum-state line and continue Q60 append-only prospective collection."
+}
