@@ -1,0 +1,77 @@
+name: SONAR Q87 Causal Node-Graph Phase Lag
+
+on:
+  pull_request:
+    branches:
+      - research/q86-directional-field-kinematics-20261110
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sonar-q87-node-graph-phase-lag
+  cancel-in-progress: false
+
+jobs:
+  evaluate-validate-persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: \${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Detect persisted Q87 outputs
+        id: state
+        run: |
+          if git log --format=%s | grep -Fq '[q87-phase-lag-persisted]' && test -s reports/sequence_agent/q87_node_graph_phase_lag_validation.json; then
+            echo "persisted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "persisted=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Compile Q87 model and validator
+        run: python -m py_compile scripts/sonar_q87_node_graph_phase_lag.py scripts/validate_sonar_q87_node_graph_phase_lag.py
+      - name: Run lag direction, correlation, prefix-only and operator tests
+        run: python tests/test_sonar_q87_node_graph_phase_lag.py -v
+      - name: Execute preregistered Q87 strict-prior walk-forward
+        if: steps.state.outputs.persisted != 'true'
+        env:
+          GITHUB_SHA: \${{ github.event.pull_request.head.sha }}
+        run: python scripts/sonar_q87_node_graph_phase_lag.py
+      - name: Replay every target, phase vector, rank and Holm family
+        if: steps.state.outputs.persisted != 'true'
+        run: python scripts/validate_sonar_q87_node_graph_phase_lag.py
+      - name: Persist append-only Q87 artifacts and verify exact Git readback
+        if: steps.state.outputs.persisted != 'true'
+        env:
+          TARGET_BRANCH: \${{ github.event.pull_request.head.ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q87_node_graph_phase_lag_catalog.jsonl \\
+                  reports/sequence_agent/q87_node_graph_phase_lag_target_ledger.csv.gz \\
+                  reports/sequence_agent/q87_node_graph_phase_lag_report.json \\
+                  reports/sequence_agent/q87_node_graph_phase_lag_manifest.json \\
+                  reports/sequence_agent/q87_node_graph_phase_lag_checkpoint_2026-11-10.json \\
+                  reports/sequence_agent/q87_node_graph_phase_lag_validation.json
+          git commit -m "Persist Q87 causal node-graph phase-lag results [q87-phase-lag-persisted]"
+          git push origin "HEAD:$TARGET_BRANCH"
+          for f in \\
+            reports/sequence_agent/q87_node_graph_phase_lag_catalog.jsonl \\
+            reports/sequence_agent/q87_node_graph_phase_lag_target_ledger.csv.gz \\
+            reports/sequence_agent/q87_node_graph_phase_lag_report.json \\
+            reports/sequence_agent/q87_node_graph_phase_lag_manifest.json \\
+            reports/sequence_agent/q87_node_graph_phase_lag_checkpoint_2026-11-10.json \\
+            reports/sequence_agent/q87_node_graph_phase_lag_validation.json; do
+            git show "HEAD:$f" > /tmp/q87-readback
+            cmp "$f" /tmp/q87-readback
+          done
+      - name: Revalidate persisted exact-head outputs without modifying them
+        if: steps.state.outputs.persisted == 'true'
+        run: python scripts/validate_sonar_q87_node_graph_phase_lag.py --read-only
