@@ -19,6 +19,7 @@ class Q90EdgeDecompositionTests(unittest.TestCase):
         np.testing.assert_allclose(np.diag(residual),0.0,atol=1e-12,rtol=0)
         np.testing.assert_allclose(residual.sum(axis=1),0.0,atol=1e-10,rtol=0)
         self.assertLess(diag["residual_row_sum_max_abs"],1e-10)
+        self.assertLess(abs(diag["main_effect_sum"]),1e-10)
         self.assertLess(abs(diag["main_interaction_inner_product"]),1e-9)
 
     def test_additive_edge_field_has_zero_pair_residual(self):
