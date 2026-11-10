@@ -211,13 +211,15 @@ def compute_experiment(draws=None):
         reversion = current_field["signals"]["REVERSION"]
         graph_signal = current_field["graph_signal"]
         scores = transfer_operator_scores(base_z, reversion, graph_signal, smooth)
-        actual = np.asarray(draws[draw_index]["nums"], dtype=np.int64)
+        frozen_candidate_ranks = np.vstack([
+            q87.field.rank_from_scores(scores[model]) for model in DYNAMIC_IDS
+        ])
+        candidate_ranks[target_offset] = frozen_candidate_ranks
 
-        # Freeze all rankings before reading the target outcome.
-        for candidate_index, model in enumerate(DYNAMIC_IDS):
-            rank = q87.field.rank_from_scores(scores[model])
-            candidate_ranks[target_offset, candidate_index] = rank
-            actual_rank = rank[actual - 1]
+        # All candidate rankings are frozen before the target outcome is read.
+        actual = np.asarray(draws[draw_index]["nums"], dtype=np.int64)
+        for candidate_index in range(len(DYNAMIC_IDS)):
+            actual_rank = frozen_candidate_ranks[candidate_index, actual - 1]
             candidate_actual_ranks[target_offset, candidate_index] = actual_rank
             candidate_hits[target_offset, candidate_index] = (
                 np.sum(actual_rank <= 5), np.sum(actual_rank <= 10), np.sum(actual_rank <= 20)
