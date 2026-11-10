@@ -220,14 +220,14 @@ export function runQ100(options = {}) {
   const validationRows = rows.slice(DISCOVERY_N, DISCOVERY_N + VALIDATION_N);
   const blindRows = rows.slice(DISCOVERY_N + VALIDATION_N);
   const discovery = aggregate(discoveryRows);
-  const validation = aggregate(validationRows);
+  const validationSummary = aggregate(validationRows);
   const blind = aggregate(blindRows);
   const overall = aggregate(rows);
 
   const reconciliation = {};
   for (const [name, calc, key] of [
     ["discovery", discovery, "discovery"],
-    ["validation", validation, "validation"],
+    ["validation", validationSummary, "validation"],
     ["oos", blind, "oos"]
   ]) {
     const published = active.splits[key];
@@ -271,7 +271,7 @@ export function runQ100(options = {}) {
   const blindGains = blindRows.map(r => r.gain);
   const ci = circularBlockBootstrapCI(blindGains, bootstrapReps, BLOCK, 0x5100A101);
 
-  const validation = {
+  const validationReport = {
     status: "PASS",
     tests: [
       { id: "canonical_archive_integrity", status: "PASS", detail: "3403 unique chronological rows; each is a sorted five-number subset of 1..40." },
@@ -303,7 +303,7 @@ export function runQ100(options = {}) {
       main_base_commit: "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b"
     },
     data: { draws: draws.length, first_date: draws[0].d, last_date: draws.at(-1).d, warmup_draws: WARMUP, targets: rows.length },
-    splits: { discovery, validation, historical_blind_oos: blind, overall },
+    splits: { discovery, validation: validationSummary, historical_blind_oos: blind, overall },
     primary_inference: {
       endpoint: "mean rank of the five target numbers; lower is better",
       exact_null_mean_rank: exactNull.meanRank,
@@ -371,7 +371,7 @@ export function runQ100(options = {}) {
     "",
     "## Measured result",
     "- Discovery mean rank: " + discovery.mean_rank.toFixed(6) + " (null 20.5).",
-    "- Validation mean rank: " + validation.mean_rank.toFixed(6) + " (null 20.5).",
+    "- Validation mean rank: " + validationSummary.mean_rank.toFixed(6) + " (null 20.5).",
     "- Historical Blind OOS mean rank: " + blind.mean_rank.toFixed(6) + "; gain " + blind.mean_rank_gain_vs_exact_null.toFixed(6) + ".",
     "- Blind OOS one-sided conditional-null Monte Carlo p: " + mc.p.toFixed(6) + "; Bonferroni ×43: " + pBonferroni43.toFixed(6) + ".",
     "- Circular block-20 bootstrap 95% CI for gain: [" + ci[0].toFixed(6) + ", " + ci[1].toFixed(6) + "].",
@@ -392,12 +392,12 @@ export function runQ100(options = {}) {
     const outDir = root + "/reports/sequence_agent";
     fs.mkdirSync(outDir, { recursive: true });
     fs.writeFileSync(outDir + "/q100_prequential_rank_calibration_report_2026-11-10.json", JSON.stringify(report, null, 2) + "\n");
-    fs.writeFileSync(outDir + "/q100_prequential_rank_calibration_validation_2026-11-10.json", JSON.stringify(validation, null, 2) + "\n");
+    fs.writeFileSync(outDir + "/q100_prequential_rank_calibration_validation_2026-11-10.json", JSON.stringify(validationReport, null, 2) + "\n");
     fs.writeFileSync(outDir + "/q100_prequential_rank_calibration_target_ledger_2026-11-10.csv", ledgerText);
     fs.writeFileSync(outDir + "/q100_prequential_rank_calibration_checkpoint_2026-11-10.md", checkpoint);
   }
 
-  return { report, validation, ledgerText, checkpoint };
+  return { report, validation: validationReport, ledgerText, checkpoint };
 }
 
 if (process.argv[1] && process.argv[1].endsWith("sonar_q100_prequential_rank_calibration.js")) {
