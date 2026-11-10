@@ -1,0 +1,99 @@
+{
+  "experiment_id": "Q102",
+  "title": "Lag-1 consecutive-draw overlap-state memory diagnostic",
+  "preregistered_date": "2026-11-10",
+  "status": "PREREGISTERED_BEFORE_Q102_SCORING",
+  "hypothesis": {
+    "null": "Under independent uniform 5-of-40 draws, consecutive-draw overlaps K_t=|D_{t-1}∩D_t| are iid Hypergeometric(N=40,K=5,n=5); the previous observed overlap K_{t-1} does not improve the forecast of K_t over the exact marginal null.",
+    "alternative": "The previous observed overlap K_{t-1} carries one-step information about the next overlap K_t, and a fixed kernel transition estimator improves proper scoring rules against the exact hypergeometric null.",
+    "estimand": "For each target draw index t, estimate P(K_t=k | K_{t-1}) for k=0..5 using only previously observed overlap transitions; compare multiclass Brier and log loss against the exact null PMF."
+  },
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "archive_draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09"
+  },
+  "definitions": {
+    "draw": "D_i is the 5-element subset on zero-based archive row i.",
+    "overlap": "K_i=|D_{i-1}∩D_i| for i=1..3402.",
+    "target": "At target draw index t, current state is K_{t-1}; target outcome is K_t.",
+    "training_pairs": "Only pairs (K_j,K_{j+1}) with j=1..t-2 are eligible; therefore the latest transition outcome ends at draw index t-1, strictly before target draw t.",
+    "kernel": "w_j(h)=exp(-(K_j-K_{t-1})^2/(2h^2)).",
+    "estimator": "p_t(k|K_{t-1},h)=[200*q0(k)+Σ_{j=1}^{t-2} w_j(h)*1(K_{j+1}=k)]/[200+Σ_{j=1}^{t-2}w_j(h)]."
+  },
+  "exact_null": {
+    "distribution": "q0(k)=C(5,k)*C(35,5-k)/C(40,5), k=0..5.",
+    "denominator": 658008,
+    "probabilities": [
+      0.49335570388201966,
+      0.39786750313066105,
+      0.09946687578266526,
+      0.00904244325296957,
+      0.0002659542133226344,
+      0.000001519738361843625
+    ],
+    "expected_overlap": 0.625,
+    "variance": 0.49078525641025644,
+    "rationale": "Conditional on any fixed previous 5-subset, a new independent uniform 5-subset has the same hypergeometric overlap law. Under iid draws the overlap sequence is iid by symmetry."
+  },
+  "model": {
+    "prior_strength": 200,
+    "bandwidth_grid": [
+      0.5,
+      1,
+      2,
+      4
+    ],
+    "tie_break": "If validation Brier ties exactly, choose the smaller bandwidth.",
+    "no_other_parameters": true
+  },
+  "data": {
+    "warmup_observed_transitions": 300,
+    "first_target_index_zero_based": 301,
+    "last_target_index_zero_based": 3402,
+    "total_targets": 3102,
+    "target_index_convention": "zero-based index into data/storico_daily.csv; first scored target is the 302nd draw.",
+    "splits": {
+      "discovery": 1400,
+      "validation": 850,
+      "historical_blind_oos": 852
+    },
+    "split_rule": "Chronological contiguous target rows: first 1400 Discovery, next 850 Validation, final 852 historical Blind OOS."
+  },
+  "selection": {
+    "criterion": "Minimum mean multiclass Brier score on Validation.",
+    "validation_only": true,
+    "blind_oos_used_for_selection": false,
+    "discovery_used_for_selection": false
+  },
+  "endpoints": {
+    "primary": "Mean multiclass Brier score over six overlap categories; gain=exact-null Brier minus model Brier, positive favors model.",
+    "secondary": "Mean categorical log loss; gain=exact-null log loss minus model log loss, positive favors model."
+  },
+  "inference": {
+    "family": "Four fixed bandwidths × two fixed endpoints = 8 tests on historical Blind OOS.",
+    "primary_test": "Paired block sign-flip on per-target loss gains, contiguous block length 20, 50000 replicates, fixed seed 0x5100A102, one-sided alternative mean gain > 0, add-one p-value.",
+    "uncertainty": "Circular moving-block bootstrap, block length 20, 10000 replicates, fixed seed 0x5100B102, percentile 95% CI for mean paired gain.",
+    "multiplicity": "Holm step-down across all 8 Q102 p-values. Also report Bonferroni ×43 as a conservative catalogue-level screen, explicitly not a correction for unknown analyst degrees of freedom or the entire lifetime search."
+  },
+  "integrity_checks": [
+    "Validate canonical archive header, strict date order, five sorted distinct integers 1..40 per draw, row count and cutoff.",
+    "Recompute every consecutive overlap from canonical draws.",
+    "For each forecast, assert all training transition outcomes end at or before the previous draw (max eligible pair endpoint index t-1).",
+    "All six-category forecast PMFs and exact-null PMF sum to one within 1e-12.",
+    "Future-mutation invariance at fixed cutoffs: changing target and later draws must not change the pre-target forecast.",
+    "Deterministic replay of forecasts, bootstrap and sign-flip with fixed seeds.",
+    "Independent persisted report/ledger byte-for-byte replay."
+  ],
+  "guardrails": [
+    "This is a retrospective historical diagnostic; historical Blind OOS has been exposed to extensive prior SONAR research and is not a virgin prospective holdout.",
+    "The outcome is an overlap count, not a prediction of any specific number or quintet; even a detected dependence would not itself justify a new number-ranking engine.",
+    "No active engine, candidate ranking, prospective freeze, H101/H102 ledger or Q60 gate may be modified.",
+    "No missing freeze may be reconstructed; no automatic merge or promotion."
+  ],
+  "next_action": "Stop retrospective overlap tuning if no robust gain is demonstrated; continue Q60 append-only prospective collection and wait for an official result before evaluating the 2026-11-10 frozen forecasts."
+}
