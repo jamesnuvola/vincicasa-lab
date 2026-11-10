@@ -1,0 +1,132 @@
+{
+  "experiment_id": "Q60-D314-APPEND-ONLY",
+  "status": "OFFICIAL_RESULT_VERIFIED_BEFORE_APPEND",
+  "date": "2026-11-10",
+  "contest_number": 314,
+  "official_source": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+  "official_result": [
+    1,
+    7,
+    11,
+    22,
+    25
+  ],
+  "official_source_evidence": "Official VinciCasa archive lists contest 314 dated 10 November 2026 with winning combination 1 7 11 22 25.",
+  "prior_archive_cutoff": "2026-11-09",
+  "expected_new_archive_row": "2026-11-10,1,7,11,22,25",
+  "preexisting_freezes": {
+    "global_freq_100": {
+      "frozen_at": "2026-11-10T10:53:16+01:00",
+      "history_cutoff": "2026-11-09",
+      "top20": [
+        26,
+        16,
+        25,
+        36,
+        10,
+        12,
+        15,
+        28,
+        29,
+        38,
+        1,
+        5,
+        9,
+        17,
+        18,
+        30,
+        34,
+        37,
+        39,
+        24
+      ]
+    },
+    "position_seed_mix_top20_v1": {
+      "frozen_at": "2026-11-10T10:55:31+01:00",
+      "history_cutoff": "2026-11-09",
+      "top20": [
+        26,
+        16,
+        36,
+        12,
+        15,
+        29,
+        38,
+        1,
+        17,
+        37,
+        39,
+        3,
+        23,
+        2,
+        25,
+        10,
+        28,
+        5,
+        9,
+        18
+      ]
+    },
+    "app_engine": {
+      "frozen_at": "2026-11-10T10:53:16+01:00",
+      "history_cutoff": "2026-11-09",
+      "top20": [
+        25,
+        16,
+        38,
+        36,
+        17,
+        26,
+        12,
+        28,
+        9,
+        27,
+        10,
+        34,
+        37,
+        1,
+        8,
+        39,
+        13,
+        15,
+        20,
+        30
+      ]
+    }
+  },
+  "evaluation_policy": {
+    "archive_update": "Append exactly one official row; preserve all earlier rows.",
+    "freeze_policy": "Preserve every frozen list, timestamp and cutoff. Fill only actual outcome/hit fields after publication.",
+    "q60_pair": "position_seed_mix_top20_v1 versus freq_100 on the registered target dates from 2026-10-19 onward.",
+    "q60_minimum_complete_pairs": 200,
+    "missing_freezes_reconstructed": 0,
+    "no_auto_promotion": true,
+    "no_auto_merge": true,
+    "protected_pull_requests": [
+      6,
+      7,
+      8
+    ]
+  },
+  "expected_per_target_diagnostics": {
+    "global_freq_100": {
+      "top5_hits": 1,
+      "top10_hits": 1,
+      "top20_hits": 2,
+      "top20_5of5": false
+    },
+    "position_seed_mix_top20_v1": {
+      "top5_hits": 0,
+      "top10_hits": 1,
+      "top20_hits": 2,
+      "top20_5of5": false
+    },
+    "app_engine": {
+      "top5_hits": 1,
+      "top10_hits": 1,
+      "top20_hits": 2,
+      "top20_5of5": false
+    }
+  },
+  "next_action": "Continue append-only prospective paired evaluation; do not tune from this single target."
+}
