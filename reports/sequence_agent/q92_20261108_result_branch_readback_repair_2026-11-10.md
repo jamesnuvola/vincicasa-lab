@@ -39,3 +39,9 @@ These fields are inconsistent. They have not been silently rewritten. The replay
 ## Next action
 
 Wait for the read-only result-branch replay and exact-head CI. If both pass, update PR #23 with the evidence and retain the status-metadata warning for human review. Do not rerun the 15 shards merely to repair the readback reference. No merge or engine promotion is authorized.
+
+## Follow-up correction before replay
+
+A dry inspection of the new verifier found a second path-resolution defect: `receipt.output_sha256` keys are basenames, while the Git result branch stores the files under `reports/sequence_agent/`. The verifier now maps every receipt basename to that directory before `git show` and `git ls-tree`. A regression test covers this mapping. This was corrected before accepting any replay result; no accepted output was changed.
+
+The Q92 result-branch replay remains **PENDING** until the updated PR CI/read-only workflow completes.
