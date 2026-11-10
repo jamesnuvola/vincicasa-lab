@@ -13,8 +13,8 @@ permissions:
 # Cancel superseded research-branch runs so several expensive historical searches
 # do not compete after each incremental commit.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  group: sonar-q88-trusted-push-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   validate:
