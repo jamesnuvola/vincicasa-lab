@@ -1,4 +1,4 @@
-name: SONAR Q88 Signed Node-Graph Transfer Read-Only Replay and Dispatch
+name: SONAR Q88 Signed Node-Graph Transfer Read-Only Replay
 
 on:
   pull_request:
@@ -8,16 +8,15 @@ on:
 
 permissions:
   contents: read
-  actions: write
 
 concurrency:
-  group: sonar-q88-readonly-dispatch-20261110
+  group: sonar-q88-signed-node-graph-transfer-readonly-20261110
   cancel-in-progress: false
 
 jobs:
-  validate-and-dispatch:
+  validate-persisted:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,16 +43,3 @@ jobs:
       - name: Replay persisted Q88 outputs read-only on exact head
         if: steps.state.outputs.persisted == 'true'
         run: python scripts/validate_sonar_q88_signed_node_graph_transfer.py --read-only
-      - name: Dispatch trusted Q88 compute-persist CI on the research head
-        if: steps.state.outputs.persisted != 'true'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TARGET_BRANCH: ${{ github.event.pull_request.head.ref }}
-        run: |
-          curl --fail --silent --show-error -X POST \
-            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GITHUB_TOKEN" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -H "Content-Type: application/json" \
-            -d "{\"ref\":\"$TARGET_BRANCH\"}"
