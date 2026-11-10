@@ -53,6 +53,12 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Run Q93 spectral and strict-prefix regression tests
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110'
+        run: |
+          python -m py_compile scripts/sonar_q93_spectral_coherence.py
+          python -m py_compile scripts/validate_sonar_q93_spectral_coherence.py
+          python -m pytest -q tests/test_sonar_q93_spectral_coherence.py
       - name: Detect whether Q93 outputs are already accepted and persisted
         id: q93-state
         if: github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q93-spectral-coherence-20261110'
@@ -68,10 +74,7 @@ jobs:
           GITHUB_RUN_ID: ${{ github.run_id }}
           GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          python -m py_compile scripts/sonar_q93_spectral_coherence.py
-          python -m py_compile scripts/validate_sonar_q93_spectral_coherence.py
           python -m py_compile scripts/persist_sonar_q93_outputs.py
-          python -m pytest -q tests/test_sonar_q93_spectral_coherence.py
           python scripts/sonar_q93_spectral_coherence.py
           python scripts/validate_sonar_q93_spectral_coherence.py
       - name: Replay previously accepted Q93 outputs read-only
