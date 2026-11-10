@@ -261,6 +261,8 @@ def circular_block_bootstrap_mean_ci(
 def build_report(
     records: list[dict],
     source_blob_sha: str,
+    source_first_date: str,
+    source_last_date: str,
     permutations: int = 50000,
     bootstrap_replicates: int = 10000,
 ) -> dict:
@@ -339,8 +341,9 @@ def build_report(
         "source": {
             "path": "data/storico_daily.csv",
             "git_blob_sha": source_blob_sha,
-            "first_date": records[0]["history_cutoff"],
-            "last_date": records[-1]["target_date"],
+            "first_date": source_first_date,
+            "last_date": source_last_date,
+            "draw_count": len(records) + WARMUP,
             "walkforward_targets": len(records),
         },
         "method": {
@@ -408,7 +411,7 @@ def build_report(
             "strict_prior_target_cutoffs": len(records),
             "target_scored_before_own_transition_update": True,
             "future_outcomes_used_for_predictors": False,
-            "all_targets_have_previous_day_cutoff": all(
+            "all_targets_cutoff_precedes_target": all(
                 row["history_cutoff"] < row["target_date"] for row in records
             ),
             "missing_or_reconstructed_forecasts": 0,
@@ -513,6 +516,8 @@ def main() -> None:
     report = build_report(
         records,
         args.source_blob_sha,
+        rows[0]["date"],
+        rows[-1]["date"],
         permutations=args.permutations,
         bootstrap_replicates=args.bootstrap_replicates,
     )
