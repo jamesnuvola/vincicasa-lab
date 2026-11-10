@@ -72,8 +72,7 @@ def validate(read_only=False):
     if missing:
         raise ValueError("Q93 missing required outputs: " + ", ".join(missing))
 
-    dates, draws = q87.read_draws()
-    # q87.read_draws returns a list of draw records; keep the canonical archive pinned by Q93.
+    draws = q87.read_draws()
     if not isinstance(draws, list):
         raise ValueError("Q93 archive reader returned an unexpected shape")
 
