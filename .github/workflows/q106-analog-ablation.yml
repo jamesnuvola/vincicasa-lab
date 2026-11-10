@@ -54,4 +54,5 @@ jobs:
             git push origin "HEAD:${REF_NAME}"
           fi
       - name: Recompute and byte-compare persisted artifacts
+        if: github.event_name == 'push'
         run: node scripts/sonar_q106_analog_ablation.js --check
