@@ -6,6 +6,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.sonar_q60_h102_disagreement import (
     build_ledger,
+    build_report,
     exact_signflip_p,
     holm_adjust,
     ols_slope,
@@ -136,6 +137,41 @@ class H102DisagreementTests(unittest.TestCase):
         archive = [{"data": "2026-11-09", "n1": "9", "n2": "17", "n3": "25", "n4": "32", "n5": "34"}]
         with self.assertRaises(ValueError):
             build_ledger(global_rows, positional_rows, h101_rows, archive)
+
+
+    def test_full_200_target_final_inference_path_and_splits(self):
+        records = []
+        for i in range(200):
+            disagreement = (i % 5) * 3
+            signal = 1 if disagreement >= 6 else 0
+            noise = 1 if i % 13 == 0 else 0
+            h101_hits = 2 + signal + noise
+            records.append({
+                "target_date": f"2026-11-{10 + i:03d}",
+                "history_cutoff": "prior",
+                "global_frozen_at": "pre-target",
+                "positional_frozen_at": "pre-target",
+                "h101_frozen_at": "pre-target",
+                "parent_overlap": 20 - disagreement,
+                "disagreement_slots": disagreement,
+                "global_hits": 2,
+                "positional_hits": 2,
+                "h101_hits": h101_hits,
+                "h101_minus_global": h101_hits - 2,
+                "h101_minus_positional": h101_hits - 2,
+            })
+        report = build_report(
+            records, [], "2027-06-27",
+            permutations=199, bootstrap_replicates=200
+        )
+        self.assertEqual(report["status"], "FINAL_INFERENCE_COMPLETE")
+        self.assertTrue(report["inference_executed"])
+        self.assertEqual(report["reporting_split_results"]["discovery"]["targets"], 100)
+        self.assertEqual(report["reporting_split_results"]["validation"]["targets"], 50)
+        self.assertEqual(report["reporting_split_results"]["blind_oos"]["targets"], 50)
+        self.assertEqual(len(report["inference"]["raw_p_values"]), 4)
+        self.assertEqual(len(report["inference"]["holm_adjusted_p_values"]), 4)
+        self.assertFalse(report["inference"]["engine_promotion_allowed"])
 
     def test_rejects_freeze_after_draw(self):
         target = "2026-11-10"
