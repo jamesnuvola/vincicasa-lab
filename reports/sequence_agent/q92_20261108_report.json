@@ -1,0 +1,384 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q92_2026_11_08",
+  "status": "AGGREGATED_PENDING_ACCEPTANCE_VALIDATION",
+  "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+  "protocol_id": "Q92-ten-feature-equal-weight-catalog-2026-11-09",
+  "source_archive": "data/storico_daily.csv",
+  "source_archive_sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b",
+  "source_archive_git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+  "source_archive_main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+  "aggregate_checkout_sha": "64118b89a59cf689dea6c90a7736db6ef7aca0a3",
+  "source_code_sha256": {
+    "scripts/sonar_per_number_condition_10plus_shard.py": "7183cc76b4c603c86d21b372206833f187d69d892cd23ea9988d95587e498976",
+    "scripts/sonar_q92_common.py": "a25abad2c85a64c6b71223af07c10169ec9e3b0589a8f60b1f3c72dd4295e2c1",
+    "scripts/sonar_q92_null_calibration.py": "b3f716a3ec53e93cd642139925df62619e9bfb0ee3e2dc08273ad5522cfc960b",
+    "scripts/sonar_per_number_condition_grammar.py": "02033a6c5032b23307c9ad1c0db33e7bf29613c8407424201a90d045f87b3b8c",
+    "scripts/sonar_per_number_condition_4plus_grammar.py": "1d6d69f2677957dbe3748f9b8ecfa1bcf661af1a6a92edc33bf033e4b0280d27",
+    "scripts/sonar_q92_aggregate_common.py": "327c79e132b69f2cef7a1313a10c060a8af7a3b9648cc96edd8e3a7d7a294bca",
+    "scripts/aggregate_sonar_q92_ten_feature.py": "741d363b8720fd248743fc710d97339d845e4b1d67b8da0bf4f7d8902150f876",
+    "scripts/validate_sonar_q92_ten_feature.py": "7c5aed88c3756e69ef1533beaf8c40eae68b92fd134be1c008bdbeb115ec39af",
+    ".github/workflows/ci.yml": "b5965eb7bd8c0e585d43ce6592835feed928a59bc932a474e2507dbccc321645",
+    ".github/workflows/sonar-q92-ten-feature.yml": "078b5fb941a582a00d35f78a32440315666302c8eccce72655be3631d42c7571",
+    ".github/workflows/sonar-q92-aggregate-core.yml": "b2184627893d8633e3768b959d30324f1ca56184d396e3c3fe6abf8432f181cc",
+    ".github/workflows/sonar-q92-full-walkforward.yml": "6504bf76d6326bf80552abea8e3c07beb9a32b3e82fa43ad39aa358f89750d6d",
+    "scripts/sonar_q92_ci_gate.py": "ec1b43116c2494466882e1411726f92f59d95816472b2e4ff5b729fe524aa8bb",
+    "tests/test_sonar_q92_ci_gate.py": "2626b2201e26421174b2691d9a38121dd4f68fb97aad43b86b7c0940a9f490a6",
+    "tests/test_sonar_q92_walkforward_shard.py": "018d081e4b2541e689be1d48915812e171773c1328607e66ff937ca3551a1b0a",
+    "tests/test_sonar_q92_aggregate_common.py": "a9ba10112d3b796f8e7f76a34cf169f094979503744883f5f3bd6a85dc069dad",
+    "tests/test_sonar_q92_null_calibration.py": "1ef67aa95bc0e066ed2acd45457816f835b9946aa697461b0d5e0c4882e40e27",
+    "tests/benchmark_sonar_q92_rank_kernel.py": "f89e6ac37d84d6131db7721e0f553d796fc88e79f86813c2df15c57eff659095",
+    "reports/sequence_agent/q92_rank_kernel_02_preregistration_2026-11-09.json": "ad27ce829cd170b312ac02465cfd2ebd0b3afea4777f23fdebdbd0b325aa55d5",
+    "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_preregistration_2026-11-09.json": "19aed0d9d5ced9c61178423ed9003766260313e48f67b6dd8930478dd9467149",
+    "reports/sequence_agent/q92_rank_kernel_03_batch_sweep_result_2026-11-09.json": "3da6dc2c4e3c82b064755b1e099b829052fc224583183857a8a3c873d9341b35",
+    "reports/sequence_agent/q92_minimum_practical_effect_amendment_2026-11-09.json": "3890eb93a7f78bf1d7d05ee302d9fc203e5648b4f8040e186ab2c8a26e44972b",
+    "reports/sequence_agent/q92_preregistration_2026-11-09.json": "896f4f51673ae3888f34f5820e52d5ba5560e09eb4139973a3e6f1e52776314e",
+    "reports/sequence_agent/q92_preregistration_2026-11-09.md": "45ce2ee9fe732ff7369e02925e5279a4dbb82914a05facf0e7d86e11db2c5184",
+    "data/storico_daily.csv": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+  },
+  "shard_source_checkout_shas": [
+    "64118b89a59cf689dea6c90a7736db6ef7aca0a3"
+  ],
+  "target_count": 3402,
+  "first_date": "2017-07-17",
+  "last_date": "2026-11-08",
+  "minimum_prior_history": 50,
+  "scored_targets": 3352,
+  "feature_count": 27,
+  "formula_size": 10,
+  "formula_count": 8436285,
+  "shard_count": 15,
+  "shard_formula_count": 562419,
+  "metrics_rows": 25308855,
+  "metrics_parts_row_schema": "compact_counts_v1",
+  "split_counts": {
+    "discovery": 2012,
+    "validation": 670,
+    "blind_oos": 670
+  },
+  "target_ledger_rows_per_shard": 3352,
+  "target_ledger_rows_total": 50280,
+  "multiple_testing": {
+    "method": "Global Holm-Bonferroni",
+    "test_count": 75926565,
+    "formula_split_endpoint_family_size": 75926565,
+    "raw_pvalue_vector_sha256": "9334b5deb519da352ad2097fadd1c9ea37d04e954c730d3d73670cd6bc002ef3",
+    "adjusted_pvalue_vector_sha256": "845dd86f9d68a3e6983bcad9228e3c0ddff22bebfa9b0c784a7338fca1f55ad3",
+    "p_value_method": "discrete upper-tail convolution of iid Hypergeometric(40,k,5) number-hit counts; deterministic float64 under independent uniform 5-of-40 draws",
+    "holm_adjusted_formula_split_rows_below_0_05": 0,
+    "minimum_holm_p_max_endpoint_family": 1.0
+  },
+  "uniform_number_rank_baseline": {
+    "mean_number_hits_top5": 0.125,
+    "mean_number_hits_top10": 0.25,
+    "mean_number_hits_top20": 0.5,
+    "mean_rank_of_actual_numbers": 20.5
+  },
+  "selected_candidate_global_holm_adjusted_pvalues": {
+    "discovery": {
+      "raw_pvalues": {
+        "top5": 6.148011693074817e-05,
+        "top10": 0.0017671326479763326,
+        "top20": 0.021113758802653905
+      },
+      "holm_adjusted_pvalues": {
+        "top5": 1.0,
+        "top10": 1.0,
+        "top20": 1.0
+      }
+    },
+    "validation": {
+      "raw_pvalues": {
+        "top5": 0.19217206889096972,
+        "top10": 0.2771029910921,
+        "top20": 0.392208154779484
+      },
+      "holm_adjusted_pvalues": {
+        "top5": 1.0,
+        "top10": 1.0,
+        "top20": 1.0
+      }
+    },
+    "blind_oos": {
+      "raw_pvalues": {
+        "top5": 0.994222895943184,
+        "top10": 0.9302320254416669,
+        "top20": 0.9645147292270432
+      },
+      "holm_adjusted_pvalues": {
+        "top5": 1.0,
+        "top10": 1.0,
+        "top20": 1.0
+      }
+    }
+  },
+  "blind_oos_uniform_baseline_evidence": {
+    "blind_oos_targets": 670,
+    "mean_number_hits_top5": 0.11164179104477612,
+    "uniform_baseline_mean_number_hits_top5": 0.125,
+    "absolute_lift": -0.013358208955223883,
+    "raw_discrete_null_p_top5": 0.994222895943184,
+    "global_holm_adjusted_p_top5": 1.0,
+    "alpha": 0.05,
+    "absolute_baseline_pass": false,
+    "status": "NOT_DEMONSTRATED",
+    "evidence_scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+    "interpretation": "A paired lift over Q89 alone is not evidence of above-uniform performance; this historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation."
+  },
+  "candidate_selection": {
+    "rule": "Discovery global top100 by mean Top-5 hit share, tie-break lower mean rank then lexicographic formula_id; select one on Validation with the same tie-break.",
+    "blind_oos_used_for_selection": false,
+    "selected_candidate_id": "P10_01_08_11_12_14_15_16_18_19_23",
+    "Q89_control_candidate_id": "P9_06_09_12_14_15_17_18_19_23",
+    "discovery_top100_count": 100,
+    "validation_candidates": 100,
+    "blind_oos_targets": 670,
+    "paired_blind_ledger_rows": 670
+  },
+  "selected_candidate_metrics": {
+    "Q92_candidate": {
+      "discovery": {
+        "mean_number_hits_top5": 0.13717693836978131,
+        "mean_number_hits_top10": 0.26202783300198806,
+        "mean_number_hits_top20": 0.5096421471172963,
+        "all5_top5_rate": 0.0,
+        "all5_top10_rate": 0.0009940357852882703,
+        "all5_top20_rate": 0.027335984095427434,
+        "mean_rank_of_actual_numbers": 20.25437375745527,
+        "p_top5_exact_hypergeom_sum": 6.148011693074817e-05,
+        "p_top10_exact_hypergeom_sum": 0.0017671326479763326,
+        "p_top20_exact_hypergeom_sum": 0.021113758802653905
+      },
+      "validation": {
+        "mean_number_hits_top5": 0.12985074626865672,
+        "mean_number_hits_top10": 0.2543283582089552,
+        "mean_number_hits_top20": 0.5023880597014926,
+        "all5_top5_rate": 0.0,
+        "all5_top10_rate": 0.0,
+        "all5_top20_rate": 0.026865671641791045,
+        "mean_rank_of_actual_numbers": 20.348059701492538,
+        "p_top5_exact_hypergeom_sum": 0.19217206889096972,
+        "p_top10_exact_hypergeom_sum": 0.2771029910921,
+        "p_top20_exact_hypergeom_sum": 0.392208154779484
+      },
+      "blind_oos_descriptive_only": {
+        "mean_number_hits_top5": 0.11164179104477612,
+        "mean_number_hits_top10": 0.23970149253731343,
+        "mean_number_hits_top20": 0.4853731343283582,
+        "all5_top5_rate": 0.0,
+        "all5_top10_rate": 0.0,
+        "all5_top20_rate": 0.020895522388059702,
+        "mean_rank_of_actual_numbers": 20.8510447761194,
+        "p_top5_exact_hypergeom_sum": 0.994222895943184,
+        "p_top10_exact_hypergeom_sum": 0.9302320254416669,
+        "p_top20_exact_hypergeom_sum": 0.9645147292270432
+      },
+      "global_holm_adjusted_pvalues": {
+        "discovery": {
+          "raw_pvalues": {
+            "top5": 6.148011693074817e-05,
+            "top10": 0.0017671326479763326,
+            "top20": 0.021113758802653905
+          },
+          "holm_adjusted_pvalues": {
+            "top5": 1.0,
+            "top10": 1.0,
+            "top20": 1.0
+          }
+        },
+        "validation": {
+          "raw_pvalues": {
+            "top5": 0.19217206889096972,
+            "top10": 0.2771029910921,
+            "top20": 0.392208154779484
+          },
+          "holm_adjusted_pvalues": {
+            "top5": 1.0,
+            "top10": 1.0,
+            "top20": 1.0
+          }
+        },
+        "blind_oos": {
+          "raw_pvalues": {
+            "top5": 0.994222895943184,
+            "top10": 0.9302320254416669,
+            "top20": 0.9645147292270432
+          },
+          "holm_adjusted_pvalues": {
+            "top5": 1.0,
+            "top10": 1.0,
+            "top20": 1.0
+          }
+        }
+      },
+      "blind_oos_uniform_baseline_evidence": {
+        "blind_oos_targets": 670,
+        "mean_number_hits_top5": 0.11164179104477612,
+        "uniform_baseline_mean_number_hits_top5": 0.125,
+        "absolute_lift": -0.013358208955223883,
+        "raw_discrete_null_p_top5": 0.994222895943184,
+        "global_holm_adjusted_p_top5": 1.0,
+        "alpha": 0.05,
+        "absolute_baseline_pass": false,
+        "status": "NOT_DEMONSTRATED",
+        "evidence_scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+        "interpretation": "A paired lift over Q89 alone is not evidence of above-uniform performance; this historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation."
+      }
+    },
+    "Q89_control": {
+      "discovery": {
+        "mean_number_hits_top5": 0.1374751491053678,
+        "mean_number_hits_top10": 0.2596421471172962,
+        "mean_number_hits_top20": 0.5129224652087475,
+        "all5_top5_rate": 0.0,
+        "all5_top10_rate": 0.0,
+        "all5_top20_rate": 0.02584493041749503,
+        "mean_rank_of_actual_numbers": 20.14572564612326
+      },
+      "validation": {
+        "mean_number_hits_top5": 0.13014925373134328,
+        "mean_number_hits_top10": 0.2435820895522388,
+        "mean_number_hits_top20": 0.4988059701492537,
+        "all5_top5_rate": 0.0,
+        "all5_top10_rate": 0.0,
+        "all5_top20_rate": 0.020895522388059702,
+        "mean_rank_of_actual_numbers": 20.587761194029852
+      },
+      "blind_oos_descriptive_only": {
+        "mean_number_hits_top5": 0.11791044776119403,
+        "mean_number_hits_top10": 0.23582089552238805,
+        "mean_number_hits_top20": 0.4955223880597015,
+        "all5_top5_rate": 0.0,
+        "all5_top10_rate": 0.0,
+        "all5_top20_rate": 0.016417910447761194,
+        "mean_rank_of_actual_numbers": 20.61402985074627
+      }
+    }
+  },
+  "paired_blind_inference": {
+    "method": "circular moving-block bootstrap percentile CI and circular block sign-flip randomization",
+    "replicates": 20000,
+    "block_length": 7,
+    "bootstrap_seed": 920027,
+    "signflip_seed": 920028,
+    "confidence_level": 0.95,
+    "multiple_testing": {
+      "method": "Holm-Bonferroni",
+      "family_size": 4,
+      "endpoints": [
+        "top5_hit_share",
+        "top10_hit_share",
+        "top20_hit_share",
+        "mean_rank_actual_numbers"
+      ]
+    },
+    "minimum_practical_effect": {
+      "primary_endpoint": "top5_hit_share",
+      "absolute_delta_threshold": 0.005,
+      "criterion": "mean_delta >= threshold AND Holm sign-flip p < 0.05 AND 95% block-bootstrap CI lower > 0"
+    },
+    "endpoints": {
+      "top5_hit_share": {
+        "n_targets": 670,
+        "mean_delta": -0.00626865671641791,
+        "bootstrap_ci_95_low": -0.01671641791044776,
+        "bootstrap_ci_95_high": 0.00417910447761194,
+        "signflip_p_raw": 0.2687365631718414,
+        "signflip_p_holm": 0.6197690115494225
+      },
+      "top10_hit_share": {
+        "n_targets": 670,
+        "mean_delta": 0.0038805970149253734,
+        "bootstrap_ci_95_low": -0.00865671641791045,
+        "bootstrap_ci_95_high": 0.01671641791044776,
+        "signflip_p_raw": 0.5889205539723014,
+        "signflip_p_holm": 0.6197690115494225
+      },
+      "top20_hit_share": {
+        "n_targets": 670,
+        "mean_delta": -0.010149253731343282,
+        "bootstrap_ci_95_low": -0.02507462686567164,
+        "bootstrap_ci_95_high": 0.0047761194029850755,
+        "signflip_p_raw": 0.20658967051647417,
+        "signflip_p_holm": 0.6197690115494225
+      },
+      "mean_rank_actual_numbers": {
+        "n_targets": 670,
+        "mean_delta": 0.23701492537313426,
+        "bootstrap_ci_95_low": -0.03523134328358197,
+        "bootstrap_ci_95_high": 0.5119402985074627,
+        "signflip_p_raw": 0.09374531273436328,
+        "signflip_p_holm": 0.3749812509374531
+      }
+    },
+    "primary_decision": "NO_SIGNIFICANT_GAIN",
+    "schema_version": "1.0",
+    "task_id": "Q92_2026_11_08",
+    "protocol_id": "Q92-ten-feature-equal-weight-catalog-2026-11-09",
+    "source_archive_sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b",
+    "Q92_candidate_id": "P10_01_08_11_12_14_15_16_18_19_23",
+    "Q89_control_candidate_id": "P9_06_09_12_14_15_17_18_19_23",
+    "paired_blind_ledger_rows": 670,
+    "blind_oos_used_for_selection": false
+  },
+  "outputs": {
+    "metrics_parts": [
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_0_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_1_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_2_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_3_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_4_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_5_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_6_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_7_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_8_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_9_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_10_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_11_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_12_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_13_metrics.csv.gz",
+      "reports/sequence_agent/q92_20261108_metrics_parts/shard_14_metrics.csv.gz"
+    ],
+    "target_ledger_parts": [
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_0_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_1_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_2_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_3_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_4_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_5_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_6_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_7_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_8_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_9_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_10_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_11_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_12_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_13_target_ledger.csv.gz",
+      "reports/sequence_agent/q92_20261108_target_ledger_parts/shard_14_target_ledger.csv.gz"
+    ],
+    "candidate_shortlist": "reports/sequence_agent/q92_20261108_candidate_shortlist.csv",
+    "candidate_selection": "reports/sequence_agent/q92_20261108_candidate_selection.json",
+    "paired_blind_ledger": "reports/sequence_agent/q92_20261108_paired_blind_ledger.csv",
+    "paired_inference": "reports/sequence_agent/q92_20261108_paired_inference.json",
+    "manifest": "reports/sequence_agent/q92_20261108_manifest.json"
+  },
+  "guardrails": [
+    "strict-prior feature state uses draws[0:i] only for target i; target quintet enters after ranking",
+    "global Holm includes all 8,436,285 formulas × 3 chronological splits × 3 endpoints",
+    "selected candidate raw and global Holm-adjusted p-values are exposed for every split and endpoint",
+    "absolute Blind OOS evidence requires Top-5 share above 0.125 and selected-candidate global Holm-adjusted Top-5 p<0.05; paired lift over Q89 alone is insufficient",
+    "Discovery top100 and Validation freeze precede Blind OOS reporting; Blind OOS cannot select",
+    "Q89 control was refreshed and accepted on the exact same 2026-11-08 canonical archive",
+    "per-target best formula within each shard is retrospective descriptive only, never a candidate-selection rule",
+    "no automatic merge, engine promotion or shadow insertion; human review remains required"
+  ],
+  "limitations": [
+    "finite equal-weight ten-feature grammar only; weighted/nonlinear/conditional/interaction formulas remain untested",
+    "global formula-family p-values use discrete float64 convolution under the independent uniform 5-of-40 null; extreme underflow tails use the smallest positive subnormal floor",
+    "compact metric parts store seven integer sufficient statistics; exact raw p-values and global Holm adjusted vector are replayed from these counts",
+    "historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation",
+    "relative paired improvement over Q89 does not establish absolute above-uniform predictive value; the selected candidate's global Holm-adjusted Blind OOS Top-5 p-value is reported separately",
+    "the finite formula catalog does not exhaust the infinite mathematical formula universe"
+  ],
+  "next_action": "Run Q92 acceptance validator with candidate-specific global Holm replay; report absolute Blind OOS evidence against the 0.125 uniform Top-5 baseline separately from paired Q89 lift; persist append-only and require human review."
+}

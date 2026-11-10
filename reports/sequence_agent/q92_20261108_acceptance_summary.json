@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q92_2026_11_08",
+  "status": "ACCEPTANCE_PASS_PENDING_ARTIFACT_PERSISTENCE",
+  "source_checkout_sha": "64118b89a59cf689dea6c90a7736db6ef7aca0a3",
+  "source_archive_sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b",
+  "source_archive_git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+  "formula_count": 8436285,
+  "metrics_rows": 25308855,
+  "holm_family_size": 75926565,
+  "split_counts": {
+    "discovery": 2012,
+    "validation": 670,
+    "blind_oos": 670
+  },
+  "selected_q92_candidate_id": "P10_01_08_11_12_14_15_16_18_19_23",
+  "q89_control_candidate_id": "P9_06_09_12_14_15_17_18_19_23",
+  "paired_primary_decision": "NO_SIGNIFICANT_GAIN",
+  "paired_top5_mean_delta": -0.00626865671641791,
+  "paired_top5_bootstrap_ci_95": [
+    -0.01671641791044776,
+    0.00417910447761194
+  ],
+  "paired_top5_signflip_p_holm": 0.6197690115494225,
+  "minimum_practical_effect_top5": 0.005,
+  "selected_candidate_global_holm_adjusted_pvalues": {
+    "discovery": {
+      "raw_pvalues": {
+        "top5": 6.148011693074817e-05,
+        "top10": 0.0017671326479763326,
+        "top20": 0.021113758802653905
+      },
+      "holm_adjusted_pvalues": {
+        "top5": 1.0,
+        "top10": 1.0,
+        "top20": 1.0
+      }
+    },
+    "validation": {
+      "raw_pvalues": {
+        "top5": 0.19217206889096972,
+        "top10": 0.2771029910921,
+        "top20": 0.392208154779484
+      },
+      "holm_adjusted_pvalues": {
+        "top5": 1.0,
+        "top10": 1.0,
+        "top20": 1.0
+      }
+    },
+    "blind_oos": {
+      "raw_pvalues": {
+        "top5": 0.994222895943184,
+        "top10": 0.9302320254416669,
+        "top20": 0.9645147292270432
+      },
+      "holm_adjusted_pvalues": {
+        "top5": 1.0,
+        "top10": 1.0,
+        "top20": 1.0
+      }
+    }
+  },
+  "blind_oos_uniform_baseline_evidence": {
+    "blind_oos_targets": 670,
+    "mean_number_hits_top5": 0.11164179104477612,
+    "uniform_baseline_mean_number_hits_top5": 0.125,
+    "absolute_lift": -0.013358208955223883,
+    "raw_discrete_null_p_top5": 0.994222895943184,
+    "global_holm_adjusted_p_top5": 1.0,
+    "alpha": 0.05,
+    "absolute_baseline_pass": false,
+    "status": "NOT_DEMONSTRATED",
+    "evidence_scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+    "interpretation": "A paired lift over Q89 alone is not evidence of above-uniform performance; this historical Blind OOS has prior SONAR exposure and is not independent prospective confirmation."
+  },
+  "metrics_parts_storage": "GitHub Actions artifact bundle; manifest SHA-256 and part sizes are recorded in the aggregate manifest.",
+  "output_sha256": {
+    "q92_20261108_report.json": {
+      "bytes": 19432,
+      "sha256": "6a55707786d20cda72aa4eddee307fcce43da3a0802d51686eb69605605423df"
+    },
+    "q92_20261108_manifest.json": {
+      "bytes": 23720,
+      "sha256": "446dfa137d710fac6d483c5d6d29f28de6def4bbdbc8c8009e03276323c51dba"
+    },
+    "q92_20261108_candidate_shortlist.csv": {
+      "bytes": 24974,
+      "sha256": "d051f48e7a60889cdc9fb66512da40254b2bc4efe6d878d6d3637b2e27719b0f"
+    },
+    "q92_20261108_candidate_selection.json": {
+      "bytes": 10184,
+      "sha256": "67df75f77bfefc2fd598135b3b80540f3ad8127c130187e606877d90c1125281"
+    },
+    "q92_20261108_paired_blind_ledger.csv": {
+      "bytes": 133830,
+      "sha256": "86521981ffe43c06451ee33a79f45a037435e5794e470644af283e457f9aae5a"
+    },
+    "q92_20261108_paired_inference.json": {
+      "bytes": 2325,
+      "sha256": "cc6eb2627b8bd1dc71ce6a668692a60058e494c084cec34e535553a512fc6104"
+    },
+    "q92_20261108_shard_artifact_manifest.json": {
+      "bytes": 12411,
+      "sha256": "759c75ea8c464933b4cf1a0dae1aafc2ff35eeb244e3ae49beedbf0342b22520"
+    }
+  }
+}

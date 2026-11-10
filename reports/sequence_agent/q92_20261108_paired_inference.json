@@ -1,0 +1,66 @@
+{
+  "method": "circular moving-block bootstrap percentile CI and circular block sign-flip randomization",
+  "replicates": 20000,
+  "block_length": 7,
+  "bootstrap_seed": 920027,
+  "signflip_seed": 920028,
+  "confidence_level": 0.95,
+  "multiple_testing": {
+    "method": "Holm-Bonferroni",
+    "family_size": 4,
+    "endpoints": [
+      "top5_hit_share",
+      "top10_hit_share",
+      "top20_hit_share",
+      "mean_rank_actual_numbers"
+    ]
+  },
+  "minimum_practical_effect": {
+    "primary_endpoint": "top5_hit_share",
+    "absolute_delta_threshold": 0.005,
+    "criterion": "mean_delta >= threshold AND Holm sign-flip p < 0.05 AND 95% block-bootstrap CI lower > 0"
+  },
+  "endpoints": {
+    "top5_hit_share": {
+      "n_targets": 670,
+      "mean_delta": -0.00626865671641791,
+      "bootstrap_ci_95_low": -0.01671641791044776,
+      "bootstrap_ci_95_high": 0.00417910447761194,
+      "signflip_p_raw": 0.2687365631718414,
+      "signflip_p_holm": 0.6197690115494225
+    },
+    "top10_hit_share": {
+      "n_targets": 670,
+      "mean_delta": 0.0038805970149253734,
+      "bootstrap_ci_95_low": -0.00865671641791045,
+      "bootstrap_ci_95_high": 0.01671641791044776,
+      "signflip_p_raw": 0.5889205539723014,
+      "signflip_p_holm": 0.6197690115494225
+    },
+    "top20_hit_share": {
+      "n_targets": 670,
+      "mean_delta": -0.010149253731343282,
+      "bootstrap_ci_95_low": -0.02507462686567164,
+      "bootstrap_ci_95_high": 0.0047761194029850755,
+      "signflip_p_raw": 0.20658967051647417,
+      "signflip_p_holm": 0.6197690115494225
+    },
+    "mean_rank_actual_numbers": {
+      "n_targets": 670,
+      "mean_delta": 0.23701492537313426,
+      "bootstrap_ci_95_low": -0.03523134328358197,
+      "bootstrap_ci_95_high": 0.5119402985074627,
+      "signflip_p_raw": 0.09374531273436328,
+      "signflip_p_holm": 0.3749812509374531
+    }
+  },
+  "primary_decision": "NO_SIGNIFICANT_GAIN",
+  "schema_version": "1.0",
+  "task_id": "Q92_2026_11_08",
+  "protocol_id": "Q92-ten-feature-equal-weight-catalog-2026-11-09",
+  "source_archive_sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b",
+  "Q92_candidate_id": "P10_01_08_11_12_14_15_16_18_19_23",
+  "Q89_control_candidate_id": "P9_06_09_12_14_15_17_18_19_23",
+  "paired_blind_ledger_rows": 670,
+  "blind_oos_used_for_selection": false
+}
