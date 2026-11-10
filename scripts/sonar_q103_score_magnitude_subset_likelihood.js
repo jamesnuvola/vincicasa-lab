@@ -220,7 +220,7 @@ function validateScores(scores, targetIndex) {
     if (i > 0) {
       const prev = scores[i - 1];
       if (prev.score < item.score - 1e-12) fail("score vector is not descending at target " + targetIndex);
-      if (Math.abs(prev.score - item.score) <= 1e-12 && prev.n > item.n) fail("tie-break mismatch at target " + targetIndex);
+      if (prev.score === item.score && prev.n > item.n) fail("tie-break mismatch at target " + targetIndex);
     }
     seen.add(item.n);
   }
