@@ -1,0 +1,39 @@
+name: SONAR Q92 persisted result-branch read-only replay
+
+on:
+  push:
+    branches:
+      - research/sonar-q92-exact-null-calibration-20261109
+    paths:
+      - ".github/workflows/sonar-q92-result-branch-replay.yml"
+      - "scripts/verify_sonar_q92_result_branch.py"
+      - "tests/test_sonar_q92_result_branch_readback.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      RESULT_BRANCH: research/sonar-q92-results-20261108-64118b89a59cf689dea6c90a7736db6ef7aca0a3
+      EXPECTED_SOURCE_CHECKOUT_SHA: 64118b89a59cf689dea6c90a7736db6ef7aca0a3
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch the exact persisted result branch
+        run: |
+          set -euo pipefail
+          git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+      - name: Compile readback verifier and tests
+        run: python -m py_compile scripts/verify_sonar_q92_result_branch.py tests/test_sonar_q92_result_branch_readback.py
+      - name: Run readback verifier unit tests
+        run: python tests/test_sonar_q92_result_branch_readback.py -v
+      - name: Verify persisted Q92 result branch without rerunning shards
+        run: python scripts/verify_sonar_q92_result_branch.py
