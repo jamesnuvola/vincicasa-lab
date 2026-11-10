@@ -1,0 +1,68 @@
+{
+  "experiment_id": "Q105",
+  "status": "PASS",
+  "check_count": 11,
+  "passed": 11,
+  "failed": 0,
+  "checks": [
+    {
+      "id": "protocol_and_archive_pin",
+      "status": "PASS",
+      "detail": "Q105 protocol constants and canonical archive blob SHA match preregistration."
+    },
+    {
+      "id": "archive_integrity",
+      "status": "PASS",
+      "detail": "3403 unique chronological rows; each outcome is a sorted five-number subset of 1..40."
+    },
+    {
+      "id": "strict_prior_cutoffs",
+      "status": "PASS",
+      "detail": "3203/3203 forecasts use only rows with index less than the target; previous-day cutoff verified."
+    },
+    {
+      "id": "weekday_prior_filter",
+      "status": "PASS",
+      "detail": "Weekday counts use only prior rows matching the target weekday; target row is added after scoring."
+    },
+    {
+      "id": "fixed_cardinality_normalizer",
+      "status": "PASS",
+      "detail": "e5 dynamic program agrees with brute-force enumeration on an eight-weight synthetic fixture."
+    },
+    {
+      "id": "exhaustive_subset_normalization",
+      "status": "PASS",
+      "detail": "Representative global and weekday normalizers match exhaustive enumeration of all 658008 subsets; max relative error 2.047e-13."
+    },
+    {
+      "id": "future_mutation_invariance",
+      "status": "PASS",
+      "detail": "9/9 fixed-cutoff forecasts unchanged after mutating all later outcomes."
+    },
+    {
+      "id": "deterministic_replay",
+      "status": "PASS",
+      "detail": "8/8 forecast replays identical in memory."
+    },
+    {
+      "id": "chronological_split_reconciliation",
+      "status": "PASS",
+      "detail": "1921 discovery + 641 validation + 641 historical blind OOS = 3203."
+    },
+    {
+      "id": "finite_probability_checks",
+      "status": "PASS",
+      "detail": "All global and weekday models have finite positive weights and normalizers."
+    },
+    {
+      "id": "multiplicity_family",
+      "status": "PASS",
+      "detail": "Exactly two preregistered Blind OOS endpoints receive Holm correction; weekday subgroup summaries are descriptive only."
+    }
+  ],
+  "inference_family_size": 2,
+  "selected_model_or_parameter": "none",
+  "no_engine_promotion": true,
+  "no_freeze_mutation": true
+}
