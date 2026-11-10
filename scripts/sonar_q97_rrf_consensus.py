@@ -243,10 +243,12 @@ def run(input_path, manifest_path, outdir):
         "hypothesis": "Equal-weight RRF of five prior-only rankings improves Top-20 mean hits over Equal42 and is not materially inferior to its components.",
         "formula": {"score": "S(n)=sum_m 1/(20+r_m(n))", "c": C,
                     "weights": {m: 1.0 for m in MODELS},
+                    "baseline_is_included_as_one_of_five_sources": True,
                     "tie_break": "descending score, then ascending number",
                     "candidate_domain": "1..40", "tuning": "none"},
         "split_results": metrics,
         "blind_oos_inference": {"n": len(blind),
+            "family_scope": "Q97-only; does not correct across all prior SONAR research branches.",
             "primary_gate": {"mean_difference_hits_per_target": mean,
                              "mean_difference_total_hits": primary["mean_difference_total_hits"],
                              "ci95": ci, "p_raw": primary["block_signflip"]["p_raw"],
@@ -270,7 +272,9 @@ def run(input_path, manifest_path, outdir):
             "Historical Blind OOS is prior-exposed and is not a virgin prospective holdout.",
             "Block sign-flip assumes exchangeability of contiguous 20-target block signs under the null.",
             "RRF is a ranking aggregation, not a physical or causal mechanism.",
-            "No historical result establishes an advantage for future random draws."
+            "No historical result establishes an advantage for future random draws.",
+            "BASE_EQUAL42 is one of the five fused inputs; its comparator is an anchored/nested comparison, not an independent head-to-head.",
+            "Holm correction covers the 15 Q97 comparisons only, not the full historical SONAR search family."
         ],
         "decision_policy": {"promotion_allowed": False, "production_change_allowed": False,
                             "merge_allowed": False, "human_review_required": True,
@@ -293,6 +297,9 @@ def run(input_path, manifest_path, outdir):
         "- All prior cutoffs and 16,015 source rank vectors checked; source snapshot and target ledger persisted.\n\n"
         "Post-hoc exploratory only: component families were previously examined and historical Blind OOS is not virgin. "
         "No promotion, production change, freeze change or merge. Stop retrospective tuning; continue Q60 prospective collection.\n"
+        "## Additional interpretation limits\n\n"
+        "- BASE_EQUAL42 is itself one of the five fused rankings; the RRF-vs-baseline comparison is anchored/nested, not independent.\n"
+        "- Holm correction covers the 15 Q97 comparisons only, not the entire historical SONAR research family.\n"
     )
     checkpoint_path.write_text(checkpoint, encoding="utf-8")
     validation = {
@@ -302,7 +309,11 @@ def run(input_path, manifest_path, outdir):
         "paired_test_count": len(comparisons), "holm_family_size": len(comparisons),
         "outputs": {"source_snapshot_sha256": sha(snap_path), "target_ledger_sha256": sha(ledger_path),
                     "report_sha256": sha(report_path), "checkpoint_sha256": sha(checkpoint_path)},
-        "decision": gate, "human_review_required": True
+        "decision": gate, "human_review_required": True,
+        "methodological_caveats": [
+            "BASE_EQUAL42 is included as one of the five RRF inputs.",
+            "The 15-test Holm family is Q97-local, not a correction across all prior SONAR research."
+        ]
     }
     write_json(validation_path, validation)
     return report, validation
