@@ -290,7 +290,7 @@ const manifest={
     report:gitBlobSha1(reportText),validation:gitBlobSha1(validationText),
     ledger:gitBlobSha1(result.ledgerText),checkpoint:gitBlobSha1(result.checkpointText)
   },
-  replay:{sign_flip_replicates:50000,bootstrap_replicates:10000,block_length:20,deterministic:true}
+  replay:{sign_flip_replicates:50000,bootstrap_replicates:10000,block_length:20,deterministic:true,numeric_serialization_precision_decimals:12,probability_fingerprint_precision_decimals:12}
 };
 outputs["q102_lag1_overlap_memory_persistence_manifest_2026-11-10.json"]=JSON.stringify(manifest,null,2)+"\n";
 if(process.argv.includes("--check")){
