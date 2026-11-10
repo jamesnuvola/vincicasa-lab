@@ -1,0 +1,231 @@
+name: Q92 Recover Accepted 2026-11-08 Bundle Persistence
+run-name: Q92 persistence recovery from accepted run 42764304973
+
+on:
+  push:
+    branches:
+      - research/sonar-q92-exact-null-calibration-20261109
+    paths:
+      - ".github/workflows/sonar-q92-recover-accepted-bundle.yml"
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: sonar-q92-recover-accepted-bundle-42764304973
+  cancel-in-progress: false
+
+jobs:
+  persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SOURCE_SHA: 449d2e9925a9d68385912025b9937c8b5e0851a2
+      RESULT_BRANCH: research/sonar-q92-results-20261108-449d2e9925a9d68385912025b9937c8b5e0851a2
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout exact accepted analysis source
+        uses: actions/checkout@v4
+        with:
+          ref: 449d2e9925a9d68385912025b9937c8b5e0851a2
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+
+      - name: Verify exact-source full project CI
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs/42764311328" > /tmp/q92-exact-ci.json
+          ci_sha="$(jq -r '.head_sha' /tmp/q92-exact-ci.json)"
+          ci_conclusion="$(jq -r '.conclusion' /tmp/q92-exact-ci.json)"
+          if [[ "$ci_sha" != "$SOURCE_SHA" || "$ci_conclusion" != "success" ]]; then
+            echo "Q92_RECOVERY_BLOCKED: exact-source project CI is not successful."
+            exit 1
+          fi
+          echo "Q92_EXACT_SOURCE_CI_PASS: run 42764311328 on $ci_sha."
+
+      - name: Download and byte-verify accepted bundle and original receipt
+        run: |
+          set -euo pipefail
+          curl --retry 3 --retry-all-errors --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/13743351872/zip" \
+            --output /tmp/q92-accepted-bundle.zip
+          bundle_sha="$(sha256sum /tmp/q92-accepted-bundle.zip | awk '{print $1}')"
+          bundle_bytes="$(stat -c%s /tmp/q92-accepted-bundle.zip)"
+          [[ "$bundle_sha" == "2bc547a399b8017d3e93b34683662ecb3adb96002a26b2bd2835b48384856bc6" ]]
+          [[ "$bundle_bytes" == "204386240" ]]
+          curl --retry 3 --retry-all-errors --fail --location --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/13742758649/zip" \
+            --output /tmp/q92-original-receipt.zip
+          receipt_zip_sha="$(sha256sum /tmp/q92-original-receipt.zip | awk '{print $1}')"
+          [[ "$receipt_zip_sha" == "296b65322547e991895e2692a62ea0b5ac503982b252a99dd808caa8af5cb203" ]]
+          mkdir -p .q92-accepted .q92-receipt
+          unzip -q /tmp/q92-accepted-bundle.zip -d .q92-accepted
+          unzip -q /tmp/q92-original-receipt.zip -d .q92-receipt
+          echo "Q92_ACCEPTED_ARTIFACT_BYTE_READBACK_PASS: bundle=$bundle_sha bytes=$bundle_bytes receipt_zip=$receipt_zip_sha."
+
+      - name: Restore bundle and reconcile immutable receipt and output hashes
+        run: |
+          set -euo pipefail
+          mkdir -p reports/sequence_agent
+          cp -a .q92-accepted/. reports/sequence_agent/
+          cp .q92-receipt/q92_20261108_persistence_receipt.json reports/sequence_agent/
+          python - <<'PY'
+          import hashlib,json
+          from pathlib import Path
+          root=Path("reports/sequence_agent")
+          receipt_path=root/"q92_20261108_persistence_receipt.json"
+          receipt_raw=receipt_path.read_bytes()
+          receipt=json.loads(receipt_raw)
+          summary=json.loads((root/"q92_20261108_acceptance_summary.json").read_text(encoding="utf-8"))
+          report=json.loads((root/"q92_20261108_report.json").read_text(encoding="utf-8"))
+          manifest=json.loads((root/"q92_20261108_manifest.json").read_text(encoding="utf-8"))
+          if hashlib.sha256(receipt_raw).hexdigest()!="99735b7fccc97bc39a3638d6549ffc31e10a942fea2b99f50531b0d1b88747f0":
+              raise SystemExit("Q92_RECOVERY_BLOCKED: original receipt JSON digest mismatch")
+          if receipt.get("source_checkout_sha")!="449d2e9925a9d68385912025b9937c8b5e0851a2":
+              raise SystemExit("Q92_RECOVERY_BLOCKED: source checkout SHA mismatch")
+          if receipt.get("source_archive_sha256")!="5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b":
+              raise SystemExit("Q92_RECOVERY_BLOCKED: archive SHA mismatch")
+          bundle=receipt.get("artifact_bundle",{})
+          if bundle.get("id")!="13743351872" or bundle.get("digest")!="2bc547a399b8017d3e93b34683662ecb3adb96002a26b2bd2835b48384856bc6":
+              raise SystemExit("Q92_RECOVERY_BLOCKED: accepted bundle identity mismatch")
+          if bundle.get("byte_readback_verified") is not True or bundle.get("byte_readback_sha256")!=bundle.get("digest") or bundle.get("byte_readback_bytes")!=204386240:
+              raise SystemExit("Q92_RECOVERY_BLOCKED: original bundle byte-readback receipt invalid")
+          if summary.get("status")!="ACCEPTANCE_PASS_PENDING_ARTIFACT_PERSISTENCE" or summary.get("source_checkout_sha")!=receipt["source_checkout_sha"]:
+              raise SystemExit("Q92_RECOVERY_BLOCKED: acceptance summary identity/status mismatch")
+          if report.get("source_archive_sha256")!=receipt["source_archive_sha256"] or manifest.get("source_archive_sha256")!=receipt["source_archive_sha256"]:
+              raise SystemExit("Q92_RECOVERY_BLOCKED: report/manifest archive identity mismatch")
+          if summary.get("formula_count")!=8436285 or summary.get("metrics_rows")!=25308855 or summary.get("holm_family_size")!=75926565:
+              raise SystemExit("Q92_RECOVERY_BLOCKED: formula/metric/Holm dimensions mismatch")
+          if summary.get("split_counts")!={"discovery":2012,"validation":670,"blind_oos":670}:
+              raise SystemExit("Q92_RECOVERY_BLOCKED: chronological split counts mismatch")
+          if "Q92_ACCEPTANCE_PASS:" not in (root/"q92_20261108_acceptance_stdout.txt").read_text(encoding="utf-8"):
+              raise SystemExit("Q92_RECOVERY_BLOCKED: accepted validator marker absent from preserved stdout")
+          for name,identity in summary["output_sha256"].items():
+              raw=(root/name).read_bytes()
+              if len(raw)!=identity["bytes"] or hashlib.sha256(raw).hexdigest()!=identity["sha256"]:
+                  raise SystemExit("Q92_RECOVERY_BLOCKED: core output hash mismatch: "+name)
+          print("Q92_RECOVERY_RECEIPT_AND_CORE_HASHES_PASS: original receipt, report, manifest, summary and seven core outputs reconciled.")
+          PY
+
+      - name: Replay independent fail-closed Q92 acceptance validator
+        run: |
+          set -o pipefail
+          python scripts/validate_sonar_q92_ten_feature.py | tee /tmp/q92-recovery-acceptance-replay.txt
+          grep -F "Q92_ACCEPTANCE_PASS:" /tmp/q92-recovery-acceptance-replay.txt
+
+      - name: Persist accepted core outputs append-only to the source-bound result branch
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin "$RESULT_BRANCH" >/dev/null 2>&1; then
+            echo "Q92_RECOVERY_BLOCKED: source-bound result branch already exists; refusing overwrite."
+            exit 1
+          fi
+          git checkout -b "$RESULT_BRANCH" "$SOURCE_SHA"
+          paths=(
+            reports/sequence_agent/q92_20261108_report.json
+            reports/sequence_agent/q92_20261108_manifest.json
+            reports/sequence_agent/q92_20261108_candidate_shortlist.csv
+            reports/sequence_agent/q92_20261108_candidate_selection.json
+            reports/sequence_agent/q92_20261108_paired_blind_ledger.csv
+            reports/sequence_agent/q92_20261108_paired_inference.json
+            reports/sequence_agent/q92_20261108_shard_artifact_manifest.json
+            reports/sequence_agent/q92_20261108_acceptance_summary.json
+            reports/sequence_agent/q92_20261108_persistence_receipt.json
+          )
+          git add "${paths[@]}"
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Persist accepted Q92 2026-11-08 outputs from $SOURCE_SHA"
+          git push origin "$RESULT_BRANCH"
+          echo "Q92_RECOVERY_CORE_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Verify persisted core bytes and replay acceptance on the result branch
+        run: |
+          set -euo pipefail
+          git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          git merge-base --is-ancestor "$SOURCE_SHA" "origin/$RESULT_BRANCH"
+          paths=(
+            reports/sequence_agent/q92_20261108_report.json
+            reports/sequence_agent/q92_20261108_manifest.json
+            reports/sequence_agent/q92_20261108_candidate_shortlist.csv
+            reports/sequence_agent/q92_20261108_candidate_selection.json
+            reports/sequence_agent/q92_20261108_paired_blind_ledger.csv
+            reports/sequence_agent/q92_20261108_paired_inference.json
+            reports/sequence_agent/q92_20261108_shard_artifact_manifest.json
+            reports/sequence_agent/q92_20261108_acceptance_summary.json
+            reports/sequence_agent/q92_20261108_persistence_receipt.json
+          )
+          for path in "${paths[@]}"; do
+            git show "origin/$RESULT_BRANCH:$path" | cmp -s - "$path" || { echo "Q92_RECOVERY_READBACK_BLOCKED: byte mismatch $path"; exit 1; }
+            [[ "$(git hash-object "$path")" == "$(git rev-parse "origin/$RESULT_BRANCH:$path")" ]] || { echo "Q92_RECOVERY_READBACK_BLOCKED: Git blob mismatch $path"; exit 1; }
+          done
+          python scripts/validate_sonar_q92_ten_feature.py > /tmp/q92-persisted-replay.txt
+          grep -F "Q92_ACCEPTANCE_PASS:" /tmp/q92-persisted-replay.txt
+          python - <<'PY'
+          import hashlib,json,os
+          from pathlib import Path
+          root=Path("reports/sequence_agent")
+          original=json.loads((root/"q92_20261108_persistence_receipt.json").read_text(encoding="utf-8"))
+          summary=json.loads((root/"q92_20261108_acceptance_summary.json").read_text(encoding="utf-8"))
+          replay=Path("/tmp/q92-persisted-replay.txt").read_text(encoding="utf-8")
+          receipt={
+            "schema_version":"1.0",
+            "task_id":"Q92_2026_11_08",
+            "status":"ACCEPTANCE_PASS_RESULT_BRANCH_PERSISTED_READBACK_VERIFIED_PENDING_HUMAN_REVIEW",
+            "source_checkout_sha":os.environ["SOURCE_SHA"],
+            "source_archive_sha256":original["source_archive_sha256"],
+            "source_archive_git_blob_sha1":"77ca692a6082809fcc6c471501617433ec7c36cf",
+            "analysis_run_id":42764304973,
+            "exact_source_full_ci_run_id":42764311328,
+            "exact_source_full_ci_conclusion":"success",
+            "acceptance_replay_marker":"Q92_ACCEPTANCE_PASS",
+            "accepted_bundle":{
+              "artifact_id":"13743351872",
+              "sha256":"2bc547a399b8017d3e93b34683662ecb3adb96002a26b2bd2835b48384856bc6",
+              "bytes":204386240,
+              "retention_days":90,
+              "byte_readback_verified":True
+            },
+            "original_receipt_sha256":hashlib.sha256((root/"q92_20261108_persistence_receipt.json").read_bytes()).hexdigest(),
+            "result_branch":os.environ["RESULT_BRANCH"],
+            "core_outputs_commit_sha":os.environ["Q92_RECOVERY_CORE_COMMIT"],
+            "persisted_core_paths":[
+              "q92_20261108_report.json","q92_20261108_manifest.json","q92_20261108_candidate_shortlist.csv",
+              "q92_20261108_candidate_selection.json","q92_20261108_paired_blind_ledger.csv",
+              "q92_20261108_paired_inference.json","q92_20261108_shard_artifact_manifest.json",
+              "q92_20261108_acceptance_summary.json","q92_20261108_persistence_receipt.json"
+            ],
+            "readback":{"status":"PASS","byte_identical_core_files":9,"git_blob_sha_verified_core_files":9},
+            "acceptance_replay":{"status":"PASS","marker_present":("Q92_ACCEPTANCE_PASS:" in replay)},
+            "result":{
+              "formula_count":summary["formula_count"],
+              "metrics_rows":summary["metrics_rows"],
+              "global_holm_family_size":summary["holm_family_size"],
+              "selected_q92_candidate_id":summary["selected_q92_candidate_id"],
+              "paired_primary_decision":summary["paired_primary_decision"]
+            },
+            "human_review":"PENDING",
+            "promotion":"NOT_AUTHORIZED"
+          }
+          path=root/"q92_20261108_persistence_recovery_receipt.json"
+          path.write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+chr(10),encoding="utf-8")
+          print("Q92_RECOVERY_RECEIPT_CREATED: "+hashlib.sha256(path.read_bytes()).hexdigest())
+          PY
+          git add reports/sequence_agent/q92_20261108_persistence_recovery_receipt.json
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Record Q92 accepted artifact persistence and readback"
+          git push origin "$RESULT_BRANCH"
+          git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          git show "origin/$RESULT_BRANCH:reports/sequence_agent/q92_20261108_persistence_recovery_receipt.json" | cmp -s - reports/sequence_agent/q92_20261108_persistence_recovery_receipt.json
+          [[ "$(git hash-object reports/sequence_agent/q92_20261108_persistence_recovery_receipt.json)" == "$(git rev-parse "origin/$RESULT_BRANCH:reports/sequence_agent/q92_20261108_persistence_recovery_receipt.json")" ]]
+          echo "Q92_PERSISTED_RECOVERY_PASS: core outputs and recovery receipt are committed, byte-read back and acceptance-replayed; human review remains pending."
