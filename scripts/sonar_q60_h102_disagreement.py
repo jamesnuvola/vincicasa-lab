@@ -11,11 +11,16 @@ import argparse
 import csv
 import json
 import random
+import sys
 from collections import defaultdict
 from datetime import datetime, time
 from pathlib import Path
 from zoneinfo import ZoneInfo
 from math import comb
+
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from scripts.sonar_q60_h101_rrf import reciprocal_rank_fusion
 
