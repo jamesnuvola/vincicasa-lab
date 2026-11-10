@@ -1,4 +1,7 @@
 import unittest
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.verify_sonar_q92_result_branch import (
     git_blob_sha,
