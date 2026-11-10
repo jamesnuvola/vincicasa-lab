@@ -39,12 +39,6 @@ def validate_receipt_summary(receipt: dict[str, Any], summary: dict[str, Any]) -
         raise ValueError("receipt/summary source archive SHA-256 mismatch")
     if receipt.get("output_sha256") != summary.get("output_sha256"):
         raise ValueError("receipt/summary output SHA-256 manifest mismatch")
-    if receipt.get("summary_sha256") != hashlib.sha256(
-        json.dumps(summary, ensure_ascii=False, indent=2).encode("utf-8")
-    ).hexdigest():
-        # The stored summary is checked byte-for-byte by verify(); this branch
-        # is informational because JSON serializers may differ in whitespace.
-        pass
     bundle = receipt.get("artifact_bundle", {})
     if bundle.get("byte_readback_verified") is not True:
         raise ValueError("receipt does not attest artifact byte readback")
@@ -91,6 +85,8 @@ def verify() -> int:
 
     receipt = json.loads(receipt_raw)
     summary = json.loads(summary_raw)
+    if source_sha and receipt.get("source_checkout_sha") != source_sha:
+        raise ValueError("receipt source checkout SHA differs from expected source")
     report = json.loads(report_raw)
     manifest = json.loads(manifest_raw)
     validate_receipt_summary(receipt, summary)
