@@ -11,3 +11,10 @@
 - All prior cutoffs and 16,015 source rank vectors checked; source snapshot and target ledger persisted.
 
 Post-hoc exploratory only: component families were previously examined and historical Blind OOS is not virgin. No promotion, production change, freeze change or merge. Stop retrospective tuning; continue Q60 prospective collection.
+
+## Execution and persistence recovery
+
+- Workflow run 42848795188: six regression tests passed and the strict-prior replay completed successfully.
+- The final workflow push failed with `remote: fatal error in commit_refs`; this was a repository-write failure, not an analytical or test failure.
+- Report, checkpoint and validation were then persisted through the GitHub connector. SHA-256 readback matches the validation record for the script, report, checkpoint, source snapshot and target ledger.
+- The workflow was changed to upload an evidence artifact instead of pushing from the runner; no successful rerun of that revised workflow is claimed.
