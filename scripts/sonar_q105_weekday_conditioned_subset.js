@@ -170,6 +170,7 @@ function run() {
   if (protocol.experiment_id !== "Q105" || protocol.status !== "PREREGISTERED_NOT_RUN") fail("protocol identity/status mismatch");
   if (protocol.source.archive_blob_sha1 !== gitBlobSha(ARCHIVE)) fail("archive blob SHA differs from preregistration");
   if (protocol.forecast.prior_equivalent_draws !== ALPHA || protocol.forecast.warmup_draws !== WARMUP) fail("protocol constants mismatch");
+  if (protocol.inference.block_length !== BLOCK || protocol.inference.block_sign_flip_replicates !== SIGN_REPS || protocol.inference.circular_block_bootstrap_replicates !== BOOT_REPS || protocol.inference.seed !== SEED) fail("inference constants differ from preregistration");
   const draws = parseArchive(archiveText), rows = [];
   const gc = Array(40).fill(0), wc = Array.from({ length: 7 }, () => Array(40).fill(0)), wn = Array(7).fill(0);
   for (let i = 0; i < WARMUP; i++) {
@@ -241,6 +242,7 @@ function run() {
     { id: "deterministic_replay", status: "PASS", detail: replayPass + "/8 forecast replays identical in memory." },
     { id: "chronological_split_reconciliation", status: "PASS", detail: "1921 discovery + 641 validation + 641 historical blind OOS = 3203." },
     { id: "finite_probability_checks", status: "PASS", detail: "All global and weekday models have finite positive weights and normalizers." },
+    { id: "inference_preregistration_match", status: "PASS", detail: "Block length, sign-flip replicates, bootstrap replicates and seed match the preregistered protocol exactly." },
     { id: "multiplicity_family", status: "PASS", detail: "Exactly two preregistered Blind OOS endpoints receive Holm correction; weekday subgroup summaries are descriptive only." }
   ];
   const primaryMean = mean(d1);
@@ -266,6 +268,11 @@ function run() {
     },
     blind_inference: inference, weekday_diagnostics: weekdayDiagnostics,
     validation: { status: "PASS", checks },
+    recovery: {
+      initial_attempt_issue: "The first runner draft used 21-target inference blocks while the preregistered protocol specified 20. That first run is invalidated and its inferential outputs are superseded.",
+      correction: "The runner was changed to block length 20 before the final successful run; the final runner now fails closed if any inference constant differs from the protocol.",
+      final_run: "The final dedicated workflow run uses 20-target blocks, 50000 sign-flips, 10000 bootstrap replicates and the preregistered seed."
+    },
     limitations: [
       "Historical blind OOS has been exposed to prior SONAR research and is not a virgin holdout.",
       "Calendar weekday is an ex-ante covariate but no physical draw mechanism is established.",
@@ -283,8 +290,9 @@ function run() {
     "- Runner: strict-prior global and weekday counts; fixed-cardinality e5 normalization.",
     "- Blind weekday-minus-global mean gain: " + inference.endpoint_weekday_minus_global.observed_mean + "; Holm p=" + inference.endpoint_weekday_minus_global.p_holm_two_endpoint_family + ".",
     "- Blind weekday-minus-uniform mean gain: " + inference.endpoint_weekday_minus_uniform.observed_mean + "; Holm p=" + inference.endpoint_weekday_minus_uniform.p_holm_two_endpoint_family + ".",
-    "- Validation checks: " + checks.length + "/" + checks.length + " structural/replay/leakage checks passed.",
-    "- Recovery: run the Q105 Node script with --write, then with --check; no freeze or production file is modified.",
+    "- Validation checks: " + checks.length + "/" + checks.length + " structural/replay/leakage/preregistration checks passed.",
+    "- Recovery: an initial draft used 21-day blocks against the preregistered 20; that run was invalidated. Final runner enforces protocol equality and uses 20-day blocks.",
+    "- Recovery command: run the Q105 Node script with --write, then with --check; no freeze or production file is modified.",
     "- Next: await official contest 314 publication; append-only Q60 evaluation only."
   ].join("\n") + "\n";
   const validation = { experiment_id: "Q105", status: "PASS", check_count: checks.length, passed: checks.filter(x => x.status === "PASS").length, failed: checks.filter(x => x.status !== "PASS").length, checks, inference_family_size: 2, selected_model_or_parameter: "none", no_engine_promotion: true, no_freeze_mutation: true };
