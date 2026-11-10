@@ -112,6 +112,8 @@ function subsetLikelihood(scores, actualNumbers, temperature) {
   const gain = LOG_COMBINATIONS + observedLogWeight - logZ;
   const expectedGainUnderUniform = LOG_COMBINATIONS + (5 / 40) * sumLogWeights - logZ;
   return {
+    gain_raw: gain,
+    expected_gain_raw: expectedGainUnderUniform,
     gain: round12(gain),
     expected_gain_under_uniform: round12(expectedGainUnderUniform),
     log_normalizer: round12(logZ),
@@ -342,6 +344,8 @@ function main() {
       const key = temperatureKey(temperature);
       row["gain_" + key] = result.gain;
       row["expected_" + key] = result.expected_gain_under_uniform;
+      row["raw_gain_" + key] = result.gain_raw;
+      row["raw_expected_" + key] = result.expected_gain_raw;
       if (t === WARMUP && temperature === 0.5) {
         representativeLogWeights = result.log_weights;
         representativeLogZ = result.log_normalizer;
@@ -392,11 +396,15 @@ function main() {
   const validationSummary = splitSummary(validation);
   const blindSummary = splitSummary(blind);
 
-  const selectionCandidates = TEMPERATURES.map(t => ({
-    temperature: String(t),
-    mean_gain: validationSummary.models[String(t)].mean_log_likelihood_gain,
-    numeric_temperature: t
-  }));
+  const selectionCandidates = TEMPERATURES.map(t => {
+    const key = "raw_gain_" + temperatureKey(t);
+    const rawMean = validation.reduce((sum, row) => sum + row[key], 0) / validation.length;
+    return {
+      temperature: String(t),
+      mean_gain: rawMean,
+      numeric_temperature: t
+    };
+  });
   selectionCandidates.push({
     temperature: "uniform",
     mean_gain: 0,
@@ -409,16 +417,17 @@ function main() {
   const selectedTemperature = selected.temperature === "uniform" ? null : Number(selected.temperature);
 
   const blindTests = TEMPERATURES.map(temperature => {
-    const key = "gain_" + temperatureKey(temperature);
+    const key = "raw_gain_" + temperatureKey(temperature);
     const values = blind.map(r => r[key]);
-    const totalLogLikelihoodGain = round12(values.reduce((a, b) => a + b, 0));
-    const logEValue = totalLogLikelihoodGain;
+    const rawTotalLogLikelihoodGain = values.reduce((a, b) => a + b, 0);
+    const totalLogLikelihoodGain = round12(rawTotalLogLikelihoodGain);
+    const logEValue = rawTotalLogLikelihoodGain;
     const pValue = logEValue > 0 ? Math.min(1, Math.exp(-logEValue)) : 1;
     return {
       temperature: String(temperature),
-      mean_log_likelihood_gain: round12(totalLogLikelihoodGain / blind.length),
+      mean_log_likelihood_gain: round12(rawTotalLogLikelihoodGain / blind.length),
       cumulative_log_likelihood_gain: totalLogLikelihoodGain,
-      log_e_value: logEValue,
+      log_e_value: round12(logEValue),
       e_process_p_value: round12(pValue),
       p_bonferroni_43: round12(Math.min(1, 43 * pValue))
     };
@@ -431,7 +440,7 @@ function main() {
   for (const item of blindTests) item.p_holm = holmMap.get(item.temperature);
 
   const selectedBlindKey = selectedTemperature === null ? null : "gain_" + temperatureKey(selectedTemperature);
-  const selectedBlindValues = selectedBlindKey ? blind.map(r => r[selectedBlindKey]) : blind.map(() => 0);
+  const selectedBlindValues = selectedBlindKey ? blind.map(r => r["raw_" + selectedBlindKey]) : blind.map(() => 0);
   const selectedBlindMean = round12(selectedBlindValues.reduce((a, b) => a + b, 0) / blind.length);
   const selectedBlindCI = circularBlockBootstrapCI(selectedBlindValues, BOOT_REPS, BLOCK_LENGTH, BOOT_SEED);
   const selectedBlindTest = selectedTemperature === null
