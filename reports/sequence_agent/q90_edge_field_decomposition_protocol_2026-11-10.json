@@ -1,0 +1,92 @@
+{
+  "task_id": "Q90-EDGE-FIELD-DECOMPOSITION-01",
+  "title": "Separate common/degree edge-change effects from pair-specific interactions",
+  "registered_at_utc": "2026-11-10T03:40:14+01:00",
+  "status": "PREREGISTERED_PENDING_EXECUTION",
+  "source_archive": {
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86"
+  },
+  "target_design": {
+    "minimum_prior_draws": 200,
+    "targets": 3203,
+    "discovery": 1921,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "split_rule": "q84.split_name(index, total), floor(0.60*total), floor(0.80*total)",
+    "cutoff_rule": "For target i, construct every state and rank from draws[:i], freeze rankings, then read draw i."
+  },
+  "hypothesis": "The zero-row-sum pair-specific residual of the symmetric edge-change matrix may carry incremental information beyond common/degree main effects and node-only inertia.",
+  "decomposition": {
+    "input": "Symmetric zero-diagonal edge-change matrix E (40x40).",
+    "mu": "sum(E)/(n*(n-1)) over all ordered off-diagonal entries.",
+    "node_effect": "a_i=(s_i-(n-1)*mu)/(n-2), where s_i=sum_j E_ij.",
+    "main_effect": "E_main[i,j]=mu+a_i+a_j for i!=j; diagonal zero.",
+    "pair_interaction": "E_pair=E-E_main.",
+    "invariants": [
+      "E_main+E_pair=E to numerical tolerance",
+      "E_pair symmetric and zero diagonal",
+      "every E_pair row sum is zero to 1e-10",
+      "sum_i a_i=0 to 1e-10",
+      "E_main and E_pair are Frobenius-orthogonal to numerical tolerance"
+    ]
+  },
+  "frozen_operator": {
+    "base": "BASE::EQUAL42",
+    "alpha": 0.2,
+    "blend": "0.5*(REVERSION+GRAPH)",
+    "projection": "signed cosine(node_delta_i, (E_component @ prior_features)/sqrt(39))",
+    "smoothing": {
+      "window": 20,
+      "decay": 0.8
+    },
+    "node_only": "signed cosine(current node delta, previous node delta), EWMA20 decay 0.80; reversion multiplier."
+  },
+  "models": [
+    {
+      "id": "Q90::FULL_EDGE_TRANSFER",
+      "component": "E",
+      "role": "full graph comparator"
+    },
+    {
+      "id": "Q90::DEGREE_MAIN_TRANSFER",
+      "component": "E_main",
+      "role": "common/degree main-effect control"
+    },
+    {
+      "id": "Q90::PAIR_INTERACTION_TRANSFER",
+      "component": "E_pair",
+      "role": "fixed focal hypothesis"
+    },
+    {
+      "id": "Q90::NODE_ONLY_INERTIA",
+      "component": "none",
+      "role": "graph-free autoregressive control"
+    },
+    {
+      "id": "BASE::EQUAL42",
+      "component": "none",
+      "role": "fixed 42-rule equal-weight baseline"
+    }
+  ],
+  "selection": "No candidate or parameter selection. PAIR_INTERACTION is the predeclared focal operator. Discovery and Validation are reported chronologically; historical Blind OOS is evaluated once and remains exploratory.",
+  "statistics": {
+    "exact_null": "45 tests: 5 models x 3 chronological splits x Top5/Top10/Top20; exact Hypergeometric(40,k,5) upper-tail null and one global Holm family.",
+    "paired": "32 tests: Validation and historical Blind OOS x four controls (FULL_EDGE, DEGREE_MAIN, NODE_ONLY, EQUAL42) x Top5/Top10/Top20/mean actual rank; circular moving-block bootstrap length 20, 2,000 replicates, one global Holm family.",
+    "primary_gate": "On historical Blind OOS, PAIR_INTERACTION must exceed DEGREE_MAIN Top20 by at least 0.10 hits/target, paired block-bootstrap CI lower bound >0, paired Holm p<0.05, and exact-null Holm p<0.05. The same direction and inferential criteria must hold versus EQUAL42; this historical slice is exploratory and cannot establish prospective confirmation."
+  },
+  "safeguards": [
+    "Archive byte identity pinned by Git blob SHA-1; no archive rewrite after registration.",
+    "Every target state uses draws[:i]; no current or future outcome is used to form the ranking.",
+    "All four transfer operators use fixed alpha/window/decay; no Validation or Blind OOS tuning.",
+    "The decomposition is deterministic and tested for exact reconstruction, symmetry, zero diagonal and zero residual row sums.",
+    "All five rankings are frozen before reading the target quintet.",
+    "One global Holm family for exact-null tests and one global Holm family for paired tests.",
+    "Moving-block bootstrap is reported separately because exact hypergeometric tests assume independent target draws.",
+    "Historical Blind OOS is already exposed in earlier SONAR experiments; it is exploratory, not virgin holdout.",
+    "Pair graph is a statistical co-occurrence descriptor, not physical coupling or proof of causality.",
+    "No immutable freeze modification, no prospective shadow insertion, no model promotion and no automatic merge."
+  ]
+}
