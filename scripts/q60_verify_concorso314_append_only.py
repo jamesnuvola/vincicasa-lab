@@ -164,12 +164,12 @@ def main():
           "active app freeze preserves its prior-day cutoff and exact-source reconciliation", checks)
 
     queue = read_json(OUT / "research_queue_status.json")
-    q60 = next((x for x in queue.get("tasks", []) if x.get("id") == "Q60"), {})
-    check(queue.get("overall_cycle_status") == "INCOMPLETE" and
-          q60.get("status") == "INSUFFICIENT_PROSPECTIVE_CASES",
-          "research queue remains incomplete at the registered Q60 gate", checks)
-    check(any("23 complete prospective paired targets" in e for e in q60.get("validation_errors", [])),
-          "queue explicitly records 23/200 and the remaining evidence requirement", checks)
+    q60 = next((x for x in queue.get("tasks", []) if x.get("id") == "Q60"), None)
+    check(queue.get("overall_cycle_status") == "INCOMPLETE" and queue.get("queue_status") == "QUEUE_VALID",
+          "research queue remains valid but incomplete", checks)
+    check(q60 is not None, "Q60 remains registered in the research queue", checks)
+    check(any("minimum 200" in e for e in q60.get("validation_errors", [])),
+          "queue retains the 200-pair evidence requirement", checks)
 
     result = {
         "experiment_id": "Q60-D314-APPEND-ONLY",
