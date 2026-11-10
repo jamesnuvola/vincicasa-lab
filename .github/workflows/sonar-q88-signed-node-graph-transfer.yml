@@ -1,28 +1,31 @@
-name: SONAR Q88 Signed Node-Graph Transfer Read-Only Replay
+name: SONAR Q88 Signed Node-Graph Transfer
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - research/q88-execution-base-20261110
     types: [opened, synchronize, reopened, edited]
-  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  actions: write
 
 concurrency:
-  group: sonar-q88-signed-node-graph-transfer-readonly-20261110
+  group: sonar-q88-signed-node-graph-transfer-trusted-20261110
   cancel-in-progress: false
 
 jobs:
-  validate-persisted:
+  evaluate-validate-persist:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 240
     steps:
+      # pull_request_target uses this trusted base workflow. Checkout the PR head
+      # without persisting credentials; the Python research code never receives GITHUB_TOKEN.
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -40,6 +43,69 @@ jobs:
         run: python -m py_compile scripts/sonar_q88_signed_node_graph_transfer.py scripts/validate_sonar_q88_signed_node_graph_transfer.py
       - name: Run signed projection, prefix-only, smoothing and operator tests
         run: python tests/test_sonar_q88_signed_node_graph_transfer.py -v
-      - name: Replay persisted Q88 outputs read-only on exact head
+      - name: Execute preregistered Q88 strict-prior walk-forward
+        if: steps.state.outputs.persisted != 'true'
+        env:
+          SONAR_SOURCE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python scripts/sonar_q88_signed_node_graph_transfer.py
+      - name: Independently replay every target, transfer vector, rank and Holm family
+        if: steps.state.outputs.persisted != 'true'
+        run: python scripts/validate_sonar_q88_signed_node_graph_transfer.py
+      - name: Upload Q88 persistence bundle as recovery evidence
+        if: steps.state.outputs.persisted != 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: q88-signed-node-graph-transfer-bundle
+          path: |
+            reports/sequence_agent/q88_signed_node_graph_transfer_catalog.jsonl
+            reports/sequence_agent/q88_signed_node_graph_transfer_target_ledger.csv.gz
+            reports/sequence_agent/q88_signed_node_graph_transfer_report.json
+            reports/sequence_agent/q88_signed_node_graph_transfer_manifest.json
+            reports/sequence_agent/q88_signed_node_graph_transfer_checkpoint_2026-11-10.json
+            reports/sequence_agent/q88_signed_node_graph_transfer_validation.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Persist append-only Q88 artifacts with isolated write token and verify exact Git readback
+        if: steps.state.outputs.persisted != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote set-url origin "https://x-access-token:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_catalog.jsonl
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_target_ledger.csv.gz
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_report.json
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_manifest.json
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_checkpoint_2026-11-10.json
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_validation.json
+          git commit -m "Persist Q88 signed node-graph transfer results [q88-signed-transfer-persisted]"
+          git push origin "HEAD:$TARGET_BRANCH"
+          for f in \
+            reports/sequence_agent/q88_signed_node_graph_transfer_catalog.jsonl \
+            reports/sequence_agent/q88_signed_node_graph_transfer_target_ledger.csv.gz \
+            reports/sequence_agent/q88_signed_node_graph_transfer_report.json \
+            reports/sequence_agent/q88_signed_node_graph_transfer_manifest.json \
+            reports/sequence_agent/q88_signed_node_graph_transfer_checkpoint_2026-11-10.json \
+            reports/sequence_agent/q88_signed_node_graph_transfer_validation.json; do
+            git show "HEAD:$f" > /tmp/q88-readback
+            cmp "$f" /tmp/q88-readback
+          done
+          python scripts/validate_sonar_q88_signed_node_graph_transfer.py --read-only
+      - name: Replay already persisted Q88 outputs read-only on exact head
         if: steps.state.outputs.persisted == 'true'
         run: python scripts/validate_sonar_q88_signed_node_graph_transfer.py --read-only
+      - name: Dispatch general CI on persisted exact head
+        if: steps.state.outputs.persisted != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"$TARGET_BRANCH\"}"
