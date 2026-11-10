@@ -94,15 +94,9 @@ def verify() -> int:
     report = json.loads(report_raw)
     manifest = json.loads(manifest_raw)
     validate_receipt_summary(receipt, summary)
+    if hashlib.sha256(summary_raw).hexdigest() != receipt.get("summary_sha256"):
+        raise ValueError("acceptance-summary SHA-256 mismatch")
 
-    expected = dict(receipt["output_sha256"])
-    expected[SUMMARY_PATH.rsplit("/", 1)[-1]] = {
-        "bytes": len(summary_raw),
-        "sha256": hashlib.sha256(summary_raw).hexdigest(),
-    }
-    # The acceptance summary is stored under a different name from the
-    # basename key above; verify it explicitly and keep the receipt schema
-    # unchanged.
     expected_files = dict(receipt["output_sha256"])
     expected_files[SUMMARY_PATH] = {
         "bytes": len(summary_raw),
