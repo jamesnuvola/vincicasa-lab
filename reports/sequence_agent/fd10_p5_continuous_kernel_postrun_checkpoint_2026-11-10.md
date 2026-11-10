@@ -46,7 +46,11 @@ The other bandwidths also failed to beat the exact null on Blind OOS Brier. h=3,
 - Target-ledger blob SHA: `7b7d0a3d46eb5094397a377b0b1a79139c64643a`; read back through Git blob API as 1,074,564 characters, 3,104 lines (header + 3,103 targets), 41 columns.
 - Code blob SHA: `553dbcb5b18cfeccaadcc022c0f07e1a0210467d`.
 - Protocol blob SHA: `5d315321f69cc5e3493ace98d61df49414c57229`.
-- GitHub readback confirmed all paths and blob identifiers. Dedicated Python CI replay and cross-language numeric-tolerance comparison are **pending**; do not claim them passed until the workflow result is inspected.
+- GitHub readback confirmed all paths and blob identifiers.
+- Initial dedicated workflow run 42839132477 failed in the full replay because the bootstrap still referenced `random.Random` after the PRNG was replaced; the nine unit tests had passed. Replaced the remaining RNG call with the registered XorShift32 generator and added a deterministic-bootstrap regression test.
+- The next replay (run 42839311224) completed the full walk-forward but failed the independent readback because Python serialized bandwidth keys as `3.0/6.0/12.0` while the V8-generated report used `3/6/12`. Normalized the Python report keys to `{h:g}`; the registered hypothesis, data, parameters and scored results were unchanged.
+- Exact-head dedicated workflow run **42839425666: SUCCESS** on commit `96569fd76495734f860c4eb5baabd7d69663569b`. Verified: compilation, **10/10 regression tests**, full 3,103-target replay with 50,000 block-sign flips and 10,000 bootstraps, and report/ledger readback validator (`FD10_PERSISTED_REPORT_LEDGER_REPLAY_PASS`).
+- General repository CI run 42839426185 was still in progress at the last check; do not claim it passed until its conclusion is read.
 
 ## Guardrails and next action
 - Historical Blind OOS is already exposed to prior SONAR work; this remains exploratory, not prospective confirmation.
