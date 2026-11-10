@@ -8,6 +8,6 @@
 - Blind Top-20 difference vs Equal42: -0.003120125 hits/target; 95% CI [-0.018720749, +0.014040562].
 - Block sign-flip raw p 0.707746; global Holm p 1.000000.
 - 15 paired tests, 50,000 sign flips, 10,000 circular block bootstraps, block length 20.
-- All prior cutoffs and 25,624 source rank vectors checked; source snapshot and target ledger persisted.
+- All prior cutoffs and 16,015 source rank vectors checked; source snapshot and target ledger persisted.
 
 Post-hoc exploratory only: component families were previously examined and historical Blind OOS is not virgin. No promotion, production change, freeze change or merge. Stop retrospective tuning; continue Q60 prospective collection.
