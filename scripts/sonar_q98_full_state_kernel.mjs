@@ -332,7 +332,7 @@ function main() {
   const csv=fs.readFileSync("data/storico_daily.csv","utf8");
   const protocolText=fs.readFileSync(PROTOCOL_PATH,"utf8");
   const protocol=JSON.parse(protocolText);
-  const gitBlobSha1=(value)=>{const b=Buffer.from(value,"utf8");return crypto.createHash("sha1").update(Buffer.from("blob "+b.length+"\\0")).update(b).digest("hex");};
+  const gitBlobSha1=(value)=>{const b=Buffer.from(value,"utf8");return crypto.createHash("sha1").update(Buffer.from("blob "+b.length+"\0")).update(b).digest("hex");};
   assert(gitBlobSha1(csv)===protocol.source.git_blob_sha1,"canonical archive Git blob SHA mismatch");
   assert(gitBlobSha1(protocolText)==="883226aeb8d54dedf8f015d72c2d06e12cae349c","preregistered protocol Git blob SHA mismatch");
   const out=runExperiment(csv,protocol);
