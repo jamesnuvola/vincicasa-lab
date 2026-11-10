@@ -1,0 +1,126 @@
+{
+  "protocol": "Q60-H100 exclusive-candidate complementarity audit",
+  "prepared_at": "2026-11-10T11:47:17+01:00",
+  "status": "EXPLORATORY_NOT_CONFIRMATORY",
+  "source_branch": "research/q60-nov09-reconciliation-20261110-run11",
+  "inputs": {
+    "global_shadow_forecasts": {
+      "path": "reports/sequence_agent/shadow_forecasts.csv",
+      "git_blob_sha": "ffd9ab70fb27897d0dd3126391ca931b60ba25ac"
+    },
+    "positional_shadow_forecasts": {
+      "path": "reports/sequence_agent/position_mix_shadow.csv",
+      "git_blob_sha": "3b2fe6055d2075308fba742022dd6e527f634770"
+    },
+    "canonical_archive": {
+      "path": "data/storico_daily.csv",
+      "git_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86"
+    }
+  },
+  "sample": {
+    "paired_evaluated_targets": 22,
+    "first_target": "2026-10-19",
+    "last_target": "2026-11-09",
+    "global_model": "freq_100",
+    "positional_model": "position_seed_mix_top20_v1",
+    "history_cutoff_rule": "target_date minus one calendar day",
+    "freeze_rule": "both forecasts frozen before nominal 19:00 Europe/Rome draw time",
+    "missing_freezes_reconstructed": 0
+  },
+  "hypothesis": {
+    "h100_primary": "After controlling for equal-sized exclusive candidate slices per target, the positional-only Top20 candidates add more actual winning numbers than the global-only Top20 candidates.",
+    "paired_endpoint": "sum(actual hits in positional Top20 minus global Top20) minus sum(actual hits in global Top20 minus positional Top20), equivalently sum(positional-only hits - global-only hits), paired by target.",
+    "null": "Within each target, the two exclusive slices have equal size m=20-intersection_size; under exchangeability of candidate identities, swapping the two slices leaves the null distribution of their hit-count difference unchanged.",
+    "secondary_absolute_null": "For each target t, the hit count in an m_t-number exclusive slice follows Hypergeometric(population=40, successes=m_t, draws=5); convolve target-specific discrete distributions.",
+    "future_confirmatory_cohort": "Next 178 complete paired targets including any already frozen pre-target pair whose outcome is not yet known at registration; no retrospective backfill; engines and candidate lists unchanged."
+  },
+  "observed_22_pair_replay": {
+    "mean_top20_jaccard": 0.6555994729907771,
+    "mean_intersection_size": 15.818181818181818,
+    "exclusive_candidates_per_engine_per_target": {
+      "mean": 4.181818181818182,
+      "min": 3,
+      "max": 5
+    },
+    "union_size": {
+      "mean": 24.181818181818183,
+      "min": 23,
+      "max": 25
+    },
+    "positional_only_hits_total": 11,
+    "global_only_hits_total": 11,
+    "paired_unique_hit_difference_total": 0,
+    "paired_unique_hit_difference_mean_per_target": 0.0,
+    "paired_signflip_exact_two_sided_p": 1.0,
+    "paired_circular_block_bootstrap": {
+      "mean_difference_ci_95": [-0.36363636363636365, 0.4090909090909091],
+      "replicates": 10000,
+      "block_length": 3,
+      "seed": 1001002
+    },
+    "positional_only_hypergeometric": {
+      "observed_total_hits": 11,
+      "expected_total_hits": 11.5,
+      "exact_upper_tail_p": 0.6172325008035332
+    },
+    "global_only_hypergeometric": {
+      "observed_total_hits": 11,
+      "expected_total_hits": 11.5,
+      "exact_upper_tail_p": 0.6172325008035332
+    },
+    "union_coverage_hypergeometric": {
+      "observed_total_hits": 67,
+      "expected_total_hits": 66.5,
+      "mean_hits_per_target": 3.0454545454545454,
+      "exact_upper_tail_p": 0.5022615868567502
+    }
+  },
+  "multiple_testing": {
+    "method": "Holm step-down",
+    "family_size": 10,
+    "family": [
+      "H97 Top5",
+      "H97 Top10",
+      "H97 Top20",
+      "H98 shared-winner rank displacement",
+      "H99 MRR5@20",
+      "H99 DHG5@20",
+      "H100 paired positional-only versus global-only hits",
+      "H100 positional-only absolute hypergeometric excess",
+      "H100 global-only absolute hypergeometric excess",
+      "H100 union absolute hypergeometric excess"
+    ],
+    "raw_p_values": [
+      0.125,
+      0.4316,
+      1.0,
+      0.76298,
+      0.3960142135620117,
+      0.6768817901611328,
+      1.0,
+      0.6172325008035332,
+      0.6172325008035332,
+      0.5022615868567502
+    ],
+    "holm_adjusted_p_values": [
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "decision": "NO_INCREMENTAL_COMPLEMENTARITY_DEMONSTRATED",
+  "limitations": [
+    "All 22 targets were already inspected in H97-H99; H100 is exploratory and cannot be treated as a fresh blind OOS result.",
+    "The candidate union contains 23-25 numbers, so raw union-hit totals must be compared with target-specific hypergeometric expectations; the size-adjusted test shows no excess.",
+    "No discovery/validation/blind split is claimed for H100 because this is a small fixed-engine prospective replay, not a newly fitted walk-forward model.",
+    "Q60's primary 5-of-5 promotion gate remains unchanged and still requires 200 complete paired targets."
+  ],
+  "next_action": "Freeze both unchanged engines for each new target, evaluate only after canonical outcome publication, append outcomes without modifying forecasts, and run the registered 178-pair confirmatory complementarity analysis with the paired exclusive-hit endpoint primary and the size-adjusted hypergeometric endpoints secondary under Holm."
+}
