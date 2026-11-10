@@ -243,11 +243,15 @@ function run() {
     { id: "finite_probability_checks", status: "PASS", detail: "All global and weekday models have finite positive weights and normalizers." },
     { id: "multiplicity_family", status: "PASS", detail: "Exactly two preregistered Blind OOS endpoints receive Holm correction; weekday subgroup summaries are descriptive only." }
   ];
+  const primaryMean = mean(d1);
+  const decision = primaryMean > 0 && inference.endpoint_weekday_minus_global.p_holm_two_endpoint_family < 0.05
+    ? "HISTORICAL_WEEKDAY_INCREMENTAL_SIGNAL_REQUIRES_PROSPECTIVE_CONFIRMATION"
+    : "NO_WEEKDAY_INCREMENTAL_LIFT_DEMONSTRATED";
   const report = {
     experiment_id: "Q105",
     title: "Weekday-conditioned number inclusion model versus global-frequency and exact-uniform subset baselines",
     generated_date: "2026-11-10",
-    decision: "PENDING_INTERPRETATION",
+    decision,
     source: { main_commit: protocol.source.main_commit, archive_blob_sha1: gitBlobSha(ARCHIVE), protocol_blob_sha1: gitBlobSha(PROTOCOL), archive_draws: draws.length, first_date: draws[0].date, last_date: draws[draws.length - 1].date },
     model: {
       prior_equivalent_draws: ALPHA, prior_expected_hits_per_number: PRIOR_HITS, baseline_per_number_inclusion_probability: 0.125,
