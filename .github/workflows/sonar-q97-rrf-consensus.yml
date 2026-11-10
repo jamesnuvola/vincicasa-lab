@@ -16,7 +16,7 @@ on:
 
 permissions:
   actions: read
-  contents: write
+  contents: read
 
 jobs:
   q97:
@@ -46,12 +46,10 @@ jobs:
             --input /tmp/q94/q94_spectral_subspace_persistence_target_ledger.csv.gz \
             --manifest /tmp/q94/q94_spectral_subspace_persistence_manifest.json \
             --output-dir reports/sequence_agent
-      - name: Commit generated evidence to this research branch
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/sequence_agent/q97_rrf_consensus_*
-          if ! git diff --cached --quiet; then
-            git commit -m "Persist Q97 RRF consensus replay [skip ci]"
-            git push origin "HEAD:${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
-          fi
+      - name: Upload generated evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: q97-rrf-consensus-evidence
+          path: reports/sequence_agent/q97_rrf_consensus_*
+          if-no-files-found: error
+          retention-days: 90
