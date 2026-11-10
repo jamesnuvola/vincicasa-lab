@@ -434,7 +434,7 @@ function main() {
       cumulative_log_likelihood_gain: totalLogLikelihoodGain,
       log_e_value: round12(logEValue),
       e_process_p_value: pValue,
-      p_bonferroni_43: roundUp12(Math.min(1, 43 * pValueRaw))
+      p_bonferroni_43: roundUp12(Math.min(1, 43 * (pValueRaw === 0 ? 1e-12 : pValueRaw)))
     };
   });
   const blindTestsHolm = holmAdjust(blindTests.map(x => ({
