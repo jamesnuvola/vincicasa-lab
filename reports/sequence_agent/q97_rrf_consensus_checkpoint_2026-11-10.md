@@ -18,3 +18,8 @@ Post-hoc exploratory only: component families were previously examined and histo
 - The final workflow push failed with `remote: fatal error in commit_refs`; this was a repository-write failure, not an analytical or test failure.
 - Report, checkpoint and validation were then persisted through the GitHub connector. SHA-256 readback matches the validation record for the script, report, checkpoint, source snapshot and target ledger.
 - The workflow was changed to upload an evidence artifact instead of pushing from the runner; no successful rerun of that revised workflow is claimed.
+
+## Additional interpretation limits
+
+- BASE_EQUAL42 is itself one of the five fused rankings; the RRF-vs-baseline comparison is anchored/nested, not independent.
+- Holm correction covers the 15 Q97 comparisons only, not the entire historical SONAR research family.
