@@ -1,0 +1,64 @@
+{
+  "task_id": "Q88-SIGNED-NODE-GRAPH-TRANSFER-01",
+  "title": "Signed node-to-graph transfer by neighbor-state projection",
+  "registered_at_utc": "2026-11-10T01:40:34+01:00",
+  "status": "PREREGISTERED_PENDING_EXECUTION",
+  "source_archive": {
+    "draws": 3402,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-08",
+    "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+  },
+  "target_design": {
+    "minimum_prior_draws": 200,
+    "targets": 3202,
+    "discovery": 1921,
+    "validation": 640,
+    "historical_blind_oos": 641,
+    "cutoff_rule": "For target index i, compute the current field and edge graph from draws[:i] only. The current transition is from the previously observed prefix to draws[:i]; freeze all 40-number rankings before reading draw i."
+  },
+  "hypothesis": "A signed projection of each number's recent pair-graph row change onto the six-dimensional prior feature states of its neighbors may describe directional transfer between relational and per-number state. A rolling, prior-only average of this signed alignment may contain information not captured by Q86 directional cosine or Q87 lagged magnitude correlation.",
+  "projection": {
+    "node_delta": "X_t - X_(t-1), shape 40x6, where each column is a standardized per-number field feature.",
+    "graph_delta": "E_t - E_(t-1), shape 40x40, symmetric with zero diagonal.",
+    "neighbor_state": "X_(t-1), shape 40x6, strictly prior to the current transition.",
+    "projected_graph_change": "G_t = (E_t - E_(t-1)) @ X_(t-1) / sqrt(39), shape 40x6.",
+    "signed_transfer": "c_i(t) = dot(node_delta_i, G_t_i) / (norm(node_delta_i)*norm(G_t_i)); zero if either norm is zero.",
+    "smoothing": "Weighted mean over at most the latest 20 observed transition alignments, with fixed decay 0.80 per step; latest transition weight 1.0. No fitted parameters."
+  },
+  "operators": [
+    {
+      "id": "DYN::TRANSFER_REVERSION",
+      "definition": "base_z + 0.20 * reversion_i * z(rolling_signed_transfer_i)"
+    },
+    {
+      "id": "DYN::TRANSFER_GRAPH",
+      "definition": "base_z + 0.20 * graph_signal_i * z(rolling_signed_transfer_i)"
+    },
+    {
+      "id": "DYN::TRANSFER_BLEND",
+      "definition": "base_z + 0.20 * 0.5*(reversion_i+graph_signal_i) * z(rolling_signed_transfer_i)"
+    }
+  ],
+  "model_family": "All 12 frozen Q87 models plus 3 fixed Q88 transfer operators; 15 models total.",
+  "selection": "Select one of the three Q88 candidates by Discovery mean Top20 hits only; tie-break lower mean actual rank, then stable strategy ID. Do not use Validation or historical Blind OOS to select or tune.",
+  "statistics": {
+    "exact_null": "Discrete upper-tail convolution of iid Hypergeometric(40,k,5) hit counts, one global Holm family.",
+    "exact_holm_family": 135,
+    "paired": "Moving-block bootstrap, block length 20, 2,000 replications, one global Holm family.",
+    "paired_holm_family": 96,
+    "paired_comparators": "All 12 frozen Q87 models, on Validation and historical Blind OOS; endpoints Top5, Top10, Top20, and mean actual rank.",
+    "primary_gate": "Selected historical Blind OOS Top20 lift >=0.10 versus Equal42, paired 95% CI lower bound >0, paired Holm p<0.05 and exact-null global Holm p<0.05. This historical gate is exploratory only and cannot authorize promotion."
+  },
+  "safeguards": [
+    "All node and graph states are computed from the target's strict prior prefix.",
+    "The graph change is projected using the previous prefix's neighbor feature matrix, not the current or future feature matrix.",
+    "Rolling transfer uses only transitions observed by the target cutoff; future-invariance tests are mandatory.",
+    "All operator weights, smoothing window and decay are fixed before execution.",
+    "No Validation or historical Blind OOS tuning; historical Blind OOS has prior exposure and is not a virgin holdout.",
+    "The pair graph is a statistical co-occurrence descriptor, not physical coupling or proof of causal influence.",
+    "The validator independently replays every target cutoff, transfer vector, rank permutation, metric and multiple-testing family.",
+    "No immutable freeze modification, prospective shadow insertion, engine promotion, or automatic merge."
+  ]
+}
