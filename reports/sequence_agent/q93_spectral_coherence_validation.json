@@ -1,0 +1,75 @@
+{
+  "checks": {
+    "archive_git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "archive_sha256": "ba0c8f4e78805e72d04a1b731e1882a9edd3ac71a2bc35c92409540d9ebdec61",
+    "canonical_draws": 3403,
+    "exact_null_holm_tests": 72,
+    "models": 8,
+    "paired_holm_tests": 48,
+    "permutation_summary_values_replayed": 1268388,
+    "permutations": 99,
+    "rank_vectors_replayed": 25624,
+    "report_sha256": "d5c471cf6fb85a92e741b090c858bc16044110f427a91c04d42ba12467c26abd",
+    "spectral_randomization_holm_tests": 9,
+    "spectral_signal_values_replayed": 768720,
+    "split_counts": {
+      "blind_oos": 641,
+      "discovery": 1921,
+      "validation": 641
+    },
+    "strict_prior_cutoffs": 3203,
+    "target_ledger_sha256": "c6312eab612c278abed9df1050f8dc873ee20b6176d0fe6684958edee60a3eab",
+    "targets": 3203
+  },
+  "engine_promotion_allowed": false,
+  "human_review_required": true,
+  "immutable_freezes_modified": false,
+  "primary_gate": {
+    "blind_top20": 2.5366614664586584,
+    "comparisons": [
+      {
+        "ci95": [
+          -0.020319812792511698,
+          0.029641185647425898
+        ],
+        "comparator": "Q90::PAIR_INTERACTION_TRANSFER",
+        "focal_top20": 2.5366614664586584,
+        "gate_component": "NOT_MET",
+        "lift": 0.004680187207488196,
+        "paired_p_holm": 1.0,
+        "reference_top20": 2.5319812792511702
+      },
+      {
+        "ci95": [
+          -0.0343213728549142,
+          0.014040561622464899
+        ],
+        "comparator": "BASE::EQUAL42",
+        "focal_top20": 2.5366614664586584,
+        "gate_component": "NOT_MET",
+        "lift": -0.009360374414976391,
+        "paired_p_holm": 1.0,
+        "reference_top20": 2.546021840873635
+      },
+      {
+        "ci95": [
+          -0.02615941001276415,
+          0.012702689925778846
+        ],
+        "comparator": "Q93::SPECTRAL_K2_PERM_MEAN",
+        "focal_top20": 2.5366614664586584,
+        "gate_component": "NOT_MET",
+        "lift": -0.006712995792561127,
+        "paired_p_holm": 1.0,
+        "reference_top20": 2.5433744622512195
+      }
+    ],
+    "exact_null_p_holm": 1.0,
+    "focal_model": "Q93::SPECTRAL_K2",
+    "spectral_randomization_p_holm": 1.0,
+    "status": "NOT_MET"
+  },
+  "scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+  "status": "PASS",
+  "task_id": "Q93-SPECTRAL-COHERENCE-01"
+}
