@@ -1,0 +1,105 @@
+name: SONAR Q93 Spectral Coherence
+
+on:
+  push:
+    branches:
+      - research/q93-spectral-coherence-20261110
+    paths:
+      - "scripts/sonar_q93_spectral_coherence.py"
+      - "scripts/validate_sonar_q93_spectral_coherence.py"
+      - "scripts/persist_sonar_q93_outputs.py"
+      - "tests/test_sonar_q93_spectral_coherence.py"
+      - "reports/sequence_agent/q93_spectral_coherence_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q93-spectral-coherence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonar-q93-spectral-coherence
+  cancel-in-progress: false
+
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q93-spectral-coherence-20261110
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependencies
+        run: python -m pip install --disable-pip-version-check numpy pytest
+      - name: Compile Q93 engine, validator and persistence
+        run: |
+          python -m py_compile scripts/sonar_q93_spectral_coherence.py
+          python -m py_compile scripts/validate_sonar_q93_spectral_coherence.py
+          python -m py_compile scripts/persist_sonar_q93_outputs.py
+      - name: Run Q93 spectral, permutation and strict-prefix regression tests
+        run: python -m pytest -q tests/test_sonar_q93_spectral_coherence.py
+      - name: Execute Q93 strict-prior spectral walk-forward
+        run: python scripts/sonar_q93_spectral_coherence.py
+      - name: Independently replay Q93 rankings, permutations and statistical families
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: python scripts/validate_sonar_q93_spectral_coherence.py
+      - name: Upload accepted Q93 output bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q93-spectral-coherence-bundle
+          path: |
+            reports/sequence_agent/q93_spectral_coherence_catalog.jsonl
+            reports/sequence_agent/q93_spectral_coherence_target_ledger.csv.gz
+            reports/sequence_agent/q93_spectral_coherence_report.json
+            reports/sequence_agent/q93_spectral_coherence_manifest.json
+            reports/sequence_agent/q93_spectral_coherence_protocol_2026-11-10.json
+            reports/sequence_agent/q93_spectral_coherence_checkpoint_2026-11-10.md
+            reports/sequence_agent/q93_spectral_coherence_validation.json
+          if-no-files-found: error
+          retention-days: 90
+
+  persist:
+    needs: evaluate
+    if: ${{ needs.evaluate.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q93-spectral-coherence-20261110
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Download accepted Q93 output bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: q93-spectral-coherence-bundle
+          path: .q93-bundle
+          run-id: ${{ github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Persist Q93 outputs append-only and verify exact Git-object bytes
+        id: persist-q93
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SONAR_BRANCH: research/q93-spectral-coherence-20261110
+        run: python scripts/persist_sonar_q93_outputs.py
+      - name: Check out the persisted exact head
+        run: |
+          git fetch origin refs/heads/research/q93-spectral-coherence-20261110:refs/remotes/origin/research/q93-spectral-coherence-20261110
+          git checkout --detach refs/remotes/origin/research/q93-spectral-coherence-20261110
+      - name: Replay accepted Q93 outputs read-only on persisted head
+        run: |
+          python -m py_compile scripts/sonar_q93_spectral_coherence.py scripts/validate_sonar_q93_spectral_coherence.py
+          python scripts/validate_sonar_q93_spectral_coherence.py --read-only
