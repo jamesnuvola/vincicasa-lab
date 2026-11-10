@@ -1,0 +1,194 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-2026-11-10-Q84-REGIME-FLOW-REVIEW",
+  "generated_at_utc": "2026-11-10T16:41:18Z",
+  "status": "ANALYTICAL_CHECKPOINT_NOT_ACCEPTANCE_VALIDATED",
+  "source": {
+    "canonical_archive_path": "data/storico_daily.csv",
+    "canonical_archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "canonical_archive_draws": 3403,
+    "canonical_archive_first_date": "2017-07-17",
+    "canonical_archive_last_date": "2026-11-09",
+    "canonical_archive_latest_draw": [
+      9,
+      17,
+      25,
+      32,
+      34
+    ],
+    "research_branch_archive_matches_main_byte_for_byte": true,
+    "immutable_target_2026_10_25_freeze_overwritten": false,
+    "research_branch_head_at_review": "369c74332cf77cda0879eae6783d0050db5de363"
+  },
+  "q84_flow_prototype": {
+    "artifact": "reports/sequence_agent/sonar_regime_flow_prototype_2026-11-10.json",
+    "artifact_blob_sha": "8004e82788842d513e710b014c86c9f91a7c4d3c",
+    "status": "EXPLORATORY_PROTOTYPE_NOT_ACCEPTANCE_VALIDATED",
+    "targets": 3353,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "selector_candidates": 27,
+    "blind_oos": {
+      "uniform": {
+        "top5": 0.125,
+        "top10": 0.25,
+        "top20": 0.5,
+        "mean_rank": 20.5
+      },
+      "flow_only_knn_k25": {
+        "top5": 0.1223880597,
+        "top10": 0.2540298507,
+        "top20": 0.5101492537,
+        "mean_rank": 20.3495522388
+      },
+      "equal_weight_27": {
+        "top5": 0.1220895522,
+        "top10": 0.2471641791,
+        "top20": 0.5035820896,
+        "mean_rank": 20.536119403
+      },
+      "level_state_knn_k25": {
+        "top5": 0.1235820896,
+        "top10": 0.2411940299,
+        "top20": 0.4898507463,
+        "mean_rank": 20.6537313433
+      },
+      "hybrid_state_flow_knn_k25": {
+        "top5": 0.1202985075,
+        "top10": 0.2382089552,
+        "top20": 0.4802985075,
+        "mean_rank": 20.9340298507
+      },
+      "recency_100": {
+        "top5": 0.1179104478,
+        "top10": 0.2456716418,
+        "top20": 0.4994029851,
+        "mean_rank": 20.5579104478
+      },
+      "fixed_discovery_feature": {
+        "feature": "neighbor_pm2_history",
+        "top5": 0.1188059701,
+        "top10": 0.2462686567,
+        "top20": 0.5119402985,
+        "mean_rank": 20.436119403
+      }
+    },
+    "flow_only_vs_level_only_moving_block_bootstrap": {
+      "block_length": 20,
+      "replicates": 1000,
+      "mean_rank_delta_flow_minus_level": -0.3041791045,
+      "ci95": [
+        -0.9328358209,
+        0.2653731343
+      ],
+      "exploratory_two_sided_p": 0.326,
+      "top5_fraction_delta_flow_minus_level": -0.0059701493,
+      "top5_ci95": [
+        -0.0805970149,
+        0.071641791
+      ],
+      "top5_exploratory_two_sided_p": 0.882
+    },
+    "approximate_blind_oos_deviation_from_uniform": {
+      "note": "Normal approximations using 3,350 number-target observations; descriptive only, ignore within-target dependence and are not family-wise corrected.",
+      "top5": {
+        "difference_percentage_points": -0.26119403,
+        "z_approx": -0.4571
+      },
+      "top10": {
+        "difference_percentage_points": 0.40298507,
+        "z_approx": 0.5387
+      },
+      "top20": {
+        "difference_percentage_points": 1.01492537,
+        "z_approx": 1.1749
+      },
+      "mean_rank": {
+        "difference": -0.15044776,
+        "z_approx": -0.7963
+      }
+    },
+    "regime_counts": {
+      "stable": 446,
+      "contraction": 415,
+      "transition": 1672,
+      "expansion": 317,
+      "turbulent": 503
+    },
+    "conclusion": "Flow-only is the strongest adaptive variant on blind-OOS mean-rank/Top10/Top20, but its Top5 is below uniform; its paired interval versus level-only includes zero. The current result is a weak, non-significant exploratory signal, not a validated gain."
+  },
+  "historical_rule_wave_audit": {
+    "artifacts": {
+      "wave_events": "reports/sequence_agent/wave_events.csv",
+      "wave_events_blob_sha": "073a64204311c69719b63cb5af8af5047db9d03c",
+      "latest_metrics": "reports/sequence_agent/latest_metrics.json",
+      "latest_metrics_blob_sha": "155b99dd749249689abbc72ab203f75f10ebee47"
+    },
+    "status": "RETROSPECTIVE_RULE_FIXED_NOW",
+    "target_count": 3201,
+    "rule_configurations": 42,
+    "event_rows": 3047,
+    "isolated_success_rows": 2980,
+    "repeated_two_target_wave_rows": 67,
+    "successful_rule_target_pairs": 3114,
+    "longest_consecutive_success_streak": 2,
+    "rules_with_at_least_one_repeated_two_target_wave": 33,
+    "unique_target_dates_with_any_rule_5_of_5_top20": 1094,
+    "unique_target_date_rate": 0.3417682,
+    "uniform_fixed_top20_probability": 0.02356202356202356,
+    "expected_successful_rule_target_pairs_under_uniform": 3167.7256,
+    "observed_successful_rule_target_pairs": 3114,
+    "recurrence_gap_days": {
+      "count": 3005,
+      "min": 2,
+      "p25": 13,
+      "median": 30,
+      "p75": 57,
+      "max": 365
+    },
+    "best_rule": {
+      "strategy_id": "momentum_20_100",
+      "successes": 102,
+      "expected_under_uniform": 75.422,
+      "exact_one_sided_binomial_p_raw": 0.0018285463,
+      "bonferroni_p_over_42": 0.0767989461,
+      "adjusted_result_below_0_05": false
+    },
+    "interpretation": "The catalog contains many isolated successes and some two-target waves, with a broad recurrence-gap distribution. The aggregate number of rule-target successes is not above the linear uniform expectation. The best single rule's raw exact p-value does not survive Bonferroni correction across 42 configurations. These are retrospective descriptive events, not ex-ante forecasts."
+  },
+  "archive_freshness": {
+    "formula_reports_last_date": "2026-11-07",
+    "formula_reports_target_count": 3401,
+    "current_archive_last_date": "2026-11-09",
+    "current_archive_draw_count": 3403,
+    "stale_by_draws": 2,
+    "affected_families": [
+      "Q80",
+      "Q81",
+      "Q82",
+      "Q83",
+      "Q86",
+      "Q87",
+      "Q88"
+    ],
+    "status": "REFRESH_REQUIRED_BEFORE_FORMULA_INTEGRATION"
+  },
+  "next_actions_in_order": [
+    "Implement deterministic Python runner and regression tests reproducing the prior-only level/flow descriptors and selector, including a parameter sensitivity grid.",
+    "Refresh Q80-Q88 formula reports and manifests against canonical archive blob 8d3e19f0b417024ba32e576697eac0648d12ab86.",
+    "Select multi-feature formula candidates using discovery results only; freeze the selected catalog before validation and blind OOS.",
+    "Integrate those candidates into level-only, flow-only and hybrid online selectors, then generate Q84 catalog, target ledger, lifecycle and relationship artifacts.",
+    "Run fail-closed acceptance validation, persist and reread exact bytes, run current-head CI, and leave Q84 pending human review/integration."
+  ],
+  "guardrails": [
+    "No formula or strategy promotion.",
+    "No PR merge.",
+    "No immutable historical or prospective freeze overwritten or reconstructed.",
+    "No target outcomes used to construct the prior-only state at that target.",
+    "Finite formula grammars remain explicitly bounded; no claim that all mathematical formulas are exhausted."
+  ]
+}
