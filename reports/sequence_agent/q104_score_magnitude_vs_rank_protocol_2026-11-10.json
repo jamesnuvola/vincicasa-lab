@@ -1,0 +1,99 @@
+{
+  "experiment_id": "Q104",
+  "title": "Incremental subset-likelihood value of active SONAR score magnitudes over rank-only scores",
+  "status": "PREREGISTERED_BEFORE_SCORING",
+  "preregistered_on": "2026-11-10",
+  "source": {
+    "main_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b",
+    "archive": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "scorer": "src/VinciCasaLab.jsx",
+    "scorer_git_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_engine_report": "reports/sequence_agent/active_engine_walkforward.json",
+    "active_engine_report_git_blob_sha1": "ff07b6da4948bb89467067c2552d9b1f78bc9549"
+  },
+  "hypothesis": {
+    "null": "Conditional on the prior archive, the next draw is a uniform 5-subset of 1..40; active score magnitudes add no predictive information beyond the induced rank order.",
+    "alternative": "Within-target score gaps contain incremental information about complete 5-number subsets beyond rank order.",
+    "unit_of_analysis": "Complete unordered 5-of-40 target subset."
+  },
+  "models": {
+    "magnitude": {
+      "utility": "uS(n)=(score(n)-min_score)/(max_score-min_score); if range is zero, all utilities are zero.",
+      "weight": "wS(n,T)=exp(uS(n)/T)"
+    },
+    "rank_only": {
+      "utility": "uR(n)=(40-rank(n))/39, with rank 1 best and rank 40 worst.",
+      "weight": "wR(n,T)=exp(uR(n)/T)"
+    },
+    "subset_probability": "P(D|F,T)=product_{n in D} w(n,T) / e5(w1,...,w40).",
+    "normalizer": "Fifth elementary symmetric polynomial by descending dynamic programming; exact normalization over C(40,5)=658008 subsets.",
+    "temperatures": [
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      0.75,
+      1,
+      1.5,
+      2,
+      4
+    ],
+    "null_control": "Uniform 5-of-40 subset distribution; zero log-likelihood gain."
+  },
+  "walk_forward": {
+    "warmup_draws": 200,
+    "total_draws": 3403,
+    "targets": 3203,
+    "splits": {
+      "discovery": 1921,
+      "validation": 641,
+      "historical_blind_oos": 641
+    },
+    "split_rule": "Chronological 60/20/20 after 200-draw warm-up.",
+    "information_rule": "For target index t, call the exact scorer only on archive[0:t]; target t and all later draws are excluded.",
+    "selection": "Select one temperature independently for each model using Validation mean complete-subset log-likelihood gain versus uniform; include uniform fallback; ties prefer larger temperature. Blind OOS is never used for selection."
+  },
+  "endpoints": {
+    "primary": "Blind OOS paired mean log-likelihood difference: score-magnitude model minus rank-only model, at the two Validation-selected temperatures.",
+    "secondary": "Each model's log-likelihood gain versus uniform; Top5 and Top20 hit counts are descriptive only."
+  },
+  "inference": {
+    "primary_test": "Paired circular block sign-flip on per-target log-likelihood differences; block length 20, 50000 replicates, one-sided alternative magnitude > rank.",
+    "primary_uncertainty": "Circular moving-block bootstrap 10000 replicates, block length 20, fixed seed 20261110, percentile 95% interval.",
+    "multiplicity": "For transparency, also compute the complete 9x9 temperature-pair family on Blind OOS and apply Holm across all 81 paired tests. The Validation-selected pair is identified separately; no Blind-based selection.",
+    "model_vs_uniform": "For each of 18 fixed model/temperature combinations, use a likelihood-ratio e-value against conditional uniform and Holm across 18; these are secondary."
+  },
+  "integrity_checks": [
+    "Verify source Git blob hashes against pinned main commit.",
+    "Verify 3403 unique chronological rows and valid sorted 5-of-40 outcomes.",
+    "Verify all score vectors are permutations 1..40, finite, sorted by source tie-break.",
+    "Verify every forecast is based on archive[0:t] and max training outcome index is t-1.",
+    "Verify subset partition DP against exhaustive small-n enumeration and uniform normalizer 658008.",
+    "Exhaustively sum one representative subset PMF over all 658008 subsets.",
+    "Test future-mutation invariance at nine fixed cutoffs.",
+    "Test deterministic scorer replay at eight fixed cutoffs.",
+    "Reconcile discovery/validation/historical blind target counts and ledger chronology.",
+    "Replay persisted outputs and compare exact bytes."
+  ],
+  "limitations": [
+    "Historical blind OOS has been exposed to earlier SONAR research, including Q100 and Q103; it is not a virgin holdout.",
+    "The active SONAR score is heuristic, not a calibrated probability.",
+    "Q104 is a historical diagnostic; any positive result requires prospective frozen confirmation and completion of Q60.",
+    "The paired block sign-flip assumes exchangeability of contiguous 20-target block sums; bootstrap is approximate under nonstationarity.",
+    "The 81-pair Holm family is a declared sensitivity screen; it does not erase unknown analyst degrees of freedom from the wider research history."
+  ],
+  "guardrails": {
+    "research_only": true,
+    "production_engine_changes": false,
+    "prospective_freeze_changes": false,
+    "q60_h101_h102_changes": false,
+    "automatic_merge": false,
+    "automatic_promotion": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
