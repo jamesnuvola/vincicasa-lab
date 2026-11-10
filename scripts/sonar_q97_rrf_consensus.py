@@ -290,7 +290,7 @@ def run(input_path, manifest_path, outdir):
         f"- Blind Top-20 difference vs Equal42: {mean:+.9f} hits/target; 95% CI [{ci[0]:+.9f}, {ci[1]:+.9f}].\n"
         f"- Block sign-flip raw p {primary['block_signflip']['p_raw']:.6f}; global Holm p {p_holm:.6f}.\n"
         "- 15 paired tests, 50,000 sign flips, 10,000 circular block bootstraps, block length 20.\n"
-        "- All prior cutoffs and 25,624 source rank vectors checked; source snapshot and target ledger persisted.\n\n"
+        "- All prior cutoffs and 16,015 source rank vectors checked; source snapshot and target ledger persisted.\n\n"
         "Post-hoc exploratory only: component families were previously examined and historical Blind OOS is not virgin. "
         "No promotion, production change, freeze change or merge. Stop retrospective tuning; continue Q60 prospective collection.\n"
     )
