@@ -1,0 +1,197 @@
+{
+  "acceptance": {
+    "human_review": "PENDING_HUMAN_REVIEW_INTEGRATION",
+    "persisted_head_replay": "PENDING",
+    "source_sha": "476bb4928e4bf55156e22a2b54acf47340780918",
+    "validator": "Q95_FORMULA_ACCEPTANCE_PASS",
+    "workflow_run_id": 42758588282
+  },
+  "frozen_parameters": {
+    "association": "Spearman overlap vs target Q93 minus Equal42 Top20 hits",
+    "bootstrap_block_length": 20,
+    "bootstrap_replicates": 2000,
+    "multiple_testing": "one global Holm family of six split-level tests",
+    "permutation_count": 999,
+    "permutation_null": "permute previous-basis node labels only; preserve orthonormality and all-ones-orthogonal subspace",
+    "permutation_seed": 9501,
+    "requested_modes": 2,
+    "shift_count": 999,
+    "shift_seed": 9502
+  },
+  "global_holm_tests": [
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.886,
+      "test_id": "Q95PERM|discovery"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.998,
+      "test_id": "Q95PERM|validation"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.997,
+      "test_id": "Q95PERM|blind_oos"
+    },
+    {
+      "p_holm": 0.33,
+      "p_raw": 0.055,
+      "test_id": "Q95SHIFT|discovery"
+    },
+    {
+      "p_holm": 0.33,
+      "p_raw": 0.062402496099843996,
+      "test_id": "Q95SHIFT|validation"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.9048361934477379,
+      "test_id": "Q95SHIFT|blind_oos"
+    }
+  ],
+  "guardrails": [
+    "Q93/Q94 sources acceptance-verified before use",
+    "current and previous subspaces use strict prefixes draws[:i] only",
+    "permutations and circular shifts are inferential only, never forecasts",
+    "target outcome read after overlap is frozen",
+    "one global Holm family of six tests",
+    "historical Blind OOS is exploratory, not virgin holdout",
+    "no freeze changes or model promotion"
+  ],
+  "hypothesis": "Observed consecutive leading k=2 overlap exceeds a constrained node-label permutation null and prior-only overlap positively predicts Q93-vs-Equal42 Top20 advantage.",
+  "limitations": [
+    "Constrained label permutation is not a Haar null or universal graph null",
+    "overlap is geometric, not causal",
+    "outcome association is post-forecast and non-causal",
+    "failure to reject does not prove absence of all graph structure",
+    "Q60 still requires 200 prospective paired targets"
+  ],
+  "primary_gate": {
+    "engine_promotion_allowed": false,
+    "required_splits": [
+      "validation",
+      "blind_oos"
+    ],
+    "status": "NOT_SUPPORTED"
+  },
+  "scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+  "source_archive": {
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "last_date": "2026-11-09",
+    "sha256": "ba0c8f4e78805e72d04a1b731e1882a9edd3ac71a2bc35c92409540d9ebdec61"
+  },
+  "source_q93_ledger_sha256": "c6312eab612c278abed9df1050f8dc873ee20b6176d0fe6684958edee60a3eab",
+  "source_q94_manifest_sha256": "61ec19fbe10c651e339a47bd131338ae5545fedaffb6690ab3bae0bc958ec6a1",
+  "source_q94_validation_sha256": "66dd6e297db0ffc7dcb11d502c678694f7395da8be5572ee41ca46f874490815",
+  "split_results": [
+    {
+      "circular_shift_count": 999,
+      "circular_shift_null_abs_q95": 0.04494367960959374,
+      "circular_shift_p_holm": 0.33,
+      "circular_shift_p_raw": 0.055,
+      "empty_current_subspaces": 1,
+      "empty_previous_subspaces": 2,
+      "mean_current_modes": 1.9989588755856325,
+      "mean_equal42_top20_hits": 2.515356585111921,
+      "mean_excess_block_bootstrap_ci95": [
+        -0.003042849640934818,
+        0.00021275007930175727
+      ],
+      "mean_observed_minus_target_null": -0.001391268069483924,
+      "mean_previous_modes": 1.997917751171265,
+      "mean_q93_minus_equal42_top20": 0.0031233732431025507,
+      "mean_q93_top20_hits": 2.5184799583550235,
+      "observed_overlap_mean": 0.049848496012759105,
+      "observed_overlap_median": 0.035573743103320864,
+      "overlap_vs_future_q93_top20_advantage_spearman": -0.04483054239676868,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05123976408224303,
+      "permutation_null_q95": 0.052980453821036305,
+      "permutation_null_sd": 0.0011255621731121994,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.886,
+      "spearman_block_bootstrap_ci95": [
+        -0.08832627330290646,
+        0.0027981067344989923
+      ],
+      "split": "discovery",
+      "targets": 1921
+    },
+    {
+      "circular_shift_count": 640,
+      "circular_shift_null_abs_q95": 0.07318995473209544,
+      "circular_shift_p_holm": 0.33,
+      "circular_shift_p_raw": 0.062402496099843996,
+      "empty_current_subspaces": 0,
+      "empty_previous_subspaces": 0,
+      "mean_current_modes": 2.0,
+      "mean_equal42_top20_hits": 2.499219968798752,
+      "mean_excess_block_bootstrap_ci95": [
+        -0.007117693184236794,
+        -0.0034016376591754598
+      ],
+      "mean_observed_minus_target_null": -0.005279055425991964,
+      "mean_previous_modes": 2.0,
+      "mean_q93_minus_equal42_top20": -0.0124804992199688,
+      "mean_q93_top20_hits": 2.486739469578783,
+      "observed_overlap_mean": 0.04602332548827267,
+      "observed_overlap_median": 0.03590048647108232,
+      "overlap_vs_future_q93_top20_advantage_spearman": 0.07013609246865798,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05130238091426463,
+      "permutation_null_q95": 0.0542838997884254,
+      "permutation_null_sd": 0.0017789804960383195,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.998,
+      "spearman_block_bootstrap_ci95": [
+        -0.018841243053241842,
+        0.14609927876618622
+      ],
+      "split": "validation",
+      "targets": 641
+    },
+    {
+      "circular_shift_count": 640,
+      "circular_shift_null_abs_q95": 0.0775119754307,
+      "circular_shift_p_holm": 1.0,
+      "circular_shift_p_raw": 0.9048361934477379,
+      "empty_current_subspaces": 0,
+      "empty_previous_subspaces": 0,
+      "mean_current_modes": 2.0,
+      "mean_equal42_top20_hits": 2.546021840873635,
+      "mean_excess_block_bootstrap_ci95": [
+        -0.007707887129741965,
+        -0.0013331441336171704
+      ],
+      "mean_observed_minus_target_null": -0.004739020018625059,
+      "mean_previous_modes": 2.0,
+      "mean_q93_minus_equal42_top20": -0.0093603744149766,
+      "mean_q93_top20_hits": 2.5366614664586584,
+      "observed_overlap_mean": 0.04653273248264808,
+      "observed_overlap_median": 0.03670521561333329,
+      "overlap_vs_future_q93_top20_advantage_spearman": -0.005537942374796219,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05127175250127314,
+      "permutation_null_q95": 0.05431957302995552,
+      "permutation_null_sd": 0.0018551591007328974,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.997,
+      "spearman_block_bootstrap_ci95": [
+        -0.07846907279271048,
+        0.06857599434789102
+      ],
+      "split": "blind_oos",
+      "targets": 641
+    }
+  ],
+  "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+  "target_counts": {
+    "blind_oos": 641,
+    "discovery": 1921,
+    "validation": 641
+  },
+  "task_id": "Q95-SPECTRAL-SUBSPACE-PERMUTATION-NULL-01"
+}
