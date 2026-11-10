@@ -1,0 +1,368 @@
+{
+  "experiment_id": "Q106",
+  "title": "Ablation del voto analogico nel motore SONAR ibrido",
+  "decision": "NO_INCREMENTAL_ANALOG_LIFT_DEMONSTRATED",
+  "preregistered_at_utc": "2026-11-10T23:47:57.234Z",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "1a61088205f843fdb0d6656c01a54969b555a392",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "app_source_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "total_draws": 3403,
+    "pending_official_target_excluded": "2026-11-10"
+  },
+  "method": {
+    "full_weights": [
+      0.38,
+      0.22,
+      0.14,
+      0.06,
+      0.1,
+      0.06,
+      0.04
+    ],
+    "no_analog_weights": [
+      0.422222222222,
+      0.244444444444,
+      0.155555555556,
+      0.066666666667,
+      0,
+      0.066666666667,
+      0.044444444444
+    ],
+    "ablation_rule": "Only analog_successor_votes is set to zero; remaining six coefficients are divided by 0.90. All feature definitions, min-max normalizations and tie-breaks are unchanged.",
+    "freq100_rule": "Prior-100 inclusion counts; descending frequency, ascending numeric tie-break.",
+    "splits": "Chronological 60% / 20% / 20% after 200-draw warm-up.",
+    "validation_is_descriptive_only": true,
+    "no_parameter_selection": true
+  },
+  "baseline": {
+    "mean_hits_top5": 0.625,
+    "mean_hits_top10": 1.25,
+    "mean_hits_top20": 2.5,
+    "top20_all5_probability_exact": 0.023562023562,
+    "top20_all5_expected_count_blind": 15.103257
+  },
+  "walk_forward": {
+    "warmup_draws": 200,
+    "targets": 3203,
+    "splits": {
+      "discovery": {
+        "targets": 1921,
+        "first_target": "2018-02-02",
+        "last_target": "2023-05-07"
+      },
+      "validation": {
+        "targets": 641,
+        "first_target": "2023-05-08",
+        "last_target": "2025-02-06"
+      },
+      "historical_blind_oos": {
+        "targets": 641,
+        "first_target": "2025-02-07",
+        "last_target": "2026-11-09"
+      }
+    },
+    "summaries": {
+      "discovery": {
+        "full": {
+          "targets": 1921,
+          "first_target": "2018-02-02",
+          "last_target": "2023-05-07",
+          "mean_hits_top5": 0.6418532,
+          "mean_hits_top10": 1.2493493,
+          "mean_hits_top20": 2.52264446,
+          "top20_all5_count": 51,
+          "top20_all5_rate": 0.02654867,
+          "top20_all5_random_expected": 45.26264726,
+          "top20_all5_exact_binomial_p_one_sided": 0.21268513,
+          "top20_4plus_count": 329
+        },
+        "noAnalog": {
+          "targets": 1921,
+          "first_target": "2018-02-02",
+          "last_target": "2023-05-07",
+          "mean_hits_top5": 0.64653826,
+          "mean_hits_top10": 1.25663717,
+          "mean_hits_top20": 2.52785008,
+          "top20_all5_count": 51,
+          "top20_all5_rate": 0.02654867,
+          "top20_all5_random_expected": 45.26264726,
+          "top20_all5_exact_binomial_p_one_sided": 0.21268513,
+          "top20_4plus_count": 331
+        },
+        "freq100": {
+          "targets": 1921,
+          "first_target": "2018-02-02",
+          "last_target": "2023-05-07",
+          "mean_hits_top5": 0.64289433,
+          "mean_hits_top10": 1.27069235,
+          "mean_hits_top20": 2.52160333,
+          "top20_all5_count": 52,
+          "top20_all5_rate": 0.02706923,
+          "top20_all5_random_expected": 45.26264726,
+          "top20_all5_exact_binomial_p_one_sided": 0.17316647,
+          "top20_4plus_count": 340
+        }
+      },
+      "validation": {
+        "full": {
+          "targets": 641,
+          "first_target": "2023-05-08",
+          "last_target": "2025-02-06",
+          "mean_hits_top5": 0.6349454,
+          "mean_hits_top10": 1.24648986,
+          "mean_hits_top20": 2.43681747,
+          "top20_all5_count": 10,
+          "top20_all5_rate": 0.01560062,
+          "top20_all5_random_expected": 15.1032571,
+          "top20_all5_exact_binomial_p_one_sided": 0.93566386,
+          "top20_4plus_count": 92
+        },
+        "noAnalog": {
+          "targets": 641,
+          "first_target": "2023-05-08",
+          "last_target": "2025-02-06",
+          "mean_hits_top5": 0.61310452,
+          "mean_hits_top10": 1.22152886,
+          "mean_hits_top20": 2.48049922,
+          "top20_all5_count": 10,
+          "top20_all5_rate": 0.01560062,
+          "top20_all5_random_expected": 15.1032571,
+          "top20_all5_exact_binomial_p_one_sided": 0.93566386,
+          "top20_4plus_count": 108
+        },
+        "freq100": {
+          "targets": 641,
+          "first_target": "2023-05-08",
+          "last_target": "2025-02-06",
+          "mean_hits_top5": 0.6224649,
+          "mean_hits_top10": 1.2324493,
+          "mean_hits_top20": 2.45397816,
+          "top20_all5_count": 7,
+          "top20_all5_rate": 0.01092044,
+          "top20_all5_random_expected": 15.1032571,
+          "top20_all5_exact_binomial_p_one_sided": 0.99333253,
+          "top20_4plus_count": 101
+        }
+      },
+      "historical_blind_oos": {
+        "full": {
+          "targets": 641,
+          "first_target": "2025-02-07",
+          "last_target": "2026-11-09",
+          "mean_hits_top5": 0.6224649,
+          "mean_hits_top10": 1.31669267,
+          "mean_hits_top20": 2.52574103,
+          "top20_all5_count": 20,
+          "top20_all5_rate": 0.03120125,
+          "top20_all5_random_expected": 15.1032571,
+          "top20_all5_exact_binomial_p_one_sided": 0.12795111,
+          "top20_4plus_count": 110
+        },
+        "noAnalog": {
+          "targets": 641,
+          "first_target": "2025-02-07",
+          "last_target": "2026-11-09",
+          "mean_hits_top5": 0.60530421,
+          "mean_hits_top10": 1.29485179,
+          "mean_hits_top20": 2.55538222,
+          "top20_all5_count": 21,
+          "top20_all5_rate": 0.03276131,
+          "top20_all5_random_expected": 15.1032571,
+          "top20_all5_exact_binomial_p_one_sided": 0.08484218,
+          "top20_4plus_count": 124
+        },
+        "freq100": {
+          "targets": 641,
+          "first_target": "2025-02-07",
+          "last_target": "2026-11-09",
+          "mean_hits_top5": 0.65366615,
+          "mean_hits_top10": 1.31513261,
+          "mean_hits_top20": 2.50702028,
+          "top20_all5_count": 16,
+          "top20_all5_rate": 0.024961,
+          "top20_all5_random_expected": 15.1032571,
+          "top20_all5_exact_binomial_p_one_sided": 0.4426084,
+          "top20_4plus_count": 114
+        }
+      }
+    }
+  },
+  "blind_inference": {
+    "endpoints": {
+      "full_minus_noAnalog_top20": {
+        "n": 641,
+        "mean_difference": -0.02964119,
+        "block_sign_flip_replicates": 50000,
+        "block_length": 20,
+        "p_one_sided": 0.9650407,
+        "circular_block_bootstrap_replicates": 10000,
+        "ci95": {
+          "lower": -0.06396256,
+          "upper": 0.00468019
+        },
+        "p_holm_10": 1
+      },
+      "full_minus_noAnalog_top10": {
+        "n": 641,
+        "mean_difference": 0.02184087,
+        "block_sign_flip_replicates": 50000,
+        "block_length": 20,
+        "p_one_sided": 0.1050379,
+        "circular_block_bootstrap_replicates": 10000,
+        "ci95": {
+          "lower": -0.01092044,
+          "upper": 0.05460218
+        },
+        "p_holm_10": 0.94534109
+      },
+      "full_minus_noAnalog_top5": {
+        "n": 641,
+        "mean_difference": 0.01716069,
+        "block_sign_flip_replicates": 50000,
+        "block_length": 20,
+        "p_one_sided": 0.12657747,
+        "circular_block_bootstrap_replicates": 10000,
+        "ci95": {
+          "lower": -0.00936037,
+          "upper": 0.04524181
+        },
+        "p_holm_10": 1
+      },
+      "full_minus_noAnalog_all5": {
+        "n": 641,
+        "mean_difference": -0.00156006,
+        "block_sign_flip_replicates": 50000,
+        "block_length": 20,
+        "p_one_sided": 0.76940461,
+        "circular_block_bootstrap_replicates": 10000,
+        "ci95": {
+          "lower": -0.00936037,
+          "upper": 0.00627925
+        },
+        "p_holm_10": 1
+      },
+      "full_minus_freq100_top20": {
+        "n": 641,
+        "mean_difference": 0.01872075,
+        "block_sign_flip_replicates": 50000,
+        "block_length": 20,
+        "p_one_sided": 0.34543309,
+        "circular_block_bootstrap_replicates": 10000,
+        "ci95": {
+          "lower": -0.07332293,
+          "upper": 0.11076443
+        },
+        "p_holm_10": 1
+      },
+      "full_minus_freq100_top10": {
+        "n": 641,
+        "mean_difference": 0.00156006,
+        "block_sign_flip_replicates": 50000,
+        "block_length": 20,
+        "p_one_sided": 0.49843003,
+        "circular_block_bootstrap_replicates": 10000,
+        "ci95": {
+          "lower": -0.05620125,
+          "upper": 0.06084243
+        },
+        "p_holm_10": 1
+      },
+      "full_minus_freq100_top5": {
+        "n": 641,
+        "mean_difference": -0.03120125,
+        "block_sign_flip_replicates": 50000,
+        "block_length": 20,
+        "p_one_sided": 0.88604228,
+        "circular_block_bootstrap_replicates": 10000,
+        "ci95": {
+          "lower": -0.08580343,
+          "upper": 0.02340094
+        },
+        "p_holm_10": 1
+      },
+      "full_minus_freq100_all5": {
+        "n": 641,
+        "mean_difference": 0.00624025,
+        "block_sign_flip_replicates": 50000,
+        "block_length": 20,
+        "p_one_sided": 0.27585448,
+        "circular_block_bootstrap_replicates": 10000,
+        "ci95": {
+          "lower": -0.00936037,
+          "upper": 0.02184087
+        },
+        "p_holm_10": 1
+      },
+      "full_top20_all5_vs_exact_uniform": {
+        "n": 641,
+        "observed_all5_count": 20,
+        "exact_null_probability_per_target": 0.0235620236,
+        "expected_count": 15.103257,
+        "p_exact_binomial_one_sided": 0.12795111,
+        "p_holm_10": 1
+      },
+      "noAnalog_top20_all5_vs_exact_uniform": {
+        "n": 641,
+        "observed_all5_count": 21,
+        "exact_null_probability_per_target": 0.0235620236,
+        "expected_count": 15.103257,
+        "p_exact_binomial_one_sided": 0.08484218,
+        "p_holm_10": 0.84842183
+      }
+    },
+    "holm_family_size": 10,
+    "holm_method": "Holm-Bonferroni across 8 paired block-sign-flip endpoints and 2 exact binomial all-five tests.",
+    "random_mean_diagnostics": {
+      "full": {
+        "mean_top20_hits": 2.52574103,
+        "gain_vs_exact_random_mean_2_5": 0.02574103,
+        "circular_block_bootstrap_ci95_for_gain": {
+          "lower": -0.06318253,
+          "upper": 0.11310452
+        }
+      },
+      "noAnalog": {
+        "mean_top20_hits": 2.55538222,
+        "gain_vs_exact_random_mean_2_5": 0.05538222,
+        "circular_block_bootstrap_ci95_for_gain": {
+          "lower": -0.03198128,
+          "upper": 0.14586583
+        }
+      },
+      "freq100": {
+        "mean_top20_hits": 2.50702028,
+        "gain_vs_exact_random_mean_2_5": 0.00702028,
+        "circular_block_bootstrap_ci95_for_gain": {
+          "lower": -0.06630265,
+          "upper": 0.07878315
+        }
+      }
+    }
+  },
+  "diagnostics": {
+    "mean_analog_candidate_count": 16.74617546,
+    "targets_with_at_least_one_analog_percent": 99.5005,
+    "mean_max_overlap_when_candidates_exist": 3.37307813,
+    "mean_top20_overlap_full_vs_noAnalog": 18.85388698,
+    "mean_top10_overlap_full_vs_noAnalog": 9.09022791,
+    "mean_top5_overlap_full_vs_noAnalog": 4.41929441
+  },
+  "validation": {
+    "status": "PASS",
+    "checks_passed": 14,
+    "checks_total": 14
+  },
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout; prior SONAR research has inspected the same archive.",
+    "The exact UI scorer and its analog feature were selected after extensive historical exploration; ablation is exploratory, not confirmatory.",
+    "Block sign-flip and circular block bootstrap address local dependence approximately; they do not establish lottery mechanism independence.",
+    "The experiment tests only the incremental contribution of this one analog feature under the committed fixed weights; it does not establish an optimal weight or rule.",
+    "No prospective outcome for 2026-11-10 is included because the official VinciCasa archive still lists that contest as pending."
+  ],
+  "next_action": "Keep the analog component unpromoted; await official publication of contest 314, append the canonical draw once, then evaluate existing freezes without reconstruction and continue Q60 prospectively."
+}

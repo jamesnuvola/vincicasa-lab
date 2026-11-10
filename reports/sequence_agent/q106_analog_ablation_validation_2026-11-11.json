@@ -1,0 +1,86 @@
+{
+  "experiment_id": "Q106",
+  "status": "PASS",
+  "checks_passed": 14,
+  "checks_total": 14,
+  "checks": [
+    {
+      "name": "archive_rows_and_range",
+      "status": "PASS",
+      "detail": "draws=3403"
+    },
+    {
+      "name": "archive_dates_and_draws",
+      "status": "PASS",
+      "detail": "parser validated unique chronological dates and five sorted distinct values in 1..40"
+    },
+    {
+      "name": "app_data_row_by_row",
+      "status": "PASS",
+      "detail": "src/data.json modelDraws matches canonical CSV"
+    },
+    {
+      "name": "pinned_source_blobs",
+      "status": "PASS",
+      "detail": "archive=8d3e19f0b417024ba32e576697eac0648d12ab86; app=7ccb9a2abfe452ec535913b70225bc109f692304"
+    },
+    {
+      "name": "walk_forward_target_count",
+      "status": "PASS",
+      "detail": "targets=3203"
+    },
+    {
+      "name": "chronological_split_sizes",
+      "status": "PASS",
+      "detail": "1921/641/641"
+    },
+    {
+      "name": "all_forecasts_are_complete_rankings",
+      "status": "PASS",
+      "detail": "all full/noAnalog/freq100 forecasts are permutations of 1..40"
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "status": "PASS",
+      "detail": "all 3,203 cutoffs precede targets"
+    },
+    {
+      "name": "future_mutation_invariance_9_cutoffs",
+      "status": "PASS",
+      "detail": "mutating target and all later outcomes leaves both prior-only forecasts unchanged"
+    },
+    {
+      "name": "synthetic_no_analog_equivalence",
+      "status": "PASS",
+      "detail": "zero analog votes imply identical full and ablated ranks"
+    },
+    {
+      "name": "synthetic_analog_feature_ablation",
+      "status": "PASS",
+      "detail": "one prior analog is detected and the isolated analog coefficient changes scores"
+    },
+    {
+      "name": "analog_successor_source_static_audit",
+      "status": "PASS",
+      "detail": "historical successor is always at index i+1 within the supplied prior prefix"
+    },
+    {
+      "name": "all_reported_analog_successors_within_cutoff",
+      "status": "PASS",
+      "detail": "every returned analog successor date was checked against its target prefix cutoff"
+    },
+    {
+      "name": "deterministic_inference_and_artifacts",
+      "status": "PASS",
+      "detail": "fixed seeds; byte-for-byte replay enforced by --check"
+    }
+  ],
+  "replay": "Deterministic output generation; --check regenerates every artifact and compares exact bytes.",
+  "inference_constants": {
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "seed": 20261111,
+    "holm_family_size": 10
+  }
+}
