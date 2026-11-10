@@ -49,5 +49,9 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Reproduce Q100 prequential rank calibration
+        run: |
+          node scripts/sonar_q100_prequential_rank_calibration.js
+          git diff --exit-code -- reports/sequence_agent/q100_prequential_rank_calibration_report_2026-11-10.json reports/sequence_agent/q100_prequential_rank_calibration_validation_2026-11-10.json reports/sequence_agent/q100_prequential_rank_calibration_target_ledger_2026-11-10.csv reports/sequence_agent/q100_prequential_rank_calibration_checkpoint_2026-11-10.md
       - name: Build web application
         run: npm install && npm run build
