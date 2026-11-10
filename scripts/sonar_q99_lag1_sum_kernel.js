@@ -66,7 +66,7 @@ function runQ99(csvText) {
       return (x >>> 0) / 4294967296;
     };
   }
-  function forecast(sums, t, h, nullModel) {
+  function forecast(sums, t, h, nullModel, includeVector=false) {
     const prev = sums[t-1];
     const weighted = new Float64Array(CATS);
     let weightTotal=0;
@@ -99,7 +99,8 @@ function runQ99(csvText) {
       modelBrier:brier,
       modelLogloss:logloss,
       sumP,
-      weightTotal
+      weightTotal,
+      probabilityVector:includeVector?Array.from(probs):undefined
     };
   }
   function splitName(i) {
@@ -283,12 +284,11 @@ function runQ99(csvText) {
   };
 
   const tCheck=WARMUP+17;
-  const original=forecast(archive.sums,tCheck,selectedH,nullModel);
+  const original=forecast(archive.sums,tCheck,selectedH,nullModel,true);
   const mutatedSums=archive.sums.slice();
   for(let i=tCheck;i<mutatedSums.length;i++) mutatedSums[i]=((mutatedSums[i]+37)%176)+15;
-  const mutated=forecast(mutatedSums,tCheck,selectedH,nullModel);
-  const mutationInvariant=Math.abs(original.brierGain-mutated.brierGain)<1e-15 &&
-    Math.abs(original.loglossGain-mutated.loglossGain)<1e-15;
+  const mutated=forecast(mutatedSums,tCheck,selectedH,nullModel,true);
+  const mutationInvariant=JSON.stringify(original.probabilityVector)===JSON.stringify(mutated.probabilityVector);
   if(!mutationInvariant) fail("target/future mutation invariance failed");
 
   const replayA=forecast(archive.sums,WARMUP+31,0.5,nullModel);
