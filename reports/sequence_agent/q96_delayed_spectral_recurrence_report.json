@@ -1,0 +1,412 @@
+{
+  "acceptance": {
+    "human_review": "PENDING_HUMAN_REVIEW_INTEGRATION",
+    "persisted_head_replay": "PENDING",
+    "source_sha": "31b5ebc1e708e382e1f5c990f01ffb05f2cfa4b1",
+    "validator": "Q96_FORMULA_ACCEPTANCE_PASS",
+    "workflow_run_id": 42764596346
+  },
+  "accepted_q95_sources": {
+    "manifest_sha256": "c676d7b7207e0b120b1cec137757263c39f2e3b9ca1587a6919a96056f6c995d",
+    "report_sha256": "f2ff6ae8e5660046528c551c9687af2f68c4f36842b36b4f050adb189646c095",
+    "validation_sha256": "5874333713de3658811f8158a61a500eba31b46797ee6abe87725250059b4e1c"
+  },
+  "frozen_parameters": {
+    "bootstrap_block_length": 20,
+    "bootstrap_replicates": 2000,
+    "lags": [
+      2,
+      3,
+      5
+    ],
+    "multiple_testing": "one global Holm family of nine lag-by-split tests",
+    "permutation_count": 999,
+    "permutation_seed": 9601,
+    "requested_modes": 2
+  },
+  "global_holm_tests": [
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.596,
+      "test_id": "Q96|LAG2|discovery"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "test_id": "Q96|LAG2|validation"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.861,
+      "test_id": "Q96|LAG2|blind_oos"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 1.0,
+      "test_id": "Q96|LAG3|discovery"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.944,
+      "test_id": "Q96|LAG3|validation"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.973,
+      "test_id": "Q96|LAG3|blind_oos"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.994,
+      "test_id": "Q96|LAG5|discovery"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.944,
+      "test_id": "Q96|LAG5|validation"
+    },
+    {
+      "p_holm": 1.0,
+      "p_raw": 0.642,
+      "test_id": "Q96|LAG5|blind_oos"
+    }
+  ],
+  "guardrails": [
+    "strict-prior prefixes only",
+    "no target outcome values read",
+    "permutations inferential only",
+    "one global Holm family of nine tests",
+    "historical Blind OOS exploratory, not virgin holdout",
+    "no freeze changes, no prospective shadow insertion, no promotion"
+  ],
+  "hypothesis": "At least one preregistered lag in {2,3,5} has label-aligned leading k=2 overlap greater than the constrained node-label permutation null in both Validation and historical Blind OOS.",
+  "limitations": [
+    "Constrained label permutation is not a Haar or universal graph null",
+    "Subspace overlap is geometric and not causal",
+    "Lagged rolling prefixes overlap; block bootstrap only approximately addresses dependence",
+    "Historical Blind OOS is prior-exposed and exploratory",
+    "Q60 prospective gate remains separate and requires 200 complete paired targets"
+  ],
+  "primary_gate": {
+    "engine_promotion_allowed": false,
+    "global_holm_family_size": 9,
+    "required_splits": [
+      "validation",
+      "blind_oos"
+    ],
+    "status": "NOT_SUPPORTED",
+    "supported_lags": []
+  },
+  "q95_lag1_reference": [
+    {
+      "circular_shift_count": 999,
+      "circular_shift_null_abs_q95": 0.04494367960959374,
+      "circular_shift_p_holm": 0.33,
+      "circular_shift_p_raw": 0.055,
+      "empty_current_subspaces": 1,
+      "empty_previous_subspaces": 2,
+      "mean_current_modes": 1.9989588755856325,
+      "mean_equal42_top20_hits": 2.515356585111921,
+      "mean_excess_block_bootstrap_ci95": [
+        -0.003042849640934818,
+        0.00021275007930175727
+      ],
+      "mean_observed_minus_target_null": -0.001391268069483924,
+      "mean_previous_modes": 1.997917751171265,
+      "mean_q93_minus_equal42_top20": 0.0031233732431025507,
+      "mean_q93_top20_hits": 2.5184799583550235,
+      "observed_overlap_mean": 0.049848496012759105,
+      "observed_overlap_median": 0.035573743103320864,
+      "overlap_vs_future_q93_top20_advantage_spearman": -0.04483054239676868,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05123976408224303,
+      "permutation_null_q95": 0.052980453821036305,
+      "permutation_null_sd": 0.0011255621731121994,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.886,
+      "spearman_block_bootstrap_ci95": [
+        -0.08832627330290646,
+        0.0027981067344989923
+      ],
+      "split": "discovery",
+      "targets": 1921
+    },
+    {
+      "circular_shift_count": 640,
+      "circular_shift_null_abs_q95": 0.07318995473209544,
+      "circular_shift_p_holm": 0.33,
+      "circular_shift_p_raw": 0.062402496099843996,
+      "empty_current_subspaces": 0,
+      "empty_previous_subspaces": 0,
+      "mean_current_modes": 2.0,
+      "mean_equal42_top20_hits": 2.499219968798752,
+      "mean_excess_block_bootstrap_ci95": [
+        -0.007117693184236794,
+        -0.0034016376591754598
+      ],
+      "mean_observed_minus_target_null": -0.005279055425991964,
+      "mean_previous_modes": 2.0,
+      "mean_q93_minus_equal42_top20": -0.0124804992199688,
+      "mean_q93_top20_hits": 2.486739469578783,
+      "observed_overlap_mean": 0.04602332548827267,
+      "observed_overlap_median": 0.03590048647108232,
+      "overlap_vs_future_q93_top20_advantage_spearman": 0.07013609246865798,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05130238091426463,
+      "permutation_null_q95": 0.0542838997884254,
+      "permutation_null_sd": 0.0017789804960383195,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.998,
+      "spearman_block_bootstrap_ci95": [
+        -0.018841243053241842,
+        0.14609927876618622
+      ],
+      "split": "validation",
+      "targets": 641
+    },
+    {
+      "circular_shift_count": 640,
+      "circular_shift_null_abs_q95": 0.0775119754307,
+      "circular_shift_p_holm": 1.0,
+      "circular_shift_p_raw": 0.9048361934477379,
+      "empty_current_subspaces": 0,
+      "empty_previous_subspaces": 0,
+      "mean_current_modes": 2.0,
+      "mean_equal42_top20_hits": 2.546021840873635,
+      "mean_excess_block_bootstrap_ci95": [
+        -0.007707887129741965,
+        -0.0013331441336171704
+      ],
+      "mean_observed_minus_target_null": -0.004739020018625059,
+      "mean_previous_modes": 2.0,
+      "mean_q93_minus_equal42_top20": -0.0093603744149766,
+      "mean_q93_top20_hits": 2.5366614664586584,
+      "observed_overlap_mean": 0.04653273248264808,
+      "observed_overlap_median": 0.03670521561333329,
+      "overlap_vs_future_q93_top20_advantage_spearman": -0.005537942374796219,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05127175250127314,
+      "permutation_null_q95": 0.05431957302995552,
+      "permutation_null_sd": 0.0018551591007328974,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.997,
+      "spearman_block_bootstrap_ci95": [
+        -0.07846907279271048,
+        0.06857599434789102
+      ],
+      "split": "blind_oos",
+      "targets": 641
+    }
+  ],
+  "scope": "HISTORICAL_GEOMETRIC_DIAGNOSTIC_NOT_PREDICTIVE_OR_PROSPECTIVE_CONFIRMATION",
+  "source_archive": {
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "last_date": "2026-11-09",
+    "sha256": "ba0c8f4e78805e72d04a1b731e1882a9edd3ac71a2bc35c92409540d9ebdec61"
+  },
+  "split_results": [
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.0020509283678789366,
+        0.0015172900990288673
+      ],
+      "lag": 2,
+      "mean_current_modes": 1.9989588755856325,
+      "mean_observed_minus_target_null": -0.00021951841358916745,
+      "mean_reference_modes": 1.9968766267568974,
+      "missing_reference_count": 3,
+      "observed_overlap_mean": 0.05098052899913119,
+      "observed_overlap_median": 0.037397999628463276,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05120004741272035,
+      "permutation_null_q95": 0.05302087340929014,
+      "permutation_null_sd": 0.0011293921183977555,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.596,
+      "split": "discovery",
+      "targets": 1921
+    },
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.009327827234968642,
+        -0.003955239265770052
+      ],
+      "lag": 2,
+      "mean_current_modes": 2.0,
+      "mean_observed_minus_target_null": -0.006732635540015477,
+      "mean_reference_modes": 2.0,
+      "missing_reference_count": 0,
+      "observed_overlap_mean": 0.04447303798013045,
+      "observed_overlap_median": 0.033419858463297716,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.051205673520145926,
+      "permutation_null_q95": 0.054297439314882456,
+      "permutation_null_sd": 0.00183958737519358,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 1.0,
+      "split": "validation",
+      "targets": 641
+    },
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.004485063464908178,
+        0.0005380363514490032
+      ],
+      "lag": 2,
+      "mean_current_modes": 2.0,
+      "mean_observed_minus_target_null": -0.0021388657374339227,
+      "mean_reference_modes": 2.0,
+      "missing_reference_count": 0,
+      "observed_overlap_mean": 0.04912172232699213,
+      "observed_overlap_median": 0.036436934347675365,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05126058806442605,
+      "permutation_null_q95": 0.054263570392162466,
+      "permutation_null_sd": 0.0019102206802257698,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.861,
+      "split": "blind_oos",
+      "targets": 641
+    },
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.005186054993805414,
+        -0.0018058829507041382
+      ],
+      "lag": 3,
+      "mean_current_modes": 1.9989588755856325,
+      "mean_observed_minus_target_null": -0.003454932380903391,
+      "mean_reference_modes": 1.9958355023425298,
+      "missing_reference_count": 4,
+      "observed_overlap_mean": 0.047723992997010335,
+      "observed_overlap_median": 0.03461141130319085,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.051178925377913714,
+      "permutation_null_q95": 0.05300801438488933,
+      "permutation_null_sd": 0.001065736608143314,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 1.0,
+      "split": "discovery",
+      "targets": 1921
+    },
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.005459932411865042,
+        -0.00018538700370110346
+      ],
+      "lag": 3,
+      "mean_current_modes": 2.0,
+      "mean_observed_minus_target_null": -0.002766603778712052,
+      "mean_reference_modes": 2.0,
+      "missing_reference_count": 0,
+      "observed_overlap_mean": 0.048462511539445544,
+      "observed_overlap_median": 0.03606185703027875,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.051229115318157596,
+      "permutation_null_q95": 0.05424656791410233,
+      "permutation_null_sd": 0.001784182141753945,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.944,
+      "split": "validation",
+      "targets": 641
+    },
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.006218092115392243,
+        -0.0011251787680143506
+      ],
+      "lag": 3,
+      "mean_current_modes": 2.0,
+      "mean_observed_minus_target_null": -0.0037429227379649765,
+      "mean_reference_modes": 2.0,
+      "missing_reference_count": 0,
+      "observed_overlap_mean": 0.047548460577868504,
+      "observed_overlap_median": 0.034813313243031656,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05129138331583348,
+      "permutation_null_q95": 0.05445772961466278,
+      "permutation_null_sd": 0.0019233923452121385,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.973,
+      "split": "blind_oos",
+      "targets": 641
+    },
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.004435313209938018,
+        -0.001139411721343685
+      ],
+      "lag": 5,
+      "mean_current_modes": 1.9989588755856325,
+      "mean_observed_minus_target_null": -0.0027462886452502,
+      "mean_reference_modes": 1.993753253513795,
+      "missing_reference_count": 6,
+      "observed_overlap_mean": 0.048416376879159735,
+      "observed_overlap_median": 0.0369728213799729,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.051162665524409935,
+      "permutation_null_q95": 0.05298640119883786,
+      "permutation_null_sd": 0.0011219372229508578,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.994,
+      "split": "discovery",
+      "targets": 1921
+    },
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.00632552103580498,
+        0.0004384054781133707
+      ],
+      "lag": 5,
+      "mean_current_modes": 2.0,
+      "mean_observed_minus_target_null": -0.0029792426105429326,
+      "mean_reference_modes": 2.0,
+      "missing_reference_count": 0,
+      "observed_overlap_mean": 0.04831019953456282,
+      "observed_overlap_median": 0.035141175161187546,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.05128944214510575,
+      "permutation_null_q95": 0.05452529183974726,
+      "permutation_null_sd": 0.001912821839754398,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.944,
+      "split": "validation",
+      "targets": 641
+    },
+    {
+      "excess_block_bootstrap_ci95": [
+        -0.0038941757410498696,
+        0.0024898541874031612
+      ],
+      "lag": 5,
+      "mean_current_modes": 2.0,
+      "mean_observed_minus_target_null": -0.000810706646298928,
+      "mean_reference_modes": 2.0,
+      "missing_reference_count": 0,
+      "observed_overlap_mean": 0.05043729646649808,
+      "observed_overlap_median": 0.035739216524123305,
+      "permutation_count": 999,
+      "permutation_null_mean": 0.051248003112797,
+      "permutation_null_q95": 0.054336930580397395,
+      "permutation_null_sd": 0.0018547240885587386,
+      "permutation_p_holm": 1.0,
+      "permutation_p_raw": 0.642,
+      "split": "blind_oos",
+      "targets": 641
+    }
+  ],
+  "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+  "target_design": {
+    "cutoff_rule": "Current subspace uses draws[:i]; lagged subspace uses draws[:i-lag]; both strictly precede target i.",
+    "minimum_prior_draws": 200,
+    "split_counts": {
+      "blind_oos": 641,
+      "discovery": 1921,
+      "validation": 641
+    },
+    "targets": 3203
+  },
+  "task_id": "Q96-DELAYED-SPECTRAL-RECURRENCE-01"
+}
