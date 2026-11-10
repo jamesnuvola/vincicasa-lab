@@ -27,8 +27,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: sonar-q93-spectral-coherence
-  cancel-in-progress: false
+  group: sonar-q93-pr-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   evaluate:
