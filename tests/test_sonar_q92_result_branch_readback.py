@@ -5,6 +5,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.verify_sonar_q92_result_branch import (
     git_blob_sha,
+    result_path,
     status_warnings,
     validate_receipt_summary,
 )
@@ -16,6 +17,9 @@ class Q92ResultBranchReadbackTests(unittest.TestCase):
             git_blob_sha(b"hello\n"),
             "ce013625030ba8dba906f756967f9e9ca394464a",
         )
+
+    def test_receipt_basename_maps_to_report_directory(self):
+        self.assertEqual(result_path("q92_20261108_report.json"), "reports/sequence_agent/q92_20261108_report.json")
 
     def test_receipt_and_summary_core_fields_must_match(self):
         receipt = {
