@@ -5,7 +5,7 @@ import base64,hashlib,json,os,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
 
 REPO=os.environ["GITHUB_REPOSITORY"]
-BRANCH=os.environ.get("GITHUB_REF_NAME","research/q90-edge-field-decomposition-20261110")
+BRANCH=os.environ.get("SONAR_BRANCH","research/q90-edge-field-decomposition-20261110")
 TOKEN=os.environ["GITHUB_TOKEN"]
 API="https://api.github.com"
 ROOT=Path(__file__).resolve().parents[1]
