@@ -8,6 +8,7 @@ on:
       - "data/storico_daily.csv"
       - ".github/workflows/q60-concorso314-append-only.yml"
       - "scripts/q60_verify_concorso314_append_only.py"
+      - "scripts/q60_update_position_shadow_only.py"
   workflow_dispatch:
 
 permissions:
@@ -41,14 +42,14 @@ jobs:
           python scripts/audit_dataset.py --check-json
       - name: Check SONAR pipeline syntax
         run: |
-          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_fast_improvements.py scripts/sonar_evolutionary_lab.py scripts/sonar_position_regime_residual_lab.py scripts/sonar_research_queue.py scripts/q60_verify_concorso314_append_only.py
+          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_active_engine_walkforward.mjs scripts/sonar_research_queue.py scripts/sonar_position_regime_residual_lab.py scripts/q60_update_position_shadow_only.py scripts/q60_verify_concorso314_append_only.py
           node --check scripts/sonar_active_engine_walkforward.mjs
       - name: Evaluate existing global freezes and create next-date rule freezes
         run: python scripts/sonar_sequence_agent.py
       - name: Reconcile exact-source app freeze without reconstructing it
         run: node scripts/sonar_active_engine_walkforward.mjs
-      - name: Evaluate existing position freeze and paired Q60 gate
-        run: python scripts/sonar_position_regime_residual_lab.py
+      - name: Refresh only the append-only position freeze and paired Q60 gate
+        run: python scripts/q60_update_position_shadow_only.py
       - name: Validate research queue
         run: python scripts/sonar_research_queue.py
       - name: Test prospective freeze eligibility
