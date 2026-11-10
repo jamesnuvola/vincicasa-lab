@@ -17,16 +17,16 @@ EXPECTED = {
         "history_cutoff": "2026-11-09",
         "top20": [26,16,25,36,10,12,15,28,29,38,1,5,9,17,18,30,34,37,39,24],
     },
-    "position_seed_mix_top20_v1": {
-        "frozen_at": "2026-11-10T10:55:31+01:00",
-        "history_cutoff": "2026-11-09",
-        "top20": [26,16,36,12,15,29,38,1,17,37,39,3,23,2,25,10,28,5,9,18],
-    },
     "APP::SONAR_HYBRID_RECENCY_ANALOG_FULL_HISTORY": {
         "frozen_at": "2026-11-10T10:53:16+01:00",
         "history_cutoff": "2026-11-09",
         "top20": [25,16,38,36,17,26,12,28,9,27,10,34,37,1,8,39,13,15,20,30],
     },
+}
+POSITION_EXPECTED = {
+    "frozen_at": "2026-11-10T10:55:31+01:00",
+    "history_cutoff": "2026-11-09",
+    "top20": [26,16,36,12,15,29,38,1,17,37,39,3,23,2,25,10,28,5,9,18],
 }
 
 def check(condition, message, checks):
@@ -113,11 +113,11 @@ def main():
     position_row = one(position_rows, target_date=DATE, config_id="position_seed_mix_top20_v1")
     check(position_row["status"] == "EVALUATED" and position_row["actual_numbers"] == ACTUAL_TEXT,
           "position-seed freeze for 10 November is evaluated", checks)
-    check(position_row["frozen_at"] == EXPECTED["position_seed_mix_top20_v1"]["frozen_at"],
+    check(position_row["frozen_at"] == POSITION_EXPECTED["frozen_at"],
           "position-seed frozen_at is unchanged", checks)
     check(position_row["history_cutoff"] == "2026-11-09",
           "position-seed cutoff remains prior-day", checks)
-    check(nums(position_row["top20"]) == EXPECTED["position_seed_mix_top20_v1"]["top20"],
+    check(nums(position_row["top20"]) == POSITION_EXPECTED["top20"],
           "position-seed Top20 is unchanged", checks)
     position_metrics = metrics_for(nums(position_row["top20"]))
     check(nums(position_row["hit_numbers"]) == position_metrics["hit_numbers"] and
@@ -182,7 +182,12 @@ def main():
         "checks": checks,
         "paired_target": {
             "global_freq_100": evaluated["freq_100"],
-            "position_seed_mix_top20_v1": evaluated["position_seed_mix_top20_v1"],
+            "position_seed_mix_top20_v1": {
+                "frozen_at": position_row["frozen_at"],
+                "history_cutoff": position_row["history_cutoff"],
+                "top20": nums(position_row["top20"]),
+                **position_metrics
+            },
             "active_app_engine": evaluated["APP::SONAR_HYBRID_RECENCY_ANALOG_FULL_HISTORY"],
             "position_minus_global_top20_hits": position_metrics["top20_hits"] - evaluated["freq_100"]["top20_hits"],
             "position_minus_global_top20_5of5": int(position_metrics["top20_5of5"]) - int(evaluated["freq_100"]["top20_5of5"])
