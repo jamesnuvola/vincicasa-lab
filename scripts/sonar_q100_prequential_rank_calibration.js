@@ -3,6 +3,7 @@ import crypto from "node:crypto";
 
 const EXPECTED_ARCHIVE_BLOB = "8d3e19f0b417024ba32e576697eac0648d12ab86";
 const EXPECTED_SCORER_BLOB = "7ccb9a2abfe452ec535913b70225bc109f692304";
+const EXPECTED_ACTIVE_REPORT_BLOB = "ff07b6da4948bb89467067c2552d9b1f78bc9549";
 const WARMUP = 200;
 const DISCOVERY_N = 1921;
 const VALIDATION_N = 641;
@@ -156,12 +157,15 @@ export function runQ100(options = {}) {
   const root = options.root ?? process.cwd();
   const csvText = fs.readFileSync(root + "/data/storico_daily.csv", "utf8");
   const sourceText = fs.readFileSync(root + "/src/VinciCasaLab.jsx", "utf8");
-  const active = JSON.parse(fs.readFileSync(root + "/reports/sequence_agent/active_engine_walkforward.json", "utf8"));
+  const activeText = fs.readFileSync(root + "/reports/sequence_agent/active_engine_walkforward.json", "utf8");
+  const active = JSON.parse(activeText);
+  const activeReportBlob = gitBlobSha1(activeText);
 
   const archiveBlob = gitBlobSha1(csvText);
   const scorerBlob = gitBlobSha1(sourceText);
   if (archiveBlob !== EXPECTED_ARCHIVE_BLOB) fail("canonical archive blob changed: " + archiveBlob);
   if (scorerBlob !== EXPECTED_SCORER_BLOB) fail("active scorer blob changed: " + scorerBlob);
+  if (activeReportBlob !== EXPECTED_ACTIVE_REPORT_BLOB) fail("active-engine report blob changed: " + activeReportBlob);
   if (active.source_git_blob_sha !== archiveBlob || active.implementation_source_blob_sha !== scorerBlob) {
     fail("active-engine report provenance mismatch");
   }
@@ -258,6 +262,9 @@ export function runQ100(options = {}) {
 
   const exactNull = exactRankSumDistribution();
   if (Math.abs(exactNull.meanRank - 20.5) > 1e-12) fail("exact null mean rank is not 20.5");
+  const mcReplayA = simulateLowerTail(exactNull.expanded, blindRows.length, 1000, 0x5100A100, blindRows.reduce((a, r) => a + r.rank_sum, 0));
+  const mcReplayB = simulateLowerTail(exactNull.expanded, blindRows.length, 1000, 0x5100A100, blindRows.reduce((a, r) => a + r.rank_sum, 0));
+  if (mcReplayA.extreme !== mcReplayB.extreme || mcReplayA.p !== mcReplayB.p) fail("Monte Carlo seed replay is not deterministic");
   const observedRankSum = blindRows.reduce((a, r) => a + r.rank_sum, 0);
   const mc = simulateLowerTail(exactNull.expanded, blindRows.length, inferenceReps, 0x5100A100, observedRankSum);
   const pBonferroni43 = Math.min(1, mc.p * 43);
@@ -275,9 +282,10 @@ export function runQ100(options = {}) {
       { id: "future_mutation_invariance", status: "PASS", detail: "Mutating target and later draws leaves pre-target score vectors unchanged at nine fixed cutoffs." },
       { id: "deterministic_replay", status: "PASS", detail: "Repeated fixed-prefix score vectors are identical at nine fixed cutoffs." },
       { id: "exact_rank_null", status: "PASS", detail: "Dynamic programming enumerates exactly 658008 five-subsets; expected mean rank is exactly 20.5." },
+      { id: "monte_carlo_seed_replay", status: "PASS", detail: "Repeated 1000-replicate conditional-null runs with the fixed seed produce identical extreme counts and p-values." },
       { id: "split_reconciliation", status: "PASS", detail: "1921 Discovery + 641 Validation + 641 historical Blind OOS = 3203 targets." }
     ],
-    provenance: { archive_blob_sha: archiveBlob, scorer_blob_sha: scorerBlob },
+    provenance: { archive_blob_sha: archiveBlob, scorer_blob_sha: scorerBlob, active_report_blob_sha: activeReportBlob },
     reconciliation
   };
 
@@ -291,7 +299,7 @@ export function runQ100(options = {}) {
       archive_blob_sha: archiveBlob,
       scorer: "src/VinciCasaLab.jsx",
       scorer_blob_sha: scorerBlob,
-      active_report_blob_sha: active.source_git_blob_sha,
+      active_report_blob_sha: activeReportBlob,
       main_base_commit: "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b"
     },
     data: { draws: draws.length, first_date: draws[0].d, last_date: draws.at(-1).d, warmup_draws: WARMUP, targets: rows.length },
