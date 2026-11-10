@@ -1,0 +1,350 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "task_id": "Q84-P0",
+  "title": "Prior-only regime and residual flow prototype",
+  "generated_at_utc": "2026-11-10T16:25:00Z",
+  "status": "EXPLORATORY_PROTOTYPE_NOT_ACCEPTANCE_VALIDATED",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "latest_draw": [
+      9,
+      17,
+      25,
+      32,
+      34
+    ],
+    "research_branch_archive_synced_byte_for_byte_to_main": true,
+    "archive_sync_commit": "9a9a3383182e5fe2a138f6a18f731b207300f318",
+    "immutable_target_2026_10_25_freeze_overwritten": false
+  },
+  "objective": "Test whether the current direction and acceleration of the 27-feature state field can help select which prior-only feature-ranking rule to use next, rather than selecting a rule only from its global or recent historical success.",
+  "scope": {
+    "minimum_prior_history": 50,
+    "scored_targets": 3353,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "common_meta_model_warmup_targets": 100,
+    "strategies_in_selector": 27,
+    "selector_candidates": "27 existing single-feature ranking strategies; Q80-Q88 multi-feature formula families are not yet included in this prototype."
+  },
+  "method": {
+    "feature_state": "For every target, compute the registered 27 per-number features from the strict prefix before that target; standardize each feature across numbers 1..40; rank the five actual numbers under each feature.",
+    "level_state": "For each feature, record the mean standardized score of its five highest-ranked numbers and the contemporaneous cross-feature correlation summaries.",
+    "flow_state": "First differences and second differences of the 27 level descriptors, plus changes in cross-feature correlation summaries, velocity magnitude, acceleration magnitude, divergence and turning cosine.",
+    "level_knn": "Select the feature with the best weighted mean actual-number rank among the 25 nearest prior state-level observations.",
+    "flow_only_knn": "Select the feature using only velocity, acceleration and correlation-change descriptors among the 25 nearest prior flow states.",
+    "hybrid_knn": "Select using both level and flow descriptors.",
+    "recency_baseline": "Select the feature with the best mean actual-number rank over the preceding 100 targets.",
+    "equal_weight_baseline": "Rank numbers by the mean standardized score across all 27 features.",
+    "fixed_baseline": "Select the best single feature over discovery only, then freeze it for validation and blind OOS.",
+    "knn_parameters": {
+      "neighbors": 25,
+      "history_window": 250,
+      "distance": "Euclidean after scaling each state dimension by the standard deviation of the available prior history",
+      "neighbor_weight": "1/(sqrt(mean_squared_standardized_distance)+0.05)",
+      "selection_objective": "minimize predicted mean rank of actual numbers"
+    },
+    "regime_thresholds": "Expansion/contraction/stable/turbulent cutpoints are estimated from discovery states only and then held fixed.",
+    "evaluation": "All model comparisons use the same target dates from scored-target index 100 onward. At target t, state features use draws strictly before t and KNN/recency selection uses outcomes only from targets earlier than t."
+  },
+  "metric_definitions": {
+    "top5_top10_top20": "Mean fraction of the five actual numbers ranked within the corresponding Top-k; not the probability of a 5/5 quintet.",
+    "mean_rank": "Mean rank of the five actual numbers; lower is better.",
+    "best_feature_match": "Fraction of targets where the selected feature equals the retrospective best feature for that target; diagnostic only.",
+    "hindsight_regret": "Selected feature mean rank minus the retrospective best feature mean rank; diagnostic only.",
+    "uniform_reference": {
+      "top5": 0.125,
+      "top10": 0.25,
+      "top20": 0.5,
+      "mean_rank": 20.5
+    }
+  },
+  "results": [
+    {
+      "model": "equal_weight_27",
+      "discovery": {
+        "targets": 1912,
+        "top5": 0.1291841004,
+        "top10": 0.2521966527,
+        "top20": 0.5048117155,
+        "mean_rank": 20.3777196653
+      },
+      "validation": {
+        "targets": 671,
+        "top5": 0.1165424739,
+        "top10": 0.2393442623,
+        "top20": 0.4903129657,
+        "mean_rank": 20.6986587183
+      },
+      "blind_oos": {
+        "targets": 670,
+        "top5": 0.1220895522,
+        "top10": 0.2471641791,
+        "top20": 0.5035820896,
+        "mean_rank": 20.536119403
+      }
+    },
+    {
+      "model": "level_state_knn_k25",
+      "discovery": {
+        "targets": 1912,
+        "top5": 0.1195606695,
+        "top10": 0.2445606695,
+        "top20": 0.499790795,
+        "mean_rank": 20.6388075314,
+        "best_feature_match": 0.0355648536,
+        "hindsight_regret": 8.5968619247
+      },
+      "validation": {
+        "targets": 671,
+        "top5": 0.1219076006,
+        "top10": 0.2453055142,
+        "top20": 0.4962742176,
+        "mean_rank": 20.4616989568,
+        "best_feature_match": 0.0402384501,
+        "hindsight_regret": 8.3964232489
+      },
+      "blind_oos": {
+        "targets": 670,
+        "top5": 0.1235820896,
+        "top10": 0.2411940299,
+        "top20": 0.4898507463,
+        "mean_rank": 20.6537313433,
+        "best_feature_match": 0.0462686567,
+        "hindsight_regret": 8.6188059701
+      }
+    },
+    {
+      "model": "flow_only_knn_k25",
+      "discovery": {
+        "targets": 1912,
+        "top5": 0.1236401674,
+        "top10": 0.2525104603,
+        "top20": 0.5076359833,
+        "mean_rank": 20.3017782427,
+        "best_feature_match": 0.0486401674,
+        "hindsight_regret": 8.25983263598
+      },
+      "validation": {
+        "targets": 671,
+        "top5": 0.1236959762,
+        "top10": 0.254247392,
+        "top20": 0.5061102832,
+        "mean_rank": 20.3669150522,
+        "best_feature_match": 0.0581222057,
+        "hindsight_regret": 8.3016393443
+      },
+      "blind_oos": {
+        "targets": 670,
+        "top5": 0.1223880597,
+        "top10": 0.2540298507,
+        "top20": 0.5101492537,
+        "mean_rank": 20.3495522388,
+        "best_feature_match": 0.0507462687,
+        "hindsight_regret": 8.3146268657
+      }
+    },
+    {
+      "model": "hybrid_state_flow_knn_k25",
+      "discovery": {
+        "targets": 1912,
+        "top5": 0.1207112971,
+        "top10": 0.2473849372,
+        "top20": 0.5048117155,
+        "mean_rank": 20.4713389121,
+        "best_feature_match": 0.0360878661,
+        "hindsight_regret": 8.4293933054
+      },
+      "validation": {
+        "targets": 671,
+        "top5": 0.1222056632,
+        "top10": 0.2396423249,
+        "top20": 0.4876304024,
+        "mean_rank": 20.8557377049,
+        "best_feature_match": 0.0327868852,
+        "hindsight_regret": 8.790461997
+      },
+      "blind_oos": {
+        "targets": 670,
+        "top5": 0.1202985075,
+        "top10": 0.2382089552,
+        "top20": 0.4802985075,
+        "mean_rank": 20.9340298507,
+        "best_feature_match": 0.0417910448,
+        "hindsight_regret": 8.8991044776
+      }
+    },
+    {
+      "model": "recency_100",
+      "discovery": {
+        "targets": 1912,
+        "top5": 0.1261506276,
+        "top10": 0.2554393305,
+        "top20": 0.5089958159,
+        "mean_rank": 20.3184100418,
+        "best_feature_match": 0.0418410042,
+        "hindsight_regret": 8.2764644351
+      },
+      "validation": {
+        "targets": 671,
+        "top5": 0.1183308495,
+        "top10": 0.2399403875,
+        "top20": 0.4876304024,
+        "mean_rank": 20.7448584203,
+        "best_feature_match": 0.0402384501,
+        "hindsight_regret": 8.6795827124
+      },
+      "blind_oos": {
+        "targets": 670,
+        "top5": 0.1179104478,
+        "top10": 0.2456716418,
+        "top20": 0.4994029851,
+        "mean_rank": 20.5579104478,
+        "best_feature_match": 0.0313432836,
+        "hindsight_regret": 8.5229850746
+      }
+    }
+  ],
+  "fixed_discovery_selected_feature": {
+    "feature": "neighbor_pm2_history",
+    "validation": {
+      "targets": 671,
+      "top5": 0.129657228,
+      "top10": 0.251266766,
+      "top20": 0.4968703428,
+      "mean_rank": 20.4637853949
+    },
+    "blind_oos": {
+      "targets": 670,
+      "top5": 0.1188059701,
+      "top10": 0.2462686567,
+      "top20": 0.5119402985,
+      "mean_rank": 20.436119403
+    }
+  },
+  "blind_oos_moving_block_bootstrap": {
+    "block_length": 20,
+    "replicates": 1000,
+    "hybrid_minus_equal_mean_rank": {
+      "mean": 0.3979104478,
+      "ci95": [
+        -0.1259701493,
+        0.9164179104
+      ],
+      "exploratory_two_sided_bootstrap_p": 0.122
+    },
+    "flow_minus_level_mean_rank": {
+      "mean": -0.3041791045,
+      "ci95": [
+        -0.9328358209,
+        0.2653731343
+      ],
+      "exploratory_two_sided_bootstrap_p": 0.326
+    },
+    "hybrid_minus_equal_top5_fraction": {
+      "mean": -0.0089552239,
+      "ci95": [
+        -0.0776119403,
+        0.0597014925
+      ],
+      "exploratory_two_sided_bootstrap_p": 0.818
+    },
+    "flow_minus_level_top5_fraction": {
+      "mean": -0.0059701493,
+      "ci95": [
+        -0.0805970149,
+        0.071641791
+      ],
+      "exploratory_two_sided_bootstrap_p": 0.882
+    }
+  },
+  "regime_thresholds_discovery_only": {
+    "velocity_q25": 0.076959057,
+    "velocity_q50": 0.0972879386,
+    "velocity_q75": 0.1194565686,
+    "acceleration_q25": 0.1232877223,
+    "acceleration_q75": 0.1950938733,
+    "divergence_q25": -0.0207555534,
+    "divergence_q75": 0.0195544059
+  },
+  "regime_counts": {
+    "stable": 446,
+    "contraction": 415,
+    "transition": 1672,
+    "expansion": 317,
+    "turbulent": 503
+  },
+  "regime_performance_descriptive_only": {
+    "stable": {
+      "targets": 446,
+      "hindsight_best_feature_mean_rank": 12.1461883408,
+      "equal_weight_mean_rank": 20.4977578475,
+      "equal_weight_top5_fraction": 0.1264573991
+    },
+    "contraction": {
+      "targets": 415,
+      "hindsight_best_feature_mean_rank": 12.0419277108,
+      "equal_weight_mean_rank": 20.5474698795,
+      "equal_weight_top5_fraction": 0.1204819277
+    },
+    "transition": {
+      "targets": 1672,
+      "hindsight_best_feature_mean_rank": 12.0046650718,
+      "equal_weight_mean_rank": 20.406937799,
+      "equal_weight_top5_fraction": 0.1294258373
+    },
+    "expansion": {
+      "targets": 317,
+      "hindsight_best_feature_mean_rank": 12.243533123,
+      "equal_weight_mean_rank": 20.9905362776,
+      "equal_weight_top5_fraction": 0.1129337539
+    },
+    "turbulent": {
+      "targets": 503,
+      "hindsight_best_feature_mean_rank": 12.0894632207,
+      "equal_weight_mean_rank": 20.4524850895,
+      "equal_weight_top5_fraction": 0.1168986083
+    }
+  },
+  "interpretation": [
+    "The flow-only selector is the most stable of the adaptive variants across discovery, validation and blind OOS on mean-rank and Top10/Top20 metrics.",
+    "On blind OOS, flow-only mean rank is 20.35 versus 20.5 uniform; Top10 is 25.40% versus 25.0%; Top20 is 51.01% versus 50.0%; Top5 is 12.24%, below the 12.5% uniform reference.",
+    "The flow-only versus level-only paired bootstrap intervals include zero; this is a weak exploratory signal, not validated predictive advantage.",
+    "Adding current levels to flow in this prototype degraded blind-OOS performance; this suggests testing directional-change descriptors separately rather than assuming more inputs are better.",
+    "The retrospective best-feature oracle reaches mean rank near 12 but is not an attainable ex-ante model. The flow selector matches that hindsight winner on only about 5.1% of blind-OOS targets, showing a large remaining selection gap.",
+    "The expansion regime has worse equal-weight rank performance than the transition regime in this sample, but this is descriptive and requires independent prospective/chronological confirmation."
+  ],
+  "limitations": [
+    "This is a JavaScript prototype calculation, not yet a committed reproducible Python runner or a full Q84 acceptance artifact set.",
+    "Only the 27 registered single-feature strategies are included in the selector; multi-feature Q80-Q88 formulas and conditional grammars remain to be integrated.",
+    "The KNN settings were fixed for this prototype and have not undergone a preregistered hyperparameter sensitivity grid.",
+    "Bootstrap intervals are exploratory; no global family-wise correction has been applied across all variants and endpoints.",
+    "The flow descriptors are empirical state summaries inspired by fluid dynamics, not a claim that the lottery mechanism is a physical fluid or that the observed states have causal meaning.",
+    "The current archive includes 2026-11-08 and 2026-11-09, but the persisted Q80-Q88 grammar outputs still need refresh against this new cutoff."
+  ],
+  "acceptance": {
+    "q84": "INCOMPLETE",
+    "status": "PROTOTYPE_ONLY",
+    "required_next": [
+      "Implement a deterministic Python runner and regression tests for the state/flow descriptors and strict prior-only cutoff.",
+      "Refresh Q80-Q88 metrics and manifests against archive blob 8d3e19f0b417024ba32e576697eac0648d12ab86.",
+      "Select formula candidates using discovery metrics only, then include them in the level/flow/hybrid online selector without using validation or blind OOS to choose candidates.",
+      "Produce the full Q84 catalog, target ledger, lifecycle and relationship outputs with row-count/hash reconciliation.",
+      "Run exact-head CI, persist and reread outputs, and retain pending human review."
+    ],
+    "guardrails": [
+      "No automatic model promotion.",
+      "No PR merge.",
+      "No target freeze overwritten.",
+      "Finite formula grammars are explicitly bounded; no claim of mathematical-universe exhaustion."
+    ]
+  }
+}
