@@ -142,12 +142,14 @@ def spectral_projection(values: np.ndarray, vectors: np.ndarray, features: np.nd
 def permuted_spectral_projection(values, vectors, features, permutation):
     """Apply P V diag(lambda) V.T P.T to features; preserves the spectral eigenvalues."""
     permutation = np.asarray(permutation, dtype=np.int64)
-    inverse = np.argsort(permutation)
     permuted_vectors = vectors[permutation, :]
-    permuted_features = np.asarray(features, dtype=np.float64)[inverse, :]
+    original_features = np.asarray(features, dtype=np.float64)
+    if original_features.shape != (40, 6) or not np.isfinite(original_features).all():
+        raise ValueError("Q93 permuted spectral projection requires finite prior features (40,6)")
     if vectors.shape[1] == 0:
         return np.zeros((40, 6), dtype=np.float64)
-    return permuted_vectors @ (values[:, None] * (permuted_vectors.T @ permuted_features))
+    # (P V) Lambda (P V).T X is exactly (P S P.T) X; do not permute X a second time.
+    return permuted_vectors @ (values[:, None] * (permuted_vectors.T @ original_features))
 
 
 def split_labels(total: int):
