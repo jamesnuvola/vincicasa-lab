@@ -1,0 +1,45 @@
+name: Q60 H102 RRF disagreement slope
+on:
+  push:
+    branches:
+      - research/q60-h102-disagreement-slope-20261110
+    paths:
+      - ".github/workflows/sonar-q60-h102-disagreement.yml"
+      - "scripts/sonar_q60_h102_disagreement.py"
+      - "tests/test_sonar_q60_h102_disagreement.py"
+      - "reports/sequence_agent/q60_h102_disagreement_preregistration_2026-11-10.json"
+      - "reports/sequence_agent/q60_h102_current_status_2026-11-10.json"
+      - "reports/sequence_agent/q60_h102_current_ledger_2026-11-10.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile H101 and H102 implementations and tests
+        run: python -m py_compile scripts/sonar_q60_h101_rrf.py scripts/sonar_q60_h102_disagreement.py tests/test_sonar_q60_h102_disagreement.py
+      - name: Run H102 statistical and leakage-guard tests
+        run: python tests/test_sonar_q60_h102_disagreement.py -v
+      - name: Rebuild current H102 status from frozen sources and canonical archive
+        run: |
+          python scripts/sonar_q60_h102_disagreement.py \
+            --global-csv reports/sequence_agent/shadow_forecasts.csv \
+            --positional-csv reports/sequence_agent/position_mix_shadow.csv \
+            --h101-csv reports/sequence_agent/q60_h101_rrf_shadow.csv \
+            --archive-csv data/storico_daily.csv \
+            --report-out /tmp/q60_h102_status.json \
+            --ledger-out /tmp/q60_h102_ledger.csv
+      - name: Verify current pending status and ledger byte-for-byte
+        run: |
+          diff -u reports/sequence_agent/q60_h102_current_status_2026-11-10.json /tmp/q60_h102_status.json
+          diff -u reports/sequence_agent/q60_h102_current_ledger_2026-11-10.csv /tmp/q60_h102_ledger.csv
