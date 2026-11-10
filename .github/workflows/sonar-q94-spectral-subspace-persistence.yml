@@ -1,0 +1,130 @@
+name: SONAR Q94 Spectral Subspace Persistence
+
+on:
+  push:
+    branches:
+      - research/q94-spectral-subspace-persistence-20261110
+    paths:
+      - "scripts/sonar_q94_spectral_subspace_persistence.py"
+      - "scripts/validate_sonar_q94_spectral_subspace_persistence.py"
+      - "tests/test_sonar_q94_spectral_subspace_persistence.py"
+      - "reports/sequence_agent/q94_spectral_subspace_persistence_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q94-spectral-subspace-persistence.yml"
+  pull_request:
+    branches:
+      - research/q93-spectral-coherence-20261110
+    paths:
+      - "scripts/sonar_q94_spectral_subspace_persistence.py"
+      - "scripts/validate_sonar_q94_spectral_subspace_persistence.py"
+      - "tests/test_sonar_q94_spectral_subspace_persistence.py"
+      - "reports/sequence_agent/q94_spectral_subspace_persistence_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q94-spectral-subspace-persistence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sonar-q94-${{ github.event.pull_request.number || github.ref_name || github.run_id }}
+  cancel-in-progress: false
+
+jobs:
+  evaluate-accept-and-persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Check out Q94 research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/q94-spectral-subspace-persistence-20261110
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+
+      - name: Compile Q94 engine and independent validator
+        run: |
+          python -m py_compile scripts/sonar_q94_spectral_subspace_persistence.py
+          python -m py_compile scripts/validate_sonar_q94_spectral_subspace_persistence.py
+
+      - name: Run Q94 regression tests
+        run: python tests/test_sonar_q94_spectral_subspace_persistence.py
+
+      - name: Detect pre-existing accepted Q94 outputs
+        id: q94-state
+        run: |
+          if [ -f reports/sequence_agent/q94_spectral_subspace_persistence_validation.json ] && [ -f reports/sequence_agent/q94_spectral_subspace_persistence_manifest.json ]; then
+            echo "preexisting=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "preexisting=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Execute strict-prior Q94 walk-forward
+        if: steps.q94-state.outputs.preexisting == 'false'
+        run: python scripts/sonar_q94_spectral_subspace_persistence.py
+
+      - name: Independently replay and accept Q94 outputs
+        if: steps.q94-state.outputs.preexisting == 'false'
+        env:
+          GITHUB_RUN_ID: ${{ github.run_id }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python scripts/validate_sonar_q94_spectral_subspace_persistence.py
+
+      - name: Replay pre-existing Q94 outputs read-only
+        if: steps.q94-state.outputs.preexisting == 'true'
+        run: python scripts/validate_sonar_q94_spectral_subspace_persistence.py --read-only
+
+      - name: Upload Q94 accepted bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q94-spectral-subspace-persistence-bundle
+          path: |
+            reports/sequence_agent/q94_spectral_subspace_persistence_catalog.jsonl
+            reports/sequence_agent/q94_spectral_subspace_persistence_target_ledger.csv.gz
+            reports/sequence_agent/q94_spectral_subspace_persistence_report.json
+            reports/sequence_agent/q94_spectral_subspace_persistence_manifest.json
+            reports/sequence_agent/q94_spectral_subspace_persistence_protocol_2026-11-10.json
+            reports/sequence_agent/q94_spectral_subspace_persistence_checkpoint_2026-11-10.md
+            reports/sequence_agent/q94_spectral_subspace_persistence_validation.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Persist Q94 outputs append-only and replay the exact persisted head
+        if: steps.q94-state.outputs.preexisting == 'false'
+        env:
+          SONAR_BRANCH: research/q94-spectral-subspace-persistence-20261110
+        run: |
+          set -euo pipefail
+          git fetch origin "refs/heads/$SONAR_BRANCH:refs/remotes/origin/$SONAR_BRANCH"
+          for path in \
+            reports/sequence_agent/q94_spectral_subspace_persistence_catalog.jsonl \
+            reports/sequence_agent/q94_spectral_subspace_persistence_target_ledger.csv.gz \
+            reports/sequence_agent/q94_spectral_subspace_persistence_report.json \
+            reports/sequence_agent/q94_spectral_subspace_persistence_manifest.json \
+            reports/sequence_agent/q94_spectral_subspace_persistence_checkpoint_2026-11-10.md \
+            reports/sequence_agent/q94_spectral_subspace_persistence_validation.json; do
+            if git cat-file -e "refs/remotes/origin/$SONAR_BRANCH:$path" 2>/dev/null; then
+              echo "Append-only persistence blocked; path already exists: $path"
+              exit 1
+            fi
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            reports/sequence_agent/q94_spectral_subspace_persistence_catalog.jsonl \
+            reports/sequence_agent/q94_spectral_subspace_persistence_target_ledger.csv.gz \
+            reports/sequence_agent/q94_spectral_subspace_persistence_report.json \
+            reports/sequence_agent/q94_spectral_subspace_persistence_manifest.json \
+            reports/sequence_agent/q94_spectral_subspace_persistence_checkpoint_2026-11-10.md \
+            reports/sequence_agent/q94_spectral_subspace_persistence_validation.json
+          git commit -m "Persist accepted Q94 spectral subspace persistence evidence"
+          git push origin "HEAD:refs/heads/$SONAR_BRANCH"
+          git fetch origin "refs/heads/$SONAR_BRANCH:refs/remotes/origin/$SONAR_BRANCH"
+          git checkout --detach "refs/remotes/origin/$SONAR_BRANCH"
+          python -m py_compile scripts/sonar_q94_spectral_subspace_persistence.py scripts/validate_sonar_q94_spectral_subspace_persistence.py
+          python scripts/validate_sonar_q94_spectral_subspace_persistence.py --read-only
