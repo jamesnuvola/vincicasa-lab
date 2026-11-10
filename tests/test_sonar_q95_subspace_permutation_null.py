@@ -7,6 +7,11 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
 import sonar_q95_subspace_permutation_null as q95
 import sonar_q94_spectral_subspace_persistence as q94
 
+def orthogonal_basis(rng, columns):
+    x=rng.normal(size=(40,columns))
+    x-=np.ones((40,1))@(np.ones((1,40))@x/40.0)
+    return np.linalg.qr(x)[0]
+
 class Q95Tests(unittest.TestCase):
     def test_fixed_permutations_reproducible_unique_nonidentity(self):
         a=q95.fixed_permutations(); b=q95.fixed_permutations()
@@ -22,11 +27,11 @@ class Q95Tests(unittest.TestCase):
             self.assertLess(np.max(np.abs(v.T@np.ones(40))),1e-8)
             np.testing.assert_allclose(v.T@v,np.eye(2),atol=1e-10,rtol=0)
     def test_identity_overlap_matches_q94(self):
-        rng=np.random.default_rng(95012); a,_=np.linalg.qr(rng.normal(size=(40,2))); b,_=np.linalg.qr(rng.normal(size=(40,2)))
+        rng=np.random.default_rng(95012); a=orthogonal_basis(rng,2); b=orthogonal_basis(rng,2)
         p=np.arange(40,dtype=np.int16)[None,:]
         self.assertAlmostEqual(float(q95.overlap_many(a,b,p)[0]),q94.subspace_overlap(a,b),places=12)
     def test_vectorized_overlap_matches_scalar_loop(self):
-        rng=np.random.default_rng(95013); a,_=np.linalg.qr(rng.normal(size=(40,2))); b,_=np.linalg.qr(rng.normal(size=(40,3)))
+        rng=np.random.default_rng(95013); a=orthogonal_basis(rng,2); b=orthogonal_basis(rng,3)
         ps=q95.fixed_permutations()[:20]
         x=q95.overlap_many(a,b,ps)
         y=np.asarray([q94.subspace_overlap(a,q95.permuted_basis(b,p)) for p in ps])
