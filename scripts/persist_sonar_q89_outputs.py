@@ -42,8 +42,9 @@ def main():
     validation=json.loads(files[NAMES[5]])
     if validation.get("status")!="PASS":
         raise SystemExit("Q89 persistence blocked: acceptance status is not PASS")
-    refpath="/repos/"+REPO+"/git/ref/heads/"+urllib.parse.quote(BRANCH,safe="/")
-    ref=api("GET",refpath); parent=ref["object"]["sha"]
+    ref_get="/repos/"+REPO+"/git/ref/heads/"+urllib.parse.quote(BRANCH,safe="/")
+    ref_patch="/repos/"+REPO+"/git/refs/heads/"+urllib.parse.quote(BRANCH,safe="/")
+    ref=api("GET",ref_get); parent=ref["object"]["sha"]
     parent_commit=api("GET","/repos/"+REPO+"/git/commits/"+parent)
     base_tree=parent_commit["tree"]["sha"]
     entries=[]; blob_map={}
@@ -63,8 +64,8 @@ def main():
     commit=api("POST","/repos/"+REPO+"/git/commits",{
         "message":"Persist Q89 validated counterfactual outputs [q89-results-persisted]",
         "tree":tree["sha"],"parents":[parent]})
-    api("PATCH",refpath,{"sha":commit["sha"],"force":False})
-    final_ref=api("GET",refpath)
+    api("PATCH",ref_patch,{"sha":commit["sha"],"force":False})
+    final_ref=api("GET",ref_get)
     if final_ref["object"]["sha"]!=commit["sha"]:
         raise SystemExit("Q89 persistence blocked: branch head differs from created commit")
     # Read each Git blob back from GitHub and verify byte-for-byte SHA-256.
