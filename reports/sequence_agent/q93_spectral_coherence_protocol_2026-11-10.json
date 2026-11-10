@@ -1,0 +1,107 @@
+{
+  "task_id": "Q93-SPECTRAL-COHERENCE-01",
+  "title": "Spectral coherence of the Q90 zero-row-sum pair-interaction residual",
+  "registered_at_utc": "2026-11-10T03:46:48Z",
+  "status": "PREREGISTERED_PENDING_EXECUTION",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "sha256": "ba0c8f4e78805e72d04a1b731e1882a9edd3ac71a2bc35c92409540d9ebdec61"
+  },
+  "target_design": {
+    "minimum_prior_draws": 200,
+    "targets": 3203,
+    "discovery": 1921,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "split_rule": "q90.split_labels(total), using the registered 60/20/20 chronological partition",
+    "cutoff_rule": "For target i, compute field state, edge change, decomposition and all rankings using draws[:i] only; freeze rankings before reading draw i."
+  },
+  "hypothesis": "The large Q90 pair-interaction residual may contain predictive structure concentrated in a small number of coherent spectral modes; fixed low-rank spectral operators may produce a more useful node-to-field transfer signal than the full residual projection.",
+  "spectral_definition": {
+    "residual": "E_pair from q90.decompose_edge_change(E_t-E_(t-1)); symmetric, zero diagonal and zero row sums.",
+    "decomposition": "eigh(E_pair); sort nonzero eigenmodes by descending absolute eigenvalue; include the full tie group at the k-th absolute-eigenvalue boundary; S_k=V_k diag(lambda_k) V_k.T.",
+    "projections": [
+      "k=1",
+      "k=2 (fixed focal hypothesis)",
+      "k=4"
+    ],
+    "signal": "For each node i, signed cosine(node_delta_i, (S_k @ prior_features)_i); smooth with EWMA window 20, decay 0.80.",
+    "score": "base_z + 0.20 * 0.5*(REVERSION+graph_signal) * zscore(smoothed_spectral_signal).",
+    "mode_tie_rule": "Include all modes tied at the absolute-eigenvalue cutoff within 1e-10*max(1,cutoff); report effective mode count. This avoids arbitrary truncation inside a degenerate eigenspace."
+  },
+  "spectral_null": {
+    "kind": "fixed node-label permutation conjugation",
+    "count": 99,
+    "seed": 9301,
+    "construction": "For each fixed permutation P, S_perm=P S_2 P.T. This preserves eigenvalues, symmetry and the all-ones null direction; it also preserves the diagonal pattern of S_2. It randomizes the alignment of spectral modes with the original node labels. It is a constrained node-label null, not a Haar-random eigenvector rotation.",
+    "tests": "For each chronological split and Top5/Top10/Top20, compare the observed k=2 mean hits with the 99 permuted spectral operators; use plus-one randomization p-values and one global Holm family of 9 tests."
+  },
+  "models": [
+    {
+      "id": "Q90::FULL_EDGE_TRANSFER",
+      "role": "full edge comparator"
+    },
+    {
+      "id": "Q90::DEGREE_MAIN_TRANSFER",
+      "role": "additive degree/main comparator"
+    },
+    {
+      "id": "Q90::PAIR_INTERACTION_TRANSFER",
+      "role": "full residual comparator"
+    },
+    {
+      "id": "Q90::NODE_ONLY_INERTIA",
+      "role": "graph-free autoregressive control"
+    },
+    {
+      "id": "BASE::EQUAL42",
+      "role": "fixed 42-rule equal-weight baseline"
+    },
+    {
+      "id": "Q93::SPECTRAL_K1",
+      "role": "low-rank spectral secondary"
+    },
+    {
+      "id": "Q93::SPECTRAL_K2",
+      "role": "fixed focal low-rank spectral hypothesis"
+    },
+    {
+      "id": "Q93::SPECTRAL_K4",
+      "role": "low-rank spectral secondary"
+    }
+  ],
+  "frozen_parameters": {
+    "alpha": 0.2,
+    "ewma_window": 20,
+    "ewma_decay": 0.8,
+    "permutation_count": 99,
+    "permutation_seed": 9301,
+    "bootstrap_block_length": 20,
+    "bootstrap_replicates": 2000
+  },
+  "statistics": {
+    "exact_null": "72 tests: 8 named models x 3 chronological splits x Top5/Top10/Top20; exact Hypergeometric(40,k,5) upper-tail null and one global Holm family.",
+    "paired": "48 tests: Validation and historical Blind OOS x 6 comparators (full edge, degree/main, pair residual, node-only, Equal42, mean of 99 node-label permutations) x Top5/Top10/Top20/mean actual rank; circular moving-block bootstrap length 20, 2,000 replicates, one global Holm family.",
+    "randomization": "9 tests: 3 splits x Top5/Top10/Top20 for the focal k=2 model versus 99 fixed node-label spectral permutations; plus-one randomization p-values and one global Holm family.",
+    "primary_gate": "On historical Blind OOS, fixed Q93::SPECTRAL_K2 must exceed Q90::PAIR_INTERACTION_TRANSFER, BASE::EQUAL42 and the mean of 99 spectral node-label permutations by at least 0.10 Top20 hits/target; each paired block-bootstrap 95% CI lower bound must be >0 and Holm p<0.05; focal exact-null Holm p<0.05; focal k=2 vs permutation randomization Holm p<0.05. This historical slice is exploratory and cannot establish prospective confirmation."
+  },
+  "safeguards": [
+    "Archive byte identity is pinned; no archive rewrite after registration.",
+    "Every target uses draws[:i]; no current or future outcome enters features, eigendecomposition, smoothing or ranking.",
+    "The spectral mode count k and all transfer parameters are fixed before evaluation; no Validation or Blind OOS tuning.",
+    "Degenerate eigenvalue ties are included as complete eigenspaces and effective mode counts are recorded.",
+    "The spectral null uses 99 fixed node-label permutation conjugations, preserving eigenvalues, symmetry and the all-ones null direction; it does not claim arbitrary Haar orientation.",
+    "All rankings are frozen before reading the target quintet.",
+    "One global Holm family for exact-null tests, one for paired bootstrap tests and one for spectral randomization tests.",
+    "Moving-block bootstrap is reported separately because exact hypergeometric tests assume independent target draws.",
+    "Historical Blind OOS has been exposed in prior SONAR experiments; it is exploratory, not virgin holdout.",
+    "The pair graph is a statistical co-occurrence descriptor, not physical coupling or proof of causality.",
+    "No immutable freeze modification, no prospective shadow insertion, no model promotion and no automatic merge."
+  ],
+  "id_collision_note": "Q91 is already assigned in PR #12 to nested strict-prior anticipation over the Q80 3,303-formula catalog. Q92 is separately registered for the 10-variable formula grammar. The spectral-coherence continuation proposed in the Q90 checkpoint is therefore registered as Q93 to avoid reusing Q91.",
+  "next_action": "Execute the strict-prior Q93 walk-forward, independent replay validator, append-only persistence and exact-head read-only replay. If the workflow is blocked by GitHub approval, preserve the protocol/code and report the exact blocker; do not invent results."
+}
