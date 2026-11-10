@@ -1,0 +1,94 @@
+{
+  "task_id": "Q87-NODE-GRAPH-PHASE-LAG-01",
+  "title": "Causal node/graph transition phase-lag field",
+  "registered_at_utc": "2026-11-10T01:10:50+01:00",
+  "status": "PREREGISTERED_PENDING_EXECUTION",
+  "source_archive": {
+    "draws": 3402,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-08",
+    "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "sha256": "5bc4c105c4c34c325eefbbc3441a03c30b732fbe47e5d36b224e9dbcdf10ac1b"
+  },
+  "target_design": {
+    "minimum_prior_draws": 200,
+    "targets": 3202,
+    "discovery": 1921,
+    "validation": 640,
+    "blind_oos": 641,
+    "cutoff_rule": "For target index i, all field states, transition magnitudes and lag correlations are computed from draws[:i] only; the target draw is not read until ranking is frozen."
+  },
+  "hypothesis": "The magnitude of per-number node transitions may lead or lag changes in that number's pair-graph row. A causal rolling cross-correlation over the prior 80 field transitions may encode temporal phase information not captured by Q85 RMS acceleration or Q86 signed instantaneous cosine.",
+  "phase_definition": {
+    "series": "Per-number Euclidean magnitude of the 6-feature node velocity and Euclidean magnitude of the corresponding 40-edge graph-row velocity.",
+    "window_transitions": 80,
+    "lags": [
+      1,
+      2,
+      3
+    ],
+    "minimum_paired_observations": 30,
+    "positive_lag": "node leads graph: corr(node_speed[t], graph_row_speed[t+lag])",
+    "negative_lag": "graph leads node: corr(node_speed[t+lag], graph_row_speed[t])",
+    "forward": "mean of positive-lag correlations at lags 1,2,3",
+    "backward": "mean of negative-lag correlations at lags 1,2,3",
+    "asymmetry": "forward - backward",
+    "bidirectional_coherence": "0.5 * (forward + backward)",
+    "zero_variance_policy": "correlation 0"
+  },
+  "operators": [
+    {
+      "id": "DYN::NODE_LEADS_GRAPH",
+      "definition": "base_z + 0.20 * reversion_i * z(forward_phase_correlation_i)"
+    },
+    {
+      "id": "DYN::GRAPH_LEADS_NODE",
+      "definition": "base_z + 0.20 * graph_signal_i * z(backward_phase_correlation_i)"
+    },
+    {
+      "id": "DYN::PHASE_ASYMMETRY",
+      "definition": "base_z + 0.20 * 0.5*(reversion_i+graph_signal_i) * z(forward_i-backward_i)"
+    },
+    {
+      "id": "DYN::BIDIRECTIONAL_PHASE_COHERENCE",
+      "definition": "base_z + 0.20 * 0.5*(reversion_i+graph_signal_i) * z(0.5*(forward_i+backward_i))"
+    }
+  ],
+  "controls": [
+    "BASE::EQUAL42",
+    "BASE::FLOW_K50",
+    "FIXED::REVERSION_A20",
+    "FIXED::GRAPH_MIX_A20",
+    "Q86-DIR selected candidate"
+  ],
+  "model_family": "All eight Q86-DIR models plus four Q87 phase-lag candidates; 12 models total.",
+  "selection": "Select one of the four Q87 candidates using Discovery mean Top20 hits only; tie-break lower mean actual rank then stable strategy ID. Freeze before Validation and historical Blind OOS.",
+  "statistics": {
+    "exact_null": "Discrete upper-tail convolution of Hypergeometric(40,k,5), with one global Holm family.",
+    "exact_holm_family": 108,
+    "paired": "Moving-block bootstrap, block length 20, 2000 replications.",
+    "paired_holm_family": 32,
+    "paired_comparators": [
+      "BASE::EQUAL42",
+      "BASE::FLOW_K50",
+      "FIXED::REVERSION_A20",
+      "FIXED::GRAPH_MIX_A20"
+    ],
+    "endpoints": [
+      "Top5",
+      "Top10",
+      "Top20",
+      "mean actual rank"
+    ],
+    "primary_gate": "Selected historical Blind OOS Top20 lift >=0.10 versus Equal42, paired 95% CI lower bound >0, paired Holm p<0.05 and exact-null global Holm p<0.05."
+  },
+  "safeguards": [
+    "All phase correlations are computed from field transitions available before the target draw.",
+    "The current field state is included only after it has been computed from the target's strict prior prefix; the target outcome is read only after all rankings are frozen.",
+    "No phase window, lag, alpha, or operator is tuned on Validation or historical Blind OOS.",
+    "Historical Blind OOS has prior exposure and is exploratory, not prospective confirmation.",
+    "The lagged magnitude correlation is a statistical descriptor, not physical coupling or a literal fluid phase.",
+    "Rank vectors, all four per-number phase signals, target cutoffs and archive identity are replayed by a fail-closed validator.",
+    "No immutable freeze modification, shadow insertion, engine promotion, or automatic merge."
+  ]
+}
