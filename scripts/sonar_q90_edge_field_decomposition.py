@@ -163,7 +163,7 @@ def compute_experiment(draws=None):
             edge_delta=np.zeros((N,N),dtype=np.float64)
             main=np.zeros((N,N),dtype=np.float64)
             interaction=np.zeros((N,N),dtype=np.float64)
-            diag={"mu":0.0,"edge_rms":0.0,"main_rms":0.0,"interaction_rms":0.0,
+            diag={"mu":0.0,"main_effect_sum":0.0,"edge_rms":0.0,"main_rms":0.0,"interaction_rms":0.0,
                   "interaction_energy_fraction":0.0,"main_energy_fraction":0.0,
                   "residual_row_sum_max_abs":0.0,"reconstruction_max_abs":0.0,
                   "main_interaction_inner_product":0.0}
@@ -303,7 +303,7 @@ def compute_experiment(draws=None):
 
 def ledger_fields():
     f=["target_date","cutoff_date","prior_draws","actual_quintet","split",
-       "edge_delta_mu","edge_delta_rms","edge_main_rms","edge_interaction_rms",
+       "edge_delta_mu","main_effect_sum","edge_delta_rms","edge_main_rms","edge_interaction_rms",
        "interaction_energy_fraction","main_energy_fraction","residual_row_sum_max_abs",
        "reconstruction_max_abs","main_interaction_inner_product"]
     for component in COMPONENTS:
@@ -343,7 +343,7 @@ def write_outputs(result):
                          "actual_quintet":" ".join(map(str,sorted(result["draws"][i]["nums"]))),
                          "split":result["labels"][t]}
                     d=result["decomposition"]
-                    for key,column in (("mu","edge_delta_mu"),("edge_rms","edge_delta_rms"),("main_rms","edge_main_rms"),
+                    for key,column in (("mu","edge_delta_mu"),("main_effect_sum","main_effect_sum"),("edge_rms","edge_delta_rms"),("main_rms","edge_main_rms"),
                         ("interaction_rms","edge_interaction_rms"),("interaction_energy_fraction","interaction_energy_fraction"),
                         ("main_energy_fraction","main_energy_fraction"),("residual_row_sum_max_abs","residual_row_sum_max_abs"),
                         ("reconstruction_max_abs","reconstruction_max_abs"),("main_interaction_inner_product","main_interaction_inner_product")):
