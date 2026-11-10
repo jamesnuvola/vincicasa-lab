@@ -356,9 +356,9 @@ function main() {
 
   if (targetRows.length !== 3203) fail("walk-forward target count mismatch: " + targetRows.length);
   const discovery = targetRows.filter(r => r.split === "discovery");
-  const validation = targetRows.filter(r => r.split === "validation");
+  const validationRows = targetRows.filter(r => r.split === "validation");
   const blind = targetRows.filter(r => r.split === "historical_blind_oos");
-  if (discovery.length !== DISCOVERY_N || validation.length !== VALIDATION_N || blind.length !== BLIND_N) {
+  if (discovery.length !== DISCOVERY_N || validationRows.length !== VALIDATION_N || blind.length !== BLIND_N) {
     fail("chronological split sizes mismatch");
   }
 
@@ -393,12 +393,12 @@ function main() {
   }
 
   const discoverySummary = splitSummary(discovery);
-  const validationSummary = splitSummary(validation);
+  const validationSummary = splitSummary(validationRows);
   const blindSummary = splitSummary(blind);
 
   const selectionCandidates = TEMPERATURES.map(t => {
     const key = "raw_gain_" + temperatureKey(t);
-    const rawMean = validation.reduce((sum, row) => sum + row[key], 0) / validation.length;
+    const rawMean = validationRows.reduce((sum, row) => sum + row[key], 0) / validationRows.length;
     return {
       temperature: String(t),
       mean_gain: rawMean,
