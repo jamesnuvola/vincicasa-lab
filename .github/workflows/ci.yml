@@ -43,6 +43,17 @@ jobs:
         run: python scripts/sonar_sequence_agent.py
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
+      - name: Verify persisted Q92 result branch (read-only)
+        if: github.ref == 'refs/heads/research/sonar-q92-exact-null-calibration-20261109' || github.head_ref == 'research/sonar-q92-exact-null-calibration-20261109'
+        env:
+          RESULT_BRANCH: research/sonar-q92-results-20261108-64118b89a59cf689dea6c90a7736db6ef7aca0a3
+          EXPECTED_SOURCE_CHECKOUT_SHA: 64118b89a59cf689dea6c90a7736db6ef7aca0a3
+        run: |
+          set -euo pipefail
+          git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
+          python -m py_compile scripts/verify_sonar_q92_result_branch.py tests/test_sonar_q92_result_branch_readback.py
+          python tests/test_sonar_q92_result_branch_readback.py -v
+          python scripts/verify_sonar_q92_result_branch.py
       - name: Check exact-source active SONAR engine diagnostic syntax
         run: node --check scripts/sonar_active_engine_walkforward.mjs
       - name: Check SONAR analysis and queue scripts
