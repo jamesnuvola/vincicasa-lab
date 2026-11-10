@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: \${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
@@ -42,7 +42,7 @@ jobs:
       - name: Execute preregistered Q87 strict-prior walk-forward
         if: steps.state.outputs.persisted != 'true'
         env:
-          GITHUB_SHA: \${{ github.event.pull_request.head.sha }}
+          GITHUB_SHA: ${{ github.event.pull_request.head.sha }}
         run: python scripts/sonar_q87_node_graph_phase_lag.py
       - name: Replay every target, phase vector, rank and Holm family
         if: steps.state.outputs.persisted != 'true'
@@ -50,25 +50,19 @@ jobs:
       - name: Persist append-only Q87 artifacts and verify exact Git readback
         if: steps.state.outputs.persisted != 'true'
         env:
-          TARGET_BRANCH: \${{ github.event.pull_request.head.ref }}
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/sequence_agent/q87_node_graph_phase_lag_catalog.jsonl \\
-                  reports/sequence_agent/q87_node_graph_phase_lag_target_ledger.csv.gz \\
-                  reports/sequence_agent/q87_node_graph_phase_lag_report.json \\
-                  reports/sequence_agent/q87_node_graph_phase_lag_manifest.json \\
-                  reports/sequence_agent/q87_node_graph_phase_lag_checkpoint_2026-11-10.json \\
-                  reports/sequence_agent/q87_node_graph_phase_lag_validation.json
+          git add reports/sequence_agent/q87_node_graph_phase_lag_catalog.jsonl
+          git add reports/sequence_agent/q87_node_graph_phase_lag_target_ledger.csv.gz
+          git add reports/sequence_agent/q87_node_graph_phase_lag_report.json
+          git add reports/sequence_agent/q87_node_graph_phase_lag_manifest.json
+          git add reports/sequence_agent/q87_node_graph_phase_lag_checkpoint_2026-11-10.json
+          git add reports/sequence_agent/q87_node_graph_phase_lag_validation.json
           git commit -m "Persist Q87 causal node-graph phase-lag results [q87-phase-lag-persisted]"
           git push origin "HEAD:$TARGET_BRANCH"
-          for f in \\
-            reports/sequence_agent/q87_node_graph_phase_lag_catalog.jsonl \\
-            reports/sequence_agent/q87_node_graph_phase_lag_target_ledger.csv.gz \\
-            reports/sequence_agent/q87_node_graph_phase_lag_report.json \\
-            reports/sequence_agent/q87_node_graph_phase_lag_manifest.json \\
-            reports/sequence_agent/q87_node_graph_phase_lag_checkpoint_2026-11-10.json \\
-            reports/sequence_agent/q87_node_graph_phase_lag_validation.json; do
+          for f in             reports/sequence_agent/q87_node_graph_phase_lag_catalog.jsonl             reports/sequence_agent/q87_node_graph_phase_lag_target_ledger.csv.gz             reports/sequence_agent/q87_node_graph_phase_lag_report.json             reports/sequence_agent/q87_node_graph_phase_lag_manifest.json             reports/sequence_agent/q87_node_graph_phase_lag_checkpoint_2026-11-10.json             reports/sequence_agent/q87_node_graph_phase_lag_validation.json; do
             git show "HEAD:$f" > /tmp/q87-readback
             cmp "$f" /tmp/q87-readback
           done
