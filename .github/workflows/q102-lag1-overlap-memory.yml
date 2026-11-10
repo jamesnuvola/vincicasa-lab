@@ -1,0 +1,25 @@
+name: Q102 lag-1 overlap-memory replay
+
+on:
+  pull_request:
+    paths:
+      - "data/storico_daily.csv"
+      - "scripts/sonar_q102_lag1_overlap_memory.js"
+      - "reports/sequence_agent/q102_lag1_overlap_memory_*_2026-11-10.*"
+      - ".github/workflows/q102-lag1-overlap-memory.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  q102-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Recompute and compare persisted Q102 evidence
+        run: node scripts/sonar_q102_lag1_overlap_memory.js --check
