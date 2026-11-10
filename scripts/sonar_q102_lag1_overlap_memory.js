@@ -133,7 +133,7 @@ function runQ102(archiveText) {
       const sum=f.p.reduce((s,x)=>s+x,0);
       maxPmfError=Math.max(maxPmfError,Math.abs(sum-1));
       if(f.trainingPairs!==t-2 || t-1>=t) strictPriorErrors++;
-      models[h]={p:f.p,brier:brier(f.p,actual),logloss:logloss(f.p,actual),prob_hash:hash32(f.p.map(x=>x.toPrecision(17)).join("|"))};
+      models[h]={p:f.p,brier:brier(f.p,actual),logloss:logloss(f.p,actual),prob_hash:hash32(f.p.map(x=>x.toFixed(12)).join("|"))};
     }
     rows.push({
       ordinal,target_index:t,target_date:draws[t].date,cutoff_date:draws[t-1].date,
@@ -198,14 +198,15 @@ function runQ102(archiveText) {
     {name:"canonical_archive_schema_dates_and_5of40_rows",status:"PASS",draws:draws.length},
     {name:"exact_hypergeometric_null_normalized_and_mean_0.625",status:"PASS",denominator:nul.den,probability_sum:nul.p.reduce((s,x)=>s+x,0),mean:nul.mean,variance:nul.variance},
     {name:"3102_strict_prior_walk_forward_targets",status:strictPriorErrors===0&&rows.length===3102?"PASS":"FAIL",targets:rows.length,strict_prior_errors:strictPriorErrors},
-    {name:"all_forecast_pmfs_normalized",status:maxPmfError<1e-12?"PASS":"FAIL",forecast_count:rows.length*hs.length,max_sum_error:maxPmfError},
+    {name:"all_forecast_pmfs_normalized",status:maxPmfError<1e-12?"PASS":"FAIL",forecast_count:rows.length*hs.length,max_sum_error:maxPmfError.toExponential(3)},
     {name:"chronological_split_reconciliation",status:splitCounts.discovery===1400&&splitCounts.validation===850&&splitCounts.historical_blind_oos===852?"PASS":"FAIL",counts:splitCounts},
     {name:"future_mutation_invariance",status:mutationFailures===0?"PASS":"FAIL",cutoffs,comparisons:mutationChecks,failures:mutationFailures},
     {name:"deterministic_forecast_replay",status:deterministicForecastReplay?"PASS":"FAIL"},
     {name:"deterministic_prng_replay",status:deterministicRngReplay?"PASS":"FAIL"},
-    {name:"target_outcomes_not_used_in_training_pairs",status:strictPriorErrors===0?"PASS":"FAIL",rule:"training pair endpoints end no later than draw index t-1"}
+    {name:"target_outcomes_not_used_in_training_pairs",status:strictPriorErrors===0?"PASS":"FAIL",rule:"training pair endpoints end no later than draw index t-1"},
+    {name:"canonical_numeric_serialization",status:"PASS",precision_decimals:12,probability_fingerprint_decimals:12}
   ];
-  const validation={experiment_id:"Q102",status:checks.every(x=>x.status==="PASS")?"PASS":"FAIL",checks,integrity:{archive_draws:draws.length,overlap_count:overlaps.length-1,targets:rows.length,split_counts:splitCounts,forecast_count:rows.length*hs.length,max_forecast_pmf_sum_error:maxPmfError,strict_prior_errors:strictPriorErrors,future_mutation_comparisons:mutationChecks,future_mutation_failures:mutationFailures}};
+  const validation={experiment_id:"Q102",status:checks.every(x=>x.status==="PASS")?"PASS":"FAIL",checks,integrity:{archive_draws:draws.length,overlap_count:overlaps.length-1,targets:rows.length,split_counts:splitCounts,forecast_count:rows.length*hs.length,max_forecast_pmf_sum_error:maxPmfError.toExponential(3),strict_prior_errors:strictPriorErrors,future_mutation_comparisons:mutationChecks,future_mutation_failures:mutationFailures,numeric_serialization_precision_decimals:12}};
   const observedCounts=Array(6).fill(0);for(let i=1;i<overlaps.length;i++)observedCounts[overlaps[i]]++;
   const report={
     experiment_id:"Q102",
@@ -221,6 +222,7 @@ function runQ102(archiveText) {
     blind_inference:{family_size:8,block_length:20,sign_flip_replicates:50000,bootstrap_replicates:10000,tests,selected_bandwidth:selectedH,selected_brier_test:selectedBrierTest,selected_logloss_test:selectedLogTest,holm_correction:"Holm step-down across 8 fixed tests",catalogue_screen:"Bonferroni ×43 reported separately; does not correct unknown analyst degrees of freedom."},
     interpretation:supported?"The selected kernel shows a positive historical blind gain under the registered local family; this remains exploratory and requires a virgin prospective cohort.":"The previous overlap state did not demonstrate a robust proper-score improvement over the exact hypergeometric null.",
     decision:{predictive_lift_demonstrated:supported,promotion_allowed:false,production_change_allowed:false,prospective_freezes_changed:false},
+    reproducibility:{numeric_serialization_precision_decimals:12,probability_fingerprint_precision_decimals:12},
     limitations:["Historical Blind OOS is exposed to previous SONAR research and is not a virgin prospective holdout.","The model forecasts only the next overlap count, not any number or quintet.","Block sign-flip assumes exchangeability of contiguous 20-target block signs; bootstrap preserves local dependence only approximately.","Holm covers the eight Q102 tests; Bonferroni ×43 is only a conservative catalogue screen and not a complete correction for all historical analyst choices."]
   };
   const ledgerHeader=["ordinal","target_index","target_date","cutoff_date","previous_overlap_state","observed_overlap","training_pairs","max_training_pair_end_draw_index","split","baseline_brier","baseline_logloss"];
@@ -253,6 +255,7 @@ function runQ102(archiveText) {
     "- Future-mutation invariance: "+mutationChecks+" comparisons, "+mutationFailures+" failures.",
     "- "+(rows.length*hs.length)+" forecast PMFs normalized; max sum error "+maxPmfError.toExponential(3)+".",
     "- Fixed-seed block inference and deterministic replay are part of the persisted runner.",
+    "- Cross-runtime replay uses canonical 12-decimal numeric serialization and 12-decimal probability fingerprints to avoid platform-specific floating-point tail differences.",
     "",
     "## Limitations / next action",
     "- Historical Blind OOS is not a virgin prospective holdout; this is an overlap-count diagnostic, not a number predictor.",
@@ -268,8 +271,9 @@ const base=root+"/reports/sequence_agent/";
 const archiveText=fs.readFileSync(root+"/data/storico_daily.csv","utf8");
 const protocolText=fs.readFileSync(base+"q102_lag1_overlap_memory_protocol_2026-11-10.json","utf8");
 const result=runQ102(archiveText);
-const reportText=JSON.stringify(result.report,null,2)+"\n";
-const validationText=JSON.stringify(result.validation,null,2)+"\n";
+function roundDeep(value){if(Array.isArray(value))return value.map(roundDeep);if(value&&typeof value==="object"){const out={};for(const [k,v] of Object.entries(value))out[k]=roundDeep(v);return out;}if(typeof value==="number"&&Number.isFinite(value))return Number(value.toFixed(12));return value;}
+const reportText=JSON.stringify(roundDeep(result.report),null,2)+"\n";
+const validationText=JSON.stringify(roundDeep(result.validation),null,2)+"\n";
 const scriptText=fs.readFileSync(fileURLToPath(import.meta.url),"utf8");
 function gitBlobSha1(text){const b=Buffer.from(text,"utf8");return crypto.createHash("sha1").update(Buffer.from("blob "+b.length+"\0","utf8")).update(b).digest("hex");}
 const outputs={
