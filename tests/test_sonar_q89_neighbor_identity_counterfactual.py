@@ -41,6 +41,13 @@ class Q89Tests(unittest.TestCase):
     def test_all_feature_permutations_preserve_feature_multiset(self):
         f=np.arange(240,dtype=float).reshape(40,6)
         for p in q89.PERMUTATIONS: np.testing.assert_array_equal(np.sort(f[p],axis=0),np.sort(f,axis=0))
+    def test_actual_rank_extraction_keeps_model_by_winner_axes(self):
+        ranks=np.tile(np.arange(1,41,dtype=np.int8),(42,1))
+        actual=np.array([1,5,10,20,30])
+        got=q89.extract_actual_ranks(ranks,actual)
+        self.assertEqual(got.shape,(42,5))
+        np.testing.assert_array_equal(got[0],actual)
+
     def test_rank_is_complete_permutation(self):
         ranks=q89.q87.field.rank_from_scores(np.linspace(-1,1,40))
         self.assertEqual(sorted(ranks.tolist()),list(range(1,41)))

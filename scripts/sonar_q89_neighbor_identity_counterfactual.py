@@ -73,6 +73,17 @@ def randomization_p(identity,controls):
     if x.shape!=(39,) or not np.isfinite(x).all() or not np.isfinite(identity): raise ValueError("Q89 requires 39 finite permutation controls")
     return float((1+np.sum(x>=float(identity)))/40.0)
 
+def extract_actual_ranks(rank_matrix, actual_numbers):
+    """Return model-by-winning-number ranks; avoid NumPy advanced-index axis reordering."""
+    matrix=np.asarray(rank_matrix,dtype=np.int8)
+    numbers=np.asarray(actual_numbers,dtype=np.int64)
+    if matrix.ndim!=2 or matrix.shape[1]!=40 or numbers.shape!=(5,) or np.any(numbers<1) or np.any(numbers>40):
+        raise ValueError("Q89 actual-rank extraction shape/value mismatch")
+    result=matrix[:,numbers-1]
+    if result.shape!=(matrix.shape[0],5):
+        raise ValueError("Q89 actual-rank extraction orientation mismatch")
+    return result
+
 def metric_row(model,split,idx,hits,actual_ranks,tests):
     mi=ALL_MODEL_IDS.index(model); h=hits[idx,mi,:]; r=actual_ranks[idx,mi,:]; n=len(idx)
     row={"strategy_id":model,"split":split,"targets":int(n),"mean_hits_top5":float(h[:,0].mean()),
@@ -116,7 +127,7 @@ def compute_experiment(draws=None):
         ranks[t,NODE_INDEX]=q87.field.rank_from_scores(base+ALPHA*rev*q87.field.zscore(nsmooth))
         ranks[t,BASE_INDEX]=equal
         # All 42 rankings are frozen before the target quintet is read.
-        actual=np.asarray(draws[draw_index]["nums"],dtype=np.int64); ar=ranks[t,:,actual-1]; actual_ranks[t]=ar
+        actual=np.asarray(draws[draw_index]["nums"],dtype=np.int64); ar=extract_actual_ranks(ranks[t],actual); actual_ranks[t]=ar
         hits[t]=np.column_stack([np.sum(ar<=5,axis=1),np.sum(ar<=10,axis=1),np.sum(ar<=20,axis=1)]).astype(np.int8)
         prev_feat=state["features"]; prev_edge=edge; prev_node_delta=node_delta
     split_idx={s:np.asarray([i for i,x in enumerate(labels) if x==s],dtype=np.int64) for s in SPLITS}
