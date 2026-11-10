@@ -1,0 +1,80 @@
+name: Q60 contest 314 append-only update
+
+on:
+  push:
+    branches:
+      - research/q60-draw314-append-only-20261110
+    paths:
+      - "data/storico_daily.csv"
+      - ".github/workflows/q60-concorso314-append-only.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q60-concorso314-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install data-generation dependency
+        run: pip install numpy
+      - name: Audit appended official archive
+        run: python scripts/audit_dataset.py
+      - name: Regenerate app data and audit exact consistency
+        run: |
+          python scripts/rigenera_dati.py
+          python scripts/audit_dataset.py --check-json
+      - name: Check SONAR pipeline syntax
+        run: |
+          python -m py_compile scripts/sonar_sequence_agent.py scripts/sonar_fast_improvements.py scripts/sonar_evolutionary_lab.py scripts/sonar_position_regime_residual_lab.py scripts/sonar_research_queue.py scripts/q60_verify_concorso314_append_only.py
+          node --check scripts/sonar_active_engine_walkforward.mjs
+      - name: Evaluate existing global freezes and create next-date rule freezes
+        run: python scripts/sonar_sequence_agent.py
+      - name: Reconcile exact-source app freeze without reconstructing it
+        run: node scripts/sonar_active_engine_walkforward.mjs
+      - name: Refresh fixed-rule and evolutionary diagnostics
+        run: |
+          python scripts/sonar_fast_improvements.py
+          python scripts/sonar_evolutionary_lab.py
+      - name: Evaluate existing position freeze and paired Q60 gate
+        run: python scripts/sonar_position_regime_residual_lab.py
+      - name: Validate research queue
+        run: python scripts/sonar_research_queue.py
+      - name: Test prospective freeze eligibility
+        run: python tests/test_sonar_prospective_gate.py -v
+      - name: Verify contest 314, unchanged freezes, paired gate and next freezes
+        run: python scripts/q60_verify_concorso314_append_only.py
+      - name: Audit generated app data after all analysis
+        run: python scripts/audit_dataset.py --check-json
+      - name: Persist append-only archive and SONAR evidence on research branch
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          git config user.name "sonar-q60-evidence"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/storico_daily.csv src/data.json reports/sequence_agent/
+          if ! git diff --cached --quiet; then
+            git commit -m "Q60: evaluate official contest 314 and persist prospective evidence"
+            git push origin "HEAD:${REF_NAME}"
+          fi
+      - name: Verify committed evidence remains clean
+        run: |
+          python scripts/audit_dataset.py --check-json
+          python tests/test_sonar_prospective_gate.py -v
+          python scripts/q60_verify_concorso314_append_only.py
+          git diff --exit-code
+          test -z "$(git status --porcelain)"
