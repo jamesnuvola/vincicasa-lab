@@ -15,10 +15,11 @@ NO_PREDICTIVE_LIFT_DEMONSTRATED. No active engine, production ranking, freeze or
 - Blind OOS selected-model log-loss gain: -0.000394189; Holm p=1.000000; 95% CI [-0.001621529, 0.000829736].
 
 ## Integrity
-- PASS; 9 checks; 3102 strict-prior target rows.
+- PASS; 10 checks; 3102 strict-prior target rows.
 - Future-mutation invariance: 16 comparisons, 0 failures.
 - 12408 forecast PMFs normalized; max sum error 3.730e-14.
 - Fixed-seed block inference and deterministic replay are part of the persisted runner.
+- Cross-runtime replay uses canonical 12-decimal numeric serialization and 12-decimal probability fingerprints to avoid platform-specific floating-point tail differences.
 
 ## Limitations / next action
 - Historical Blind OOS is not a virgin prospective holdout; this is an overlap-count diagnostic, not a number predictor.
