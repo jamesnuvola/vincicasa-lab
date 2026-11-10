@@ -1,0 +1,76 @@
+{
+  "experiment_id": "Q103",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "source_provenance",
+      "status": "PASS",
+      "detail": "Archive, scorer, active report and preregistered protocol Git blob SHA-1 values match the pinned contract."
+    },
+    {
+      "id": "archive_integrity",
+      "status": "PASS",
+      "detail": "3403 unique chronological rows; every row is a sorted distinct 5-of-40 draw."
+    },
+    {
+      "id": "score_vector_integrity",
+      "status": "PASS",
+      "detail": "All 3203 prior-only score vectors contain each number 1..40 exactly once with finite descending scores and source tie-break."
+    },
+    {
+      "id": "strict_prior_cutoffs",
+      "status": "PASS",
+      "detail": "Every target t is scored from archive[0:t]; maximum training outcome index is t-1, strictly before target t."
+    },
+    {
+      "id": "subset_partition_dp",
+      "status": "PASS",
+      "detail": "Fifth elementary symmetric DP equals exhaustive small-n enumeration; uniform 40-node normalizer equals 658008."
+    },
+    {
+      "id": "exact_subset_normalization",
+      "status": "PASS",
+      "detail": "One representative finite-temperature forecast was exhaustively summed over all 658008 subsets; relative normalization error 0."
+    },
+    {
+      "id": "future_mutation_invariance",
+      "status": "PASS",
+      "detail": "9/9 future-mutation comparisons preserved the complete score vector."
+    },
+    {
+      "id": "deterministic_replay",
+      "status": "PASS",
+      "detail": "8/8 fixed-cutoff scorer replays were byte-identical."
+    },
+    {
+      "id": "split_reconciliation",
+      "status": "PASS",
+      "detail": "1921 discovery + 641 validation + 641 historical blind OOS = 3203 targets."
+    },
+    {
+      "id": "likelihood_ratio_validity",
+      "status": "PASS",
+      "detail": "Each subset PMF is normalized and predictable from the strict prior; exp(cumulative log gain) is the registered likelihood-ratio test martingale under the conditional uniform null."
+    }
+  ],
+  "counts": {
+    "archive_draws": 3403,
+    "targets": 3203,
+    "discovery": 1921,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "future_mutation_comparisons": 9,
+    "deterministic_replay_comparisons": 8
+  },
+  "exact_normalization": {
+    "uniform_subset_count": 658008,
+    "representative_finite_temperature_relative_error": 0
+  },
+  "provenance": {
+    "archive_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "scorer_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_engine_report_blob_sha1": "ff07b6da4948bb89467067c2552d9b1f78bc9549",
+    "protocol_blob_sha1": "34e0aca868daf9e1f65113c89a131c63c3ff3b01",
+    "runner_blob_sha1": "6d0cfaf6c2d8ff826f3795d2393cd04983a55fab"
+  }
+}
