@@ -1,0 +1,169 @@
+{
+  "experiment_id": "Q101",
+  "title": "Nonlinear rank-band shape audit of the active SONAR ranking",
+  "status": "POST_HOC_EXPLORATORY_NO_NONLINEAR_RANK_SHAPE_LIFT_DEMONSTRATED",
+  "generated_date": "2026-11-10",
+  "source": {
+    "archive": "data/storico_daily.csv",
+    "archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "q100_rank_ledger_blob_sha": "50f384ec3fec77ba505d30374daa7e0ddd54afbe",
+    "q100_protocol_blob_sha": "927266f5f5cb3906b0faec7e67ce8955edb1e643",
+    "q100_report_blob_sha": "9de459c57e3120958a9bc6ba2de63d00e34f53f2",
+    "q100_validation_blob_sha": "b3498f334007e7b7dd135e9a407409f0f15523ad",
+    "scorer_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_report_blob_sha": "ff07b6da4948bb89467067c2552d9b1f78bc9549"
+  },
+  "data": {
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "warmup_draws": 200,
+    "targets": 3203
+  },
+  "integrity": {
+    "ledger_rows": 3203,
+    "strict_prior_cutoff_errors": 0,
+    "actual_draw_mismatches": 0,
+    "invalid_rank_vectors": 0,
+    "rank_summary_mismatches": 0,
+    "split_mismatches": 0,
+    "split_counts": {
+      "discovery": 1921,
+      "validation": 641,
+      "historical_blind_oos": 641
+    },
+    "q100_source_validation_status": "PASS",
+    "exact_composition_count": 792,
+    "exact_subset_weight_sum": 658008,
+    "exact_subset_total": 658008
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1921,
+      "rank_mean": 20.438001041124416,
+      "rank_gain": 0.061998958875584265,
+      "band_counts": [
+        1233,
+        1167,
+        1216,
+        1230,
+        1135,
+        1247,
+        1202,
+        1175
+      ],
+      "expected_per_band": 1200.625,
+      "residual_hits_per_target": [
+        0.011799410029498523,
+        -0.02111375523660792,
+        0.005837733323417863,
+        0.014569544632012096,
+        -0.03343992464242334,
+        0.02630698297017922,
+        0.004325624054931708,
+        -0.008285615131008155
+      ],
+      "Q": 9.346520625949495,
+      "Q_over_df": 1.5577534376582491,
+      "linear_beta": -0.0002887880816043232
+    },
+    "validation": {
+      "targets": 641,
+      "rank_mean": 20.745085803432136,
+      "rank_gain": -0.24508580343213637,
+      "band_counts": [
+        407,
+        392,
+        370,
+        393,
+        426,
+        395,
+        380,
+        442
+      ],
+      "expected_per_band": 400.625,
+      "residual_hits_per_target": [
+        0.028991159646385854,
+        0.0001485773716662947,
+        -0.039614441720525966,
+        -0.009174652700393731,
+        0.0368657603446995,
+        -0.016937820369957658,
+        -0.04578040264467721,
+        0.045501820072802915
+      ],
+      "Q": 9.492446114171097,
+      "Q_over_df": 1.5820743523618495,
+      "linear_beta": 0.0010883292474556125
+    },
+    "historical_blind_oos": {
+      "targets": 641,
+      "rank_mean": 20.33135725429017,
+      "rank_gain": 0.1686427457098283,
+      "band_counts": [
+        399,
+        445,
+        394,
+        381,
+        394,
+        388,
+        418,
+        386
+      ],
+      "expected_per_band": 400.625,
+      "residual_hits_per_target": [
+        -0.017550702028081122,
+        0.05850234009360374,
+        -0.016770670826833072,
+        -0.0327613104524181,
+        -0.008190327613104524,
+        -0.01326053042121685,
+        0.03783151326053042,
+        -0.0078003120124804995
+      ],
+      "Q": 7.794089592155115,
+      "Q_over_df": 1.2990149320258524,
+      "linear_beta": -0.000858034321372855
+    }
+  },
+  "inference": {
+    "primary_split": "historical_blind_oos",
+    "primary_statistic": "Residualized nonlinear rank-band shape Q; six-dimensional subspace after projecting out constant and linear rank trend.",
+    "degrees_of_freedom": 6,
+    "null_expected_Q": 6,
+    "observed_Q": 7.794089592155115,
+    "conditional_null": "Exact multivariate hypergeometric composition law for five ranks sampled without replacement from eight bands of five ranks each; 20,000 Monte Carlo replicates; fixed xorshift32 seed; add-one upper-tail p-value.",
+    "monte_carlo": {
+      "replicates": 20000,
+      "extreme": 5053,
+      "p": 0.2526873656317184,
+      "mc_se": 0.0030726781439881085,
+      "null_q95": 12.394208029545673,
+      "null_q99": 16.761618644337613
+    },
+    "family_size_bonferroni": 43,
+    "p_bonferroni_43": 1,
+    "deterministic_replay_1000": {
+      "extreme": 238,
+      "p": 0.23876123876123875,
+      "identical": true
+    }
+  },
+  "interpretation": "The historical Blind OOS nonlinear rank-band shape statistic is close to its six-degree-of-freedom null scale and is not significant under conditional randomization. The result does not support a stable nonlinear rank-shape signal. This is a post-hoc diagnostic, not independent confirmation.",
+  "decision": {
+    "nonlinear_shape_departure_demonstrated": false,
+    "predictive_lift_demonstrated": false,
+    "promotion_allowed": false,
+    "production_change_allowed": false,
+    "merge_allowed": false,
+    "human_review_required": true
+  },
+  "limitations": [
+    "Q100 rank-bin means were already disclosed descriptively; Q101 is post-hoc despite its formula and seed being frozen before Q101 scoring.",
+    "Historical Blind OOS is not a virgin holdout and has been exposed to prior SONAR research.",
+    "The conditional randomization null assumes independent uniform 5-of-40 draws; rankings are treated as fixed conditional on pre-target history.",
+    "Bonferroni ×43 is a conservative screen for the catalogued model family and cannot cover unknown analyst degrees of freedom.",
+    "A nonlinear rank-shape departure would not by itself establish a profitable or superior five-number ticket."
+  ],
+  "next_action": "Do not tune the active engine from Q101. Continue append-only prospective Q60 collection; evaluate 2026-11-10 freezes only after the official result is verified and appended to the canonical archive."
+}
