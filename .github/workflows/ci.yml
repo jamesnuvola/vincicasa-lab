@@ -7,7 +7,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  actions: write
 
 # Cancel superseded research-branch runs so several expensive historical searches
 # do not compete after each incremental commit.
@@ -18,7 +19,7 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 240
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -51,3 +52,74 @@ jobs:
           python scripts/sonar_position_regime_residual_lab.py
       - name: Build web application
         run: npm install && npm run build
+
+      - name: Checkout Q88 research head for strict-prior evaluation
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q88-signed-node-graph-transfer-20261110') || (github.event_name == 'workflow_dispatch' && github.ref_name == 'research/q88-signed-node-graph-transfer-20261110')
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
+          fetch-depth: 0
+      - name: Detect persisted Q88 result checkpoint
+        id: q88-state
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q88-signed-node-graph-transfer-20261110') || (github.event_name == 'workflow_dispatch' && github.ref_name == 'research/q88-signed-node-graph-transfer-20261110')
+        run: |
+          if git log --format=%s | grep -Fq '[q88-signed-transfer-persisted]' && test -s reports/sequence_agent/q88_signed_node_graph_transfer_validation.json; then
+            echo "persisted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "persisted=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Compile and test Q88 signed transfer
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q88-signed-node-graph-transfer-20261110') || (github.event_name == 'workflow_dispatch' && github.ref_name == 'research/q88-signed-node-graph-transfer-20261110')
+        run: |
+          python -m py_compile scripts/sonar_q88_signed_node_graph_transfer.py scripts/validate_sonar_q88_signed_node_graph_transfer.py
+          python tests/test_sonar_q88_signed_node_graph_transfer.py -v
+      - name: Execute Q88 preregistered strict-prior walk-forward
+        if: steps.q88-state.outputs.persisted != 'true' && ((github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q88-signed-node-graph-transfer-20261110') || (github.event_name == 'workflow_dispatch' && github.ref_name == 'research/q88-signed-node-graph-transfer-20261110'))
+        env:
+          SONAR_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python scripts/sonar_q88_signed_node_graph_transfer.py
+      - name: Independently replay Q88 cutoffs, projections, ranks and Holm families
+        if: steps.q88-state.outputs.persisted != 'true' && ((github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q88-signed-node-graph-transfer-20261110') || (github.event_name == 'workflow_dispatch' && github.ref_name == 'research/q88-signed-node-graph-transfer-20261110'))
+        run: python scripts/validate_sonar_q88_signed_node_graph_transfer.py
+      - name: Persist Q88 artifacts append-only and verify Git readback
+        if: steps.q88-state.outputs.persisted != 'true' && ((github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q88-signed-node-graph-transfer-20261110') || (github.event_name == 'workflow_dispatch' && github.ref_name == 'research/q88-signed-node-graph-transfer-20261110'))
+        env:
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_catalog.jsonl
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_target_ledger.csv.gz
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_report.json
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_manifest.json
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_checkpoint_2026-11-10.json
+          git add reports/sequence_agent/q88_signed_node_graph_transfer_validation.json
+          git commit -m "Persist Q88 signed node-graph transfer results [q88-signed-transfer-persisted]"
+          git push origin "HEAD:$TARGET_BRANCH"
+          for f in \
+            reports/sequence_agent/q88_signed_node_graph_transfer_catalog.jsonl \
+            reports/sequence_agent/q88_signed_node_graph_transfer_target_ledger.csv.gz \
+            reports/sequence_agent/q88_signed_node_graph_transfer_report.json \
+            reports/sequence_agent/q88_signed_node_graph_transfer_manifest.json \
+            reports/sequence_agent/q88_signed_node_graph_transfer_checkpoint_2026-11-10.json \
+            reports/sequence_agent/q88_signed_node_graph_transfer_validation.json; do
+            git show "HEAD:$f" > /tmp/q88-readback
+            cmp "$f" /tmp/q88-readback
+          done
+          python scripts/validate_sonar_q88_signed_node_graph_transfer.py --read-only
+      - name: Replay persisted Q88 outputs read-only on exact head
+        if: steps.q88-state.outputs.persisted == 'true' && ((github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q88-signed-node-graph-transfer-20261110') || (github.event_name == 'workflow_dispatch' && github.ref_name == 'research/q88-signed-node-graph-transfer-20261110'))
+        run: python scripts/validate_sonar_q88_signed_node_graph_transfer.py --read-only
+      - name: Dispatch general CI on persisted Q88 exact head
+        if: steps.q88-state.outputs.persisted != 'true' && ((github.event_name == 'pull_request' && github.event.pull_request.head.ref == 'research/q88-signed-node-graph-transfer-20261110') || (github.event_name == 'workflow_dispatch' && github.ref_name == 'research/q88-signed-node-graph-transfer-20261110'))
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TARGET_BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"$TARGET_BRANCH\"}"
