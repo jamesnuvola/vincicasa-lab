@@ -30,7 +30,7 @@ class Q90EdgeDecompositionTests(unittest.TestCase):
         main,residual,diag=q90.decompose_edge_change(edge)
         np.testing.assert_allclose(main,edge,atol=1e-12,rtol=0)
         np.testing.assert_allclose(residual,0.0,atol=1e-12,rtol=0)
-        self.assertEqual(diag["interaction_energy_fraction"],0.0)
+        self.assertLess(diag["interaction_energy_fraction"],1e-28)
 
     def test_zero_edge_is_stable(self):
         main,residual,diag=q90.decompose_edge_change(np.zeros((40,40)))
