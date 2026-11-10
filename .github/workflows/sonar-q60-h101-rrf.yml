@@ -1,0 +1,45 @@
+name: Q60 H101 deterministic reciprocal-rank fusion
+
+on:
+  push:
+    branches:
+      - research/q60-h101-rrf-fusion-20261110
+    paths:
+      - ".github/workflows/sonar-q60-h101-rrf.yml"
+      - "scripts/sonar_q60_h101_rrf.py"
+      - "tests/test_sonar_q60_h101_rrf.py"
+      - "reports/sequence_agent/q60_h101_rrf_preregistration_2026-11-10.json"
+      - "reports/sequence_agent/q60_h101_rrf_shadow.csv"
+      - "reports/sequence_agent/q60_h101_rrf_historical_replay_2026-11-10.json"
+      - "reports/sequence_agent/q60_h101_rrf_historical_replay_2026-11-10.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile H101 implementation and tests
+        run: python -m py_compile scripts/sonar_q60_h101_rrf.py tests/test_sonar_q60_h101_rrf.py
+      - name: Run H101 unit and leakage-guard tests
+        run: python tests/test_sonar_q60_h101_rrf.py -v
+      - name: Rebuild the 2026-11-10 H101 freeze from pre-target parent lists
+        run: |
+          python scripts/sonar_q60_h101_rrf.py \
+            --global-csv reports/sequence_agent/shadow_forecasts.csv \
+            --positional-csv reports/sequence_agent/position_mix_shadow.csv \
+            --archive-csv data/storico_daily.csv \
+            --target-date 2026-11-10 \
+            --frozen-at 2026-11-10T12:49:51+01:00 \
+            --out /tmp/q60_h101_rrf_shadow.csv
+      - name: Verify exact frozen-row replay
+        run: diff -u reports/sequence_agent/q60_h101_rrf_shadow.csv /tmp/q60_h101_rrf_shadow.csv
