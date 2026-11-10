@@ -29,7 +29,8 @@
     "weights": "1.0 for each of the five fixed source rankings",
     "candidate_domain": "1..40",
     "tie_break": "descending score, then ascending number",
-    "tuning": "none; one fixed formula and one fixed c=20"
+    "tuning": "none; one fixed formula and one fixed c=20",
+    "baseline_is_included_as_one_of_five_sources": true
   },
   "walk_forward": {
     "cutoff_rule": "Every source rank vector is taken from the Q94 target ledger for that target; cutoff_date must be strictly earlier than target_date.",
@@ -70,7 +71,9 @@
     "The historical Blind OOS is prior-exposed and is not a virgin prospective holdout.",
     "Block sign-flip inference assumes exchangeability of contiguous 20-target block signs under the null.",
     "RRF is a ranking aggregation, not a physical or causal mechanism.",
-    "No historical result establishes an advantage for future random draws."
+    "No historical result establishes an advantage for future random draws.",
+    "BASE_EQUAL42 is included in the RRF ensemble; its comparator is therefore an anchored/nested comparison.",
+    "Holm covers the 15 Q97 comparisons only, not all prior SONAR research branches."
   ],
   "decision_policy": {
     "engine_promotion_allowed": false,
