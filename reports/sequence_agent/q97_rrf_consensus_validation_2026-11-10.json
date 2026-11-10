@@ -4,8 +4,8 @@
   "holm_family_size": 15,
   "human_review_required": true,
   "outputs": {
-    "checkpoint_sha256": "f3a82748e1ee2bf0490582edd01d2f089ff853b8408c901fa68d9afe36ff17b6",
-    "report_sha256": "2eb99a139a700be2bd724943d719985f52e0e0af0166bc31ce0b887f0a1e3e06",
+    "checkpoint_sha256": "01eb6bd61a612093dd5631f9236853dfc4b84942a0620c60982431a8dbb5c1f5",
+    "report_sha256": "e220979f37cb97d112f51123eeab98b60f40e0624e6f85e5623b150cd3bfe1e8",
     "source_snapshot_sha256": "0ab47d5b5eea8bb0b9062fef064bfc74a93ca8cb080e44625915b569ba2e9c54",
     "target_ledger_sha256": "fde511032c5eed18735d9456f113a97b9182fc06105dfa4df3c57a968b1a65ed"
   },
@@ -19,5 +19,13 @@
   },
   "status": "PASS",
   "strict_prior_cutoffs": 3203,
-  "target_count": 3203
+  "target_count": 3203,
+  "workflow_execution": {
+    "run_id": 42848795188,
+    "regression_tests": "6/6 PASS",
+    "strict_prior_replay": "PASS",
+    "final_push": "FAIL: remote fatal error in commit_refs",
+    "recovery": "connector persistence and SHA-256 readback PASS",
+    "revised_artifact_upload_workflow": "configured; rerun not verified"
+  }
 }
