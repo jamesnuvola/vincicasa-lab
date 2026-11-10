@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q60-H102-RRF-DISAGREEMENT-2026-11-10",
+  "registered_at": "2026-11-10T13:44:44+01:00",
+  "status": "PREREGISTERED_RESEARCH_ONLY",
+  "hypothesis": "The prospective Top20 hit advantage of fixed H101 reciprocal-rank fusion over freq_100 increases as disagreement between the two parent Top20 lists increases.",
+  "mechanism_predictor": {
+    "name": "parent_disagreement_slots",
+    "formula": "d_t = 20 - |G_t intersect P_t|",
+    "range": [0, 20],
+    "available_before_target": true,
+    "minimum_effect_unit": "five additional non-overlapping candidate slots"
+  },
+  "response": {
+    "name": "paired_top20_hit_delta",
+    "formula": "y_t = hits(H101_RRF_t) - hits(freq_100_t)",
+    "range": [-5, 5],
+    "outcome_used_only_for_scoring": true
+  },
+  "primary_estimand": {
+    "formula": "beta5 = 5 * Cov(d, y) / Var(d)",
+    "interpretation": "Change in H101-minus-global Top20 hits per target associated with five additional disagreement slots",
+    "minimum_practical_effect": 0.10,
+    "direction": "positive"
+  },
+  "sample": {
+    "required_complete_targets": 200,
+    "cohort_start": "2026-11-10",
+    "reporting_splits": {
+      "discovery": 100,
+      "validation": 50,
+      "blind_oos": 50
+    },
+    "inferential_timing": "One final analysis only after all 200 canonical target outcomes are complete; no interim inferential looks and no retuning.",
+    "split_use": "Report all three chronological splits separately. The final 50-target blind OOS slope is a prespecified directional consistency check; no separate p-value is tested on that split."
+  },
+  "primary_test": {
+    "method": "One-sided block permutation test of the OLS slope, shuffling contiguous 20-target blocks of the paired response while keeping the prior-only disagreement predictor fixed.",
+    "permutations": 9999,
+    "seed": 1022026,
+    "alternative": "beta5 > 0"
+  },
+  "uncertainty": {
+    "method": "Circular moving-block bootstrap of paired predictor/response observations",
+    "block_length": 20,
+    "replicates": 10000,
+    "seed": 1022027,
+    "interval": "Percentile 95%"
+  },
+  "registered_secondary_tests": [
+    "Paired H101 RRF minus freq_100 mean Top20 hits (two-sided exact sign-flip dynamic program)",
+    "Paired H101 RRF minus position_seed_mix_top20_v1 mean Top20 hits (two-sided exact sign-flip dynamic program)",
+    "Absolute H101 RRF Top20 hits against exact iid Hypergeometric(40,20,5) convolution"
+  ],
+  "multiple_testing": "Holm step-down across the four final inferential p-values: the three registered H101 Top20 endpoints plus the H102 disagreement-slope endpoint.",
+  "support_rule": "Mechanistic support requires beta5 >= 0.10, Holm-adjusted H102 p < 0.05, bootstrap 95% lower bound > 0, and a positive descriptive slope in the final 50-target blind OOS split. This does not authorize engine promotion.",
+  "data_and_freeze_guards": [
+    "Use only the existing H101 frozen Top20 and its two already-frozen parent Top20 lists as predictors.",
+    "For every target, all three freezes must be on the target date, precede 19:00 Europe/Rome, and the H101 freeze must follow both parent freezes.",
+    "Each parent history_cutoff must equal the latest canonical draw date strictly before that target.",
+    "The target outcome is joined only after it appears in the canonical archive; no pending outcome is read from shadow-row fields.",
+    "No missing freeze is reconstructed, no forecast row is edited, and no parent model is retuned.",
+    "No merge or model promotion is authorized."
+  ],
+  "source_blob_shas_at_registration": {
+    "h101_protocol": "b3e9f38537f15dbd8a465a97d4450bed77c657f7",
+    "h101_shadow": "ced52ac9fd1850f3812c553ab83d7bd8e27dc3f6",
+    "global_shadow": "afe538cb835dbe561983eaa6972899ce8bd97df7",
+    "positional_shadow": "e63f35394e916ca7688fc7b41457c1032b9b7be0",
+    "canonical_archive": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "q60_gate": "bce911528ccecb93d2efaccbf76c45cd22c07ae7"
+  },
+  "initial_state": {
+    "canonical_archive_through": "2026-11-09",
+    "h101_target": "2026-11-10",
+    "h101_status": "FROZEN_PENDING",
+    "complete_h101_targets": 0,
+    "pending_h101_targets": 1,
+    "inference_executed": false
+  },
+  "next_action": "Wait for the official 2026-11-10 result to enter the canonical archive; then append-only score the unchanged H101 freeze. Continue the fixed 200-target cohort and run final inference only when complete."
+}
