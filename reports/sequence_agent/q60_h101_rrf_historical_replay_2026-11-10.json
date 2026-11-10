@@ -1,0 +1,108 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q60-H101-RRF-2026-11-10",
+  "status": "EXPLORATORY_AUDIT_COMPLETE_PROSPECTIVE_FREEZE_PENDING",
+  "protocol_commit": "f7f7e3805eccc673e7b5a3eab188e3313ca683d8",
+  "protocol_registered_at": "2026-11-10T12:49:26+01:00",
+  "historical_audit": {
+    "target_dates": "2026-10-19 through 2026-11-09",
+    "n": 22,
+    "scope": "fixed-engine prospective shadow replay; exploratory only; not discovery/validation/blind-OOS split",
+    "metrics": {
+      "global": {
+        "top5_mean": 0.7272727272727273,
+        "top10_mean": 1.2727272727272727,
+        "top20_mean": 2.5454545454545454,
+        "top20_total": 56,
+        "five_of_five": 1
+      },
+      "positional": {
+        "top5_mean": 0.9545454545454546,
+        "top10_mean": 1.4545454545454546,
+        "top20_mean": 2.5454545454545454,
+        "top20_total": 56,
+        "five_of_five": 0
+      },
+      "rrf": {
+        "top5_mean": 0.9545454545454546,
+        "top10_mean": 1.3636363636363635,
+        "top20_mean": 2.5454545454545454,
+        "top20_total": 56,
+        "five_of_five": 0
+      }
+    },
+    "paired_exact_signflip": {
+      "family": [
+        "RRF-global Top5",
+        "RRF-positional Top5",
+        "RRF-global Top10",
+        "RRF-positional Top10",
+        "RRF-global Top20",
+        "RRF-positional Top20",
+        "RRF absolute Top20 vs uniform exact null"
+      ],
+      "raw_p_values": [
+        0.125,
+        1,
+        0.6875,
+        0.6875,
+        1,
+        1,
+        0.4599202821346578
+      ],
+      "holm_adjusted_p_values": [
+        0.875,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "method": "exact paired sign-flip dynamic programming for six paired endpoints; exact convolution of Hypergeometric(40,20,5) for the absolute uniform Top20 check"
+    },
+    "uniform_top20": {
+      "observed_hits": 56,
+      "expected_hits": 55,
+      "mean_expected_per_target": 2.5,
+      "exact_upper_tail_p": 0.4599202821346578,
+      "decision": "NOT_DEMONSTRATED"
+    },
+    "interpretation": "RRF matched both parent engines on total Top20 hits (56/22). Its Top5 mean matched positional (0.9545); its Top10 mean (1.3636) lay between positional (1.4545) and global (1.2727). None of the six paired rank/coverage endpoints survived Holm; absolute Top20 performance did not exceed the exact uniform null.",
+    "target_ledger_path": "reports/sequence_agent/q60_h101_rrf_historical_replay_2026-11-10.csv"
+  },
+  "current_pre_target_freeze": {
+    "target_date": "2026-11-10",
+    "registered_at": "2026-11-10T12:49:26+01:00",
+    "frozen_at": "2026-11-10T12:49:51+01:00",
+    "history_cutoff": "2026-11-09",
+    "source_global_frozen_at": "2026-11-10T10:53:16+01:00",
+    "source_positional_frozen_at": "2026-11-10T10:55:31+01:00",
+    "rrf_k": 20,
+    "top20": "26 16 36 12 15 29 25 38 1 10 17 28 37 39 5 9 18 3 23 2",
+    "top10": "26 16 36 12 15 29 25 38 1 10",
+    "top5": "26 16 36 12 15",
+    "status": "FROZEN_PENDING",
+    "outcome_read": false
+  },
+  "multiple_testing": "Holm across seven historical exploratory endpoints; future confirmatory H101 family is preregistered separately with three endpoints.",
+  "leakage_audit": {
+    "historical_replay": "Only the two pre-target frozen lists and canonical outcomes were joined by target date; RRF scoring used ranks only.",
+    "current_freeze": "Generated from parent forecasts frozen at 10:53:16 and 10:55:31, with history cutoff 2026-11-09; fusion frozen at 12:49:51 before nominal 19:00 draw.",
+    "future_outcome_used_for_current_freeze": false,
+    "existing_freezes_modified": false
+  },
+  "sources": {
+    "global_shadow_blob_sha": "afe538cb835dbe561983eaa6972899ce8bd97df7",
+    "positional_shadow_blob_sha": "e63f35394e916ca7688fc7b41457c1032b9b7be0",
+    "canonical_archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "q60_gate_blob_sha": "bce911528ccecb93d2efaccbf76c45cd22c07ae7"
+  },
+  "limits": [
+    "The 22 historical pairs have already been examined in H97-H100; H101 historical metrics are exploratory and cannot confirm superiority.",
+    "No discovery/validation/blind-OOS split is claimed for the 22-pair replay.",
+    "The new 2026-11-10 H101 row is frozen but pending the canonical target outcome.",
+    "No promotion, retuning, or change to parent engines is authorized."
+  ],
+  "next_action": "Keep H101 frozen and unchanged; append outcomes only after canonical publication; collect 200 new complete H101 prospective targets with preregistered 100/50/50 chronological reporting splits and final-only inference."
+}
