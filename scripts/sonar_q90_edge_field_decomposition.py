@@ -145,7 +145,7 @@ def compute_experiment(draws=None):
     signals={name:np.zeros((total,N),dtype=np.float64) for name in COMPONENTS}
     smoothed={name:np.zeros((total,N),dtype=np.float64) for name in COMPONENTS}
     decomposition={name:np.zeros(total,dtype=np.float64) for name in
-        ("mu","edge_rms","main_rms","interaction_rms","interaction_energy_fraction",
+        ("mu","main_effect_sum","edge_rms","main_rms","interaction_rms","interaction_energy_fraction",
          "main_energy_fraction","residual_row_sum_max_abs","reconstruction_max_abs","main_interaction_inner_product")}
     histories={name:deque(maxlen=WINDOW) for name in COMPONENTS}
     previous_features=None
