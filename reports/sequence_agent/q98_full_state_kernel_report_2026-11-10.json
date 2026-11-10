@@ -1,0 +1,721 @@
+{
+  "experiment_id": "SONAR-Q98-LAG1-FULL-DRAW-GEOMETRY-KERNEL-2026-11-10",
+  "generated_at_utc": "2026-11-10",
+  "status": "HISTORICAL_EXPLORATORY_COMPLETE",
+  "validation_status": "NO_PREDICTIVE_LIFT_DEMONSTRATED",
+  "question": "Does the complete preceding five-number order-statistic geometry contain incremental one-step information about the next draw's position marginals, beyond the exact 5-of-40 order-statistic prior?",
+  "hypothesis": "A fixed Gaussian kernel over all five standardized order-statistic coordinates improves mean multiclass Brier score over the exact prior on both Validation and historical Blind OOS; a fixed one-dimensional P5-only kernel is a nested diagnostic comparator.",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "target_count": 3103,
+    "first_target": "2018-05-13",
+    "last_target": "2026-11-09"
+  },
+  "method": {
+    "state": "five previous sorted positions standardized by exact order-statistic means and SDs",
+    "distance": "mean squared standardized Euclidean distance across five positions",
+    "kernel": "exp(-d2/(2*h^2))",
+    "bandwidth_grid": [
+      0.5,
+      0.75,
+      1,
+      1.5
+    ],
+    "alpha": 200,
+    "training_pairs": "historical transitions u=1..t-1, state draw[u-1], outcome draw[u]",
+    "p5_only_comparator": "one-dimensional standardized P5 kernel, fixed h=1.5 and alpha=200",
+    "target_start_index": 300
+  },
+  "splits": {
+    "discovery": 1400,
+    "validation": 850,
+    "blind_oos_historical": 853
+  },
+  "validation_selection": {
+    "selected_bandwidth": 1.5,
+    "criterion": "lowest mean five-position multiclass Brier on Validation; tie-break larger h",
+    "validation_gain_vs_exact_prior": -0.000322443
+  },
+  "split_results": {
+    "discovery": {
+      "targets": 1400,
+      "first_target": "2018-05-13",
+      "last_target": "2022-03-12",
+      "exact_prior": {
+        "mean_multiclass_brier": 0.947073169,
+        "mean_top5_hits_per_target": 1.785,
+        "mean_p5_brier": 0.92938687,
+        "mean_p5_top5_hits_per_target": 0.497142857
+      },
+      "full_state_kernel": {
+        "1": {
+          "mean_multiclass_brier": 0.947649749,
+          "mean_brier_gain_vs_exact_prior": -0.00057658,
+          "mean_top5_hits_per_target": 1.755714286,
+          "mean_top5_hit_gain_vs_exact_prior": -0.029285714,
+          "mean_p5_brier": 0.929938073,
+          "mean_p5_brier_gain_vs_exact_prior": -0.000551203,
+          "mean_p5_top5_hits_per_target": 0.492857143,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": -0.000937071,
+              "top5_hit_gain_per_target": -0.000714286
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000580297,
+              "top5_hit_gain_per_target": -0.005714286
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000084916,
+              "top5_hit_gain_per_target": -0.003571429
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.000729412,
+              "top5_hit_gain_per_target": -0.015
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -0.000551203,
+              "top5_hit_gain_per_target": -0.004285714
+            }
+          ]
+        },
+        "0.5": {
+          "mean_multiclass_brier": 0.947446241,
+          "mean_brier_gain_vs_exact_prior": -0.000373072,
+          "mean_top5_hits_per_target": 1.777857143,
+          "mean_top5_hit_gain_vs_exact_prior": -0.007142857,
+          "mean_p5_brier": 0.92936557,
+          "mean_p5_brier_gain_vs_exact_prior": 0.0000213,
+          "mean_p5_top5_hits_per_target": 0.499285714,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": -0.000965141,
+              "top5_hit_gain_per_target": -0.000714286
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000503579,
+              "top5_hit_gain_per_target": -0.002142857
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": 0.000158959,
+              "top5_hit_gain_per_target": 0.012142857
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.0005769,
+              "top5_hit_gain_per_target": -0.018571429
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": 0.0000213,
+              "top5_hit_gain_per_target": 0.002142857
+            }
+          ]
+        },
+        "0.75": {
+          "mean_multiclass_brier": 0.947589966,
+          "mean_brier_gain_vs_exact_prior": -0.000516797,
+          "mean_top5_hits_per_target": 1.755714286,
+          "mean_top5_hit_gain_vs_exact_prior": -0.029285714,
+          "mean_p5_brier": 0.929719044,
+          "mean_p5_brier_gain_vs_exact_prior": -0.000332174,
+          "mean_p5_top5_hits_per_target": 0.494285714,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": -0.000999771,
+              "top5_hit_gain_per_target": -0.001428571
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.00056122,
+              "top5_hit_gain_per_target": -0.008571429
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": 0.000018979,
+              "top5_hit_gain_per_target": 0.002142857
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.000709798,
+              "top5_hit_gain_per_target": -0.018571429
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -0.000332174,
+              "top5_hit_gain_per_target": -0.002857143
+            }
+          ]
+        },
+        "1.5": {
+          "mean_multiclass_brier": 0.947699786,
+          "mean_brier_gain_vs_exact_prior": -0.000626617,
+          "mean_top5_hits_per_target": 1.746428571,
+          "mean_top5_hit_gain_vs_exact_prior": -0.038571429,
+          "mean_p5_brier": 0.930084177,
+          "mean_p5_brier_gain_vs_exact_prior": -0.000697307,
+          "mean_p5_top5_hits_per_target": 0.493571429,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": -0.000867283,
+              "top5_hit_gain_per_target": -0.003571429
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000609713,
+              "top5_hit_gain_per_target": -0.010714286
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000218589,
+              "top5_hit_gain_per_target": -0.003571429
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.00074019,
+              "top5_hit_gain_per_target": -0.017142857
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -0.000697307,
+              "top5_hit_gain_per_target": -0.003571429
+            }
+          ]
+        }
+      },
+      "fixed_p5_only_comparator": {
+        "h": 1.5,
+        "mean_p5_brier": 0.930208595,
+        "mean_p5_brier_gain_vs_exact_prior": -0.000821725,
+        "mean_p5_top5_hits_per_target": 0.492857143,
+        "mean_p5_top5_hit_gain_vs_exact_prior": -0.004285714
+      }
+    },
+    "validation": {
+      "targets": 850,
+      "first_target": "2022-03-13",
+      "last_target": "2024-07-09",
+      "exact_prior": {
+        "mean_multiclass_brier": 0.946282425,
+        "mean_top5_hits_per_target": 1.869411765,
+        "mean_p5_brier": 0.92447202,
+        "mean_p5_top5_hits_per_target": 0.510588235
+      },
+      "full_state_kernel": {
+        "1": {
+          "mean_multiclass_brier": 0.946611305,
+          "mean_brier_gain_vs_exact_prior": -0.00032888,
+          "mean_top5_hits_per_target": 1.82,
+          "mean_top5_hit_gain_vs_exact_prior": -0.049411765,
+          "mean_p5_brier": 0.924408314,
+          "mean_p5_brier_gain_vs_exact_prior": 0.000063706,
+          "mean_p5_top5_hits_per_target": 0.509411765,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": 0.000447126,
+              "top5_hit_gain_per_target": 0
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000901787,
+              "top5_hit_gain_per_target": -0.011764706
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000747527,
+              "top5_hit_gain_per_target": -0.031764706
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.000505917,
+              "top5_hit_gain_per_target": -0.004705882
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": 0.000063706,
+              "top5_hit_gain_per_target": -0.001176471
+            }
+          ]
+        },
+        "0.5": {
+          "mean_multiclass_brier": 0.946738752,
+          "mean_brier_gain_vs_exact_prior": -0.000456327,
+          "mean_top5_hits_per_target": 1.794117647,
+          "mean_top5_hit_gain_vs_exact_prior": -0.075294118,
+          "mean_p5_brier": 0.924501996,
+          "mean_p5_brier_gain_vs_exact_prior": -0.000029976,
+          "mean_p5_top5_hits_per_target": 0.510588235,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": 0.000336822,
+              "top5_hit_gain_per_target": -0.003529412
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.001045732,
+              "top5_hit_gain_per_target": -0.027058824
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000943374,
+              "top5_hit_gain_per_target": -0.023529412
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.000599375,
+              "top5_hit_gain_per_target": -0.021176471
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -0.000029976,
+              "top5_hit_gain_per_target": 0
+            }
+          ]
+        },
+        "0.75": {
+          "mean_multiclass_brier": 0.946648202,
+          "mean_brier_gain_vs_exact_prior": -0.000365777,
+          "mean_top5_hits_per_target": 1.804705882,
+          "mean_top5_hit_gain_vs_exact_prior": -0.064705883,
+          "mean_p5_brier": 0.92438448,
+          "mean_p5_brier_gain_vs_exact_prior": 0.00008754,
+          "mean_p5_top5_hits_per_target": 0.512941176,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": 0.000471598,
+              "top5_hit_gain_per_target": 0
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.001002894,
+              "top5_hit_gain_per_target": -0.021176471
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000830338,
+              "top5_hit_gain_per_target": -0.029411765
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.000554789,
+              "top5_hit_gain_per_target": -0.016470588
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": 0.000087541,
+              "top5_hit_gain_per_target": 0.002352941
+            }
+          ]
+        },
+        "1.5": {
+          "mean_multiclass_brier": 0.946604868,
+          "mean_brier_gain_vs_exact_prior": -0.000322443,
+          "mean_top5_hits_per_target": 1.812941176,
+          "mean_top5_hit_gain_vs_exact_prior": -0.056470589,
+          "mean_p5_brier": 0.924540253,
+          "mean_p5_brier_gain_vs_exact_prior": -0.000068233,
+          "mean_p5_top5_hits_per_target": 0.510588235,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": 0.000369133,
+              "top5_hit_gain_per_target": 0
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000793086,
+              "top5_hit_gain_per_target": -0.022352941
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000692194,
+              "top5_hit_gain_per_target": -0.031764706
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.000427835,
+              "top5_hit_gain_per_target": -0.002352941
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -0.000068233,
+              "top5_hit_gain_per_target": 0
+            }
+          ]
+        }
+      },
+      "fixed_p5_only_comparator": {
+        "h": 1.5,
+        "mean_p5_brier": 0.924708244,
+        "mean_p5_brier_gain_vs_exact_prior": -0.000236224,
+        "mean_p5_top5_hits_per_target": 0.510588235,
+        "mean_p5_top5_hit_gain_vs_exact_prior": 0
+      }
+    },
+    "blind_oos_historical": {
+      "targets": 853,
+      "first_target": "2024-07-10",
+      "last_target": "2026-11-09",
+      "exact_prior": {
+        "mean_multiclass_brier": 0.946511859,
+        "mean_top5_hits_per_target": 1.82883939,
+        "mean_p5_brier": 0.927555163,
+        "mean_p5_top5_hits_per_target": 0.524032825
+      },
+      "full_state_kernel": {
+        "1": {
+          "mean_multiclass_brier": 0.946751681,
+          "mean_brier_gain_vs_exact_prior": -0.000239822,
+          "mean_top5_hits_per_target": 1.807737397,
+          "mean_top5_hit_gain_vs_exact_prior": -0.021101993,
+          "mean_p5_brier": 0.927641114,
+          "mean_p5_brier_gain_vs_exact_prior": -0.000085951,
+          "mean_p5_top5_hits_per_target": 0.522860492,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": -0.000431488,
+              "top5_hit_gain_per_target": 0
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000493863,
+              "top5_hit_gain_per_target": -0.004689332
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000198705,
+              "top5_hit_gain_per_target": -0.002344666
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": 0.000010897,
+              "top5_hit_gain_per_target": -0.012895662
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -0.00008595,
+              "top5_hit_gain_per_target": -0.001172333
+            }
+          ]
+        },
+        "0.5": {
+          "mean_multiclass_brier": 0.946763203,
+          "mean_brier_gain_vs_exact_prior": -0.000251344,
+          "mean_top5_hits_per_target": 1.791324736,
+          "mean_top5_hit_gain_vs_exact_prior": -0.037514654,
+          "mean_p5_brier": 0.927557579,
+          "mean_p5_brier_gain_vs_exact_prior": -0.000002416,
+          "mean_p5_top5_hits_per_target": 0.519343494,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": -0.000306677,
+              "top5_hit_gain_per_target": 0
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000475561,
+              "top5_hit_gain_per_target": -0.009378664
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000085281,
+              "top5_hit_gain_per_target": -0.002344666
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.000386783,
+              "top5_hit_gain_per_target": -0.021101993
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -0.000002416,
+              "top5_hit_gain_per_target": -0.004689332
+            }
+          ]
+        },
+        "0.75": {
+          "mean_multiclass_brier": 0.946756486,
+          "mean_brier_gain_vs_exact_prior": -0.000244627,
+          "mean_top5_hits_per_target": 1.814771395,
+          "mean_top5_hit_gain_vs_exact_prior": -0.014067995,
+          "mean_p5_brier": 0.927555698,
+          "mean_p5_brier_gain_vs_exact_prior": -5.35e-7,
+          "mean_p5_top5_hits_per_target": 0.522860492,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": -0.000431558,
+              "top5_hit_gain_per_target": 0
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000487257,
+              "top5_hit_gain_per_target": -0.002344666
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000183717,
+              "top5_hit_gain_per_target": 0
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": -0.000120068,
+              "top5_hit_gain_per_target": -0.010550996
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -5.34e-7,
+              "top5_hit_gain_per_target": -0.001172333
+            }
+          ]
+        },
+        "1.5": {
+          "mean_multiclass_brier": 0.946740821,
+          "mean_brier_gain_vs_exact_prior": -0.000228962,
+          "mean_top5_hits_per_target": 1.806565064,
+          "mean_top5_hit_gain_vs_exact_prior": -0.022274326,
+          "mean_p5_brier": 0.92772069,
+          "mean_p5_brier_gain_vs_exact_prior": -0.000165527,
+          "mean_p5_top5_hits_per_target": 0.524032825,
+          "per_position": [
+            {
+              "position": "P1",
+              "brier_gain_vs_exact_prior": -0.000407179,
+              "top5_hit_gain_per_target": 0
+            },
+            {
+              "position": "P2",
+              "brier_gain_vs_exact_prior": -0.000507676,
+              "top5_hit_gain_per_target": 0.002344666
+            },
+            {
+              "position": "P3",
+              "brier_gain_vs_exact_prior": -0.000156498,
+              "top5_hit_gain_per_target": -0.010550996
+            },
+            {
+              "position": "P4",
+              "brier_gain_vs_exact_prior": 0.000092069,
+              "top5_hit_gain_per_target": -0.014067995
+            },
+            {
+              "position": "P5",
+              "brier_gain_vs_exact_prior": -0.000165527,
+              "top5_hit_gain_per_target": 0
+            }
+          ]
+        }
+      },
+      "fixed_p5_only_comparator": {
+        "h": 1.5,
+        "mean_p5_brier": 0.92775646,
+        "mean_p5_brier_gain_vs_exact_prior": -0.000201297,
+        "mean_p5_top5_hits_per_target": 0.524032825,
+        "mean_p5_top5_hit_gain_vs_exact_prior": 0
+      }
+    }
+  },
+  "blind_inference": {
+    "primary_endpoint": "paired mean multiclass Brier gain vs exact order-statistic prior; positive favors full-state kernel",
+    "tests": [
+      {
+        "id": "h=0.5|brier_gain",
+        "bandwidth": 0.5,
+        "endpoint": "brier_gain_vs_exact_prior",
+        "mean_gain": -0.000251343,
+        "block_bootstrap_ci95": [
+          -0.000501659,
+          0.000004666
+        ],
+        "block_signflip_p_one_sided": 0.9604807903841923,
+        "holm_adjusted_p": 1,
+        "block_count": 43,
+        "n": 853
+      },
+      {
+        "id": "h=0.5|top5_gain",
+        "bandwidth": 0.5,
+        "endpoint": "top5_hit_gain_vs_exact_prior",
+        "mean_gain": -0.037514654,
+        "block_bootstrap_ci95": [
+          -0.085580305,
+          0.011723329
+        ],
+        "block_signflip_p_one_sided": 0.9486010279794405,
+        "holm_adjusted_p": 1,
+        "block_count": 43,
+        "n": 853
+      },
+      {
+        "id": "h=0.75|brier_gain",
+        "bandwidth": 0.75,
+        "endpoint": "brier_gain_vs_exact_prior",
+        "mean_gain": -0.000244627,
+        "block_bootstrap_ci95": [
+          -0.000461725,
+          -0.00002748
+        ],
+        "block_signflip_p_one_sided": 0.9780004399912001,
+        "holm_adjusted_p": 1,
+        "block_count": 43,
+        "n": 853
+      },
+      {
+        "id": "h=0.75|top5_gain",
+        "bandwidth": 0.75,
+        "endpoint": "top5_hit_gain_vs_exact_prior",
+        "mean_gain": -0.014067995,
+        "block_bootstrap_ci95": [
+          -0.055099648,
+          0.026963658
+        ],
+        "block_signflip_p_one_sided": 0.7626447471050579,
+        "holm_adjusted_p": 1,
+        "block_count": 43,
+        "n": 853
+      },
+      {
+        "id": "h=1|brier_gain",
+        "bandwidth": 1,
+        "endpoint": "brier_gain_vs_exact_prior",
+        "mean_gain": -0.000239822,
+        "block_bootstrap_ci95": [
+          -0.000448458,
+          -0.000039179
+        ],
+        "block_signflip_p_one_sided": 0.9847003059938801,
+        "holm_adjusted_p": 1,
+        "block_count": 43,
+        "n": 853
+      },
+      {
+        "id": "h=1|top5_gain",
+        "bandwidth": 1,
+        "endpoint": "top5_hit_gain_vs_exact_prior",
+        "mean_gain": -0.021101993,
+        "block_bootstrap_ci95": [
+          -0.058616647,
+          0.016412661
+        ],
+        "block_signflip_p_one_sided": 0.877762444751105,
+        "holm_adjusted_p": 1,
+        "block_count": 43,
+        "n": 853
+      },
+      {
+        "id": "h=1.5|brier_gain",
+        "bandwidth": 1.5,
+        "endpoint": "brier_gain_vs_exact_prior",
+        "mean_gain": -0.000228962,
+        "block_bootstrap_ci95": [
+          -0.000430627,
+          -0.000037101
+        ],
+        "block_signflip_p_one_sided": 0.987420251594968,
+        "holm_adjusted_p": 1,
+        "block_count": 43,
+        "n": 853
+      },
+      {
+        "id": "h=1.5|top5_gain",
+        "bandwidth": 1.5,
+        "endpoint": "top5_hit_gain_vs_exact_prior",
+        "mean_gain": -0.022274326,
+        "block_bootstrap_ci95": [
+          -0.060961313,
+          0.017584994
+        ],
+        "block_signflip_p_one_sided": 0.867102657946841,
+        "holm_adjusted_p": 1,
+        "block_count": 43,
+        "n": 853
+      }
+    ],
+    "family_size": 8,
+    "multiple_testing": "Holm across 4 bandwidths x 2 endpoints (8 tests)",
+    "block_length": 20,
+    "bootstrap_replicates": 10000,
+    "signflip_replicates": 50000,
+    "selected_bandwidth_primary_test": {
+      "id": "h=1.5|brier_gain",
+      "bandwidth": 1.5,
+      "endpoint": "brier_gain_vs_exact_prior",
+      "mean_gain": -0.000228962,
+      "block_bootstrap_ci95": [
+        -0.000430627,
+        -0.000037101
+      ],
+      "block_signflip_p_one_sided": 0.987420251594968,
+      "holm_adjusted_p": 1,
+      "block_count": 43,
+      "n": 853
+    }
+  },
+  "selected_model_diagnostics": {
+    "selected_bandwidth": 1.5,
+    "blind_brier_gain_vs_exact_prior": -0.000228962,
+    "blind_p5_brier_gain_full_vs_fixed_p5_only": 0.00003577,
+    "blind_p5_top5_hit_gain_full_vs_fixed_p5_only": 0,
+    "interpretation": "Descriptive comparator only; not part of the preregistered 8-test Holm family."
+  },
+  "integrity": {
+    "archive_rows": 3403,
+    "strict_prior_cutoff_checks": 3103,
+    "all_training_outcomes_strictly_before_target": true,
+    "missing_targets": 0,
+    "all_dates_unique_and_increasing": true,
+    "all_draws_valid_sorted_5_of_40": true,
+    "probability_normalization_checks": 65163,
+    "max_probability_sum_error": 0,
+    "exact_prior_mass_max_error": 0,
+    "synthetic_tests": {
+      "passed": 5,
+      "tests": [
+        "exact priors normalize",
+        "strict-prior boundary",
+        "target/future mutation invariance",
+        "probability normalization",
+        "deterministic prediction replay"
+      ]
+    }
+  },
+  "decision": {
+    "primary_gate": "NOT_MET",
+    "research_only": true,
+    "merge_allowed": false,
+    "production_change_allowed": false,
+    "promotion_allowed": false,
+    "human_review_required": true
+  },
+  "limitations": [
+    "Historical Blind OOS is prior-exposed to other SONAR research and is not a virgin prospective holdout.",
+    "Marginal position forecasts do not define a coherent joint 5-number distribution.",
+    "A positive historical result would remain exploratory until a separate prospective freeze.",
+    "Block sign-flip inference assumes exchangeability of contiguous 20-target block signs.",
+    "No causal, physical-fluid, or future-winning-number claim is made.",
+    "This is a marginal-position model, not a joint quintet probability model.",
+    "The full-state kernel and P5-only diagnostic share the same training archive and shrinkage prior.",
+    "Historical Discovery/Validation/Blind splits are not a prospective trial; Blind OOS has prior SONAR exposure.",
+    "The one-sided block sign-flip is Monte Carlo and depends on exchangeability of contiguous 20-target block signs."
+  ],
+  "next_action": "Do not tune this historical model further. Continue Q60 append-only prospective collection; only if a future independently preregistered trial is justified should this fixed model be frozen prospectively."
+}
