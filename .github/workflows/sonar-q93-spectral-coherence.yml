@@ -13,7 +13,7 @@ on:
       - ".github/workflows/sonar-q93-spectral-coherence.yml"
   pull_request:
     branches:
-      - research/q90-edge-field-decomposition-20261110
+      - research/q90-q93-ci-base-20261110
     paths:
       - "scripts/sonar_q93_spectral_coherence.py"
       - "scripts/validate_sonar_q93_spectral_coherence.py"
@@ -27,8 +27,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: sonar-q93-spectral-coherence
-  cancel-in-progress: false
+  group: sonar-q93-pr-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 
 jobs:
   evaluate:
