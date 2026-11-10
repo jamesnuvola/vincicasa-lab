@@ -265,7 +265,7 @@ def circular_block_bootstrap_mean_ci(
     n = len(values)
     if n < 2 or block_length < 1:
         raise ValueError("invalid bootstrap sample")
-    rng = random.Random(seed)
+    rng = XorShift32(seed)
     means = []
     blocks_needed = math.ceil(n / block_length)
     for _ in range(replicates):
