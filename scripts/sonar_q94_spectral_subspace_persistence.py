@@ -124,6 +124,33 @@ def subspace_overlap(current: np.ndarray, previous: np.ndarray) -> float:
     return float(np.clip(overlap, 0.0, 1.0))
 
 
+def strict_history(draws, draw_index: int):
+    """Return only draws strictly before the target index."""
+    index = int(draw_index)
+    if index < 0 or index > len(draws):
+        raise ValueError("Q94 target index outside archive")
+    return draws[:index]
+
+
+def persistence_weighted_scores(equal_rank, spectral_rank, stability_value: float):
+    equal_rank = np.asarray(equal_rank, dtype=np.float64)
+    spectral_rank = np.asarray(spectral_rank, dtype=np.float64)
+    weight = float(stability_value)
+    if equal_rank.shape != (40,) or spectral_rank.shape != (40,):
+        raise ValueError("Q94 rank blend requires two length-40 vectors")
+    if not np.isfinite(equal_rank).all() or not np.isfinite(spectral_rank).all():
+        raise ValueError("Q94 rank blend contains non-finite values")
+    if np.any(equal_rank < 1) or np.any(equal_rank > 40) or np.any(spectral_rank < 1) or np.any(spectral_rank > 40):
+        raise ValueError("Q94 rank blend requires ranks in 1..40")
+    if not 0.0 <= weight <= 1.0:
+        raise ValueError("Q94 stability weight must lie in [0,1]")
+    equal_strength = 41.0 - equal_rank
+    spectral_strength = 41.0 - spectral_rank
+    stable_score = (1.0 - weight) * equal_strength + weight * spectral_strength
+    unstable_score = weight * equal_strength + (1.0 - weight) * spectral_strength
+    return stable_score, unstable_score
+
+
 def compute_stability(draws):
     """Compute each target's current-vs-previous leading subspace from strict prefixes only."""
     stability = np.zeros(len(draws) - MIN_HISTORY, dtype=np.float64)
@@ -133,7 +160,7 @@ def compute_stability(draws):
     previous_vectors = np.zeros((40, 0), dtype=np.float64)
 
     for offset, draw_index in enumerate(range(MIN_HISTORY, len(draws))):
-        history = draws[:draw_index]
+        history = strict_history(draws, draw_index)
         edge = q87.field.pair_residual_graph(history)
         if previous_edge is None:
             vectors = np.zeros((40, 0), dtype=np.float64)
@@ -211,13 +238,10 @@ def compute_experiment(draws=None):
         equal_rank = parse_rank(source, "BASE::EQUAL42")
         pair_rank = parse_rank(source, "Q90::PAIR_INTERACTION_TRANSFER")
         spectral_rank = parse_rank(source, "Q93::SPECTRAL_K2")
-        equal_strength = 41.0 - equal_rank.astype(np.float64)
-        spectral_strength = 41.0 - spectral_rank.astype(np.float64)
         weight = float(stability[offset])
 
         # These are fixed convex blends of already-frozen prior-only rankings.
-        stable_score = (1.0 - weight) * equal_strength + weight * spectral_strength
-        unstable_score = weight * equal_strength + (1.0 - weight) * spectral_strength
+        stable_score, unstable_score = persistence_weighted_scores(equal_rank, spectral_rank, weight)
         stable_rank = q87.field.rank_from_scores(stable_score)
         unstable_rank = q87.field.rank_from_scores(unstable_score)
 
