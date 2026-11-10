@@ -48,7 +48,8 @@ class Q93SpectralCoherenceTests(unittest.TestCase):
         projected = q93.permuted_spectral_projection(
             values, vectors, np.random.default_rng(93005).normal(size=(40, 6)), permutation
         )
-        explicit = operator[np.ix_(permutation, permutation)] @ np.random.default_rng(93005).normal(size=(40, 6))[np.argsort(permutation)]
+        features = np.random.default_rng(93005).normal(size=(40, 6))
+        explicit = operator[np.ix_(permutation, permutation)] @ features
         np.testing.assert_allclose(projected, explicit, atol=1e-12, rtol=0)
         conjugated = operator[np.ix_(permutation, permutation)]
         np.testing.assert_allclose(np.linalg.eigvalsh(conjugated), np.linalg.eigvalsh(operator), atol=1e-10, rtol=0)
