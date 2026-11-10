@@ -1,0 +1,44 @@
+name: Q103 score-magnitude subset-likelihood replay
+
+on:
+  pull_request:
+    paths:
+      - "data/storico_daily.csv"
+      - "src/VinciCasaLab.jsx"
+      - "reports/sequence_agent/active_engine_walkforward.json"
+      - "reports/sequence_agent/q103_score_magnitude_subset_likelihood_*_2026-11-10.*"
+      - "scripts/sonar_q103_score_magnitude_subset_likelihood.js"
+      - ".github/workflows/q103-score-magnitude-subset-likelihood.yml"
+      - "reports/sequence_agent/q103_exact_head_replay_trigger_2026-11-10.txt"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  q103-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: \${{ github.event.pull_request.head.ref || github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Generate deterministic Q103 walk-forward outputs
+        run: node scripts/sonar_q103_score_magnitude_subset_likelihood.js --write
+      - name: Persist outputs on the research branch
+        env:
+          REF_NAME: \${{ github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q103_score_magnitude_subset_likelihood_*_2026-11-10.*
+          if ! git diff --cached --quiet; then
+            git commit -m "Q103: persist score-magnitude walk-forward evidence"
+            git push origin "HEAD:\${REF_NAME}"
+          fi
+      - name: Recompute and byte-compare persisted Q103 evidence
+        run: node scripts/sonar_q103_score_magnitude_subset_likelihood.js --check
