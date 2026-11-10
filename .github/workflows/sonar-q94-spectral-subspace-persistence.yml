@@ -52,6 +52,9 @@ jobs:
           python -m py_compile scripts/sonar_q94_spectral_subspace_persistence.py
           python -m py_compile scripts/validate_sonar_q94_spectral_subspace_persistence.py
 
+      - name: Run Q93 source regression tests with the built-in unittest runner
+        run: python tests/test_sonar_q93_spectral_coherence.py
+
       - name: Run Q94 regression tests
         run: python tests/test_sonar_q94_spectral_subspace_persistence.py
 
