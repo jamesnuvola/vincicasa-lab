@@ -26,6 +26,7 @@ METRICS_PART_DIR=OUT/"q92_20261108_metrics_parts"
 TARGET_PART_DIR=OUT/"q92_20261108_target_ledger_parts"
 SPLITS=("discovery","validation","blind_oos")
 SPLIT_COUNTS={"discovery":2012,"validation":670,"blind_oos":670}
+EXPECTED_BLIND_TARGETS=SPLIT_COUNTS["blind_oos"]
 TOTAL=q92.TOTAL_FORMULA_COUNT
 SHARDS=q92.SHARD_COUNT
 SHARD_SIZE=q92.SHARD_SIZE
