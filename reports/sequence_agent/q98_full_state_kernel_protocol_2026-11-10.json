@@ -1,0 +1,81 @@
+{
+  "experiment_id": "SONAR-Q98-LAG1-FULL-DRAW-GEOMETRY-KERNEL-2026-11-10",
+  "schema_version": "1.0",
+  "registration_status": "PREREGISTERED_BEFORE_COMPUTATION",
+  "registered_at_utc": "2026-11-10",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09"
+  },
+  "question": "Does the complete preceding five-number order-statistic geometry contain incremental one-step information about the next draw's position marginals, beyond the exact 5-of-40 order-statistic prior?",
+  "hypothesis": "A fixed Gaussian kernel over all five standardized order-statistic coordinates improves mean multiclass Brier score over the exact prior on both Validation and historical Blind OOS; a fixed one-dimensional P5-only kernel is a nested diagnostic comparator.",
+  "state_definition": {
+    "positions": 5,
+    "candidate_domain_per_position": 36,
+    "exact_prior": "p0_j(n)=C(n-1,j-1)*C(40-n,5-j)/C(40,5), n=j..35+j",
+    "mean_j": "sum_n n*p0_j(n)",
+    "sd_j": "sqrt(sum_n (n-mean_j)^2*p0_j(n))",
+    "standardized_state": "z_j(D)=(D_j-mean_j)/sd_j",
+    "distance_squared": "d2(A,B)=mean_j((z_j(A)-z_j(B))^2)"
+  },
+  "model": {
+    "kernel": "w_h(A,B)=exp(-d2(A,B)/(2*h^2))",
+    "bandwidth_grid": [0.5, 0.75, 1.0, 1.5],
+    "fixed_prior_strength_alpha": 200,
+    "probability": "p_t,j(n)=(alpha*p0_j(n)+sum_{u=1}^{t-1} w_h(D[t-1],D[u-1])*I(D[u,j]=n))/(alpha+sum_{u=1}^{t-1} w_h(D[t-1],D[u-1]))",
+    "training_pairs": "u=1..t-1 only; state D[u-1], outcome D[u]; no pair whose outcome is target D[t]",
+    "selection": "Choose one bandwidth by lowest mean five-position multiclass Brier on Validation only; tie-break larger h; no Blind OOS tuning.",
+    "p5_only_comparator": "Same kernel/shrinkage on standardized P5 coordinate only, fixed h=1.5; diagnostic only and not separately tuned."
+  },
+  "walk_forward": {
+    "zero_based_target_index_start": 300,
+    "warmup_draws": 300,
+    "targets": 3103,
+    "chronological_splits": {
+      "discovery": 1400,
+      "validation": 850,
+      "blind_oos_historical": 853
+    },
+    "strict_prior_rule": "For target index t, current state is D[t-1]; historical transition u may be used only when 1<=u<=t-1."
+  },
+  "endpoints": {
+    "primary": "Mean five-position multiclass Brier gain = exact_prior_Brier - candidate_Brier; positive favors candidate.",
+    "secondary": "Mean Top-5 position-hit gain = candidate_hits - exact_prior_top5_hits; positive favors candidate.",
+    "diagnostic": "P5 Brier difference full-state kernel versus fixed P5-only kernel."
+  },
+  "inference": {
+    "block_length": 20,
+    "circular_block_bootstrap_replicates": 10000,
+    "block_signflip_replicates": 50000,
+    "random_seed_bootstrap": 98101,
+    "random_seed_signflip": 98102,
+    "multiple_testing": "Holm correction across all 4 bandwidths x 2 Blind OOS endpoints (8 tests).",
+    "confidence_interval": "Percentile 95% circular moving-block bootstrap of paired per-target gains.",
+    "test": "One-sided block sign-flip, alternative candidate gain > 0; contiguous blocks are sign-flipped as units."
+  },
+  "controls": [
+    "Exact combinatorial order-statistic marginal baseline.",
+    "Fixed P5-only kernel comparator.",
+    "Identical targets and target outcomes across all candidates.",
+    "Strict-prior cutoff assertions for every target.",
+    "Probability normalization and domain checks for all 5 positions.",
+    "Deterministic seeds and canonical result serialization."
+  ],
+  "limitations_preregistered": [
+    "Historical Blind OOS is prior-exposed to other SONAR research and is not a virgin prospective holdout.",
+    "Marginal position forecasts do not define a coherent joint 5-number distribution.",
+    "A positive historical result would remain exploratory until a separate prospective freeze.",
+    "Block sign-flip inference assumes exchangeability of contiguous 20-target block signs.",
+    "No causal, physical-fluid, or future-winning-number claim is made."
+  ],
+  "decision_policy": {
+    "research_only": true,
+    "merge_allowed": false,
+    "production_change_allowed": false,
+    "promotion_allowed": false,
+    "human_review_required": true
+  }
+}
