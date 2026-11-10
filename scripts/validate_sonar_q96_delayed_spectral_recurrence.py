@@ -133,7 +133,7 @@ def validate(read_only=False):
         report["status"]="VALIDATED_PENDING_HUMAN_REVIEW"
         report["acceptance"]={"validator":"Q96_FORMULA_ACCEPTANCE_PASS",
           "workflow_run_id":int(os.environ.get("GITHUB_RUN_ID","0")),
-          "source_sha":os.environ.get("GITHUB_SHA",""),
+          "source_sha":os.environ.get("SONAR_SOURCE_SHA",os.environ.get("GITHUB_SHA","")),
           "human_review":"PENDING_HUMAN_REVIEW_INTEGRATION",
           "persisted_head_replay":"PENDING"}
         q96.dump(q96.REPORT,report)

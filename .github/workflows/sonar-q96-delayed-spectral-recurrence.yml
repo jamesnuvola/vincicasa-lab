@@ -39,6 +39,9 @@ jobs:
           ref: research/q96-delayed-spectral-recurrence-20261110
           fetch-depth: 0
 
+      - name: Capture exact checked-out source commit
+        run: echo "SONAR_SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
