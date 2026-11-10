@@ -1,0 +1,82 @@
+{
+  "task_id": "Q94-SPECTRAL-SUBSPACE-PERSISTENCE-01",
+  "title": "Prior-only persistence weighting of Q93 leading pair-residual spectral subspaces",
+  "registered_at_utc": "2026-11-10T04:20:00Z",
+  "status": "PREREGISTERED_PENDING_EXECUTION",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "sha256": "ba0c8f4e78805e72d04a1b731e1882a9edd3ac71a2bc35c92409540d9ebdec61"
+  },
+  "source_evidence": {
+    "q93_task_id": "Q93-SPECTRAL-COHERENCE-01",
+    "q93_validation_status": "PASS",
+    "q93_manifest_status": "ACCEPTANCE_PASS",
+    "q93_persisted_source_branch": "research/q93-spectral-coherence-20261110",
+    "q93_focal_model": "Q93::SPECTRAL_K2",
+    "q93_historical_primary_gate": "NOT_MET"
+  },
+  "target_design": {
+    "minimum_prior_draws": 200,
+    "targets": 3203,
+    "discovery": 1921,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "split_rule": "Reuse q93.split_labels(3203); chronological 60/20/20 partition.",
+    "cutoff_rule": "For target i, compute the current pair-residual eigenspace from draws[:i] only. Compare it with the preceding target's prior-only eigenspace. Read the target quintet only after all rankings for that target are frozen."
+  },
+  "hypothesis": "Q93's leading k=2 spectral operator retains about 72% of pair-residual energy but does not improve ranking consistently. Its failure may be due to rapidly rotating or unstable leading eigenspaces. Weighting the spectral ranking contribution by prior-only subspace persistence may suppress unstable spectral noise and improve out-of-sample ranking.",
+  "spectral_persistence": {
+    "pair_residual": "For target i, E_pair_i is q90.decompose_edge_change(E_i-E_(i-1)).pair, with E_i computed from draws[:i].",
+    "leading_subspace": "Use q93.spectral_modes(E_pair_i, 2), including the complete absolute-eigenvalue tie group under Q93's fixed 1e-10 cutoff tolerance.",
+    "overlap": "For current and previous orthonormal bases V_i and V_(i-1), stability_i = ||V_i.T @ V_(i-1)||_F^2 / min(r_i,r_(i-1)); if either subspace is empty, stability_i=0. Clip numerical roundoff to [0,1].",
+    "interpretation": "For equal dimensions this is the mean squared cosine of principal angles. For unequal tie-expanded dimensions it is the normalized overlap of the smaller subspace with the larger one.",
+    "focal_operator": "stable_score = (1-stability_i)*(41-rank_equal42_i) + stability_i*(41-rank_q93_k2_i).",
+    "opposite_control": "unstable_score = stability_i*(41-rank_equal42_i) + (1-stability_i)*(41-rank_q93_k2_i).",
+    "rank_rule": "Convert scores to a deterministic 1..40 ranking with q87.field.rank_from_scores; ties follow the existing engine's deterministic rule."
+  },
+  "models": [
+    {"id": "BASE::EQUAL42", "role": "fixed equal-weight 42-rule baseline"},
+    {"id": "Q90::PAIR_INTERACTION_TRANSFER", "role": "full pair-residual comparator"},
+    {"id": "Q93::SPECTRAL_K2", "role": "unweighted fixed k=2 spectral comparator"},
+    {"id": "Q94::STABILITY_WEIGHTED", "role": "fixed focal persistence-weighted spectral ranking"},
+    {"id": "Q94::INSTABILITY_WEIGHTED", "role": "opposite-weight diagnostic control"}
+  ],
+  "frozen_parameters": {
+    "requested_modes": 2,
+    "subspace_overlap_formula": "frobenius_overlap_squared / minimum_effective_dimension",
+    "rank_blend": "convex ordinal-rank blend; no fitted coefficient",
+    "circular_shift_count": 99,
+    "circular_shift_seed": 9401,
+    "bootstrap_block_length": 20,
+    "bootstrap_replicates": 2000
+  },
+  "statistics": {
+    "exact_null": "45 tests: 5 named models x 3 chronological splits x Top5/Top10/Top20; exact Hypergeometric(40,k,5) upper-tail null; one global Holm family.",
+    "paired": "24 tests: Validation and historical Blind OOS x 4 comparators (Equal42, Q90 pair interaction, Q93 k=2, Q94 instability control) x Top5/Top10/Top20; circular moving-block bootstrap length 20, 2,000 replicates; one global Holm family.",
+    "circular_shift": "99 fixed nonzero circular shifts of the stability sequence within each split, seed 9401. This is a post-hoc alignment null only, never a forecast input. Compare focal Q94 stability-weighted mean hits against the 99 shifted-weight means for each split and endpoint; plus-one p-values and one global Holm family of 9 tests.",
+    "primary_gate": "On historical Blind OOS, Q94::STABILITY_WEIGHTED must exceed Q90::PAIR_INTERACTION_TRANSFER, BASE::EQUAL42 and Q93::SPECTRAL_K2 by at least 0.10 Top20 hits/target; each paired moving-block bootstrap 95% CI lower bound must be >0 and Holm p<0.05; focal exact-null Holm p<0.05; focal circular-shift randomization Holm p<0.05. Historical Blind OOS is exploratory, not prospective confirmation."
+  },
+  "safeguards": [
+    "Verify Q93 accepted manifest, validation and source-ledger SHA-256 before using its frozen prior-only rankings.",
+    "Recompute every current and previous spectral subspace using strict prefixes draws[:i]; no target or future draw enters the graph, eigenspace, overlap, score or ranking.",
+    "The Q93 equal42 and k2 rankings are consumed only as pre-target ranking vectors; their outcomes are never used to calculate the current stability weight.",
+    "No coefficient, mode count, threshold or model is tuned on Validation or historical Blind OOS.",
+    "The circular-shift null is inferential only and is never used as a predictive model.",
+    "One global Holm family for exact-null tests, one for paired bootstrap tests and one for circular-shift randomization tests.",
+    "Moving-block bootstrap is reported separately because exact hypergeometric tests assume independent target draws.",
+    "Historical Blind OOS has been exposed in prior SONAR work and is exploratory, not virgin holdout.",
+    "The co-occurrence graph is a statistical descriptor, not physical coupling or proof of causality.",
+    "No immutable freeze modification, no prospective shadow insertion, no model promotion and no automatic merge."
+  ],
+  "known_limitations": [
+    "Subspace overlap measures persistence of the leading spectral subspace, not causal transfer.",
+    "Ordinal-rank blending discards score magnitudes and is a deliberately simple, fixed diagnostic operator.",
+    "A high subspace overlap may be common under the structural constraints of zero-row-sum symmetric matrices; the circular-shift null tests temporal alignment, not all possible graph nulls.",
+    "Q60 prospective promotion still requires at least 200 complete paired targets; the latest registered count is 21."
+  ],
+  "next_action": "Run Q94 strict-prior walk-forward and independent replay; append-only persist the ledger/report/manifest/checkpoint/validation; verify exact Git readback and persisted-head read-only replay. If CI fails, diagnose the precise cause and resume from this preregistration without changing the frozen hypothesis."
+}

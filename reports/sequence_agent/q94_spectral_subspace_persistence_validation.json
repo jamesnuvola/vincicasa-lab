@@ -1,0 +1,73 @@
+{
+  "checks": {
+    "archive_git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "archive_sha256": "ba0c8f4e78805e72d04a1b731e1882a9edd3ac71a2bc35c92409540d9ebdec61",
+    "circular_shift_holm_tests": 9,
+    "exact_null_holm_tests": 45,
+    "models": 5,
+    "paired_holm_tests": 24,
+    "q93_source_ledger_sha256": "c6312eab612c278abed9df1050f8dc873ee20b6176d0fe6684958edee60a3eab",
+    "ranking_vectors_replayed": 16015,
+    "report_sha256": "fb8295500c9dfa1e881f21cc3186e825312e55660785d0b7c4b87909f7ef99fe",
+    "split_counts": {
+      "blind_oos": 641,
+      "discovery": 1921,
+      "validation": 641
+    },
+    "strict_prior_cutoffs": 3203,
+    "subspace_stability_values_replayed": 3203,
+    "target_ledger_sha256": "be4e24f4a4a90261950583cf5752065bd3b735d8351d3637fba4fadeaed67b04",
+    "targets": 3203
+  },
+  "engine_promotion_allowed": false,
+  "human_review_required": true,
+  "immutable_freezes_modified": false,
+  "primary_gate": {
+    "blind_top20": 2.546021840873635,
+    "circular_shift_p_holm": 1.0,
+    "comparisons": [
+      {
+        "ci95": [
+          -0.010959438377535099,
+          0.0374414976599064
+        ],
+        "comparator": "Q90::PAIR_INTERACTION_TRANSFER",
+        "focal_top20": 2.546021840873635,
+        "gate_component": "NOT_MET",
+        "lift": 0.014040561622464587,
+        "paired_p_holm": 1.0,
+        "reference_top20": 2.5319812792511702
+      },
+      {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "comparator": "BASE::EQUAL42",
+        "focal_top20": 2.546021840873635,
+        "gate_component": "NOT_MET",
+        "lift": 0.0,
+        "paired_p_holm": 1.0,
+        "reference_top20": 2.546021840873635
+      },
+      {
+        "ci95": [
+          -0.015600624024960999,
+          0.0327613104524181
+        ],
+        "comparator": "Q93::SPECTRAL_K2",
+        "focal_top20": 2.546021840873635,
+        "gate_component": "NOT_MET",
+        "lift": 0.009360374414976391,
+        "paired_p_holm": 1.0,
+        "reference_top20": 2.5366614664586584
+      }
+    ],
+    "exact_null_p_holm": 1.0,
+    "focal_model": "Q94::STABILITY_WEIGHTED",
+    "status": "NOT_MET"
+  },
+  "scope": "HISTORICAL_EXPLORATORY_NOT_PROSPECTIVE_CONFIRMATION",
+  "status": "PASS",
+  "task_id": "Q94-SPECTRAL-SUBSPACE-PERSISTENCE-01"
+}
