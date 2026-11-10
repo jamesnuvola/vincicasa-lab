@@ -11,6 +11,16 @@ on:
       - "tests/test_sonar_q93_spectral_coherence.py"
       - "reports/sequence_agent/q93_spectral_coherence_protocol_2026-11-10.json"
       - ".github/workflows/sonar-q93-spectral-coherence.yml"
+  pull_request:
+    branches:
+      - research/q90-edge-field-decomposition-20261110
+    paths:
+      - "scripts/sonar_q93_spectral_coherence.py"
+      - "scripts/validate_sonar_q93_spectral_coherence.py"
+      - "scripts/persist_sonar_q93_outputs.py"
+      - "tests/test_sonar_q93_spectral_coherence.py"
+      - "reports/sequence_agent/q93_spectral_coherence_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q93-spectral-coherence.yml"
   workflow_dispatch:
 
 permissions:
