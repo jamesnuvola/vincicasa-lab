@@ -402,7 +402,7 @@ function generate() {
   addCheck("analog_successor_source_static_audit", sourceStatic, "historical successor is always at index i+1 within the supplied prior prefix");
   addCheck("all_reported_analog_successors_within_cutoff", true, "every returned analog successor date was checked against its target prefix cutoff");
   addCheck("deterministic_inference_and_artifacts", true, "fixed seeds; byte-for-byte replay enforced by --check");
-  assert(checks.length === 13, "expected 13 validation checks, got " + checks.length);
+  assert(checks.length === 14, "expected 14 validation checks, got " + checks.length);
 
   const report = {
     experiment_id: "Q106",
