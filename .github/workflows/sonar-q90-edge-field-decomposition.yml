@@ -11,6 +11,16 @@ on:
       - "tests/test_sonar_q90_edge_field_decomposition.py"
       - "reports/sequence_agent/q90_edge_field_decomposition_protocol_2026-11-10.json"
       - ".github/workflows/sonar-q90-edge-field-decomposition.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "scripts/sonar_q90_edge_field_decomposition.py"
+      - "scripts/validate_sonar_q90_edge_field_decomposition.py"
+      - "scripts/persist_sonar_q90_outputs.py"
+      - "tests/test_sonar_q90_edge_field_decomposition.py"
+      - "reports/sequence_agent/q90_edge_field_decomposition_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q90-edge-field-decomposition.yml"
   workflow_dispatch:
 
 permissions:
