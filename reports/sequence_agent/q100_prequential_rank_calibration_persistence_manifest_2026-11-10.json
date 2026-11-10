@@ -1,0 +1,77 @@
+{
+  "experiment_id": "Q100",
+  "branch": "research/q100-prequential-rank-calibration-20261110",
+  "base_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b",
+  "protocol_committed_before_scoring": true,
+  "protocol_commit": "a3e9b362bc4c04904c81acc54437eca83549e373",
+  "artifacts": [
+    {
+      "path": "reports/sequence_agent/q100_prequential_rank_calibration_protocol_2026-11-10.json",
+      "git_blob_sha": "927266f5f5cb3906b0faec7e67ce8955edb1e643",
+      "bytes": 4418,
+      "readback_verified": true
+    },
+    {
+      "path": "scripts/sonar_q100_prequential_rank_calibration.js",
+      "git_blob_sha": "0e2e948dbbf8474068497e7c7107a2370b1f8fbb",
+      "bytes": 19328,
+      "readback_verified": true
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "git_blob_sha": "0c0f3b60cca317149205444d761a46a834b8f6a2",
+      "bytes": 2396,
+      "readback_verified": true
+    },
+    {
+      "path": "reports/sequence_agent/q100_prequential_rank_calibration_report_2026-11-10.json",
+      "git_blob_sha": "9de459c57e3120958a9bc6ba2de63d00e34f53f2",
+      "bytes": 5279,
+      "readback_verified": true
+    },
+    {
+      "path": "reports/sequence_agent/q100_prequential_rank_calibration_validation_2026-11-10.json",
+      "git_blob_sha": "b3498f334007e7b7dd135e9a407409f0f15523ad",
+      "bytes": 2570,
+      "readback_verified": true
+    },
+    {
+      "path": "reports/sequence_agent/q100_prequential_rank_calibration_target_ledger_2026-11-10.csv",
+      "git_blob_sha": "50f384ec3fec77ba505d30374daa7e0ddd54afbe",
+      "bytes": 373455,
+      "readback_verified": true
+    },
+    {
+      "path": "reports/sequence_agent/q100_prequential_rank_calibration_checkpoint_2026-11-10.md",
+      "git_blob_sha": "e0d6fd58841f97a675f2fa894ce547b899851566",
+      "bytes": 1497,
+      "readback_verified": true
+    }
+  ],
+  "result": {
+    "targets": 3203,
+    "discovery": 1921,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "blind_mean_rank": 20.331357254290168,
+    "exact_null_mean_rank": 20.5,
+    "blind_mean_gain": 0.1686427457098286,
+    "raw_one_sided_conditional_null_p": 0.19136808631913682,
+    "bonferroni_43_p": 1,
+    "block_bootstrap_ci95": [
+      -0.22230889235569426,
+      0.5574102964118562
+    ]
+  },
+  "validation": {
+    "status": "PASS",
+    "tests": 10,
+    "workflow_ci_status": "PENDING"
+  },
+  "decision": "NO_PREDICTIVE_LIFT_DEMONSTRATED",
+  "guardrails": {
+    "no_merge": true,
+    "no_promotion": true,
+    "pr6_7_8_untouched": true
+  }
+}
