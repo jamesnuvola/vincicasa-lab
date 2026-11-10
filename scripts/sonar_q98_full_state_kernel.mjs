@@ -263,7 +263,7 @@ function runExperiment(csv, protocol) {
   const priors=buildPriors(), z=standardize(draws,priors);
   const counts=protocol.walk_forward.chronological_splits;
   const start=protocol.walk_forward.zero_based_target_index_start;
-  const targetCount=counts.discovery+counts.validation+counts.blind_oos;
+  const targetCount=counts.discovery+counts.validation+counts.blind_oos_historical;
   assert(draws.length-start===targetCount,"split sizes do not reconcile to target count");
   const hGrid=protocol.model.bandwidth_grid, alpha=protocol.model.fixed_prior_strength_alpha, p5OnlyH=protocol.model.p5_only_comparator.match(/h=([0-9.]+)/)?.[1] ? Number(protocol.model.p5_only_comparator.match(/h=([0-9.]+)/)[1]) : 1.5;
   const rows=[], ledgerLines=[];
@@ -313,7 +313,7 @@ function runExperiment(csv, protocol) {
     hypothesis:protocol.hypothesis,
     source:{path:protocol.source.path,git_blob_sha1:protocol.source.git_blob_sha1,draws:draws.length,first_date:draws[0].date,last_date:draws[draws.length-1].date,target_count:rows.length,first_target:rows[0].date,last_target:rows[rows.length-1].date},
     method:{state:"five previous sorted positions standardized by exact order-statistic means and SDs",distance:"mean squared standardized Euclidean distance across five positions",kernel:"exp(-d2/(2*h^2))",bandwidth_grid:hGrid,alpha,training_pairs:"historical transitions u=1..t-1, state draw[u-1], outcome draw[u]",p5_only_comparator:"one-dimensional standardized P5 kernel, fixed h=1.5 and alpha=200",target_start_index:start},
-    splits:{discovery:counts.discovery,validation:counts.validation,blind_oos_historical:counts.blind_oos},
+    splits:{discovery:counts.discovery,validation:counts.validation,blind_oos_historical:counts.blind_oos_historical},
     validation_selection:{selected_bandwidth:selectedH,criterion:"lowest mean five-position multiclass Brier on Validation; tie-break larger h",validation_gain_vs_exact_prior:valGain},
     split_results:splitResults,
     blind_inference:{primary_endpoint:"paired mean multiclass Brier gain vs exact order-statistic prior; positive favors full-state kernel",tests:inferenceRows,family_size:inferenceRows.length,multiple_testing:"Holm across 4 bandwidths x 2 endpoints (8 tests)",block_length:BLOCK_LENGTH,bootstrap_replicates:protocol.inference.circular_block_bootstrap_replicates,signflip_replicates:protocol.inference.block_signflip_replicates,selected_bandwidth_primary_test:blindBrierTest},
