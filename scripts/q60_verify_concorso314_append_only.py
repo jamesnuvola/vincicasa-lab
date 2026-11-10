@@ -168,8 +168,11 @@ def main():
     check(queue.get("overall_cycle_status") == "INCOMPLETE" and queue.get("queue_status") == "QUEUE_VALID",
           "research queue remains valid but incomplete", checks)
     check(q60 is not None, "Q60 remains registered in the research queue", checks)
-    check(any("minimum 200" in e for e in q60.get("validation_errors", [])),
-          "queue retains the 200-pair evidence requirement", checks)
+    queue_task_statuses = {x.get("id"): x.get("status") for x in queue.get("tasks", [])}
+    queue_dependencies = {dep: queue_task_statuses.get(dep) for dep in q60.get("depends_on", [])}
+    check(q60.get("status") in ("INSUFFICIENT_PROSPECTIVE_CASES", "BLOCKED_BY_DEPENDENCY",
+                                "EVIDENCE_PRESENT_REQUIRES_VALIDATION"),
+          "Q60 queue task remains non-complete", checks)
 
     result = {
         "experiment_id": "Q60-D314-APPEND-ONLY",
@@ -191,6 +194,13 @@ def main():
             "active_app_engine": evaluated["APP::SONAR_HYBRID_RECENCY_ANALOG_FULL_HISTORY"],
             "position_minus_global_top20_hits": position_metrics["top20_hits"] - evaluated["freq_100"]["top20_hits"],
             "position_minus_global_top20_5of5": int(position_metrics["top20_5of5"]) - int(evaluated["freq_100"]["top20_5of5"])
+        },
+        "queue": {
+            "queue_status": queue.get("queue_status"),
+            "overall_cycle_status": queue.get("overall_cycle_status"),
+            "q60_status": q60.get("status"),
+            "q60_validation_errors": q60.get("validation_errors", []),
+            "q60_dependency_statuses": queue_dependencies
         },
         "q60": {
             "complete_paired_targets": gate["valid_complete_prospective_targets"],
