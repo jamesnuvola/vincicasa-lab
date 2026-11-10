@@ -323,3 +323,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# Q97 evidence replay trigger: outputs are uploaded as an immutable workflow artifact.
