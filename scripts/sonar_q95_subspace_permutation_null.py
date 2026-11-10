@@ -60,7 +60,10 @@ def permuted_basis(basis,p):
     return v
 
 def overlap_many(current,previous,perms):
+    current=np.asarray(current,dtype=np.float64); previous=np.asarray(previous,dtype=np.float64)
+    if current.ndim!=2 or previous.ndim!=2 or current.shape[0]!=40 or previous.shape[0]!=40: raise ValueError("Q95 basis shape mismatch")
     if not current.shape[1] or not previous.shape[1]: return np.zeros(len(perms))
+    if np.max(np.abs(current.T@np.ones(40)))>1e-8 or np.max(np.abs(previous.T@np.ones(40)))>1e-8: raise ValueError("Q95 basis must lie in the all-ones-orthogonal subspace")
     vp=previous[perms.astype(np.int64),:]
     cross=np.einsum("ia,pib->pab",current,vp,optimize=True)
     x=np.sum(cross*cross,axis=(1,2))/float(min(current.shape[1],previous.shape[1]))
