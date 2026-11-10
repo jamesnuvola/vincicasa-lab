@@ -346,7 +346,7 @@ def build_report(
         split_results[split_name_value] = {
             "exact_null": summarize(split_rows, None),
             "bandwidths": {
-                str(h): summarize(split_rows, str(h))
+                f"{h:g}": summarize(split_rows, str(h))
                 for h in BANDWIDTHS
             },
         }
