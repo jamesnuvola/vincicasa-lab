@@ -23,6 +23,10 @@ on:
       - "reports/sequence_agent/q103_exact_head_replay_trigger_2026-11-10.txt"
   workflow_dispatch:
 
+concurrency:
+  group: q103-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: read
