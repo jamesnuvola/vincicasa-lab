@@ -1,0 +1,68 @@
+{
+  "task_id": "Q96-DELAYED-SPECTRAL-RECURRENCE-01",
+  "title": "Strict-prior delayed recurrence of leading pair-residual spectral subspaces",
+  "registered_at_utc": "2026-11-10T05:42:00Z",
+  "status": "PREREGISTERED_PENDING_EXECUTION",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "sha256": "ba0c8f4e78805e72d04a1b731e1882a9edd3ac71a2bc35c92409540d9ebdec61"
+  },
+  "accepted_source": {
+    "q95_branch": "research/q95-subspace-permutation-null-20261110",
+    "q95_head_at_registration": "7c8af45b539d129519bafe552aadadac83a40f2e",
+    "q95_manifest_git_blob_sha1": "d681eedd41e3dfdec96a296d47b5330579f97847",
+    "q95_validation_git_blob_sha1": "2ca7e9a289bebed2e7c25e3b65a178f721dd47fb",
+    "q95_acceptance_commit": "362c0ad8025c0aac35eacc41ab7cc549117c4b63"
+  },
+  "target_design": {
+    "minimum_prior_draws": 200,
+    "targets": 3203,
+    "discovery": 1921,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "split_rule": "Reuse Q93 split_labels(3203); chronological 60/20/20 partition.",
+    "cutoff_rule": "For target index i, compute current leading k=2 pair-residual subspace from draws[:i] only. Compare it with the subspace computed from draws[:i-lag], for fixed lag in {2,3,5}. No target quintet or future draw values enter either subspace."
+  },
+  "hypothesis": "At least one preregistered lag in {2,3,5} has label-aligned leading k=2 subspace overlap greater than a constrained node-label permutation null in both Validation and historical Blind OOS.",
+  "lags": [2, 3, 5],
+  "subspace": {
+    "requested_modes": 2,
+    "construction": "For each prefix i, calculate pair_residual_graph(draws[:i]); difference against the immediately preceding prefix graph; apply Q90 additive-main-effect decomposition; take the leading Q93 k=2 eigen-subspace with Q93 tie-expansion rule.",
+    "overlap": "sum((V_current.T @ V_lagged)^2) / min(effective_current_modes, effective_lagged_modes); zero when either basis is empty."
+  },
+  "permutation_null": {
+    "transformation": "Apply one fixed row permutation p to the lagged basis V_lagged[p,:] while leaving current basis unchanged. This preserves orthonormality and the all-ones-orthogonal subspace while disrupting node-label correspondence.",
+    "count": 999,
+    "seed": 9601,
+    "exclusions": "Exclude identity; all permutations unique.",
+    "classification": "Constrained node-label permutation null; not a Haar-random subspace null or universal graph null."
+  },
+  "statistics": {
+    "test_statistic": "Within each lag and chronological split, compare mean observed overlap with the 999 fixed-permutation mean-over-target statistics using plus-one one-sided p-value.",
+    "uncertainty": "Circular moving-block bootstrap of per-target observed-minus-per-target-permutation-mean overlap; block length 20; 2000 replicates; 95% percentile interval.",
+    "multiple_testing": "One global Holm family of nine tests: three fixed lags multiplied by three chronological splits.",
+    "primary_gate": "At least one fixed lag must have positive excess overlap, strictly positive bootstrap 95% lower bound and global Holm p<0.05 in both Validation and historical Blind OOS. Otherwise NOT_SUPPORTED."
+  },
+  "safeguards": [
+    "Verify Q95 acceptance manifest, validation and every manifested artifact hash before using its source state.",
+    "Recompute every spectral basis from strict archive prefixes only.",
+    "Lagged prefix index must be strictly earlier than the current prefix and both must precede the target.",
+    "Permutation transformations are inferential controls only and never forecast inputs.",
+    "No target outcomes are needed or read by this diagnostic.",
+    "All nine lag-by-split tests are corrected in one global Holm family.",
+    "Historical Blind OOS is exploratory, not virgin prospective confirmation.",
+    "No immutable freeze modification, prospective shadow insertion, model promotion or automatic merge."
+  ],
+  "known_limitations": [
+    "The constrained node-label permutation null is not a Haar null or a universal graph null.",
+    "Subspace overlap is geometric and does not imply causality or predictive value.",
+    "Lagged recurrence may be affected by overlapping rolling prefixes; the block bootstrap addresses local dependence only approximately.",
+    "Failure to reject does not prove absence of every possible temporal structure.",
+    "Q60 prospective promotion remains blocked until at least 200 complete paired prospective targets are available."
+  ],
+  "next_action": "Run Q96 strict-prior walk-forward and independent exact replay. If no lag passes both Validation and historical Blind OOS after the global Holm correction, close this spectral-recurrence line and concentrate on Q92 acceptance and Q60 append-only prospective collection."
+}
