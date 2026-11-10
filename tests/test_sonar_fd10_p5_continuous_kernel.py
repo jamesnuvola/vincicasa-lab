@@ -9,6 +9,7 @@ from scripts.sonar_fd10_p5_continuous_kernel import (
     BANDWIDTHS,
     block_signflip_family,
     build_walkforward,
+    circular_block_bootstrap_mean_ci,
     exact_null_pmf,
     holm_adjust,
     kernel_probabilities,
@@ -84,6 +85,13 @@ class FD10ContinuousKernelTests(unittest.TestCase):
         second = block_signflip_family(endpoints, block_length=7, replicates=999, seed=10)
         self.assertEqual(first, second)
         self.assertLess(first["positive"], first["negative"])
+
+    def test_circular_bootstrap_is_deterministic(self):
+        values = [float((i % 9) - 4) for i in range(83)]
+        first = circular_block_bootstrap_mean_ci(values, block_length=7, replicates=999, seed=101)
+        second = circular_block_bootstrap_mean_ci(values, block_length=7, replicates=999, seed=101)
+        self.assertEqual(first, second)
+        self.assertLessEqual(first[0], first[1])
 
     def test_split_counts_and_cutoff_are_recorded(self):
         maxima = [20, 25, 30, 35, 22, 40, 18, 33]
