@@ -1,4 +1,4 @@
-name: SONAR Q88 Signed Node-Graph Transfer
+name: SONAR Q88 Signed Node-Graph Transfer Read-Only Replay
 
 on:
   pull_request:
@@ -15,9 +15,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  evaluate-validate-artifact:
+  validate-persisted:
     runs-on: ubuntu-latest
-    timeout-minutes: 240
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:
@@ -40,28 +40,6 @@ jobs:
         run: python -m py_compile scripts/sonar_q88_signed_node_graph_transfer.py scripts/validate_sonar_q88_signed_node_graph_transfer.py
       - name: Run signed projection, prefix-only, smoothing and operator tests
         run: python tests/test_sonar_q88_signed_node_graph_transfer.py -v
-      - name: Execute preregistered Q88 strict-prior walk-forward
-        if: steps.state.outputs.persisted != 'true'
-        env:
-          SONAR_SOURCE_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
-        run: python scripts/sonar_q88_signed_node_graph_transfer.py
-      - name: Replay every target, transfer vector, rank and Holm family
-        if: steps.state.outputs.persisted != 'true'
-        run: python scripts/validate_sonar_q88_signed_node_graph_transfer.py
-      - name: Upload validated Q88 persistence bundle
-        if: steps.state.outputs.persisted != 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: q88-signed-node-graph-transfer-bundle
-          path: |
-            reports/sequence_agent/q88_signed_node_graph_transfer_catalog.jsonl
-            reports/sequence_agent/q88_signed_node_graph_transfer_target_ledger.csv.gz
-            reports/sequence_agent/q88_signed_node_graph_transfer_report.json
-            reports/sequence_agent/q88_signed_node_graph_transfer_manifest.json
-            reports/sequence_agent/q88_signed_node_graph_transfer_checkpoint_2026-11-10.json
-            reports/sequence_agent/q88_signed_node_graph_transfer_validation.json
-          if-no-files-found: error
-          retention-days: 7
       - name: Replay persisted Q88 outputs read-only on exact head
         if: steps.state.outputs.persisted == 'true'
         run: python scripts/validate_sonar_q88_signed_node_graph_transfer.py --read-only
