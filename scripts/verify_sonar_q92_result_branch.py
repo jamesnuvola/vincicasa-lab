@@ -20,6 +20,10 @@ REPORT_PATH = "reports/sequence_agent/q92_20261108_report.json"
 MANIFEST_PATH = "reports/sequence_agent/q92_20261108_manifest.json"
 
 
+def result_path(filename: str) -> str:
+    return f"reports/sequence_agent/{filename}"
+
+
 def git(args: list[str]) -> bytes:
     completed = subprocess.run(
         ["git", *args], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
@@ -93,7 +97,7 @@ def verify() -> int:
     if hashlib.sha256(summary_raw).hexdigest() != receipt.get("summary_sha256"):
         raise ValueError("acceptance-summary SHA-256 mismatch")
 
-    expected_files = dict(receipt["output_sha256"])
+    expected_files = {result_path(name): spec for name, spec in receipt["output_sha256"].items()}
     expected_files[SUMMARY_PATH] = {
         "bytes": len(summary_raw),
         "sha256": hashlib.sha256(summary_raw).hexdigest(),
