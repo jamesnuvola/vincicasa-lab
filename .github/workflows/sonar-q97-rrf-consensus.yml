@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - research/q97-rrf-consensus-20261110
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/sonar-q97-rrf-consensus.yml'
+      - 'scripts/sonar_q97_rrf_consensus.py'
+      - 'tests/test_sonar_q97_rrf_consensus.py'
+      - 'reports/sequence_agent/q97_rrf_consensus_protocol_2026-11-10.json'
   workflow_dispatch:
 
 permissions:
@@ -16,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -43,5 +53,5 @@ jobs:
           git add reports/sequence_agent/q97_rrf_consensus_*
           if ! git diff --cached --quiet; then
             git commit -m "Persist Q97 RRF consensus replay [skip ci]"
-            git push origin "HEAD:$GITHUB_REF_NAME"
+            git push origin "HEAD:${GITHUB_HEAD_REF:-$GITHUB_REF_NAME}"
           fi
