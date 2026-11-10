@@ -5,7 +5,6 @@ on:
     branches:
       - research/sonar-q92-exact-null-calibration-20261109
     paths:
-      - ".github/workflows/sonar-q92-full-walkforward.yml"
       - ".github/workflows/ci.yml"
       - ".github/workflows/sonar-q92-ten-feature.yml"
       - ".github/workflows/sonar-q92-aggregate-core.yml"
@@ -418,7 +417,7 @@ jobs:
             python - <<'PY'
             import json,subprocess
             from pathlib import Path
-            branch="origin/research/sonar-q92-results-20261108"
+            branch="origin/"+os.environ["RESULT_BRANCH"]
             paths=["reports/sequence_agent/q92_20261108_report.json","reports/sequence_agent/q92_20261108_manifest.json",
               "reports/sequence_agent/q92_20261108_candidate_shortlist.csv","reports/sequence_agent/q92_20261108_candidate_selection.json",
               "reports/sequence_agent/q92_20261108_paired_blind_ledger.csv","reports/sequence_agent/q92_20261108_paired_inference.json",
@@ -454,7 +453,7 @@ jobs:
           python - <<'PY'
           import hashlib,json,subprocess,os
           from pathlib import Path
-          branch="origin/research/sonar-q92-results-20261108"
+          branch="origin/"+os.environ["RESULT_BRANCH"]
           paths=["reports/sequence_agent/q92_20261108_report.json","reports/sequence_agent/q92_20261108_manifest.json",
             "reports/sequence_agent/q92_20261108_candidate_shortlist.csv","reports/sequence_agent/q92_20261108_candidate_selection.json",
             "reports/sequence_agent/q92_20261108_paired_blind_ledger.csv","reports/sequence_agent/q92_20261108_paired_inference.json",
