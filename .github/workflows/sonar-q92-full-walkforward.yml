@@ -411,33 +411,34 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
+          paths=(
+            reports/sequence_agent/q92_20261108_report.json
+            reports/sequence_agent/q92_20261108_manifest.json
+            reports/sequence_agent/q92_20261108_candidate_shortlist.csv
+            reports/sequence_agent/q92_20261108_candidate_selection.json
+            reports/sequence_agent/q92_20261108_paired_blind_ledger.csv
+            reports/sequence_agent/q92_20261108_paired_inference.json
+            reports/sequence_agent/q92_20261108_shard_artifact_manifest.json
+            reports/sequence_agent/q92_20261108_acceptance_summary.json
+            reports/sequence_agent/q92_20261108_persistence_receipt.json
+          )
           if git ls-remote --exit-code --heads origin "$RESULT_BRANCH" >/dev/null 2>&1; then
             git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
-            python - <<'PY'
-            import json,subprocess
-            from pathlib import Path
-            branch="origin/"+os.environ["RESULT_BRANCH"]
-            paths=["reports/sequence_agent/q92_20261108_report.json","reports/sequence_agent/q92_20261108_manifest.json",
-              "reports/sequence_agent/q92_20261108_candidate_shortlist.csv","reports/sequence_agent/q92_20261108_candidate_selection.json",
-              "reports/sequence_agent/q92_20261108_paired_blind_ledger.csv","reports/sequence_agent/q92_20261108_paired_inference.json",
-              "reports/sequence_agent/q92_20261108_shard_artifact_manifest.json","reports/sequence_agent/q92_20261108_acceptance_summary.json"]
-            for path in paths:
-                old=subprocess.run(["git","show",branch+":"+path],capture_output=True)
-                if old.returncode!=0 or old.stdout!=Path(path).read_bytes():
-                    raise SystemExit("Q92_APPEND_ONLY_BLOCKED: existing output differs byte-for-byte: "+path)
-            old=json.loads(subprocess.run(["git","show",branch+":reports/sequence_agent/q92_20261108_persistence_receipt.json"],check=True,capture_output=True,text=True).stdout)
-            new=json.loads(Path("reports/sequence_agent/q92_20261108_persistence_receipt.json").read_text(encoding="utf-8"))
-            core=("task_id","source_checkout_sha","source_archive_sha256","report_sha256","manifest_sha256","summary_sha256","output_sha256")
-            if any(old.get(key)!=new.get(key) for key in core):
-                raise SystemExit("Q92_APPEND_ONLY_BLOCKED: existing receipt core differs")
-            if old.get("artifact_bundle",{}).get("byte_readback_verified") is not True:
-                raise SystemExit("Q92_APPEND_ONLY_BLOCKED: existing receipt lacks uploaded-bundle byte readback")
-            print("Q92_APPEND_ONLY_PASS: identical accepted outputs already persisted; no branch update.")
-          PY
+            for path in "${paths[@]}"; do
+              git show "origin/$RESULT_BRANCH:$path" | cmp -s - "$path" || { echo "Q92_APPEND_ONLY_BLOCKED: existing result differs: $path"; exit 1; }
+              local_sha="$(git hash-object "$path")"
+              remote_sha="$(git rev-parse "origin/$RESULT_BRANCH:$path")"
+              [[ "$local_sha" == "$remote_sha" ]] || { echo "Q92_APPEND_ONLY_BLOCKED: Git blob differs: $path"; exit 1; }
+            done
+            old_core="$(git show "origin/$RESULT_BRANCH:reports/sequence_agent/q92_20261108_persistence_receipt.json" | jq -c '[.task_id,.source_checkout_sha,.source_archive_sha256,.report_sha256,.manifest_sha256,.summary_sha256,.output_sha256]')"
+            new_core="$(jq -c '[.task_id,.source_checkout_sha,.source_archive_sha256,.report_sha256,.manifest_sha256,.summary_sha256,.output_sha256]' reports/sequence_agent/q92_20261108_persistence_receipt.json)"
+            [[ "$old_core" == "$new_core" ]] || { echo "Q92_APPEND_ONLY_BLOCKED: receipt core differs"; exit 1; }
+            git show "origin/$RESULT_BRANCH:reports/sequence_agent/q92_20261108_persistence_receipt.json" | jq -e '.artifact_bundle.byte_readback_verified == true and .artifact_bundle.digest == .artifact_bundle.byte_readback_sha256' >/dev/null
+            echo "Q92_APPEND_ONLY_PASS: identical accepted outputs already persisted; no branch update."
           else
             git checkout -b "$RESULT_BRANCH" "$GITHUB_SHA"
-            git add reports/sequence_agent/q92_20261108_report.json reports/sequence_agent/q92_20261108_manifest.json reports/sequence_agent/q92_20261108_candidate_shortlist.csv reports/sequence_agent/q92_20261108_candidate_selection.json reports/sequence_agent/q92_20261108_paired_blind_ledger.csv reports/sequence_agent/q92_20261108_paired_inference.json reports/sequence_agent/q92_20261108_shard_artifact_manifest.json reports/sequence_agent/q92_20261108_acceptance_summary.json reports/sequence_agent/q92_20261108_persistence_receipt.json
-            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Persist accepted Q92 2026-11-08 walk-forward outputs"
+            git add "${paths[@]}"
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Persist accepted Q92 2026-11-08 outputs from $GITHUB_SHA"
             git push origin "$RESULT_BRANCH"
             echo "Q92_APPEND_ONLY_PASS: accepted outputs committed and pushed without merge."
           fi
@@ -449,36 +450,33 @@ jobs:
           set -euo pipefail
           git fetch origin "refs/heads/$RESULT_BRANCH:refs/remotes/origin/$RESULT_BRANCH"
           git merge-base --is-ancestor "$GITHUB_SHA" "origin/$RESULT_BRANCH"
-          python - <<'PY'
-          import hashlib,json,subprocess,os
-          from pathlib import Path
-          branch="origin/"+os.environ["RESULT_BRANCH"]
-          paths=["reports/sequence_agent/q92_20261108_report.json","reports/sequence_agent/q92_20261108_manifest.json",
-            "reports/sequence_agent/q92_20261108_candidate_shortlist.csv","reports/sequence_agent/q92_20261108_candidate_selection.json",
-            "reports/sequence_agent/q92_20261108_paired_blind_ledger.csv","reports/sequence_agent/q92_20261108_paired_inference.json",
-            "reports/sequence_agent/q92_20261108_shard_artifact_manifest.json","reports/sequence_agent/q92_20261108_acceptance_summary.json"]
-          def show(path):
-              result=subprocess.run(["git","show",branch+":"+path],capture_output=True)
-              if result.returncode:raise SystemExit("Q92_GIT_READBACK_BLOCKED: missing result-branch path "+path)
-              return result.stdout
-          def blob_sha(raw):
-              return hashlib.sha1(b"blob "+str(len(raw)).encode("ascii")+bytes([0])+raw).hexdigest()
-          def tree_sha(path):
-              result=subprocess.run(["git","ls-tree",branch,path],capture_output=True,text=True)
-              if result.returncode or not result.stdout.strip():raise SystemExit("Q92_GIT_READBACK_BLOCKED: missing Git tree entry "+path)
-              return result.stdout.split()[2]
-          for path in paths:
-              raw=show(path)
-              if raw!=Path(path).read_bytes():raise SystemExit("Q92_GIT_READBACK_BLOCKED: byte mismatch "+path)
-              if tree_sha(path)!=blob_sha(raw):raise SystemExit("Q92_GIT_READBACK_BLOCKED: Git blob SHA mismatch "+path)
-          receipt_path="reports/sequence_agent/q92_20261108_persistence_receipt.json"
-          receipt_raw=show(receipt_path);receipt=json.loads(receipt_raw)
-          summary=json.loads(Path("reports/sequence_agent/q92_20261108_acceptance_summary.json").read_text(encoding="utf-8"))
-          if receipt.get("source_checkout_sha")!=os.environ["GITHUB_SHA"] or receipt.get("source_archive_sha256")!=summary["source_archive_sha256"] or receipt.get("output_sha256")!=summary["output_sha256"]:
-              raise SystemExit("Q92_GIT_READBACK_BLOCKED: persisted receipt core mismatch")
-          if receipt.get("artifact_bundle",{}).get("byte_readback_verified") is not True:
-              raise SystemExit("Q92_GIT_READBACK_BLOCKED: receipt does not attest verified artifact byte readback")
-          if tree_sha(receipt_path)!=blob_sha(receipt_raw):
-              raise SystemExit("Q92_GIT_READBACK_BLOCKED: persistence receipt Git blob SHA mismatch")
-          print("Q92_GIT_TREE_BLOB_READBACK_PASS: result branch "+branch+"; core files and receipt byte-identical; artifact digest readback recorded.")
-          PY
+          paths=(
+            reports/sequence_agent/q92_20261108_report.json
+            reports/sequence_agent/q92_20261108_manifest.json
+            reports/sequence_agent/q92_20261108_candidate_shortlist.csv
+            reports/sequence_agent/q92_20261108_candidate_selection.json
+            reports/sequence_agent/q92_20261108_paired_blind_ledger.csv
+            reports/sequence_agent/q92_20261108_paired_inference.json
+            reports/sequence_agent/q92_20261108_shard_artifact_manifest.json
+            reports/sequence_agent/q92_20261108_acceptance_summary.json
+            reports/sequence_agent/q92_20261108_persistence_receipt.json
+          )
+          for path in "${paths[@]}"; do
+            git show "origin/$RESULT_BRANCH:$path" | cmp -s - "$path" || { echo "Q92_GIT_READBACK_BLOCKED: byte mismatch $path"; exit 1; }
+            local_sha="$(git hash-object "$path")"
+            remote_sha="$(git rev-parse "origin/$RESULT_BRANCH:$path")"
+            [[ "$local_sha" == "$remote_sha" ]] || { echo "Q92_GIT_READBACK_BLOCKED: Git blob mismatch $path"; exit 1; }
+          done
+          receipt_path=reports/sequence_agent/q92_20261108_persistence_receipt.json
+          summary_path=reports/sequence_agent/q92_20261108_acceptance_summary.json
+          expected_archive="$(jq -r '.source_archive_sha256' "$summary_path")"
+          expected_output="$(jq -c '.output_sha256' "$summary_path")"
+          jq -e --arg sha "$GITHUB_SHA" --arg branch "$RESULT_BRANCH" --arg archive "$expected_archive" --arg output "$expected_output" '
+            .source_checkout_sha == $sha and
+            .result_branch == $branch and
+            .source_archive_sha256 == $archive and
+            (.output_sha256|tojson) == $output and
+            .artifact_bundle.byte_readback_verified == true and
+            .artifact_bundle.digest == .artifact_bundle.byte_readback_sha256
+          ' "$receipt_path" >/dev/null
+          echo "Q92_GIT_TREE_BLOB_READBACK_PASS: result branch $RESULT_BRANCH; nine core files and receipt are byte-identical."
