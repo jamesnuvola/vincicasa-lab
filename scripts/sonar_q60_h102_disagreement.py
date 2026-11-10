@@ -349,7 +349,7 @@ def build_report(records, pending, latest_archive_date):
 def write_outputs(report, records, report_out, ledger_out):
     Path(report_out).parent.mkdir(parents=True, exist_ok=True)
     Path(ledger_out).parent.mkdir(parents=True, exist_ok=True)
-    Path(report_out).write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    Path(report_out).write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     with Path(ledger_out).open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=LEDGER_FIELDS, lineterminator="\n")
         writer.writeheader()
