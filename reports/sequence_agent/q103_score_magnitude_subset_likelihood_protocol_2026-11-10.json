@@ -1,0 +1,91 @@
+{
+  "experiment_id": "Q103",
+  "title": "Active SONAR score-magnitude calibration as a 5-of-40 subset likelihood",
+  "status": "PREREGISTERED_BEFORE_SCORING",
+  "preregistered_on": "2026-11-10",
+  "source": {
+    "archive": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "scorer": "src/VinciCasaLab.jsx",
+    "scorer_git_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_engine_report": "reports/sequence_agent/active_engine_walkforward.json",
+    "active_engine_report_git_blob_sha1": "ff07b6da4948bb89467067c2552d9b1f78bc9549",
+    "main_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b",
+    "archive_cutoff": "2026-11-09"
+  },
+  "hypothesis": {
+    "null": "Each target is an independent uniformly selected 5-subset of {1,...,40}, conditional on all prior draws.",
+    "alternative": "The active SONAR scorer's pre-target score magnitudes contain information beyond rank order and induce a better calibrated distribution over complete 5-number subsets.",
+    "unit_of_analysis": "The complete unordered 5-number target draw, not five independent Bernoulli labels."
+  },
+  "model": {
+    "score_source": "Exact scores[] returned by sonarAnalogCore from src/VinciCasaLab.jsx, called only with draws.slice(0,target_index).",
+    "subset_probability": "P_T(D_t | F_{t-1}) = product_{n in D_t} w_{t,n}(T) / e_5(w_{t,1},...,w_{t,40})",
+    "weight": "w_{t,n}(T) = exp((score_{t,n} - max_m score_{t,m}) / T)",
+    "partition_function": "e_5 is the fifth elementary symmetric polynomial, computed by descending dynamic programming; it exactly normalizes over all C(40,5)=658008 subsets.",
+    "temperatures": [
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      0.75,
+      1,
+      1.5,
+      2,
+      4
+    ],
+    "null_control": "Uniform subset distribution; equivalent to T=infinity and log-likelihood gain exactly zero.",
+    "tie_break": "The source scorer's existing descending-score, ascending-number order; no new ranking rule."
+  },
+  "walk_forward": {
+    "warmup_draws": 200,
+    "total_draws": 3403,
+    "total_targets": 3203,
+    "split_rule": "Chronological 60/20/20 after warm-up.",
+    "discovery_targets": 1921,
+    "validation_targets": 641,
+    "historical_blind_oos_targets": 641,
+    "validation_selection": "Choose the temperature with the largest mean prequential log-likelihood gain over the uniform 5-of-40 baseline; include the uniform null as a zero-gain candidate; ties prefer the larger temperature. No blind OOS tuning.",
+    "target_information_rule": "For target index t, scorer input is exactly archive[0:t]; target t and all later rows are excluded."
+  },
+  "primary_endpoint": {
+    "name": "Prequential complete-quintet log-likelihood gain",
+    "formula": "g_t(T)=log(C(40,5)) + sum_{n in D_t} log(w_{t,n}(T)) - log(e_5(w_t(T)))",
+    "interpretation": "Positive cumulative gain means the sequential model assigns greater likelihood to the observed complete draws than the uniform null."
+  },
+  "inference": {
+    "primary_test": "For each fixed T, exp(sum_t g_t(T)) is a likelihood-ratio test martingale under the conditional independent-uniform null because each forecast is normalized and predictable from the strict prior. Convert to a valid conservative p-value p=min(1, exp(-sum_t g_t)).",
+    "family": "Nine fixed finite temperatures; Holm step-down correction across their nine OOS e-process p-values.",
+    "catalogue_screen": "Also report Bonferroni ×43 as a conservative catalogue screen; it does not correct unknown analyst degrees of freedom.",
+    "uncertainty": "Circular moving-block bootstrap, block length 20, 10000 replicates, fixed seed 20261110, for descriptive 95% CI of the selected validation temperature's blind mean gain.",
+    "secondary_metrics": "Top-5 and Top-20 hit counts are descriptive only and are not additional confirmatory endpoints."
+  },
+  "integrity_checks": [
+    "Verify exact Git blob SHA-1 for archive, scorer, active-engine report and this protocol.",
+    "Verify every target has a strict prior cutoff and the scorer receives no target/future row.",
+    "Verify every score vector contains each integer 1..40 exactly once with finite scores.",
+    "Verify the subset partition function by dynamic programming and exhaustive small-n test; verify uniform 5-of-40 normalizer equals 658008.",
+    "Exhaustively verify subset probabilities sum to one for one representative finite-temperature forecast.",
+    "Run future-mutation invariance checks at nine fixed cutoffs.",
+    "Run deterministic replay and byte-compare report, validation, ledger, checkpoint and manifest."
+  ],
+  "limitations": [
+    "The historical blind OOS cohort was already examined by earlier SONAR work, including Q100 rank calibration; it is not a virgin holdout.",
+    "The score vector is a heuristic ranking score, not a probability calibration supplied by the original engine.",
+    "This experiment evaluates the likelihood of complete 5-subsets; it does not independently prove a better winning quintet forecast.",
+    "Any positive historical result would still require a new prospective frozen cohort and the registered Q60 gate."
+  ],
+  "guardrails": {
+    "research_only": true,
+    "production_engine_changes": false,
+    "prospective_freeze_changes": false,
+    "q60_h101_h102_changes": false,
+    "automatic_merge": false,
+    "automatic_promotion": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
