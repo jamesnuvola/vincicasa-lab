@@ -1,0 +1,497 @@
+{
+  "protocol": "Q60-H99 exploratory paired ranking-quality replay",
+  "prepared_at": "2026-11-10T10:47:06+01:00",
+  "status": "EXPLORATORY_NOT_CONFIRMATORY",
+  "source_branch": "research/q60-nov09-reconciliation-20261110-run11",
+  "input_blobs": {
+    "global_shadow_forecasts": {
+      "path": "reports/sequence_agent/shadow_forecasts.csv",
+      "sha": "ffd9ab70fb27897d0dd3126391ca931b60ba25ac"
+    },
+    "positional_shadow_forecasts": {
+      "path": "reports/sequence_agent/position_mix_shadow.csv",
+      "sha": "3b2fe6055d2075308fba742022dd6e527f634770"
+    },
+    "canonical_archive": {
+      "path": "data/storico_daily.csv",
+      "sha": "8d3e19f0b417024ba32e576697eac0648d12ab86"
+    }
+  },
+  "sample": {
+    "paired_targets": 22,
+    "first_target": "2026-10-19",
+    "last_target": "2026-11-09",
+    "freeze_cutoff_rule": "history_cutoff = target_date - 1 day; frozen_at before nominal 19:00 Europe/Rome draw time",
+    "missing_freezes_reconstructed": 0
+  },
+  "hypothesis": {
+    "h99": "The positional engine has higher mean reciprocal rank across the five drawn numbers within its Top20 (MRR5@20) and higher mean discounted hit gain (DHG5@20) than freq_100 on future paired freezes.",
+    "mrr5_at20": "(1/5) * sum over five winning numbers of 1/rank if rank<=20, else 0",
+    "dhg5_at20": "(1/5) * sum over five winning numbers of 1/log2(rank+1) if rank<=20, else 0",
+    "future_cohort": "Next 178 genuinely new complete paired targets after registration; no backfill; both engines and ranking lists unchanged."
+  },
+  "observed_22_pair_replay": {
+    "global_top5_hits": 16,
+    "positional_top5_hits": 21,
+    "global_top10_hits": 28,
+    "positional_top10_hits": 32,
+    "global_top20_hits": 56,
+    "positional_top20_hits": 56,
+    "mean_shared_top20_candidates": 15.8181818182,
+    "mean_mrr5_at20_global": 0.10027610477054609,
+    "mean_mrr5_at20_positional": 0.10442696524634325,
+    "mrr5_at20_difference": 0.004150860475797148,
+    "mrr5_at20_exact_signflip_p": 0.3960142135620117,
+    "mrr5_at20_bootstrap": {
+      "lower_95": -0.004142235317298641,
+      "upper_95": 0.011621059617119284,
+      "replicates": 10000,
+      "block_length": 3,
+      "seed": 9901
+    },
+    "mean_dhg5_at20_global": 0.18649688993785166,
+    "mean_dhg5_at20_positional": 0.19133672681142588,
+    "dhg5_at20_difference": 0.004839836873574297,
+    "dhg5_at20_exact_signflip_p": 0.6768817901611328,
+    "dhg5_at20_bootstrap": {
+      "lower_95": -0.015141104870729878,
+      "upper_95": 0.025009636466344562,
+      "replicates": 10000,
+      "block_length": 3,
+      "seed": 9901
+    }
+  },
+  "multiple_testing": {
+    "family": [
+      "H97 Top5",
+      "H97 Top10",
+      "H97 Top20",
+      "H98 shared-winner rank displacement",
+      "H99 MRR5@20",
+      "H99 DHG5@20"
+    ],
+    "raw_p_values": [
+      0.125,
+      0.4316,
+      1,
+      0.76298,
+      0.3960142135620117,
+      0.6768817901611328
+    ],
+    "holm_adjusted_p_values": [
+      0.75,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "note": "Global exploratory family correction across the six inspected endpoints; no endpoint is confirmatory on this already-observed cohort."
+  },
+  "target_ledger": [
+    {
+      "target_date": "2026-10-19",
+      "history_cutoff": "2026-10-18",
+      "actual_numbers": [
+        5,
+        15,
+        20,
+        31,
+        34
+      ],
+      "global_top20_hits": 4,
+      "positional_top20_hits": 3,
+      "shared_candidates": 17,
+      "global_mrr5_at20": 0.24555555555555558,
+      "positional_mrr5_at20": 0.2555555555555556,
+      "global_discounted_hit_gain5_at20": 0.35574004887218685,
+      "positional_discounted_hit_gain5_at20": 0.3314474365544007
+    },
+    {
+      "target_date": "2026-10-20",
+      "history_cutoff": "2026-10-19",
+      "actual_numbers": [
+        1,
+        4,
+        17,
+        20,
+        29
+      ],
+      "global_top20_hits": 1,
+      "positional_top20_hits": 1,
+      "shared_candidates": 17,
+      "global_mrr5_at20": 0.01818181818181818,
+      "positional_mrr5_at20": 0.02857142857142857,
+      "global_discounted_hit_gain5_at20": 0.055788589130225975,
+      "positional_discounted_hit_gain5_at20": 0.06666666666666667
+    },
+    {
+      "target_date": "2026-10-21",
+      "history_cutoff": "2026-10-20",
+      "actual_numbers": [
+        2,
+        4,
+        29,
+        35,
+        37
+      ],
+      "global_top20_hits": 3,
+      "positional_top20_hits": 3,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.05675324675324676,
+      "positional_mrr5_at20": 0.08318181818181818,
+      "global_discounted_hit_gain5_at20": 0.16798930553628325,
+      "positional_discounted_hit_gain5_at20": 0.19625212593428004
+    },
+    {
+      "target_date": "2026-10-22",
+      "history_cutoff": "2026-10-21",
+      "actual_numbers": [
+        9,
+        16,
+        23,
+        30,
+        32
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 2,
+      "shared_candidates": 15,
+      "global_mrr5_at20": 0.07719298245614034,
+      "positional_mrr5_at20": 0.07999999999999999,
+      "global_discounted_hit_gain5_at20": 0.14627564263195184,
+      "positional_discounted_hit_gain5_at20": 0.15
+    },
+    {
+      "target_date": "2026-10-23",
+      "history_cutoff": "2026-10-22",
+      "actual_numbers": [
+        6,
+        22,
+        26,
+        36,
+        39
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 3,
+      "shared_candidates": 15,
+      "global_mrr5_at20": 0.1,
+      "positional_mrr5_at20": 0.12484848484848485,
+      "global_discounted_hit_gain5_at20": 0.17124143742160441,
+      "positional_discounted_hit_gain5_at20": 0.2331591505771343
+    },
+    {
+      "target_date": "2026-10-24",
+      "history_cutoff": "2026-10-23",
+      "actual_numbers": [
+        7,
+        13,
+        17,
+        25,
+        35
+      ],
+      "global_top20_hits": 1,
+      "positional_top20_hits": 2,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.014285714285714285,
+      "positional_mrr5_at20": 0.023333333333333334,
+      "global_discounted_hit_gain5_at20": 0.0511916049619631,
+      "positional_discounted_hit_gain5_at20": 0.09553404973939059
+    },
+    {
+      "target_date": "2026-10-25",
+      "history_cutoff": "2026-10-24",
+      "actual_numbers": [
+        1,
+        8,
+        12,
+        16,
+        21
+      ],
+      "global_top20_hits": 1,
+      "positional_top20_hits": 3,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.06666666666666667,
+      "positional_mrr5_at20": 0.09428571428571428,
+      "global_discounted_hit_gain5_at20": 0.1,
+      "positional_discounted_hit_gain5_at20": 0.2011916049619631
+    },
+    {
+      "target_date": "2026-10-26",
+      "history_cutoff": "2026-10-25",
+      "actual_numbers": [
+        25,
+        26,
+        35,
+        36,
+        37
+      ],
+      "global_top20_hits": 5,
+      "positional_top20_hits": 4,
+      "shared_candidates": 15,
+      "global_mrr5_at20": 0.1857936507936508,
+      "positional_mrr5_at20": 0.18444444444444444,
+      "global_discounted_hit_gain5_at20": 0.3616856416102908,
+      "positional_discounted_hit_gain5_at20": 0.32187973225613187
+    },
+    {
+      "target_date": "2026-10-27",
+      "history_cutoff": "2026-10-26",
+      "actual_numbers": [
+        1,
+        6,
+        8,
+        28,
+        34
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 2,
+      "shared_candidates": 15,
+      "global_mrr5_at20": 0.0327485380116959,
+      "positional_mrr5_at20": 0.029292929292929294,
+      "global_discounted_hit_gain5_at20": 0.10648164176474806,
+      "positional_discounted_hit_gain5_at20": 0.10287037180355363
+    },
+    {
+      "target_date": "2026-10-28",
+      "history_cutoff": "2026-10-27",
+      "actual_numbers": [
+        9,
+        21,
+        25,
+        26,
+        30
+      ],
+      "global_top20_hits": 4,
+      "positional_top20_hits": 2,
+      "shared_candidates": 15,
+      "global_mrr5_at20": 0.27361111111111114,
+      "positional_mrr5_at20": 0.25,
+      "global_discounted_hit_gain5_at20": 0.3821472027116515,
+      "positional_discounted_hit_gain5_at20": 0.28613531161467864
+    },
+    {
+      "target_date": "2026-10-29",
+      "history_cutoff": "2026-10-28",
+      "actual_numbers": [
+        1,
+        8,
+        17,
+        27,
+        36
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 3,
+      "shared_candidates": 15,
+      "global_mrr5_at20": 0.040336134453781515,
+      "positional_mrr5_at20": 0.0765079365079365,
+      "global_discounted_hit_gain5_at20": 0.11462915998029295,
+      "positional_discounted_hit_gain5_at20": 0.18876816554166767
+    },
+    {
+      "target_date": "2026-10-30",
+      "history_cutoff": "2026-10-29",
+      "actual_numbers": [
+        25,
+        26,
+        28,
+        38,
+        39
+      ],
+      "global_top20_hits": 4,
+      "positional_top20_hits": 4,
+      "shared_candidates": 15,
+      "global_mrr5_at20": 0.29444444444444445,
+      "positional_mrr5_at20": 0.28250000000000003,
+      "global_discounted_hit_gain5_at20": 0.4044585317096107,
+      "positional_discounted_hit_gain5_at20": 0.39287838530190144
+    },
+    {
+      "target_date": "2026-10-31",
+      "history_cutoff": "2026-10-30",
+      "actual_numbers": [
+        10,
+        20,
+        30,
+        34,
+        36
+      ],
+      "global_top20_hits": 3,
+      "positional_top20_hits": 2,
+      "shared_candidates": 15,
+      "global_mrr5_at20": 0.06580086580086579,
+      "positional_mrr5_at20": 0.05052631578947368,
+      "global_discounted_hit_gain5_at20": 0.1782216315137935,
+      "positional_discounted_hit_gain5_at20": 0.12364620407886015
+    },
+    {
+      "target_date": "2026-11-01",
+      "history_cutoff": "2026-10-31",
+      "actual_numbers": [
+        9,
+        12,
+        14,
+        15,
+        33
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 3,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.03205128205128205,
+      "positional_mrr5_at20": 0.05166666666666666,
+      "global_discounted_hit_gain5_at20": 0.10657753789290267,
+      "positional_discounted_hit_gain5_at20": 0.16267465598200032
+    },
+    {
+      "target_date": "2026-11-02",
+      "history_cutoff": "2026-11-01",
+      "actual_numbers": [
+        12,
+        16,
+        17,
+        27,
+        40
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 3,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.07999999999999999,
+      "positional_mrr5_at20": 0.10222222222222221,
+      "global_discounted_hit_gain5_at20": 0.15,
+      "positional_discounted_hit_gain5_at20": 0.21020599913279625
+    },
+    {
+      "target_date": "2026-11-03",
+      "history_cutoff": "2026-11-02",
+      "actual_numbers": [
+        3,
+        13,
+        17,
+        28,
+        36
+      ],
+      "global_top20_hits": 4,
+      "positional_top20_hits": 3,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.09385964912280702,
+      "positional_mrr5_at20": 0.07068181818181818,
+      "global_discounted_hit_gain5_at20": 0.24042169123985518,
+      "positional_discounted_hit_gain5_at20": 0.1820892590007795
+    },
+    {
+      "target_date": "2026-11-04",
+      "history_cutoff": "2026-11-03",
+      "actual_numbers": [
+        14,
+        16,
+        18,
+        20,
+        21
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 1,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.11176470588235295,
+      "positional_mrr5_at20": 0.1,
+      "global_discounted_hit_gain5_at20": 0.1741484440279178,
+      "positional_discounted_hit_gain5_at20": 0.1261859507142915
+    },
+    {
+      "target_date": "2026-11-05",
+      "history_cutoff": "2026-11-04",
+      "actual_numbers": [
+        15,
+        24,
+        25,
+        27,
+        38
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 3,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.09523809523809523,
+      "positional_mrr5_at20": 0.12205128205128206,
+      "global_discounted_hit_gain5_at20": 0.16666666666666666,
+      "positional_discounted_hit_gain5_at20": 0.22990046845434703
+    },
+    {
+      "target_date": "2026-11-06",
+      "history_cutoff": "2026-11-05",
+      "actual_numbers": [
+        20,
+        21,
+        24,
+        38,
+        39
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 2,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.021764705882352943,
+      "positional_mrr5_at20": 0.03484848484848485,
+      "global_discounted_hit_gain5_at20": 0.09349654305301688,
+      "positional_discounted_hit_gain5_at20": 0.10983622001568993
+    },
+    {
+      "target_date": "2026-11-07",
+      "history_cutoff": "2026-11-06",
+      "actual_numbers": [
+        12,
+        16,
+        27,
+        31,
+        38
+      ],
+      "global_top20_hits": 3,
+      "positional_top20_hits": 3,
+      "shared_candidates": 17,
+      "global_mrr5_at20": 0.09509803921568627,
+      "positional_mrr5_at20": 0.11166666666666666,
+      "global_discounted_hit_gain5_at20": 0.20201012419909023,
+      "positional_discounted_hit_gain5_at20": 0.2209059406207233
+    },
+    {
+      "target_date": "2026-11-08",
+      "history_cutoff": "2026-11-07",
+      "actual_numbers": [
+        3,
+        7,
+        10,
+        16,
+        27
+      ],
+      "global_top20_hits": 2,
+      "positional_top20_hits": 2,
+      "shared_candidates": 17,
+      "global_mrr5_at20": 0.11538461538461538,
+      "positional_mrr5_at20": 0.11052631578947367,
+      "global_discounted_hit_gain5_at20": 0.1787158577217302,
+      "positional_discounted_hit_gain5_at20": 0.17246159334624334
+    },
+    {
+      "target_date": "2026-11-09",
+      "history_cutoff": "2026-11-08",
+      "actual_numbers": [
+        9,
+        17,
+        25,
+        32,
+        34
+      ],
+      "global_top20_hits": 3,
+      "positional_top20_hits": 2,
+      "shared_candidates": 16,
+      "global_mrr5_at20": 0.0895424836601307,
+      "positional_mrr5_at20": 0.03068181818181818,
+      "global_discounted_hit_gain5_at20": 0.19504427598695395,
+      "positional_discounted_hit_gain5_at20": 0.10471869755387117
+    }
+  ],
+  "limitations": [
+    "The 22 pairs are an interim prospective shadow cohort, not a historical discovery/validation/blind-OOS split.",
+    "H99 metrics were specified after inspection of the same 22 outcomes; all results are exploratory and subject to selection bias.",
+    "Exact paired sign-flip tests and block bootstrap do not remove post-hoc hypothesis-selection bias.",
+    "No predictive model or frozen forecast was changed.",
+    "Official main Q60 gate remains 21/200; PR #36 branch carries the 22/200 reconciliation."
+  ],
+  "next_action": "Register H99 before the next genuinely pre-target paired freeze; collect the next 178 pairs without retuning, then evaluate H97/H98/H99 as the preregistered secondary family while keeping the Q60 Top20 5-of-5 primary gate unchanged."
+}
