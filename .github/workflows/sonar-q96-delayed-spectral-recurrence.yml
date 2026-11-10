@@ -1,0 +1,133 @@
+name: SONAR Q96 Delayed Spectral Recurrence
+
+on:
+  push:
+    branches:
+      - research/q96-delayed-spectral-recurrence-20261110
+    paths:
+      - "scripts/sonar_q96_delayed_spectral_recurrence.py"
+      - "scripts/validate_sonar_q96_delayed_spectral_recurrence.py"
+      - "tests/test_sonar_q96_delayed_spectral_recurrence.py"
+      - "reports/sequence_agent/q96_delayed_spectral_recurrence_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q96-delayed-spectral-recurrence.yml"
+  pull_request:
+    branches:
+      - research/q95-subspace-permutation-null-20261110
+    paths:
+      - "scripts/sonar_q96_delayed_spectral_recurrence.py"
+      - "scripts/validate_sonar_q96_delayed_spectral_recurrence.py"
+      - "tests/test_sonar_q96_delayed_spectral_recurrence.py"
+      - "reports/sequence_agent/q96_delayed_spectral_recurrence_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q96-delayed-spectral-recurrence.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sonar-q96-delayed-spectral-recurrence
+  cancel-in-progress: false
+
+jobs:
+  evaluate-accept-persist:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Check out Q96 research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/q96-delayed-spectral-recurrence-20261110
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+
+      - name: Compile Q96 engine and independent validator
+        run: |
+          python -m py_compile scripts/sonar_q96_delayed_spectral_recurrence.py
+          python -m py_compile scripts/validate_sonar_q96_delayed_spectral_recurrence.py
+
+      - name: Run accepted Q93/Q94/Q95 source regression tests
+        run: |
+          python tests/test_sonar_q93_spectral_coherence.py
+          python tests/test_sonar_q94_spectral_subspace_persistence.py
+          python tests/test_sonar_q95_subspace_permutation_null.py
+
+      - name: Run Q96 regression tests
+        run: python tests/test_sonar_q96_delayed_spectral_recurrence.py
+
+      - name: Detect pre-existing accepted Q96 outputs
+        id: q96-state
+        run: |
+          if [ -f reports/sequence_agent/q96_delayed_spectral_recurrence_validation.json ] && [ -f reports/sequence_agent/q96_delayed_spectral_recurrence_manifest.json ]; then
+            echo "preexisting=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "preexisting=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Execute strict-prior Q96 walk-forward
+        if: steps.q96-state.outputs.preexisting == 'false'
+        run: python scripts/sonar_q96_delayed_spectral_recurrence.py
+
+      - name: Independently replay and accept Q96
+        if: steps.q96-state.outputs.preexisting == 'false'
+        run: python scripts/validate_sonar_q96_delayed_spectral_recurrence.py
+
+      - name: Replay pre-existing Q96 outputs read-only
+        if: steps.q96-state.outputs.preexisting == 'true'
+        run: python scripts/validate_sonar_q96_delayed_spectral_recurrence.py --read-only
+
+      - name: Upload Q96 evidence bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q96-delayed-spectral-recurrence
+          path: |
+            reports/sequence_agent/q96_delayed_spectral_recurrence_catalog.jsonl
+            reports/sequence_agent/q96_delayed_spectral_recurrence_target_ledger.csv.gz
+            reports/sequence_agent/q96_delayed_spectral_recurrence_report.json
+            reports/sequence_agent/q96_delayed_spectral_recurrence_manifest.json
+            reports/sequence_agent/q96_delayed_spectral_recurrence_protocol_2026-11-10.json
+            reports/sequence_agent/q96_delayed_spectral_recurrence_checkpoint_2026-11-10.md
+            reports/sequence_agent/q96_delayed_spectral_recurrence_validation.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Persist accepted Q96 outputs append-only and replay exact persisted head
+        if: steps.q96-state.outputs.preexisting == 'false'
+        env:
+          SONAR_BRANCH: research/q96-delayed-spectral-recurrence-20261110
+        run: |
+          set -euo pipefail
+          git fetch origin "refs/heads/$SONAR_BRANCH:refs/remotes/origin/$SONAR_BRANCH"
+          for path in \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_catalog.jsonl \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_target_ledger.csv.gz \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_report.json \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_manifest.json \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_checkpoint_2026-11-10.md \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_validation.json; do
+            if git cat-file -e "refs/remotes/origin/$SONAR_BRANCH:$path" 2>/dev/null; then
+              echo "Append-only persistence blocked; path already exists: $path"
+              exit 1
+            fi
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_catalog.jsonl \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_target_ledger.csv.gz \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_report.json \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_manifest.json \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_checkpoint_2026-11-10.md \
+            reports/sequence_agent/q96_delayed_spectral_recurrence_validation.json
+          git commit -m "Persist accepted Q96 delayed spectral recurrence evidence"
+          git push origin "HEAD:refs/heads/$SONAR_BRANCH"
+          git fetch origin "refs/heads/$SONAR_BRANCH:refs/remotes/origin/$SONAR_BRANCH"
+          git checkout --detach "refs/remotes/origin/$SONAR_BRANCH"
+          python -m py_compile scripts/sonar_q96_delayed_spectral_recurrence.py scripts/validate_sonar_q96_delayed_spectral_recurrence.py
+          python scripts/validate_sonar_q96_delayed_spectral_recurrence.py --read-only
