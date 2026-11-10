@@ -45,6 +45,10 @@ function round12(value) {
   const out = Number(value.toFixed(12));
   return Object.is(out, -0) ? 0 : out;
 }
+function roundUp12(value) {
+  if (!Number.isFinite(value) || value < 0) fail("invalid probability for conservative rounding");
+  return Math.min(1, Math.ceil(value * 1e12) / 1e12);
+}
 function canonicalJson(value) { return JSON.stringify(value, null, 2) + "\n"; }
 
 function parseArchive(csvText) {
@@ -167,7 +171,7 @@ function holmAdjust(items) {
   for (let i = 0; i < sorted.length; i++) {
     const value = Math.min(1, (sorted.length - i) * sorted[i].p_value);
     running = Math.max(running, value);
-    adjusted.set(sorted[i].temperature, round12(running));
+    adjusted.set(sorted[i].temperature, roundUp12(running));
   }
   return items.map(item => ({ ...item, p_holm: adjusted.get(item.temperature) }));
 }
@@ -422,14 +426,15 @@ function main() {
     const rawTotalLogLikelihoodGain = values.reduce((a, b) => a + b, 0);
     const totalLogLikelihoodGain = round12(rawTotalLogLikelihoodGain);
     const logEValue = rawTotalLogLikelihoodGain;
-    const pValue = logEValue > 0 ? Math.min(1, Math.exp(-logEValue)) : 1;
+    const pValueRaw = logEValue > 0 ? Math.min(1, Math.exp(-logEValue)) : 1;
+    const pValue = pValueRaw === 0 ? 1e-12 : roundUp12(pValueRaw);
     return {
       temperature: String(temperature),
       mean_log_likelihood_gain: round12(rawTotalLogLikelihoodGain / blind.length),
       cumulative_log_likelihood_gain: totalLogLikelihoodGain,
       log_e_value: round12(logEValue),
-      e_process_p_value: round12(pValue),
-      p_bonferroni_43: round12(Math.min(1, 43 * pValue))
+      e_process_p_value: pValue,
+      p_bonferroni_43: roundUp12(Math.min(1, 43 * pValueRaw))
     };
   });
   const blindTestsHolm = holmAdjust(blindTests.map(x => ({
