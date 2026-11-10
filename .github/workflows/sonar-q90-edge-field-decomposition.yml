@@ -97,7 +97,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF_NAME: research/q90-edge-field-decomposition-20261110
+          SONAR_BRANCH: research/q90-edge-field-decomposition-20261110
         run: python scripts/persist_sonar_q90_outputs.py
       - name: Request general repository CI on persisted exact head
         continue-on-error: true
