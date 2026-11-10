@@ -1,0 +1,137 @@
+name: SONAR Q90 Edge-Field Decomposition
+
+on:
+  push:
+    branches:
+      - research/q90-edge-field-decomposition-20261110
+    paths:
+      - "scripts/sonar_q90_edge_field_decomposition.py"
+      - "scripts/validate_sonar_q90_edge_field_decomposition.py"
+      - "scripts/persist_sonar_q90_outputs.py"
+      - "tests/test_sonar_q90_edge_field_decomposition.py"
+      - "reports/sequence_agent/q90_edge_field_decomposition_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q90-edge-field-decomposition.yml"
+  pull_request:
+    branches:
+      - research/q89-neighbor-identity-counterfactual-20261110
+    paths:
+      - "scripts/sonar_q90_edge_field_decomposition.py"
+      - "scripts/validate_sonar_q90_edge_field_decomposition.py"
+      - "scripts/persist_sonar_q90_outputs.py"
+      - "tests/test_sonar_q90_edge_field_decomposition.py"
+      - "reports/sequence_agent/q90_edge_field_decomposition_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q90-edge-field-decomposition.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sonar-q90-edge-field-decomposition
+  cancel-in-progress: true
+
+jobs:
+  evaluate:
+    if: ${{ github.event_name != 'push' || (!contains(github.event.head_commit.message, '[q90-reuse-artifact]') && !contains(github.event.head_commit.message, '[q90-verify-only]')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q90-edge-field-decomposition-20261110
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile Q90 runner, validator and persistence code
+        run: |
+          python -m py_compile scripts/sonar_q90_edge_field_decomposition.py scripts/validate_sonar_q90_edge_field_decomposition.py scripts/persist_sonar_q90_outputs.py
+      - name: Run Q90 decomposition and strict-prefix regression tests
+        run: python tests/test_sonar_q90_edge_field_decomposition.py -v
+      - name: Execute Q90 strict-prior walk-forward
+        run: python scripts/sonar_q90_edge_field_decomposition.py
+      - name: Independently replay Q90 outputs, cutoffs and statistical families
+        run: python scripts/validate_sonar_q90_edge_field_decomposition.py
+      - name: Upload accepted Q90 output bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q90-edge-field-decomposition-bundle
+          path: |
+            reports/sequence_agent/q90_edge_field_decomposition_catalog.jsonl
+            reports/sequence_agent/q90_edge_field_decomposition_target_ledger.csv.gz
+            reports/sequence_agent/q90_edge_field_decomposition_report.json
+            reports/sequence_agent/q90_edge_field_decomposition_manifest.json
+            reports/sequence_agent/q90_edge_field_decomposition_checkpoint_2026-11-10.md
+            reports/sequence_agent/q90_edge_field_decomposition_validation.json
+          if-no-files-found: error
+          retention-days: 90
+
+  persist:
+    needs: evaluate
+    if: ${{ always() && needs.evaluate.result == 'success' && (github.event_name == 'push' || github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q90-edge-field-decomposition-20261110
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Download accepted Q90 output bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: q90-edge-field-decomposition-bundle
+          path: .q90-bundle
+          run-id: ${{ github.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Persist Q90 outputs append-only and verify exact Git blob bytes
+        id: persist-q90
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          SONAR_BRANCH: research/q90-edge-field-decomposition-20261110
+        run: python scripts/persist_sonar_q90_outputs.py
+      - name: Request general repository CI on persisted exact head
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          curl --fail --silent --show-error -X POST \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/dispatches" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/json" \
+            -d "{\"ref\":\"research/q90-edge-field-decomposition-20261110\"}"
+
+  verify-persisted:
+    needs: persist
+    if: ${{ always() && needs.persist.result == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q90-edge-field-decomposition-20261110
+          fetch-depth: 1
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Re-run Q90 regression tests on persisted head
+        run: |
+          python -m py_compile scripts/sonar_q90_edge_field_decomposition.py scripts/validate_sonar_q90_edge_field_decomposition.py
+          python tests/test_sonar_q90_edge_field_decomposition.py -v
+      - name: Read-only replay exact persisted Q90 outputs
+        run: python scripts/validate_sonar_q90_edge_field_decomposition.py --read-only

@@ -1,0 +1,5 @@
+{"definition":"Q88 signed transfer projected from the complete symmetric edge-change matrix; alpha .20, EWMA20 decay .80.","kind":"FULL_EDGE_COMPONENT","strategy_id":"Q90::FULL_EDGE_TRANSFER"}
+{"definition":"Q88 signed transfer projected from E_main[i,j]=mu+a_i+a_j, diagonal zero; alpha .20, EWMA20 decay .80.","kind":"ADDITIVE_MAIN_EFFECT_COMPONENT","strategy_id":"Q90::DEGREE_MAIN_TRANSFER"}
+{"definition":"Q88 signed transfer projected from E_pair=E-E_main, symmetric zero diagonal and zero row sums; alpha .20, EWMA20 decay .80. Fixed focal hypothesis.","kind":"ZERO_ROW_SUM_PAIR_INTERACTION","strategy_id":"Q90::PAIR_INTERACTION_TRANSFER"}
+{"definition":"Signed cosine of current and previous six-feature node deltas; alpha .20, reversion multiplier, EWMA20 decay .80.","kind":"GRAPH_FREE_CONTROL","strategy_id":"Q90::NODE_ONLY_INERTIA"}
+{"definition":"Equal-weight Borda ranking across the 42 fixed SONAR rules.","kind":"FROZEN_BASELINE","strategy_id":"BASE::EQUAL42"}
