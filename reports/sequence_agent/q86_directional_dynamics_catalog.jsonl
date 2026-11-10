@@ -1,0 +1,8 @@
+{"definition":"Equal-weight Borda of 42 fixed Q84 rules.","kind":"BASELINE","strategy_id":"BASE::EQUAL42"}
+{"definition":"Causal Q84 flow-state analogue ensemble, K=50.","kind":"BASELINE","strategy_id":"BASE::FLOW_K50"}
+{"definition":"Q84 field reversion signal with fixed alpha 0.20.","kind":"FIXED_CONTROL","strategy_id":"FIXED::REVERSION_A20"}
+{"definition":"Q84 graph signal with fixed alpha 0.20.","kind":"FIXED_CONTROL","strategy_id":"FIXED::GRAPH_MIX_A20"}
+{"definition":"Per-number reversion signal multiplied by signed node-wise cosine(velocity, acceleration); fixed alpha 0.20.","kind":"DIRECTIONAL_CANDIDATE","strategy_id":"DYN::NODE_DIRECTIONAL_ALIGNMENT"}
+{"definition":"Per-number reversion signal multiplied by the negative signed node-wise cosine; fixed alpha 0.20.","kind":"DIRECTIONAL_CANDIDATE","strategy_id":"DYN::NODE_DIRECTIONAL_CURVATURE"}
+{"definition":"Per-number graph signal multiplied by signed row-wise cosine(edge velocity, edge acceleration); fixed alpha 0.20.","kind":"DIRECTIONAL_CANDIDATE","strategy_id":"DYN::GRAPH_DIRECTIONAL_ALIGNMENT"}
+{"definition":"Blended node/graph signal multiplied by the product of node and graph directional cosines; fixed alpha 0.20.","kind":"DIRECTIONAL_CANDIDATE","strategy_id":"DYN::NODE_GRAPH_DIRECTIONAL_COHERENCE"}
