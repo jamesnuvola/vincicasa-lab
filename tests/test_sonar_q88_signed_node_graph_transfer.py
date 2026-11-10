@@ -74,7 +74,8 @@ class Q88SignedTransferTests(unittest.TestCase):
         result = q88.rolling_signed_transfer(values, 19)
         self.assertTrue(np.all(result > 0.0))
         self.assertTrue(np.all(result < 1.0))
-        one_row = q88.rolling_signed_transfer(values, 0)
+        first = np.ones((1, 40), dtype=np.float64)
+        one_row = q88.rolling_signed_transfer(first, 0)
         np.testing.assert_array_equal(one_row, np.ones(40))
 
     def test_transfer_projection_rejects_asymmetric_or_nonzero_diagonal_graph(self):
