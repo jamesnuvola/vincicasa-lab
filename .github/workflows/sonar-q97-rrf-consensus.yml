@@ -1,0 +1,47 @@
+name: SONAR Q97 five-model RRF consensus
+
+on:
+  push:
+    branches:
+      - research/q97-rrf-consensus-20261110
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: write
+
+jobs:
+  q97:
+    if: \${{ github.event_name != 'push' || !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install numerical dependency
+        run: python -m pip install numpy
+      - name: Download immutable Q94 source artifact
+        env:
+          GH_TOKEN: \${{ github.token }}
+        run: |
+          gh run download 42755127353 --repo jamesnuvola/vincicasa-lab --name q94-spectral-subspace-persistence-bundle --dir /tmp/q94
+          test -s /tmp/q94/q94_spectral_subspace_persistence_target_ledger.csv.gz
+          test -s /tmp/q94/q94_spectral_subspace_persistence_manifest.json
+      - name: Run regression tests
+        run: python -m unittest discover -s tests -p 'test_sonar_q97_rrf_consensus.py' -v
+      - name: Execute strict-prior replay and persist artifacts
+        run: |
+          python scripts/sonar_q97_rrf_consensus.py \
+            --input /tmp/q94/q94_spectral_subspace_persistence_target_ledger.csv.gz \
+            --manifest /tmp/q94/q94_spectral_subspace_persistence_manifest.json \
+            --output-dir reports/sequence_agent
+      - name: Commit generated evidence to this research branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q97_rrf_consensus_*
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist Q97 RRF consensus replay [skip ci]"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          fi
