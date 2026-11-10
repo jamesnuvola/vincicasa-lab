@@ -205,6 +205,7 @@ def compute_experiment(draws=None):
     previous_features = None
     previous_edge = None
     previous_node_delta = None
+    base_signal_histories = {name: deque(maxlen=WINDOW) for name in ("full", "degree", "pair", "node")}
 
     for offset, draw_index in enumerate(range(MIN_HISTORY, len(draws))):
         # Strict-prior state: target draw is never passed to a feature, graph or spectral function.
@@ -228,12 +229,7 @@ def compute_experiment(draws=None):
             pair_signal = q88.signed_transfer_alignment(node_delta, pair, previous_features)
             node_signal = q88.rowwise_signed_cosine(node_delta, previous_node_delta)
 
-        base_histories = getattr(compute_experiment, "_unused", None)
         # Reproduce Q90's fixed EWMA operators with independent per-component histories.
-        if offset == 0:
-            base_signal_histories = {name: deque(maxlen=WINDOW) for name in ("full", "degree", "pair", "node")}
-            compute_experiment._base_signal_histories = base_signal_histories
-        base_signal_histories = compute_experiment._base_signal_histories
         raw_base = {"full": full_signal, "degree": degree_signal, "pair": pair_signal, "node": node_signal}
         smooth_base = {}
         for name, vector in raw_base.items():
@@ -320,10 +316,6 @@ def compute_experiment(draws=None):
         previous_edge = edge
         previous_node_delta = node_delta
 
-    # Clear function-attached history so independent calls are deterministic and isolated.
-    if hasattr(compute_experiment, "_base_signal_histories"):
-        delattr(compute_experiment, "_base_signal_histories")
-
     split_indices = {split: np.asarray([i for i, label in enumerate(labels) if label == split], dtype=np.int64)
                      for split in SPLITS}
     metrics = []
@@ -356,6 +348,8 @@ def compute_experiment(draws=None):
     if len(exact_tests) != 72:
         raise ValueError("Q93 exact-null family must contain 72 tests")
     exact_adjusted = q90.q84.holm_adjust(exact_tests)
+    for test in exact_tests:
+        test["p_holm"] = exact_adjusted[test["test_id"]]
     for row in metrics:
         row["p_values_holm"] = {
             endpoint: exact_adjusted[f"Q93|{row['strategy_id']}|{row['split']}|{endpoint}"]
@@ -364,7 +358,7 @@ def compute_experiment(draws=None):
 
     focal_index = MODEL_IDS.index(FOCAL)
     permutation_mean_hits = permutation_hits.mean(axis=1)
-    permutation_mean_rank = permutation_mean_rank.mean(axis=1)
+    permutation_mean_rank_average = permutation_mean_rank.mean(axis=1)
     paired = []
     paired_tests = []
     for split_index, split in enumerate(("validation", "blind_oos")):
@@ -372,7 +366,7 @@ def compute_experiment(draws=None):
         for comparator_index, comparator in enumerate(COMPARATORS):
             if comparator == PERMUTATION_COMPARATOR:
                 comparator_hits = permutation_mean_hits[idx]
-                comparator_rank = permutation_mean_rank[idx]
+                comparator_rank = permutation_mean_rank_average[idx]
             else:
                 model_index = MODEL_IDS.index(comparator)
                 comparator_hits = hits[idx, model_index, :].astype(np.float64)
@@ -402,6 +396,8 @@ def compute_experiment(draws=None):
     if len(paired_tests) != 48:
         raise ValueError("Q93 paired bootstrap family must contain 48 tests")
     paired_adjusted = q90.q84.holm_adjust(paired_tests)
+    for test in paired_tests:
+        test["p_holm"] = paired_adjusted[test["test_id"]]
     for row in paired:
         row["p_holm"] = paired_adjusted[row["test_id"]]
 
@@ -426,6 +422,8 @@ def compute_experiment(draws=None):
     if len(randomization_tests) != 9:
         raise ValueError("Q93 randomization family must contain 9 tests")
     randomization_adjusted = q90.q84.holm_adjust(randomization_tests)
+    for test in randomization_tests:
+        test["p_holm"] = randomization_adjusted[test["test_id"]]
     for row in randomization:
         row["p_holm"] = randomization_adjusted[row["test_id"]]
 
@@ -498,7 +496,8 @@ def compute_experiment(draws=None):
         "spectral_raw": spectral_raw, "spectral_ewma": spectral_ewma,
         "spectral_energy": spectral_energy, "spectral_modes_count": spectral_modes_count,
         "permutation_hits": permutation_hits, "permutation_mean_rank": permutation_mean_rank,
-        "permutation_mean_hits": permutation_mean_hits, "permutation_mean_rank_by_target": permutation_mean_rank,
+        "permutation_mean_hits": permutation_mean_hits, "permutation_mean_rank": permutation_mean_rank,
+        "permutation_mean_rank_average": permutation_mean_rank_average,
         "metrics": metrics, "exact_tests": exact_tests, "paired": paired, "paired_tests": paired_tests,
         "randomization": randomization, "randomization_tests": randomization_tests,
         "primary_gate": primary_gate, "spectral_summary": spectral_summary,
@@ -529,8 +528,7 @@ def write_outputs(result):
             "target_date": result["dates"][draw_index],
             "cutoff_date": result["dates"][draw_index - 1],
             "prior_draws": draw_index,
-            "actual_quintet": " ".join(map(str, sorted(result["dates"] and result["actual_ranks"][t, 0].shape and
-                np.asarray(result["ranks"][t, 0]).shape[0] and result["actual_quintet"][t] if "actual_quintet" in result else []))),
+            "actual_quintet": "",
             "split": result["labels"][t],
         }
         # The actual quintet is carried separately to avoid reconstructing it from a ranking.
@@ -571,7 +569,7 @@ def write_outputs(result):
                               "k_values": list(K_VALUES), "permutation_count": PERMUTATION_COUNT,
                               "permutation_seed": PERMUTATION_SEED, "bootstrap_block": BOOTSTRAP_BLOCK,
                               "bootstrap_replicates": BOOTSTRAP_REPLICATES},
-        "metrics": result["metrics"], "exact_null_holm_tests": q90.q84.holm_adjust(result["exact_tests"]),
+        "metrics": result["metrics"], "exact_null_holm_tests": result["exact_tests"],
         "paired_block_bootstrap": result["paired"], "paired_holm_tests": result["paired_tests"],
         "spectral_randomization": result["randomization"], "spectral_randomization_holm_tests": result["randomization_tests"],
         "primary_gate": result["primary_gate"], "spectral_diagnostics": result["spectral_summary"],
