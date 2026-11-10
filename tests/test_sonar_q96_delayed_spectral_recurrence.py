@@ -79,6 +79,9 @@ class Q96Tests(unittest.TestCase):
         self.assertEqual(protocol["permutation_null"]["seed"],q96.PERM_SEED)
         self.assertIn("nine",protocol["statistics"]["multiple_testing"])
 
+    def test_compressed_ledger_writer_dependency_is_available(self):
+        self.assertTrue(hasattr(q96.io, "TextIOWrapper"))
+
     def test_q95_accepted_source_fingerprints_present(self):
         self.assertTrue(q96.q95.MANIFEST.is_file())
         self.assertTrue(q96.q95.VALIDATION.is_file())

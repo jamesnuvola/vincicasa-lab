@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Q96: delayed recurrence of prior-only leading spectral subspaces."""
 from __future__ import annotations
-import csv, gzip, hashlib, json
+import csv, gzip, hashlib, io, json
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
