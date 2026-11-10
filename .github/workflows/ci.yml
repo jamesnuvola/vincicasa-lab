@@ -37,6 +37,12 @@ jobs:
         run: python scripts/audit_dataset.py --check-json
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
+      - name: Test Q60 H101 reciprocal-rank fusion freeze
+        run: |
+          python -m py_compile scripts/sonar_q60_h101_rrf.py tests/test_sonar_q60_h101_rrf.py
+          python tests/test_sonar_q60_h101_rrf.py -v
+          python scripts/sonar_q60_h101_rrf.py --global-csv reports/sequence_agent/shadow_forecasts.csv --positional-csv reports/sequence_agent/position_mix_shadow.csv --archive-csv data/storico_daily.csv --target-date 2026-11-10 --frozen-at 2026-11-10T12:49:51+01:00 --out /tmp/q60_h101_rrf_shadow.csv
+          diff -u reports/sequence_agent/q60_h101_rrf_shadow.csv /tmp/q60_h101_rrf_shadow.csv
       - name: Check exact-source active SONAR engine diagnostic syntax
         run: node --check scripts/sonar_active_engine_walkforward.mjs
       - name: Check SONAR analysis and queue scripts
