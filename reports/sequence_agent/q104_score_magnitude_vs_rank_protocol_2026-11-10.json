@@ -59,9 +59,9 @@
     "secondary": "Each model's log-likelihood gain versus uniform; Top5 and Top20 hit counts are descriptive only."
   },
   "inference": {
-    "primary_test": "Paired circular block sign-flip on per-target log-likelihood differences; block length 20, 50000 replicates, one-sided alternative magnitude > rank.",
+    "primary_test": "Paired circular block sign-flip on per-target log-likelihood differences; block length 20, 50000 replicates, one-sided alternative magnitude > rank. The selected pair is part of the 100-test family.",
     "primary_uncertainty": "Circular moving-block bootstrap 10000 replicates, block length 20, fixed seed 20261110, percentile 95% interval.",
-    "multiplicity": "For transparency, also compute the complete 9x9 temperature-pair family on Blind OOS and apply Holm across all 81 paired tests. The Validation-selected pair is identified separately; no Blind-based selection.",
+    "multiplicity": "For transparency, compute the complete 10x10 family across the nine fixed temperatures plus uniform for each model on Blind OOS and apply Holm across all 100 paired tests. The Validation-selected pair is included; no Blind-based selection.",
     "model_vs_uniform": "For each of 18 fixed model/temperature combinations, use a likelihood-ratio e-value against conditional uniform and Holm across 18; these are secondary."
   },
   "integrity_checks": [
