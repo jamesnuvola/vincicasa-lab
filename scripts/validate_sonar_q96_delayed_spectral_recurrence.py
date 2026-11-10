@@ -51,7 +51,8 @@ def validate(read_only=False):
     report=json.loads(q96.REPORT.read_text(encoding="utf-8"))
     if protocol.get("task_id")!=q96.TASK_ID or protocol.get("status")!="PREREGISTERED_PENDING_EXECUTION":
         raise ValueError("Q96 protocol identity/status mismatch")
-    if protocol.get("lags")!=list(q96.LAGS) or protocol.get("permutation_count")!=q96.PERM_COUNT or protocol.get("permutation_seed")!=q96.PERM_SEED:
+    null_spec=protocol.get("permutation_null",{})
+    if protocol.get("lags")!=list(q96.LAGS) or null_spec.get("count")!=q96.PERM_COUNT or null_spec.get("seed")!=q96.PERM_SEED:
         raise ValueError("Q96 frozen parameters mismatch")
     if manifest.get("task_id")!=q96.TASK_ID:
         raise ValueError("Q96 manifest identity mismatch")

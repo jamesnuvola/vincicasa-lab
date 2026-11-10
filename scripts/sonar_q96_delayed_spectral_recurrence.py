@@ -255,7 +255,8 @@ def write_outputs(result):
     proto=json.loads(PROTOCOL.read_text(encoding="utf-8"))
     if proto.get("task_id")!=TASK_ID or proto.get("status")!="PREREGISTERED_PENDING_EXECUTION":
         raise ValueError("Q96 protocol identity/status mismatch")
-    if proto.get("lags")!=list(LAGS) or proto.get("permutation_count")!=PERM_COUNT or proto.get("permutation_seed")!=PERM_SEED:
+    null_spec=proto.get("permutation_null",{})
+    if proto.get("lags")!=list(LAGS) or null_spec.get("count")!=PERM_COUNT or null_spec.get("seed")!=PERM_SEED:
         raise ValueError("Q96 protocol frozen parameters mismatch")
     entries=[{"id":f"LAG_{lag}","role":"strict-prior current-vs-lagged leading k=2 subspace overlap","lag":lag}
              for lag in LAGS]

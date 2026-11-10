@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Q96 regression tests for delayed spectral recurrence."""
-import sys, unittest
+import json, sys, unittest
 from pathlib import Path
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/"scripts"))
@@ -71,6 +71,13 @@ class Q96Tests(unittest.TestCase):
         self.assertEqual(len(fields),4+3*(8+999))
         for lag in q96.LAGS:
             self.assertIn(f"lag_{lag}_perm_0998",fields)
+
+    def test_protocol_matches_frozen_engine_parameters(self):
+        protocol=json.loads(q96.PROTOCOL.read_text(encoding="utf-8"))
+        self.assertEqual(protocol["lags"],list(q96.LAGS))
+        self.assertEqual(protocol["permutation_null"]["count"],q96.PERM_COUNT)
+        self.assertEqual(protocol["permutation_null"]["seed"],q96.PERM_SEED)
+        self.assertIn("nine",protocol["statistics"]["multiple_testing"])
 
     def test_q95_accepted_source_fingerprints_present(self):
         self.assertTrue(q96.q95.MANIFEST.is_file())
