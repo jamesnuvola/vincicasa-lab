@@ -1,0 +1,53 @@
+name: SONAR Q89 Neighbor-Identity Counterfactual
+on:
+  push:
+    branches:
+      - research/q89-neighbor-identity-counterfactual-20261110
+    paths:
+      - "scripts/sonar_q89_neighbor_identity_counterfactual.py"
+      - "scripts/validate_sonar_q89_neighbor_identity_counterfactual.py"
+      - "tests/test_sonar_q89_neighbor_identity_counterfactual.py"
+      - "reports/sequence_agent/q89_neighbor_identity_counterfactual_protocol_2026-11-10.json"
+      - ".github/workflows/sonar-q89-neighbor-identity-counterfactual.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: sonar-q89-neighbor-identity-counterfactual
+  cancel-in-progress: false
+jobs:
+  evaluate-validate-artifact:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q89-neighbor-identity-counterfactual-20261110
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install --disable-pip-version-check numpy
+      - name: Compile Q89 runner and validator
+        run: python -m py_compile scripts/sonar_q89_neighbor_identity_counterfactual.py scripts/validate_sonar_q89_neighbor_identity_counterfactual.py
+      - name: Run Q89 regression tests
+        run: python tests/test_sonar_q89_neighbor_identity_counterfactual.py -v
+      - name: Execute strict-prior Q89 walk-forward
+        run: python scripts/sonar_q89_neighbor_identity_counterfactual.py
+      - name: Independently replay all Q89 outputs and statistical families
+        run: python scripts/validate_sonar_q89_neighbor_identity_counterfactual.py
+      - name: Upload validated Q89 bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q89-neighbor-identity-counterfactual-bundle
+          path: |
+            reports/sequence_agent/q89_neighbor_identity_counterfactual_catalog.jsonl
+            reports/sequence_agent/q89_neighbor_identity_counterfactual_target_ledger.csv.gz
+            reports/sequence_agent/q89_neighbor_identity_counterfactual_report.json
+            reports/sequence_agent/q89_neighbor_identity_counterfactual_manifest.json
+            reports/sequence_agent/q89_neighbor_identity_counterfactual_checkpoint_2026-11-10.json
+            reports/sequence_agent/q89_neighbor_identity_counterfactual_validation.json
+          if-no-files-found: error
+          retention-days: 7
