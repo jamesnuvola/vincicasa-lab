@@ -1,6 +1,17 @@
 name: Q103 score-magnitude subset-likelihood replay
 
 on:
+  push:
+    branches:
+      - research/q103-score-magnitude-subset-likelihood-20261110
+    paths:
+      - "data/storico_daily.csv"
+      - "src/VinciCasaLab.jsx"
+      - "reports/sequence_agent/active_engine_walkforward.json"
+      - "reports/sequence_agent/q103_score_magnitude_subset_likelihood_*_2026-11-10.*"
+      - "scripts/sonar_q103_score_magnitude_subset_likelihood.js"
+      - ".github/workflows/q103-score-magnitude-subset-likelihood.yml"
+      - "reports/sequence_agent/q103_exact_head_replay_trigger_2026-11-10.txt"
   pull_request:
     paths:
       - "data/storico_daily.csv"
@@ -27,6 +38,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
+      - name: Check Q103 runner syntax
+        run: node --check scripts/sonar_q103_score_magnitude_subset_likelihood.js
       - name: Generate deterministic Q103 walk-forward outputs
         run: node scripts/sonar_q103_score_magnitude_subset_likelihood.js --write
       - name: Persist outputs on the research branch
