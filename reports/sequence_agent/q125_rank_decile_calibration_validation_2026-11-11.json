@@ -68,7 +68,7 @@
     {
       "id": "randomization_replicates",
       "passed": true,
-      "detail": "20,000 conditional randomization replicates"
+      "detail": "20,000 Set-based conditional randomization replicates; five distinct ranks per target"
     },
     {
       "id": "p_values_valid",
@@ -108,10 +108,12 @@
     "bootstrap_replicates": 10000,
     "block_length": 20,
     "seed": "0x12520261111",
-    "bootstrap_seed": "0x125B007"
+    "bootstrap_seed": "0x125B007",
+    "sampler": "Set-based without-replacement sampler; no 32-bit mask"
   },
   "notes": [
     "Q125 consumes the pinned Q123 ledger only.",
-    "No new forecast or production model was generated."
+    "No new forecast or production model was generated.",
+    "Recovered a 32-bit mask aliasing bug in the first sampler; replaced with Set-based sampling and recomputed all inferential p-values."
   ]
 }
