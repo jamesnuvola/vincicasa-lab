@@ -1,0 +1,81 @@
+{
+  "experiment_id": "Q108",
+  "status": "PASS",
+  "checks_passed": 13,
+  "checks_total": 13,
+  "checks": [
+    {
+      "name": "archive_schema_chronology_and_draw_validity",
+      "status": "PASS",
+      "detail": "3,404 chronological valid rows; first 3,403 used."
+    },
+    {
+      "name": "pinned_source_blobs",
+      "status": "PASS",
+      "detail": "Current archive and 3,403-row analysis prefix match the preregistered Git blobs."
+    },
+    {
+      "name": "unverified_append_excluded",
+      "status": "PASS",
+      "detail": "2026-11-10 row is present in source but excluded from all forecasts and scores."
+    },
+    {
+      "name": "exact_hypergeometric_null",
+      "status": "PASS",
+      "detail": "Exact parity-count numerators sum to 658,008."
+    },
+    {
+      "name": "walk_forward_counts_and_splits",
+      "status": "PASS",
+      "detail": "3,102 targets split 1,861/620/621."
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "status": "PASS",
+      "detail": "Every target uses exactly t-1 transitions strictly before its draw index."
+    },
+    {
+      "name": "forecast_probability_normalization",
+      "status": "PASS",
+      "detail": "All M0/M1 probabilities finite, positive and normalized."
+    },
+    {
+      "name": "future_mutation_invariance_9_cutoffs",
+      "status": "PASS",
+      "detail": "Mutating target and all future parity states leaves the prior-only forecast unchanged at nine cutoffs."
+    },
+    {
+      "name": "synthetic_state_sensitivity",
+      "status": "PASS",
+      "detail": "A synthetic state with distinct outcomes changes M1 relative to M0."
+    },
+    {
+      "name": "synthetic_no_support_fallback",
+      "status": "PASS",
+      "detail": "A state with no prior support falls back exactly to M0."
+    },
+    {
+      "name": "deterministic_inference_replay",
+      "status": "PASS",
+      "detail": "Fixed-seed sign-flip and circular block-bootstrap reproduce exactly."
+    },
+    {
+      "name": "ledger_report_reconciliation",
+      "status": "PASS",
+      "detail": "Ledger target count equals report split totals."
+    },
+    {
+      "name": "canonical_ledger_float_serialization",
+      "status": "PASS",
+      "detail": "All six per-target loss fields are serialized after fixed 12-decimal rounding."
+    }
+  ],
+  "inference_constants": {
+    "alpha": 200,
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "seed": 20261111,
+    "holm_family_size": 2
+  }
+}

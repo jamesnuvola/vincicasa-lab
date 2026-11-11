@@ -1,0 +1,27 @@
+name: Q108 parity-count walk-forward
+on:
+  push:
+    branches:
+      - research/q108-lag1-parity-count-20261111
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "scripts/sonar_q108_lag1_parity_count.js"
+      - "reports/sequence_agent/q108_lag1_parity_count_*"
+      - "data/storico_daily.csv"
+      - ".github/workflows/q108-parity-count.yml"
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check runner syntax
+        run: node --check scripts/sonar_q108_lag1_parity_count.js
+      - name: Recompute and compare persisted artifacts
+        run: node scripts/sonar_q108_lag1_parity_count.js --check

@@ -1,0 +1,237 @@
+{
+  "experiment_id": "Q108",
+  "title": "Lag-1 parity-count transition memory",
+  "decision": "NO_LAG1_PARITY_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "pinned_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+    "current_archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "analysis_prefix_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "archive_rows": 3404,
+    "draws_used": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "excluded_appended_row": {
+      "date": "2026-11-10",
+      "numbers": [
+        1,
+        7,
+        11,
+        22,
+        25
+      ],
+      "reason": "Official archive pending; excluded."
+    }
+  },
+  "definition": {
+    "feature": "A_t = number of odd values in draw D_t",
+    "target": "A_t",
+    "state": "A_(t-1)",
+    "state_space": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "exact_null": {
+      "distribution": "Hypergeometric(N=40,K=20 odd,n=5)",
+      "numerators": [
+        15504,
+        96900,
+        216600,
+        216600,
+        96900,
+        15504
+      ],
+      "denominator": 658008,
+      "probabilities": [
+        0.023562023562,
+        0.147262647263,
+        0.329175329175,
+        0.329175329175,
+        0.147262647263,
+        0.023562023562
+      ],
+      "expected_odd_count": 2.5
+    }
+  },
+  "models": {
+    "M0": "Exact Hypergeometric(40,20,5) PMF.",
+    "M1": "One-step categorical shrinkage toward M0, alpha=200.",
+    "alpha": 200,
+    "parameter_selection": "None; fixed before scoring."
+  },
+  "walk_forward": {
+    "draws": 3403,
+    "warmup_transition_pairs": 300,
+    "first_target_index_zero_based": 301,
+    "targets": 3102,
+    "split_rule": "Chronological 60%/20%/20%, fixed before scoring.",
+    "splits": {
+      "discovery": {
+        "targets": 1861,
+        "first_target": "2018-05-14",
+        "last_target": "2023-06-17"
+      },
+      "validation": {
+        "targets": 620,
+        "first_target": "2023-06-18",
+        "last_target": "2025-02-26"
+      },
+      "historical_blind_oos": {
+        "targets": 621,
+        "first_target": "2025-02-27",
+        "last_target": "2026-11-09"
+      }
+    }
+  },
+  "metrics": {
+    "discovery": {
+      "targets": 1861,
+      "first_target": "2018-05-14",
+      "last_target": "2023-06-17",
+      "m0_brier": 0.733259139979,
+      "m1_brier": 0.734257962379,
+      "brier_gain": -0.0009988224,
+      "m0_logloss": 1.455450225859,
+      "m1_logloss": 1.459123507777,
+      "logloss_gain": -0.003673281918,
+      "mean_previous_odd_count": 2.508328855454,
+      "mean_state_support": 329.943578721118,
+      "actual_odd_count_distribution": [
+        40,
+        264,
+        617,
+        632,
+        267,
+        41
+      ]
+    },
+    "validation": {
+      "targets": 620,
+      "first_target": "2023-06-18",
+      "last_target": "2025-02-26",
+      "m0_brier": 0.736709310075,
+      "m1_brier": 0.737393374264,
+      "brier_gain": -0.000684064189,
+      "m0_logloss": 1.477623136965,
+      "m1_logloss": 1.479534154436,
+      "logloss_gain": -0.001911017472,
+      "mean_previous_odd_count": 2.448387096774,
+      "mean_state_support": 656.882258064516,
+      "actual_odd_count_distribution": [
+        16,
+        96,
+        214,
+        201,
+        75,
+        18
+      ]
+    },
+    "historical_blind_oos": {
+      "targets": 621,
+      "first_target": "2025-02-27",
+      "last_target": "2026-11-09",
+      "m0_brier": 0.749242282145,
+      "m1_brier": 0.750009881174,
+      "brier_gain": -0.000767599029,
+      "m0_logloss": 1.519710012537,
+      "m1_logloss": 1.522187629724,
+      "logloss_gain": -0.002477617187,
+      "mean_previous_odd_count": 2.418679549114,
+      "mean_state_support": 797.365539452496,
+      "actual_odd_count_distribution": [
+        19,
+        106,
+        209,
+        190,
+        75,
+        22
+      ]
+    }
+  },
+  "blind_inference": {
+    "method": "One-sided block sign-flip of contiguous paired loss-gain blocks; circular moving-block bootstrap for 95% confidence intervals.",
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "seed": 20261111,
+    "holm_family_size": 2,
+    "endpoints": [
+      {
+        "name": "m1_vs_m0_brier_gain",
+        "n": 621,
+        "blocks": 32,
+        "observed_mean": -0.000767599029,
+        "replicates": 50000,
+        "block_length": 20,
+        "extreme": 40820,
+        "p_one_sided": 0.816403671927,
+        "monte_carlo_se": 0.001731408192,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.00229399507,
+            "upper": 0.000779828583
+          }
+        },
+        "p_holm": 1
+      },
+      {
+        "name": "m1_vs_m0_logloss_gain",
+        "n": 621,
+        "blocks": 32,
+        "observed_mean": -0.002477617187,
+        "replicates": 50000,
+        "block_length": 20,
+        "extreme": 42887,
+        "p_one_sided": 0.857742845143,
+        "monte_carlo_se": 0.00156217833,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.007010227619,
+            "upper": 0.001992394643
+          }
+        },
+        "p_holm": 1
+      }
+    ]
+  },
+  "diagnostics": {
+    "prior_state_support": {
+      "min": 3,
+      "median": 421,
+      "max": 1144
+    },
+    "transition_state_counts": [
+      78,
+      502,
+      1145,
+      1126,
+      466,
+      85
+    ],
+    "observed_odd_count_distribution": [
+      78,
+      502,
+      1145,
+      1127,
+      466,
+      85
+    ]
+  },
+  "interpretation": {
+    "primary": "M1 tests whether the previous draw's odd-count adds predictive information about the next draw's odd-count beyond the exact combinatorial marginal.",
+    "caveat": "The historical Blind OOS is not a virgin holdout: many earlier SONAR experiments examined related draw-structure features. Holm correction is within Q108 only, not across the entire historical research family.",
+    "scope": "This is a structural diagnostic; it does not directly forecast an exact 5-number combination."
+  },
+  "integrity": {
+    "exact_null_numerator_sum": 658008,
+    "exact_null_denominator": 658008,
+    "maximum_probability_normalization_error": 2e-12
+  }
+}

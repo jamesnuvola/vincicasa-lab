@@ -1,0 +1,111 @@
+{
+  "experiment_id": "Q108",
+  "source_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+  "protocol_original_commit": "444b878815e3565682711763693946b4225ddfc0",
+  "protocol_timestamp_corrected_to_original_commit_time": true,
+  "replay": {
+    "method": "Persisted runner's pure runAnalysis function executed against re-read canonical CSV.",
+    "report_validation_checkpoint": "Deterministic replay matched persisted files.",
+    "ledger": "Ledger generated with six loss fields rounded to 12 decimals; Git blob SHA-1 recorded from repository after persistence.",
+    "targets": 3102,
+    "validation_checks": "13/13 PASS"
+  },
+  "source_governance": {
+    "current_archive_rows": 3404,
+    "analysis_draws": 3403,
+    "official_cutoff": "2026-11-09",
+    "excluded_unverified_row": {
+      "date": "2026-11-10",
+      "numbers": [
+        1,
+        7,
+        11,
+        22,
+        25
+      ]
+    },
+    "official_status": "Contest 314 still shown as In programmazione/In attesa in the official November archive at the time of this run."
+  },
+  "files": {
+    "q108_lag1_parity_count_protocol_2026-11-11.json": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_protocol_2026-11-11.json",
+      "git_blob_sha1": "97b67acd45b66766abd60a7fc500fd647bb12c94",
+      "characters": 4879,
+      "verification": "Re-read from repository"
+    },
+    "sonar_q108_lag1_parity_count.js": {
+      "path": "scripts/sonar_q108_lag1_parity_count.js",
+      "git_blob_sha1": "0d88f87b5d8c58ea70cd89ba2acd963f7ac72ccb",
+      "characters": 21018,
+      "verification": "Re-read from repository"
+    },
+    "q108_lag1_parity_count_report_2026-11-11.json": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_report_2026-11-11.json",
+      "git_blob_sha1": "25b6ff634a7a03e988df30165e5e078a8e6559cf",
+      "characters": 6281,
+      "verification": "Re-read from repository"
+    },
+    "q108_lag1_parity_count_validation_2026-11-11.json": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_validation_2026-11-11.json",
+      "git_blob_sha1": "7f45e378a6d3077810056fa044a7c4cdefdf3ef7",
+      "characters": 2498,
+      "verification": "Re-read from repository"
+    },
+    "q108_lag1_parity_count_target_ledger_2026-11-11.csv": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_target_ledger_2026-11-11.csv",
+      "git_blob_sha1": "ae8c5403d089776bcc65e558fb3f52c7253dda24",
+      "characters": 984623,
+      "verification": "Persisted Git blob SHA-1 recorded; content retrieval is size-limited"
+    },
+    "q108_lag1_parity_count_checkpoint_2026-11-11.md": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_checkpoint_2026-11-11.md",
+      "git_blob_sha1": "5e0e2ec8a1f8723e446415f68c92e29a2b73fca4",
+      "characters": 1169,
+      "verification": "Re-read from repository"
+    },
+    "q108_data_provenance_followup_2026-11-11.md": {
+      "path": "reports/sequence_agent/q108_data_provenance_followup_2026-11-11.md",
+      "git_blob_sha1": "896ebbc8b513a3bbc6c355a2513e2fc3c87f023b",
+      "characters": 1609,
+      "verification": "Re-read from repository"
+    }
+  },
+  "limitations": [
+    "General repository CI run 42941619727 was still in progress at the time of this manifest update.",
+    "Historical Blind OOS is not a virgin holdout; Q108 is exploratory and Holm correction is within this experiment only.",
+    "The 2026-11-10 row remains excluded pending official exact-number evidence."
+  ],
+  "post_run_source_reconciliation": {
+    "path": "reports/sequence_agent/q108_data_provenance_followup_2026-11-11.md",
+    "git_blob_sha1": "896ebbc8b513a3bbc6c355a2513e2fc3c87f023b",
+    "characters": 1609,
+    "decision": "Keep 2026-11-10 row excluded until official exact-number evidence is available.",
+    "sources": {
+      "official_archive": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+      "official_operator_result": "https://www.sisal.it/estrazioni/vincicasa/concorso-314/10-novembre-2026",
+      "independent_numbers": "https://www.estrazionedellotto.it/vinci-casa/risultati-vinci-casa"
+    }
+  },
+  "recovery": {
+    "first_node20_ci_failure": "Run 42941313617 passed syntax but found sub-ulp float-to-string differences in ledger loss fields.",
+    "diagnosis": "Run 42941437471 identified the first difference at row 1: values differed at the 16th decimal place due to cross-runtime shortest-float rendering; no forecast or target data differed.",
+    "correction": "All six ledger loss fields are now rounded to 12 decimals before serialization; outputs were regenerated. Awaiting a fresh Node 20 replay.",
+    "final_status": {
+      "q108_node20_workflow_run": 42941619759,
+      "q108_node20_workflow_conclusion": "SUCCESS",
+      "detail": "After fixed 12-decimal serialization, Node 20 syntax check and --check byte-for-byte persisted artifact replay both passed.",
+      "intermediate_failures": "Runs 42941313617 and 42941437471 exposed cross-runtime float string differences; runs 42941551133 and 42941585292 were triggered on intermediate commits before all regenerated artifacts and manifest had synchronized."
+    }
+  },
+  "ci_status": {
+    "q108_dedicated": {
+      "run_id": 42941619759,
+      "conclusion": "success"
+    },
+    "general_repository": {
+      "run_id": 42941619727,
+      "status": "in_progress",
+      "conclusion": null
+    }
+  }
+}

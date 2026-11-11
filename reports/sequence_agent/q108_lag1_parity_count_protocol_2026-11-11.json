@@ -1,0 +1,116 @@
+{
+  "experiment_id": "Q108",
+  "title": "Lag-1 parity-count transition memory",
+  "preregistered_at_utc": "2026-11-11T01:41:47Z",
+  "status": "PREREGISTERED_BEFORE_SCORING",
+  "hypothesis": "The odd-count of the immediately preceding 5-of-40 draw contains incremental information about the odd-count of the next draw, beyond the exact combinatorial Hypergeometric(40,20,5) marginal distribution.",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "pinned_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+    "archive_path": "data/storico_daily.csv",
+    "current_archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "analysis_prefix_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "draws_used": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "excluded_appended_row": {
+      "date": "2026-11-10",
+      "numbers": [
+        1,
+        7,
+        11,
+        22,
+        25
+      ],
+      "reason": "The official VinciCasa November 2026 archive still lists contest 314 as In programmazione/In attesa at preregistration time. A third-party page reports a result, but third-party-only evidence is not accepted for the canonical dataset."
+    },
+    "official_source": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre"
+  },
+  "definition": {
+    "feature": "A_t = number of odd values in draw D_t",
+    "target": "A_t",
+    "state": "A_(t-1)",
+    "state_space": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "exact_null": {
+      "distribution": "Hypergeometric(N=40, K=20 odd numbers, n=5)",
+      "denominator": 658008,
+      "numerators": [
+        15504,
+        96900,
+        216600,
+        216600,
+        96900,
+        15504
+      ],
+      "expected_odd_count": 2.5
+    }
+  },
+  "models": {
+    "M0": "Exact Hypergeometric(40,20,5) distribution q0(k).",
+    "M1": "One-step categorical shrinkage p1(k|a)=[alpha*q0(k)+C_a(k)]/[alpha+N_a], where C_a counts only prior transitions with previous odd-count a and target odd-count k.",
+    "alpha": 200,
+    "parameter_selection": "None. alpha is fixed before scoring. No temperature, state merging, subgroup selection, or parameter tuning."
+  },
+  "walk_forward": {
+    "draws": 3403,
+    "warmup_transition_pairs": 300,
+    "first_target_index_zero_based": 301,
+    "target_indices": "t=301..3402 inclusive",
+    "targets": 3102,
+    "strict_prior_rule": "For target draw index t, only draws[0..t-1] are read. Training transitions j=1..t-1 use feature A_(j-1) and outcome A_j; exactly t-1 prior transitions are available.",
+    "split_rule": "Chronological 60%/20%/20% using integer counts 1861/620/621; split boundaries are fixed before scoring.",
+    "split_counts": {
+      "discovery": 1861,
+      "validation": 620,
+      "historical_blind_oos": 621
+    }
+  },
+  "inference": {
+    "primary_comparison": "M1 versus M0 on historical Blind OOS.",
+    "endpoints": [
+      "m1_vs_m0_brier_gain",
+      "m1_vs_m0_logloss_gain"
+    ],
+    "gain_definition": "Baseline loss minus model loss; positive is better.",
+    "block_sign_flip": {
+      "replicates": 50000,
+      "block_length": 20,
+      "one_sided": true
+    },
+    "circular_block_bootstrap": {
+      "replicates": 10000,
+      "block_length": 20,
+      "confidence": 0.95
+    },
+    "seed": 20261111,
+    "multiple_testing": "Holm correction across the two preregistered Blind OOS endpoints. No post-hoc state-specific tests.",
+    "exploratory_family_caveat": "This within-experiment correction does not account for the full history of Q00-Q108 experiments; historical Blind OOS is not a virgin holdout."
+  },
+  "acceptance_checks": [
+    "CSV schema, chronology, unique dates and 5 distinct integers in 1..40",
+    "first 3403 rows reproduce the pinned prefix blob",
+    "the appended 2026-11-10 row is excluded from every calculation",
+    "all target cutoffs are strictly prior and use exactly t-1 training transitions",
+    "all M0/M1 probability vectors are finite, positive and normalized",
+    "future-mutation invariance at nine deterministic cutoffs",
+    "synthetic state sensitivity and no-support fallback",
+    "fixed-seed inference replay is deterministic",
+    "Discovery/Validation/Blind OOS counts match preregistration",
+    "report and ledger reproduce byte-for-byte from the persisted runner"
+  ],
+  "guardrails": [
+    "Research only; no production scorer changes.",
+    "Do not modify or reconstruct any existing freeze.",
+    "Do not modify Q60, H101 or H102.",
+    "Do not merge automatically or promote any engine.",
+    "PRs #6, #7 and #8 must remain untouched."
+  ],
+  "timestamp_note": "Timestamp equals the GitHub commit timestamp of the original protocol commit 444b878815e3565682711763693946b4225ddfc0; this metadata correction does not change the preregistered hypothesis, data prefix, parameters, splits or endpoints."
+}
