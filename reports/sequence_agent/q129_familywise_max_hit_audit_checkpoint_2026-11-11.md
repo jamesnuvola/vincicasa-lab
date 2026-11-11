@@ -30,3 +30,9 @@
 - Sisal's official latest-extraction page confirms contest 315 and the prize profile (0 / 2 / 178 / 1,947), but its extracted page text still does not expose the five numbers. The official VinciCasa archive still labels contest 315 pending and the official bulletin index still shows 10/11 as latest.
 - The result therefore remains `PROVISIONAL_SECONDARY_SOURCE_CORROBORATED`; the shadow scores are unchanged (42-rule Top20 maximum 5; APP Top20 3; positional Top20 2). Do not append to canonical archive or increment Q60.
 - Updated provisional observation blob: `02011d56d326a9a67cb8a22ff3db55f46e13c826`.
+
+## Replay performance recovery — 2026-11-12
+
+- The first corrected exact-head replay reached the checkout stage but spent the run time fetching the repository's full history because the Q129 workflow used `fetch-depth: 0`.
+- The runner only needs the current checkout tree for `git rev-parse HEAD:<source path>` and a clean `git diff HEAD -- <source path>`; it does not traverse history. The workflow now uses `fetch-depth: 1`, preserving the exact current commit/tree checks while avoiding an unnecessary full-history fetch.
+- No statistical computation, source data, protocol, or forecast was changed. Fresh exact-head push and pull-request replays are pending.
