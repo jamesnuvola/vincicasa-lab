@@ -1,0 +1,30 @@
+name: Q109 range-state deterministic replay
+
+on:
+  push:
+    branches:
+      - research/q109-lag1-range-state-20261111
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "src/data.json"
+      - "scripts/sonar_q109_range_state.js"
+      - "reports/sequence_agent/q109_lag1_range_state_*"
+      - "reports/sequence_agent/q60_contest314_outcome_reconciliation_2026-11-11.json"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Syntax check
+        run: node --check scripts/sonar_q109_range_state.js
+      - name: Recompute and byte-compare persisted artifacts
+        run: node scripts/sonar_q109_range_state.js --check
