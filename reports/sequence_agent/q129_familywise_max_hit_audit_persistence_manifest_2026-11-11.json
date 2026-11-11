@@ -30,8 +30,8 @@
     },
     {
       "path": "reports/sequence_agent/q129_familywise_max_hit_audit_checkpoint_2026-11-11.md",
-      "git_blob_sha": "c3efb42073279d1c9c3a43c3249266fff1329156",
-      "bytes_utf8": 3473
+      "git_blob_sha": "b24a538ea5d5b6a2717a6f2966855350b37ec4c2",
+      "bytes_utf8": 4140
     },
     {
       "path": "reports/sequence_agent/q129_contest_315_provisional_observation_2026-11-11.json",
@@ -45,9 +45,9 @@
     },
     {
       "path": ".github/workflows/q129-familywise-max-hit-audit.yml",
-      "git_blob_sha": "09a319d9f79e2dcc2864b0b08d7b288ffdd9c04d",
+      "git_blob_sha": "0f1253939758176df20c2749432202d75a1e01e6",
       "bytes_utf8": 940
     }
   ],
-  "verification_rule": "Node 20 verifies the source by comparing git rev-parse HEAD:<source path> with the pinned Git blob SHA and requiring a clean git diff; it then recomputes the strict-prior walk-forward, conditional randomization, block bootstrap, provisional freeze scoring over all 658,008 5-of-40 outcomes, and verifies Git blob SHA-1 plus UTF-8 byte counts for all eight entries."
+  "verification_rule": "Node 20 verifies the source by comparing git rev-parse HEAD:<source path> with the pinned Git blob SHA and requiring a clean git diff; the workflow uses fetch-depth 1 because no history traversal is required. It then recomputes strict-prior walk-forward, conditional randomization, block bootstrap, provisional freeze scoring over all 658,008 5-of-40 outcomes, and verifies Git blob SHA-1 plus UTF-8 byte counts for all eight entries."
 }
