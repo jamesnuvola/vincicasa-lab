@@ -9,3 +9,9 @@
 - Q118 freeze for 2026-11-11 is research-only, cutoff 2026-11-10, and is not a Q60 pair.
 - No production scorer, Q60 record, or existing freeze was changed. No merge or promotion.
 - Next: after the official 11-Nov draw is published, score this immutable freeze; retain Q60 at 23/200 until a complete paired target is verified.
+
+## CI recovery
+
+- First Node 20 replay run 43016008865 reached the Q118 step after all preceding repository checks passed, then failed at parse time because the local variable `fs` redeclared the imported `node:fs` binding.
+- Root cause was a naming collision only; no statistical calculation or persisted result was implicated.
+- Corrected the local variable to `freezeStats`; the next CI run must still complete before the Node 20 replay is declared passed.
