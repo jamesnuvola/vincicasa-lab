@@ -138,13 +138,15 @@
       "metric": "brier",
       "observed_gain": -0.000259361949,
       "p_value": 0.9999800004,
-      "replicates": 10000,
+      "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
         -0.000373627002,
         -0.000139797813
       ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
       "holm_adjusted_p": 1
     },
     {
@@ -153,13 +155,15 @@
       "metric": "logloss",
       "observed_gain": -0.137218704289,
       "p_value": 1,
-      "replicates": 10000,
+      "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
         -0.183484007331,
         -0.093406987714
       ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
       "holm_adjusted_p": 1
     },
     {
@@ -168,13 +172,15 @@
       "metric": "brier",
       "observed_gain": -0.000707695619,
       "p_value": 1,
-      "replicates": 10000,
+      "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
         -0.000880565003,
         -0.000530752588
       ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
       "holm_adjusted_p": 1
     },
     {
@@ -183,13 +189,15 @@
       "metric": "logloss",
       "observed_gain": -0.309742657508,
       "p_value": 1,
-      "replicates": 10000,
+      "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
         -0.364627524247,
         -0.252402463429
       ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
       "holm_adjusted_p": 1
     },
     {
@@ -198,13 +206,15 @@
       "metric": "brier",
       "observed_gain": -0.000967057568,
       "p_value": 1,
-      "replicates": 10000,
+      "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
         -0.001188175075,
         -0.000744707155
       ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
       "holm_adjusted_p": 1
     },
     {
@@ -213,17 +223,19 @@
       "metric": "logloss",
       "observed_gain": -0.446961361797,
       "p_value": 1,
-      "replicates": 10000,
+      "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
         -0.535810294235,
         -0.363436996315
       ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
       "holm_adjusted_p": 1
     }
   ],
-  "decision_reason": "No M2 incremental improvement over M1 on either proper score; all six local Holm-adjusted p-values are not significant and all block-bootstrap intervals include zero. Historical Blind OOS is not a virgin holdout.",
+  "decision_reason": "M2 does not improve on M1 on either proper score; all six local Holm-adjusted p-values are non-significant and all block-bootstrap intervals include zero. Historical Blind OOS is not a virgin holdout.",
   "limitations": [
     "The statistic compresses four adjacent internal gaps to one scalar and can miss other structure.",
     "The exact-null quartile states are fixed from the 5-of-40 combinatorial universe, not optimized on outcomes.",
