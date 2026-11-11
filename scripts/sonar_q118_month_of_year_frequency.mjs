@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 const INPUT='data/storico_daily.csv',EXPECTED='40f317e2d0067e061c46ab799d66f777a0e087c0',REPORT='reports/sequence_agent/q118_month_of_year_frequency_report_2026-11-11.json',LEDGER='reports/sequence_agent/q118_month_of_year_frequency_target_ledger_2026-11-11.csv',VALID='reports/sequence_agent/q118_month_of_year_frequency_validation_2026-11-11.json',FREEZE='reports/sequence_agent/q118_month_of_year_frequency_prospective_freeze_2026-11-11.json';
-const GRID=[25,50,100,200,400,800,1600,3200],BETA=200,WARM=200,N0=658008,r12=x=>Number(x.toFixed(12)),mean=a=>a.reduce((s,x)=>s+x,0);
+const GRID=[25,50,100,200,400,800,1600,3200],BETA=200,WARM=200,N0=658008,r12=x=>Number(x.toFixed(12)),mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
 const buf=fs.readFileSync(INPUT),blob=crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+buf.length+'\0'),buf])).digest('hex');
 if(blob!==EXPECTED)throw new Error('Pinned archive Git blob SHA mismatch');
 const lines=buf.toString('utf8').trim().split(/\r?\n/),header=lines.shift();if(header!=='data,n1,n2,n3,n4,n5')throw new Error('Bad CSV header');
