@@ -61,7 +61,7 @@
     "primary": "Exact subset log-likelihood gain versus uniform, positive favors M1.",
     "secondary": "Multiclass Brier gain for the six-category overlap PMF q_beta versus q0, positive favors M1.",
     "inference": {
-      "method": "Circular block sign-flip on paired per-target gains",
+      "method": "Non-overlapping chronological blocks of 20 consecutive Blind OOS target gains; retain the final shorter block. Independently multiply each block sum by a Rademacher sign.",
       "block_length": 20,
       "replicates": 50000,
       "seed": 20261111,
