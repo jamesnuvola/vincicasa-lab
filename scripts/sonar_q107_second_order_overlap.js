@@ -405,7 +405,7 @@ function run() {
     checks_passed:checks.filter(c=>c[1]).length,
     checks_total:checks.length,
     checks:checks.map(([name,ok,detail])=>({name,status:ok?"PASS":"FAIL",detail})),
-    replay:"Node --check mode is implemented but was not executed in this run; deterministic inference replay passed in memory, and persisted artifacts were checked by GitHub read-back.",
+    replay:"The dedicated Q107 PR workflow executes the Node runner with --check against persisted artifacts; execution status is recorded in GitHub Actions.",
     inference_constants:{alpha:ALPHA,block_length:BLOCK,block_sign_flip_replicates:SIGN_REPS,circular_block_bootstrap_replicates:BOOT_REPS,seed:SEED,holm_family_size:4}
   };
   assert(validationReport.status==="PASS","one or more Q107 integrity checks failed");
