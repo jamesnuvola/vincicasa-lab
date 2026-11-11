@@ -1,8 +1,8 @@
 {
   "experiment_id": "Q108",
   "status": "PASS",
-  "checks_passed": 12,
-  "checks_total": 12,
+  "checks_passed": 13,
+  "checks_total": 13,
   "checks": [
     {
       "name": "archive_schema_chronology_and_draw_validity",
@@ -63,6 +63,11 @@
       "name": "ledger_report_reconciliation",
       "status": "PASS",
       "detail": "Ledger target count equals report split totals."
+    },
+    {
+      "name": "canonical_ledger_float_serialization",
+      "status": "PASS",
+      "detail": "All six per-target loss fields are serialized after fixed 12-decimal rounding."
     }
   ],
   "inference_constants": {
