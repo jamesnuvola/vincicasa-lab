@@ -1,7 +1,7 @@
 {
   "experiment_id": "Q120",
   "branch": "research/q120-rolling-frequency-drift-20261111",
-  "commit_before_manifest": "a8dcf6148c4faad06ec10d1b5ec98d58112643c9",
+  "commit_before_manifest": "6647443aef84ab12e8a25e33192ac448661be053",
   "source": {
     "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
     "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
@@ -31,18 +31,18 @@
     },
     {
       "path": "reports/sequence_agent/q120_rolling_frequency_drift_validation_2026-11-11.json",
-      "blob_sha": "4e7823ade3b237c4831068dc5756d6db236beaf4",
-      "bytes": 4508
+      "blob_sha": "f88e3144cb6b40644d09a51dde3888e33a93f8c8",
+      "bytes": 4820
     },
     {
       "path": "reports/sequence_agent/q120_rolling_frequency_drift_checkpoint_2026-11-11.md",
-      "blob_sha": "6fac6c701cc378a5468dc1ef32f807218d75650a",
-      "bytes": 1200
+      "blob_sha": "e6f543b8d4354d83eae6c02bfa7a44d6a973c7fd",
+      "bytes": 1690
     },
     {
       "path": "scripts/sonar_q120_rolling_frequency_drift.mjs",
-      "blob_sha": "82de76484d86afbca3c2419a27e588460a065770",
-      "bytes": 10129
+      "blob_sha": "69c1d9830c50c6dda4591176f2cf029233f3b274",
+      "bytes": 10138
     },
     {
       "path": ".github/workflows/q120-rolling-frequency-drift.yml",
@@ -50,12 +50,23 @@
       "bytes": 803
     }
   ],
-  "verification": "All eight files were fetched from the branch after commit. The 919 KB target ledger was read back in full and compared byte-for-byte when persisted. Dedicated Node 20 replay recomputes all 3,204 target scores, the 12 block tests, Holm adjustment, exact subset mass, future-suffix checks, freeze, and compares saved artifacts.",
+  "replay_evidence": {
+    "node20_push_run": 43024486362,
+    "node20_pull_request_run": 43024494177,
+    "conclusion": "success",
+    "recovery": "Initial replay failed because mean helper returned sum; fixed and both replays passed."
+  },
+  "general_ci_evidence": {
+    "push_run": 43024486259,
+    "pull_request_run": 43024494224,
+    "status": "in_progress_at_checkpoint"
+  },
+  "verification": "All eight artifact blobs were read back from the branch; the 919,343-byte target ledger was fully readable. Node 20 replay recomputes target scores, all 12 block tests, Holm correction, exact subset mass, future-suffix checks, freeze, and verifies persisted artifacts.",
   "guardrails": [
     "Research-only",
-    "No production scorer changes",
-    "No Q60 changes or paired target counted",
+    "No production changes",
+    "No Q60 modifications",
     "No merge or engine promotion",
-    "PRs #6, #7, and #8 untouched"
+    "PR #6, #7, and #8 untouched"
   ]
 }
