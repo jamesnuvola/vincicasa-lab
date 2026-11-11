@@ -1,0 +1,235 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q126",
+  "title": "Prior-only squared-gap concentration transition",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_SQUARED_GAP_CONCENTRATION_TRANSITION_LIFT_DEMONSTRATED",
+  "preregistration": {
+    "protocol_blob_sha": "69d237c31ace1ecad42aac13db14f789e5e92f0a",
+    "registered_before_calculation": true,
+    "protocol_status": "PREREGISTERED_BEFORE_CALCULATION"
+  },
+  "source": {
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "application_data_blob_sha": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "The squared concentration of the four internal gaps in one 5-of-40 draw may contain one-step transition information about the next draw's gap concentration beyond the exact combinatorial marginal and prior-only unconditional empirical marginal.",
+  "statistic": {
+    "definition": "G=(b-a)^2+(c-b)^2+(d-c)^2+(e-d)^2 for sorted a<b<c<d<e",
+    "exact_subset_count": 658008,
+    "support_size": 864,
+    "quartile_cutpoints": {
+      "q25": 182,
+      "q50": 284,
+      "q75": 396
+    },
+    "state_rule": "1: G<=q25; 2: q25<G<=q50; 3: q50<G<=q75; 4: G>q75"
+  },
+  "method": {
+    "warmup": 200,
+    "alpha": 200,
+    "targets": 3204,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "models": {
+      "M0": "exact combinatorial marginal",
+      "M1": "prior-only unconditional marginal shrinkage 200 toward M0",
+      "M2": "prior-only one-step previous-state conditional shrinkage 200 toward M1"
+    },
+    "metrics": [
+      "multiclass Brier over exact G support",
+      "negative log probability of observed G"
+    ],
+    "inference": {
+      "blind_oos_only": true,
+      "block_sign_flip_replicates": 50000,
+      "bootstrap_replicates": 10000,
+      "block_length": 20,
+      "multiplicity": "Holm across six endpoints"
+    }
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1922,
+      "first_target": "2018-02-02",
+      "last_target": "2023-05-08",
+      "previous_state_counts": [
+        516,
+        469,
+        495,
+        442
+      ],
+      "models": {
+        "m0": {
+          "mean_logloss": 6.255315896149927,
+          "mean_brier": 0.9976294862910958
+        },
+        "m1": {
+          "mean_logloss": 6.506536821835574,
+          "mean_brier": 0.998276371981979
+        },
+        "m2": {
+          "mean_logloss": 6.80997745721435,
+          "mean_brier": 0.9993141793118222
+        }
+      }
+    },
+    "validation": {
+      "targets": 641,
+      "first_target": "2023-05-09",
+      "last_target": "2025-02-07",
+      "previous_state_counts": [
+        151,
+        166,
+        158,
+        166
+      ],
+      "models": {
+        "m0": {
+          "mean_logloss": 6.256070104305394,
+          "mean_brier": 0.9977201963858795
+        },
+        "m1": {
+          "mean_logloss": 6.446294560617194,
+          "mean_brier": 0.9981900070223351
+        },
+        "m2": {
+          "mean_logloss": 6.76479821329992,
+          "mean_brier": 0.9989878312914309
+        }
+      }
+    },
+    "blind_oos": {
+      "targets": 641,
+      "first_target": "2025-02-08",
+      "last_target": "2026-11-10",
+      "previous_state_counts": [
+        163,
+        156,
+        173,
+        149
+      ],
+      "models": {
+        "m0": {
+          "mean_logloss": 6.240221452671391,
+          "mean_brier": 0.9975564914024018
+        },
+        "m1": {
+          "mean_logloss": 6.377440156960673,
+          "mean_brier": 0.9978158533509557
+        },
+        "m2": {
+          "mean_logloss": 6.6871828144684375,
+          "mean_brier": 0.9985235489700091
+        }
+      }
+    }
+  },
+  "blind_oos_inference": [
+    {
+      "id": "M1_vs_M0_brier",
+      "comparison": "M1_vs_M0",
+      "metric": "brier",
+      "observed_gain": -0.000259361949,
+      "p_value": 0.9999800004,
+      "replicates": 10000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.000373627002,
+        -0.000139797813
+      ],
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M1_vs_M0_logloss",
+      "comparison": "M1_vs_M0",
+      "metric": "logloss",
+      "observed_gain": -0.137218704289,
+      "p_value": 1,
+      "replicates": 10000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.183484007331,
+        -0.093406987714
+      ],
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M2_vs_M1_brier",
+      "comparison": "M2_vs_M1",
+      "metric": "brier",
+      "observed_gain": -0.000707695619,
+      "p_value": 1,
+      "replicates": 10000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.000880565003,
+        -0.000530752588
+      ],
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M2_vs_M1_logloss",
+      "comparison": "M2_vs_M1",
+      "metric": "logloss",
+      "observed_gain": -0.309742657508,
+      "p_value": 1,
+      "replicates": 10000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.364627524247,
+        -0.252402463429
+      ],
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M2_vs_M0_brier",
+      "comparison": "M2_vs_M0",
+      "metric": "brier",
+      "observed_gain": -0.000967057568,
+      "p_value": 1,
+      "replicates": 10000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.001188175075,
+        -0.000744707155
+      ],
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M2_vs_M0_logloss",
+      "comparison": "M2_vs_M0",
+      "metric": "logloss",
+      "observed_gain": -0.446961361797,
+      "p_value": 1,
+      "replicates": 10000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.535810294235,
+        -0.363436996315
+      ],
+      "holm_adjusted_p": 1
+    }
+  ],
+  "decision_reason": "No M2 incremental improvement over M1 on either proper score; all six local Holm-adjusted p-values are not significant and all block-bootstrap intervals include zero. Historical Blind OOS is not a virgin holdout.",
+  "limitations": [
+    "The statistic compresses four adjacent internal gaps to one scalar and can miss other structure.",
+    "The exact-null quartile states are fixed from the 5-of-40 combinatorial universe, not optimized on outcomes.",
+    "The historical Blind OOS has prior exposure to SONAR research and is not independent prospective confirmation.",
+    "Holm correction covers only six preregistered Q126 Blind OOS endpoints, not the full Q00-Q126 research family.",
+    "This tests a one-step transition of a derived draw statistic, not a full five-number prediction or physical fluid-dynamics mechanism."
+  ],
+  "next_action": "After official publication of contest 315, score immutable 11-Nov freezes without retuning and continue append-only Q60 paired collection."
+}
