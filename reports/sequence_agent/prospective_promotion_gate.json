@@ -32,7 +32,7 @@
     "2026-11-10"
   ],
   "position_top20_5of5": 0,
-  "position_top20_5of5_rate": 0.0,
+  "position_top20_5of5_rate": 0,
   "global_top20_5of5": 1,
   "global_top20_5of5_rate": 0.043478260869565216,
   "paired_rate_difference_position_minus_global": -0.043478260869565216,
@@ -46,10 +46,10 @@
   },
   "mcnemar_discordant_position_wins": 0,
   "mcnemar_discordant_global_wins": 1,
-  "mcnemar_exact_two_sided_p": 1.0,
+  "mcnemar_exact_two_sided_p": 1,
   "top20_5of5_random_baseline_rate": 0.02356202356202356,
   "position_random_baseline_expected_count": 0.5419265419265419,
-  "position_binomial_p_vs_random": 1.0,
+  "position_binomial_p_vs_random": 1,
   "top20_4plus": 2,
   "mean_position_top20_hits": 2.5217391304347827,
   "evaluated_position_shadow_rows_total": 24,
@@ -58,5 +58,55 @@
   "eligible_global_rows_without_position_pair": 0,
   "missing_freezes_reconstructed": 0,
   "promotion_allowed": false,
-  "rule": "Only pre-existing, pre-target freezes on/after protocol registration with previous-day cutoff and matching canonical outcome qualify. Require 200 paired targets; no auto-promotion."
+  "rule": "Only pre-existing, pre-target freezes on/after protocol registration with previous-day cutoff and matching canonical outcome qualify. Require 200 paired targets; no auto-promotion.",
+  "outcome_provenance": {
+    "status": "VERIFIED_OFFICIAL",
+    "contest_number": 314,
+    "target_date": "2026-11-10",
+    "official_numbers": [
+      1,
+      7,
+      11,
+      22,
+      25
+    ],
+    "verified_at_utc": "2026-11-11T11:05:38Z",
+    "official_source_url": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+    "official_source_title": "Archivio estrazioni VinciCasa Novembre 2026",
+    "repository_source": {
+      "path": "data/storico_daily.csv",
+      "git_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+      "date_row": "2026-11-10,1,7,11,22,25"
+    },
+    "paired_freezes": {
+      "global": {
+        "file": "reports/sequence_agent/shadow_forecasts.csv",
+        "config_id": "freq_100",
+        "frozen_at": "2026-11-10T10:53:16+01:00",
+        "history_cutoff": "2026-11-09",
+        "status": "EVALUATED",
+        "top20_hits": 2,
+        "hit_numbers": [
+          1,
+          25
+        ],
+        "all5_top20": false
+      },
+      "positional": {
+        "file": "reports/sequence_agent/position_mix_shadow.csv",
+        "config_id": "position_seed_mix_top20_v1",
+        "frozen_at": "2026-11-10T10:55:31+01:00",
+        "history_cutoff": "2026-11-09",
+        "status": "EVALUATED",
+        "top20_hits": 2,
+        "hit_numbers": [
+          1,
+          25
+        ],
+        "all5_top20": false
+      }
+    },
+    "gate_effect": "No count or test statistic changed. This verifies the existing 23rd paired target; Q60 remains 23/200 with 177 additional paired targets required.",
+    "verification_note": "The official VinciCasa November 2026 archive lists contest 314 on 10 November with the exact five numbers and shows contest 315 on 11 November as in programmazione."
+  }
 }
