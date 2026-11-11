@@ -105,7 +105,7 @@ function main() {
   const expectedLedger = lines.join("\n") + "\n";
   if (read(P + "q113_active_engine_hit_regime_target_ledger_2026-11-11.csv") !== expectedLedger) fail("ledger content does not replay byte-for-byte");
   const roundedSplits = Object.fromEntries(Object.entries(splits).map(([k, v]) => [k, Object.fromEntries(Object.entries(v).map(([a, b]) => [a, round(b)]))]));
-  if (JSON.stringify(report.walk_forward.split_metrics) !== JSON.stringify(roundedSplits)) fail("split metrics do not replay");
+  if (JSON.stringify(report.walk_forward.metrics) !== JSON.stringify(roundedSplits)) fail("split metrics do not replay");
   if (round(report.blind_inference.brier.p) !== round(sb.p) || round(report.blind_inference.log_loss.p) !== round(sl.p)) fail("block sign-flip p-values do not replay");
   if (JSON.stringify(report.blind_inference.brier.ci95) !== JSON.stringify(cb.map(round)) || JSON.stringify(report.blind_inference.log_loss.ci95) !== JSON.stringify(cl.map(round))) fail("bootstrap intervals do not replay");
   if (queue.tasks.find(x => x.id === "Q60")?.validation_errors?.[0]?.startsWith("23 complete prospective paired targets") !== true) fail("Q60 queue state changed");
