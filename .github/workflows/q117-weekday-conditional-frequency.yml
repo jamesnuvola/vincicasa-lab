@@ -1,0 +1,26 @@
+name: Q117 weekday-conditioned frequency
+on:
+  pull_request:
+    paths:
+      - "data/storico_daily.csv"
+      - "reports/sequence_agent/q117_*"
+      - "scripts/sonar_q117_weekday_conditional_frequency.mjs"
+      - ".github/workflows/q117-weekday-conditional-frequency.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Syntax check
+        run: node --check scripts/sonar_q117_weekday_conditional_frequency.mjs
+      - name: Deterministic replay and manifest verification
+        run: node scripts/sonar_q117_weekday_conditional_frequency.mjs --check
