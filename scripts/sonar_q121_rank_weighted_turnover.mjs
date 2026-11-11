@@ -282,7 +282,7 @@ function expectedOutputs(){
     method:{M0:"exact Hypergeometric(40,20,5)",M1:"Q117 overlap-only prequential model, shrinkage 200",M2:"hierarchical conditional rank-displacement model, shrinkage 200",overlap_states:protocol.estimand.overlap_states,rank_states:protocol.estimand.displacement_states,selection:"No parameter tuning; thresholds and shrinkage fixed in preregistration.",update_order:"Score first, then update prior-only state counts.",metrics:["multiclass Brier","realized hit-count log-loss"]},
     walk_forward:{warmup:MIN_HISTORY,targets:n,first_target:rows[0].date,last_target:rows.at(-1).date,splits:{discovery:d,validation:v,blind_oos:o},strict_prior:true},
     segments,blind_inference:{family_size:4,adjustment:"Holm",tests},
-    support:{overlap_states:a.overlapCounts,joint_states:a.jointCounts,max_probability_normalization_error:maxNormError},
+    support:{overlap_states:a.overlapCounts,joint_states:a.jointCounts,max_probability_normalization_error:a.maxNormError},
     replay:{identical:replay,ledger_rows:rows.length,future_suffix_invariance:future,passed_future_tests:future.filter(Boolean).length,total_future_tests:future.length},
     decision_rule:protocol.decision_rule,
     limitations:[
