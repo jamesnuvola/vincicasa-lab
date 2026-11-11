@@ -20,6 +20,10 @@
 
 After official publication of contest 315, append the verified outcome and score only immutable existing freezes; continue append-only Q60 paired collection.
 
+## Replay recovery
+
+- The first persisted-head Node 20 replay failed before execution because `utf8Bytes` was declared twice in the ES module. The duplicate trailing declaration was removed; the statistical algorithm and results are unchanged.
+
 ## CI status at artifact generation
 
 The exact-head Node 20 replay and general repository CI must be observed after this branch is pushed. Do not infer CI success from the local calculation.
