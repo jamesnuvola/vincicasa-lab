@@ -37,7 +37,6 @@ jobs:
       - name: Check Q107 runner syntax
         run: node --check scripts/sonar_q107_second_order_overlap.js
       - name: Generate deterministic walk-forward artifacts
-        if: github.event_name == 'push'
         run: node scripts/sonar_q107_second_order_overlap.js --write
       - name: Persist Q107 outputs on research branch
         if: github.event_name == 'push'
@@ -52,5 +51,4 @@ jobs:
             git push origin "HEAD:${REF_NAME}"
           fi
       - name: Recompute and byte-compare persisted artifacts
-        if: github.event_name == 'push'
         run: node scripts/sonar_q107_second_order_overlap.js --check
