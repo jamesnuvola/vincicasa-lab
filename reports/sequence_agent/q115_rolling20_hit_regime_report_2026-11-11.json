@@ -321,5 +321,16 @@
     "Holm covers four Q115 endpoints only, not the full Q00-Q115 research family.",
     "The 2026-11-11 freeze is one descriptive observation until the official result is published."
   ],
-  "next_action": "Await official 2026-11-11 result; score Q112-Q115 freezes without retuning; continue Q60 from 23/200."
+  "next_action": "Await official 2026-11-11 result; score Q112-Q115 freezes without retuning; continue Q60 from 23/200.",
+  "reproducibility": {
+    "analysis_runtime_replay": "PASS",
+    "node20_runner": {
+      "workflow": "Q115 rolling-20 hit-regime replay",
+      "run_id": 42991167922,
+      "conclusion": "success",
+      "node_version": "20.20.2"
+    },
+    "initial_replay_failure_recovered": true,
+    "recovery": "A one-unit floating-point serialization difference at the 12th decimal was found in a log-loss CSV cell; the ledger was canonicalized to 10 decimal places. No model formula, target, score definition or result was changed."
+  }
 }
