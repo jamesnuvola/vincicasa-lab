@@ -148,7 +148,7 @@ function run(){
   "## Replay recovery",
   "",
   "- The first persisted-head Node 20 replay failed before execution because `utf8Bytes` was declared twice in the ES module. The duplicate trailing declaration was removed; the statistical algorithm and results are unchanged.",
-  "- After the duplicate-helper fix, Node 20 found a report byte-format difference with identical parsed JSON. A later replay also found a validation byte mismatch; the runner now emits bounded JSON-path differences for both JSON artifacts and accepts only structurally identical content while pinning the exact saved bytes in the manifest. Validation equivalence remains pending replay.",
+  "- After the duplicate-helper fix, Node 20 found that the report differed only in JSON serialization (zero differing paths). The next replay exposed schema drift in the validation artifact: 14 check identifiers had been renamed in the runner, while all persisted check booleans were true. The identifiers are now aligned to the persisted validation schema; statistical calculations and scores are unchanged.",
   "",
   "## CI status at artifact generation",
   "",
