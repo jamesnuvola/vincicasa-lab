@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q117",
+  "created_at_utc": "2026-11-11T10:38:10Z",
+  "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+  "preregistration_commit": "ce4c32bb2fec14d77e7d20f1f38b6874e54599c3",
+  "source_blobs": {
+    "data": {
+      "path": "data/storico_daily.csv",
+      "sha": "40f317e2d0067e061c46ab799d66f777a0e087c0"
+    },
+    "app_source": {
+      "path": "src/VinciCasaLab.jsx",
+      "sha": "7ccb9a2abfe452ec535913b70225bc109f692304"
+    },
+    "app_data": {
+      "path": "src/data.json",
+      "sha": "25c0b2316662664deff9e2157e60ec56cfa3a640"
+    }
+  },
+  "artifacts": [
+    {
+      "path": "reports/sequence_agent/q117_forecast_turnover_stability_protocol_2026-11-11.json",
+      "sha": "399236b39a5b4b1b793fa4363298f4f855c80035",
+      "size_bytes": 3987
+    },
+    {
+      "path": "scripts/sonar_q117_forecast_turnover_stability.mjs",
+      "sha": "49d16231eed5fd64678ab6e836b74d60b62db377",
+      "size_bytes": 12266
+    },
+    {
+      "path": "reports/sequence_agent/q117_forecast_turnover_stability_target_ledger_2026-11-11.csv",
+      "sha": "9c3e7ad880eb080349ac71c2849b73889974966b",
+      "size_bytes": 441748
+    },
+    {
+      "path": "reports/sequence_agent/q117_forecast_turnover_stability_report_2026-11-11.json",
+      "sha": "d0b65596126c1ec484a82d330441d5aada441709",
+      "size_bytes": 5170
+    },
+    {
+      "path": "reports/sequence_agent/q117_forecast_turnover_stability_validation_2026-11-11.json",
+      "sha": "792124a5d2e0c893d6524d2502242fe482fd3194",
+      "size_bytes": 1201
+    },
+    {
+      "path": "reports/sequence_agent/q117_forecast_turnover_stability_checkpoint_2026-11-11.json",
+      "sha": "31914b301a169940509fc7215a8f78f712487978",
+      "size_bytes": 758
+    },
+    {
+      "path": ".github/workflows/q117-forecast-turnover-stability.yml",
+      "sha": "d1a4f0a78a257b3d0a86bfd2db9410c713a6fa16",
+      "size_bytes": 978
+    }
+  ],
+  "validation": {
+    "passed": 13,
+    "total": 13,
+    "replay_identical": true
+  },
+  "decision": "NO_FORECAST_TURNOVER_INCREMENTAL_LIFT_DEMONSTRATED",
+  "guardrail": "Research only; no production engine changes, no Q60 edits, no historical freeze reconstruction."
+}
