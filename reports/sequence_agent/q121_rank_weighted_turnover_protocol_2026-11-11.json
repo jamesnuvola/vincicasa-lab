@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q121",
+  "title": "Rank-weighted forecast turnover conditional on Top20 set overlap",
+  "status": "PREREGISTERED_BEFORE_CALCULATION",
+  "preregistered_at_utc": "2026-11-11T13:41:43Z",
+  "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "app_data_path": "src/data.json",
+    "app_data_git_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "scorer_path": "src/VinciCasaLab.jsx",
+    "scorer_git_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304"
+  },
+  "hypothesis": "Among successive prior-only APP SONAR Top20 forecasts with the same set-overlap state, the mean rank displacement of retained numbers may contain incremental information about the next target's Top20 hit-count distribution.",
+  "estimand": {
+    "target": "H_t = |Top20_t intersect D_t|, where Top20_t is computed only from draws strictly before target t.",
+    "current_forecast": "A_t = Top20(sonarAnalogCore(draws[0:t]))",
+    "previous_forecast": "B_t = Top20(sonarAnalogCore(draws[0:t-1])); both are available before D_t.",
+    "overlap": "m_t = |A_t intersect B_t|.",
+    "mean_rank_displacement": "d_t = mean_{n in A_t intersect B_t}(|rank_A(n)-rank_B(n)|/19); if m_t=0, d_t=1.",
+    "overlap_states": {
+      "LOW": "m<=15",
+      "MID": "16<=m<=17",
+      "HIGH": "m>=18"
+    },
+    "displacement_states": {
+      "STABLE": "d<=0.25",
+      "MODERATE": "0.25<d<=0.50",
+      "VOLATILE": "d>0.50"
+    }
+  },
+  "models": {
+    "M0": "Exact Hypergeometric(40,20,5) distribution q0(k)=C(20,k)C(20,5-k)/C(40,5), k=0..5.",
+    "M1": "Q117 overlap-only prequential model: P1(k|b)=(200*q0(k)+C_(b,k))/(200+N_b).",
+    "M2": "Hierarchical rank-displacement model: P2(k|b,d)=(200*P1(k|b)+C_(b,d,k))/(200+N_(b,d)).",
+    "shrinkage": 200,
+    "bins": "All overlap and displacement thresholds are fixed here; no tuning or threshold selection on Validation or Blind OOS.",
+    "update_order": "Score target using prior state counts; only after scoring update M1 and M2 counts with the target outcome."
+  },
+  "sample": {
+    "minimum_history": 201,
+    "archive_draws": 3404,
+    "expected_target_count": 3203,
+    "split_rule": "Chronological 60%/20%/remainder over 3,203 targets after the 201-draw prefix needed to construct current and previous forecasts.",
+    "expected_splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 640
+    }
+  },
+  "endpoints": [
+    "Multiclass Brier score for H_t over k=0..5",
+    "Log-loss of realized H_t"
+  ],
+  "inference": {
+    "primary_segment": "Historical blind prequential OOS",
+    "comparisons": [
+      "M2 versus M1 (incremental rank information)",
+      "M2 versus M0 (overall calibration)"
+    ],
+    "method": "One-sided paired block sign-flip on per-target loss gains; positive gain means M2 improves.",
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "bootstrap": "Circular moving-block bootstrap, 10,000 replicates, block length 20, percentile 95% interval.",
+    "multiple_testing": "Holm across four primary endpoints: Brier and log-loss for M2 versus M1 and M2 versus M0."
+  },
+  "leakage_controls": [
+    "Pin canonical archive, APP data and exact committed scorer blob SHA.",
+    "For target index t, compute current Top20 from draws[0:t] and previous Top20 from draws[0:t-1]; neither includes target t.",
+    "Update overlap-state and joint-state outcome counts only after target scoring.",
+    "Check every conditional probability vector sums to one within 1e-12.",
+    "Mutate target and future suffix at nine fixed targets; both forecast prefixes and rank-state features must remain identical.",
+    "Verify APP modelDraws exactly matches canonical CSV row-by-row.",
+    "Replay complete ledger, report, freeze and manifest deterministically."
+  ],
+  "guardrails": [
+    "Research only; no production scorer or existing forecast changes.",
+    "No Q60 gate edits and no reconstructed historical freezes.",
+    "The Q121 freeze is separate and is not a Q60 paired target.",
+    "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+    "No automatic merge or engine promotion.",
+    "Do not modify PR #6, #7 or #8."
+  ],
+  "decision_rule": "Retain M2 only as an exploratory diagnostic if it improves both primary loss metrics on Blind OOS and the Holm-adjusted one-sided tests support improvement; otherwise record a null/negative result. No production promotion."
+}
