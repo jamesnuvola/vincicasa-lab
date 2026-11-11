@@ -12,7 +12,8 @@
 - No forecast freeze, Q60 record, production scorer, or existing PR was modified.
 - Recovery 1: first Node 20 replay failed on a 12-decimal ledger byte mismatch; outputs were canonicalized to 9 decimals.
 - Recovery 2: second replay failed on the report because split means were full precision in the runner but 9-decimal in the persisted report; the runner was corrected.
-- Recovery 3: third replay passed the report but found a one-unit-at-9-decimals ledger difference at row 226 (10.912065719 vs 10.912065718). All floating ledger/report outputs are now canonicalized to 6 decimals; corrected replay remains pending.
+- Recovery 3: third replay passed the report but found a one-unit-at-9-decimals ledger difference at row 226 (10.912065719 vs 10.912065718). All floating ledger/report outputs were canonicalized to 6 decimals.
+- Recovery 4: the next replay found a report-only mismatch because an explanatory serialization sentence had been appended to the persisted decision_reason but not to the runner template. The extra sentence was removed from decision_reason; serialization history remains in this checkpoint. Corrected replay remains pending.
 
 ## Limitations
 
