@@ -1,0 +1,98 @@
+{
+  "experiment": "Q130",
+  "title": "Family-wise Top-k depth profile across 42 fixed rule configurations",
+  "status": "PREREGISTERED_BEFORE_CALCULATION",
+  "preregistration_timestamp_utc": "2026-11-12T00:44:29Z",
+  "base_main_commit": "06e9e470054a86a0b710657db35e0c2259ef6b0a",
+  "source": {
+    "path": "reports/sequence_agent/historical_rule_ledger.csv",
+    "git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b",
+    "rows": 134568,
+    "targets": 3204,
+    "configurations_per_target": 42,
+    "required_history_cutoff": "strictly earlier than target_date",
+    "columns": [
+      "top5",
+      "top10",
+      "top20",
+      "actual_numbers",
+      "history_cutoff"
+    ],
+    "evaluation_mode": "RETROSPECTIVE_WALK_FORWARD_RULE_FIXED_NOW"
+  },
+  "hypothesis": {
+    "h0": "For each K in {5,10,20}, the mean per-target maximum overlap across the fixed 42-rule TopK family is no greater than its conditional uniform 5-of-40 randomization expectation.",
+    "h1": "At least one K in {5,10,20} has positive mean maximum-overlap lift in the final chronological Blind OOS segment after Holm correction across the three K endpoints.",
+    "statistic": "M_{K,t}=max_{j=1..42}|D_t intersect TopK_{j,t}| for K in {5,10,20}.",
+    "primary_endpoint": "Family of three Blind OOS mean lifts versus target-specific conditional randomization expectation; one-sided positive alternatives; Holm family size 3.",
+    "interpretation": "Measures family-wise rank-depth profile only. Does not validate any single rule as a production predictor."
+  },
+  "design": {
+    "warmup_draws": 200,
+    "target_count": 3204,
+    "chronological_splits": {
+      "discovery": {
+        "targets": 1922,
+        "first": "2018-02-02",
+        "last": "2023-05-08"
+      },
+      "validation": {
+        "targets": 641,
+        "first": "2023-05-09",
+        "last": "2025-02-07"
+      },
+      "blind_oos": {
+        "targets": 641,
+        "first": "2025-02-08",
+        "last": "2026-11-10"
+      }
+    },
+    "candidate_family": "The same 42 fixed rule configurations and their prior-only ordered Top5/Top10/Top20 lists from historical_rule_ledger.csv, separately evaluated at K=5,10,20.",
+    "null": "For each target and each replicate, independently draw one uniform 5-of-40 quintet and compute the maximum overlap against the same target's 42 TopK candidate sets. Reuse each random quintet across K to preserve cross-endpoint dependence.",
+    "randomization_replicates": 1000,
+    "randomization_seed": "0x01302026",
+    "bootstrap": {
+      "method": "paired circular moving-block bootstrap of observed M_{K,t} minus target-specific Monte Carlo null expectation",
+      "replicates": 10000,
+      "block_length": 20,
+      "seed": "0x01312026"
+    },
+    "inference": {
+      "blind_oos": "one-sided randomization p-values with plus-one correction",
+      "multiple_testing": "Holm-Bonferroni across K=5,10,20",
+      "confidence_intervals": "two-sided 95% paired circular moving-block bootstrap intervals",
+      "descriptive_splits": [
+        "discovery",
+        "validation",
+        "blind_oos"
+      ]
+    },
+    "tuning": "none",
+    "score_before_update": true
+  },
+  "prospective_observation": {
+    "target_date": "2026-11-11",
+    "contest": 315,
+    "source_artifact": "reports/sequence_agent/q129_contest_315_provisional_observation_2026-11-11.json",
+    "status": "PROVISIONAL_SECONDARY_SOURCE_CORROBORATED",
+    "role": "separate descriptive exact-enumeration check only; excluded from historical walk-forward, canonical archive and Q60 until official combination publication"
+  },
+  "guardrails": {
+    "no_archive_mutation": true,
+    "no_freeze_mutation": true,
+    "no_q60_increment": true,
+    "no_engine_promotion": true,
+    "no_automatic_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ],
+    "limitations": [
+      "The 42-rule family was selected after the archive; conditional randomization conditions on the fixed candidate sets but does not correct that broader selection history.",
+      "Historical Blind OOS is not a virgin holdout and is not prospective confirmation.",
+      "Holm correction covers only the three Q130 rank-depth endpoints, not the broader Q00-Q129 research family.",
+      "The conditional null assumes independent uniform 5-of-40 draws."
+    ]
+  }
+}
