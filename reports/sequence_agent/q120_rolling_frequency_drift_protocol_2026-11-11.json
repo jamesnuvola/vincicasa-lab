@@ -1,0 +1,74 @@
+{
+  "experiment_id": "Q120",
+  "title": "Rolling-window frequency drift versus cumulative frequency and exact uniform 5-of-40 baseline",
+  "protocol_committed_at_utc": "2026-11-11T12:42:37Z",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "ref": "main",
+    "commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "path": "data/storico_daily.csv",
+    "blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "If the number process is nonstationary, a strictly prior rolling-frequency model may improve the next five-number set probability and marginal inclusion calibration relative to both the exact uniform 5-of-40 model and cumulative-history frequency.",
+  "models": {
+    "M0": "Uniform exact 5-of-40 set distribution; each subset has probability 1/C(40,5), each number inclusion probability 5/40.",
+    "M1": "Cumulative frequency weights w_n(t)=c_n(0:t)+alpha/40.",
+    "MW": "Rolling frequency weights w_n(t,W)=c_n(max(0,t-W):t)+alpha/40.",
+    "alpha": 200,
+    "candidate_windows": [
+      100,
+      250,
+      500,
+      1000,
+      2000
+    ],
+    "set_probability": "P(S|w)=prod_{n in S} w_n / e_5(w), where e_5 is the fifth elementary symmetric polynomial over all 40 weights. This is an exact normalized fixed-size weighted-without-replacement distribution.",
+    "marginal_inclusion": "pi_n=w_n*e_4(w excluding n)/e_5(w)."
+  },
+  "protocol": {
+    "minimum_history": 200,
+    "walk_forward": "For each target index t, all counts use only rows with index < t. Score before updating counts with the target draw.",
+    "split": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641,
+      "chronology": "60/20/20 over 3,204 targets after 200-draw warmup."
+    },
+    "selection": "Choose one W on Validation by minimum mean joint set log-loss; ties choose the larger W. Blind OOS is not used for selection.",
+    "primary_metrics": [
+      "joint set log-loss",
+      "marginal inclusion Brier averaged over 40 numbers"
+    ],
+    "inference": {
+      "method": "one-sided paired block sign-flip, contiguous block length 20",
+      "replicates": 50000,
+      "bootstrap": "circular moving-block bootstrap",
+      "bootstrap_replicates": 10000,
+      "holm_family": "12 endpoints: 5 rolling windows vs M0 (two metrics each), plus selected W vs M1 (two metrics)."
+    },
+    "secondary": "Top20 ranking from marginal inclusion probabilities; report mean hits and 5/5 count descriptively, without promotion."
+  },
+  "leakage_checks": [
+    "source blob SHA pinned",
+    "chronological unique dates",
+    "valid sorted five-of-forty draws",
+    "strict-prior counts for every target",
+    "target scored before counts update",
+    "window contains at most W prior draws",
+    "future-suffix mutation invariance at 9 fixed targets",
+    "exact subset probability normalization by exhaustive enumeration for representative forecasts",
+    "deterministic replay"
+  ],
+  "guardrails": [
+    "Research only; no production scorer changes.",
+    "No Q60 record or existing freeze changes.",
+    "No merge or engine promotion.",
+    "Do not modify PR #6, #7, or #8.",
+    "Do not reconstruct missing historical freezes.",
+    "Historical Blind OOS is not a virgin holdout after prior SONAR research."
+  ],
+  "next_action": "Freeze a Q120-only rolling-frequency Top20 for 2026-11-11 with cutoff 2026-11-10; evaluate only after official publication."
+}
