@@ -25,7 +25,7 @@ const discovery=sum(rows.slice(0,1922)),validation=sum(rows.slice(1922,2563)),bl
 for(const s of [discovery,validation,blind])if(s.c.reduce((a,b)=>a+b,0)!==5*s.n)throw new Error('hit conservation');
 function rng(a){return function(){let t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;};}
 const R=20000,rand=rng(0x12520261111>>>0),e=blind.n*.5;let ex1=0,ex2=0;
-for(let q=0;q<R;q++){const c=Array(10).fill(0);for(let t=0;t<blind.n;t++){let mask=0;for(let j=0;j<5;j++){let z;do{z=Math.floor(rand()*40);}while(mask&(1<<z));mask|=1<<z;c[Math.floor(z/4)]++;}}let chi=0,tr=0;for(let i=0;i<10;i++){chi+=(c[i]-e)*(c[i]-e)/e;tr+=c[i]*(10-i);}if(chi>=blind.chi-1e-12)ex1++;if(tr>=blind.trend-1e-12)ex2++;}
+for(let q=0;q<R;q++){const c=Array(10).fill(0);for(let t=0;t<blind.n;t++){const seen=new Set();while(seen.size<5){const z=Math.floor(rand()*40);if(!seen.has(z)){seen.add(z);c[Math.floor(z/4)]++;}}}let chi=0,tr=0;for(let i=0;i<10;i++){chi+=(c[i]-e)*(c[i]-e)/e;tr+=c[i]*(10-i);}if(chi>=blind.chi-1e-12)ex1++;if(tr>=blind.trend-1e-12)ex2++;}
 const p1=(ex1+1)/(R+1),p2=(ex2+1)/(R+1),ps=[p1,p2].sort((a,b)=>a-b),h1=Math.min(1,2*ps[0]),h2=Math.min(1,Math.max(h1,ps[1])),holm1=p1<=p2?h1:h2,holm2=p2<p1?h1:h2;
 const B=10000,L=20,br=rng(0x125B007),boot=[],bd=Array.from({length:10},()=>[]),nblocks=Math.ceil(blind.n/L);
 for(let q=0;q<B;q++){const c=Array(10).fill(0);let used=0;for(let b=0;b<nblocks&&used<blind.n;b++){const start=Math.floor(br()*blind.n),take=Math.min(L,blind.n-used);for(let j=0;j<take;j++){const v=blind.vectors[(start+j)%blind.n];for(let k=0;k<10;k++)c[k]+=v[k];}used+=take;}let tr=0;for(let k=0;k<10;k++){tr+=c[k]*(10-k);bd[k].push(c[k]/blind.n);}boot.push(tr/blind.n-27.5);}
