@@ -5,7 +5,7 @@ const SOURCE_SHA="40f317e2d0067e061c46ab799d66f777a0e087c0";
 const WINS=[100,250,500,1000,2000],ALPHA=200,MIN=200,L=20;
 const PATHS={archive:"data/storico_daily.csv",report:"reports/sequence_agent/q120_rolling_frequency_drift_report_2026-11-11.json",ledger:"reports/sequence_agent/q120_rolling_frequency_drift_target_ledger_2026-11-11.csv",freeze:"reports/sequence_agent/q120_rolling_frequency_drift_prospective_freeze_2026-11-11.json",validation:"reports/sequence_agent/q120_rolling_frequency_drift_validation_2026-11-11.json"};
 const close=(a,b,tol=1e-10)=>Math.abs(a-b)<=tol;
-const mean=a=>a.reduce((s,x)=>s+x,0);
+const mean=a=>a.reduce((s,x)=>s+x,0)/a.length;
 function rng(seed){let s=seed>>>0;return ()=>{s^=s<<13;s^=s>>>17;s^=s<<5;return (s>>>0)/4294967296;};}
 function holm(ps){const a=ps.map((p,i)=>({p,i})).sort((x,y)=>x.p-y.p);let prev=0;const out=Array(ps.length);for(let i=0;i<a.length;i++){prev=Math.min(1,Math.max(prev,(a.length-i)*a[i].p));out[a[i].i]=prev;}return out;}
 function infer(g,seed){const n=g.length,blocks=[];for(let i=0;i<n;i+=L)blocks.push(g.slice(i,Math.min(n,i+L)).reduce((s,x)=>s+x,0));const obs=mean(g),R=50000,r=rng(seed);let ext=0;for(let i=0;i<R;i++){let z=0;for(const b of blocks)z+=(r()<.5?-1:1)*b;if(z/n>=obs-1e-15)ext++;}const B=10000,br=rng(seed+0x9e3779b9),circ=Array.from({length:n},(_,i)=>{let s=0;for(let j=0;j<L;j++)s+=g[(i+j)%n];return s;}),boot=[];for(let i=0;i<B;i++){let z=0;for(let j=0;j<Math.floor(n/L);j++)z+=circ[Math.floor(br()*n)];z+=g[Math.floor(br()*n)];boot.push(z/n);}boot.sort((a,b)=>a-b);return {mean_gain:obs,p_one_sided_improvement:(ext+1)/(R+1),bootstrap_ci95:[boot[Math.floor(.025*B)],boot[Math.floor(.975*B)]],replicates:R,bootstrap_replicates:B,block_length:L,block_count:blocks.length};}
