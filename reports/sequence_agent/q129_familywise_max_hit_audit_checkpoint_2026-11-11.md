@@ -18,8 +18,9 @@
 ## Replay recovery — 2026-11-12
 
 - Exact-head replay runs 43117898470 (push) and 43117940502 (pull request) failed at the source-blob guard before statistical recomputation.
-- Root cause: the runner compared the pinned Git blob SHA with a SHA-1 recomputed from decoded working-tree text. These are not the same verification layer; checkout/text representation can differ even when the committed tree contains the pinned blob.
-- Correction: the runner now checks `git rev-parse HEAD:reports/sequence_agent/historical_rule_ledger.csv` against the protocol blob SHA and requires `git diff --quiet HEAD -- <source path>` before parsing the source. All row-level strict-prior, count, actual-combination, and hit-count checks remain active.
+- Root cause confirmed by comparing the protocol value with the base commit Git tree: `protocol.source.git_blob_sha` contained 39 hexadecimal characters; the actual Git blob SHA contains 40 and ends in `...b3b`. The original protocol pin omitted its final `b`. The first Git-tree-based correction exposed this truncated pin.
+- Correction: the protocol source pin now contains the verified 40-character Git blob SHA. The runner checks `git rev-parse HEAD:reports/sequence_agent/historical_rule_ledger.csv` against that pin and requires `git diff --quiet HEAD -- <source path>` before parsing. All row-level strict-prior, count, actual-combination, and hit-count checks remain active.
+- Provenance: original design/preregistration commit `e8f94633ddbf4c08e36d0f331d47a068269d5f2d` is preserved. The post-result correction is limited to the source blob identifier and its provenance note; hypothesis, split, seeds, endpoints, null, bootstrap, and statistical results are unchanged.
 - No protocol, source ledger, statistical result, target freeze, canonical archive, Q60 record, or production scorer was changed.
 - The updated runner blob is `cfba32f0005eee8f62368587f887137e983845dc` (9,735 UTF-8 bytes).
 - Fresh exact-head replay is pending.
@@ -36,3 +37,5 @@
 - The first corrected exact-head replay reached the checkout stage but spent the run time fetching the repository's full history because the Q129 workflow used `fetch-depth: 0`.
 - The runner only needs the current checkout tree for `git rev-parse HEAD:<source path>` and a clean `git diff HEAD -- <source path>`; it does not traverse history. The workflow now uses `fetch-depth: 1`, preserving the exact current commit/tree checks while avoiding an unnecessary full-history fetch.
 - No statistical computation, source data, protocol, or forecast was changed. Fresh exact-head push and pull-request replays are pending.
+
+- Corrected protocol blob: `3db249baec71921ff78591a88b95278f31de118f`; corrected report blob: `535c8a55839dff5886beec8742a54b64a617ad13`.
