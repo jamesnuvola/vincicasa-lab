@@ -298,7 +298,7 @@ async function main() {
     }
     const manifest=JSON.parse(fs.readFileSync(MANIFEST_PATH,"utf8"));
     for(const [p,expected] of Object.entries(outputs)){
-      assert(manifest.files[path.basename(p)].sha256===crypto.createHash("sha256").update(expected).digest("hex"),"manifest hash mismatch: "+path.basename(p));
+      assert(manifest.files[path.basename(p)].git_blob_sha1===gitBlobSha1(expected),"manifest Git blob hash mismatch: "+path.basename(p));
     }
     console.log(JSON.stringify({experiment_id:"Q108",status:"PASS",targets:out.report.walk_forward.targets,checks:out.validation.checks_passed,artifact_replay:"BYTE_IDENTICAL"}));
     return;
