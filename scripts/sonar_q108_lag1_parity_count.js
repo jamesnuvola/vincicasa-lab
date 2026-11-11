@@ -242,7 +242,7 @@ function runAnalysis(csvText,sourceInfo) {
   add("deterministic_inference_replay",replay1===replay2,"Fixed-seed sign-flip and circular block-bootstrap reproduce exactly.");
   add("ledger_report_reconciliation",ledger.length===Object.values(metrics).reduce((s,x)=>s+x.targets,0)&&metrics.historical_blind_oos.targets===621,"Ledger target count equals report split totals.");
   add("canonical_ledger_float_serialization",ledger.every(r=>[r.m0_brier,r.m1_brier,r.brier_gain,r.m0_logloss,r.m1_logloss,r.logloss_gain].every(Number.isFinite)),"All six per-target loss fields are serialized after fixed 12-decimal rounding.");
-  assert(checks.length===12,"acceptance check count mismatch");
+  assert(checks.length===13,"acceptance check count mismatch");
   assert(checks.every(c=>c.status==="PASS"),"one or more acceptance checks failed");
   const validation={experiment_id:"Q108",status:"PASS",checks_passed:checks.filter(c=>c.status==="PASS").length,checks_total:checks.length,checks,inference_constants:{alpha:ALPHA,block_length:BLOCK,sign_flip_replicates:SIGN_REPS,circular_block_bootstrap_replicates:BOOT_REPS,seed:SEED,holm_family_size:2}};
   const header=["target_index","target_date","cutoff_date","prior_transition_count","previous_odd_count","actual_odd_count","state_support","m0_brier","m1_brier","brier_gain","m0_logloss","m1_logloss","logloss_gain","m0_probabilities","m1_probabilities"];
