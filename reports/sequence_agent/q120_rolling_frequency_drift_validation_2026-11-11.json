@@ -22,7 +22,7 @@
     {
       "name": "five_of_forty",
       "passed": true,
-      "detail": "sorted distinct values 1..40"
+      "detail": "sorted distinct 1..40"
     },
     {
       "name": "strict_prior",
@@ -60,7 +60,7 @@
       ]
     },
     {
-      "name": "exact_mass",
+      "name": "exact_subset_mass",
       "passed": true,
       "detail": {
         "sum": 1.0000000000000557,
@@ -128,7 +128,7 @@
       ]
     },
     {
-      "name": "inference_reproducible",
+      "name": "inference_family",
       "passed": true,
       "detail": 12
     },
@@ -142,7 +142,8 @@
       "passed": true,
       "detail": {
         "rows": 3205,
-        "columns": 25
+        "columns": 25,
+        "precision": 8
       }
     }
   ],
@@ -209,5 +210,6 @@
   "selected_window": 2000,
   "ledger_rows": 3205,
   "ledger_columns": 25,
+  "ledger_precision_decimal_places": 8,
   "deterministic_replay": true
 }
