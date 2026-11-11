@@ -30,8 +30,8 @@
     },
     {
       "path": "reports/sequence_agent/q129_familywise_max_hit_audit_checkpoint_2026-11-11.md",
-      "git_blob_sha": "b779a6fcbd1ffa9fb61d7089bf1de3206de51382",
-      "bytes_utf8": 1622
+      "git_blob_sha": "cdb86172814292c3ec9ed604f7c78e6c84374cc7",
+      "bytes_utf8": 2621
     },
     {
       "path": "reports/sequence_agent/q129_contest_315_provisional_observation_2026-11-11.json",
@@ -40,8 +40,8 @@
     },
     {
       "path": "scripts/sonar_q129_familywise_max_hit_audit.mjs",
-      "git_blob_sha": "95294f7408910c32500fde9870d42e7c93384d4b",
-      "bytes_utf8": 9342
+      "git_blob_sha": "cfba32f0005eee8f62368587f887137e983845dc",
+      "bytes_utf8": 9735
     },
     {
       "path": ".github/workflows/q129-familywise-max-hit-audit.yml",
@@ -49,5 +49,5 @@
       "bytes_utf8": 940
     }
   ],
-  "verification_rule": "Node 20 recomputes the historical family-wise walk-forward, target ledger and bootstrap; recomputes the provisional 11/11 exact family-wise freeze score by enumerating all 658,008 5-of-40 outcomes; then verifies Git blob SHA-1 and UTF-8 byte counts for all eight entries."
+  "verification_rule": "Node 20 verifies the source by comparing git rev-parse HEAD:<source path> with the pinned Git blob SHA and requiring a clean git diff; it then recomputes the strict-prior walk-forward, conditional randomization, block bootstrap, provisional freeze scoring over all 658,008 5-of-40 outcomes, and verifies Git blob SHA-1 plus UTF-8 byte counts for all eight entries."
 }
