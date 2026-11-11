@@ -14,7 +14,7 @@
 - Recovery 2: second replay failed on the report because split means were full precision in the runner but 9-decimal in the persisted report; the runner was corrected.
 - Recovery 3: third replay passed the report but found a one-unit-at-9-decimals ledger difference at row 226 (10.912065719 vs 10.912065718). Outputs were then canonicalized to 6 decimals.
 - Recovery 4: fourth replay found a report-only mismatch because a serialization note had been appended to the persisted decision_reason but not the runner template; the note was removed from the decision field and retained here.
-- Recovery 5: fifth replay still found a one-unit-at-6-decimals ledger mismatch at row 1377 (M2 log-loss 5.006097 vs 5.006096). The prior ledger had been rounded twice; all artifacts are now being regenerated directly from unrounded prequential values at six decimals. Corrected replay remains pending.
+- Recovery 5: fifth replay found a one-unit-at-6-decimals ledger mismatch at row 1377 (M2 log-loss 5.006097 vs 5.006096) because the prior ledger had been rounded twice. All artifacts were regenerated directly from unrounded prequential values at six decimals. The corrected Node 20 replay passed on commit cd3234d12d47b48b6f976a874a376667683589ca (run 43083643515): 3,204 targets, 20/20 checks, six inferential endpoints, byte-identical report/ledger/validation/checkpoint, and 7/7 manifest entries.
 
 ## Limitations
 
