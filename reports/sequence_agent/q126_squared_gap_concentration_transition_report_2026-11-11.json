@@ -67,16 +67,16 @@
       ],
       "models": {
         "m0": {
-          "mean_logloss": 6.255315896,
-          "mean_brier": 0.997629486
+          "mean_logloss": 6.255316,
+          "mean_brier": 0.997629
         },
         "m1": {
-          "mean_logloss": 6.506536822,
-          "mean_brier": 0.998276372
+          "mean_logloss": 6.506537,
+          "mean_brier": 0.998276
         },
         "m2": {
-          "mean_logloss": 6.809977457,
-          "mean_brier": 0.999314179
+          "mean_logloss": 6.809977,
+          "mean_brier": 0.999314
         }
       }
     },
@@ -92,16 +92,16 @@
       ],
       "models": {
         "m0": {
-          "mean_logloss": 6.256070104,
-          "mean_brier": 0.997720196
+          "mean_logloss": 6.25607,
+          "mean_brier": 0.99772
         },
         "m1": {
-          "mean_logloss": 6.446294561,
-          "mean_brier": 0.998190007
+          "mean_logloss": 6.446295,
+          "mean_brier": 0.99819
         },
         "m2": {
-          "mean_logloss": 6.764798213,
-          "mean_brier": 0.998987831
+          "mean_logloss": 6.764798,
+          "mean_brier": 0.998988
         }
       }
     },
@@ -117,16 +117,16 @@
       ],
       "models": {
         "m0": {
-          "mean_logloss": 6.240221453,
-          "mean_brier": 0.997556491
+          "mean_logloss": 6.240221,
+          "mean_brier": 0.997556
         },
         "m1": {
-          "mean_logloss": 6.377440157,
-          "mean_brier": 0.997815853
+          "mean_logloss": 6.37744,
+          "mean_brier": 0.997816
         },
         "m2": {
-          "mean_logloss": 6.687182814,
-          "mean_brier": 0.998523549
+          "mean_logloss": 6.687183,
+          "mean_brier": 0.998524
         }
       }
     }
@@ -136,14 +136,14 @@
       "id": "M1_vs_M0_brier",
       "comparison": "M1_vs_M0",
       "metric": "brier",
-      "observed_gain": -0.000259362,
+      "observed_gain": -0.000259,
       "p_value": 0.99998,
       "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
-        -0.000373627,
-        -0.000139798
+        -0.000374,
+        -0.00014
       ],
       "bootstrap_replicates": 10000,
       "bootstrap_block_length": 20,
@@ -153,14 +153,14 @@
       "id": "M1_vs_M0_logloss",
       "comparison": "M1_vs_M0",
       "metric": "logloss",
-      "observed_gain": -0.137218704,
+      "observed_gain": -0.137219,
       "p_value": 1,
       "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
-        -0.183484007,
-        -0.093406988
+        -0.183484,
+        -0.093407
       ],
       "bootstrap_replicates": 10000,
       "bootstrap_block_length": 20,
@@ -170,14 +170,14 @@
       "id": "M2_vs_M1_brier",
       "comparison": "M2_vs_M1",
       "metric": "brier",
-      "observed_gain": -0.000707696,
+      "observed_gain": -0.000708,
       "p_value": 1,
       "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
-        -0.000880565,
-        -0.000530753
+        -0.000881,
+        -0.000531
       ],
       "bootstrap_replicates": 10000,
       "bootstrap_block_length": 20,
@@ -187,14 +187,14 @@
       "id": "M2_vs_M1_logloss",
       "comparison": "M2_vs_M1",
       "metric": "logloss",
-      "observed_gain": -0.309742658,
+      "observed_gain": -0.309743,
       "p_value": 1,
       "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
-        -0.364627524,
-        -0.252402463
+        -0.364628,
+        -0.252402
       ],
       "bootstrap_replicates": 10000,
       "bootstrap_block_length": 20,
@@ -204,14 +204,14 @@
       "id": "M2_vs_M0_brier",
       "comparison": "M2_vs_M0",
       "metric": "brier",
-      "observed_gain": -0.000967058,
+      "observed_gain": -0.000967,
       "p_value": 1,
       "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
-        -0.001188175,
-        -0.000744707
+        -0.001188,
+        -0.000745
       ],
       "bootstrap_replicates": 10000,
       "bootstrap_block_length": 20,
@@ -221,21 +221,21 @@
       "id": "M2_vs_M0_logloss",
       "comparison": "M2_vs_M0",
       "metric": "logloss",
-      "observed_gain": -0.446961362,
+      "observed_gain": -0.446961,
       "p_value": 1,
       "sign_flip_replicates": 50000,
       "block_length": 20,
       "blocks": 33,
       "ci95": [
-        -0.535810294,
-        -0.363436996
+        -0.53581,
+        -0.363437
       ],
       "bootstrap_replicates": 10000,
       "bootstrap_block_length": 20,
       "holm_adjusted_p": 1
     }
   ],
-  "decision_reason": "M2 does not improve on M1 on either proper score; all six point estimates are negative and their block-bootstrap 95% intervals lie below zero. The preregistered one-sided improvement tests yield Holm-adjusted p-values of 1.000. Historical Blind OOS is not a virgin holdout.",
+  "decision_reason": "M2 does not improve on M1 on either proper score; all six point estimates are negative and their block-bootstrap 95% intervals lie below zero. The preregistered one-sided improvement tests yield Holm-adjusted p-values of 1.000. Historical Blind OOS is not a virgin holdout. Cross-runtime score serialization is canonicalized to six decimals after a one-unit-at-nine-decimal Node 20 ledger mismatch.",
   "limitations": [
     "The statistic compresses four adjacent internal gaps to one scalar and can miss other structure.",
     "The exact-null quartile states are fixed from the 5-of-40 combinatorial universe, not optimized on outcomes.",
