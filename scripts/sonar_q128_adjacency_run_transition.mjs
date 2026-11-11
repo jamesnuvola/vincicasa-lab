@@ -148,6 +148,7 @@ function run(){
   "## Replay recovery",
   "",
   "- The first persisted-head Node 20 replay failed before execution because `utf8Bytes` was declared twice in the ES module. The duplicate trailing declaration was removed; the statistical algorithm and results are unchanged.",
+  "- After the duplicate-helper fix, Node 20 reached the byte-comparison stage and found a persisted report mismatch. A bounded JSON-path diff is now emitted on failure; no mismatched report is accepted.",
   "",
   "## CI status at artifact generation",
   "",
