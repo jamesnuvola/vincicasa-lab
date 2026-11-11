@@ -4,6 +4,7 @@
 - Canonical archive: 3,404 draws through 2026-11-10; blob 40f317e2d0067e061c46ab799d66f777a0e087c0.
 - Exact APP scorer and APP data hashes pinned; APP data reconciles row-by-row.
 - 200 prior-only calibration forecasts (target indices 200–399) set q33/q67; outcomes do not enter threshold selection.
+- Q122 forecast freeze persisted in Git at 2026-11-11T14:51:38Z (15:51:38 CET), before the 20:00 target draw.
 - 3,004 scored targets; Discovery/Validation/Blind OOS = 1,802/601/601.
 - q33=0.024527431706, q67=0.068544672898.
 - Decision: NO_BOUNDARY_MARGIN_INCREMENTAL_HIT_COUNT_LIFT_DEMONSTRATED.
