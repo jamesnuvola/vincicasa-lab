@@ -12,7 +12,7 @@ const EXPECTED_PROTOCOL_BLOB="36dd14b940d4eeccead81ff3e82048eadd72598c";
 const PROTOCOL_COMMIT_SHA="944dce696aaa2446d9c71f075590e1d8966c7f88";
 function read(p){return fs.readFileSync(path.join(ROOT,p),"utf8");}
 function utf8Bytes(s){return Buffer.byteLength(s,"utf8");}
-function gitBlobSha(s){const b=Buffer.from(s,"utf8");const h=Buffer.from("blob "+b.length+"\\0","utf8");return crypto.createHash("sha1").update(Buffer.concat([h,b])).digest("hex");}
+function gitBlobSha(s){const b=Buffer.from(s,"utf8");const h=Buffer.from("blob "+b.length+"\0","utf8");return crypto.createHash("sha1").update(Buffer.concat([h,b])).digest("hex");}
 
 function assert(c,m){if(!c)throw new Error(m);}
 
@@ -103,7 +103,7 @@ function buildExperiment(draws,archiveSha,protocolBlobSha,protocolCommitSha,expe
 function buildManifest(){
  const paths=[FILES.protocol,FILES.runner,FILES.workflow,FILES.report,FILES.ledger,FILES.validation,FILES.checkpoint];
  const entries=paths.map(p=>{const c=read(p);return{path:p,git_blob_sha:gitBlobSha(c),bytes_utf8:utf8Bytes(c)};});
- return JSON.stringify({schema_version:"1.0",experiment_id:"Q127",status:"PERSISTED",base_commit:"ea46a70c4c90db5dad44d5374a97f89a84e50ad9",entries},null,2)+"\\n";
+ return JSON.stringify({schema_version:"1.0",experiment_id:"Q127",status:"PERSISTED",base_commit:"ea46a70c4c90db5dad44d5374a97f89a84e50ad9",entries},null,2)+"\n";
 }
 function main(){
  const mode=process.argv.includes("--write")?"write":"check";
@@ -113,11 +113,11 @@ function main(){
  const draws=parseArchive(archiveText);
  const out=buildExperiment(draws,EXPECTED_ARCHIVE_BLOB,EXPECTED_PROTOCOL_BLOB,PROTOCOL_COMMIT_SHA,EXPECTED_PROTOCOL_BLOB);
  const generated={[FILES.report]:out.report,[FILES.ledger]:out.ledger,[FILES.validation]:out.validation,[FILES.checkpoint]:out.checkpoint};
- if(mode==="write"){for(const [p,c] of Object.entries(generated))fs.writeFileSync(path.join(ROOT,p),c);const manifest=buildManifest();fs.writeFileSync(path.join(ROOT,FILES.manifest),manifest);process.stdout.write("Q127 WRITE PASS\\n");return;}
- for(const [p,c] of Object.entries(generated)){const actual=read(p);if(actual!==c){let i=0;while(i<actual.length&&i<c.length&&actual[i]===c[i])i++;process.stderr.write("DIFF "+p+" at char "+i+" expected="+JSON.stringify(c.slice(Math.max(0,i-60),i+120))+" actual="+JSON.stringify(actual.slice(Math.max(0,i-60),i+120))+"\\n");throw new Error("persisted output differs: "+p);}}
+ if(mode==="write"){for(const [p,c] of Object.entries(generated))fs.writeFileSync(path.join(ROOT,p),c);const manifest=buildManifest();fs.writeFileSync(path.join(ROOT,FILES.manifest),manifest);process.stdout.write("Q127 WRITE PASS\n");return;}
+ for(const [p,c] of Object.entries(generated)){const actual=read(p);if(actual!==c){let i=0;while(i<actual.length&&i<c.length&&actual[i]===c[i])i++;process.stderr.write("DIFF "+p+" at char "+i+" expected="+JSON.stringify(c.slice(Math.max(0,i-60),i+120))+" actual="+JSON.stringify(actual.slice(Math.max(0,i-60),i+120))+"\n");throw new Error("persisted output differs: "+p);}}
  const manifest=buildManifest();assert(read(FILES.manifest)===manifest,"manifest differs from deterministic replay");
  const m=JSON.parse(manifest);assert(m.entries.length===7,"manifest entry count mismatch");
  for(const e of m.entries){const c=read(e.path);assert(gitBlobSha(c)===e.git_blob_sha,"Git blob SHA mismatch: "+e.path);assert(utf8Bytes(c)===e.bytes_utf8,"UTF-8 size mismatch: "+e.path);}
- process.stdout.write("Q127 CHECK PASS: 3204 targets; 20/20 checks; six inferential endpoints; report/ledger/validation/checkpoint byte-identical; 7/7 manifest entries verified.\\n");
+ process.stdout.write("Q127 CHECK PASS: 3204 targets; 20/20 checks; six inferential endpoints; report/ledger/validation/checkpoint byte-identical; 7/7 manifest entries verified.\n");
 }
 main();
