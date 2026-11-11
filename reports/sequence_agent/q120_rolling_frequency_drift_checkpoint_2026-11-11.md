@@ -12,3 +12,7 @@
 - Ledger precision: 8 decimal places; dedicated Node 20 workflow will verify byte-identical replay.
 - Limitations: historical Blind OOS is not virgin; Holm covers Q120 only; no production changes or promotion.
 - Next action: evaluate only after official contest 315 publication; do not retune.
+
+## Recovery note
+
+The first Node 20 replay failed at the Validation selection comparison. Root cause: the runner's `mean` helper returned a sum, not an arithmetic mean. The helper was corrected and the Q120 replay passed on both push run 43024486362 and pull-request run 43024494177 at commit f6c968a60fee8fca16bf1d17e1a11a0143e3a773. The general repository CI was still running the evolutionary lab at the last check; no general-CI success is claimed here.
