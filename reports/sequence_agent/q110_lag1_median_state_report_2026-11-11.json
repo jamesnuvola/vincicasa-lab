@@ -1,0 +1,429 @@
+{
+  "experiment_id": "Q110",
+  "title": "Lag-1 median order-statistic state memory",
+  "decision": "NO_LAG1_MEDIAN_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "app_data_path": "src/data.json",
+    "app_data_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "model_draws_match_canonical_csv": true,
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10",
+    "official_latest": {
+      "contest": 314,
+      "date": "2026-11-10",
+      "numbers": [
+        1,
+        7,
+        11,
+        22,
+        25
+      ]
+    }
+  },
+  "definition": {
+    "feature": "M_t = third sorted number in draw D_t",
+    "support": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38
+    ],
+    "exact_null": {
+      "numerators": [
+        666,
+        1890,
+        3570,
+        5610,
+        7920,
+        10416,
+        13020,
+        15660,
+        18270,
+        20790,
+        23166,
+        25350,
+        27300,
+        28980,
+        30360,
+        31416,
+        32130,
+        32490,
+        32490,
+        32130,
+        31416,
+        30360,
+        28980,
+        27300,
+        25350,
+        23166,
+        20790,
+        18270,
+        15660,
+        13020,
+        10416,
+        7920,
+        5610,
+        3570,
+        1890,
+        666
+      ],
+      "denominator": 658008,
+      "probabilities": [
+        0.001012145749,
+        0.002872305504,
+        0.005425465952,
+        0.00852573221,
+        0.012036327826,
+        0.015829594777,
+        0.019786993471,
+        0.023799102746,
+        0.027765619871,
+        0.031595360543,
+        0.03520625889,
+        0.038525367473,
+        0.041488857278,
+        0.044042017726,
+        0.046139256666,
+        0.047744100376,
+        0.048829193566,
+        0.049376299376,
+        0.049376299376,
+        0.048829193566,
+        0.047744100376,
+        0.046139256666,
+        0.044042017726,
+        0.041488857278,
+        0.038525367473,
+        0.03520625889,
+        0.031595360543,
+        0.027765619871,
+        0.023799102746,
+        0.019786993471,
+        0.015829594777,
+        0.012036327826,
+        0.00852573221,
+        0.005425465952,
+        0.002872305504,
+        0.001012145749
+      ],
+      "expected_median": 20.5
+    }
+  },
+  "models": {
+    "M0": "Exact combinatorial median PMF q0.",
+    "M1": "Lag-1 categorical shrinkage conditional on previous median.",
+    "alpha": 200,
+    "warmup_transition_pairs": 300,
+    "parameter_selection": "None."
+  },
+  "walk_forward": {
+    "targets": 3103,
+    "first_target_index_zero_based": 301,
+    "split_rule": "Chronological 60/20/20; floor for Discovery and Validation.",
+    "splits": {
+      "discovery": {
+        "targets": 1861,
+        "first_target": "2018-05-14",
+        "last_target": "2023-06-17",
+        "m0_brier": 0.9615553869,
+        "m1_brier": 0.962213531691,
+        "brier_gain": -0.000658144791,
+        "m0_logloss": 3.347979734121,
+        "m1_logloss": 3.356236099818,
+        "logloss_gain": -0.008256365697,
+        "mean_previous_median": 20.268672756582,
+        "mean_state_support": 47.279419666846
+      },
+      "validation": {
+        "targets": 620,
+        "first_target": "2023-06-18",
+        "last_target": "2025-02-26",
+        "m0_brier": 0.960913505905,
+        "m1_brier": 0.96227615309,
+        "brier_gain": -0.001362647185,
+        "m0_logloss": 3.344148880488,
+        "m1_logloss": 3.368524176337,
+        "logloss_gain": -0.024375295849,
+        "mean_previous_median": 20.656451612903,
+        "mean_state_support": 95.567741935484
+      },
+      "historical_blind_oos": {
+        "targets": 622,
+        "first_target": "2025-02-27",
+        "last_target": "2026-11-10",
+        "m0_brier": 0.963320943605,
+        "m1_brier": 0.965175791499,
+        "brier_gain": -0.001854847894,
+        "m0_logloss": 3.386984378513,
+        "m1_logloss": 3.416401058039,
+        "logloss_gain": -0.029416679526,
+        "mean_previous_median": 20.77652733119,
+        "mean_state_support": 116.567524115756
+      }
+    }
+  },
+  "blind_inference": {
+    "method": "One-sided block sign-flip of contiguous paired loss-gain blocks; circular moving-block bootstrap.",
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "holm_family_size": 2,
+    "endpoints": [
+      {
+        "name": "m1_vs_m0_brier_gain",
+        "n": 622,
+        "blocks": 32,
+        "observed_mean": -0.001854847894,
+        "replicates": 50000,
+        "block_length": 20,
+        "extreme": 49982,
+        "p_one_sided": 0.9996400072,
+        "monte_carlo_se": 0.000084835842,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.002827219768,
+            "upper": -0.00089795182
+          }
+        },
+        "p_holm": 1
+      },
+      {
+        "name": "m1_vs_m0_logloss_gain",
+        "n": 622,
+        "blocks": 32,
+        "observed_mean": -0.029416679526,
+        "replicates": 50000,
+        "block_length": 20,
+        "extreme": 49992,
+        "p_one_sided": 0.9998400032,
+        "monte_carlo_se": 0.000056562886,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.043190531513,
+            "upper": -0.015002203557
+          }
+        },
+        "p_holm": 1
+      }
+    ]
+  },
+  "diagnostics": {
+    "transition_support": {
+      "min": 0,
+      "median": 64,
+      "max": 190
+    },
+    "max_probability_normalization_error": 0,
+    "median_counts": [
+      {
+        "median": 3,
+        "count": 2
+      },
+      {
+        "median": 4,
+        "count": 4
+      },
+      {
+        "median": 5,
+        "count": 17
+      },
+      {
+        "median": 6,
+        "count": 26
+      },
+      {
+        "median": 7,
+        "count": 41
+      },
+      {
+        "median": 8,
+        "count": 54
+      },
+      {
+        "median": 9,
+        "count": 60
+      },
+      {
+        "median": 10,
+        "count": 87
+      },
+      {
+        "median": 11,
+        "count": 90
+      },
+      {
+        "median": 12,
+        "count": 103
+      },
+      {
+        "median": 13,
+        "count": 141
+      },
+      {
+        "median": 14,
+        "count": 145
+      },
+      {
+        "median": 15,
+        "count": 134
+      },
+      {
+        "median": 16,
+        "count": 152
+      },
+      {
+        "median": 17,
+        "count": 164
+      },
+      {
+        "median": 18,
+        "count": 191
+      },
+      {
+        "median": 19,
+        "count": 165
+      },
+      {
+        "median": 20,
+        "count": 144
+      },
+      {
+        "median": 21,
+        "count": 172
+      },
+      {
+        "median": 22,
+        "count": 167
+      },
+      {
+        "median": 23,
+        "count": 159
+      },
+      {
+        "median": 24,
+        "count": 169
+      },
+      {
+        "median": 25,
+        "count": 131
+      },
+      {
+        "median": 26,
+        "count": 135
+      },
+      {
+        "median": 27,
+        "count": 143
+      },
+      {
+        "median": 28,
+        "count": 135
+      },
+      {
+        "median": 29,
+        "count": 112
+      },
+      {
+        "median": 30,
+        "count": 78
+      },
+      {
+        "median": 31,
+        "count": 65
+      },
+      {
+        "median": 32,
+        "count": 62
+      },
+      {
+        "median": 33,
+        "count": 42
+      },
+      {
+        "median": 34,
+        "count": 48
+      },
+      {
+        "median": 35,
+        "count": 33
+      },
+      {
+        "median": 36,
+        "count": 16
+      },
+      {
+        "median": 37,
+        "count": 12
+      },
+      {
+        "median": 38,
+        "count": 5
+      }
+    ]
+  },
+  "repository_diagnostics": {
+    "canonical_archive": {
+      "draws": 3404,
+      "last_date": "2026-11-10"
+    },
+    "latest_metrics": {
+      "draws": 3403,
+      "last_date": "2026-11-09"
+    },
+    "queue_snapshot": {
+      "generated_at_utc": "2026-11-10T23:26:31.687742+00:00",
+      "paired_targets": 22
+    },
+    "last_sequence_agent_run": {
+      "id": 42922992880,
+      "created_at": "2026-11-10T23:23:40Z",
+      "conclusion": "success",
+      "head": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b"
+    },
+    "finding": "Canonical archive and generated modelDraws contain 3,404 rows through 2026-11-10, while latest_metrics and queue snapshot still reflect 3,403 rows through 2026-11-09. The sequence-agent workflow has not yet refreshed these reports on the updated archive."
+  },
+  "interpretation": {
+    "scope": "Predicts only the next draw's median, not individual numbers or a complete quintet.",
+    "caveat": "Historical Blind OOS is not a virgin holdout; prior SONAR work examined related order-statistic and structural summaries. Holm correction is within Q110 only, not across the entire Q00-Q110 research family.",
+    "next_action": "Preserve this exploratory negative result. Refresh sequence-agent reports on the 3,404-row archive, then continue prospective frozen evaluation; do not retune median states on this archive."
+  }
+}
