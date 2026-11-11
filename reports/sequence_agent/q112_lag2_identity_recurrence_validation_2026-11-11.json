@@ -1,0 +1,185 @@
+{
+  "experiment_id": "Q112",
+  "generated_at_local": "2026-11-11T06:38:58+01:00",
+  "passed": true,
+  "checks_passed": 16,
+  "checks_total": 16,
+  "checks": [
+    {
+      "name": "archive_header",
+      "passed": true
+    },
+    {
+      "name": "archive_rows_3404",
+      "passed": true
+    },
+    {
+      "name": "unique_dates",
+      "passed": true
+    },
+    {
+      "name": "chronological_dates",
+      "passed": true
+    },
+    {
+      "name": "five_distinct_integers_1_to_40",
+      "passed": true
+    },
+    {
+      "name": "pinned_archive_blob",
+      "passed": true
+    },
+    {
+      "name": "walk_forward_3103_targets",
+      "passed": true
+    },
+    {
+      "name": "split_sizes_1861_620_622",
+      "passed": true
+    },
+    {
+      "name": "both_lag_cutoffs_strictly_prior",
+      "passed": true
+    },
+    {
+      "name": "all_658008_subsets",
+      "passed": true
+    },
+    {
+      "name": "uniform_normalizer_m0_to_m5",
+      "passed": true
+    },
+    {
+      "name": "all_candidate_joint_pmfs_normalized",
+      "passed": true
+    },
+    {
+      "name": "validation_selects_uniform",
+      "passed": true
+    },
+    {
+      "name": "future_mutation_invariance_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "deterministic_replay",
+      "passed": true
+    },
+    {
+      "name": "holm_family_size_14",
+      "passed": true
+    }
+  ],
+  "future_mutation_samples": [
+    {
+      "target_index": 301,
+      "passed": true
+    },
+    {
+      "target_index": 500,
+      "passed": true
+    },
+    {
+      "target_index": 1000,
+      "passed": true
+    },
+    {
+      "target_index": 1500,
+      "passed": true
+    },
+    {
+      "target_index": 2000,
+      "passed": true
+    },
+    {
+      "target_index": 2500,
+      "passed": true
+    },
+    {
+      "target_index": 3000,
+      "passed": true
+    },
+    {
+      "target_index": 3300,
+      "passed": true
+    },
+    {
+      "target_index": 3403,
+      "passed": true
+    }
+  ],
+  "normalizer_diagnostics": {
+    "max_joint_pmf_normalization_error": 0,
+    "uniform_partitions": [
+      {
+        "previous_draw_overlap": 0,
+        "uniform_partition": 658008,
+        "pmf_sum": 1
+      },
+      {
+        "previous_draw_overlap": 1,
+        "uniform_partition": 658008,
+        "pmf_sum": 1
+      },
+      {
+        "previous_draw_overlap": 2,
+        "uniform_partition": 658008,
+        "pmf_sum": 1
+      },
+      {
+        "previous_draw_overlap": 3,
+        "uniform_partition": 658008,
+        "pmf_sum": 1
+      },
+      {
+        "previous_draw_overlap": 4,
+        "uniform_partition": 658008,
+        "pmf_sum": 1
+      },
+      {
+        "previous_draw_overlap": 5,
+        "uniform_partition": 658008,
+        "pmf_sum": 1
+      }
+    ]
+  },
+  "replay": {
+    "deterministic": true,
+    "ledger_rows": 3103,
+    "ledger_columns": 38
+  },
+  "leakage_audit": {
+    "target_uses_only_lag1_and_lag2_prior_draws": true,
+    "all_cutoffs_strictly_before_target": true,
+    "future_mutation_invariance_passes": 9
+  },
+  "multiple_testing": {
+    "primary_grid_tests": 14,
+    "holm_adjusted_p_values": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "selected_endpoint_holm": [
+      1,
+      1
+    ]
+  },
+  "limitations": [
+    "Initial exploratory computation preceded protocol persistence; not preregistered before first scoring.",
+    "Historical Blind OOS is not virgin due repeated examination of the same archive.",
+    "Holm correction covers the 14 Q112 non-null candidates, not the entire historical SONAR research family.",
+    "No prospective outcomes after 2026-11-10 are available in this run."
+  ]
+}

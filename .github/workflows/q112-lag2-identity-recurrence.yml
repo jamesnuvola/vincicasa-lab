@@ -1,0 +1,29 @@
+name: Q112 lag-2 identity recurrence deterministic replay
+on:
+  push:
+    branches: ["research/q112-lag2-identity-recurrence-20261111"]
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/sonar_q112_lag2_identity_recurrence.mjs"
+      - "reports/sequence_agent/q112_lag2_identity_recurrence_*"
+      - "data/storico_daily.csv"
+      - ".github/workflows/q112-lag2-identity-recurrence.yml"
+permissions:
+  contents: read
+jobs:
+  q112-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Syntax check
+        run: node --check scripts/sonar_q112_lag2_identity_recurrence.mjs
+      - name: Deterministic recomputation and byte comparison
+        run: node scripts/sonar_q112_lag2_identity_recurrence.mjs --check
+      - name: Reconcile Git blob manifest
+        run: |
+          node -e 'const fs=require("fs");const cp=require("child_process");const m=JSON.parse(fs.readFileSync("reports/sequence_agent/q112_lag2_identity_recurrence_persistence_manifest_2026-11-11.json","utf8"));for(const f of m.files){const got=cp.execSync("git rev-parse HEAD:"+f.path).toString().trim();if(got!==f.git_blob_sha1)throw new Error("Blob mismatch "+f.path);if(fs.statSync(f.path).size!==f.bytes)throw new Error("Byte mismatch "+f.path);}console.log("Q112 manifest reconciled:",m.files.length,"files");'
