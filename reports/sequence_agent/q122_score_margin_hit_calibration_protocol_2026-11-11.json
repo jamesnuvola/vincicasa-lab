@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q122",
+  "title": "Prior-only APP Top20 boundary-margin calibration",
+  "status": "PREREGISTERED_BEFORE_CALCULATION",
+  "preregistered_at_utc": "2026-11-11T14:44:16Z",
+  "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "scorer_path": "src/VinciCasaLab.jsx",
+    "scorer_git_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "app_data_path": "src/data.json",
+    "app_data_git_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "archive_draws": 3404,
+    "archive_last_date": "2026-11-10"
+  },
+  "hypothesis": "The standardized score gap between APP SONAR ranks 20 and 21 may contain information about the next target's Top20 hit-count distribution: a larger prior-only boundary margin may correspond to a better calibrated or more concentrated hit-count forecast.",
+  "estimand": {
+    "forecast": "For target index t, execute the exact committed sonarAnalogCore on draws[0:t] and obtain its 40 ranked scores.",
+    "boundary_margin": "g_t=(score_rank20-score_rank21)/population_sd(all 40 scores); scores are sorted descending, so the numerator is non-negative.",
+    "outcome": "H_t = number of target draw numbers contained in the prior-only APP Top20.",
+    "states": "LOW if g<=q33; MID if q33<g<=q67; HIGH if g>q67.",
+    "thresholds": "q33 and q67 are order statistics at indices floor((199)/3)=66 and floor(2*199/3)=132 of the 200 margin values from calibration target indices 200..399. Thresholds are fixed thereafter; ties are not rebalanced."
+  },
+  "models": {
+    "M0": "Exact Hypergeometric(40,20,5), q0(k)=C(20,k)C(20,5-k)/C(40,5), k=0..5.",
+    "M1": "Unconditional prequential hit-count model P1(k)=(200*q0(k)+C_global(k))/(200+N_global).",
+    "M2": "Boundary-margin conditional model P2(k|state)=(200*P1(k)+C_state(k))/(200+N_state).",
+    "shrinkage": 200,
+    "tuning": "No parameter or threshold tuning on Discovery, Validation, or Blind OOS. Quantile thresholds are derived only from the 200 prior-only calibration forecasts and then frozen."
+  },
+  "sample": {
+    "warmup_draws": 200,
+    "margin_calibration_targets": 200,
+    "calibration_target_indices_inclusive": [
+      200,
+      399
+    ],
+    "scored_target_indices_inclusive": [
+      400,
+      3403
+    ],
+    "scored_targets": 3004,
+    "chronological_split": {
+      "discovery": 1802,
+      "validation": 601,
+      "blind_oos": 601
+    },
+    "split_rule": "60% / 20% / remainder of the 3,004 scored targets, in chronological order."
+  },
+  "endpoints": [
+    "Multiclass Brier score over H=0..5",
+    "Realized hit-count log-loss"
+  ],
+  "inference": {
+    "primary_segment": "Historical Blind OOS",
+    "comparisons": [
+      "M2 versus M1 (incremental margin information)",
+      "M2 versus M0 (overall calibration)"
+    ],
+    "method": "One-sided paired block sign-flip on per-target loss gains; positive means M2 improves.",
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "bootstrap": "Circular moving-block bootstrap, 10,000 replicates, block length 20, percentile 95% interval.",
+    "multiple_testing": "Holm across four primary endpoints: Brier and log-loss for M2 versus M1 and M2 versus M0."
+  },
+  "leakage_controls": [
+    "Pin canonical archive, APP data, and exact committed scorer blob SHAs.",
+    "For every target, compute all 40 scores from draws strictly before that target.",
+    "The 200 margin calibration forecasts use no target outcomes to estimate q33/q67.",
+    "After calibration, initialize sequential hit-count state only with outcomes whose targets precede the scored target.",
+    "Score first, then update global and margin-state counts with the current target outcome.",
+    "Mutate target and future suffix at nine fixed targets and verify the current margin and Top20 remain unchanged.",
+    "Verify APP modelDraws exactly matches canonical CSV row-by-row.",
+    "Replay the complete ledger, report, validation, and prospective freeze deterministically."
+  ],
+  "guardrails": [
+    "Research-only; no production scorer, ranking, or existing freeze changes.",
+    "Q122 prospective freeze is separate and is not a Q60 pair.",
+    "No Q60 gate edits and no reconstructed historical freezes.",
+    "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+    "No automatic merge or engine promotion.",
+    "Do not modify PR #6, #7, or #8."
+  ],
+  "decision_rule": "Retain M2 only as an exploratory diagnostic if it improves both Brier and log-loss versus M1 and M0 on Blind OOS with Holm-adjusted one-sided tests supporting improvement. Otherwise record a null/negative result. No production promotion."
+}
