@@ -2,7 +2,7 @@
   "experiment_id": "Q118",
   "branch": "research/q118-month-of-year-frequency-20261111",
   "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
-  "verified_at_utc": "2026-11-11T11:58:10Z",
+  "verified_at_utc": "2026-11-11T12:00:00Z",
   "artifacts": [
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_protocol_2026-11-11.json",
@@ -11,9 +11,9 @@
     },
     {
       "path": "scripts/sonar_q118_month_of_year_frequency.mjs",
-      "sha": "ae9f783b01e0cdbf8dd5e4bbd0f586bcf060b9ee",
-      "bytes": 8158,
-      "git_blob_sha": "ae9f783b01e0cdbf8dd5e4bbd0f586bcf060b9ee"
+      "sha": "90a85adfd9dbdd1b03c40df247680d96bbae61a9",
+      "bytes": 8246,
+      "git_blob_sha": "90a85adfd9dbdd1b03c40df247680d96bbae61a9"
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_report_2026-11-11.json",
@@ -37,9 +37,9 @@
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_checkpoint_2026-11-11.md",
-      "sha": "7dd99fa138ab343c2086f731432a38b8d1d13c08",
-      "bytes": 1581,
-      "git_blob_sha": "7dd99fa138ab343c2086f731432a38b8d1d13c08"
+      "sha": "87848ab37c3be9ed7b9f26ea46a529088856a507",
+      "bytes": 1840,
+      "git_blob_sha": "87848ab37c3be9ed7b9f26ea46a529088856a507"
     },
     {
       "path": ".github/workflows/ci.yml",
@@ -47,5 +47,5 @@
       "bytes": 2018
     }
   ],
-  "verification": "All listed artifacts were fetched back from the branch. The 1,164,337-byte ledger was fetched by Git blob SHA and confirmed to contain 3,205 lines. Initial Node 20 replay exposed a parse-time fs binding collision; runner corrected to freezeStats and checkpoint updated. The next CI run must pass before Node 20 replay is considered validated."
+  "verification": "The 1,164,337-byte ledger was fetched by Git blob SHA and confirmed to contain 3,205 lines. Node 20 first exposed a variable-name collision; after fixing that, the replay diagnostic exposed a runner-only mean helper that returned sums. Both runner defects are documented and corrected; final Node 20 CI rerun is still required."
 }
