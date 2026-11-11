@@ -1,12 +1,12 @@
 {
   "experiment": "Q129",
   "title": "Family-wise maximum Top20 hit audit across 42 fixed rule configurations",
-  "status": "PREREGISTERED_BEFORE_FINAL_RUN",
+  "status": "PREREGISTERED_DESIGN_WITH_SOURCE_PIN_METADATA_CORRECTION",
   "preregistration_timestamp_utc": "2026-11-11T22:47:10Z",
   "base_main_commit": "06e9e470054a86a0b710657db35e0c2259ef6b0a",
   "source": {
     "path": "reports/sequence_agent/historical_rule_ledger.csv",
-    "git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3",
+    "git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b",
     "rows": 134568,
     "targets": 3204,
     "configurations_per_target": 42,
@@ -81,5 +81,12 @@
     "The conditional randomization assumes independent uniform 5-of-40 outcomes across targets; the block bootstrap is a separate dependence-robust uncertainty summary.",
     "Monte Carlo p-value resolution is limited by 1000 randomization replicates.",
     "The statistic measures a post-selection maximum across candidate Top20 sets, not the performance of one deployable engine."
-  ]
+  ],
+  "source_sha_correction": {
+    "original_truncated_value": "553e08a3c7a0aabd092d3977b75bf959e90b8b3",
+    "corrected_git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b",
+    "reason": "The original source pin omitted its final hexadecimal character; the corrected 40-character SHA was verified against the base commit Git tree.",
+    "design_changed": false,
+    "statistical_results_changed": false
+  }
 }
