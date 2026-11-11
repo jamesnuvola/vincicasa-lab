@@ -1,0 +1,71 @@
+{
+  "experiment_id": "Q108",
+  "source_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+  "protocol_original_commit": "444b878815e3565682711763693946b4225ddfc0",
+  "protocol_timestamp_corrected_to_original_commit_time": true,
+  "replay": {
+    "method": "Re-read persisted runner's pure runAnalysis function and executed it against re-read canonical archive CSV.",
+    "report_validation_checkpoint": "Direct content equality with deterministic replay.",
+    "ledger": "Recomputed Git blob SHA-1 equals persisted Git blob SHA-1; GitHub fetch_file omits content for this >1 MB blob.",
+    "targets": 3102,
+    "validation_checks": "12/12 PASS"
+  },
+  "source_governance": {
+    "current_archive_rows": 3404,
+    "analysis_draws": 3403,
+    "official_cutoff": "2026-11-09",
+    "excluded_unverified_row": {
+      "date": "2026-11-10",
+      "numbers": [
+        1,
+        7,
+        11,
+        22,
+        25
+      ]
+    },
+    "official_status": "Contest 314 still shown as In programmazione/In attesa in the official November archive at the time of this run."
+  },
+  "files": {
+    "q108_lag1_parity_count_protocol_2026-11-11.json": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_protocol_2026-11-11.json",
+      "git_blob_sha1": "97b67acd45b66766abd60a7fc500fd647bb12c94",
+      "characters": 4879,
+      "verification": "Fetched content matched deterministic replay"
+    },
+    "sonar_q108_lag1_parity_count.js": {
+      "path": "scripts/sonar_q108_lag1_parity_count.js",
+      "git_blob_sha1": "d685d7b4fd796bb6e337bfe519b1b72724bd2478",
+      "characters": 19959,
+      "verification": "Fetched content matched deterministic replay"
+    },
+    "q108_lag1_parity_count_report_2026-11-11.json": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_report_2026-11-11.json",
+      "git_blob_sha1": "25b6ff634a7a03e988df30165e5e078a8e6559cf",
+      "characters": 6281,
+      "verification": "Fetched content matched deterministic replay"
+    },
+    "q108_lag1_parity_count_validation_2026-11-11.json": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_validation_2026-11-11.json",
+      "git_blob_sha1": "5e6a0b9e26acbc08fb5949ac779e58234d79b6fc",
+      "characters": 2310,
+      "verification": "Fetched content matched deterministic replay"
+    },
+    "q108_lag1_parity_count_target_ledger_2026-11-11.csv": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_target_ledger_2026-11-11.csv",
+      "git_blob_sha1": "7ed214789bf00abb6921924fa52c5b8a2065294c",
+      "characters": 0,
+      "verification": "Git blob SHA-1 matched recomputed ledger"
+    },
+    "q108_lag1_parity_count_checkpoint_2026-11-11.md": {
+      "path": "reports/sequence_agent/q108_lag1_parity_count_checkpoint_2026-11-11.md",
+      "git_blob_sha1": "c4aad89d4b60cd055f3393324fcf3869b6901542",
+      "characters": 947,
+      "verification": "Fetched content matched deterministic replay"
+    }
+  },
+  "limitations": [
+    "Full Node CLI --check and GitHub Actions status remain pending the branch/PR workflow.",
+    "Historical Blind OOS is not a virgin holdout; the experiment is exploratory."
+  ]
+}
