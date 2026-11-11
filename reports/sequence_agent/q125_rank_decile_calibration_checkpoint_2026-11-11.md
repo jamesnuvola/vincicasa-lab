@@ -15,6 +15,7 @@
 - First sampler used a 32-bit bitmask for 40 rank slots; JavaScript bit shifts 32..39 alias slots 0..7. Those initial p-values are superseded and must not be used.
 - Replaced the sampler with a Set-based without-replacement implementation and recomputed all 20,000 randomization replicates. Bootstrap and observed decile counts are unchanged.
 - Q125 reuses the fixed Q123 prior-only rank ledger; it does not rerun the APP scorer.
+- The first Node 20 replay then caught a field-name mismatch in the added ledger verifier (parent schema uses r/idx/date/cutoff/sum/top5/top10/top20); the verifier was aligned and will be rerun.
 - Q123 strict-prior and future-suffix checks (9/9) are inherited, not rerun.
 - Historical Blind OOS is not a virgin holdout.
 - No forecast freeze, Q60 record, production engine, or protected PR was modified.
