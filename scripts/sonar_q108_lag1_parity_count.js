@@ -294,7 +294,17 @@ async function main() {
   };
   if(process.argv.includes("--check")){
     for(const [p,expected] of Object.entries(outputs)){
-      assert(fs.readFileSync(p,"utf8")===expected,"persisted artifact mismatch: "+path.basename(p));
+      const actual=fs.readFileSync(p,"utf8");
+      if(actual!==expected){
+        let i=0; while(i<Math.min(actual.length,expected.length)&&actual[i]===expected[i]) i++;
+        console.error(JSON.stringify({
+          artifact:path.basename(p),actual_chars:actual.length,expected_chars:expected.length,
+          first_difference:i,actual_snippet:actual.slice(Math.max(0,i-60),i+120),
+          expected_snippet:expected.slice(Math.max(0,i-60),i+120),
+          actual_git_blob_sha1:gitBlobSha1(actual),expected_git_blob_sha1:gitBlobSha1(expected)
+        }));
+        assert(false,"persisted artifact mismatch: "+path.basename(p));
+      }
     }
     const manifest=JSON.parse(fs.readFileSync(MANIFEST_PATH,"utf8"));
     for(const [p,expected] of Object.entries(outputs)){
