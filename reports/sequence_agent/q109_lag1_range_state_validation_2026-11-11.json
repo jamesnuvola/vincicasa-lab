@@ -1,0 +1,83 @@
+{
+  "experiment_id": "Q109",
+  "status": "PASS",
+  "passed": 14,
+  "total": 14,
+  "checks": [
+    {
+      "name": "archive_shape",
+      "pass": true,
+      "detail": "3,404 draws, 2017-07-17 through 2026-11-10"
+    },
+    {
+      "name": "draw_integrity",
+      "pass": true,
+      "detail": "All rows contain five distinct integers in 1..40"
+    },
+    {
+      "name": "chronology",
+      "pass": true,
+      "detail": "Strictly increasing unique dates"
+    },
+    {
+      "name": "range_support",
+      "pass": true,
+      "detail": "All observed ranges lie in 4..39"
+    },
+    {
+      "name": "exact_null_mass",
+      "pass": true,
+      "detail": "Integer range counts sum exactly to C(40,5)"
+    },
+    {
+      "name": "target_count",
+      "pass": true,
+      "detail": "3,103 targets split 1,861/620/622"
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "pass": true,
+      "detail": "All training pairs end no later than the previous draw"
+    },
+    {
+      "name": "first_forecast_support",
+      "pass": true,
+      "detail": "First forecast begins after 300 prior transitions"
+    },
+    {
+      "name": "probability_normalization",
+      "pass": true,
+      "detail": "Maximum forecast PMF normalization error < 1e-12"
+    },
+    {
+      "name": "finite_positive_probabilities",
+      "pass": true,
+      "detail": "Shrinkage keeps realized probabilities finite and positive"
+    },
+    {
+      "name": "future_mutation_invariance",
+      "pass": true,
+      "detail": "9/9 suffix mutation tests preserved prior forecast"
+    },
+    {
+      "name": "deterministic_ledger_replay",
+      "pass": true,
+      "detail": "Second independent ledger replay matches all target losses"
+    },
+    {
+      "name": "inference_constants",
+      "pass": true,
+      "detail": "Block length 20, 50,000 sign flips, 10,000 bootstrap replicates"
+    },
+    {
+      "name": "holm_reconciliation",
+      "pass": true,
+      "detail": "Holm adjusted p-values are valid probabilities"
+    }
+  ],
+  "source_archive_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+  "ledger_rows": 3103,
+  "max_probability_normalization_error": 0,
+  "blind_sign_flip_replicates": 50000,
+  "bootstrap_replicates": 10000
+}
