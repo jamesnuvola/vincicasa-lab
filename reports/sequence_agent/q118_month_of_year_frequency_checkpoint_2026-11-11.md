@@ -15,3 +15,5 @@
 - First Node 20 replay run 43016008865 reached the Q118 step after all preceding repository checks passed, then failed at parse time because the local variable `fs` redeclared the imported `node:fs` binding.
 - Root cause was a naming collision only; no statistical calculation or persisted result was implicated.
 - Corrected the local variable to `freezeStats`; the next CI run must still complete before the Node 20 replay is declared passed.
+
+- Second replay diagnostic showed the Node runner's mean helper returned a sum instead of an average. Corrected the helper to divide by the sample length; the precomputed V8 report/ledger were unaffected. A full replay is being repeated before accepting CI.
