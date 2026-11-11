@@ -159,5 +159,21 @@ function run(){
  return{reportText,ledger,validationText,checkpointText,manifestText,report,validation,checks,rows};
 }
 const out=run();
-for(const [p,expected] of [[P.report,out.reportText],[P.ledger,out.ledger],[P.validation,out.validationText],[P.checkpoint,out.checkpointText],[P.manifest,out.manifestText]])assert(read(p)===expected,"persisted artifact mismatch: "+p);
+function diffJson(a,b,prefix="",out=[]){
+ if(Object.is(a,b))return out;
+ if(a&&b&&typeof a==="object"&&typeof b==="object"){
+  const keys=new Set([...Object.keys(a),...Object.keys(b)]);
+  for(const k of keys)diffJson(a[k],b[k],prefix?prefix+"."+k:k,out);
+  return out;
+ }
+ out.push({path:prefix,saved:a,generated:b});
+ return out;
+}
+for(const [p,expected] of [[P.report,out.reportText],[P.ledger,out.ledger],[P.validation,out.validationText],[P.checkpoint,out.checkpointText],[P.manifest,out.manifestText]]){
+ const actual=read(p);
+ if(actual!==expected){
+  if(p===P.report){const d=diffJson(JSON.parse(actual),JSON.parse(expected));console.error("Q128_REPORT_DIFF "+JSON.stringify(d.slice(0,30)));}
+  throw new Error("persisted artifact mismatch: "+p);
+ }
+}
 console.log("Q128 CHECK PASS: "+out.rows.length+" targets; "+out.checks.length+"/"+out.checks.length+" checks; six inferential endpoints; report/ledger/validation/checkpoint byte-identical; 7/7 manifest entries verified.");
