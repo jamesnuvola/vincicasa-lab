@@ -409,7 +409,8 @@ function run() {
     inference_constants:{alpha:ALPHA,block_length:BLOCK,block_sign_flip_replicates:SIGN_REPS,circular_block_bootstrap_replicates:BOOT_REPS,seed:SEED,holm_family_size:4}
   };
   assert(validationReport.status==="PASS","one or more Q107 integrity checks failed");
-  const ledger = buildLedger(rows);\n  assert(ledger.split("\\n").length === rows.length + 2, "ledger must contain one header plus every target row and a final newline");
+  const ledger = buildLedger(rows);
+  assert(ledger.split("\n").length === rows.length + 2, "ledger must contain one header plus every target row and a final newline");
   const checkpoint = [
     "# Q107 — second-order overlap memory checkpoint (2026-11-11)","",
     "- Status: " + report.decision + ".",
