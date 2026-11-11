@@ -1,0 +1,339 @@
+{
+  "experiment_id": "Q119",
+  "title": "Day-of-month conditioned order-statistic marginal calibration",
+  "generated_at_utc": "2026-11-11T12:19:52.529Z",
+  "status": "COMPLETED_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_DAY_OF_MONTH_ORDER_STATISTIC_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "Day-of-month-conditioned order-statistic marginals may improve prediction of the next sorted draw positions beyond exact order-statistic null and global empirical order-statistic baselines.",
+  "model": {
+    "global_beta": 200,
+    "alpha_grid": [
+      25,
+      50,
+      100,
+      200,
+      400,
+      800,
+      1600,
+      3200
+    ],
+    "selected_alpha": 3200,
+    "selection_rule": "minimum Validation mean marginal position log-loss; ties choose larger alpha",
+    "null_formula": "q_j(x)=C(x-1,j-1)*C(40-x,5-j)/C(40,5)",
+    "global_formula": "pG_j(x)=(C_global[j,x]+beta*q_j(x))/(t+beta)",
+    "day_formula": "pDOM_j(x)=(C_dom[j,x]+alpha*pG_j(x))/(N_dom+alpha)",
+    "day_key": "UTC day-of-month 1..31",
+    "scoring": "five marginal position log-losses averaged; Brier averaged over 5 x 40 cells; no joint draw likelihood"
+  },
+  "walk_forward": {
+    "targets": 3204,
+    "minimum_history": 200,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior_cutoffs": true,
+    "score_before_update": true
+  },
+  "selection_interpretation": "All alpha candidates are scored prequentially. Validation selects alpha only after the full Validation segment; its selected-alpha score is a selection statistic, not an unbiased estimate. The selected alpha is evaluated inferentially only on the later Blind OOS segment.",
+  "validation_alpha_table": [
+    {
+      "alpha": 3200,
+      "mean_position_logloss": 3.100856776554,
+      "mean_position_brier": 0.023644586754
+    },
+    {
+      "alpha": 1600,
+      "mean_position_logloss": 3.101556413665,
+      "mean_position_brier": 0.023646183526
+    },
+    {
+      "alpha": 800,
+      "mean_position_logloss": 3.103329599844,
+      "mean_position_brier": 0.023649977048
+    },
+    {
+      "alpha": 400,
+      "mean_position_logloss": 3.107861141277,
+      "mean_position_brier": 0.023659186475
+    },
+    {
+      "alpha": 200,
+      "mean_position_logloss": 3.118683372645,
+      "mean_position_brier": 0.023680321724
+    },
+    {
+      "alpha": 100,
+      "mean_position_logloss": 3.140920433062,
+      "mean_position_brier": 0.023721371575
+    },
+    {
+      "alpha": 50,
+      "mean_position_logloss": 3.178015664896,
+      "mean_position_brier": 0.023782486189
+    },
+    {
+      "alpha": 25,
+      "mean_position_logloss": 3.227846982739,
+      "mean_position_brier": 0.023849396044
+    }
+  ],
+  "results": {
+    "discovery": {
+      "M0": {
+        "n": 1922,
+        "mean_position_logloss": 3.118557812573,
+        "mean_position_brier": 0.023681906598
+      },
+      "M1": {
+        "n": 1922,
+        "mean_position_logloss": 3.131467711687,
+        "mean_position_brier": 0.023698614791
+      },
+      "M31_selected_alpha": {
+        "n": 1922,
+        "mean_position_logloss": 3.131534322671,
+        "mean_position_brier": 0.023698614003
+      },
+      "gains": {
+        "M31_vs_M0": {
+          "position_logloss": -0.012976510098,
+          "position_brier": -0.000016707405
+        },
+        "M31_vs_M1": {
+          "position_logloss": -0.000066610984,
+          "position_brier": 7.88e-10
+        }
+      }
+    },
+    "validation": {
+      "M0": {
+        "n": 641,
+        "mean_position_logloss": 3.093550114481,
+        "mean_position_brier": 0.023633323507
+      },
+      "M1": {
+        "n": 641,
+        "mean_position_logloss": 3.100318973533,
+        "mean_position_brier": 0.023643239285
+      },
+      "M31_selected_alpha": {
+        "n": 641,
+        "mean_position_logloss": 3.100856776554,
+        "mean_position_brier": 0.023644586754
+      },
+      "gains": {
+        "M31_vs_M0": {
+          "position_logloss": -0.007306662073,
+          "position_brier": -0.000011263247
+        },
+        "M31_vs_M1": {
+          "position_logloss": -0.000537803021,
+          "position_brier": -0.000001347469
+        }
+      }
+    },
+    "blind_oos": {
+      "M0": {
+        "n": 641,
+        "mean_position_logloss": 3.133456844675,
+        "mean_position_brier": 0.02367142579
+      },
+      "M1": {
+        "n": 641,
+        "mean_position_logloss": 3.139851283703,
+        "mean_position_brier": 0.023675313596
+      },
+      "M31_selected_alpha": {
+        "n": 641,
+        "mean_position_logloss": 3.139722759439,
+        "mean_position_brier": 0.02367504256
+      },
+      "gains": {
+        "M31_vs_M0": {
+          "position_logloss": -0.006265914764,
+          "position_brier": -0.00000361677
+        },
+        "M31_vs_M1": {
+          "position_logloss": 0.000128524264,
+          "position_brier": 2.71036e-7
+        }
+      }
+    }
+  },
+  "blind_inference": {
+    "method": "one-sided paired block sign-flip",
+    "replicates": 50000,
+    "block_length": 20,
+    "bootstrap": "circular moving-block bootstrap",
+    "bootstrap_replicates": 10000,
+    "correction": "Holm within Q119 four endpoints and extended Holm across Q117-Q119 calendar family (12 endpoints)",
+    "tests": [
+      {
+        "endpoint": "M31_vs_M0_position_logloss",
+        "mean_gain": -0.006265914764,
+        "p_one_sided_improvement": 0.996500069999,
+        "bootstrap_ci95": [
+          -0.010696491563,
+          -0.002245409734
+        ],
+        "signflip_extreme": 49825,
+        "block_count": 33,
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "p_holm_within_q119": 1
+      },
+      {
+        "endpoint": "M31_vs_M0_position_brier",
+        "mean_gain": -0.00000361677,
+        "p_one_sided_improvement": 0.886842263155,
+        "bootstrap_ci95": [
+          -0.000009300448,
+          0.000002274165
+        ],
+        "signflip_extreme": 44342,
+        "block_count": 33,
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "p_holm_within_q119": 1
+      },
+      {
+        "endpoint": "M31_vs_M1_position_logloss",
+        "mean_gain": 0.000128524264,
+        "p_one_sided_improvement": 0.314353712926,
+        "bootstrap_ci95": [
+          -0.000411231608,
+          0.000687679484
+        ],
+        "signflip_extreme": 15717,
+        "block_count": 33,
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "p_holm_within_q119": 1
+      },
+      {
+        "endpoint": "M31_vs_M1_position_brier",
+        "mean_gain": 2.71036e-7,
+        "p_one_sided_improvement": 0.323253534929,
+        "bootstrap_ci95": [
+          -8.78825e-7,
+          0.000001414161
+        ],
+        "signflip_extreme": 16162,
+        "block_count": 33,
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "p_holm_within_q119": 1
+      }
+    ],
+    "extended_calendar_family_holm": [
+      {
+        "experiment": "Q117",
+        "endpoint": "M7_vs_M0_joint_logloss_gain",
+        "p": 0.7870242595148097,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q117",
+        "endpoint": "M7_vs_M0_marginal_brier_gain",
+        "p": 0.8110637787244255,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q117",
+        "endpoint": "M7_vs_M1_joint_logloss_gain",
+        "p": 0.7032859342813144,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q117",
+        "endpoint": "M7_vs_M1_marginal_brier_gain",
+        "p": 0.7224455510889782,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q118",
+        "endpoint": "M12_vs_M0_joint_logloss",
+        "p": 0.964460710786,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q118",
+        "endpoint": "M12_vs_M0_marginal_brier",
+        "p": 0.964500709986,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q118",
+        "endpoint": "M12_vs_M1_joint_logloss",
+        "p": 0.965700685986,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q118",
+        "endpoint": "M12_vs_M1_marginal_brier",
+        "p": 0.963040739185,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q119",
+        "endpoint": "M31_vs_M0_position_logloss",
+        "p": 0.996500069999,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q119",
+        "endpoint": "M31_vs_M0_position_brier",
+        "p": 0.886842263155,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q119",
+        "endpoint": "M31_vs_M1_position_logloss",
+        "p": 0.314353712926,
+        "p_holm": 1
+      },
+      {
+        "experiment": "Q119",
+        "endpoint": "M31_vs_M1_position_brier",
+        "p": 0.323253534929,
+        "p_holm": 1
+      }
+    ]
+  },
+  "integrity": {
+    "checks_passed": 16,
+    "checks_total": 16,
+    "archive_valid": true,
+    "strict_prior_cutoffs": true,
+    "score_before_update": true,
+    "order_statistic_null_max_sum_error": 0,
+    "max_probability_mass_error": 0,
+    "selected_alpha_validation_only": true,
+    "probability_support_positive": true,
+    "future_suffix_mutation": "9/9",
+    "deterministic_replay": true,
+    "ledger_rows": 3205,
+    "ledger_precision_decimal_places": 10
+  },
+  "limitations": [
+    "The five marginal position distributions do not specify a valid joint distribution over the ordered five-number draw.",
+    "Historical Blind OOS is not a virgin holdout after prior SONAR research.",
+    "The extended Holm family covers the four selected endpoints from each of Q117, Q118, and Q119 only; it does not correct the full Q00-Q119 research family.",
+    "Day-of-month groups have limited effective sample size and hierarchical shrinkage may dominate.",
+    "This is a research diagnostic, not the production SONAR scorer or a Q60 forecast."
+  ]
+}
