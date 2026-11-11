@@ -80,7 +80,7 @@ function runCore(archiveText, sourceText, appText, activeText, protocolText, pro
       dist=next;
     }
     const mass=sum(dist);let tail=0;for(let j=observed;j<dist.length;j++)tail+=dist[j];
-    return {observed,expected:rnd(N*K/8),mass_error:Math.abs(1-mass),p_one_sided_upper:rnd(Math.min(1,tail))};
+    return {observed,expected:rnd(N*K/8),mass_error:rnd(Math.abs(1-mass),18),p_one_sided_upper:rnd(Math.min(1,tail))};
   }
   function holm(tests){
     const order=tests.map((x,i)=>({i,p:x.p_one_sided_improvement??x.p_one_sided_upper})).sort((a,b)=>a.p-b.p);
