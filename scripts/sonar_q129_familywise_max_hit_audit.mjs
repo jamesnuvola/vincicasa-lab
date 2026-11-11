@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 const P='reports/sequence_agent/';
 const read=(p)=>fs.readFileSync(p,'utf8');
 const sha=(s)=>{const b=Buffer.from(s,'utf8');return crypto.createHash('sha1').update(Buffer.concat([Buffer.from('blob '+b.length+'\0'),b])).digest('hex');};
@@ -11,8 +12,11 @@ const pop=(x)=>{x=x-((x>>>1)&0x55555555);x=(x&0x33333333)+((x>>>2)&0x33333333);r
 const csv=(s)=>s.trimEnd().split(/\r?\n/).map(x=>x.split(','));
 const protocolPath=P+'q129_familywise_max_hit_audit_protocol_2026-11-11.json';
 const protocolText=read(protocolPath),protocol=JSON.parse(protocolText);
-const sourceText=read('reports/sequence_agent/historical_rule_ledger.csv');
-if(sha(sourceText)!==protocol.source.git_blob_sha)throw new Error('source blob SHA mismatch');
+const sourcePath='reports/sequence_agent/historical_rule_ledger.csv';
+const committedSourceBlob=execFileSync('git',['rev-parse',`HEAD:${sourcePath}`],{encoding:'utf8'}).trim();
+if(committedSourceBlob!==protocol.source.git_blob_sha)throw new Error('source Git tree blob SHA mismatch: '+committedSourceBlob);
+try{execFileSync('git',['diff','--quiet','HEAD','--',sourcePath],{stdio:'ignore'});}catch{throw new Error('source working-tree content differs from committed Git blob');}
+const sourceText=read(sourcePath);
 const lines=csv(sourceText),h=lines[0],ix={d:h.indexOf('target_date'),c:h.indexOf('history_cutoff'),id:h.indexOf('config_id'),t:h.indexOf('top20'),a:h.indexOf('actual_numbers'),hit:h.indexOf('hit_count'),mode:h.indexOf('evaluation_mode')};
 const groups=[];let g=null,errors=0;
 for(let i=1;i<lines.length;i++){const f=lines[i];if(!g||g.date!==f[ix.d]){if(g)groups.push(g);g={date:f[ix.d],cut:f[ix.c],actual:f[ix.a],am:mask(f[ix.a]),cfg:[],ids:new Set()};}
