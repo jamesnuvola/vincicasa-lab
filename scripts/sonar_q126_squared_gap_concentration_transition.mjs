@@ -24,7 +24,7 @@ function assert(c,m){if(!c)fail(m);}
 function read(p){return fs.readFileSync(path.join(ROOT,p),"utf8");}
 function utf8Bytes(s){return Buffer.byteLength(s,"utf8");}
 function gitBlobSha(s){const b=Buffer.from(s,"utf8");const h=Buffer.from("blob "+b.length+"\0","utf8");return crypto.createHash("sha1").update(Buffer.concat([h,b])).digest("hex");}
-function round(x){return Number(x.toFixed(9));}
+function round(x){return Number(x.toFixed(6));}
 function mean(a){return a.reduce((x,y)=>x+y,0)/a.length;}
 function makeRng(seed){let x=seed>>>0;return()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return(x>>>0)/4294967296;};}
 function parseArchive(s){const l=s.trim().split(/\r?\n/);assert(l[0]==="data,n1,n2,n3,n4,n5","archive header mismatch");return l.slice(1).map(x=>{const f=x.split(",");return{d:f[0],n:f.slice(1).map(Number)};});}
@@ -143,7 +143,7 @@ function build(){
   next_action:"After official publication of contest 315, score immutable 11-Nov freezes without retuning and continue append-only Q60 paired collection."
  };
  const header="target_index,target_date,cutoff_date,previous_G,previous_state,G,global_prior_n,state_prior_n,split,m0_logloss,m1_logloss,m2_logloss,m0_brier,m1_brier,m2_brier,m0_mass,m1_mass,m2_mass";
- const csv=[header].concat(rows.map(r=>[r.target_index,r.target_date,r.cutoff_date,r.previous_G,r.previous_state,r.G,r.global_prior_n,r.state_prior_n,r.split,...["m0_logloss","m1_logloss","m2_logloss","m0_brier","m1_brier","m2_brier","m0_mass","m1_mass","m2_mass"].map(k=>round(r[k]).toFixed(9))].join(","))).join("\n")+"\n";
+ const csv=[header].concat(rows.map(r=>[r.target_index,r.target_date,r.cutoff_date,r.previous_G,r.previous_state,r.G,r.global_prior_n,r.state_prior_n,r.split,...["m0_logloss","m1_logloss","m2_logloss","m0_brier","m1_brier","m2_brier","m0_mass","m1_mass","m2_mass"].map(k=>round(r[k]).toFixed(6))].join(","))).join("\n")+"\n";
  const validation={schema_version:"1.0",experiment_id:"Q126",status:"PASS",checks:checks.map(x=>({name:x[0],passed:x[1]})),exact_null:{subsets:nm.total,support_size:S,probability_mass:round(nm.q0.reduce((a,b)=>a+b,0)),quartile_cutpoints:{q25:nm.q25,q50:nm.q50,q75:nm.q75}},target_ledger:{rows:rows.length,first_target:rows[0].target_date,last_target:rows[rows.length-1].target_date,split_sizes:SPLITS},future_suffix_mutation_checks:{passed:future,total:9},inference:{endpoints:endpoints.length,sign_flip_replicates:50000,bootstrap_replicates:10000,all_p_values_finite:endpoints.every(x=>Number.isFinite(x.p_value)),all_holm_finite:endpoints.every(x=>Number.isFinite(x.holm_adjusted_p))},limitations:["No independent prospective outcome exists yet for the 11-Nov target.","No Q60 or production forecast was changed."]};
  const checkpoint=[
   "# Q126 checkpoint — squared-gap concentration transition","",
