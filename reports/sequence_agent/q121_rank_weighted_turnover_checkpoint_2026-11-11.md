@@ -1,6 +1,6 @@
 # Q121 checkpoint — rank-weighted forecast turnover
 
-- Protocol committed before calculation; protocol commit: 7f440b4fdd2cd772e6e16ac3ccc1d1d15c6e10f2 (2026-11-11T14:45:48+01:00).
+- Protocol committed before calculation; protocol commit: a6f43e60feb7879644aeae9220e855c1153115f4 (2026-11-11T14:41:56+01:00).
 - Source main commit 04fed58ab8a4226da3cd2bc2a495a12095941355; archive blob 40f317e2d0067e061c46ab799d66f777a0e087c0; 3404 draws through 2026-11-10.
 - Exact APP scorer blob 7ccb9a2abfe452ec535913b70225bc109f692304; app data blob 25c0b2316662664deff9e2157e60ec56cfa3a640; APP data row-by-row matches canonical archive: true.
 - Walk-forward: 3203 strict-prior targets; Discovery / Validation / historical Blind OOS = 1922 / 641 / 640.
