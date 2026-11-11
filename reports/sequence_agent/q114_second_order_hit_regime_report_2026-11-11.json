@@ -1,0 +1,212 @@
+{
+  "experiment_id": "Q114",
+  "title": "Second-order active-engine Top20 hit-count regime",
+  "generated_at_utc": "2026-11-11T07:42:54Z",
+  "decision": "NO_SECOND_ORDER_HIT_REGIME_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "source_q113_ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "source_q113_freeze_blob_sha": "ea9387df6ad3c1afd31d19e225892bb624d79f13",
+    "source_draw_count": 3404,
+    "source_target_rows": 3203,
+    "first_source_target": "2018-02-03",
+    "last_source_target": "2026-11-10"
+  },
+  "walk_forward": {
+    "targets": 3202,
+    "split_sizes": {
+      "discovery": 1920,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "alpha": 200,
+    "metrics": {
+      "discovery": {
+        "targets": 1920,
+        "mean_actual_hits": 2.521354166666667,
+        "m1_vs_m0": {
+          "brier_gain": -0.00035342144397399204,
+          "log_loss_gain": -0.002236938440591763
+        },
+        "m2_vs_m1": {
+          "brier_gain": -0.00024370104670243224,
+          "log_loss_gain": -0.0018034461758632385
+        },
+        "m2_vs_m0": {
+          "brier_gain": -0.0005971224906764251,
+          "log_loss_gain": -0.004040384616455007
+        }
+      },
+      "validation": {
+        "targets": 641,
+        "mean_actual_hits": 2.436817472698908,
+        "m1_vs_m0": {
+          "brier_gain": -0.0010205784803116276,
+          "log_loss_gain": -0.002342426406065667
+        },
+        "m2_vs_m1": {
+          "brier_gain": -0.0009574784101958523,
+          "log_loss_gain": -0.0024005899750060684
+        },
+        "m2_vs_m0": {
+          "brier_gain": -0.0019780568905074796,
+          "log_loss_gain": -0.004743016381071732
+        }
+      },
+      "blind_oos": {
+        "targets": 641,
+        "mean_actual_hits": 2.5257410296411855,
+        "m1_vs_m0": {
+          "brier_gain": -0.0015143918237615632,
+          "log_loss_gain": -0.004354781265305758
+        },
+        "m2_vs_m1": {
+          "brier_gain": -0.0021704882004172604,
+          "log_loss_gain": -0.007417608876545382
+        },
+        "m2_vs_m0": {
+          "brier_gain": -0.0036848800241788254,
+          "log_loss_gain": -0.011772390141851143
+        }
+      }
+    }
+  },
+  "blind_inference": {
+    "brier": {
+      "gain": -0.0021704882004172604,
+      "p_value": 0.990740185196296,
+      "simulations": 50000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.0037530235394230838,
+        -0.0005248174416020461
+      ]
+    },
+    "log_loss": {
+      "gain": -0.007417608876545382,
+      "p_value": 0.997240055198896,
+      "simulations": 50000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.01193101521859474,
+        -0.002743333937962857
+      ]
+    },
+    "holm_family_size": 2,
+    "holm_adjusted": {
+      "brier": 1,
+      "log_loss": 1
+    },
+    "alternative": "one-sided improvement: mean(M1 loss - M2 loss) > 0"
+  },
+  "descriptive": {
+    "overall_mean_hits": 2.5053091817613993,
+    "null_expected_hits": 2.5,
+    "blind_pair_state_support": {
+      "min": 2,
+      "median": 143,
+      "max": 370,
+      "unique_states": 35
+    },
+    "max_pmf_normalization_error": 2.220446049250313e-16
+  },
+  "prospective": {
+    "experiment_id": "Q114",
+    "status": "FROZEN_PENDING",
+    "target_date": "2026-11-11",
+    "frozen_at_local": "2026-11-11T08:42:54+01:00",
+    "frozen_at_utc": "2026-11-11T07:42:54Z",
+    "history_cutoff": "2026-11-10",
+    "source_main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "source_archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "source_q113_ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "source_q113_freeze_blob_sha": "ea9387df6ad3c1afd31d19e225892bb624d79f13",
+    "previous_hits_lag1": 2,
+    "previous_hits_lag2": 4,
+    "pair_state_support": 150,
+    "alpha": 200,
+    "baseline_pmf": [
+      0.02356202356202356,
+      0.14726264726264726,
+      0.32917532917532916,
+      0.32917532917532916,
+      0.14726264726264726,
+      0.02356202356202356
+    ],
+    "first_order_pmf": [
+      0.03212977727540834,
+      0.13952470020431187,
+      0.31620960019018274,
+      0.35342642866914714,
+      0.13709751573829246,
+      0.021611977922657535
+    ],
+    "second_order_pmf": [
+      0.029788444157376196,
+      0.13115697154532105,
+      0.3264054858229615,
+      0.36767224495379836,
+      0.12691286613616712,
+      0.018063987384375733
+    ],
+    "first_order_max_abs_diff_vs_q113_freeze": 0,
+    "expected_hits_baseline": 2.4999999999999996,
+    "expected_hits_first_order": 2.4886731391585766,
+    "expected_hits_second_order": 2.4849560795191863,
+    "expected_hits_delta_second_vs_first": -0.0037170596393902855,
+    "active_engine_top20": [
+      25,
+      16,
+      38,
+      17,
+      36,
+      1,
+      28,
+      26,
+      27,
+      9,
+      34,
+      12,
+      8,
+      10,
+      21,
+      20,
+      15,
+      39,
+      30,
+      37
+    ],
+    "active_engine_top10": [
+      25,
+      16,
+      38,
+      17,
+      36,
+      1,
+      28,
+      26,
+      27,
+      9
+    ],
+    "active_engine_top5": [
+      25,
+      16,
+      38,
+      17,
+      36
+    ],
+    "outcome": null,
+    "evaluation": "After official 2026-11-11 result, append observed Top20 hit count only; do not retune from this target."
+  },
+  "limitations": [
+    "Q114 is exploratory and was not preregistered before the initial historical computation; the protocol records this limitation.",
+    "Historical Blind OOS is not a virgin holdout and has been examined by related SONAR research.",
+    "The Top20 hit-count sequence is derived from the active engine and historical outcomes; it tests calibration of hit-count probabilities, not winning-number prediction.",
+    "The fixed alpha=200 is inherited from Q113; no alpha grid or subgroup tuning was performed.",
+    "Holm correction covers the two Q114 primary endpoints only, not the entire Q00-Q114 research family.",
+    "The prospective 2026-11-11 freeze is a single descriptive observation until the official result is available."
+  ],
+  "next_action": "Await official 2026-11-11 result; score Q112/Q113/Q114 freezes without retuning. Continue Q60 from 23/200; 177 paired targets remain."
+}
