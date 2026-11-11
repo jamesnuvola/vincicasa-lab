@@ -1,0 +1,35 @@
+name: Q110 median-state deterministic replay
+
+on:
+  push:
+    branches:
+      - research/q110-lag1-median-state-20261111
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "data/storico_daily.csv"
+      - "src/data.json"
+      - "scripts/sonar_q110_median_state.js"
+      - ".github/workflows/q110-median-state.yml"
+      - "reports/sequence_agent/q110_lag1_median_state_*"
+      - "reports/sequence_agent/q60_contest314_gate_refresh_2026-11-11.json"
+      - "reports/sequence_agent/shadow_forecasts.csv"
+      - "reports/sequence_agent/position_mix_shadow.csv"
+      - "reports/sequence_agent/prospective_promotion_gate.json"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Syntax check
+        run: node --check scripts/sonar_q110_median_state.js
+      - name: Recompute and byte-compare persisted artifacts
+        run: node scripts/sonar_q110_median_state.js --check
