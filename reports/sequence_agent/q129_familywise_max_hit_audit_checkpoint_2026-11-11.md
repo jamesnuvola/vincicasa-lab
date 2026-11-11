@@ -23,3 +23,10 @@
 - No protocol, source ledger, statistical result, target freeze, canonical archive, Q60 record, or production scorer was changed.
 - The updated runner blob is `cfba32f0005eee8f62368587f887137e983845dc` (9,735 UTF-8 bytes).
 - Fresh exact-head replay is pending.
+
+## Contest 315 source refresh — 2026-11-12
+
+- Two current secondary pages independently display contest 315 (11/11/2026) as **1, 21, 22, 27, 29**: estrazionedellotto.it latest-results page and the dedicated Estrazioni di Oggi contest article.
+- Sisal's official latest-extraction page confirms contest 315 and the prize profile (0 / 2 / 178 / 1,947), but its extracted page text still does not expose the five numbers. The official VinciCasa archive still labels contest 315 pending and the official bulletin index still shows 10/11 as latest.
+- The result therefore remains `PROVISIONAL_SECONDARY_SOURCE_CORROBORATED`; the shadow scores are unchanged (42-rule Top20 maximum 5; APP Top20 3; positional Top20 2). Do not append to canonical archive or increment Q60.
+- Updated provisional observation blob: `02011d56d326a9a67cb8a22ff3db55f46e13c826`.
