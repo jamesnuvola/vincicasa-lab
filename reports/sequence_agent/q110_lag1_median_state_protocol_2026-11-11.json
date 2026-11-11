@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q110",
+  "title": "Lag-1 median order-statistic state memory",
+  "preregistered_at_local": "2026-11-11T04:41:05+01:00",
+  "status": "PREREGISTERED_RESEARCH_ONLY",
+  "source": {
+    "pinned_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10",
+    "generated_app_data_path": "src/data.json",
+    "generated_app_data_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "reconciliation": "data/storico_daily.csv matches src/data.json:modelDraws row-for-row on all 3,404 dates and five-number sets."
+  },
+  "hypothesis": "The previous draw's third order statistic (median) may add one-step information about the next draw's median beyond its exact combinatorial marginal distribution.",
+  "definition": {
+    "feature": "M_t = the third sorted number in draw D_t",
+    "support": {
+      "minimum": 3,
+      "maximum": 38,
+      "size": 36
+    },
+    "exact_null": "q0(m) = C(m-1,2) * C(40-m,2) / C(40,5), m=3..38",
+    "denominator": 658008
+  },
+  "models": {
+    "M0": "Exact combinatorial median PMF q0.",
+    "M1": "One-step categorical shrinkage conditional on previous median s: p_t(m|s) = [alpha*q0(m) + N_{s,m}(t)]/[alpha + N_s(t)].",
+    "alpha": 200,
+    "parameter_selection": "None; alpha fixed before scoring."
+  },
+  "walk_forward": {
+    "warmup_transition_pairs": 300,
+    "first_target_index_zero_based": 301,
+    "expected_targets": 3103,
+    "chronological_splits": "60% discovery / 20% validation / remaining 20% historical blind OOS; floor for first two segments.",
+    "expected_split_sizes": {
+      "discovery": 1861,
+      "validation": 620,
+      "historical_blind_oos": 622
+    },
+    "cutoff_rule": "For target index t, only transition pairs (M_i,M_{i+1}) with i+1 <= t-1 may enter the forecast. Forecast uses the previous draw as state; target outcome is scored only after forecast construction.",
+    "inference": "Historical blind OOS only. Discovery and Validation are descriptive; no tuning is performed."
+  },
+  "endpoints": {
+    "primary": [
+      "M0 minus M1 multiclass Brier loss (positive favors M1)",
+      "M0 minus M1 multiclass log-loss (positive favors M1)"
+    ],
+    "sign_flip": {
+      "alternative": "positive mean gain",
+      "block_length": 20,
+      "replicates": 50000,
+      "seed": 20261111
+    },
+    "bootstrap": {
+      "method": "circular moving-block bootstrap",
+      "block_length": 20,
+      "replicates": 10000,
+      "seed": 20261112,
+      "interval": "percentile 95%"
+    },
+    "multiple_testing": "Holm step-down across the two preregistered Blind OOS endpoints."
+  },
+  "guardrails": [
+    "No parameter, state-binning, subgroup or feature search after observing outcomes.",
+    "No target or future draw is used in forecast construction.",
+    "All probabilities are normalized over the 36 possible median values.",
+    "Historical Blind OOS is not a virgin holdout; earlier SONAR work examined related order-statistic and geometric summaries. Q110 is exploratory, not confirmatory.",
+    "The result concerns only the next draw's median, not individual number probabilities or a complete quintet.",
+    "Q60 outcome reconciliation may update only pre-existing 2026-11-10 freeze outcome fields using the official archive result; forecast lists and frozen_at/history_cutoff are immutable.",
+    "No production scorer change, no model promotion, no auto-merge.",
+    "PRs #6, #7 and #8 must remain untouched."
+  ]
+}
