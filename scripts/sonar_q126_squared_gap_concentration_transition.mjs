@@ -100,7 +100,7 @@ function build(){
  const splitMetrics={};
  for(const name of ["discovery","validation","blind_oos"]){
   const rr=splitRows[name];splitMetrics[name]={targets:rr.length,first_target:rr[0].target_date,last_target:rr[rr.length-1].target_date,previous_state_counts:stateCounts[name],models:{}};
-  for(const m of ["m0","m1","m2"])splitMetrics[name].models[m]={mean_logloss:mean(rr.map(x=>x[m+"_logloss"])),mean_brier:mean(rr.map(x=>x[m+"_brier"]))};
+  for(const m of ["m0","m1","m2"])splitMetrics[name].models[m]={mean_logloss:round(mean(rr.map(x=>x[m+"_logloss"]))),mean_brier:round(mean(rr.map(x=>x[m+"_brier"])))};
  }
  const endpoints=[];let seed=0x126202611;
  for(const [cmp,a,b] of [["M1_vs_M0","m0","m1"],["M2_vs_M1","m1","m2"],["M2_vs_M0","m0","m2"]]){
