@@ -1,0 +1,345 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q122",
+  "title": "Prior-only APP Top20 boundary-margin hit-count calibration",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_BOUNDARY_MARGIN_INCREMENTAL_HIT_COUNT_LIFT_DEMONSTRATED",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "scorer_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "app_data_blob_sha": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "preregistration": {
+    "path": "reports/sequence_agent/q122_score_margin_hit_calibration_protocol_2026-11-11.json",
+    "commit": "030271b054d347bdbe49515ef1a3b67cc4f1dec3",
+    "committed_before_calculation": true
+  },
+  "hypothesis": "The standardized score gap between APP SONAR ranks 20 and 21 may contain information about the next target's Top20 hit-count distribution: a larger prior-only boundary margin may correspond to a better calibrated or more concentrated hit-count forecast.",
+  "method": {
+    "margin": "(score rank20 - score rank21) / population SD of all 40 exact APP scores",
+    "thresholds": {
+      "q33": 0.024527431706,
+      "q67": 0.068544672898,
+      "calibration_targets": 200,
+      "calibration_dates": [
+        "2018-02-02",
+        "2018-08-20"
+      ],
+      "state_counts": {
+        "LOW": 67,
+        "MID": 66,
+        "HIGH": 67
+      }
+    },
+    "M0": "Exact Hypergeometric(40,20,5)",
+    "M1": "Unconditional prequential hit-count distribution, shrinkage 200 toward M0",
+    "M2": "Margin-state conditional prequential hit-count distribution, shrinkage 200 toward M1",
+    "update_order": "Score first, then update global and state counts",
+    "tuning": "No tuning on Discovery, Validation, or Blind OOS."
+  },
+  "walk_forward": {
+    "warmup": 200,
+    "calibration_targets": 200,
+    "targets": 3004,
+    "first_target": "2018-08-21",
+    "last_target": "2026-11-10",
+    "strict_prior": true,
+    "splits": {
+      "discovery": {
+        "targets": 1802,
+        "first_target": "2018-08-21",
+        "last_target": "2023-07-27",
+        "mean_margin": 0.063803906917,
+        "mean_hits": 2.523307436182,
+        "states": {
+          "LOW": {
+            "n": 543,
+            "mean_margin": 0.011309350872,
+            "mean_hits": 2.570902394107
+          },
+          "MID": {
+            "n": 619,
+            "mean_margin": 0.043886246007,
+            "mean_hits": 2.520193861066
+          },
+          "HIGH": {
+            "n": 640,
+            "mean_margin": 0.127606369473,
+            "mean_hits": 2.4859375
+          }
+        },
+        "M0": {
+          "brier": 0.738191314548,
+          "logloss": 1.483168845483
+        },
+        "M1": {
+          "brier": 0.73831513319,
+          "logloss": 1.483620893351
+        },
+        "M2": {
+          "brier": 0.738964783767,
+          "logloss": 1.486123499308
+        },
+        "gains": {
+          "M2_vs_M1": {
+            "brier": -0.000649650577,
+            "logloss": -0.002502605956
+          },
+          "M2_vs_M0": {
+            "brier": -0.000773469219,
+            "logloss": -0.002954653825
+          }
+        }
+      },
+      "validation": {
+        "targets": 601,
+        "first_target": "2023-07-28",
+        "last_target": "2025-03-19",
+        "mean_margin": 0.063085340123,
+        "mean_hits": 2.465890183028,
+        "states": {
+          "LOW": {
+            "n": 181,
+            "mean_margin": 0.011230427021,
+            "mean_hits": 2.486187845304
+          },
+          "MID": {
+            "n": 209,
+            "mean_margin": 0.042333453371,
+            "mean_hits": 2.578947368421
+          },
+          "HIGH": {
+            "n": 211,
+            "mean_margin": 0.12812270317,
+            "mean_hits": 2.336492890995
+          }
+        },
+        "M0": {
+          "brier": 0.729221393137,
+          "logloss": 1.459018870164
+        },
+        "M1": {
+          "brier": 0.729018627419,
+          "logloss": 1.457516930866
+        },
+        "M2": {
+          "brier": 0.7295457856,
+          "logloss": 1.458106719535
+        },
+        "gains": {
+          "M2_vs_M1": {
+            "brier": -0.000527158181,
+            "logloss": -0.000589788669
+          },
+          "M2_vs_M0": {
+            "brier": -0.000324392463,
+            "logloss": 0.000912150629
+          }
+        }
+      },
+      "blind_oos": {
+        "targets": 601,
+        "first_target": "2025-03-20",
+        "last_target": "2026-11-10",
+        "mean_margin": 0.066488739391,
+        "mean_hits": 2.507487520799,
+        "states": {
+          "LOW": {
+            "n": 157,
+            "mean_margin": 0.011858504964,
+            "mean_hits": 2.496815286624
+          },
+          "MID": {
+            "n": 215,
+            "mean_margin": 0.044002663267,
+            "mean_hits": 2.493023255814
+          },
+          "HIGH": {
+            "n": 229,
+            "mean_margin": 0.125054037083,
+            "mean_hits": 2.528384279476
+          }
+        },
+        "M0": {
+          "brier": 0.73951262639,
+          "logloss": 1.481771512205
+        },
+        "M1": {
+          "brier": 0.740137130688,
+          "logloss": 1.483008241957
+        },
+        "M2": {
+          "brier": 0.740855886796,
+          "logloss": 1.485229983574
+        },
+        "gains": {
+          "M2_vs_M1": {
+            "brier": -0.000718756108,
+            "logloss": -0.002221741617
+          },
+          "M2_vs_M0": {
+            "brier": -0.001343260405,
+            "logloss": -0.003458471369
+          }
+        }
+      }
+    }
+  },
+  "blind_inference": {
+    "family_size": 4,
+    "adjustment": "Holm",
+    "tests": [
+      {
+        "endpoint": "M2_vs_M1_Brier",
+        "metric": "Brier",
+        "baseline": "M1",
+        "n": 601,
+        "block_length": 20,
+        "block_count": 31,
+        "replicates": 50000,
+        "extreme": 45937,
+        "mean_gain": -0.000718756108,
+        "p_one_sided_improvement": 0.918741625167,
+        "bootstrap_ci95": [
+          -0.001779194326,
+          0.000378030364
+        ],
+        "p_holm": 1
+      },
+      {
+        "endpoint": "M2_vs_M1_LogLoss",
+        "metric": "LogLoss",
+        "baseline": "M1",
+        "n": 601,
+        "block_length": 20,
+        "block_count": 31,
+        "replicates": 50000,
+        "extreme": 47371,
+        "mean_gain": -0.002221741617,
+        "p_one_sided_improvement": 0.947421051579,
+        "bootstrap_ci95": [
+          -0.005224073181,
+          0.000849692492
+        ],
+        "p_holm": 1
+      },
+      {
+        "endpoint": "M2_vs_M0_Brier",
+        "metric": "Brier",
+        "baseline": "M0",
+        "n": 601,
+        "block_length": 20,
+        "block_count": 31,
+        "replicates": 50000,
+        "extreme": 43759,
+        "mean_gain": -0.001343260405,
+        "p_one_sided_improvement": 0.87518249635,
+        "bootstrap_ci95": [
+          -0.003341239366,
+          0.000665198855
+        ],
+        "p_holm": 1
+      },
+      {
+        "endpoint": "M2_vs_M0_LogLoss",
+        "metric": "LogLoss",
+        "baseline": "M0",
+        "n": 601,
+        "block_length": 20,
+        "block_count": 31,
+        "replicates": 50000,
+        "extreme": 41880,
+        "mean_gain": -0.003458471369,
+        "p_one_sided_improvement": 0.837603247935,
+        "bootstrap_ci95": [
+          -0.009294216338,
+          0.002717372139
+        ],
+        "p_holm": 1
+      }
+    ]
+  },
+  "prospective_freeze": {
+    "experiment_id": "Q122",
+    "target_date": "2026-11-11",
+    "frozen_at_local": "2026-11-11T15:44:16+01:00",
+    "frozen_at_utc": "2026-11-11T14:44:16Z",
+    "history_cutoff": "2026-11-10",
+    "model": "APP::SONAR_HYBRID_RECENCY_ANALOG_FULL_HISTORY",
+    "top20_ranked": [
+      25,
+      16,
+      38,
+      17,
+      36,
+      1,
+      28,
+      26,
+      27,
+      9,
+      34,
+      12,
+      8,
+      10,
+      21,
+      20,
+      15,
+      39,
+      30,
+      37
+    ],
+    "top5_ranked": [
+      25,
+      16,
+      38,
+      17,
+      36
+    ],
+    "boundary_margin": 0.042444758691,
+    "margin_state": "MID",
+    "q33": 0.024527431706,
+    "q67": 0.068544672898,
+    "prior_global_n": 3204,
+    "prior_state_n": 1109,
+    "p0": [
+      0.023562023562,
+      0.147262647263,
+      0.329175329175,
+      0.329175329175,
+      0.147262647263,
+      0.023562023562
+    ],
+    "p1": [
+      0.029586487871,
+      0.136443163764,
+      0.323982099246,
+      0.343958597484,
+      0.140849744257,
+      0.025179907377
+    ],
+    "p2": [
+      0.031258439705,
+      0.133146396297,
+      0.321464033498,
+      0.341322933153,
+      0.149098509436,
+      0.023709687911
+    ],
+    "status": "FROZEN_PENDING",
+    "research_only": true,
+    "not_a_q60_pair": true
+  },
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout after extensive prior SONAR exploration.",
+    "The margin is a deterministic summary of the active engine score scale; a null result does not validate the engine.",
+    "Holm covers four Q122 endpoints only, not the full Q00-Q122 research family.",
+    "Models predict Top20 hit count, not the winning quintet.",
+    "Q122 freeze is research-only and not a Q60 pair."
+  ],
+  "next_action": "Wait for official contest 315 result; evaluate the frozen Q122 hit-count distribution without retuning; continue Q60 paired prospective collection."
+}
