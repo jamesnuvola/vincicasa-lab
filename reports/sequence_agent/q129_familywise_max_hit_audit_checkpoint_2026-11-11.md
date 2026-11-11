@@ -14,3 +14,12 @@
 - Limitations: 42-rule family selected after archive; historical Blind OOS not virgin; broader Q00-Q128 multiplicity not corrected; conditional randomization assumes independent uniform draws.
 - No scorer change, freeze mutation, Q60 increment, engine promotion, or automatic merge.
 - Next: await official contest 315 combination, then append-only score existing 43 global and one positional freeze.
+
+## Replay recovery — 2026-11-12
+
+- Exact-head replay runs 43117898470 (push) and 43117940502 (pull request) failed at the source-blob guard before statistical recomputation.
+- Root cause: the runner compared the pinned Git blob SHA with a SHA-1 recomputed from decoded working-tree text. These are not the same verification layer; checkout/text representation can differ even when the committed tree contains the pinned blob.
+- Correction: the runner now checks `git rev-parse HEAD:reports/sequence_agent/historical_rule_ledger.csv` against the protocol blob SHA and requires `git diff --quiet HEAD -- <source path>` before parsing the source. All row-level strict-prior, count, actual-combination, and hit-count checks remain active.
+- No protocol, source ledger, statistical result, target freeze, canonical archive, Q60 record, or production scorer was changed.
+- The updated runner blob is `cfba32f0005eee8f62368587f887137e983845dc` (9,735 UTF-8 bytes).
+- Fresh exact-head replay is pending.
