@@ -1,0 +1,25 @@
+name: Q116 active-engine Top20 marginal hit-count calibration
+on:
+  pull_request:
+    paths:
+      - "reports/sequence_agent/q116_*"
+      - "scripts/sonar_q116_active_engine_hit_marginal.mjs"
+      - ".github/workflows/q116-active-engine-hit-marginal.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Syntax check
+        run: node --check scripts/sonar_q116_active_engine_hit_marginal.mjs
+      - name: Deterministic replay
+        run: node scripts/sonar_q116_active_engine_hit_marginal.mjs
