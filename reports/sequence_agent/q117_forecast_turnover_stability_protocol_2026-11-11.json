@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q117",
+  "title": "Prequential forecast-turnover stability and Top20 hit-count calibration",
+  "status": "PREREGISTERED_BEFORE_Q117_CALCULATION",
+  "preregistered_at_utc": "2026-11-11T10:38:10Z",
+  "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+  "data_source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0"
+  },
+  "scorer_source": {
+    "path": "src/VinciCasaLab.jsx",
+    "git_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "implementation": "exact committed overlapCount, sonarTransitionProfile and sonarAnalogCore functions"
+  },
+  "hypothesis": "The overlap between two consecutive prior-only APP SONAR Top20 forecasts may contain incremental information about the next target's Top20 hit count, beyond the exact Hypergeometric(40,20,5) null.",
+  "estimand": {
+    "target": "H_t = |S_t intersect D_t|, where S_t is the exact APP scorer Top20 computed from draws strictly before target t and D_t is target draw.",
+    "current_forecast": "S_t = Top20(sonarAnalogCore(draws[0:t]))",
+    "previous_forecast": "S_(t-1) = Top20(sonarAnalogCore(draws[0:t-1])); both forecasts exist before D_t.",
+    "stability": "m_t = |S_t intersect S_(t-1)|; Jaccard = m_t/(40-m_t).",
+    "fixed_bins": [
+      {
+        "state": "LOW",
+        "rule": "m_t <= 15"
+      },
+      {
+        "state": "MID",
+        "rule": "16 <= m_t <= 17"
+      },
+      {
+        "state": "HIGH",
+        "rule": "m_t >= 18"
+      }
+    ]
+  },
+  "models": {
+    "baseline": "q0(k)=choose(20,k)*choose(20,5-k)/choose(40,5), k=0..5.",
+    "conditional": "P_t(k|b)=(200*q0(k)+C_(t-1,b,k))/(200+N_(t-1,b)); counts include only prior evaluated targets in the same fixed stability bin.",
+    "shrinkage": 200,
+    "tuning": "None. Bins and shrinkage are fixed before Q117 calculations. Online counts update only after each target is scored."
+  },
+  "sample": {
+    "archive_draws": 3404,
+    "warmup": 200,
+    "first_scored_target_index_zero_based": 201,
+    "target_count": 3203,
+    "split_rule": "Chronological rounded 60%/20%/remainder; expected counts 1922/641/640."
+  },
+  "endpoints": [
+    "Multiclass Brier score over k=0..5",
+    "Log-loss of realized Top20 hit count"
+  ],
+  "inference": {
+    "primary_segment": "Blind historical prequential OOS",
+    "sign_flip": {
+      "replicates": 50000,
+      "block_length": 20,
+      "alternative": "conditional model improves (mean baseline loss minus model loss > 0)"
+    },
+    "bootstrap": {
+      "replicates": 10000,
+      "method": "circular moving-block bootstrap",
+      "block_length": 20,
+      "confidence": 0.95
+    },
+    "multiple_testing": "Holm correction across the two preregistered primary endpoints."
+  },
+  "safeguards": [
+    "Each target draw is excluded from both current and previous forecast prefixes.",
+    "No retrospective freeze reconstruction or target-dependent threshold selection.",
+    "The conditional probability for each target uses only outcomes from earlier targets.",
+    "Verify canonical archive chronology, unique dates, five distinct sorted integers in 1..40.",
+    "Verify exact APP source blob identity and deterministic replay.",
+    "Verify every probability vector sums to one within 1e-12.",
+    "Keep existing shadow freezes and Q60 gate unchanged."
+  ],
+  "limitations": [
+    "Blind segment is historical and not a virgin holdout after prior SONAR exploration.",
+    "The online prequential model updates from earlier blind observations, but never from the current or future target.",
+    "Holm correction covers only the two Q117 primary endpoints, not the full historical SONAR experiment family.",
+    "This is a calibration diagnostic, not a claim that lottery outcomes are predictable."
+  ],
+  "decision_rule": "No promotion. Retain only if blind OOS improvement is positive on both endpoints and statistically supported after Holm; otherwise record a null/negative result."
+}
