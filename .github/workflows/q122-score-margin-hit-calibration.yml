@@ -1,0 +1,34 @@
+name: Q122 score-margin hit-count replay
+
+on:
+  push:
+    branches: ["research/q122-score-margin-hit-calibration-20261111"]
+    paths:
+      - "scripts/sonar_q122_score_margin_hit_calibration.mjs"
+      - "reports/sequence_agent/q122_score_margin_hit_calibration_*.json"
+      - "reports/sequence_agent/q122_score_margin_hit_calibration_target_ledger_2026-11-11.csv"
+      - ".github/workflows/q122-score-margin-hit-calibration.yml"
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/sonar_q122_score_margin_hit_calibration.mjs"
+      - "reports/sequence_agent/q122_score_margin_hit_calibration_*.json"
+      - "reports/sequence_agent/q122_score_margin_hit_calibration_target_ledger_2026-11-11.csv"
+      - ".github/workflows/q122-score-margin-hit-calibration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check Q122 runner syntax
+        run: node --check scripts/sonar_q122_score_margin_hit_calibration.mjs
+      - name: Recompute and byte-compare Q122 artifacts
+        run: node scripts/sonar_q122_score_margin_hit_calibration.mjs --check
