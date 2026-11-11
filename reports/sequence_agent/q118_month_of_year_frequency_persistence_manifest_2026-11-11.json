@@ -2,7 +2,7 @@
   "experiment_id": "Q118",
   "branch": "research/q118-month-of-year-frequency-20261111",
   "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
-  "verified_at_utc": "2026-11-11T12:00:00Z",
+  "verified_at_utc": "2026-11-11T12:03:27Z",
   "artifacts": [
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_protocol_2026-11-11.json",
@@ -37,9 +37,9 @@
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_checkpoint_2026-11-11.md",
-      "sha": "87848ab37c3be9ed7b9f26ea46a529088856a507",
-      "bytes": 1840,
-      "git_blob_sha": "87848ab37c3be9ed7b9f26ea46a529088856a507"
+      "sha": "6d3b922b64f04fc2e690d51be5112aa697776245",
+      "bytes": 2191,
+      "git_blob_sha": "6d3b922b64f04fc2e690d51be5112aa697776245"
     },
     {
       "path": ".github/workflows/ci.yml",
@@ -47,5 +47,5 @@
       "bytes": 2018
     }
   ],
-  "verification": "The 1,164,337-byte ledger was fetched by Git blob SHA and confirmed to contain 3,205 lines. Node 20 first exposed a variable-name collision; after fixing that, the replay diagnostic exposed a runner-only mean helper that returned sums. Both runner defects are documented and corrected; final Node 20 CI rerun is still required."
+  "verification": "All artifacts were fetched back from the branch. The 1,164,337-byte ledger was fetched by Git blob SHA and confirmed to contain 3,205 lines. Two runner-only defects found by CI/replay (fs binding collision and mean helper returning sums) were fixed and documented. Corrected runner passed a V8 replay harness with byte-identical ledger and 9/9 future-suffix checks; Node 20 CI rerun remains pending."
 }
