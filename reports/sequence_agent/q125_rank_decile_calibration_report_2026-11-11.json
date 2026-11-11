@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q125",
+  "title": "APP rank-decile calibration profile",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_RANK_DECILE_PROFILE_SKILL_DEMONSTRATED",
+  "preregistration": {
+    "protocol_blob_sha": "9578af100c8b137404ece91732f9ff40dbca3034",
+    "protocol_status": "PREREGISTERED_BEFORE_CALCULATION",
+    "registered_at_utc": "2026-11-11T17:44:28Z",
+    "committed_before_calculation": true
+  },
+  "source": {
+    "parent_experiment": "Q123",
+    "parent_pr": 71,
+    "parent_head": "93b494b089abf485b6616f71b90baec79e39c796",
+    "ledger_blob_sha": "36d7af1fb3cceda5976eb99a78931f58d1a3d28a",
+    "rows": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10"
+  },
+  "hypothesis": "Actual winning ranks should be concentrated non-uniformly across ten equal-sized APP rank deciles, with a top-heavy monotone profile, if the full ranking contains calibration information not summarized by the mean rank.",
+  "method": {
+    "warmup": 200,
+    "targets": 3204,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "deciles": "D1=1-4 through D10=37-40",
+    "null_expected_hits_per_decile_per_target": 0.5,
+    "omnibus": "Pearson decile-profile statistic with conditional randomization under uniform 5-of-40 ranks.",
+    "trend": "Weighted decile score with weights 10..1; null expectation 27.5 per target.",
+    "inference": {
+      "primary_split": "blind_oos",
+      "replicates": 20000,
+      "seed": "0x12520261111",
+      "bootstrap_replicates": 10000,
+      "block_length": 20,
+      "bootstrap_seed": "0x125B007",
+      "multiplicity": "Holm across two preregistered blind-OOS endpoints only."
+    }
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1922,
+      "first_target": "2018-02-02",
+      "last_target": "2023-05-08",
+      "decile_hit_counts": [
+        972,
+        941,
+        982,
+        959,
+        994,
+        912,
+        969,
+        1006,
+        928,
+        947
+      ],
+      "mean_hits_per_target_by_decile": [
+        0.505723204995,
+        0.489594172737,
+        0.510926118626,
+        0.498959417274,
+        0.517169614984,
+        0.474505723205,
+        0.504162330905,
+        0.523413111342,
+        0.482830385016,
+        0.492715920916
+      ],
+      "expected_hits_per_target_per_decile": 0.5,
+      "pearson_profile_statistic": 8.147762747138,
+      "weighted_trend_score": 52979,
+      "weighted_trend_per_target": 27.564516129032,
+      "weighted_trend_gain_vs_null": 0.064516129032,
+      "mean_rank": 20.440270551509,
+      "mean_top5_hits": 0.64151925078,
+      "mean_top10_hits": 1.248699271592,
+      "mean_top20_hits": 2.522372528616
+    },
+    "validation": {
+      "targets": 641,
+      "first_target": "2023-05-09",
+      "last_target": "2025-02-07",
+      "decile_hit_counts": [
+        320,
+        324,
+        294,
+        306,
+        318,
+        339,
+        327,
+        292,
+        336,
+        349
+      ],
+      "mean_hits_per_target_by_decile": [
+        0.499219968799,
+        0.505460218409,
+        0.458658346334,
+        0.477379095164,
+        0.496099843994,
+        0.528861154446,
+        0.510140405616,
+        0.455538221529,
+        0.524180967239,
+        0.544461778471
+      ],
+      "expected_hits_per_target_per_decile": 0.5,
+      "pearson_profile_statistic": 9.923556942278,
+      "weighted_trend_score": 17418,
+      "weighted_trend_per_target": 27.173166926677,
+      "weighted_trend_gain_vs_null": -0.326833073323,
+      "mean_rank": 20.740093603744,
+      "mean_top5_hits": 0.636505460218,
+      "mean_top10_hits": 1.248049921997,
+      "mean_top20_hits": 2.436817472699
+    },
+    "blind_oos": {
+      "targets": 641,
+      "first_target": "2025-02-08",
+      "last_target": "2026-11-10",
+      "decile_hit_counts": [
+        316,
+        358,
+        328,
+        324,
+        293,
+        320,
+        309,
+        302,
+        334,
+        321
+      ],
+      "mean_hits_per_target_by_decile": [
+        0.492979719189,
+        0.558502340094,
+        0.511700468019,
+        0.505460218409,
+        0.457098283931,
+        0.499219968799,
+        0.482059282371,
+        0.471138845554,
+        0.521060842434,
+        0.500780031201
+      ],
+      "expected_hits_per_target_per_decile": 0.5,
+      "pearson_profile_statistic": 9.07488299532,
+      "weighted_trend_score": 17763,
+      "weighted_trend_per_target": 27.711388455538,
+      "weighted_trend_gain_vs_null": 0.211388455538,
+      "mean_rank": 20.336661466459,
+      "mean_top5_hits": 0.622464898596,
+      "mean_top10_hits": 1.316692667707,
+      "mean_top20_hits": 2.525741029641
+    }
+  },
+  "blind_inference": {
+    "family_size": 2,
+    "adjustment": "Holm",
+    "omnibus": {
+      "observed_statistic": 9.07488299532,
+      "extreme_replicates": 11246,
+      "replicates": 20000,
+      "p_value": 0.562321883906,
+      "p_holm": 0.562321883906
+    },
+    "top_heavy_trend": {
+      "observed_gain_per_target": 0.211388455538,
+      "extreme_replicates": 3987,
+      "replicates": 20000,
+      "p_value": 0.199390030498,
+      "p_holm": 0.398780060996,
+      "bootstrap_ci95": [
+        -0.281630265211,
+        0.682527301092
+      ]
+    },
+    "decile_pointwise_bootstrap_ci95": [
+      [
+        0.438377535101,
+        0.547581903276
+      ],
+      [
+        0.517940717629,
+        0.599063962559
+      ],
+      [
+        0.466458658347,
+        0.558502340094
+      ],
+      [
+        0.460218408736,
+        0.552262090483
+      ],
+      [
+        0.402496099844,
+        0.513260530421
+      ],
+      [
+        0.458658346334,
+        0.539781591263
+      ],
+      [
+        0.433697347894,
+        0.533541341654
+      ],
+      [
+        0.427457098283,
+        0.514820592823
+      ],
+      [
+        0.468018720749,
+        0.574102964118
+      ],
+      [
+        0.455538221528,
+        0.546021840873
+      ]
+    ]
+  },
+  "limitations": [
+    "Q125 uses the pinned Q123 prior-only rank ledger and does not independently rerun the APP scorer.",
+    "The Q123 strict-prior and 9/9 future-suffix mutation checks are inherited, not rerun.",
+    "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+    "Decile pointwise intervals are descriptive, not ten independent significance claims.",
+    "The two-endpoint Holm correction does not cover the full Q00-Q125 research family."
+  ],
+  "next_action": "After official publication of contest 315, evaluate immutable Q123/Q124 freezes without retuning and continue append-only Q60 paired collection."
+}
