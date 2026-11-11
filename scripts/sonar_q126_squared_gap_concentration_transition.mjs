@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Q126 replay uses 9-decimal canonical numeric serialization; exact byte diagnostics are retained.
+// Q126 replay uses 6-decimal canonical numeric serialization after cross-runtime 1e-9 drift; exact byte diagnostics are retained.
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
