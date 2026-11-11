@@ -211,7 +211,13 @@ function main(){
  const out=runCore(read(P.archive),read(P.source),read(P.app),read(P.active),read(P.protocol),EXPECTED.protocolCommit,activeHash,freezeAt);
  const expectedFiles=[[P.report,out.reportText],[P.ledger,out.ledger],[P.validation,out.validationText],[P.freeze,out.freezeText],[P.checkpoint,out.checkpoint]];
  if(check){
-  for(const [p,expected] of expectedFiles)if(read(p)!==expected)fail("byte mismatch: "+path.relative(ROOT,p));
+  for(const [p,expected] of expectedFiles){
+    const actual=read(p);
+    if(actual!==expected){
+      let at=0;while(at<actual.length&&at<expected.length&&actual[at]===expected[at])at++;
+      fail("byte mismatch: "+path.relative(ROOT,p)+" at char "+at+"; actual="+JSON.stringify(actual.slice(Math.max(0,at-80),at+180))+"; expected="+JSON.stringify(expected.slice(Math.max(0,at-80),at+180)));
+    }
+  }
   const existingManifest=JSON.parse(read(P.manifest));
   const expectedManifest=manifestText(existingManifest.created_at_utc);
   if(read(P.manifest)!==expectedManifest)fail("manifest mismatch");
