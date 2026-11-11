@@ -64,6 +64,6 @@ const validation=JSON.parse(read(P+'q129_familywise_max_hit_audit_validation_202
 if(validation.checks_passed!==12||validation.checks_total!==12||validation.checks.some(x=>!x.passed))throw new Error('validation status mismatch');
 if(report.decision!=='NO_FAMILYWISE_MAX_HIT_LIFT_DEMONSTRATED'||provisional.canonical_archive_updated||provisional.q60.incremented)throw new Error('governance guardrail mismatch');
 const manifest=JSON.parse(read(P+'q129_familywise_max_hit_audit_persistence_manifest_2026-11-11.json'));
-for(const e of manifest.entries){const value=read(e.path);if(gitBlobSha(value)!==e.git_blob_sha||Buffer.byteLength(value,'utf8')!==e.bytes_utf8)throw new Error('manifest mismatch '+e.path);}
+for(const e of manifest.entries){const value=read(e.path);if(sha(value)!==e.git_blob_sha||Buffer.byteLength(value,'utf8')!==e.bytes_utf8)throw new Error('manifest mismatch '+e.path);}
 if(manifest.entries.length!==8)throw new Error('manifest entry count mismatch');
 console.log('Q129 CHECK PASS: 3,204 targets; 134,568 source rows; 42 configurations per target; 1,000 conditional randomization replicates; 10,000 block-bootstrap replicates; exact 658,008-outcome prospective family-wise audit; report/ledger replay matched; manifest '+manifest.entries.length+'/8 verified.');
