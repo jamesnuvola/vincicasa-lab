@@ -7,6 +7,7 @@
 - Walk-forward: 3,102 targets; Discovery/Validation/historical Blind OOS = 1,861/620/621.
 - Primary comparison: one-step parity-state M1 versus exact Hypergeometric(40,20,5) M0.
 - Historical Blind OOS is not virgin; within-Q108 Holm correction covers two preregistered endpoints only.
-- Validation: 12/12 PASS.
+- Validation: 13/13 PASS.
+- Cross-runtime CSV serialization: all six loss fields are rounded to 12 decimals; the first Node 20 CI failure was traced to V8 shortest-float rendering differences at sub-ulp scale, not a scoring or leakage discrepancy.
 - No production scorer, canonical data, Q60, H101/H102 or existing freeze was modified.
 - Next action: continue append-only prospective evaluation; reconcile contest 314 only after official publication; do not reconstruct missing freezes.
