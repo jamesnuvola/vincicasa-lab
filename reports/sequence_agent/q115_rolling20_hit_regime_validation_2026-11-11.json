@@ -125,8 +125,20 @@
     },
     "canonical_ledger_precision_decimals": 10,
     "general_repository_ci": {
-      "status": "IN_PROGRESS",
-      "latest_run_id": 42991285883
+      "status": "IN_PROGRESS_AT_LAST_CHECK",
+      "runs": [
+        {
+          "run_id": 42991516829,
+          "stage": "positional_regime_residual_hazard",
+          "status": "in_progress"
+        },
+        {
+          "run_id": 42991526493,
+          "stage": "evolutionary_lab",
+          "status": "in_progress"
+        }
+      ],
+      "note": "An earlier general CI run 42991285883 was superseded/cancelled after subsequent branch commits; these two runs correspond to the final checkpoint commit before this metadata refresh."
     }
   }
 }

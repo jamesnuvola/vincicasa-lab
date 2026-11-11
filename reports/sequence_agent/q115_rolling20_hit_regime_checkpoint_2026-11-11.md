@@ -12,7 +12,7 @@
 - Analytical validation: 19/19; future mutation 9/9; deterministic replay PASS.
 - Recovery: initial Node 20 replay exposed a one-unit difference at the 12th decimal in one log-loss cell. Ledger numeric serialization was canonicalized to 10 decimals; no formula or metric changed.
 - Final dedicated Node 20 replay: run 42991167922, SUCCESS on Node 20.20.2. Syntax and ledger/inference/manifest replay passed.
-- General repository CI: latest run 42991285883 was still in progress at the last check; do not claim it passed.
+- General CI: on the final analysis commit, run 42991167952 completed SUCCESS. After the checkpoint-only metadata commit, runs 42991516829 (positional/regime/residual/hazard stage) and 42991526493 (evolutionary stage) were still in progress at last check; do not claim these newer runs passed.
 - Prospective add-on freeze: 2026-11-11 09:42:55 Europe/Rome, cutoff 2026-11-10; trailing-20 sum 55, state HIGH, support 493; active Top20 copied unchanged from Q113.
 - Q60 remains 23/200; 177 paired targets remain. No missing historical freezes reconstructed; no model promotion or merge.
 - Next: await official 2026-11-11 result; score the freeze without retuning.
