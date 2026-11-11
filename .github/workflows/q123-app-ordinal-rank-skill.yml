@@ -1,13 +1,18 @@
 name: Q123 APP ordinal rank skill replay
 
 on:
+  push:
+    branches: ["research/q123-app-ordinal-rank-skill-20261111"]
+    paths:
+      - "scripts/sonar_q123_app_ordinal_rank_skill.mjs"
+      - "reports/sequence_agent/q123_app_ordinal_rank_skill_*"
+      - ".github/workflows/q123-app-ordinal-rank-skill.yml"
   pull_request:
     branches: ["main"]
     paths:
       - "scripts/sonar_q123_app_ordinal_rank_skill.mjs"
       - "reports/sequence_agent/q123_app_ordinal_rank_skill_*"
       - ".github/workflows/q123-app-ordinal-rank-skill.yml"
-  workflow_dispatch:
 
 permissions:
   contents: read
