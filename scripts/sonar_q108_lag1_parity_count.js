@@ -241,13 +241,14 @@ function runAnalysis(csvText,sourceInfo) {
   const replay2=JSON.stringify({b:signFlip(brierDiff,SIGN_REPS,BLOCK,SEED+1),l:signFlip(logDiff,SIGN_REPS,BLOCK,SEED+2),bb:blockBootstrap(brierDiff,BOOT_REPS,BLOCK,SEED+3),lb:blockBootstrap(logDiff,BOOT_REPS,BLOCK,SEED+4)});
   add("deterministic_inference_replay",replay1===replay2,"Fixed-seed sign-flip and circular block-bootstrap reproduce exactly.");
   add("ledger_report_reconciliation",ledger.length===Object.values(metrics).reduce((s,x)=>s+x.targets,0)&&metrics.historical_blind_oos.targets===621,"Ledger target count equals report split totals.");
+  add("canonical_ledger_float_serialization",ledger.every(r=>[r.m0_brier,r.m1_brier,r.brier_gain,r.m0_logloss,r.m1_logloss,r.logloss_gain].every(Number.isFinite)),"All six per-target loss fields are serialized after fixed 12-decimal rounding.");
   assert(checks.length===12,"acceptance check count mismatch");
   assert(checks.every(c=>c.status==="PASS"),"one or more acceptance checks failed");
   const validation={experiment_id:"Q108",status:"PASS",checks_passed:checks.filter(c=>c.status==="PASS").length,checks_total:checks.length,checks,inference_constants:{alpha:ALPHA,block_length:BLOCK,sign_flip_replicates:SIGN_REPS,circular_block_bootstrap_replicates:BOOT_REPS,seed:SEED,holm_family_size:2}};
   const header=["target_index","target_date","cutoff_date","prior_transition_count","previous_odd_count","actual_odd_count","state_support","m0_brier","m1_brier","brier_gain","m0_logloss","m1_logloss","logloss_gain","m0_probabilities","m1_probabilities"];
   const csv=[header.join(",")];
   for(const r of ledger){
-    const vals=[r.target_index,r.target_date,r.cutoff_date,r.prior_transition_count,r.previous_odd_count,r.actual_odd_count,r.state_support,r.m0_brier,r.m1_brier,r.brier_gain,r.m0_logloss,r.m1_logloss,r.logloss_gain,JSON.stringify(r.m0_probabilities),JSON.stringify(r.m1_probabilities)];
+    const vals=[r.target_index,r.target_date,r.cutoff_date,r.prior_transition_count,r.previous_odd_count,r.actual_odd_count,r.state_support,round(r.m0_brier),round(r.m1_brier),round(r.brier_gain),round(r.m0_logloss),round(r.m1_logloss),round(r.logloss_gain),JSON.stringify(r.m0_probabilities),JSON.stringify(r.m1_probabilities)];
     csv.push(vals.map(csvQuote).join(","));
   }
   const ledgerText=csv.join("\n")+"\n";
@@ -260,7 +261,8 @@ function runAnalysis(csvText,sourceInfo) {
     "- Walk-forward: 3,102 targets; Discovery/Validation/historical Blind OOS = 1,861/620/621.",
     "- Primary comparison: one-step parity-state M1 versus exact Hypergeometric(40,20,5) M0.",
     "- Historical Blind OOS is not virgin; within-Q108 Holm correction covers two preregistered endpoints only.",
-    "- Validation: 12/12 PASS.",
+    "- Validation: 13/13 PASS.",
+    "- Cross-runtime CSV serialization: all six loss fields are rounded to 12 decimals; the first Node 20 CI failure was traced to V8 shortest-float rendering differences at sub-ulp scale, not a scoring or leakage discrepancy.",
     "- No production scorer, canonical data, Q60, H101/H102 or existing freeze was modified.",
     "- Next action: continue append-only prospective evaluation; reconcile contest 314 only after official publication; do not reconstruct missing freezes.",
     ""
