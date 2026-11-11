@@ -1,0 +1,405 @@
+{
+  "experiment_id": "Q109",
+  "title": "Lag-1 draw-range state memory",
+  "decision": "NO_LAG1_RANGE_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "archive_path": "src/data.json",
+    "archive_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10",
+    "official_latest": {
+      "contest": 314,
+      "date": "2026-11-10",
+      "numbers": [
+        1,
+        7,
+        11,
+        22,
+        25
+      ]
+    }
+  },
+  "definition": {
+    "feature": "R_t=max(D_t)-min(D_t)",
+    "state_support": [
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39
+    ],
+    "exact_null": {
+      "numerators": [
+        36,
+        140,
+        340,
+        660,
+        1120,
+        1736,
+        2520,
+        3480,
+        4620,
+        5940,
+        7436,
+        9100,
+        10920,
+        12880,
+        14960,
+        17136,
+        19380,
+        21660,
+        23940,
+        26180,
+        28336,
+        30360,
+        32200,
+        33800,
+        35100,
+        36036,
+        36540,
+        36540,
+        35960,
+        34720,
+        32736,
+        29920,
+        26180,
+        21420,
+        15540,
+        8436
+      ],
+      "denominator": 658008,
+      "probabilities": [
+        0.000054710581,
+        0.000212763371,
+        0.000516711043,
+        0.001003027319,
+        0.001702106965,
+        0.002638265796,
+        0.003829740672,
+        0.005288689499,
+        0.007021191232,
+        0.009027245869,
+        0.011300774459,
+        0.013829619093,
+        0.016595542911,
+        0.019574230101,
+        0.022735285893,
+        0.026042236569,
+        0.029452529453,
+        0.032917532918,
+        0.036382536383,
+        0.039786750313,
+        0.043063306221,
+        0.046139256666,
+        0.048935575251,
+        0.05136715663,
+        0.053342816501,
+        0.054765291607,
+        0.055531239742,
+        0.055531239742,
+        0.054649791492,
+        0.052765315923,
+        0.049750155013,
+        0.045470571786,
+        0.039786750313,
+        0.032552795711,
+        0.023616734143,
+        0.012820512821
+      ],
+      "expected_range": 27.333333333333
+    }
+  },
+  "models": {
+    "M0": "Exact combinatorial range PMF.",
+    "M1": "Lag-1 categorical shrinkage conditional on previous range.",
+    "alpha": 200,
+    "warmup_transition_pairs": 300,
+    "parameter_selection": "None."
+  },
+  "walk_forward": {
+    "targets": 3103,
+    "first_target_index_zero_based": 301,
+    "split_rule": "Chronological 60/20/20; floor for Discovery and Validation.",
+    "splits": {
+      "discovery": {
+        "targets": 1861,
+        "first_target": "2018-05-14",
+        "last_target": "2023-06-17",
+        "m0_brier": 0.959122979278,
+        "m1_brier": 0.959627914564,
+        "brier_gain": -0.000504935286,
+        "m0_logloss": 3.28329032015,
+        "m1_logloss": 3.29036407982,
+        "logloss_gain": -0.00707375967,
+        "mean_previous_range": 27.062332079527,
+        "mean_state_support": 50.469102632993
+      },
+      "validation": {
+        "targets": 620,
+        "first_target": "2023-06-18",
+        "last_target": "2025-02-26",
+        "m0_brier": 0.957122217337,
+        "m1_brier": 0.95798101,
+        "brier_gain": -0.000858792663,
+        "m0_logloss": 3.24317362105,
+        "m1_logloss": 3.260245736941,
+        "logloss_gain": -0.01707211589,
+        "mean_previous_range": 27.574193548387,
+        "mean_state_support": 102.956451612903
+      },
+      "historical_blind_oos": {
+        "targets": 622,
+        "first_target": "2025-02-27",
+        "last_target": "2026-11-10",
+        "m0_brier": 0.958580046215,
+        "m1_brier": 0.959898982388,
+        "brier_gain": -0.001318936174,
+        "m0_logloss": 3.284577078497,
+        "m1_logloss": 3.303593571996,
+        "logloss_gain": -0.019016493499,
+        "mean_previous_range": 27.122186495177,
+        "mean_state_support": 128.530546623794
+      }
+    }
+  },
+  "blind_inference": {
+    "method": "One-sided block sign-flip of contiguous paired loss-gain blocks; circular moving-block bootstrap.",
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "holm_family_size": 2,
+    "endpoints": [
+      {
+        "name": "m1_vs_m0_brier_gain",
+        "n": 622,
+        "blocks": 32,
+        "observed_mean": -0.001318936174,
+        "replicates": 50000,
+        "block_length": 20,
+        "extreme": 48931,
+        "p_one_sided": 0.978620427591,
+        "monte_carlo_se": 0.000646870433,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.002452359027,
+            "upper": -0.000211313948
+          }
+        },
+        "p_holm": 1
+      },
+      {
+        "name": "m1_vs_m0_logloss_gain",
+        "n": 622,
+        "blocks": 32,
+        "observed_mean": -0.019016493499,
+        "replicates": 50000,
+        "block_length": 20,
+        "extreme": 49034,
+        "p_one_sided": 0.980680386392,
+        "monte_carlo_se": 0.000615564574,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.034592495028,
+            "upper": -0.003084821345
+          }
+        },
+        "p_holm": 1
+      }
+    ]
+  },
+  "diagnostics": {
+    "transition_support": {
+      "min": 0,
+      "median": 71,
+      "max": 189
+    },
+    "max_probability_normalization_error": 0,
+    "range_state_counts": [
+      {
+        "range": 4,
+        "count": 1
+      },
+      {
+        "range": 5,
+        "count": 1
+      },
+      {
+        "range": 6,
+        "count": 0
+      },
+      {
+        "range": 7,
+        "count": 5
+      },
+      {
+        "range": 8,
+        "count": 6
+      },
+      {
+        "range": 9,
+        "count": 6
+      },
+      {
+        "range": 10,
+        "count": 10
+      },
+      {
+        "range": 11,
+        "count": 20
+      },
+      {
+        "range": 12,
+        "count": 31
+      },
+      {
+        "range": 13,
+        "count": 30
+      },
+      {
+        "range": 14,
+        "count": 44
+      },
+      {
+        "range": 15,
+        "count": 42
+      },
+      {
+        "range": 16,
+        "count": 56
+      },
+      {
+        "range": 17,
+        "count": 65
+      },
+      {
+        "range": 18,
+        "count": 72
+      },
+      {
+        "range": 19,
+        "count": 118
+      },
+      {
+        "range": 20,
+        "count": 115
+      },
+      {
+        "range": 21,
+        "count": 110
+      },
+      {
+        "range": 22,
+        "count": 119
+      },
+      {
+        "range": 23,
+        "count": 141
+      },
+      {
+        "range": 24,
+        "count": 143
+      },
+      {
+        "range": 25,
+        "count": 162
+      },
+      {
+        "range": 26,
+        "count": 185
+      },
+      {
+        "range": 27,
+        "count": 174
+      },
+      {
+        "range": 28,
+        "count": 188
+      },
+      {
+        "range": 29,
+        "count": 169
+      },
+      {
+        "range": 30,
+        "count": 190
+      },
+      {
+        "range": 31,
+        "count": 187
+      },
+      {
+        "range": 32,
+        "count": 163
+      },
+      {
+        "range": 33,
+        "count": 168
+      },
+      {
+        "range": 34,
+        "count": 145
+      },
+      {
+        "range": 35,
+        "count": 162
+      },
+      {
+        "range": 36,
+        "count": 158
+      },
+      {
+        "range": 37,
+        "count": 95
+      },
+      {
+        "range": 38,
+        "count": 82
+      },
+      {
+        "range": 39,
+        "count": 41
+      }
+    ]
+  },
+  "interpretation": {
+    "scope": "Predicts only the next draw's range, not individual numbers or a complete quintet.",
+    "caveat": "Historical blind OOS is not a virgin holdout; Q98 and earlier structural studies examined related draw geometry. Holm is within Q109 only, not across the full Q00-Q109 research history.",
+    "next_action": "Preserve this result; do not tune range states on the exposed archive; continue prospective frozen evaluation."
+  }
+}
