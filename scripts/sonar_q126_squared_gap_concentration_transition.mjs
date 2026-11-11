@@ -176,7 +176,7 @@ function main(){
  all[FILES.runner]=read(FILES.runner);all[FILES.workflow]=read(FILES.workflow);all[FILES.protocol]=read(FILES.protocol);
  const manifest=buildManifest(all);
  if(mode==="write"){for(const [p,c] of Object.entries(generated))fs.writeFileSync(path.join(ROOT,p),c);fs.writeFileSync(path.join(ROOT,FILES.manifest),manifest);process.stdout.write("Q126 WRITE PASS\n");return;}
- for(const [p,c] of Object.entries(generated))assert(read(p)===c,"persisted output differs: "+p);
+ for(const [p,c] of Object.entries(generated)){const actual=read(p);if(actual!==c){let i=0;while(i<actual.length&&i<c.length&&actual[i]===c[i])i++;process.stderr.write("DIFF "+p+" at char "+i+" expected="+JSON.stringify(c.slice(Math.max(0,i-80),i+180))+" actual="+JSON.stringify(actual.slice(Math.max(0,i-80),i+180))+"\n");fail("persisted output differs: "+p);}}
  assert(read(FILES.manifest)===manifest,"manifest differs from deterministic replay");
  const m=JSON.parse(read(FILES.manifest));assert(m.entries.length===7,"manifest entry count mismatch");
  for(const e of m.entries){const c=read(e.path);assert(gitBlobSha(c)===e.git_blob_sha,"Git blob SHA mismatch: "+e.path);assert(utf8Bytes(c)===e.bytes_utf8,"UTF-8 size mismatch: "+e.path);}
