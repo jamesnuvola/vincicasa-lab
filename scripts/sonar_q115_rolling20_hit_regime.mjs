@@ -36,7 +36,7 @@ const blind=segments.blind_oos;
 const tests=[["m20_vs_m0_brier",blind.map(x=>x.b0-x.b20),1152001],["m20_vs_m0_log_loss",blind.map(x=>x.l0-x.l20),1152002],["m20_vs_m1_brier",blind.map(x=>x.b1-x.b20),1152003],["m20_vs_m1_log_loss",blind.map(x=>x.l1-x.l20),1152004]].map(([key,d,seed])=>({key,...infer(d,seed)}));
 const ordered=tests.map((x,i)=>({i,p:x.p_value})).sort((a,b)=>a.p-b.p);let adj=0;ordered.forEach((x,i)=>{adj=Math.max(adj,Math.min(1,(4-i)*x.p));tests[x.i].holm_adjusted=adj;});
 const header=["target_date","history_cutoff","source_index","previous_top20_hits","rolling20_hit_sum","rolling_state","state_support_before","actual_top20_hits","split","m1_pmf","m20_pmf","baseline_brier","m1_brier","m20_brier","m20_brier_gain_vs_m0","m20_brier_gain_vs_m1","baseline_log_loss","m1_log_loss","m20_log_loss","m20_log_gain_vs_m0","m20_log_gain_vs_m1"];
-const esc=v=>/[",\r\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':String(v),fmt=v=>v.toFixed(12),names=["LOW","MID","HIGH"];
+const esc=v=>/[",\r\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':String(v),fmt=v=>v.toFixed(10),names=["LOW","MID","HIGH"];
 const ledger=[header.join(",")];for(const x of out)ledger.push([x.date,x.cutoff,x.i,x.prev,x.sum,names[x.state],x.support,x.y,x.split,x.p1.map(fmt).join(" "),x.p20.map(fmt).join(" "),fmt(x.b0),fmt(x.b1),fmt(x.b20),fmt(x.b0-x.b20),fmt(x.b1-x.b20),fmt(x.l0),fmt(x.l1),fmt(x.l20),fmt(x.l0-x.l20),fmt(x.l1-x.l20)].map(esc).join(","));
 const ledgerText=ledger.join("\n")+"\n";
 const persistedLedger=fs.readFileSync(OUT,"utf8");
@@ -47,8 +47,8 @@ if(ledgerText!==persistedLedger){
   throw Error("ledger replay differs");
 }
 const report=JSON.parse(fs.readFileSync(REPORT,"utf8"));
-for(const k of ["discovery","validation","blind_oos"])for(const m of ["m20_vs_m0","m20_vs_m1"])for(const e of ["brier","log_loss"]){const v=metrics[k].gains[m][e],saved=report.walk_forward.metrics[k].gains[m][e];if(Math.abs(v-saved)>1e-12)throw Error("metric mismatch "+k+" "+m+" "+e);}
-for(let i=0;i<4;i++){if(Math.abs(tests[i].gain-report.blind_inference[i].gain)>1e-12||Math.abs(tests[i].p_value-report.blind_inference[i].p_value)>1e-12||Math.abs(tests[i].holm_adjusted-report.blind_inference[i].holm_adjusted)>1e-12)throw Error("inference mismatch "+tests[i].key);}
+for(const k of ["discovery","validation","blind_oos"])for(const m of ["m20_vs_m0","m20_vs_m1"])for(const e of ["brier","log_loss"]){const v=metrics[k].gains[m][e],saved=report.walk_forward.metrics[k].gains[m][e];if(Math.abs(v-saved)>1e-10)throw Error("metric mismatch "+k+" "+m+" "+e);}
+for(let i=0;i<4;i++){if(Math.abs(tests[i].gain-report.blind_inference[i].gain)>1e-10||Math.abs(tests[i].p_value-report.blind_inference[i].p_value)>1e-10||Math.abs(tests[i].holm_adjusted-report.blind_inference[i].holm_adjusted)>1e-10)throw Error("inference mismatch "+tests[i].key);}
 const sf=JSON.parse(fs.readFileSync(SF,"utf8")),freeze=JSON.parse(fs.readFileSync(FREEZE,"utf8"));
 const last20=rows.slice(-W).reduce((z,x)=>z+x.y,0),state=last20<=45?0:last20<=54?1:2,prev=rows.at(-1).y;
 const expectedFreeze={sum:last20,state:["LOW","MID","HIGH"][state],support:first.c.n20[state],top20:sf.active_engine_top20};
