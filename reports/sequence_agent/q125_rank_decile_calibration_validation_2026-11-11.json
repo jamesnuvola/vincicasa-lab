@@ -1,0 +1,117 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q125",
+  "status": "PASS",
+  "passed_checks": 18,
+  "total_checks": 18,
+  "checks": [
+    {
+      "id": "source_blob_sha",
+      "passed": true,
+      "detail": "Pinned Q123 ledger Git blob SHA matches"
+    },
+    {
+      "id": "source_rows",
+      "passed": true,
+      "detail": "3,204 target rows"
+    },
+    {
+      "id": "target_indices",
+      "passed": true,
+      "detail": "Contiguous indices 200..3403"
+    },
+    {
+      "id": "chronology",
+      "passed": true,
+      "detail": "Strictly increasing target dates"
+    },
+    {
+      "id": "strict_prior_cutoffs",
+      "passed": true,
+      "detail": "Every cutoff precedes its target"
+    },
+    {
+      "id": "five_unique_ranks",
+      "passed": true,
+      "detail": "Five distinct ranks in 1..40"
+    },
+    {
+      "id": "rank_sum_reconciliation",
+      "passed": true,
+      "detail": "Parent rank sums reconcile"
+    },
+    {
+      "id": "parent_topk_reconciliation",
+      "passed": true,
+      "detail": "Parent TopK counts reconcile"
+    },
+    {
+      "id": "ten_equal_deciles",
+      "passed": true,
+      "detail": "Ten equal bins of four ranks"
+    },
+    {
+      "id": "split_sizes",
+      "passed": true,
+      "detail": "Chronological split 1922/641/641"
+    },
+    {
+      "id": "decile_hit_conservation",
+      "passed": true,
+      "detail": "Exactly five rank hits per target"
+    },
+    {
+      "id": "null_expectation",
+      "passed": true,
+      "detail": "Expected 0.5 hits per target per decile"
+    },
+    {
+      "id": "randomization_replicates",
+      "passed": true,
+      "detail": "20,000 conditional randomization replicates"
+    },
+    {
+      "id": "p_values_valid",
+      "passed": true,
+      "detail": "Monte Carlo p-values in [0,1]"
+    },
+    {
+      "id": "holm_valid",
+      "passed": true,
+      "detail": "Holm values not below raw p-values"
+    },
+    {
+      "id": "bootstrap_replicates",
+      "passed": true,
+      "detail": "10,000 circular block bootstrap replicates; block length 20"
+    },
+    {
+      "id": "bootstrap_ci",
+      "passed": true,
+      "detail": "Finite ordered intervals"
+    },
+    {
+      "id": "no_forecast_mutation",
+      "passed": true,
+      "detail": "No freeze, Q60 record or production scorer changed"
+    }
+  ],
+  "source_provenance": {
+    "parent_experiment": "Q123",
+    "git_blob_sha": "36d7af1fb3cceda5976eb99a78931f58d1a3d28a",
+    "bytes_utf8": 181952,
+    "parent_q123_validation": "17/17",
+    "parent_future_suffix_mutation_checks": "9/9 inherited; not rerun in Q125"
+  },
+  "statistical_replay": {
+    "conditional_randomization_replicates": 20000,
+    "bootstrap_replicates": 10000,
+    "block_length": 20,
+    "seed": "0x12520261111",
+    "bootstrap_seed": "0x125B007"
+  },
+  "notes": [
+    "Q125 consumes the pinned Q123 ledger only.",
+    "No new forecast or production model was generated."
+  ]
+}
