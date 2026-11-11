@@ -12,12 +12,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: q128-\${{ github.workflow }}-\${{ github.event_name }}-\${{ github.head_ref || github.ref }}
+  group: q128-${{ github.workflow }}-${{ github.event_name }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
   replay:
-    if: \${{ github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'research/q128-adjacency-run-transition-20261111' }}
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'research/q128-adjacency-run-transition-20261111' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
