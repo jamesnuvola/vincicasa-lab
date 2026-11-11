@@ -42,6 +42,16 @@ if(!close(report.blind_inference.omnibus.p_holm,holm1)||!close(report.blind_infe
 if(!close(report.blind_inference.top_heavy_trend.bootstrap_ci95[0],trendCI[0])||!close(report.blind_inference.top_heavy_trend.bootstrap_ci95[1],trendCI[1]))throw new Error('bootstrap replay');
 if(validationFile.passed_checks!==18||validationFile.total_checks!==18||validationFile.status!=='PASS')throw new Error('validation status');
 if(ledgerText.trimEnd().split(/\r?\n/).length!==3204+1)throw new Error('ledger rows');
+const ledgerRows=ledgerText.trimEnd().split(/\r?\n/);
+const ledgerHeader=['target_index','target_date','history_cutoff','split','draw_ranks','rank_sum','mean_rank','top5_hits','top10_hits','top20_hits',...Array.from({length:10},(_,i)=>'d'+(i+1))].join(',');
+if(ledgerRows[0]!==ledgerHeader)throw new Error('ledger header');
+for(let i=0;i<rows.length;i++){
+  const x=rows[i],d=Array(10).fill(0);
+  for(const r of x.ranks)d[Math.floor((r-1)/4)]++;
+  const split=i<1922?'discovery':i<2563?'validation':'blind_oos';
+  const expected=[x.target_index,x.target_date,x.history_cutoff,split,x.ranks.join(';'),x.rank_sum,(x.rank_sum/5).toFixed(12),x.top5_hits,x.top10_hits,x.top20_hits,...d].join(',');
+  if(ledgerRows[i+1]!==expected)throw new Error('ledger content mismatch at '+i);
+}
 const manifest=JSON.parse(read(P.manifest));
 for(const a of manifest.artifacts){const b=fs.readFileSync(a.path);const content=b.toString('utf8');if(sha(content)!==a.sha||b.length!==a.bytes)throw new Error('manifest mismatch '+a.path);}
 console.log('Q125 CHECK PASS: 3204 targets; decile counts and 20,000 conditional-randomization / 10,000 block-bootstrap statistics reproduced; 18/18 validation; manifest verified.');
