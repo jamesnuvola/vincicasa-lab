@@ -39,7 +39,7 @@ jobs:
         run: python tests/test_sonar_prospective_gate.py -v
       - name: Check exact-source active SONAR engine diagnostic syntax
         run: node --check scripts/sonar_active_engine_walkforward.mjs
-      - name: Replay Q125 Set-based rank-decile calibration and verify every persisted ledger row
+      - name: Replay Q125 Set-based rank-decile calibration and verify UTF-8 manifest
         run: node scripts/sonar_q125_rank_decile_calibration.mjs --check
       - name: Check SONAR analysis and queue scripts
         run: python -m py_compile scripts/sonar_fast_improvements.py scripts/sonar_research_queue.py
