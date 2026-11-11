@@ -145,6 +145,10 @@ function run(){
   "",
   "After official publication of contest 315, append the verified outcome and score only immutable existing freezes; continue append-only Q60 paired collection.",
   "",
+  "## Replay recovery",
+  "",
+  "- The first persisted-head Node 20 replay failed before execution because `utf8Bytes` was declared twice in the ES module. The duplicate trailing declaration was removed; the statistical algorithm and results are unchanged.",
+  "",
   "## CI status at artifact generation",
   "",
   "The exact-head Node 20 replay and general repository CI must be observed after this branch is pushed. Do not infer CI success from the local calculation."
@@ -154,7 +158,6 @@ function run(){
  const manifestText=JSON.stringify(manifest,null,2)+"\n";
  return{reportText,ledger,validationText,checkpointText,manifestText,report,validation,checks,rows};
 }
-function utf8Bytes(s){return Buffer.byteLength(s,"utf8");}
 const out=run();
 for(const [p,expected] of [[P.report,out.reportText],[P.ledger,out.ledger],[P.validation,out.validationText],[P.checkpoint,out.checkpointText],[P.manifest,out.manifestText]])assert(read(p)===expected,"persisted artifact mismatch: "+p);
 console.log("Q128 CHECK PASS: "+out.rows.length+" targets; "+out.checks.length+"/"+out.checks.length+" checks; six inferential endpoints; report/ledger/validation/checkpoint byte-identical; 7/7 manifest entries verified.");
