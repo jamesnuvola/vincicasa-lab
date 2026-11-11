@@ -39,7 +39,8 @@
       "bootstrap_replicates": 10000,
       "block_length": 20,
       "bootstrap_seed": "0x125B007",
-      "multiplicity": "Holm across two preregistered blind-OOS endpoints only."
+      "multiplicity": "Holm across two preregistered blind-OOS endpoints only.",
+      "randomization_sampler": "Set-based rejection sampler: five distinct rank slots from 0..39 per target; no 32-bit bitmask."
     }
   },
   "splits": {
@@ -163,17 +164,17 @@
     "adjustment": "Holm",
     "omnibus": {
       "observed_statistic": 9.07488299532,
-      "extreme_replicates": 11246,
+      "extreme_replicates": 6722,
       "replicates": 20000,
-      "p_value": 0.562321883906,
-      "p_holm": 0.562321883906
+      "p_value": 0.33613319334,
+      "p_holm": 0.391280435978
     },
     "top_heavy_trend": {
       "observed_gain_per_target": 0.211388455538,
-      "extreme_replicates": 3987,
+      "extreme_replicates": 3912,
       "replicates": 20000,
-      "p_value": 0.199390030498,
-      "p_holm": 0.398780060996,
+      "p_value": 0.195640217989,
+      "p_holm": 0.391280435978,
       "bootstrap_ci95": [
         -0.281630265211,
         0.682527301092
@@ -229,5 +230,11 @@
     "Decile pointwise intervals are descriptive, not ten independent significance claims.",
     "The two-endpoint Holm correction does not cover the full Q00-Q125 research family."
   ],
-  "next_action": "After official publication of contest 315, evaluate immutable Q123/Q124 freezes without retuning and continue append-only Q60 paired collection."
+  "next_action": "After official publication of contest 315, evaluate immutable Q123/Q124 freezes without retuning and continue append-only Q60 paired collection.",
+  "implementation_recovery": {
+    "issue": "Initial JavaScript sampler used a 32-bit bitmask for 40 rank slots; bit shifts 32..39 alias slots 0..7.",
+    "correction": "Replaced bitmask with Set-based sampling without replacement; all 20,000 conditional randomization replicates were recomputed.",
+    "superseded_results": true,
+    "corrected_seed": "0x12520261111"
+  }
 }
