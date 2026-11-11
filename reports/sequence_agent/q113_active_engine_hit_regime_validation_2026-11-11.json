@@ -1,0 +1,110 @@
+{
+  "experiment_id": "Q113",
+  "generated_at_utc": "2026-11-11T06:42:22Z",
+  "passed": true,
+  "checks_passed": 17,
+  "checks_total": 17,
+  "checks": [
+    {
+      "name": "archive_3404",
+      "passed": true
+    },
+    {
+      "name": "app_data_matches_archive",
+      "passed": true
+    },
+    {
+      "name": "dates_unique_chronological",
+      "passed": true
+    },
+    {
+      "name": "valid_five_of_40",
+      "passed": true
+    },
+    {
+      "name": "source_blobs_pinned",
+      "passed": true
+    },
+    {
+      "name": "active_engine_freeze_reproduced",
+      "passed": true
+    },
+    {
+      "name": "walk_forward_3203",
+      "passed": true
+    },
+    {
+      "name": "splits_1921_641_641",
+      "passed": true
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "passed": true
+    },
+    {
+      "name": "baseline_pmf_normalized",
+      "passed": true
+    },
+    {
+      "name": "transition_pmfs_normalized",
+      "passed": true
+    },
+    {
+      "name": "fixed_alpha_200",
+      "passed": true
+    },
+    {
+      "name": "future_mutation_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "deterministic_replay_8_of_8",
+      "passed": true
+    },
+    {
+      "name": "holm_family_size_2",
+      "passed": true
+    },
+    {
+      "name": "prospective_freeze_pre_draw_pending",
+      "passed": true
+    },
+    {
+      "name": "prospective_freeze_pmf_matches",
+      "passed": true
+    }
+  ],
+  "future_mutation_samples": [
+    201,
+    500,
+    1000,
+    1500,
+    2000,
+    2500,
+    3000,
+    3300,
+    3403
+  ],
+  "deterministic_replay_samples": [
+    201,
+    500,
+    1000,
+    1500,
+    2000,
+    2500,
+    3000,
+    3403
+  ],
+  "normalizer": {
+    "baseline_sum": 1,
+    "max_error": 2.220446049250313e-16,
+    "next_state_count": 1036
+  },
+  "inference": {
+    "block_sign_flip": 50000,
+    "bootstrap": 10000,
+    "block_length": 20,
+    "holm_family_size": 2
+  },
+  "note": "Historical analysis exploratory and historical Blind OOS not virgin; prospective freeze immutable."
+}
