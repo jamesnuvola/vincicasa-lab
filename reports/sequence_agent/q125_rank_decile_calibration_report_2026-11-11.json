@@ -236,6 +236,7 @@
     "correction": "Replaced bitmask with Set-based sampling without replacement; all 20,000 conditional randomization replicates were recomputed.",
     "superseded_results": true,
     "corrected_seed": "0x12520261111",
-    "ledger_verifier_issue": "The first Node 20 replay then exposed a field-name mismatch: the parsed parent ledger schema uses r/idx/date/cutoff/sum/top5/top10/top20, while the new row verifier referenced ranks/target_index. The verifier was aligned to the parsed schema; no statistical values changed."
+    "ledger_verifier_issue": "The first Node 20 replay then exposed a field-name mismatch: the parsed parent ledger schema uses r/idx/date/cutoff/sum/top5/top10/top20, while the new row verifier referenced ranks/target_index. The verifier was aligned to the parsed schema; no statistical values changed.",
+    "manifest_bytes_issue": "The Node 20 manifest replay found the checkpoint contains a Unicode em dash; the initial manifest used JavaScript string length instead of UTF-8 byte length. Manifest byte counts are now calculated from UTF-8 bytes."
   }
 }
