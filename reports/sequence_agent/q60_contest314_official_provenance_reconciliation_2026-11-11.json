@@ -1,0 +1,66 @@
+{
+  "experiment_id": "Q60-PROVENANCE-314",
+  "title": "Official-source reconciliation of contest 314",
+  "generated_at_utc": "2026-11-11T11:05:38Z",
+  "status": "VERIFIED_OFFICIAL_PROVENANCE",
+  "source": {
+    "url": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+    "title": "Archivio estrazioni VinciCasa Novembre 2026",
+    "contest_number": 314,
+    "target_date": "2026-11-10",
+    "numbers": [
+      1,
+      7,
+      11,
+      22,
+      25
+    ]
+  },
+  "repository": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "archive_row": "2026-11-10,1,7,11,22,25"
+  },
+  "freezes": {
+    "global": {
+      "file": "reports/sequence_agent/shadow_forecasts.csv",
+      "config_id": "freq_100",
+      "frozen_at": "2026-11-10T10:53:16+01:00",
+      "history_cutoff": "2026-11-09",
+      "status": "EVALUATED",
+      "top20_hits": 2,
+      "hit_numbers": [
+        1,
+        25
+      ],
+      "all5_top20": false
+    },
+    "positional": {
+      "file": "reports/sequence_agent/position_mix_shadow.csv",
+      "config_id": "position_seed_mix_top20_v1",
+      "frozen_at": "2026-11-10T10:55:31+01:00",
+      "history_cutoff": "2026-11-09",
+      "status": "EVALUATED",
+      "top20_hits": 2,
+      "hit_numbers": [
+        1,
+        25
+      ],
+      "all5_top20": false
+    }
+  },
+  "gate": {
+    "valid_complete_prospective_targets": 23,
+    "minimum_required": 200,
+    "remaining": 177,
+    "status": "INSUFFICIENT_PROSPECTIVE_CASES",
+    "promotion_allowed": false
+  },
+  "decision": "The previously pending exact-number provenance for contest 314 is now resolved by the official VinciCasa archive. Existing global and positional freezes were already evaluated against the same official result; no forecast or hit count was edited.",
+  "guardrails": [
+    "No historical freeze reconstructed.",
+    "No frozen candidate list, timestamp, or cutoff modified.",
+    "No Q60 count or inferential statistic changed.",
+    "No engine promotion or merge."
+  ]
+}
