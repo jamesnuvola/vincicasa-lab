@@ -23,3 +23,5 @@
 ## Next action
 
 - Wait for official contest 315 publication; evaluate immutable Q123/Q124 freezes without retuning; append only complete Q60 pairs.
+
+- The next Node 20 replay caught a manifest byte-count mismatch: the checkpoint contains a Unicode em dash, so UTF-16 string length was not its UTF-8 byte length. The manifest now records actual UTF-8 bytes.
