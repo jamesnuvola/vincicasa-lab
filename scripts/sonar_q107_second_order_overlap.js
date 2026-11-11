@@ -227,22 +227,17 @@ function formatCsvValue(v) {
   return String(v);
 }
 function buildLedger(rows) {
-  const probs = [];
-  for (let i = 0; i < 6; i++) probs.push("m0_p" + i);
-  for (let i = 0; i < 6; i++) probs.push("m1_p" + i);
-  for (let i = 0; i < 6; i++) probs.push("m2_p" + i);
   const cols = ["target_index","target_date","cutoff_date","training_pairs","lag1_overlap","lag2_overlap","actual_overlap","lag1_support","lag2_pair_support",
     "m0_brier","m1_brier","m2_brier","m0_logloss","m1_logloss","m2_logloss",
-    "m2_minus_m1_brier_gain","m2_minus_m1_logloss_gain","m2_minus_m0_brier_gain","m2_minus_m0_logloss_gain",...probs];
+    "m2_minus_m1_brier_gain","m2_minus_m1_logloss_gain","m2_minus_m0_brier_gain","m2_minus_m0_logloss_gain"];
   const lines = [cols.join(",")];
   for (const r of rows) {
     const values = [r.target_index,r.target_date,r.cutoff_date,r.training_pairs,r.lag1_overlap,r.lag2_overlap,r.actual_overlap,r.lag1_support,r.lag2_pair_support,
       r.m0_brier,r.m1_brier,r.m2_brier,r.m0_logloss,r.m1_logloss,r.m2_logloss,
-      r.m2_minus_m1_brier_gain,r.m2_minus_m1_logloss_gain,r.m2_minus_m0_brier_gain,r.m2_minus_m0_logloss_gain,
-      ...r.p0,...r.p1,...r.p2];
+      r.m2_minus_m1_brier_gain,r.m2_minus_m1_logloss_gain,r.m2_minus_m0_brier_gain,r.m2_minus_m0_logloss_gain];
     lines.push(values.map(formatCsvValue).join(","));
   }
-  return lines.join("\n") + "\n";
+  return lines.join("\\n") + "\\n";
 }
 function mutateDraw(draw, shift) {
   return { d: draw.d, n: draw.n.map(v => ((v - 1 + shift) % 40) + 1).sort((a, b) => a - b) };
