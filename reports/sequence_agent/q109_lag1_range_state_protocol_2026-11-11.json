@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q109",
+  "title": "Lag-1 draw-range state memory",
+  "preregistered_at_local": "2026-11-11T03:42:18+01:00",
+  "status": "PREREGISTERED_RESEARCH_ONLY",
+  "source": {
+    "pinned_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+    "archive_path": "src/data.json",
+    "archive_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10",
+    "official_last_draw": {
+      "contest": 314,
+      "date": "2026-11-10",
+      "numbers": [
+        1,
+        7,
+        11,
+        22,
+        25
+      ],
+      "source": "https://www.vincicasa.it/archivio-estrazioni?anno=2026&fromSchedina=1&numero=146"
+    }
+  },
+  "hypothesis": "The previous draw's range (maximum minus minimum) may add one-step information about the next draw's range beyond the exact combinatorial marginal distribution.",
+  "definition": {
+    "feature": "R_t = max(D_t) - min(D_t)",
+    "support": {
+      "minimum": 4,
+      "maximum": 39,
+      "size": 36
+    },
+    "exact_null": "q0(r) = (40-r) * C(r-1,3) / C(40,5), r=4..39",
+    "denominator": 658008
+  },
+  "models": {
+    "M0": "Exact combinatorial range PMF q0.",
+    "M1": "One-step categorical shrinkage conditional on previous range s: p_t(r|s) = [alpha*q0(r) + N_{s,r}(t)] / [alpha + N_s(t)].",
+    "alpha": 200,
+    "parameter_selection": "None; alpha fixed before scoring."
+  },
+  "walk_forward": {
+    "warmup_transition_pairs": 300,
+    "first_target_index_zero_based": 301,
+    "expected_targets": 3103,
+    "chronological_splits": "60% discovery / 20% validation / remaining 20% historical blind OOS; floor for first two segments.",
+    "cutoff_rule": "Only transition pairs (R_i,R_{i+1}) with i+1 <= t-1 are eligible for target t; history cutoff is the previous draw date.",
+    "inference": "Historical blind OOS only; discovery and validation descriptive because no tuning is performed."
+  },
+  "endpoints": {
+    "primary": [
+      "M0 minus M1 multiclass Brier loss (positive favors M1)",
+      "M0 minus M1 multiclass log-loss (positive favors M1)"
+    ],
+    "null": "M0 exact marginal; also report M1 against M0.",
+    "sign_flip": {
+      "alternative": "positive mean gain",
+      "block_length": 20,
+      "replicates": 50000,
+      "seed": 20261111
+    },
+    "bootstrap": {
+      "method": "circular moving-block bootstrap",
+      "block_length": 20,
+      "replicates": 10000,
+      "seed": 20261112,
+      "interval": "percentile 95%"
+    },
+    "multiple_testing": "Holm step-down across the two preregistered blind-OOS endpoints."
+  },
+  "guardrails": [
+    "No parameter or state-binning search.",
+    "No target or future draw is used in forecast construction.",
+    "Forecast is computed before the target outcome is scored.",
+    "Historical blind OOS is not a virgin holdout; prior SONAR work examined related structural features.",
+    "No production scorer, canonical archive, Q60 gate, H101/H102 freeze, or existing forecast is modified.",
+    "No merge or engine promotion; human review required.",
+    "PRs #6, #7, and #8 must remain untouched."
+  ]
+}
