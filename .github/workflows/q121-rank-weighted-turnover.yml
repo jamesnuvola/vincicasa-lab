@@ -1,8 +1,6 @@
 name: Q121 rank-weighted turnover replay
 
 on:
-  push:
-    branches: ["research/q121-rank-weighted-turnover-20261111"]
   pull_request:
     branches: ["main"]
     paths:
@@ -15,7 +13,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: q121-rank-weighted-turnover-${{ github.head_ref || github.ref_name }}
+  group: q121-rank-weighted-turnover-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -25,7 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref || github.ref_name }}
+          ref: ${{ github.head_ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -35,7 +33,7 @@ jobs:
         run: node scripts/sonar_q121_rank_weighted_turnover.mjs --verify
       - name: Persist generated Q121 artifacts to the research branch
         env:
-          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
+          TARGET_BRANCH: ${{ github.head_ref }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
