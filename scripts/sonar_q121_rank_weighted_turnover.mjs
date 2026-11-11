@@ -285,6 +285,10 @@ function expectedOutputs(){
     support:{overlap_states:a.overlapCounts,joint_states:a.jointCounts,max_probability_normalization_error:a.maxNormError},
     replay:{identical:replay,ledger_rows:rows.length,future_suffix_invariance:future,passed_future_tests:future.filter(Boolean).length,total_future_tests:future.length},
     decision_rule:protocol.decision_rule,
+    recovery_history:[
+      {run_id:43031726096,status:"FAILED_RECOVERED",root_cause:"ReferenceError: maxNormError was referenced outside the run result object.",correction:"Use a.maxNormError; committed in runner revision becc75e17baf3690d9ecf4304942d1c44655b5d2."},
+      {run_id:43031859358,status:"FAILED_RECOVERED",root_cause:"Manifest generation attempted to read output files before --write had created them.",correction:"Build manifest hashes from the in-memory expected output map; committed in runner revision 71b2a8e537e27c371255b10022267696a4dde2f3."}
+    ],
     limitations:[
       "Historical Blind OOS is not a virgin holdout after the extensive prior SONAR experiment family.",
       "M1 reproduces the Q117 overlap-state model; Q121 tests only whether rank displacement adds information conditional on overlap.",
@@ -304,6 +308,7 @@ function expectedOutputs(){
     "- Exact APP scorer blob "+sourceSha+"; app data blob "+appSha+"; APP data row-by-row matches canonical archive: "+appOK+".",
     "- Walk-forward: "+n+" strict-prior targets; Discovery / Validation / historical Blind OOS = "+d+" / "+v+" / "+o+".",
     "- M2 adds fixed rank-displacement bins conditional on the Q117 overlap state; shrinkage 200; no tuning.",
+    "- Recovery: first replay failed on an out-of-scope normalization variable; second replay failed because the manifest read generated outputs before write. Both root causes were corrected in runner commits becc75e17baf3690d9ecf4304942d1c44655b5d2 and 71b2a8e537e27c371255b10022267696a4dde2f3; final replay status is recorded by CI.",
     "- Blind OOS M2 vs M1 Brier gain "+segments.blind_oos.brier_gain_m2_vs_m1+"; log-loss gain "+segments.blind_oos.logloss_gain_m2_vs_m1+".",
     "- Blind OOS M2 vs M0 Brier gain "+segments.blind_oos.brier_gain_m2_vs_m0+"; log-loss gain "+segments.blind_oos.logloss_gain_m2_vs_m0+".",
     "- Holm family size 4; "+validation.passed+"/"+validation.total+" checks; future-suffix invariance "+future.filter(Boolean).length+"/9; deterministic replay "+replay+".",
