@@ -1,0 +1,504 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q124",
+  "title": "APP ordinal ranking tie-aware sensitivity and deterministic tie-break audit",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_TIE_NEUTRAL_ORDINAL_SKILL_DEMONSTRATED",
+  "source": {
+    "base_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "source_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "app_blob_sha": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "active_blob_sha": "822f955801c329585f7dd03df7fc61b0b6a2419c",
+    "draws": 3404,
+    "last_date": "2026-11-10"
+  },
+  "preregistration": {
+    "protocol_commit": "1aefa4e21eb28c95619f0e9c58b449d8b723f822",
+    "registered_at_utc": "2026-11-11T16:43:55.442Z",
+    "preregistered_before_calculation": true
+  },
+  "hypothesis": "The small favorable historical Blind OOS mean-rank estimate in Q123 may be sensitive to exact-score ties resolved deterministically by smaller-number tie-break. A tie-neutral midrank analysis will show whether ordinal rank skill remains after removing arbitrary within-tie ordering; the paired deterministic-minus-midrank difference quantifies tie-break contribution.",
+  "method": {
+    "scorer": "Exact committed APP scorer extracted from overlapCount, sonarTransitionProfile and sonarAnalogCore in pinned src/VinciCasaLab.jsx; no source edits.",
+    "warmup": 200,
+    "target_count": 3204,
+    "split_rule": "Chronological 60/20/remainder using rounded first two split sizes.",
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior": "For target index t, scorer receives only archive rows [0,t); target and all later rows are excluded.",
+    "no_tuning": true,
+    "baseline": {
+      "mean_rank": 20.5,
+      "mean_rank_sum": 102.5,
+      "top5_hits": 0.625,
+      "top10_hits": 1.25,
+      "top20_hits": 2.5
+    },
+    "endpoints": [
+      {
+        "id": "midrank_skill",
+        "direction": "higher_gain",
+        "gain": "20.5 - mean_tie_neutral_midrank",
+        "primary": true
+      },
+      {
+        "id": "fractional_top5",
+        "direction": "higher",
+        "gain": "mean_fractional_top5_hits - 0.625"
+      },
+      {
+        "id": "fractional_top10",
+        "direction": "higher",
+        "gain": "mean_fractional_top10_hits - 1.25"
+      },
+      {
+        "id": "fractional_top20",
+        "direction": "higher",
+        "gain": "mean_fractional_top20_hits - 2.5"
+      },
+      {
+        "id": "deterministic_tiebreak_advantage",
+        "direction": "higher",
+        "gain": "mean_tie_neutral_midrank - mean_deterministic_rank"
+      }
+    ],
+    "inference": {
+      "block_sign_flip_replicates": 50000,
+      "circular_block_bootstrap_replicates": 10000,
+      "block_length": 20,
+      "seed": "0x12420261111",
+      "p_value": "One-sided upper tail for the preregistered gain; plus-one correction.",
+      "confidence_interval": "Percentile 95% circular moving-block bootstrap.",
+      "multiplicity": "Holm across the five endpoints above; no claim that this corrects the full Q00–Q124 research family."
+    }
+  },
+  "walk_forward": {
+    "warmup": 200,
+    "targets": 3204,
+    "splits": {
+      "discovery": {
+        "targets": 1922,
+        "first_target": "2018-02-02",
+        "last_target": "2023-05-08",
+        "mean_deterministic_rank": 20.440270551509,
+        "deterministic_rank_gain_vs_uniform": 0.059729448491,
+        "mean_tie_neutral_midrank": 20.440322580645,
+        "tie_neutral_rank_gain_vs_uniform": 0.059677419355,
+        "mean_tiebreak_gain": 0.000052029136,
+        "mean_fractional_top5_hits": 0.64151925078,
+        "fractional_top5_gain": 0.01651925078,
+        "mean_fractional_top10_hits": 1.248699271592,
+        "fractional_top10_gain": -0.001300728408,
+        "mean_fractional_top20_hits": 2.522372528616,
+        "fractional_top20_gain": 0.022372528616,
+        "forecasts_with_ties": 7,
+        "mean_tied_groups": 0.003642039542,
+        "mean_tied_numbers": 0.007284079084,
+        "max_tie_size": 2,
+        "drawn_numbers_in_ties": 1,
+        "total_tie_randomization_variance": 0.25
+      },
+      "validation": {
+        "targets": 641,
+        "first_target": "2023-05-09",
+        "last_target": "2025-02-07",
+        "mean_deterministic_rank": 20.740093603744,
+        "deterministic_rank_gain_vs_uniform": -0.240093603744,
+        "mean_tie_neutral_midrank": 20.740093603744,
+        "tie_neutral_rank_gain_vs_uniform": -0.240093603744,
+        "mean_tiebreak_gain": 0,
+        "mean_fractional_top5_hits": 0.636505460218,
+        "fractional_top5_gain": 0.011505460218,
+        "mean_fractional_top10_hits": 1.248049921997,
+        "fractional_top10_gain": -0.001950078003,
+        "mean_fractional_top20_hits": 2.436817472699,
+        "fractional_top20_gain": -0.063182527301,
+        "forecasts_with_ties": 0,
+        "mean_tied_groups": 0,
+        "mean_tied_numbers": 0,
+        "max_tie_size": 1,
+        "drawn_numbers_in_ties": 0,
+        "total_tie_randomization_variance": 0
+      },
+      "blind_oos": {
+        "targets": 641,
+        "first_target": "2025-02-08",
+        "last_target": "2026-11-10",
+        "mean_deterministic_rank": 20.336661466459,
+        "deterministic_rank_gain_vs_uniform": 0.163338533541,
+        "mean_tie_neutral_midrank": 20.336661466459,
+        "tie_neutral_rank_gain_vs_uniform": 0.163338533541,
+        "mean_tiebreak_gain": 0,
+        "mean_fractional_top5_hits": 0.622464898596,
+        "fractional_top5_gain": -0.002535101404,
+        "mean_fractional_top10_hits": 1.316692667707,
+        "fractional_top10_gain": 0.066692667707,
+        "mean_fractional_top20_hits": 2.525741029641,
+        "fractional_top20_gain": 0.025741029641,
+        "forecasts_with_ties": 0,
+        "mean_tied_groups": 0,
+        "mean_tied_numbers": 0,
+        "max_tie_size": 1,
+        "drawn_numbers_in_ties": 0,
+        "total_tie_randomization_variance": 0
+      }
+    }
+  },
+  "blind_inference": {
+    "family_size": 5,
+    "adjustment": "Holm",
+    "block_length": 20,
+    "block_sign_flip_replicates": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "tests": [
+      {
+        "endpoint": "midrank_skill",
+        "mean_gain": 0.163338533541,
+        "block_sign_flip": {
+          "observed_sum": 104.7,
+          "blocks": 33,
+          "replicates": 50000,
+          "extreme": 10070,
+          "p_one_sided_gain": 0.201415971681
+        },
+        "bootstrap_ci95": [
+          -0.228861154446,
+          0.552106084243
+        ],
+        "p_holm": 0.805663886724
+      },
+      {
+        "endpoint": "fractional_top5",
+        "mean_gain": -0.002535101404,
+        "block_sign_flip": {
+          "observed_sum": -1.625,
+          "blocks": 33,
+          "replicates": 50000,
+          "extreme": 27550,
+          "p_one_sided_gain": 0.55100897982
+        },
+        "bootstrap_ci95": [
+          -0.055577223089,
+          0.052067082683
+        ],
+        "p_holm": 1
+      },
+      {
+        "endpoint": "fractional_top10",
+        "mean_gain": 0.066692667707,
+        "block_sign_flip": {
+          "observed_sum": 42.75,
+          "blocks": 33,
+          "replicates": 50000,
+          "extreme": 1100,
+          "p_one_sided_gain": 0.022019559609
+        },
+        "bootstrap_ci95": [
+          -0.000390015601,
+          0.133775351014
+        ],
+        "p_holm": 0.110097798045
+      },
+      {
+        "endpoint": "fractional_top20",
+        "mean_gain": 0.025741029641,
+        "block_sign_flip": {
+          "observed_sum": 16.5,
+          "blocks": 33,
+          "replicates": 50000,
+          "extreme": 14175,
+          "p_one_sided_gain": 0.283514329713
+        },
+        "bootstrap_ci95": [
+          -0.064742589704,
+          0.113104524181
+        ],
+        "p_holm": 0.850542989139
+      },
+      {
+        "endpoint": "deterministic_tiebreak_advantage",
+        "mean_gain": 0,
+        "block_sign_flip": {
+          "observed_sum": 0,
+          "blocks": 33,
+          "replicates": 50000,
+          "extreme": 50000,
+          "p_one_sided_gain": 1
+        },
+        "bootstrap_ci95": [
+          0,
+          0
+        ],
+        "p_holm": 1
+      }
+    ]
+  },
+  "prospective_freeze": {
+    "target_date": "2026-11-11",
+    "frozen_at_utc": "2026-11-11T16:47:37.291Z",
+    "history_cutoff": "2026-11-10",
+    "top40_exact_match_q123": true,
+    "tie_groups": 40,
+    "top40": [
+      {
+        "rank": 1,
+        "number": 25,
+        "score": 0.910259583731,
+        "midrank": 1
+      },
+      {
+        "rank": 2,
+        "number": 16,
+        "score": 0.778693746945,
+        "midrank": 2
+      },
+      {
+        "rank": 3,
+        "number": 38,
+        "score": 0.642796322962,
+        "midrank": 3
+      },
+      {
+        "rank": 4,
+        "number": 17,
+        "score": 0.635743193485,
+        "midrank": 4
+      },
+      {
+        "rank": 5,
+        "number": 36,
+        "score": 0.616742280759,
+        "midrank": 5
+      },
+      {
+        "rank": 6,
+        "number": 1,
+        "score": 0.607739286375,
+        "midrank": 6
+      },
+      {
+        "rank": 7,
+        "number": 28,
+        "score": 0.588023489384,
+        "midrank": 7
+      },
+      {
+        "rank": 8,
+        "number": 26,
+        "score": 0.586060771472,
+        "midrank": 8
+      },
+      {
+        "rank": 9,
+        "number": 27,
+        "score": 0.582396609013,
+        "midrank": 9
+      },
+      {
+        "rank": 10,
+        "number": 9,
+        "score": 0.569068937654,
+        "midrank": 10
+      },
+      {
+        "rank": 11,
+        "number": 34,
+        "score": 0.54150369853,
+        "midrank": 11
+      },
+      {
+        "rank": 12,
+        "number": 12,
+        "score": 0.5386851433,
+        "midrank": 12
+      },
+      {
+        "rank": 13,
+        "number": 8,
+        "score": 0.532500405297,
+        "midrank": 13
+      },
+      {
+        "rank": 14,
+        "number": 10,
+        "score": 0.520259045745,
+        "midrank": 14
+      },
+      {
+        "rank": 15,
+        "number": 21,
+        "score": 0.468504981258,
+        "midrank": 15
+      },
+      {
+        "rank": 16,
+        "number": 20,
+        "score": 0.454519600512,
+        "midrank": 16
+      },
+      {
+        "rank": 17,
+        "number": 15,
+        "score": 0.448871641506,
+        "midrank": 17
+      },
+      {
+        "rank": 18,
+        "number": 39,
+        "score": 0.447085756807,
+        "midrank": 18
+      },
+      {
+        "rank": 19,
+        "number": 30,
+        "score": 0.444485401652,
+        "midrank": 19
+      },
+      {
+        "rank": 20,
+        "number": 37,
+        "score": 0.418191082475,
+        "midrank": 20
+      },
+      {
+        "rank": 21,
+        "number": 31,
+        "score": 0.41163187202,
+        "midrank": 21
+      },
+      {
+        "rank": 22,
+        "number": 13,
+        "score": 0.397075443861,
+        "midrank": 22
+      },
+      {
+        "rank": 23,
+        "number": 32,
+        "score": 0.390262705144,
+        "midrank": 23
+      },
+      {
+        "rank": 24,
+        "number": 7,
+        "score": 0.384700495171,
+        "midrank": 24
+      },
+      {
+        "rank": 25,
+        "number": 23,
+        "score": 0.37447962922,
+        "midrank": 25
+      },
+      {
+        "rank": 26,
+        "number": 29,
+        "score": 0.366333819636,
+        "midrank": 26
+      },
+      {
+        "rank": 27,
+        "number": 5,
+        "score": 0.360980371547,
+        "midrank": 27
+      },
+      {
+        "rank": 28,
+        "number": 18,
+        "score": 0.358814490371,
+        "midrank": 28
+      },
+      {
+        "rank": 29,
+        "number": 14,
+        "score": 0.355313125238,
+        "midrank": 29
+      },
+      {
+        "rank": 30,
+        "number": 24,
+        "score": 0.348298598629,
+        "midrank": 30
+      },
+      {
+        "rank": 31,
+        "number": 3,
+        "score": 0.345671627791,
+        "midrank": 31
+      },
+      {
+        "rank": 32,
+        "number": 6,
+        "score": 0.325214407102,
+        "midrank": 32
+      },
+      {
+        "rank": 33,
+        "number": 19,
+        "score": 0.294107423371,
+        "midrank": 33
+      },
+      {
+        "rank": 34,
+        "number": 22,
+        "score": 0.293200289045,
+        "midrank": 34
+      },
+      {
+        "rank": 35,
+        "number": 40,
+        "score": 0.292616957446,
+        "midrank": 35
+      },
+      {
+        "rank": 36,
+        "number": 35,
+        "score": 0.285337517885,
+        "midrank": 36
+      },
+      {
+        "rank": 37,
+        "number": 4,
+        "score": 0.263167410309,
+        "midrank": 37
+      },
+      {
+        "rank": 38,
+        "number": 2,
+        "score": 0.242242132716,
+        "midrank": 38
+      },
+      {
+        "rank": 39,
+        "number": 11,
+        "score": 0.228728124047,
+        "midrank": 39
+      },
+      {
+        "rank": 40,
+        "number": 33,
+        "score": 0.135552478213,
+        "midrank": 40
+      }
+    ],
+    "status": "FROZEN_PENDING"
+  },
+  "leakage_checks": {
+    "strict_prior": true,
+    "future_suffix_mutation_checks": 9,
+    "source_and_app_reconciled": true,
+    "exact_score_ties_only": true
+  },
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout after prior SONAR research.",
+    "This is a tie-handling sensitivity audit, not a new predictive engine or a quintet probability model.",
+    "The conditional uniform 5-of-40 null assumes independent uniform draws.",
+    "Holm covers five Q124 endpoints only, not the full Q00–Q124 research family.",
+    "The 2026-11-11 freeze is pending the official result and is not a Q60 paired freeze."
+  ],
+  "next_action": "After official publication of contest 315, evaluate immutable Q123/Q124 freezes without retuning; continue append-only Q60 paired collection."
+}
