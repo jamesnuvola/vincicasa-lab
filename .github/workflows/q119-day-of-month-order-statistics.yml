@@ -1,0 +1,25 @@
+name: Q119 day-of-month order-statistic replay
+
+on:
+  push:
+    branches:
+      - research/q119-day-of-month-order-statistics-20261111
+  pull_request:
+    branches:
+      - main
+    paths:
+      - data/storico_daily.csv
+      - scripts/sonar_q119_day_of_month_order_statistics.mjs
+      - reports/sequence_agent/q119_day_of_month_order_statistics_*
+      - .github/workflows/q119-day-of-month-order-statistics.yml
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Replay Q119 with Node 20
+        run: node scripts/sonar_q119_day_of_month_order_statistics.mjs --verify
