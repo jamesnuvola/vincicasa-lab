@@ -5,7 +5,7 @@ const alpha=200, blockLength=20;
 const root='reports/sequence_agent/';
 const srcLedgerPath=root+'q114_source_q113_active_engine_hit_regime_target_ledger_2026-11-11.csv';
 const srcFreezePath=root+'q114_source_q113_active_engine_hit_regime_prospective_freeze_2026-11-11.json';
-function parseCSV(s){const out=[];let row=[],field='',quoted=false;for(let i=0;i<s.length;i++){const c=s[i];if(quoted){if(c==='"'&&s[i+1]==='"'){field+='"';i++;}else if(c==='"')quoted=false;else field+=c;}else{if(c==='"')quoted=true;else if(c===','){row.push(field);field='';}else if(c==='\\n'){row.push(field);out.push(row);row=[];field='';}else if(c!=='\\r')field+=c;}}if(field.length||row.length){row.push(field);out.push(row);}const h=out.shift();return out.filter(r=>r.length===h.length).map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]])));}
+function parseCSV(s){const out=[];let row=[],field='',quoted=false;for(let i=0;i<s.length;i++){const c=s[i];if(quoted){if(c==='"'&&s[i+1]==='"'){field+='"';i++;}else if(c==='"')quoted=false;else field+=c;}else{if(c==='"')quoted=true;else if(c===','){row.push(field);field='';}else if(c==='\n'){row.push(field);out.push(row);row=[];field='';}else if(c!=='\r')field+=c;}}if(field.length||row.length){row.push(field);out.push(row);}const h=out.shift();return out.filter(r=>r.length===h.length).map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]])));}
 const rows=parseCSV(fs.readFileSync(srcLedgerPath,'utf8')).map(r=>({date:r.target_date,cutoff:r.history_cutoff,prev:Number(r.previous_top20_hits),y:Number(r.actual_top20_hits)}));
 const q113=JSON.parse(fs.readFileSync(srcFreezePath,'utf8'));
 const choose=(n,k)=>{if(k<0||k>n)return 0;let v=1;for(let i=1;i<=k;i++)v=v*(n-k+i)/i;return v;};
@@ -33,6 +33,7 @@ const p1next=p1(m.c,freeze.previous_hits_lag1),p2next=p2(m.c,freeze.previous_hit
 const diff=Math.max(...p1next.map((x,k)=>Math.abs(x-q113.transition_pmf[k])));
 const close=(a,b,t=1e-10)=>Math.abs(a-b)<=t;
 const checks=[
+ Math.abs(q0.reduce((a,b)=>a+b,0)-1)<1e-12,
  rows.length===3203,
  rows.every((x,i)=>i===0||x.date>rows[i-1].date),
  rows.every(x=>Number.isInteger(x.prev)&&x.prev>=0&&x.prev<=5&&Number.isInteger(x.y)&&x.y>=0&&x.y<=5),
@@ -52,5 +53,5 @@ const checks=[
 ];
 if(checks.some(x=>!x))throw new Error('Q114 replay checks failed: '+checks.map((x,i)=>x?null:i).filter(x=>x!==null).join(','));
 const manifest=JSON.parse(fs.readFileSync(root+'q114_second_order_hit_regime_persistence_manifest_2026-11-11.json','utf8'));
-for(const [path,meta] of Object.entries(manifest.artifacts)){const bytes=fs.readFileSync(path);const header=Buffer.from('blob '+bytes.length+'\\0');const sha=crypto.createHash('sha1').update(Buffer.concat([header,bytes])).digest('hex');if(sha!==meta.git_blob_sha1||bytes.length!==meta.byte_length)throw new Error('Manifest mismatch: '+path);}
+for(const [path,meta] of Object.entries(manifest.artifacts)){const bytes=fs.readFileSync(path);const header=Buffer.from('blob '+bytes.length+'\0');const sha=crypto.createHash('sha1').update(Buffer.concat([header,bytes])).digest('hex');if(sha!==meta.git_blob_sha1||bytes.length!==meta.byte_length)throw new Error('Manifest mismatch: '+path);}
 console.log(JSON.stringify({experiment_id:'Q114',checks_passed:checks.length,checks_total:checks.length,future_mutation:mutation+'/9',replay:replay?'PASS':'FAIL',m2_vs_m1_blind_brier:mean(seg.blind_oos,x=>x.b1-x.b2),m2_vs_m1_blind_log:mean(seg.blind_oos,x=>x.l1-x.l2),m1_freeze_reconciliation_max_abs_diff:diff,manifest_artifacts:Object.keys(manifest.artifacts).length}));
