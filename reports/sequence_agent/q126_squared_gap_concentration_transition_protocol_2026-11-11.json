@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q126",
+  "title": "Prior-only squared-gap concentration transition",
+  "status": "PREREGISTERED_BEFORE_CALCULATION",
+  "registered_at_utc": "2026-11-11T18:43:30Z",
+  "base_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+  "sources": {
+    "canonical_archive": {
+      "path": "data/storico_daily.csv",
+      "blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+      "draws": 3404,
+      "first_date": "2017-07-17",
+      "last_date": "2026-11-10"
+    },
+    "application_model_draws": {
+      "path": "src/data.json",
+      "blob_sha": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+      "model_draws": 3404,
+      "last_date": "2026-11-10"
+    }
+  },
+  "hypothesis": "The squared concentration of the four internal gaps in one 5-of-40 draw may contain one-step transition information about the next draw's gap concentration, beyond both the exact combinatorial marginal and a prior-only unconditional empirical marginal.",
+  "definitions": {
+    "sorted_draw": "a < b < c < d < e",
+    "statistic": "G = (b-a)^2 + (c-b)^2 + (d-c)^2 + (e-d)^2",
+    "support": "All integer G values induced by the 658008 possible 5-subsets of {1,...,40}.",
+    "exact_null": "q0(g) = count of 5-subsets with G=g divided by 658008.",
+    "states": "Four fixed states from exact-null quartiles. q25/q50/q75 are the smallest support values whose cumulative exact-null mass reaches 25%/50%/75%; state boundaries are <=q25, <=q50, <=q75, and >q75."
+  },
+  "models": {
+    "M0": "Exact combinatorial marginal q0(g).",
+    "M1": "Prior-only unconditional prequential marginal: P1_t(g)=[C_t(g)+200*q0(g)]/[N_t+200], using only outcomes G_j for j<t.",
+    "M2": "Prior-only one-step state model: P2_t(g|s)=[C_t(s,g)+200*P1_t(g)]/[N_t(s)+200], where s is the exact-null quartile state of G_(t-1), and transition counts include only pairs (G_(j-1),G_j) ending at j<t."
+  },
+  "protocol": {
+    "warmup_draws": 200,
+    "alpha": 200,
+    "target_count": 3204,
+    "split_rule": "Chronological 60/20/20 over target indices 200..3403: 1922 discovery, 641 validation, 641 historical blind OOS.",
+    "scoring_order": "At target t, construct all probabilities from draws strictly before t, score G_t, then update global counts with G_t and transition counts with G_(t-1)->G_t.",
+    "no_tuning": true,
+    "primary_incremental_comparison": "M2 versus M1",
+    "secondary_comparisons": [
+      "M1 versus M0",
+      "M2 versus M0"
+    ],
+    "metrics": [
+      "multiclass Brier over the full exact support",
+      "negative log probability of observed G_t"
+    ],
+    "inference": {
+      "blind_oos_only": true,
+      "paired_block_sign_flip_replicates": 50000,
+      "circular_moving_block_bootstrap_replicates": 10000,
+      "block_length": 20,
+      "alternative": "one-sided improvement; positive gain means lower loss for the second-named model",
+      "multiplicity": "Holm correction across six preregistered Blind OOS endpoints: three model comparisons times two proper scores."
+    }
+  },
+  "guardrails": [
+    "No use of target or future draws before scoring the target.",
+    "Exact null enumeration is independent of observed draw outcomes.",
+    "No hyperparameter search or validation-based model selection.",
+    "Historical Blind OOS is not a virgin holdout and is exploratory only.",
+    "The local Holm family does not correct the entire Q00-Q126 research family.",
+    "No production scorer, forecast freeze, Q60 ledger, or existing pull request is modified.",
+    "No automatic merge or engine promotion."
+  ],
+  "next_action": "Run the pinned Node 20 walk-forward; verify strict-prefix invariance, exact PMF mass, deterministic replay and persisted-byte manifest."
+}
