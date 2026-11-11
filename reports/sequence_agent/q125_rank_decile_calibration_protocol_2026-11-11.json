@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q125",
+  "title": "APP rank-decile calibration profile",
+  "status": "PREREGISTERED_BEFORE_CALCULATION",
+  "registered_at_utc": "2026-11-11T17:44:28Z",
+  "base_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+  "source": {
+    "parent_experiment": "Q123",
+    "parent_pr": 71,
+    "parent_head": "93b494b089abf485b6616f71b90baec79e39c796",
+    "path": "reports/sequence_agent/q123_app_ordinal_rank_skill_target_ledger_2026-11-11.csv",
+    "git_blob_sha": "36d7af1fb3cceda5976eb99a78931f58d1a3d28a",
+    "bytes_utf8": 181952,
+    "rows": 3204
+  },
+  "hypothesis": "If the APP full ranking contains useful ordinal information beyond its mean-rank summary, actual winning numbers should be concentrated non-uniformly across ten equal-sized rank deciles, with a top-heavy monotone profile.",
+  "definitions": {
+    "deciles": "Ten consecutive rank bins of four ranks each: D1=1-4, D2=5-8, ..., D10=37-40.",
+    "target_vector": "For each strict-prior forecast, count how many of the five drawn numbers have ranks in each decile.",
+    "null": "Conditional on each forecast ranking, the five winning ranks are a uniformly sampled 5-subset of ranks 1..40; per target each decile has expected 0.5 hits.",
+    "omnibus": "Pearson statistic sum_b (O_b - 0.5*N)^2/(0.5*N) over ten deciles.",
+    "trend": "S=sum_b (11-b)*O_b, where larger values indicate concentration toward better (smaller-numbered) deciles; null expectation is 27.5*N."
+  },
+  "method": {
+    "warmup": 200,
+    "target_count": 3204,
+    "split_rule": "Use parent Q123 chronological split unchanged.",
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior": "Inherited only from the pinned, independently validated Q123 ledger: each row's scorer was run on archive prefix [0,t), before the target draw.",
+    "no_tuning": true,
+    "primary_inference_split": "blind_oos",
+    "conditional_randomization": {
+      "replicates": 20000,
+      "seed": "0x12520261111",
+      "method": "For each replicate and each blind target, sample five distinct ranks uniformly without replacement from 1..40; aggregate decile counts and compute omnibus and trend statistics.",
+      "p_values": "Plus-one Monte Carlo upper-tail p-values."
+    },
+    "bootstrap": {
+      "replicates": 10000,
+      "block_length": 20,
+      "seed": "0x125B007",
+      "method": "Circular moving-block bootstrap over chronological blind target vectors; percentile 95% intervals for each decile's mean hits and trend score."
+    },
+    "multiplicity": "Holm correction across the two preregistered blind-OOS endpoints (omnibus and top-heavy trend). Decile-specific intervals are descriptive pointwise intervals; no individual decile significance claims. No correction claim for the full Q00-Q125 research family."
+  },
+  "endpoints": [
+    {
+      "id": "blind_decile_profile_omnibus",
+      "primary": true,
+      "direction": "two_sided_profile_departure"
+    },
+    {
+      "id": "blind_top_heavy_trend",
+      "primary": false,
+      "direction": "higher"
+    }
+  ],
+  "guardrails": [
+    "No production scorer or forecast freeze is changed.",
+    "This is a diagnostic decomposition of Q123 ordinal ranks, not an independent virgin holdout.",
+    "Historical Blind OOS remains exposed to previous SONAR research.",
+    "No retuning on Validation or Blind OOS.",
+    "No automatic merge or engine promotion; PRs #6, #7 and #8 remain untouched."
+  ],
+  "next_action": "After official publication of contest 315, append outcomes only to existing immutable Q123/Q124 freezes and the paired Q60 ledger; do not reconstruct any freeze."
+}
