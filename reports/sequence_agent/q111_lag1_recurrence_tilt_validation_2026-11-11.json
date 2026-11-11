@@ -1,0 +1,86 @@
+{
+  "experiment_id": "Q111",
+  "validation_status": "PASS",
+  "checks_passed": 15,
+  "checks_total": 15,
+  "checks": [
+    {
+      "name": "archive_header",
+      "passed": true
+    },
+    {
+      "name": "archive_row_count",
+      "passed": true
+    },
+    {
+      "name": "unique_dates",
+      "passed": true
+    },
+    {
+      "name": "chronological_dates",
+      "passed": true
+    },
+    {
+      "name": "valid_five_number_draws",
+      "passed": true
+    },
+    {
+      "name": "pinned_archive_blob",
+      "passed": true
+    },
+    {
+      "name": "walk_forward_target_count",
+      "passed": true
+    },
+    {
+      "name": "chronological_split_sizes",
+      "passed": true
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "passed": true
+    },
+    {
+      "name": "exact_null_normalization",
+      "passed": true
+    },
+    {
+      "name": "all_tilt_pmfs_normalized",
+      "passed": true
+    },
+    {
+      "name": "all_subset_counts_sum_to_658008",
+      "passed": true
+    },
+    {
+      "name": "validation_only_beta_selection",
+      "passed": true
+    },
+    {
+      "name": "future_mutation_invariance_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "deterministic_replay",
+      "passed": true
+    }
+  ],
+  "source": {
+    "archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404
+  },
+  "replay": {
+    "deterministic": true,
+    "ledger_rows": 3103,
+    "byte_stable_expected": true
+  },
+  "statistical_replicates": {
+    "block_sign_flip": 50000,
+    "block_bootstrap": 10000
+  },
+  "no_leakage": {
+    "strict_prior_cutoffs": true,
+    "future_mutation_tests": 9,
+    "passed": true
+  }
+}
