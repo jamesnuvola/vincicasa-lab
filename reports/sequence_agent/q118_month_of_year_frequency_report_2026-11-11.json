@@ -1,0 +1,261 @@
+{
+  "experiment_id": "Q118",
+  "title": "Month-of-year conditioned number inclusion",
+  "generated_at_utc": "2026-11-11T11:46:47Z",
+  "status": "COMPLETED_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_MONTH_OF_YEAR_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "Month-of-year-conditioned historical number inclusion may improve the probability of the next five-number subset beyond exact uniform and global-frequency baselines.",
+  "model": {
+    "global_beta": 200,
+    "alpha_grid": [
+      25,
+      50,
+      100,
+      200,
+      400,
+      800,
+      1600,
+      3200
+    ],
+    "selected_alpha": 3200,
+    "selection_rule": "minimum Validation mean joint subset log-loss; ties choose larger alpha",
+    "p_global": "(C_n + beta/40)/(5*t + beta)",
+    "p_month": "(C_month,n + alpha*p_global[n])/(5*N_month + alpha)",
+    "subset_probability": "product(40*p_month[n] for n in S)/e5(40*p_month)",
+    "marginal_inclusion": "w_n*e4(w without n)/e5(w)",
+    "month_definition": "UTC calendar month-of-year 1..12",
+    "baselines": [
+      "M0 exact uniform 5-of-40",
+      "M1 global-frequency weighted fixed-size subset, beta=200"
+    ]
+  },
+  "walk_forward": {
+    "targets": 3204,
+    "minimum_history": 200,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior_cutoffs": true,
+    "month_history_counts_at_first_target": {
+      "1": 31,
+      "2": 1,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 15,
+      "8": 31,
+      "9": 30,
+      "10": 31,
+      "11": 30,
+      "12": 31
+    }
+  },
+  "validation_alpha_table": [
+    {
+      "alpha": 3200,
+      "mean_joint_logloss": 13.410097093739,
+      "mean_marginal_brier": 0.10944804943
+    },
+    {
+      "alpha": 1600,
+      "mean_joint_logloss": 13.417925588679,
+      "mean_marginal_brier": 0.109491684034
+    },
+    {
+      "alpha": 800,
+      "mean_joint_logloss": 13.430868647251,
+      "mean_marginal_brier": 0.10956380915
+    },
+    {
+      "alpha": 400,
+      "mean_joint_logloss": 13.446698533481,
+      "mean_marginal_brier": 0.109651252996
+    },
+    {
+      "alpha": 200,
+      "mean_joint_logloss": 13.461123535648,
+      "mean_marginal_brier": 0.10972992226
+    },
+    {
+      "alpha": 100,
+      "mean_joint_logloss": 13.471516205959,
+      "mean_marginal_brier": 0.10978592409
+    },
+    {
+      "alpha": 50,
+      "mean_joint_logloss": 13.477901018289,
+      "mean_marginal_brier": 0.109820031457
+    },
+    {
+      "alpha": 25,
+      "mean_joint_logloss": 13.481465539524,
+      "mean_marginal_brier": 0.109838971363
+    }
+  ],
+  "results": {
+    "discovery": {
+      "M0": {
+        "n": 1922,
+        "mean_joint_logloss": 13.396972368289,
+        "mean_marginal_brier": 0.109375
+      },
+      "M1": {
+        "n": 1922,
+        "mean_joint_logloss": 13.412398068713,
+        "mean_marginal_brier": 0.109461124433
+      },
+      "M12": {
+        "n": 1922,
+        "mean_joint_logloss": 13.41539955497,
+        "mean_marginal_brier": 0.109478160682
+      },
+      "gains": {
+        "M12_vs_M0": {
+          "joint_logloss": -0.018427186681,
+          "marginal_brier": -0.000103160682
+        },
+        "M12_vs_M1": {
+          "joint_logloss": -0.003001486256,
+          "marginal_brier": -0.000017036249
+        }
+      }
+    },
+    "validation": {
+      "M0": {
+        "n": 641,
+        "mean_joint_logloss": 13.396972368288,
+        "mean_marginal_brier": 0.109375
+      },
+      "M1": {
+        "n": 641,
+        "mean_joint_logloss": 13.403746656438,
+        "mean_marginal_brier": 0.109413517422
+      },
+      "M12": {
+        "n": 641,
+        "mean_joint_logloss": 13.410097093739,
+        "mean_marginal_brier": 0.10944804943
+      },
+      "gains": {
+        "M12_vs_M0": {
+          "joint_logloss": -0.01312472545,
+          "marginal_brier": -0.00007304943
+        },
+        "M12_vs_M1": {
+          "joint_logloss": -0.006350437301,
+          "marginal_brier": -0.000034532009
+        }
+      }
+    },
+    "blind_oos": {
+      "M0": {
+        "n": 641,
+        "mean_joint_logloss": 13.396972368288,
+        "mean_marginal_brier": 0.109375
+      },
+      "M1": {
+        "n": 641,
+        "mean_joint_logloss": 13.399505153146,
+        "mean_marginal_brier": 0.109389960287
+      },
+      "M12": {
+        "n": 641,
+        "mean_joint_logloss": 13.406120351991,
+        "mean_marginal_brier": 0.109426197866
+      },
+      "gains": {
+        "M12_vs_M0": {
+          "joint_logloss": -0.009147983702,
+          "marginal_brier": -0.000051197866
+        },
+        "M12_vs_M1": {
+          "joint_logloss": -0.006615198845,
+          "marginal_brier": -0.000036237579
+        }
+      }
+    }
+  },
+  "blind_inference": {
+    "method": "one-sided paired block sign-flip",
+    "replicates": 50000,
+    "block_length": 20,
+    "bootstrap": "circular moving-block bootstrap",
+    "bootstrap_replicates": 10000,
+    "correction": "Holm across four primary endpoints",
+    "tests": [
+      {
+        "endpoint": "M12_vs_M0_joint_logloss",
+        "mean_gain": -0.009147983702,
+        "p_one_sided_improvement": 0.964460710786,
+        "p_holm": 1,
+        "bootstrap_ci95": [
+          -0.019442186348,
+          0.00102745679
+        ],
+        "signflip_extreme": 48223,
+        "block_count": 33
+      },
+      {
+        "endpoint": "M12_vs_M0_marginal_brier",
+        "mean_gain": -0.000051197866,
+        "p_one_sided_improvement": 0.964500709986,
+        "p_holm": 1,
+        "bootstrap_ci95": [
+          -0.000106144789,
+          0.000004809377
+        ],
+        "signflip_extreme": 48225,
+        "block_count": 33
+      },
+      {
+        "endpoint": "M12_vs_M1_joint_logloss",
+        "mean_gain": -0.006615198845,
+        "p_one_sided_improvement": 0.965700685986,
+        "p_holm": 1,
+        "bootstrap_ci95": [
+          -0.013971960542,
+          0.000400344915
+        ],
+        "signflip_extreme": 48285,
+        "block_count": 33
+      },
+      {
+        "endpoint": "M12_vs_M1_marginal_brier",
+        "mean_gain": -0.000036237579,
+        "p_one_sided_improvement": 0.963040739185,
+        "p_holm": 1,
+        "bootstrap_ci95": [
+          -0.00007676891,
+          0.000003372983
+        ],
+        "signflip_extreme": 48152,
+        "block_count": 33
+      }
+    ]
+  },
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+    "Historical frequency forecasts are reconstructed from the archive, not contemporaneous frozen forecasts.",
+    "Holm correction covers the four Q118 endpoints only, not the complete Q00-Q118 research family.",
+    "This is a probability diagnostic and does not establish lottery predictability or modify the production scorer."
+  ],
+  "next_action": "Keep the 2026-11-11 Q118 probability freeze immutable; after the official draw, score its 40 inclusion probabilities and joint subset log-score. Do not update Q60 or promote the model.",
+  "integrity": {
+    "checks_passed": 15,
+    "checks_total": 15,
+    "future_suffix_mutation": "9/9",
+    "deterministic_replay": true,
+    "max_marginal_sum_error": 1.7763568394002505e-15
+  }
+}
