@@ -35,8 +35,8 @@ const Q0 = Q0_NUM.map(x => x / Q0_DEN);
 function assert(ok, message) {
   if (!ok) throw new Error("Q107 BLOCKED: " + message);
 }
-function sha256(s) {
-  return crypto.createHash("sha256").update(s, "utf8").digest("hex");
+function hash(s) {
+  return gitBlobSha1(s);
 }
 function gitBlobSha1(s) {
   const bytes = Buffer.from(s, "utf8");
@@ -437,18 +437,18 @@ function run() {
   const validationText = stableJson(validation);
   const ledgerText = ledger;
   const checkpointText = checkpoint;
-  const protocolHash = sha256(protocolText);
+  const protocolHash = hash(protocolText);
   const runnerText = fs.readFileSync(fileURLToPath(import.meta.url), "utf8");
   const manifest = {
     experiment_id:"Q107",
     source_blob_sha1:{main_commit:PINNED_MAIN,archive:PINNED_ARCHIVE_BLOB,analysis_prefix:PINNED_PREFIX_BLOB,app_data:PINNED_APP_BLOB},
-    output_sha256:{
+    output_git_blob_sha1:{
       protocol:protocolHash,
-      runner:sha256(runnerText),
-      report:sha256(reportText),
-      validation:sha256(validationText),
-      ledger:sha256(ledgerText),
-      checkpoint:sha256(checkpointText)
+      runner:hash(runnerText),
+      report:hash(reportText),
+      validation:hash(validationText),
+      ledger:hash(ledgerText),
+      checkpoint:hash(checkpointText)
     },
     ledger_rows:rows.length,
     validation_checks:validation.checks_total,
@@ -472,7 +472,7 @@ function run() {
       const existing=fs.readFileSync(p,"utf8");
       assert(existing===c,"persisted artifact differs on replay: " + path.basename(p));
     }
-    console.log("Q107_REPLAY_PASS " + JSON.stringify({targets:rows.length,checks:validation.checks_passed,decision:report.decision,manifest:manifest.output_sha256}));
+    console.log("Q107_REPLAY_PASS " + JSON.stringify({targets:rows.length,checks:validation.checks_passed,decision:report.decision,manifest:manifest.output_git_blob_sha1}));
   }
 }
 try { run(); } catch (error) { console.error(error.stack || error.message); process.exit(1); }
