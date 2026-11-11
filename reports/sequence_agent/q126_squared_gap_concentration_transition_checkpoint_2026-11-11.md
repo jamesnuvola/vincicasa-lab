@@ -10,7 +10,8 @@
 - Decision: **NO_SQUARED_GAP_CONCENTRATION_TRANSITION_LIFT_DEMONSTRATED**.
 - Validation checks: 20/20; future-suffix mutation: 9/9.
 - No forecast freeze, Q60 record, production scorer, or existing PR was modified.
-- Recovery: the first Node 20 replay found a byte mismatch in the 12-decimal ledger serialization; floating ledger and aggregate metrics are now canonicalized to 9 decimals for cross-runtime replay.
+- Recovery 1: the first Node 20 replay found a byte mismatch in the 12-decimal ledger serialization; floating ledger values were canonicalized to 9 decimals.
+- Recovery 2: the next replay passed the ledger but failed on the report. Root cause: the Node runner still emitted full-precision split means while the persisted report used 9 decimals. The runner now applies the same 9-decimal canonicalization to split means; corrected replay remains pending.
 
 ## Limitations
 
