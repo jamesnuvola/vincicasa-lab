@@ -47,9 +47,9 @@ const ledgerHeader=['target_index','target_date','history_cutoff','split','draw_
 if(ledgerRows[0]!==ledgerHeader)throw new Error('ledger header');
 for(let i=0;i<rows.length;i++){
   const x=rows[i],d=Array(10).fill(0);
-  for(const r of x.ranks)d[Math.floor((r-1)/4)]++;
+  for(const r of x.r)d[Math.floor((r-1)/4)]++;
   const split=i<1922?'discovery':i<2563?'validation':'blind_oos';
-  const expected=[x.target_index,x.target_date,x.history_cutoff,split,x.ranks.join(';'),x.rank_sum,(x.rank_sum/5).toFixed(12),x.top5_hits,x.top10_hits,x.top20_hits,...d].join(',');
+  const expected=[x.idx,x.date,x.cutoff,split,x.r.join(';'),x.sum,(x.sum/5).toFixed(12),x.top5,x.top10,x.top20,...d].join(',');
   if(ledgerRows[i+1]!==expected)throw new Error('ledger content mismatch at '+i);
 }
 const manifest=JSON.parse(read(P.manifest));
