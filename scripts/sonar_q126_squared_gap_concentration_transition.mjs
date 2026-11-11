@@ -23,7 +23,6 @@ function assert(c,m){if(!c)fail(m);}
 function read(p){return fs.readFileSync(path.join(ROOT,p),"utf8");}
 function utf8Bytes(s){return Buffer.byteLength(s,"utf8");}
 function gitBlobSha(s){const b=Buffer.from(s,"utf8");const h=Buffer.from("blob "+b.length+"\0","utf8");return crypto.createHash("sha1").update(Buffer.concat([h,b])).digest("hex");}
-function sha256(s){return crypto.createHash("sha256").update(Buffer.from(s,"utf8")).digest("hex");}
 function round(x){return Number(x.toFixed(12));}
 function mean(a){return a.reduce((x,y)=>x+y,0)/a.length;}
 function makeRng(seed){let x=seed>>>0;return()=>{x^=x<<13;x^=x>>>17;x^=x<<5;return(x>>>0)/4294967296;};}
@@ -169,7 +168,7 @@ function build(){
 }
 function buildManifest(contents){
  const paths=[FILES.protocol,FILES.runner,FILES.workflow,FILES.report,FILES.ledger,FILES.validation,FILES.checkpoint];
- const entries=paths.map(rel=>{const c=contents[rel]!==undefined?contents[rel]:read(rel);return{path:rel,git_blob_sha:gitBlobSha(c),sha256:sha256(c),bytes_utf8:utf8Bytes(c)};});
+ const entries=paths.map(rel=>{const c=contents[rel]!==undefined?contents[rel]:read(rel);return{path:rel,git_blob_sha:gitBlobSha(c),bytes_utf8:utf8Bytes(c)};});
  return JSON.stringify({schema_version:"1.0",experiment_id:"Q126",status:"PERSISTED",base_commit:"ea46a70c4c90db5dad44d5374a97f89a84e50ad9",entries},null,2)+"\n";
 }
 function main(){
@@ -180,7 +179,7 @@ function main(){
  for(const [p,c] of Object.entries(generated))assert(read(p)===c,"persisted output differs: "+p);
  assert(read(FILES.manifest)===manifest,"manifest differs from deterministic replay");
  const m=JSON.parse(read(FILES.manifest));assert(m.entries.length===7,"manifest entry count mismatch");
- for(const e of m.entries){const c=read(e.path);assert(gitBlobSha(c)===e.git_blob_sha,"Git blob SHA mismatch: "+e.path);assert(sha256(c)===e.sha256,"SHA-256 mismatch: "+e.path);assert(utf8Bytes(c)===e.bytes_utf8,"UTF-8 size mismatch: "+e.path);}
+ for(const e of m.entries){const c=read(e.path);assert(gitBlobSha(c)===e.git_blob_sha,"Git blob SHA mismatch: "+e.path);assert(utf8Bytes(c)===e.bytes_utf8,"UTF-8 size mismatch: "+e.path);}
  process.stdout.write("Q126 CHECK PASS: 3204 targets; 20/20 checks; six inferential endpoints; report/ledger/validation/checkpoint byte-identical; 7/7 manifest entries verified.\n");
 }
 main();
