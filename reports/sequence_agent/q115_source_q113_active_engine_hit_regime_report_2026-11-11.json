@@ -1,0 +1,165 @@
+{
+  "experiment_id": "Q113",
+  "title": "Active-engine Top20 hit-count regime persistence",
+  "generated_at_utc": "2026-11-11T06:42:22Z",
+  "decision": "NO_INCREMENTAL_HIT_REGIME_LIFT_DEMONSTRATED",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "app_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "app_data_blob_sha": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "active_engine_report_blob_sha": "407c915aaa2379e361b787971ef98d7c69e99e20",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "walk_forward": {
+    "targets": 3203,
+    "split_sizes": {
+      "discovery": 1921,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "metrics": {
+      "discovery": {
+        "targets": 1921,
+        "mean_actual_hits": 2.522123893805,
+        "brier_gain": -0.000353237466,
+        "log_loss_gain": -0.002235773975,
+        "baseline_brier": 0.739163083079,
+        "model_brier": 0.739516320545,
+        "baseline_log_loss": 1.484155607607,
+        "model_log_loss": 1.486391381582
+      },
+      "validation": {
+        "targets": 641,
+        "mean_actual_hits": 2.436817472699,
+        "brier_gain": -0.00102057848,
+        "log_loss_gain": -0.002342426406,
+        "baseline_brier": 0.729485790096,
+        "model_brier": 0.730506368577,
+        "baseline_log_loss": 1.4593431212,
+        "model_log_loss": 1.461685547606
+      },
+      "blind_oos": {
+        "targets": 641,
+        "mean_actual_hits": 2.525741029641,
+        "brier_gain": -0.001514391824,
+        "log_loss_gain": -0.004354781265,
+        "baseline_brier": 0.738771566933,
+        "model_brier": 0.740285958757,
+        "baseline_log_loss": 1.483884080892,
+        "model_log_loss": 1.488238862157
+      }
+    }
+  },
+  "blind_inference": {
+    "brier": {
+      "gain": -0.001514391824,
+      "p": 0.886842263155,
+      "holm": 1,
+      "ci95": [
+        -0.003454228005,
+        0.000550263221
+      ]
+    },
+    "log_loss": {
+      "gain": -0.004354781265,
+      "p": 0.919221615568,
+      "holm": 1,
+      "ci95": [
+        -0.009134900061,
+        0.000748401968
+      ]
+    },
+    "holm_family_size": 2
+  },
+  "descriptive": {
+    "overall_mean_top20_hits": 2.505930087391,
+    "null_expected_mean": 2.5,
+    "hit_distribution": [
+      {
+        "hits": 0,
+        "count": 96
+      },
+      {
+        "hits": 1,
+        "count": 435
+      },
+      {
+        "hits": 2,
+        "count": 1037
+      },
+      {
+        "hits": 3,
+        "count": 1105
+      },
+      {
+        "hits": 4,
+        "count": 450
+      },
+      {
+        "hits": 5,
+        "count": 81
+      }
+    ],
+    "max_pmf_normalization_error": 2.220446049250313e-16
+  },
+  "prospective": {
+    "target_date": "2026-11-11",
+    "frozen_at_local": "2026-11-11T07:42:22+01:00",
+    "history_cutoff": "2026-11-10",
+    "previous_top20_hits": 2,
+    "state_count": 1036,
+    "expected_hits_baseline": 2.5,
+    "expected_hits_model": 2.488673139159,
+    "expected_hits_delta": -0.011326860841,
+    "top20": [
+      25,
+      16,
+      38,
+      17,
+      36,
+      1,
+      28,
+      26,
+      27,
+      9,
+      34,
+      12,
+      8,
+      10,
+      21,
+      20,
+      15,
+      39,
+      30,
+      37
+    ],
+    "baseline_pmf": [
+      0.02356202356202356,
+      0.14726264726264726,
+      0.32917532917532916,
+      0.32917532917532916,
+      0.14726264726264726,
+      0.02356202356202356
+    ],
+    "transition_pmf": [
+      0.03212977727540834,
+      0.13952470020431187,
+      0.31620960019018274,
+      0.35342642866914714,
+      0.13709751573829246,
+      0.021611977922657535
+    ],
+    "outcome": null
+  },
+  "limitations": [
+    "Retrospective analysis was calculated before this protocol was persisted; it is exploratory, not preregistered.",
+    "Historical Blind OOS is not a virgin holdout.",
+    "This predicts Top20 hit count only, not the winning numbers.",
+    "No correction across the full Q00-Q113 research family.",
+    "One prospective target is descriptive only; Q60 remains the promotion gate."
+  ],
+  "next_action": "Await official 2026-11-11 result; append outcome only. Continue Q60 from 23/200; 177 paired prospective targets remain."
+}
