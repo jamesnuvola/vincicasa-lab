@@ -2,7 +2,6 @@
   "schema_version": "1.0",
   "experiment_id": "Q117",
   "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
-  "generated_at_utc": "2026-11-11T10:38:10Z",
   "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
   "preregistration_commit": "ce4c32bb2fec14d77e7d20f1f38b6874e54599c3",
   "data": {
@@ -53,8 +52,8 @@
       "targets": 1922,
       "first_target": "2018-02-03",
       "last_target": "2023-05-09",
-      "mean_hits": 2.521852237252862,
-      "mean_overlap": 17.732570239334027,
+      "mean_hits": 2.521852237253,
+      "mean_overlap": 17.732570239334,
       "hit_distribution": [
         56,
         262,
@@ -68,17 +67,17 @@
         "MID": 689,
         "HIGH": 1198
       },
-      "mean_brier_gain": -0.00027281453836792063,
-      "mean_logloss_gain": -0.0010427497408259272,
-      "mean_conditional_logloss": 1.4850042934288923,
-      "mean_baseline_logloss": 1.4839615436880729
+      "mean_brier_gain": -0.000272814538,
+      "mean_logloss_gain": -0.001042749741,
+      "mean_conditional_logloss": 1.485004293429,
+      "mean_baseline_logloss": 1.483961543688
     },
     "validation": {
       "targets": 641,
       "first_target": "2023-05-10",
       "last_target": "2025-02-08",
-      "mean_hits": 2.4414976599063962,
-      "mean_overlap": 17.73946957878315,
+      "mean_hits": 2.441497659906,
+      "mean_overlap": 17.739469578783,
       "hit_distribution": [
         24,
         84,
@@ -92,10 +91,10 @@
         "MID": 229,
         "HIGH": 399
       },
-      "mean_brier_gain": -0.000758145019675746,
-      "mean_logloss_gain": 0.00011146644657416905,
-      "mean_conditional_logloss": 1.4633454679820375,
-      "mean_baseline_logloss": 1.4634569344285995
+      "mean_brier_gain": -0.00075814502,
+      "mean_logloss_gain": 0.000111466447,
+      "mean_conditional_logloss": 1.463345467982,
+      "mean_baseline_logloss": 1.463456934429
     },
     "blind_oos": {
       "targets": 640,
@@ -116,44 +115,44 @@
         "MID": 201,
         "HIGH": 434
       },
-      "mean_brier_gain": 0.0003320509001601728,
-      "mean_logloss_gain": 0.0008797360802261557,
-      "mean_conditional_logloss": 1.4794664776974518,
-      "mean_baseline_logloss": 1.4803462137776648
+      "mean_brier_gain": 0.0003320509,
+      "mean_logloss_gain": 0.00087973608,
+      "mean_conditional_logloss": 1.479466477697,
+      "mean_baseline_logloss": 1.480346213778
     }
   },
   "blind_inference": {
     "brier": {
       "n": 640,
-      "mean": 0.0003320509001601728,
+      "mean": 0.0003320509,
       "block_length": 20,
       "block_count": 32,
       "sign_flip_replicates": 50000,
       "sign_flip_extreme": 18944,
-      "p_value": 0.378892422151557,
+      "p_value": 0.378892422152,
       "bootstrap_replicates": 10000,
       "ci95": [
-        -0.001683010108108392,
-        0.0023949159354151287
+        -0.001683010108,
+        0.002394915935
       ]
     },
     "logloss": {
       "n": 640,
-      "mean": 0.0008797360802261557,
+      "mean": 0.00087973608,
       "block_length": 20,
       "block_count": 32,
       "sign_flip_replicates": 50000,
       "sign_flip_extreme": 19943,
-      "p_value": 0.3988720225595488,
+      "p_value": 0.39887202256,
       "bootstrap_replicates": 10000,
       "ci95": [
-        -0.004900605479980042,
-        0.006884708534133383
+        -0.00490060548,
+        0.006884708534
       ]
     },
     "holm_adjusted_p": [
-      0.757784844303114,
-      0.757784844303114
+      0.757784844303,
+      0.757784844303
     ]
   },
   "state_support": {
@@ -169,5 +168,6 @@
     "Holm correction covers the two Q117 primary endpoints only, not the complete historical SONAR experiment family.",
     "The experiment is a calibration diagnostic and does not establish lottery predictability.",
     "No production scorer or forecast freeze was changed."
-  ]
+  ],
+  "persisted_at_utc": "2026-11-11T10:49:30Z"
 }
