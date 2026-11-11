@@ -324,7 +324,8 @@ function expectedOutputs(){
     ["ledger",P.ledger],["report",P.report],["validation",P.validation],["checkpoint",P.checkpoint],
     ["prospective_freeze",path.join(DIR,"q121_rank_weighted_turnover_prospective_freeze_2026-11-11.json")]
   ];
-  const manifest={schema_version:"1.0",experiment_id:"Q121",generated_from_commit:commitFor("scripts/sonar_q121_rank_weighted_turnover.mjs"),files:manifestItems.map(([role,p])=>({role,path:path.relative(ROOT,p).replaceAll(path.sep,"/"),git_blob_sha1:gitBlobSha(fs.readFileSync(p,"utf8")),bytes:Buffer.byteLength(fs.readFileSync(p,"utf8"),"utf8")}))};
+  const generatedFiles=new Map(outputs);
+  const manifest={schema_version:"1.0",experiment_id:"Q121",generated_from_commit:commitFor("scripts/sonar_q121_rank_weighted_turnover.mjs"),files:manifestItems.map(([role,p])=>{const content=generatedFiles.has(p)?generatedFiles.get(p):fs.readFileSync(p,"utf8");return {role,path:path.relative(ROOT,p).replaceAll(path.sep,"/"),git_blob_sha1:gitBlobSha(content),bytes:Buffer.byteLength(content,"utf8")};})};
   outputs.push([P.manifest,JSON.stringify(manifest,null,2)+"\n"]);
   return {outputs,manifest,report,validation,freeze};
 }
