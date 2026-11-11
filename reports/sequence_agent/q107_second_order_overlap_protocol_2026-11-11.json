@@ -1,0 +1,130 @@
+{
+  "experiment_id": "Q107",
+  "title": "Second-order overlap memory conditional on first-order state",
+  "preregistered_at_utc": "2026-11-11T00:42:25Z",
+  "status": "PREREGISTERED_BEFORE_SCORING",
+  "hypothesis": "The overlap of the draw two steps back (K[t-2]) adds predictive information about the next consecutive-draw overlap K[t], conditional on the most recent overlap K[t-1], beyond a first-order overlap-state model.",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+    "archive_path": "data/storico_daily.csv",
+    "current_archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "analysis_prefix_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "app_data_path": "src/data.json",
+    "app_data_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "draws_used": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "excluded_appended_rows": [
+      {
+        "date": "2026-11-10",
+        "numbers": [
+          1,
+          7,
+          11,
+          22,
+          25
+        ],
+        "reason": "Official VinciCasa archive and official bulletin page still list contest 314 as pending at preregistration time; this row is present in main commit 161273b but is not used."
+      }
+    ],
+    "official_verification": "Official archive and bulletin listing checked 2026-11-11; latest official bulletin remained 2026-11-09. Third-party pages report 1,7,11,22,25, but third-party-only evidence is explicitly excluded."
+  },
+  "definitions": {
+    "draw_overlap": "K_t = |D_(t-1) ∩ D_t|, t=1..3402",
+    "target": "K_t",
+    "first_order_state": "a = K_(t-1)",
+    "second_order_state": "b = K_(t-2)",
+    "exact_null": {
+      "distribution": "Hypergeometric(N=40,K=5,n=5)",
+      "denominator": 658008,
+      "numerators": [
+        324632,
+        261800,
+        65450,
+        5950,
+        175,
+        1
+      ],
+      "probabilities": [
+        0.49335570388201966,
+        0.39786750313066105,
+        0.09946687578266526,
+        0.00904244325296957,
+        0.0002659542133226344,
+        0.000001519738361843625
+      ],
+      "expected_overlap": 0.625
+    }
+  },
+  "models": {
+    "M0": "Exact hypergeometric null q0(k).",
+    "M1": "First-order categorical shrinkage: p1(k|a) = [alpha*q0(k) + C_a(k)] / [alpha + N_a], where C_a counts prior training transitions j with K_(j-1)=a and K_j=k.",
+    "M2": "Second-order incremental model: p2(k|a,b) = [alpha*p1(k|a) + C_(a,b)(k)] / [alpha + N_(a,b)], where C_(a,b) counts prior training transitions j with K_(j-1)=a, K_(j-2)=b and K_j=k.",
+    "prior_strength_alpha": 200,
+    "parameter_selection": "None. alpha=200 fixed before scoring. M2 shrinks to the corresponding M1 state distribution; M1 shrinks to exact q0."
+  },
+  "walk_forward": {
+    "first_target_draw_index_zero_based": 303,
+    "initial_training_transition_pairs": 300,
+    "target_count": 3100,
+    "target_indices": "t=303..3402 inclusive",
+    "prior_only_rule": "For target draw index t, construct K only from draws[0..t-1]. Train only on transition targets j=3..t-1; target K_t and later rows are unavailable to model construction.",
+    "chronological_splits": {
+      "discovery": {
+        "targets": 1860,
+        "offset": 0
+      },
+      "validation": {
+        "targets": 620,
+        "offset": 1860
+      },
+      "historical_blind_oos": {
+        "targets": 620,
+        "offset": 2480
+      }
+    },
+    "no_tuning": "No bandwidth, alpha, lag, subgroup, threshold, or split tuning. Validation is descriptive and is not used to alter the fixed model."
+  },
+  "scoring": {
+    "multiclass_brier": "sum_k (p(k)-1[K_t=k])^2 over k=0..5",
+    "log_loss": "-log p(K_t)",
+    "gain_sign": "baseline loss minus model loss; positive values favor the model"
+  },
+  "inference": {
+    "primary_endpoints": [
+      "M2 minus M1 Brier gain",
+      "M2 minus M1 log-loss gain"
+    ],
+    "secondary_controls": [
+      "M2 minus M0 Brier gain",
+      "M2 minus M0 log-loss gain"
+    ],
+    "alternative": "One-sided mean gain > 0.",
+    "block_length": 20,
+    "block_sign_flip_replicates": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "seed": 20261111,
+    "confidence_level": 0.95,
+    "multiplicity": "Holm-Bonferroni across exactly four preregistered Blind OOS endpoints.",
+    "historical_blind_caveat": "This historical blind slice has been exposed to prior SONAR overlap research (notably Q102) and is not a virgin prospective holdout."
+  },
+  "integrity_checks": [
+    "Archive dates unique and strictly increasing; each draw has five sorted distinct integers in 1..40.",
+    "The first 3,403 rows of data/storico_daily.csv reproduce the pinned analysis-prefix Git blob SHA-1; any appended rows are excluded.",
+    "src/data.json modelDraws matches the pinned 3,403-draw analysis prefix row-for-row.",
+    "Exact hypergeometric numerators sum to 658008 and probabilities sum to one.",
+    "All target indices use only strictly prior draws; initial training pair count is exactly 300.",
+    "M1 and M2 probability vectors are finite, nonnegative, and normalized for every target.",
+    "Future-mutation invariance: mutating target and all later draws does not alter forecasts at nine fixed cutoffs.",
+    "Synthetic second-order state test confirms M2 changes from M1 when lag-2 state contains signal; no-pair-data case collapses exactly to M1.",
+    "Fixed-seed block sign-flip and circular bootstrap are deterministic.",
+    "Report, validation, ledger, checkpoint, and manifest regenerate byte-for-byte."
+  ],
+  "guardrails": [
+    "Research-only; do not change production scorer, immutable freezes, Q60, H101 or H102.",
+    "Do not use the unverified 2026-11-10 row currently present on main commit 161273b.",
+    "Do not infer official result from third-party-only sources.",
+    "No automatic merge, no model promotion, no change to PR #6, #7 or #8."
+  ]
+}
