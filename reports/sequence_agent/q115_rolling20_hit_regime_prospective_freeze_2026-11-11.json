@@ -1,0 +1,95 @@
+{
+  "experiment_id": "Q115",
+  "status": "FROZEN_PENDING",
+  "target_date": "2026-11-11",
+  "frozen_at_local": "2026-11-11T09:42:55+01:00",
+  "frozen_at_utc": "2026-11-11T08:42:55Z",
+  "history_cutoff": "2026-11-10",
+  "source_main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+  "source_q113_ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+  "source_q113_freeze_blob_sha": "ea9387df6ad3c1afd31d19e225892bb624d79f13",
+  "rolling_window_targets": 20,
+  "state_thresholds": {
+    "LOW": "sum<=45",
+    "MID": "46<=sum<=54",
+    "HIGH": "sum>=55"
+  },
+  "trailing_20_hit_sum": 55,
+  "rolling_state": "HIGH",
+  "rolling_state_code": 2,
+  "rolling_state_support": 493,
+  "alpha": 200,
+  "baseline_pmf": [
+    0.02356202356202356,
+    0.14726264726264726,
+    0.32917532917532916,
+    0.32917532917532916,
+    0.14726264726264726,
+    0.02356202356202356
+  ],
+  "lag1_pmf": [
+    0.03212977727540834,
+    0.13952470020431187,
+    0.31620960019018274,
+    0.35342642866914714,
+    0.13709751573829246,
+    0.021611977922657535
+  ],
+  "rolling20_pmf": [
+    0.025559025559025558,
+    0.1521681521681522,
+    0.3287663287663288,
+    0.3244373244373245,
+    0.14206714206714208,
+    0.027002027002027
+  ],
+  "expected_hits": {
+    "baseline": 2.4999999999999996,
+    "lag1": 2.4886731391585766,
+    "rolling20": 2.4862914862914867
+  },
+  "lag1_max_abs_diff_vs_q113_freeze": 0,
+  "active_engine_top20": [
+    25,
+    16,
+    38,
+    17,
+    36,
+    1,
+    28,
+    26,
+    27,
+    9,
+    34,
+    12,
+    8,
+    10,
+    21,
+    20,
+    15,
+    39,
+    30,
+    37
+  ],
+  "active_engine_top10": [
+    25,
+    16,
+    38,
+    17,
+    36,
+    1,
+    28,
+    26,
+    27,
+    9
+  ],
+  "active_engine_top5": [
+    25,
+    16,
+    38,
+    17,
+    36
+  ],
+  "outcome": null,
+  "evaluation": "After official 2026-11-11 result, append the observed intersection with immutable active_engine_top20; score descriptively and do not retune."
+}
