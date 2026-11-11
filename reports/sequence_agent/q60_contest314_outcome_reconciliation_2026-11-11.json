@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "record_id": "Q60-CONTEST-314-OUTCOME-RECONCILIATION-2026-11-11",
+  "official_source": {
+    "operator_url": "https://www.sisal.it/vincicasa/ultima-estrazione",
+    "official_archive_url": "https://www.vincicasa.it/archivio-estrazioni?anno=2026&fromSchedina=1&numero=146",
+    "contest": 314,
+    "date": "2026-11-10",
+    "numbers": [
+      1,
+      7,
+      11,
+      22,
+      25
+    ],
+    "verification": "Sisal confirms contest 314 and draw date; official VinciCasa archive search result exposes the five numbers. The main src/data.json row matches exactly."
+  },
+  "canonical_archive": {
+    "path": "src/data.json",
+    "blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "rows": 3404,
+    "last_date": "2026-11-10",
+    "row_matches_official": true
+  },
+  "q60_global_vs_positional": {
+    "protocol_registered": "2026-10-19",
+    "prior_complete_pairs": 22,
+    "new_eligible_pair_date": "2026-11-10",
+    "new_pair": {
+      "history_cutoff": "2026-11-09",
+      "global_frozen_at": "2026-11-10T10:53:16+01:00",
+      "position_frozen_at": "2026-11-10T10:55:31+01:00",
+      "nominal_draw_time": "19:00 Europe/Rome",
+      "global_top20_hits": 2,
+      "position_top20_hits": 2,
+      "global_all5": false,
+      "position_all5": false
+    },
+    "reconciled_complete_pairs": 23,
+    "required_pairs": 200,
+    "remaining_pairs": 177,
+    "aggregate_after_reconciliation": {
+      "global_top20_hits": 58,
+      "position_top20_hits": 58,
+      "global_mean_top20_hits": 2.521739130435,
+      "position_mean_top20_hits": 2.521739130435,
+      "global_all5_count": 1,
+      "position_all5_count": 0,
+      "position_only_all5_wins": 0,
+      "global_only_all5_wins": 1,
+      "mcnemar_exact_two_sided_p": 1
+    },
+    "current_main_gate_snapshot_still_reports": 22,
+    "gate_file_modified": false,
+    "freeze_rows_modified": false,
+    "promotion_allowed": false
+  },
+  "h101": {
+    "branch": "research/q60-h101-rrf-fusion-20261110",
+    "freeze_blob_sha1": "ced52ac9fd1850f3812c553ab83d7bd8e27dc3f6",
+    "target_date": "2026-11-10",
+    "frozen_at": "2026-11-10T12:49:51+01:00",
+    "history_cutoff": "2026-11-09",
+    "top20_hits": 2,
+    "top10_hits": 2,
+    "top5_hits": 0,
+    "hit_numbers": [
+      1,
+      25
+    ],
+    "vs_global_top20_delta": 0,
+    "vs_position_top20_delta": 0,
+    "complete_targets_in_cohort": 1,
+    "required": 200,
+    "remaining": 199,
+    "inference_executed": false,
+    "freeze_file_modified": false
+  },
+  "h102": {
+    "branch": "research/q60-h102-disagreement-slope-20261110",
+    "target_date": "2026-11-10",
+    "parent_top20_intersection": 17,
+    "disagreement_slots": 3,
+    "rrf_minus_global_top20_hits": 0,
+    "complete_targets_in_cohort": 1,
+    "required": 200,
+    "remaining": 199,
+    "inference_executed": false,
+    "current_h102_ledger_rows": 0,
+    "ledger_modified": false
+  },
+  "decision": "OUTCOME_VERIFIED; RECONCILIATION_RECORDED_SEPARATELY; NO_PROMOTION",
+  "next_action": "Human-reviewed append-only reconciliation of the existing 2026-11-10 freeze rows and gate snapshot; continue both 200-target cohorts without interim inference."
+}
