@@ -2,7 +2,7 @@
   "experiment_id": "Q118",
   "branch": "research/q118-month-of-year-frequency-20261111",
   "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
-  "verified_at_utc": "2026-11-11T12:03:27Z",
+  "verified_at_utc": "2026-11-11T12:07:06Z",
   "artifacts": [
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_protocol_2026-11-11.json",
@@ -11,19 +11,21 @@
     },
     {
       "path": "scripts/sonar_q118_month_of_year_frequency.mjs",
-      "sha": "90a85adfd9dbdd1b03c40df247680d96bbae61a9",
+      "sha": "fea9d1d5c0a586c5160ddc3965ad3ad1393a875f",
       "bytes": 8246,
-      "git_blob_sha": "90a85adfd9dbdd1b03c40df247680d96bbae61a9"
+      "git_blob_sha": "fea9d1d5c0a586c5160ddc3965ad3ad1393a875f"
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_report_2026-11-11.json",
-      "sha": "4bfb778d1fe0df7269ac76ee6437eed4f3b719ed",
-      "bytes": 7390
+      "sha": "2e4fe68c9ecb2dc26ed8b45680bf70a9a4672788",
+      "bytes": 7458,
+      "git_blob_sha": "2e4fe68c9ecb2dc26ed8b45680bf70a9a4672788"
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_target_ledger_2026-11-11.csv",
-      "sha": "f72820f5cde048b97ab305ee067a18394749f43a",
-      "bytes": 1164337
+      "sha": "41149d99e48eead4a1afcef30d89ac16e38e4f4f",
+      "bytes": 1036177,
+      "git_blob_sha": "41149d99e48eead4a1afcef30d89ac16e38e4f4f"
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_validation_2026-11-11.json",
@@ -37,9 +39,9 @@
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_checkpoint_2026-11-11.md",
-      "sha": "6d3b922b64f04fc2e690d51be5112aa697776245",
-      "bytes": 2191,
-      "git_blob_sha": "6d3b922b64f04fc2e690d51be5112aa697776245"
+      "sha": "298f4558be49053703387c77cb44d9a5a4495bc8",
+      "bytes": 2501,
+      "git_blob_sha": "298f4558be49053703387c77cb44d9a5a4495bc8"
     },
     {
       "path": ".github/workflows/ci.yml",
@@ -47,5 +49,5 @@
       "bytes": 2018
     }
   ],
-  "verification": "All artifacts were fetched back from the branch. The 1,164,337-byte ledger was fetched by Git blob SHA and confirmed to contain 3,205 lines. Two runner-only defects found by CI/replay (fs binding collision and mean helper returning sums) were fixed and documented. Corrected runner passed a V8 replay harness with byte-identical ledger and 9/9 future-suffix checks; Node 20 CI rerun remains pending."
+  "verification": "The ledger was regenerated at 10 decimal places (3,204 targets) after Node 20 exposed cross-runtime 12-decimal serialization drift. Runner, report, checkpoint and ledger blob SHAs were fetched back and recorded. Previous CI failures and fixes are documented; fresh Node 20 replay still required."
 }
