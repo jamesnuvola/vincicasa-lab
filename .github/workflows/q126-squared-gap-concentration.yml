@@ -4,6 +4,7 @@ on:
   push:
     branches: ["research/q126-gap-concentration-transition-20261111"]
   pull_request:
+    types: [opened, synchronize, reopened, edited]
     branches: ["main"]
     paths:
       - "scripts/sonar_q126_squared_gap_concentration_transition.mjs"
