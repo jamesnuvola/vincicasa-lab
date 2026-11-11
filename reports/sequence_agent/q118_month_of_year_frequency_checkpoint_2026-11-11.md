@@ -19,3 +19,5 @@
 - Second replay diagnostic showed the Node runner's mean helper returned a sum instead of an average. Corrected the helper to divide by the sample length; the precomputed V8 report/ledger were unaffected. A full replay is being repeated before accepting CI.
 
 - After both fixes, the persisted Node runner was executed in a V8 replay harness against the pinned archive and fetched report/ledger/validation/freeze. It passed: 3,204 targets, alpha=3200, four inference comparisons within tolerance, byte-identical 3,205-line ledger, freeze match, and 9/9 future-suffix checks. This is not yet a Node 20 CI pass.
+
+- Second Node 20 run reached the replay step but failed the byte-identical ledger comparison: 12-decimal floating-point serialization differed across runtimes. The ledger and replay serializer are now canonicalized to 10 decimal places; the report records this precision. A new Node 20 run is still required.
