@@ -1,8 +1,7 @@
 #!/usr/bin/env node
-'use strict';
-const fs = require('node:fs');
-const path = require('node:path');
-const crypto = require('node:crypto');
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
 const EXPECTED_ARCHIVE_SHA1 = '25c0b2316662664deff9e2157e60ec56cfa3a640';
 const ALPHA = 200, WARMUP = 300, BLOCK = 20, SIGN_REPS = 50000, BOOT_REPS = 10000;
 const BASE = 'reports/sequence_agent/';
