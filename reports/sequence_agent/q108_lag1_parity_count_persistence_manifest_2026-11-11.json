@@ -71,7 +71,7 @@
     }
   },
   "limitations": [
-    "Latest Node 20 replay after the 12-decimal serialization correction has not yet completed.",
+    "General repository CI run 42941619727 was still in progress at the time of this manifest update.",
     "Historical Blind OOS is not a virgin holdout; Q108 is exploratory and Holm correction is within this experiment only.",
     "The 2026-11-10 row remains excluded pending official exact-number evidence."
   ],
@@ -89,6 +89,23 @@
   "recovery": {
     "first_node20_ci_failure": "Run 42941313617 passed syntax but found sub-ulp float-to-string differences in ledger loss fields.",
     "diagnosis": "Run 42941437471 identified the first difference at row 1: values differed at the 16th decimal place due to cross-runtime shortest-float rendering; no forecast or target data differed.",
-    "correction": "All six ledger loss fields are now rounded to 12 decimals before serialization; outputs were regenerated. Awaiting a fresh Node 20 replay."
+    "correction": "All six ledger loss fields are now rounded to 12 decimals before serialization; outputs were regenerated. Awaiting a fresh Node 20 replay.",
+    "final_status": {
+      "q108_node20_workflow_run": 42941619759,
+      "q108_node20_workflow_conclusion": "SUCCESS",
+      "detail": "After fixed 12-decimal serialization, Node 20 syntax check and --check byte-for-byte persisted artifact replay both passed.",
+      "intermediate_failures": "Runs 42941313617 and 42941437471 exposed cross-runtime float string differences; runs 42941551133 and 42941585292 were triggered on intermediate commits before all regenerated artifacts and manifest had synchronized."
+    }
+  },
+  "ci_status": {
+    "q108_dedicated": {
+      "run_id": 42941619759,
+      "conclusion": "success"
+    },
+    "general_repository": {
+      "run_id": 42941619727,
+      "status": "in_progress",
+      "conclusion": null
+    }
   }
 }
