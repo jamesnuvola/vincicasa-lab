@@ -234,7 +234,7 @@ function buildLedger(rows) {
       r.m2_minus_m1_brier_gain,r.m2_minus_m1_logloss_gain];
     lines.push(values.map(formatCsvValue).join(","));
   }
-  return lines.join("\\n") + "\\n";
+  return lines.join("\n") + "\n";
 }
 function mutateDraw(draw, shift) {
   return { d: draw.d, n: draw.n.map(v => ((v - 1 + shift) % 40) + 1).sort((a, b) => a - b) };
@@ -409,7 +409,7 @@ function run() {
     inference_constants:{alpha:ALPHA,block_length:BLOCK,block_sign_flip_replicates:SIGN_REPS,circular_block_bootstrap_replicates:BOOT_REPS,seed:SEED,holm_family_size:4}
   };
   assert(validationReport.status==="PASS","one or more Q107 integrity checks failed");
-  const ledger = buildLedger(rows);
+  const ledger = buildLedger(rows);\n  assert(ledger.split("\\n").length === rows.length + 2, "ledger must contain one header plus every target row and a final newline");
   const checkpoint = [
     "# Q107 — second-order overlap memory checkpoint (2026-11-11)","",
     "- Status: " + report.decision + ".",
@@ -445,7 +445,7 @@ function run() {
     ledger_rows:rows.length,
     validation_checks:validationReport.checks_total,
     validation_status:validationReport.status,
-    deterministic_replay:"Node --check mode is implemented but was not executed in this run; deterministic inference replay passed in memory, and persisted artifacts were checked by GitHub read-back."
+    deterministic_replay:"The Q107 workflow runs --write, persists artifacts on the research branch, then runs --check; execution status is recorded in GitHub Actions."
   };
   const manifestText = stableJson(manifest);
   const outputs = [
