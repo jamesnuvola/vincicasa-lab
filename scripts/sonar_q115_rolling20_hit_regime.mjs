@@ -39,7 +39,13 @@ const header=["target_date","history_cutoff","source_index","previous_top20_hits
 const esc=v=>/[",\r\n]/.test(String(v))?'"'+String(v).replace(/"/g,'""')+'"':String(v),fmt=v=>v.toFixed(12),names=["LOW","MID","HIGH"];
 const ledger=[header.join(",")];for(const x of out)ledger.push([x.date,x.cutoff,x.i,x.prev,x.sum,names[x.state],x.support,x.y,x.split,x.p1.map(fmt).join(" "),x.p20.map(fmt).join(" "),fmt(x.b0),fmt(x.b1),fmt(x.b20),fmt(x.b0-x.b20),fmt(x.b1-x.b20),fmt(x.l0),fmt(x.l1),fmt(x.l20),fmt(x.l0-x.l20),fmt(x.l1-x.l20)].map(esc).join(","));
 const ledgerText=ledger.join("\n")+"\n";
-if(ledgerText!==fs.readFileSync(OUT,"utf8"))throw Error("ledger replay differs");
+const persistedLedger=fs.readFileSync(OUT,"utf8");
+if(ledgerText!==persistedLedger){
+  const a=ledgerText.split("\n"),b=persistedLedger.split("\n");let i=0;
+  while(i<Math.min(a.length,b.length)&&a[i]===b[i])i++;
+  console.error(JSON.stringify({first_mismatch_line:i+1,expected:a[i]?.slice(0,420),persisted:b[i]?.slice(0,420),expected_lines:a.length,persisted_lines:b.length}));
+  throw Error("ledger replay differs");
+}
 const report=JSON.parse(fs.readFileSync(REPORT,"utf8"));
 for(const k of ["discovery","validation","blind_oos"])for(const m of ["m20_vs_m0","m20_vs_m1"])for(const e of ["brier","log_loss"]){const v=metrics[k].gains[m][e],saved=report.walk_forward.metrics[k].gains[m][e];if(Math.abs(v-saved)>1e-12)throw Error("metric mismatch "+k+" "+m+" "+e);}
 for(let i=0;i<4;i++){if(Math.abs(tests[i].gain-report.blind_inference[i].gain)>1e-12||Math.abs(tests[i].p_value-report.blind_inference[i].p_value)>1e-12||Math.abs(tests[i].holm_adjusted-report.blind_inference[i].holm_adjusted)>1e-12)throw Error("inference mismatch "+tests[i].key);}
