@@ -19,7 +19,6 @@ function signFlip(gains,seed){const blocks=[];for(let i=0;i<gains.length;i+=20)b
 function bootstrap(gains,seed){const n=gains.length,random=rng(seed),values=[];for(let r=0;r<10000;r++){let sum=0,count=0;while(count<n){const start=Math.floor(random()*n);for(let j=0;j<20&&count<n;j++,count++)sum+=gains[(start+j)%n];}values.push(sum/n);}values.sort((a,b)=>a-b);return {lower:rounded(values[249]),upper:rounded(values[9749]),replicates:10000,seed,block_length:20};}
 function holm(pValues){const order=pValues.map((p,i)=>({p,i})).sort((a,b)=>a.p-b.p),out=[];let previous=0;for(let i=0;i<order.length;i++){previous=Math.max(previous,Math.min(1,(order.length-i)*order[i].p));out[order[i].i]=rounded(previous);}return out;}
 function gitBlobSha1(text){const b=Buffer.from(text,"utf8");return crypto.createHash("sha1").update(Buffer.from("blob "+b.length+"\0")).update(b).digest("hex");}
-function sha256(text){return crypto.createHash("sha256").update(Buffer.from(text,"utf8")).digest("hex");}
 function read(path){return fs.readFileSync(path,"utf8");}
 function assertEqual(path,expected){const actual=read(path);if(actual!==expected)throw new Error("Persisted artifact differs from deterministic replay: "+path);}
 function buildRows(draws,models,q0,firstIndex){
@@ -132,7 +131,7 @@ assertEqual(ledgerPath,ledgerText);
 assertEqual(validationPath,validationText);
 assertEqual(checkpointPath,checkpoint);
 const manifestFiles=[protocolPath,runnerPath,reportPath,ledgerPath,validationPath,checkpointPath];
-const manifest={experiment_id:"Q111",generated_at_local:protocol.preregistered_at_local,source_archive_blob_sha1:archiveBlob,files:manifestFiles.map(path=>{const content=read(path);return {path,bytes:Buffer.byteLength(content,"utf8"),git_blob_sha1:gitBlobSha1(content),sha256:sha256(content)};})};
+const manifest={experiment_id:"Q111",generated_at_local:protocol.preregistered_at_local,source_archive_blob_sha1:archiveBlob,files:manifestFiles.map(path=>{const content=read(path);return {path,bytes:Buffer.byteLength(content,"utf8"),git_blob_sha1:gitBlobSha1(content)};})};
 const manifestText=JSON.stringify(manifest,null,2)+"\n";
 assertEqual(manifestPath,manifestText);
 console.log(JSON.stringify({experiment_id:"Q111",decision,selected_beta:selectedBeta,targets:rows.length,split_sizes:report.walk_forward.split_sizes,blind_oos:report.blind_oos_inference,checks_passed:checks.length,manifest_files:manifestFiles.length}));
