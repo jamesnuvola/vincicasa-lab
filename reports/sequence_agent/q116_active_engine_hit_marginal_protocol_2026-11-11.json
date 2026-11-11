@@ -1,0 +1,47 @@
+{
+  "experiment_id": "Q116",
+  "title": "Active-engine Top20 marginal hit-count calibration",
+  "created_at_utc": "2026-11-11T09:47:17Z",
+  "status": "EXPLORATORY_NOT_PREREGISTERED_BEFORE_PRIOR_RESEARCH",
+  "hypothesis": {
+    "question": "Does the active engine's reconstructed Top20 hit-count distribution differ from the exact 5-of-40 hypergeometric null, with a persistent upper-tail advantage?",
+    "null": "For every fixed pre-target 20-number set and a uniform 5-of-40 draw, H_t follows Hypergeometric(N=40,K=20,n=5).",
+    "statistic": "H_t = |Top20_(t-1) intersect D_t|, support 0..5.",
+    "pmf": "q0(k)=C(20,k)C(20,5-k)/C(40,5), k=0..5.",
+    "exact_pmf_numerators": [
+      15504,
+      96900,
+      216600,
+      216600,
+      96900,
+      15504
+    ],
+    "denominator": 658008,
+    "expected_hits": 2.5,
+    "variance": 1.1217948717948718,
+    "status_note": "This is a post-hoc diagnostic on a ledger already examined by Q113-Q115; it is not a virgin or prospectively preregistered experiment."
+  },
+  "design": {
+    "source_ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "compact_source_blob_sha": "b4ea460d0080f7abbec0b4d563a6089a3146fff5",
+    "target_count": 3203,
+    "chronological_splits": {
+      "discovery": 1921,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "no_parameter_tuning": true,
+    "primary_endpoint": "Blind OOS Pearson goodness-of-fit against exact Hypergeometric(40,20,5).",
+    "secondary_endpoints": [
+      "Blind OOS two-sided mean-hit z test vs 2.5",
+      "Blind OOS one-sided exact binomial test for 5/5 Top20 hits."
+    ],
+    "multiple_testing": "Holm across Pearson, mean and 5/5 endpoints for Discovery, Validation, Blind OOS and full sample (12 tests).",
+    "bootstrap": "10,000 circular block-bootstrap replicates, block length 20, fixed seeds per segment."
+  },
+  "interpretation_guardrails": [
+    "No model is fitted or selected; this is a calibration diagnostic only.",
+    "A nominal p-value in a historical split is not evidence of prospective predictive lift.",
+    "No production scorer, frozen forecast, or Q60 record may be changed by this experiment."
+  ]
+}
