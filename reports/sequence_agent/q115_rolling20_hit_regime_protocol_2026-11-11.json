@@ -1,0 +1,99 @@
+{
+  "experiment_id": "Q115",
+  "title": "Rolling-20 active-engine Top20 hit-count regime",
+  "preregistered_at_utc": "2026-11-11T08:42:55Z",
+  "status": "PREREGISTERED_BEFORE_COMPUTATION",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "source_ledger_path": "reports/sequence_agent/q113_active_engine_hit_regime_target_ledger_2026-11-11.csv",
+    "source_ledger_git_blob_sha1": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "source_report_path": "reports/sequence_agent/q113_active_engine_hit_regime_report_2026-11-11.json",
+    "source_report_git_blob_sha1": "82db307829e88677bb9455022b438640ba8df1d8",
+    "source_freeze_path": "reports/sequence_agent/q113_active_engine_hit_regime_prospective_freeze_2026-11-11.json",
+    "source_archive_cutoff": "2026-11-10",
+    "source_target_rows": 3203
+  },
+  "hypothesis": "A rolling 20-target mean of the active engine's prior Top20 hit counts may contain more stable regime information than a single lagged hit count and may improve the next-target hit-count distribution.",
+  "target": "H_t = |frozen Top20_{t-1} intersect draw_t|, taking values 0..5.",
+  "null_model": {
+    "name": "M0 exact hypergeometric",
+    "pmf": "q0(k)=C(20,k)*C(20,5-k)/C(40,5), k=0..5",
+    "expected_hits": 2.5
+  },
+  "models": [
+    {
+      "name": "M1 lag-1 transition",
+      "pmf": "P1(k|a)=(200*q0(k)+C1[a,k])/(200+N1[a])",
+      "state": "a = previous target's observed Top20 hit count",
+      "alpha": 200
+    },
+    {
+      "name": "M20 rolling-20 regime",
+      "state_definition": "S_t = sum of the previous 20 observed Top20 hit counts, using only targets before t",
+      "buckets": [
+        {
+          "state": "LOW",
+          "rule": "S_t <= 45"
+        },
+        {
+          "state": "MID",
+          "rule": "46 <= S_t <= 54"
+        },
+        {
+          "state": "HIGH",
+          "rule": "S_t >= 55"
+        }
+      ],
+      "pmf": "P20(k|s)=(200*q0(k)+C20[s,k])/(200+N20[s])",
+      "alpha": 200
+    }
+  ],
+  "evaluation": {
+    "target_rows": "source row index i=20..3202 inclusive; rolling state requires 20 prior observed outcomes",
+    "chronological_splits": {
+      "discovery": "i=20..1920 inclusive",
+      "validation": "i=1921..2561 inclusive",
+      "blind_oos": "i=2562..3202 inclusive"
+    },
+    "expected_sizes": {
+      "discovery": 1901,
+      "validation": 641,
+      "blind_oos": 641,
+      "total": 3183
+    },
+    "update_order": "Score target i before adding its outcome to either M1 or M20 counts. Every training row j must satisfy j<i; every rolling state uses only y[j-20..j-1].",
+    "primary_comparisons": [
+      "M20 vs M0",
+      "M20 vs M1"
+    ],
+    "endpoints": [
+      "multiclass Brier score",
+      "log loss"
+    ],
+    "gain_definition": "baseline loss minus model loss; positive means the model improves",
+    "inference": {
+      "method": "one-sided paired block sign-flip",
+      "simulations": 50000,
+      "block_length": 20,
+      "bootstrap": "circular moving-block bootstrap",
+      "bootstrap_replicates": 10000,
+      "confidence_level": 0.95,
+      "multiple_testing": "Holm across all four predeclared comparison-endpoint p-values",
+      "seeds": [
+        1152001,
+        1152002,
+        1152003,
+        1152004
+      ]
+    }
+  },
+  "guardrails": [
+    "No parameter or bucket-boundary tuning after computation begins.",
+    "Discovery, validation and historical blind OOS are chronological; historical blind OOS is not a virgin holdout because related SONAR research has examined the same archive.",
+    "The rolling state predicts Top20 hit-count calibration only, not winning numbers.",
+    "The experiment family-wide multiplicity across Q00-Q115 is not corrected by the within-Q115 Holm procedure; all findings remain exploratory.",
+    "One prospective target is descriptive only and cannot justify promotion.",
+    "No changes to the active engine, Q60 freezes, or PRs #6, #7, #8."
+  ],
+  "next_action": "Execute the fixed walk-forward once; persist the full target ledger, report, validation, deterministic runner and an immutable 2026-11-11 prospective distribution freeze. Await the official draw before scoring that freeze."
+}
