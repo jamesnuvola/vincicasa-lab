@@ -235,6 +235,7 @@
     "issue": "Initial JavaScript sampler used a 32-bit bitmask for 40 rank slots; bit shifts 32..39 alias slots 0..7.",
     "correction": "Replaced bitmask with Set-based sampling without replacement; all 20,000 conditional randomization replicates were recomputed.",
     "superseded_results": true,
-    "corrected_seed": "0x12520261111"
+    "corrected_seed": "0x12520261111",
+    "ledger_verifier_issue": "The first Node 20 replay then exposed a field-name mismatch: the parsed parent ledger schema uses r/idx/date/cutoff/sum/top5/top10/top20, while the new row verifier referenced ranks/target_index. The verifier was aligned to the parsed schema; no statistical values changed."
   }
 }
