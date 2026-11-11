@@ -408,7 +408,7 @@ function run() {
     checks_passed:checks.filter(c=>c[1]).length,
     checks_total:checks.length,
     checks:checks.map(([name,ok,detail])=>({name,status:ok?"PASS":"FAIL",detail})),
-    replay:"--check regenerates report, validation, ledger, checkpoint and manifest and byte-compares every persisted file.",
+    replay:"Node --check mode is implemented but was not executed in this run; deterministic inference replay passed in memory, and persisted artifacts were checked by GitHub read-back.",
     inference_constants:{alpha:ALPHA,block_length:BLOCK,block_sign_flip_replicates:SIGN_REPS,circular_block_bootstrap_replicates:BOOT_REPS,seed:SEED,holm_family_size:4}
   };
   assert(validation.status==="PASS","one or more Q107 integrity checks failed");
@@ -448,7 +448,7 @@ function run() {
     ledger_rows:rows.length,
     validation_checks:validation.checks_total,
     validation_status:validation.status,
-    deterministic_replay:"Fixed-seed outputs; --check compares exact bytes."
+    deterministic_replay:"Node --check mode is implemented but was not executed in this run; deterministic inference replay passed in memory, and persisted artifacts were checked by GitHub read-back."
   };
   const manifestText = stableJson(manifest);
   const outputs = [
