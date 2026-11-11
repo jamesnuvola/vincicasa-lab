@@ -39,3 +39,11 @@
 - No statistical computation, source data, protocol, or forecast was changed. Fresh exact-head push and pull-request replays are pending.
 
 - Corrected protocol blob: `3db249baec71921ff78591a88b95278f31de118f`; corrected report blob: `535c8a55839dff5886beec8742a54b64a617ad13`.
+
+## Replay recovery — manifest helper name — 2026-11-12
+
+- After correcting the truncated 39-character source pin, the Node 20 replay advanced through the full historical computation and failed at the final manifest loop with `ReferenceError: gitBlobSha is not defined`.
+- The runner's existing Git-blob hashing helper is named `sha`; the manifest loop called `gitBlobSha`. This was a simple helper-name mismatch, previously masked by the earlier source-pin failure.
+- Correction: manifest verification now calls the existing `sha(value)` helper. No protocol design, statistical result, ledger row, forecast freeze, canonical archive, Q60 state, or production scorer was changed.
+- Updated runner blob: `0a9009ed190bc29e45d741915f62bbc77966ba4d`.
+- A fresh exact-head Node 20 replay is pending.
