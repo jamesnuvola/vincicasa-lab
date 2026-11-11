@@ -140,6 +140,9 @@ function compute(rows) {
       mean:adjusted.find(x=>x.key===name+"_mean").holm_adjusted,
       five_of_five:adjusted.find(x=>x.key===name+"_five_of_five").holm_adjusted
     };
+    delete summaries[name].pearson_p;
+    delete summaries[name].mean_p_two_sided;
+    delete summaries[name].five_of_five_binomial_p_one_sided;
   }
   return {summaries,tests:adjusted};
 }
