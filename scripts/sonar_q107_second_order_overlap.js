@@ -294,7 +294,7 @@ function run() {
     });
   }
   const discovery = summarize(rows, 0, discoveryN);
-  const validation = summarize(rows, discoveryN, discoveryN + validationN);
+  const validationSummary = summarize(rows, discoveryN, discoveryN + validationN);
   const blind = summarize(rows, discoveryN + validationN, targetCount);
   const blindRows = rows.slice(discoveryN + validationN);
   const inference = makeInference(blindRows);
@@ -348,7 +348,7 @@ function run() {
       strict_prior_rule:"For each target draw index t, only draws[0..t-1] are read; training transition targets j=3..t-1, with exactly t-3 prior transition examples."
     },
     metrics:{
-      discovery,validation,historical_blind_oos:blind,
+      discovery,validation:validationSummary,historical_blind_oos:blind,
       all_target_overlap_counts:actualCounts,
       state_pair_target_counts:stateCounts,
       lag2_pair_support:{min:pairSupport[0],median:pairSupport[Math.floor(pairSupport.length/2)],max:pairSupport[pairSupport.length-1]}
@@ -399,7 +399,7 @@ function run() {
     ["synthetic_no_pair_fallback",noPairEquality,"when no pair-state observations exist, M2 equals M1 exactly"],
     ["deterministic_inference_replay",inferenceReplay,"fixed-seed block sign-flip and bootstrap reproduce exactly"]
   ];
-  const validation = {
+  const validationReport = {
     experiment_id:"Q107",
     status:checks.every(c=>c[1])?"PASS":"FAIL",
     checks_passed:checks.filter(c=>c[1]).length,
@@ -408,7 +408,7 @@ function run() {
     replay:"Node --check mode is implemented but was not executed in this run; deterministic inference replay passed in memory, and persisted artifacts were checked by GitHub read-back.",
     inference_constants:{alpha:ALPHA,block_length:BLOCK,block_sign_flip_replicates:SIGN_REPS,circular_block_bootstrap_replicates:BOOT_REPS,seed:SEED,holm_family_size:4}
   };
-  assert(validation.status==="PASS","one or more Q107 integrity checks failed");
+  assert(validationReport.status==="PASS","one or more Q107 integrity checks failed");
   const ledger = buildLedger(rows);
   const checkpoint = [
     "# Q107 — second-order overlap memory checkpoint (2026-11-11)","",
@@ -419,14 +419,14 @@ function run() {
     "- Walk-forward: 3,100 targets; Discovery/Validation/historical Blind OOS = 1,860/620/620.",
     "- Primary comparison: second-order M2 versus first-order M1; secondary comparison M2 versus exact Hypergeometric(40,5,5) null.",
     "- Blind OOS selected no parameters; four preregistered endpoints corrected with Holm.",
-    "- Validation: " + validation.checks_passed + "/" + validation.checks_total + " PASS.",
+    "- Validation: " + validationReport.checks_passed + "/" + validationReport.checks_total + " PASS.",
     "- Historical Blind OOS is not virgin because Q102 previously examined lag-1 overlap memory on the same archive.",
     "- No engine, freeze, Q60, H101 or H102 record changed.",
     "- Next action: wait for official publication of contest 314; append-only reconcile the existing pending freezes; continue Q60 without reconstructing missing freezes.",
     ""
   ].join("\n");
   const reportText = stableJson(report);
-  const validationText = stableJson(validation);
+  const validationText = stableJson(validationReport);
   const ledgerText = ledger;
   const checkpointText = checkpoint;
   const protocolHash = hash(protocolText);
@@ -443,8 +443,8 @@ function run() {
       checkpoint:hash(checkpointText)
     },
     ledger_rows:rows.length,
-    validation_checks:validation.checks_total,
-    validation_status:validation.status,
+    validation_checks:validationReport.checks_total,
+    validation_status:validationReport.status,
     deterministic_replay:"Node --check mode is implemented but was not executed in this run; deterministic inference replay passed in memory, and persisted artifacts were checked by GitHub read-back."
   };
   const manifestText = stableJson(manifest);
@@ -457,14 +457,14 @@ function run() {
   if (mode==="--write") {
     fs.mkdirSync(OUT,{recursive:true});
     for (const [p,c] of outputs) fs.writeFileSync(p,c,"utf8");
-    console.log("Q107_WRITE_PASS " + JSON.stringify({targets:rows.length,checks:validation.checks_passed,decision:report.decision,blind:blind.m2_vs_m1}));
+    console.log("Q107_WRITE_PASS " + JSON.stringify({targets:rows.length,checks:validationReport.checks_passed,decision:report.decision,blind:blind.m2_vs_m1}));
   } else {
     for (const [p,c] of outputs) {
       assert(fs.existsSync(p),"missing persisted artifact " + path.basename(p));
       const existing=fs.readFileSync(p,"utf8");
       assert(existing===c,"persisted artifact differs on replay: " + path.basename(p));
     }
-    console.log("Q107_REPLAY_PASS " + JSON.stringify({targets:rows.length,checks:validation.checks_passed,decision:report.decision,manifest:manifest.output_git_blob_sha1}));
+    console.log("Q107_REPLAY_PASS " + JSON.stringify({targets:rows.length,checks:validationReport.checks_passed,decision:report.decision,manifest:manifest.output_git_blob_sha1}));
   }
 }
 try { run(); } catch (error) { console.error(error.stack || error.message); process.exit(1); }
