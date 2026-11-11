@@ -1,0 +1,53 @@
+name: Q121 rank-weighted turnover replay
+
+on:
+  push:
+    branches: ["research/q121-rank-weighted-turnover-20261111"]
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/sonar_q121_rank_weighted_turnover.mjs"
+      - "reports/sequence_agent/q121_rank_weighted_turnover_*.json"
+      - "reports/sequence_agent/q121_rank_weighted_turnover_target_ledger_2026-11-11.csv"
+      - ".github/workflows/q121-rank-weighted-turnover.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q121-rank-weighted-turnover-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Generate Q121 artifacts
+        run: node scripts/sonar_q121_rank_weighted_turnover.mjs --write
+      - name: Verify deterministic replay and persisted manifest
+        run: node scripts/sonar_q121_rank_weighted_turnover.mjs --verify
+      - name: Persist generated Q121 artifacts to the research branch
+        env:
+          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q121_rank_weighted_turnover_target_ledger_2026-11-11.csv
+          git add reports/sequence_agent/q121_rank_weighted_turnover_report_2026-11-11.json
+          git add reports/sequence_agent/q121_rank_weighted_turnover_validation_2026-11-11.json
+          git add reports/sequence_agent/q121_rank_weighted_turnover_checkpoint_2026-11-11.md
+          git add reports/sequence_agent/q121_rank_weighted_turnover_prospective_freeze_2026-11-11.json
+          git add reports/sequence_agent/q121_rank_weighted_turnover_persistence_manifest_2026-11-11.json
+          if git diff --cached --quiet; then
+            echo "Q121 artifacts already match the replay."
+          else
+            git commit -m "Persist Q121 rank-weighted turnover results"
+            git push origin "HEAD:${TARGET_BRANCH}"
+          fi
