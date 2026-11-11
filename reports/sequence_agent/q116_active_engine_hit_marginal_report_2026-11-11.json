@@ -1,0 +1,373 @@
+{
+  "experiment_id": "Q116",
+  "title": "Active-engine Top20 marginal hit-count calibration",
+  "generated_at_utc": "2026-11-11T09:47:17Z",
+  "status": "EXPLORATORY_DIAGNOSTIC",
+  "decision": "NO_MARGINAL_DEPARTURE_DEMONSTRATED_AFTER_HOLM",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "q113_ledger_branch": "research/q113-active-engine-hit-regime-20261111",
+    "q113_ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "compact_source_blob_sha": "b4ea460d0080f7abbec0b4d563a6089a3146fff5",
+    "rows": 3203,
+    "first_target": "2018-02-03",
+    "last_target": "2026-11-10",
+    "provenance": "Q113 active-engine hit-count ledger; prior-only historical reconstruction."
+  },
+  "hypothesis": {
+    "question": "Does the active engine's reconstructed Top20 hit-count distribution differ from the exact 5-of-40 hypergeometric null, with a persistent upper-tail advantage?",
+    "null": "For every fixed pre-target 20-number set and a uniform 5-of-40 draw, H_t follows Hypergeometric(N=40,K=20,n=5).",
+    "statistic": "H_t = |Top20_(t-1) intersect D_t|, support 0..5.",
+    "pmf": "q0(k)=C(20,k)C(20,5-k)/C(40,5), k=0..5.",
+    "exact_pmf_numerators": [
+      15504,
+      96900,
+      216600,
+      216600,
+      96900,
+      15504
+    ],
+    "denominator": 658008,
+    "expected_hits": 2.5,
+    "variance": 1.1217948717948718,
+    "status_note": "This is a post-hoc diagnostic on a ledger already examined by Q113-Q115; it is not a virgin or prospectively preregistered experiment."
+  },
+  "walk_forward": {
+    "targets": 3203,
+    "split_sizes": {
+      "discovery": 1921,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "first_target": "2018-02-03",
+    "last_target": "2026-11-10",
+    "strict_prior_cutoffs": true,
+    "target_rows_are_historical_reconstruction": true,
+    "note": "The Top20 forecasts were reconstructed by the pinned active-engine procedure using only each target's prior history; they were not forecasts actually frozen contemporaneously in 2018-2026."
+  },
+  "baseline": {
+    "name": "Exact Hypergeometric(40,20,5)",
+    "pmf": [
+      0.023562023562,
+      0.147262647263,
+      0.329175329175,
+      0.329175329175,
+      0.147262647263,
+      0.023562023562
+    ],
+    "null_variance": 1.121794871795
+  },
+  "results": {
+    "discovery": {
+      "n": 1921,
+      "counts": [
+        56,
+        262,
+        606,
+        668,
+        278,
+        51
+      ],
+      "expected_counts": [
+        45.262647262647,
+        282.891545391545,
+        632.345807345807,
+        632.345807345807,
+        282.891545391545,
+        45.262647262647
+      ],
+      "mean_hits": 2.522123893805,
+      "mean_gain_vs_2_5": 0.022123893805,
+      "sample_variance": 1.146515486726,
+      "null_variance": 1.121794871795,
+      "variance_ratio": 1.022036662453,
+      "pearson_chi2": 8.009808455671,
+      "mean_z": 0.915521446824,
+      "five_of_five_count": 51,
+      "five_of_five_rate": 0.026548672566,
+      "five_of_five_expected": 45.262647262647,
+      "baseline_brier": 0.739163083079,
+      "baseline_log_loss": 1.484155607607,
+      "bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "mean_ci95": [
+          2.478917230609,
+          2.565851119209
+        ],
+        "five_rate_ci95": [
+          0.019781363873,
+          0.033836543467
+        ]
+      },
+      "holm": {
+        "pearson": 1,
+        "mean": 1,
+        "five_of_five": 1
+      }
+    },
+    "validation": {
+      "n": 641,
+      "counts": [
+        24,
+        84,
+        223,
+        218,
+        82,
+        10
+      ],
+      "expected_counts": [
+        15.103257103257,
+        94.395356895357,
+        211.001386001386,
+        211.001386001386,
+        94.395356895357,
+        15.103257103257
+      ],
+      "mean_hits": 2.436817472699,
+      "mean_gain_vs_2_5": -0.063182527301,
+      "sample_variance": 1.083892355694,
+      "null_variance": 1.121794871795,
+      "variance_ratio": 0.966212614219,
+      "pearson_chi2": 10.651978188106,
+      "mean_z": -1.510321077479,
+      "five_of_five_count": 10,
+      "five_of_five_rate": 0.015600624025,
+      "five_of_five_expected": 15.103257103257,
+      "baseline_brier": 0.729485790096,
+      "baseline_log_loss": 1.4593431212,
+      "bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "mean_ci95": [
+          2.374414976599,
+          2.497659906396
+        ],
+        "five_rate_ci95": [
+          0.00624024961,
+          0.02496099844
+        ]
+      },
+      "holm": {
+        "pearson": 0.646073367654,
+        "mean": 1,
+        "five_of_five": 1
+      }
+    },
+    "blind_oos": {
+      "n": 641,
+      "counts": [
+        16,
+        89,
+        208,
+        218,
+        90,
+        20
+      ],
+      "expected_counts": [
+        15.103257103257,
+        94.395356895357,
+        211.001386001386,
+        211.001386001386,
+        94.395356895357,
+        15.103257103257
+      ],
+      "mean_hits": 2.525741029641,
+      "mean_gain_vs_2_5": 0.025741029641,
+      "sample_variance": 1.14660198908,
+      "null_variance": 1.121794871795,
+      "variance_ratio": 1.022113773122,
+      "pearson_chi2": 2.42872582024,
+      "mean_z": 0.615315994528,
+      "five_of_five_count": 20,
+      "five_of_five_rate": 0.03120124805,
+      "five_of_five_expected": 15.103257103257,
+      "baseline_brier": 0.738771566933,
+      "baseline_log_loss": 1.483884080892,
+      "bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "mean_ci95": [
+          2.436817472699,
+          2.613104524181
+        ],
+        "five_rate_ci95": [
+          0.01872074883,
+          0.045241809672
+        ]
+      },
+      "holm": {
+        "pearson": 1,
+        "mean": 1,
+        "five_of_five": 1
+      }
+    },
+    "full": {
+      "n": 3203,
+      "counts": [
+        96,
+        435,
+        1037,
+        1104,
+        450,
+        81
+      ],
+      "expected_counts": [
+        75.469161469161,
+        471.682259182259,
+        1054.348579348579,
+        1054.348579348579,
+        471.682259182259,
+        75.469161469161
+      ],
+      "mean_hits": 2.505775835155,
+      "mean_gain_vs_2_5": 0.005775835155,
+      "sample_variance": 1.134491925999,
+      "null_variance": 1.121794871795,
+      "variance_ratio": 1.011318516891,
+      "pearson_chi2": 12.463676081537,
+      "mean_z": 0.30862885946,
+      "five_of_five_count": 81,
+      "five_of_five_rate": 0.025288791758,
+      "five_of_five_expected": 75.469161469161,
+      "baseline_brier": 0.737148063831,
+      "baseline_log_loss": 1.479135672418,
+      "bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "mean_ci95": [
+          2.471120824227,
+          2.540430846082
+        ],
+        "five_rate_ci95": [
+          0.019981267562,
+          0.030908523259
+        ]
+      },
+      "holm": {
+        "pearson": 0.347496995388,
+        "mean": 1,
+        "five_of_five": 1
+      }
+    }
+  },
+  "inference": {
+    "family_size": 12,
+    "correction": "Holm step-down across 4 segments x 3 endpoints (Pearson omnibus, two-sided mean z, one-sided exact 5/5 binomial).",
+    "tests": [
+      {
+        "key": "discovery_pearson",
+        "segment": "discovery",
+        "endpoint": "pearson_chi2",
+        "p_value": 0.15569589216,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "discovery_mean",
+        "segment": "discovery",
+        "endpoint": "mean",
+        "p_value": 0.359917902007,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "discovery_five_of_five",
+        "segment": "discovery",
+        "endpoint": "five_of_five",
+        "p_value": 0.212685133564,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "validation_pearson",
+        "segment": "validation",
+        "endpoint": "pearson_chi2",
+        "p_value": 0.058733942514,
+        "holm_adjusted": 0.646073367654
+      },
+      {
+        "key": "validation_mean",
+        "segment": "validation",
+        "endpoint": "mean",
+        "p_value": 0.130961569474,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "validation_five_of_five",
+        "segment": "validation",
+        "endpoint": "five_of_five",
+        "p_value": 0.935663861444,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "blind_oos_pearson",
+        "segment": "blind_oos",
+        "endpoint": "pearson_chi2",
+        "p_value": 0.787188741878,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "blind_oos_mean",
+        "segment": "blind_oos",
+        "endpoint": "mean",
+        "p_value": 0.538345950412,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "blind_oos_five_of_five",
+        "segment": "blind_oos",
+        "endpoint": "five_of_five",
+        "p_value": 0.127951106903,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "full_pearson",
+        "segment": "full",
+        "endpoint": "pearson_chi2",
+        "p_value": 0.028958082949,
+        "holm_adjusted": 0.347496995388
+      },
+      {
+        "key": "full_mean",
+        "segment": "full",
+        "endpoint": "mean",
+        "p_value": 0.757604002868,
+        "holm_adjusted": 1
+      },
+      {
+        "key": "full_five_of_five",
+        "segment": "full",
+        "endpoint": "five_of_five",
+        "p_value": 0.274858905075,
+        "holm_adjusted": 1
+      }
+    ],
+    "bootstrap": {
+      "replicates": 10000,
+      "method": "circular moving-block bootstrap",
+      "block_length": 20,
+      "seed_by_segment": {
+        "discovery": 11611,
+        "validation": 11612,
+        "blind_oos": 11613,
+        "full": 11614
+      }
+    }
+  },
+  "integrity": {
+    "checks_passed": 14,
+    "checks_total": 14,
+    "future_suffix_mutation": "9/9",
+    "deterministic_replay": true,
+    "unique_dates": 3203,
+    "strict_prior_cutoffs": true,
+    "lag1_hit_chain": true
+  },
+  "limitations": [
+    "Exploratory post-hoc diagnostic; the Q113 ledger and its chronological Blind OOS have already informed Q113-Q115.",
+    "Historical walk-forward reconstruction is not a record of forecasts actually frozen at the historical target dates.",
+    "The chi-square p-values use the asymptotic df=5 Pearson reference; expected counts in every tested cell exceed 5.",
+    "Mean z tests assume independent draws under the lottery null; circular block-bootstrap intervals are supplied as a dependence sensitivity check.",
+    "Holm correction covers the 12 Q116 endpoints only, not the full Q00-Q116 research family.",
+    "This diagnostic evaluates hit-count calibration of a fixed Top20, not winning-number identities or a new 5-number combination."
+  ],
+  "next_action": "Await official 2026-11-11 result; evaluate the 43 global and 1 positional pending freezes without retuning; update Q60 only after exact outcome provenance is resolved and the paired target is complete."
+}
