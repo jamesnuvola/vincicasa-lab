@@ -1,6 +1,6 @@
 # Q126 checkpoint — squared-gap concentration transition
 
-- Protocol was committed before calculation; protocol Git blob 84e18139cc428290e117e720108614539e94959b.
+- Protocol was committed before calculation; protocol Git blob 69d237c31ace1ecad42aac13db14f789e5e92f0a.
 - Canonical archive: 3,404 draws, 2017-07-17 through 2026-11-10; CSV blob 40f317e2d0067e061c46ab799d66f777a0e087c0.
 - Application modelDraws blob 25c0b2316662664deff9e2157e60ec56cfa3a640; 3,404 rows reconciled by date and ordered numbers.
 - Statistic: G = sum of squared four internal adjacent gaps; exact 5-of-40 enumeration = 658008 subsets; support size 864; exact-null quartile cutpoints q25/q50/q75 = 182/284/396.
@@ -10,6 +10,7 @@
 - Decision: **NO_SQUARED_GAP_CONCENTRATION_TRANSITION_LIFT_DEMONSTRATED**.
 - Validation checks: 20/20; future-suffix mutation: 9/9.
 - No forecast freeze, Q60 record, production scorer, or existing PR was modified.
+- Recovery: the first Node 20 replay found a byte mismatch in the 12-decimal ledger serialization; floating ledger and aggregate metrics are now canonicalized to 9 decimals for cross-runtime replay.
 
 ## Limitations
 
