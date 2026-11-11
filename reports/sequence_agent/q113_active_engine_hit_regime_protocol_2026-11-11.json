@@ -1,0 +1,53 @@
+{
+  "experiment_id": "Q113",
+  "title": "Active-engine Top20 hit-count regime persistence",
+  "created_at_local": "2026-11-11T07:42:22+01:00",
+  "created_at_utc": "2026-11-11T06:42:22Z",
+  "retrospective_status": "EXPLORATORY_NOT_PREREGISTERED",
+  "prospective_protocol_status": "FROZEN_BEFORE_TARGET_OUTCOME",
+  "target_date": "2026-11-11",
+  "nominal_draw_time": "20:00 Europe/Rome",
+  "hypothesis": "Does the previous target's exact active-engine Top20 hit count add information about the next Top20 hit count beyond Hypergeometric(40,20,5)?",
+  "baseline": "q0(k)=C(20,k)C(20,5-k)/C(40,5), k=0..5",
+  "alternative": "p_t(k|j)=[200*q0(k)+N_{j,k}(t)]/[200+N_j(t)] with j=previous Top20 hit count; alpha=200 fixed.",
+  "walk_forward": {
+    "warmup": 200,
+    "targets": 3203,
+    "split_sizes": {
+      "discovery": 1921,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior_only": true
+  },
+  "metrics": {
+    "primary": "Multiclass Brier",
+    "secondary": "Categorical log-loss",
+    "gain": "baseline loss minus model loss; positive favours model"
+  },
+  "inference": {
+    "block_sign_flip": 50000,
+    "circular_block_bootstrap": 10000,
+    "block_length": 20,
+    "holm_family_size": 2,
+    "one_sided_positive_gain": true,
+    "seeds": [
+      11301,
+      11302,
+      11303,
+      11304
+    ]
+  },
+  "limitations": [
+    "Retrospective analysis was calculated before this protocol was persisted; it is exploratory, not preregistered.",
+    "Historical Blind OOS is not a virgin holdout.",
+    "This predicts Top20 hit count only, not the winning numbers.",
+    "No correction across the full Q00-Q113 research family.",
+    "One prospective target is descriptive only; Q60 remains the promotion gate."
+  ],
+  "guardrails": [
+    "No production scorer changes, no promotion, no merge.",
+    "Append-only freeze/outcome; never reconstruct missing freezes.",
+    "PRs #6, #7 and #8 remain untouched."
+  ]
+}
