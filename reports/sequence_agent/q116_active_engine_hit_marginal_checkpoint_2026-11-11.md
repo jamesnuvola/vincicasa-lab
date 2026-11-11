@@ -13,3 +13,5 @@
 - Q115: dedicated Node 20 replay run 42991167922 SUCCESS; general CI run 42991516829 SUCCESS; a later evolutionary-only run 42991526493 was cancelled, not failed.
 - Next: await the 2026-11-11 draw; score all pending freezes without retuning; resolve contest-314 exact-number provenance before treating 23/200 as fully confirmed.
 - No merge, no promotion, no edits to PR #6, #7 or #8.
+
+- Recovery before CI: the first runner draft retained raw p-value helper fields in its in-memory summary, while the canonical report intentionally stores those p-values in the Holm test table. The runner was corrected to normalize the summary schema before byte-value comparison; no statistic or result changed.
