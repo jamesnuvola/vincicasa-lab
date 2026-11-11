@@ -2,7 +2,7 @@
   "experiment_id": "Q118",
   "branch": "research/q118-month-of-year-frequency-20261111",
   "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
-  "verified_at_utc": "2026-11-11T11:46:47Z",
+  "verified_at_utc": "2026-11-11T11:58:10Z",
   "artifacts": [
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_protocol_2026-11-11.json",
@@ -11,8 +11,9 @@
     },
     {
       "path": "scripts/sonar_q118_month_of_year_frequency.mjs",
-      "sha": "2f6b387310c3151c7aa35309c0ae08e78529772d",
-      "bytes": 8131
+      "sha": "ae9f783b01e0cdbf8dd5e4bbd0f586bcf060b9ee",
+      "bytes": 8158,
+      "git_blob_sha": "ae9f783b01e0cdbf8dd5e4bbd0f586bcf060b9ee"
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_report_2026-11-11.json",
@@ -36,8 +37,9 @@
     },
     {
       "path": "reports/sequence_agent/q118_month_of_year_frequency_checkpoint_2026-11-11.md",
-      "sha": "4722675f3a6f3e3e28b96d6240ee63bb601c7433",
-      "bytes": 1120
+      "sha": "7dd99fa138ab343c2086f731432a38b8d1d13c08",
+      "bytes": 1581,
+      "git_blob_sha": "7dd99fa138ab343c2086f731432a38b8d1d13c08"
     },
     {
       "path": ".github/workflows/ci.yml",
@@ -45,5 +47,5 @@
       "bytes": 2018
     }
   ],
-  "verification": "All listed artifacts were fetched back from the branch. The 1,164,337-byte ledger was fetched by Git blob SHA and confirmed to contain 3,205 lines (header plus 3,204 targets); its blob SHA matches the tree entry. Repository CI runs the Node 20 replay runner, which recomputes the walk-forward, inference, ledger and freeze."
+  "verification": "All listed artifacts were fetched back from the branch. The 1,164,337-byte ledger was fetched by Git blob SHA and confirmed to contain 3,205 lines. Initial Node 20 replay exposed a parse-time fs binding collision; runner corrected to freezeStats and checkpoint updated. The next CI run must pass before Node 20 replay is considered validated."
 }
