@@ -1,0 +1,494 @@
+{
+  "experiment_id": "Q102",
+  "title": "Lag-1 consecutive-draw overlap-state memory diagnostic",
+  "status": "NO_PREDICTIVE_LIFT_DEMONSTRATED",
+  "generated_date": "2026-11-10",
+  "source": {
+    "archive": "data/storico_daily.csv",
+    "archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "main_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b"
+  },
+  "definition": {
+    "overlap": "K_t=|D_{t-1}∩D_t|",
+    "predictor": "K_{t-1}",
+    "target": "K_t",
+    "kernel": "exp(-(K_j-K_{t-1})^2/(2h^2))",
+    "prior_strength": 200,
+    "bandwidths": [
+      0.5,
+      1,
+      2,
+      4
+    ],
+    "training_pairs": "j=1..t-2 only"
+  },
+  "exact_null": {
+    "distribution": "Hypergeometric(N=40,K=5,n=5)",
+    "denominator": 658008,
+    "numerators": [
+      324632,
+      261800,
+      65450,
+      5950,
+      175,
+      1
+    ],
+    "probabilities": [
+      0.493355703882,
+      0.397867503131,
+      0.099466875783,
+      0.009042443253,
+      0.000265954213,
+      0.000001519738
+    ],
+    "expected_overlap": 0.625,
+    "variance": 0.49078525641,
+    "all_overlap_counts": [
+      1668,
+      1348,
+      358,
+      27,
+      1,
+      0
+    ]
+  },
+  "data": {
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "warmup_observed_transitions": 300,
+    "first_target_index_zero_based": 301,
+    "last_target_index_zero_based": 3402,
+    "targets": 3102,
+    "splits": {
+      "discovery": 1400,
+      "validation": 850,
+      "historical_blind_oos": 852
+    }
+  },
+  "selection": {
+    "criterion": "minimum Validation multiclass Brier",
+    "selected_bandwidth": 2,
+    "validation_only": true,
+    "blind_oos_used_for_selection": false
+  },
+  "split_metrics": {
+    "discovery": {
+      "targets": 1400,
+      "baseline": {
+        "brier": 0.591427288548,
+        "logloss": 0.992792485853
+      },
+      "models": {
+        "1": {
+          "brier": 0.592140092676,
+          "logloss": 0.995281022586,
+          "brier_gain": -0.000712804127,
+          "logloss_gain": -0.002488536733
+        },
+        "2": {
+          "brier": 0.592002053917,
+          "logloss": 0.99545709338,
+          "brier_gain": -0.000574765369,
+          "logloss_gain": -0.002664607527
+        },
+        "4": {
+          "brier": 0.591990764841,
+          "logloss": 0.995610241457,
+          "brier_gain": -0.000563476293,
+          "logloss_gain": -0.002817755604
+        },
+        "0.5": {
+          "brier": 0.592524091775,
+          "logloss": 0.99557841076,
+          "brier_gain": -0.001096803227,
+          "logloss_gain": -0.002785924907
+        }
+      },
+      "observed_overlap_counts": [
+        683,
+        559,
+        148,
+        9,
+        1,
+        0
+      ],
+      "observed_mean_overlap": 0.632857142857,
+      "state_to_next_correlation": -0.047930428029
+    },
+    "validation": {
+      "targets": 850,
+      "baseline": {
+        "brier": 0.591823438747,
+        "logloss": 1.005196789281
+      },
+      "models": {
+        "1": {
+          "brier": 0.59209445083,
+          "logloss": 1.005996882393,
+          "brier_gain": -0.000271012083,
+          "logloss_gain": -0.000800093112
+        },
+        "2": {
+          "brier": 0.592062833503,
+          "logloss": 1.006096401325,
+          "brier_gain": -0.000239394755,
+          "logloss_gain": -0.000899612044
+        },
+        "4": {
+          "brier": 0.5920685919,
+          "logloss": 1.006113902528,
+          "brier_gain": -0.000245153153,
+          "logloss_gain": -0.000917113247
+        },
+        "0.5": {
+          "brier": 0.592340569056,
+          "logloss": 1.006711268607,
+          "brier_gain": -0.000517130309,
+          "logloss_gain": -0.001514479326
+        }
+      },
+      "observed_overlap_counts": [
+        424,
+        328,
+        87,
+        11,
+        0,
+        0
+      ],
+      "observed_mean_overlap": 0.629411764706,
+      "state_to_next_correlation": 0.032548151131
+    },
+    "historical_blind_oos": {
+      "targets": 852,
+      "baseline": {
+        "brier": 0.584534017833,
+        "logloss": 0.965167044544
+      },
+      "models": {
+        "1": {
+          "brier": 0.584919775536,
+          "logloss": 0.965497665999,
+          "brier_gain": -0.000385757703,
+          "logloss_gain": -0.000330621455
+        },
+        "2": {
+          "brier": 0.584846024806,
+          "logloss": 0.965561233966,
+          "brier_gain": -0.000312006973,
+          "logloss_gain": -0.000394189422
+        },
+        "4": {
+          "brier": 0.584810947564,
+          "logloss": 0.965578460796,
+          "brier_gain": -0.000276929731,
+          "logloss_gain": -0.000411416253
+        },
+        "0.5": {
+          "brier": 0.585067537489,
+          "logloss": 0.965534609916,
+          "brier_gain": -0.000533519656,
+          "logloss_gain": -0.000367565373
+        }
+      },
+      "observed_overlap_counts": [
+        417,
+        347,
+        86,
+        2,
+        0,
+        0
+      ],
+      "observed_mean_overlap": 0.616197183099,
+      "state_to_next_correlation": -0.009088334962
+    }
+  },
+  "blind_inference": {
+    "family_size": 8,
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "tests": [
+      {
+        "bandwidth": 0.5,
+        "endpoint": "brier",
+        "gain": -0.000533519656,
+        "block_sign_flip": {
+          "replicates": 50000,
+          "block_length": 20,
+          "blocks": 43,
+          "extreme": 48268,
+          "p": 0.965360692786,
+          "mc_se": 0.000817786731,
+          "observed_sum": -0.454558747093
+        },
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": [
+            -0.001065937955,
+            -0.00000175533
+          ],
+          "bootstrap_mean": -0.000537088647
+        },
+        "p": 0.965360692786,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "bandwidth": 0.5,
+        "endpoint": "logloss",
+        "gain": -0.000367565373,
+        "block_sign_flip": {
+          "replicates": 50000,
+          "block_length": 20,
+          "blocks": 43,
+          "extreme": 32386,
+          "p": 0.647727045459,
+          "mc_se": 0.002136221695,
+          "observed_sum": -0.313165697441
+        },
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": [
+            -0.002127307247,
+            0.001351389478
+          ],
+          "bootstrap_mean": -0.000370087914
+        },
+        "p": 0.647727045459,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "bandwidth": 1,
+        "endpoint": "brier",
+        "gain": -0.000385757703,
+        "block_sign_flip": {
+          "replicates": 50000,
+          "block_length": 20,
+          "blocks": 43,
+          "extreme": 48146,
+          "p": 0.962920741585,
+          "mc_se": 0.000845028673,
+          "observed_sum": -0.32866556313
+        },
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": [
+            -0.000801408396,
+            0.000019108575
+          ],
+          "bootstrap_mean": -0.000383611092
+        },
+        "p": 0.962920741585,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "bandwidth": 1,
+        "endpoint": "logloss",
+        "gain": -0.000330621455,
+        "block_sign_flip": {
+          "replicates": 50000,
+          "block_length": 20,
+          "blocks": 43,
+          "extreme": 33836,
+          "p": 0.676726465471,
+          "mc_se": 0.002091714039,
+          "observed_sum": -0.281689479581
+        },
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": [
+            -0.001744821146,
+            0.001071723014
+          ],
+          "bootstrap_mean": -0.000332761712
+        },
+        "p": 0.676726465471,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "bandwidth": 2,
+        "endpoint": "brier",
+        "gain": -0.000312006973,
+        "block_sign_flip": {
+          "replicates": 50000,
+          "block_length": 20,
+          "blocks": 43,
+          "extreme": 47674,
+          "p": 0.953480930381,
+          "mc_se": 0.00094185093,
+          "observed_sum": -0.265829941154
+        },
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": [
+            -0.000685235647,
+            0.000061782925
+          ],
+          "bootstrap_mean": -0.000310218034
+        },
+        "p": 0.953480930381,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "bandwidth": 2,
+        "endpoint": "logloss",
+        "gain": -0.000394189422,
+        "block_sign_flip": {
+          "replicates": 50000,
+          "block_length": 20,
+          "blocks": 43,
+          "extreme": 37050,
+          "p": 0.741005179896,
+          "mc_se": 0.001959146064,
+          "observed_sum": -0.335849387881
+        },
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": [
+            -0.001621528916,
+            0.000829736362
+          ],
+          "bootstrap_mean": -0.000392785162
+        },
+        "p": 0.741005179896,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "bandwidth": 4,
+        "endpoint": "brier",
+        "gain": -0.000276929731,
+        "block_sign_flip": {
+          "replicates": 50000,
+          "block_length": 20,
+          "blocks": 43,
+          "extreme": 47022,
+          "p": 0.940441191176,
+          "mc_se": 0.001058399139,
+          "observed_sum": -0.235944131089
+        },
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": [
+            -0.000650206297,
+            0.000103855948
+          ],
+          "bootstrap_mean": -0.000274847555
+        },
+        "p": 0.940441191176,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "bandwidth": 4,
+        "endpoint": "logloss",
+        "gain": -0.000411416253,
+        "block_sign_flip": {
+          "replicates": 50000,
+          "block_length": 20,
+          "blocks": 43,
+          "extreme": 38169,
+          "p": 0.763384732305,
+          "mc_se": 0.001900657098,
+          "observed_sum": -0.350526647243
+        },
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": [
+            -0.001577605824,
+            0.000758291938
+          ],
+          "bootstrap_mean": -0.000411994484
+        },
+        "p": 0.763384732305,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      }
+    ],
+    "selected_bandwidth": 2,
+    "selected_brier_test": {
+      "bandwidth": 2,
+      "endpoint": "brier",
+      "gain": -0.000312006973,
+      "block_sign_flip": {
+        "replicates": 50000,
+        "block_length": 20,
+        "blocks": 43,
+        "extreme": 47674,
+        "p": 0.953480930381,
+        "mc_se": 0.00094185093,
+        "observed_sum": -0.265829941154
+      },
+      "bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "ci95": [
+          -0.000685235647,
+          0.000061782925
+        ],
+        "bootstrap_mean": -0.000310218034
+      },
+      "p": 0.953480930381,
+      "p_bonferroni_43": 1,
+      "p_holm": 1
+    },
+    "selected_logloss_test": {
+      "bandwidth": 2,
+      "endpoint": "logloss",
+      "gain": -0.000394189422,
+      "block_sign_flip": {
+        "replicates": 50000,
+        "block_length": 20,
+        "blocks": 43,
+        "extreme": 37050,
+        "p": 0.741005179896,
+        "mc_se": 0.001959146064,
+        "observed_sum": -0.335849387881
+      },
+      "bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "ci95": [
+          -0.001621528916,
+          0.000829736362
+        ],
+        "bootstrap_mean": -0.000392785162
+      },
+      "p": 0.741005179896,
+      "p_bonferroni_43": 1,
+      "p_holm": 1
+    },
+    "holm_correction": "Holm step-down across 8 fixed tests",
+    "catalogue_screen": "Bonferroni ×43 reported separately; does not correct unknown analyst degrees of freedom."
+  },
+  "interpretation": "The previous overlap state did not demonstrate a robust proper-score improvement over the exact hypergeometric null.",
+  "decision": {
+    "predictive_lift_demonstrated": false,
+    "promotion_allowed": false,
+    "production_change_allowed": false,
+    "prospective_freezes_changed": false
+  },
+  "reproducibility": {
+    "numeric_serialization_precision_decimals": 12,
+    "probability_fingerprint_precision_decimals": 12
+  },
+  "limitations": [
+    "Historical Blind OOS is exposed to previous SONAR research and is not a virgin prospective holdout.",
+    "The model forecasts only the next overlap count, not any number or quintet.",
+    "Block sign-flip assumes exchangeability of contiguous 20-target block signs; bootstrap preserves local dependence only approximately.",
+    "Holm covers the eight Q102 tests; Bonferroni ×43 is only a conservative catalogue screen and not a complete correction for all historical analyst choices."
+  ]
+}

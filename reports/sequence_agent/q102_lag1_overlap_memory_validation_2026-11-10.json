@@ -1,0 +1,87 @@
+{
+  "experiment_id": "Q102",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "canonical_archive_schema_dates_and_5of40_rows",
+      "status": "PASS",
+      "draws": 3403
+    },
+    {
+      "name": "exact_hypergeometric_null_normalized_and_mean_0.625",
+      "status": "PASS",
+      "denominator": 658008,
+      "probability_sum": 1,
+      "mean": 0.625,
+      "variance": 0.49078525641
+    },
+    {
+      "name": "3102_strict_prior_walk_forward_targets",
+      "status": "PASS",
+      "targets": 3102,
+      "strict_prior_errors": 0
+    },
+    {
+      "name": "all_forecast_pmfs_normalized",
+      "status": "PASS",
+      "forecast_count": 12408,
+      "max_sum_error": "3.730e-14"
+    },
+    {
+      "name": "chronological_split_reconciliation",
+      "status": "PASS",
+      "counts": {
+        "discovery": 1400,
+        "validation": 850,
+        "historical_blind_oos": 852
+      }
+    },
+    {
+      "name": "future_mutation_invariance",
+      "status": "PASS",
+      "cutoffs": [
+        301,
+        1701,
+        2551,
+        3400
+      ],
+      "comparisons": 16,
+      "failures": 0
+    },
+    {
+      "name": "deterministic_forecast_replay",
+      "status": "PASS"
+    },
+    {
+      "name": "deterministic_prng_replay",
+      "status": "PASS"
+    },
+    {
+      "name": "target_outcomes_not_used_in_training_pairs",
+      "status": "PASS",
+      "rule": "training pair endpoints end no later than draw index t-1"
+    },
+    {
+      "name": "canonical_numeric_serialization",
+      "status": "PASS",
+      "precision_decimals": 12,
+      "probability_fingerprint_decimals": 12
+    }
+  ],
+  "integrity": {
+    "archive_draws": 3403,
+    "overlap_count": 3402,
+    "targets": 3102,
+    "split_counts": {
+      "discovery": 1400,
+      "validation": 850,
+      "historical_blind_oos": 852
+    },
+    "forecast_count": 12408,
+    "max_forecast_pmf_sum_error": "3.730e-14",
+    "strict_prior_errors": 0,
+    "future_mutation_comparisons": 16,
+    "future_mutation_failures": 0,
+    "numeric_serialization_precision_decimals": 12
+  }
+}
