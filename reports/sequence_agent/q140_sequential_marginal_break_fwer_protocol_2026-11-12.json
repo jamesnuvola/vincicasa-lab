@@ -1,0 +1,106 @@
+{
+  "experiment": "Q140",
+  "title": "Sequential per-number marginal change detection with global FWER control",
+  "status": "PREREGISTERED_BEFORE_COMPUTATION",
+  "registered_at_utc": "2026-11-12T09:42:00Z",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "base_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_rows_including_header": 3406,
+    "eligible_draws": 3404,
+    "eligible_cutoff": "2026-11-10",
+    "excluded_row": {
+      "date": "2026-11-11",
+      "numbers": [
+        1,
+        21,
+        22,
+        27,
+        29
+      ],
+      "reason": "official archive still lists contest 315 as pending; secondary-source corroboration is not accepted as canonical primary provenance"
+    }
+  },
+  "hypothesis": "A persistent change in one or more individual number-inclusion rates may be detectable by an exact two-half conditional test, and sparse alarm-gated adaptation may improve prequential subset log-loss or marginal Brier versus uniform and unconditional recency weighting.",
+  "design": {
+    "draw_size": 5,
+    "universe_size": 40,
+    "minimum_history": 200,
+    "rolling_window": 200,
+    "split_first_half": 100,
+    "split_recent_half": 100,
+    "targets": 3204,
+    "chronological_splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos_historical": 641
+    },
+    "target_indices_zero_based": {
+      "first": 200,
+      "last_inclusive": 3403
+    },
+    "per_target_update_order": "Score target using only the immediately preceding 200 eligible draws; append target only after all scores and flags for that target have been computed."
+  },
+  "change_detection": {
+    "test": "Two-sided Fisher exact conditional test for each number's first-half count given its total count in the 200-draw window; under the stationary uniform null, the first-half count is Hypergeometric(N=200,K=total_in_window,n=100).",
+    "tests_per_walk_forward": 128160,
+    "global_fwer_alpha": 0.05,
+    "bonferroni_per_test_alpha": 3.900343375e-7,
+    "family": "All 3,204 targets x all 40 numbers; Bonferroni controls the complete repeated-scan family regardless of overlap/dependence.",
+    "flag_rule": "Flag number i at target t only if its exact two-sided conditional p-value is <= 0.05/(3204*40)."
+  },
+  "models": {
+    "M0": "Uniform 5-of-40 subset distribution.",
+    "M1": "Always-on recent-half frequency model: q_i=(c_recent_i+200*0.125)/(100+200); weight w_i=q_i/0.125; exact fixed-size subset distribution proportional to product of weights.",
+    "M2": "Sparse alarm-gated model: start with w_i=1 for all numbers; only for numbers passing the globally Bonferroni-controlled exact change test set w_i=q_i/0.125 using the same fixed recent-half shrinkage; all other weights remain 1."
+  },
+  "scoring": {
+    "joint_subset_log_loss": "-log(P(S)); P(S)=product(w_i for i in S)/e5(w_1,...,w_40), where e5 is the exact fifth elementary symmetric polynomial.",
+    "marginal_brier": "Mean squared error over 40 exact marginal inclusion probabilities derived from the same fixed-size subset distribution.",
+    "direction": "Positive gain means baseline loss minus model loss > 0."
+  },
+  "inference": {
+    "comparisons": [
+      "M1_vs_M0",
+      "M2_vs_M0",
+      "M2_vs_M1"
+    ],
+    "holdout_splits": [
+      "validation",
+      "blind_oos_historical"
+    ],
+    "endpoints": 12,
+    "paired_block_sign_flip_replicates": 10000,
+    "circular_block_bootstrap_replicates": 10000,
+    "block_length": 20,
+    "multiple_testing": "Holm across all 12 holdout endpoints.",
+    "discovery_use": "Descriptive only; no tuning or model selection."
+  },
+  "integrity": {
+    "future_suffix_invariance": "Recompute selected target forecasts after perturbing all subsequent draws; prior forecast and alarm must remain unchanged.",
+    "fixed_size_normalization": "Enumerate/DP exact e5; subset probabilities normalized and marginal inclusion probabilities sum to 5.",
+    "determinism": "Fixed PRNG seed for resampling; exact Fisher p-values deterministic.",
+    "limitations": [
+      "Exploratory within the broader Q00-Q139 research family; Holm covers Q140 endpoints, not all historical experiments.",
+      "Historical blind segment is not a virgin prospective sample.",
+      "The global FWER threshold is intentionally conservative; absence of alarms does not prove exact stationarity.",
+      "This is a marginal-drift diagnostic and does not test all possible higher-order dependence."
+    ]
+  },
+  "governance": {
+    "research_only": true,
+    "no_archive_mutation": true,
+    "no_freeze_mutation": true,
+    "no_q60_increment": true,
+    "no_production_engine_change": true,
+    "no_merge_or_auto_merge": true,
+    "human_review_required": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
