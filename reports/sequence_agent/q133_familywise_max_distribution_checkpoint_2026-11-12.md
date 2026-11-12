@@ -12,7 +12,7 @@
 - Discovery mean maximum-hit difference +0.01747; nominal p for M>=4 = 0.01199, Holm = 0.10789.
 - Validation mean difference -0.03095.
 - Blind OOS mean difference -0.01953.
-- Overall descriptive difference +0.000063.
+- Overall descriptive difference +0.000383.
 - Decision: `NO_FAMILYWISE_MAX_DISTRIBUTION_LIFT_DEMONSTRATED`.
 
 ## Blockers
