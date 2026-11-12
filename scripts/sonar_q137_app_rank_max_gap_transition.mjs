@@ -199,19 +199,19 @@ function holm(pValues) {
 }
 function splitSummary(a, nullMean) {
   const modelScores = {
-    M0: { brier: mean(a.map(x => x.m0.brier)), logloss: mean(a.map(x => x.m0.logloss)) },
-    M1: { brier: mean(a.map(x => x.m1.brier)), logloss: mean(a.map(x => x.m1.logloss)) },
-    M2: { brier: mean(a.map(x => x.m2.brier)), logloss: mean(a.map(x => x.m2.logloss)) }
+    M0: { brier: round(mean(a.map(x => x.m0.brier))), logloss: round(mean(a.map(x => x.m0.logloss))) },
+    M1: { brier: round(mean(a.map(x => x.m1.brier))), logloss: round(mean(a.map(x => x.m1.logloss))) },
+    M2: { brier: round(mean(a.map(x => x.m2.brier))), logloss: round(mean(a.map(x => x.m2.logloss))) }
   };
   const gains = {
-    M1_vs_M0: { brier: mean(a.map(x => x.gain10.brier)), logloss: mean(a.map(x => x.gain10.logloss)) },
-    M2_vs_M1: { brier: mean(a.map(x => x.gain21.brier)), logloss: mean(a.map(x => x.gain21.logloss)) },
-    M2_vs_M0: { brier: mean(a.map(x => x.gain20.brier)), logloss: mean(a.map(x => x.gain20.logloss)) }
+    M1_vs_M0: { brier: round(mean(a.map(x => x.gain10.brier))), logloss: round(mean(a.map(x => x.gain10.logloss))) },
+    M2_vs_M1: { brier: round(mean(a.map(x => x.gain21.brier))), logloss: round(mean(a.map(x => x.gain21.logloss))) },
+    M2_vs_M0: { brier: round(mean(a.map(x => x.gain20.brier))), logloss: round(mean(a.map(x => x.gain20.logloss))) }
   };
   return {
     targets: a.length,
-    meanMaximumInternalRankGap: mean(a.map(x => x.gap)),
-    nullExpectedMeanMaximumInternalRankGap: nullMean,
+    meanMaximumInternalRankGap: round(mean(a.map(x => x.gap))),
+    nullExpectedMeanMaximumInternalRankGap: round(nullMean),
     stateCounts: [0, 1, 2, 3].map(s => a.filter(x => x.previousState === s).length),
     modelScores, gains
   };
@@ -424,7 +424,7 @@ function main() {
       quartile_thresholds: thresholds,
       state_bin_masses: binMasses.map(x => round(x, 12))
     },
-    max_probability_normalization_error: run1.maxNormalizationError,
+    max_probability_normalization_error: round(run1.maxNormalizationError, 15),
     deterministic_replay: deterministicReplay,
     future_suffix_checks: suffixChecks,
     decision: report.decision,
