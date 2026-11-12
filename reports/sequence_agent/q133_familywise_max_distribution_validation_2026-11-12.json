@@ -1,0 +1,100 @@
+{
+  "experiment_id": "Q133",
+  "status": "REPLAY_EXPECTED_TO_PASS",
+  "protocol_status": "EXPLORATORY_POST_HOC",
+  "check_count": 18,
+  "checks": [
+    {
+      "id": "ledger_git_blob_sha",
+      "passed": true,
+      "detail": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b"
+    },
+    {
+      "id": "ledger_byte_length",
+      "passed": true,
+      "detail": "30998468 UTF-8 bytes"
+    },
+    {
+      "id": "target_count",
+      "passed": true,
+      "detail": "3204"
+    },
+    {
+      "id": "source_row_count",
+      "passed": true,
+      "detail": "134568"
+    },
+    {
+      "id": "configurations_per_target",
+      "passed": true,
+      "detail": "42 for every target"
+    },
+    {
+      "id": "chronological_targets",
+      "passed": true,
+      "detail": "strictly ascending target dates"
+    },
+    {
+      "id": "strict_prior_cutoff",
+      "passed": true,
+      "detail": "history_cutoff is exactly the previous calendar date"
+    },
+    {
+      "id": "actual_number_shape",
+      "passed": true,
+      "detail": "five distinct integers in 1..40 for every target"
+    },
+    {
+      "id": "top20_candidate_shape",
+      "passed": true,
+      "detail": "20 distinct integers in 1..40 for every target/configuration"
+    },
+    {
+      "id": "hit_count_recomputation",
+      "passed": true,
+      "detail": "all 134568 Top20 hit_count values recomputed from target numbers"
+    },
+    {
+      "id": "chronological_splits",
+      "passed": true,
+      "detail": "1922 / 641 / 641"
+    },
+    {
+      "id": "uniform_subset_sampler",
+      "passed": true,
+      "detail": "rejection sampling over an acceptance range divisible by 40"
+    },
+    {
+      "id": "conditional_randomization",
+      "passed": true,
+      "detail": "1000 random 5-subsets per target; max across same 42 sets"
+    },
+    {
+      "id": "block_bootstrap",
+      "passed": true,
+      "detail": "10000 circular paired replicates, block length 20"
+    },
+    {
+      "id": "multiple_testing",
+      "passed": true,
+      "detail": "Holm family size 9"
+    },
+    {
+      "id": "contest315_freeze_integrity",
+      "passed": true,
+      "detail": "43 global and 1 positional pre-target freezes remain pending"
+    },
+    {
+      "id": "contest315_exact_enumeration",
+      "passed": true,
+      "detail": "658008 combinations for each Top-k family null"
+    },
+    {
+      "id": "q60_guardrail",
+      "passed": true,
+      "detail": "23/200 unchanged; no promotion"
+    }
+  ],
+  "github_replay": "PENDING_AT_COMMIT_CREATION",
+  "overall_ci": "PENDING_AT_COMMIT_CREATION"
+}
