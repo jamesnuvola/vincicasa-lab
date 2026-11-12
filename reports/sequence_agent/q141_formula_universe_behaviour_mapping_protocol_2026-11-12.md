@@ -163,3 +163,25 @@ Q140's 3,204-target splits (1,922 / 641 / 641) may be used as a historical compa
 - Preserve immutable forecast freezes and all previous research artifacts.
 - Persist protocol before computation; persist code, outputs, manifests, hashes and checkpoint after each completed stage.
 - Report only work actually run and read back from the repository.
+
+
+## Execution checkpoint — 2026-11-12: Q141-C0
+
+The branch now contains a completed Q141-C0 pilot, a narrow six-family test built from 25 unique Q80-derived features. It is **not** the full formula universe or the canonical AST registry.
+
+- Source: pinned archive blob `fcb453ed06c8002314f826dbac79d6935f9ac103`; 3,404 eligible draws through 2026-11-10; contest 315 excluded.
+- Strict-prior walk-forward: 3,354 targets, Discovery 2,013 / Validation 671 / historical Blind OOS 670. The committed target ledger was independently read back and checked: 3,354 rows, chronological target/cutoff order, `prior_draws == target_index`, valid five-number outcomes, and exact split counts.
+- Dynamic rolling-100 family selector vs equal-family in Blind OOS: Top-5 hit-share delta +0.00537; 95% block-bootstrap CI [-0.00746, +0.01791]; raw block-sign-flip p=0.4014; Holm-adjusted p=1.000 across 24 paired tests. No lift demonstrated.
+- Against the uniform 5-of-40 null, Blind Top-5 raw p=0.4813 (Holm-6 p=1.000). Blind Top-20 raw p=0.01642 but Holm-6 p=0.09852: not significant at 0.05.
+- Family Top-5 hit lag-1 autocorrelations range only from -0.0187 to +0.0259. The simple rolling success signal therefore shows almost no temporal persistence in this pilot.
+- The exploratory pair-union summaries are size-confounded: the best full-history pair's observed union coverage exceeded its size-conditioned random expectation by only about +0.0042 winning numbers per target; the worst was about -0.0195. Those aggregate summaries were descriptive, not split-wise inferential tests.
+
+The C0 code, leakage/determinism tests and walk-forward run succeeded on code commit `738d02fedfc41d36921559c8855c3090d1292515` (workflow run [43196930220](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43196930220)); the output bundle was then persisted in commit `c9c7f555b28073783965912896e287432256a024`. The subsequent PR check on the output-persistence head was marked `action_required`; it is not being represented as a separate current-head CI pass.
+
+## Q141-C1 — preregistered size-adjusted pair-union test
+
+The next quantitative hypothesis is that at least one pair of distinct formula families has a Top-5 union that covers more winners than a random candidate set of the **same, target-specific union size**. For each of the 15 family pairs and each chronological split, let `U_t` be the size of the union of their prior-only Top-5 sets and `H_t` the number of winning numbers in that union.
+
+Under the sequential uniform 5-of-40 null, conditional on the history before target `t`, `H_t ~ Hypergeometric(40, U_t, 5)`. Because `U_t` is itself adaptive but fixed before the target, C1 will use a predictable conditional hypergeometric e-process: a preregistered equal mixture over fixed positive lambda values, with Ville's maximum-e-value p-value. Holm correction covers all 45 pair × split tests. This avoids the invalid shortcut of convolving unconditional hypergeometric distributions while the candidate-set size is adaptive.
+
+C1 remains a historical exploratory test of six coarse families. Its Holm family does not control the entire prior Q00-Q141 research program. A null result will be retained as a valid finding; no pair will be selected from Blind OOS or promoted.

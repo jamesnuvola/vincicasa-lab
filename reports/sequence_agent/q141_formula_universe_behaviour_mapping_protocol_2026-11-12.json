@@ -3,7 +3,7 @@
   "task_id": "Q141",
   "title": "Formula Universe & Behaviour Mapping",
   "registration_date": "2026-11-12",
-  "status": "REGISTERED_INVENTORY_AND_PROTOCOL_ONLY",
+  "status": "IN_PROGRESS",
   "base_main_sha": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
   "source_archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
   "eligible_draw_count": 3404,
@@ -133,7 +133,8 @@
     {
       "id": "Q141-A",
       "name": "Inventory and lineage audit",
-      "status": "PENDING"
+      "status": "PARTIAL",
+      "note": "Q83-Q92 metadata and selected manifests inspected; full cross-branch formula-level lineage and archive compatibility audit still pending."
     },
     {
       "id": "Q141-B",
@@ -143,12 +144,14 @@
     {
       "id": "Q141-C",
       "name": "Formula behaviour atlas",
-      "status": "PENDING"
+      "status": "IN_PROGRESS",
+      "note": "Q141-C0 executed exploratory; Q141-C1 size-adjusted pair-union test preregistered."
     },
     {
       "id": "Q141-D",
       "name": "Ex-ante formula-family anticipation",
-      "status": "PENDING"
+      "status": "PARTIAL_NULL",
+      "note": "Q141-C0 rolling-100 family selector showed no statistically supported lift; broader pre-target state signals remain untested."
     }
   ],
   "governance": {
@@ -165,5 +168,56 @@
     ]
   },
   "compute_policy": "Deterministic shards, bounded batches, streaming aggregation; no naive formula_count × target_count run if infeasible; disclose all screening, sampling and exclusions.",
-  "completion_policy": "A valid null result completes an analytical stage; promotion requires separate independent prospective evidence and human review."
+  "completion_policy": "A valid null result completes an analytical stage; promotion requires separate independent prospective evidence and human review.",
+  "last_updated": "2026-11-12",
+  "subexperiments": [
+    {
+      "id": "Q141-C0",
+      "name": "Prior-only rolling formula-family anticipation and behaviour map",
+      "status": "EXECUTED_EXPLORATORY",
+      "decision": "NO_ROLLING_FAMILY_ANTICIPATION_LIFT_DEMONSTRATED",
+      "code_commit": "738d02fedfc41d36921559c8855c3090d1292515",
+      "successful_workflow_run": 43196930220,
+      "output_persistence_commit": "c9c7f555b28073783965912896e287432256a024",
+      "targets": 3354,
+      "splits": {
+        "discovery": 2013,
+        "validation": 671,
+        "blind_oos": 670
+      },
+      "blind_primary": {
+        "dynamic_vs_equal_family_top5_delta": 0.0053731343283582094,
+        "ci95": [
+          -0.007462686567164181,
+          0.017910447761194034
+        ],
+        "p_raw": 0.40142992850357484,
+        "p_holm_24": 1
+      },
+      "uniform_null": {
+        "blind_top5_p_raw": 0.48133947280317607,
+        "blind_top5_p_holm_6": 1,
+        "blind_top20_p_raw": 0.01642042055270863,
+        "blind_top20_p_holm_6": 0.09852252331625178
+      },
+      "family_top5_lag1_autocorrelation_range": [
+        -0.018703807855324574,
+        0.02589155393045371
+      ],
+      "limitations": [
+        "six coarse Q80-derived families only",
+        "historical blind OOS is exposed, not virgin prospective",
+        "project-wide Q00-Q141 multiplicity is not controlled by the within-experiment Holm family"
+      ]
+    },
+    {
+      "id": "Q141-C1",
+      "name": "Size-adjusted pair-union complementarity under predictable conditional null",
+      "status": "PREREGISTERED_EXECUTION_PENDING",
+      "tests": 45,
+      "multiplicity": "Holm-Bonferroni across 15 family pairs x 3 chronological splits",
+      "null": "For each target, conditional on the prior-only union size U_t, winning-number hits follow Hypergeometric(N=40,K=U_t,n=5) under independent uniform 5-of-40 draws.",
+      "method": "Predictable conditional hypergeometric e-process with fixed lambda mixture and Ville anytime-valid p-values."
+    }
+  ]
 }
