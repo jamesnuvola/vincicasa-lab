@@ -189,12 +189,14 @@ def prior_window(rows: list[dict[str, str]], keys: list[int], target_index: int,
         raise RuntimeError(f"target {target_index}: current/future row entered {key_name} features")
     return prior
 
-def family_state(rows: list[dict[str, str]], columns: tuple[str, ...], scale_max: float) -> tuple[float, float, float, float]:
+def family_state(rows: list[dict[str, str]], columns: tuple[str, ...], scale_max: float, equal_column: str) -> tuple[float, float, float, float]:
     matrix = np.asarray([[float(row[column]) for column in columns] for row in rows], dtype=np.float64)
-    if not np.isfinite(matrix).all() or np.any(matrix < 0) or np.any(matrix > scale_max):
-        raise RuntimeError("family state contains invalid values")
+    equal_by_target = np.asarray([float(row[equal_column]) for row in rows], dtype=np.float64)
+    if not np.isfinite(matrix).all() or not np.isfinite(equal_by_target).all():
+        raise RuntimeError("family state contains non-finite values")
+    if np.any(matrix < 0) or np.any(matrix > scale_max) or np.any(equal_by_target < 0) or np.any(equal_by_target > scale_max):
+        raise RuntimeError("family state contains out-of-range values")
     family_means = matrix.mean(axis=0)
-    equal_by_target = matrix.mean(axis=1)
     total = float(family_means.sum())
     if total <= 0:
         entropy = 0.0
@@ -236,8 +238,8 @@ def build_features(q7_rows: list[dict[str, str]], q80_rows: list[dict[str, str]]
             if prior["target_date"] > q7["cutoff_date"]:
                 raise RuntimeError(f"target {q7['target_date']}: source row after cutoff entered features")
 
-        q80_equal, q80_dispersion, q80_entropy, q80_trend = family_state(q80_prior, Q80_COLUMNS, 5.0)
-        q90_equal, q90_dispersion, q90_entropy, q90_trend = family_state(q90_prior, Q90_COLUMNS, 1.0)
+        q80_equal, q80_dispersion, q80_entropy, q80_trend = family_state(q80_prior, Q80_COLUMNS, 5.0, "equal_family_top5_hits")
+        q90_equal, q90_dispersion, q90_entropy, q90_trend = family_state(q90_prior, Q90_COLUMNS, 1.0, "equal_family_top5_share")
         values0 = [float(y_prior.mean())]
         values1 = values0 + [q80_equal, q80_dispersion, q80_entropy, q80_trend]
         values2 = values1 + [q90_equal, q90_dispersion, q90_entropy, q90_trend]
@@ -427,7 +429,7 @@ def build_atlas(joined: list[dict], q7_rows: list[dict[str, str]]) -> dict:
         arr = joined[start:end]
         y = [float(x["q7"]["mean_percentile_all_formulas"]) for x in arr]
         q80_equal = [float(x["q80"]["equal_family_top5_hits"]) for x in arr]
-        q90_equal = [float(np.mean([float(x["q90"][c]) for c in Q90_COLUMNS])) for x in arr]
+        q90_equal = [float(x["q90"]["equal_family_top5_share"]) for x in arr]
         q90_disp = [float(np.std([float(x["q90"][c]) for c in Q90_COLUMNS])) for x in arr]
         q90_ent = []
         for x in arr:
