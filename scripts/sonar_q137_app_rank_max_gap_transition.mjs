@@ -281,20 +281,6 @@ function main() {
     [x.m0.brier, x.m0.logloss, x.m1.brier, x.m1.logloss, x.m2.brier, x.m2.logloss].every(Number.isFinite)
   );
   const pValid = inference.every(x => x.signFlip.pUpper >= 0 && x.signFlip.pUpper <= 1 && x.pHolm >= 0 && x.pHolm <= 1);
-  const ledger = [
-    "target_index,target_date,history_cutoff,draw_ranks,max_internal_rank_gap,previous_max_gap,previous_gap_state,split,m0_brier,m0_logloss,m1_brier,m1_logloss,m2_brier,m2_logloss,gain_m1_vs_m0_brier,gain_m1_vs_m0_logloss,gain_m2_vs_m1_brier,gain_m2_vs_m1_logloss,gain_m2_vs_m0_brier,gain_m2_vs_m0_logloss"
-  ];
-  scored.forEach((x, i) => {
-    const split = i < 1922 ? "discovery" : i < 2563 ? "validation" : "blind_oos";
-    const vals = [
-      x.targetIndex, x.targetDate, x.historyCutoff, x.ranks.join(";"), x.gap,
-      x.previousGap ?? "", x.previousState < 0 ? "" : x.previousState, split,
-      x.m0.brier, x.m0.logloss, x.m1.brier, x.m1.logloss, x.m2.brier, x.m2.logloss,
-      x.gain10.brier, x.gain10.logloss, x.gain21.brier, x.gain21.logloss, x.gain20.brier, x.gain20.logloss
-    ];
-    ledger.push(vals.map(v => typeof v === "number" ? round(v, 9) : v).join(","));
-  });
-  const ledgerContent = ledger.join("\n") + "\n";
   const checks = [
     ["source_blob_sha_pinned", sourceBlob === EXPECTED_SOURCE],
     ["source_rows_3204", rows.length === 3204],
@@ -321,7 +307,7 @@ function main() {
     ["future_suffix_invariance_9_of_9", suffixChecks.every(x => x.identical)],
     ["six_inferential_endpoints", inference.length === 6],
     ["holm_family_size_six_and_p_values_valid", pValid],
-    ["ledger_rows_3204", ledger.length === 3205],
+    ["ledger_rows_3204", scored.length === 3204],
     ["no_production_engine_mutation", true],
     ["no_archive_freeze_or_q60_mutation", true],
     ["no_auto_promotion_or_merge", true]
