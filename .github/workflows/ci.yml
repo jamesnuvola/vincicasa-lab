@@ -12,7 +12,7 @@ permissions:
 # Cancel superseded research-branch runs so several expensive historical searches
 # do not compete after each incremental commit.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: ${{ !(startsWith(github.head_ref, 'research/q141-') || startsWith(github.ref, 'refs/heads/research/q141-')) }}
 
 jobs:
@@ -122,7 +122,27 @@ jobs:
               if [ "$attempt" -lt 3 ]; then
                 echo "Research branch advanced during computation; rebasing the output commit onto its latest head."
                 git fetch origin "$BRANCH_NAME"
-                git rebase FETCH_HEAD
+                if ! git rebase FETCH_HEAD; then
+        conflicts="$(git diff --name-only --diff-filter=U)"
+        if [ -z "$conflicts" ]; then
+          echo "Q141 rebase failed without a resolvable conflict list."
+          exit 1
+        fi
+        while IFS= read -r path; do
+          case "$path" in
+            reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_family_pair_union_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_margin_selector_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_registry.json|reports/sequence_agent/q141_formula_alias_walkforward_report_2026-11-12.json|reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_registry_checkpoint_2026-11-12.json)
+              echo "Resolving concurrent Q141 generated-output conflict in favor of this run: $path"
+              git checkout --theirs -- "$path"
+              git add "$path"
+              ;;
+            *)
+              echo "Unexpected Q141 persistence conflict; refusing automatic resolution: $path"
+              exit 1
+              ;;
+          esac
+        done <<< "$conflicts"
+        GIT_EDITOR=true git rebase --continue
+      fi
               fi
             done
             if [ "$pushed" != "true" ]; then
