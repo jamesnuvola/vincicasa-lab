@@ -1,0 +1,59 @@
+name: Q104 score magnitude versus rank-only subset likelihood
+
+on:
+  push:
+    branches:
+      - research/q104-score-magnitude-vs-rank-20261110
+    paths:
+      - "data/storico_daily.csv"
+      - "src/VinciCasaLab.jsx"
+      - "reports/sequence_agent/active_engine_walkforward.json"
+      - "reports/sequence_agent/q104_score_magnitude_vs_rank_protocol_2026-11-10.json"
+      - "scripts/sonar_q104_score_magnitude_vs_rank.js"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "data/storico_daily.csv"
+      - "src/VinciCasaLab.jsx"
+      - "reports/sequence_agent/active_engine_walkforward.json"
+      - "reports/sequence_agent/q104_score_magnitude_vs_rank_protocol_2026-11-10.json"
+      - "scripts/sonar_q104_score_magnitude_vs_rank.js"
+      - "reports/sequence_agent/q104_score_magnitude_vs_rank_*_2026-11-10.*"
+
+concurrency:
+  group: q104-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  q104-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check runner syntax
+        run: node --check scripts/sonar_q104_score_magnitude_vs_rank.js
+      - name: Generate deterministic walk-forward outputs on branch push
+        run: node scripts/sonar_q104_score_magnitude_vs_rank.js --write
+      - name: Persist outputs on research branch
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q104_score_magnitude_vs_rank_report_2026-11-10.json reports/sequence_agent/q104_score_magnitude_vs_rank_validation_2026-11-10.json reports/sequence_agent/q104_score_magnitude_vs_rank_target_ledger_2026-11-10.csv reports/sequence_agent/q104_score_magnitude_vs_rank_checkpoint_2026-11-10.md reports/sequence_agent/q104_score_magnitude_vs_rank_persistence_manifest_2026-11-10.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Q104: persist score magnitude versus rank walk-forward evidence"
+            git push origin "HEAD:${REF_NAME}"
+          fi
+      - name: Recompute and byte-compare persisted outputs
+        run: node scripts/sonar_q104_score_magnitude_vs_rank.js --check

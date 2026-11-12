@@ -1,0 +1,77 @@
+{
+  "experiment_id": "Q104",
+  "status": "PASS",
+  "checks": [
+    {
+      "id": "source_provenance",
+      "status": "PASS",
+      "detail": "Pinned archive, exact active scorer and active-engine report blob IDs match the protocol."
+    },
+    {
+      "id": "archive_integrity",
+      "status": "PASS",
+      "detail": "3403 unique chronological rows; every outcome is a sorted distinct 5-of-40 draw."
+    },
+    {
+      "id": "score_vector_integrity",
+      "status": "PASS",
+      "detail": "All 3203 score vectors contain each number 1..40 exactly once, finite and source-sorted."
+    },
+    {
+      "id": "strict_prior_cutoffs",
+      "status": "PASS",
+      "detail": "All targets scored from archive[0:t]; maximum training outcome index is t-1."
+    },
+    {
+      "id": "subset_partition_dp",
+      "status": "PASS",
+      "detail": "Fifth elementary-symmetric DP agrees with exhaustive small-n enumeration; uniform normalizer equals 658008."
+    },
+    {
+      "id": "exhaustive_subset_normalization",
+      "status": "PASS",
+      "detail": "Both representative finite-temperature PMFs exhaustively sum over all 658008 subsets; max relative error 1.492e-12."
+    },
+    {
+      "id": "future_mutation_invariance",
+      "status": "PASS",
+      "detail": "9/9 fixed-cutoff comparisons preserved the prior-only score vector."
+    },
+    {
+      "id": "deterministic_replay",
+      "status": "PASS",
+      "detail": "8/8 fixed-cutoff scorer replays were identical."
+    },
+    {
+      "id": "chronological_split_reconciliation",
+      "status": "PASS",
+      "detail": "1921 discovery + 641 validation + 641 historical blind OOS = 3203 targets."
+    },
+    {
+      "id": "paired_family_holm",
+      "status": "PASS",
+      "detail": "100 fixed magnitude-temperature × rank-temperature comparisons have finite Holm-adjusted p-values."
+    },
+    {
+      "id": "uniform_eprocess_family",
+      "status": "PASS",
+      "detail": "18 fixed model/temperature likelihood-ratio e-process p-values corrected with Holm."
+    }
+  ],
+  "counts": {
+    "archive_draws": 3403,
+    "targets": 3203,
+    "discovery": 1921,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "future_mutation_comparisons": 9,
+    "deterministic_replay_comparisons": 8,
+    "paired_temperature_tests": 100,
+    "uniform_eprocess_tests": 18
+  },
+  "normalization": {
+    "subset_count": 658008,
+    "magnitude_relative_error": 3.2862601528904634e-14,
+    "rank_only_relative_error": 1.4915846335838978e-12
+  }
+}

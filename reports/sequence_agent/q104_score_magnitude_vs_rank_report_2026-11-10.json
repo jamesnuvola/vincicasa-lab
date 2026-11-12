@@ -1,0 +1,1456 @@
+{
+  "experiment_id": "Q104",
+  "title": "Incremental subset-likelihood value of active SONAR score magnitudes over rank-only scores",
+  "status": "NO_INCREMENTAL_SCORE_MAGNITUDE_LIFT_DEMONSTRATED",
+  "generated_date": "2026-11-10",
+  "source": {
+    "main_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b",
+    "archive_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "scorer_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_engine_report_blob_sha1": "ff07b6da4948bb89467067c2552d9b1f78bc9549",
+    "protocol_blob_sha1": "d8faed4c6649f36b3e4248b24692082fa7056817",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09"
+  },
+  "model": {
+    "distribution": "product-weight fixed-cardinality 5-subset likelihood",
+    "normalizer": "fifth elementary symmetric polynomial e5",
+    "exact_subset_count": 658008,
+    "temperatures": [
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      0.75,
+      1,
+      1.5,
+      2,
+      4
+    ],
+    "utilities": {
+      "magnitude": "within-target min-max normalized source score",
+      "rank_only": "(40-rank)/39"
+    },
+    "null_control": "uniform 5-of-40"
+  },
+  "walk_forward": {
+    "warmup": 200,
+    "targets": 3203,
+    "splits": {
+      "discovery": {
+        "targets": 1921,
+        "first_target": "2018-02-02",
+        "last_target": "2023-05-07",
+        "mean_top5_hits": 0.641853201458,
+        "mean_top20_hits": 2.522644456012,
+        "magnitude": {
+          "selected_temperature": "uniform",
+          "selected_mean_gain": 0,
+          "selected_cumulative_gain": 0,
+          "temperatures": {
+            "1": {
+              "mean_log_likelihood_gain": -0.118434920648,
+              "cumulative_log_likelihood_gain": -227.513482563986
+            },
+            "2": {
+              "mean_log_likelihood_gain": -0.027521530794,
+              "cumulative_log_likelihood_gain": -52.86886065534
+            },
+            "4": {
+              "mean_log_likelihood_gain": -0.005880835923,
+              "cumulative_log_likelihood_gain": -11.297085808409
+            },
+            "0.1": {
+              "mean_log_likelihood_gain": -10.149288681413,
+              "cumulative_log_likelihood_gain": -19496.783556994265
+            },
+            "0.2": {
+              "mean_log_likelihood_gain": -2.990112274027,
+              "cumulative_log_likelihood_gain": -5744.005678405817
+            },
+            "0.35": {
+              "mean_log_likelihood_gain": -1.005220557661,
+              "cumulative_log_likelihood_gain": -1931.028691266113
+            },
+            "0.5": {
+              "mean_log_likelihood_gain": -0.490433251846,
+              "cumulative_log_likelihood_gain": -942.122276795785
+            },
+            "0.75": {
+              "mean_log_likelihood_gain": -0.214396811603,
+              "cumulative_log_likelihood_gain": -411.856275089723
+            },
+            "1.5": {
+              "mean_log_likelihood_gain": -0.05075566054,
+              "cumulative_log_likelihood_gain": -97.501623896412
+            },
+            "uniform": {
+              "mean_log_likelihood_gain": 0,
+              "cumulative_log_likelihood_gain": 0
+            }
+          }
+        },
+        "rank_only": {
+          "selected_temperature": "uniform",
+          "selected_mean_gain": 0,
+          "selected_cumulative_gain": 0,
+          "temperatures": {
+            "1": {
+              "mean_log_likelihood_gain": -0.187051218956,
+              "cumulative_log_likelihood_gain": -359.325391614211
+            },
+            "2": {
+              "mean_log_likelihood_gain": -0.045065930105,
+              "cumulative_log_likelihood_gain": -86.571651732521
+            },
+            "4": {
+              "mean_log_likelihood_gain": -0.010291309731,
+              "cumulative_log_likelihood_gain": -19.7696059938
+            },
+            "0.1": {
+              "mean_log_likelihood_gain": -12.750363847435,
+              "cumulative_log_likelihood_gain": -24493.448950921706
+            },
+            "0.2": {
+              "mean_log_likelihood_gain": -4.149235228431,
+              "cumulative_log_likelihood_gain": -7970.680873815772
+            },
+            "0.35": {
+              "mean_log_likelihood_gain": -1.488101922051,
+              "cumulative_log_likelihood_gain": -2858.643792259611
+            },
+            "0.5": {
+              "mean_log_likelihood_gain": -0.746512779532,
+              "cumulative_log_likelihood_gain": -1434.05104948032
+            },
+            "0.75": {
+              "mean_log_likelihood_gain": -0.333975778923,
+              "cumulative_log_likelihood_gain": -641.567471310964
+            },
+            "1.5": {
+              "mean_log_likelihood_gain": -0.081748652459,
+              "cumulative_log_likelihood_gain": -157.03916137351
+            },
+            "uniform": {
+              "mean_log_likelihood_gain": 0,
+              "cumulative_log_likelihood_gain": 0
+            }
+          }
+        }
+      },
+      "validation": {
+        "targets": 641,
+        "first_target": "2023-05-08",
+        "last_target": "2025-02-06",
+        "mean_top5_hits": 0.634945397816,
+        "mean_top20_hits": 2.436817472699,
+        "magnitude": {
+          "selected_temperature": "uniform",
+          "selected_mean_gain": 0,
+          "selected_cumulative_gain": 0,
+          "temperatures": {
+            "1": {
+              "mean_log_likelihood_gain": -0.147670268889,
+              "cumulative_log_likelihood_gain": -94.656642358017
+            },
+            "2": {
+              "mean_log_likelihood_gain": -0.04351858714,
+              "cumulative_log_likelihood_gain": -27.895414356883
+            },
+            "4": {
+              "mean_log_likelihood_gain": -0.014238462621,
+              "cumulative_log_likelihood_gain": -9.12685453989
+            },
+            "0.1": {
+              "mean_log_likelihood_gain": -10.240146468479,
+              "cumulative_log_likelihood_gain": -6563.933886295135
+            },
+            "0.2": {
+              "mean_log_likelihood_gain": -3.062964575493,
+              "cumulative_log_likelihood_gain": -1963.360292890882
+            },
+            "0.35": {
+              "mean_log_likelihood_gain": -1.064462050004,
+              "cumulative_log_likelihood_gain": -682.320174052443
+            },
+            "0.5": {
+              "mean_log_likelihood_gain": -0.539003623655,
+              "cumulative_log_likelihood_gain": -345.501322762921
+            },
+            "0.75": {
+              "mean_log_likelihood_gain": -0.251056501874,
+              "cumulative_log_likelihood_gain": -160.927217701375
+            },
+            "1.5": {
+              "mean_log_likelihood_gain": -0.071459958502,
+              "cumulative_log_likelihood_gain": -45.805833399734
+            },
+            "uniform": {
+              "mean_log_likelihood_gain": 0,
+              "cumulative_log_likelihood_gain": 0
+            }
+          }
+        },
+        "rank_only": {
+          "selected_temperature": "uniform",
+          "selected_mean_gain": 0,
+          "selected_cumulative_gain": 0,
+          "temperatures": {
+            "1": {
+              "mean_log_likelihood_gain": -0.226421060277,
+              "cumulative_log_likelihood_gain": -145.135899637791
+            },
+            "2": {
+              "mean_log_likelihood_gain": -0.064750850766,
+              "cumulative_log_likelihood_gain": -41.505295341119
+            },
+            "4": {
+              "mean_log_likelihood_gain": -0.020133770062,
+              "cumulative_log_likelihood_gain": -12.905746609525
+            },
+            "0.1": {
+              "mean_log_likelihood_gain": -13.14406226065,
+              "cumulative_log_likelihood_gain": -8425.34390907634
+            },
+            "0.2": {
+              "mean_log_likelihood_gain": -4.346084435038,
+              "cumulative_log_likelihood_gain": -2785.840122859633
+            },
+            "0.35": {
+              "mean_log_likelihood_gain": -1.600587182969,
+              "cumulative_log_likelihood_gain": -1025.976384283379
+            },
+            "0.5": {
+              "mean_log_likelihood_gain": -0.825252462175,
+              "cumulative_log_likelihood_gain": -528.986828253961
+            },
+            "0.75": {
+              "mean_log_likelihood_gain": -0.386468900685,
+              "cumulative_log_likelihood_gain": -247.726565339048
+            },
+            "1.5": {
+              "mean_log_likelihood_gain": -0.10799521334,
+              "cumulative_log_likelihood_gain": -69.224931750865
+            },
+            "uniform": {
+              "mean_log_likelihood_gain": 0,
+              "cumulative_log_likelihood_gain": 0
+            }
+          }
+        }
+      },
+      "historical_blind_oos": {
+        "targets": 641,
+        "first_target": "2025-02-07",
+        "last_target": "2026-11-09",
+        "mean_top5_hits": 0.622464898596,
+        "mean_top20_hits": 2.525741029641,
+        "magnitude": {
+          "selected_temperature": "uniform",
+          "selected_mean_gain": 0,
+          "selected_cumulative_gain": 0,
+          "temperatures": {
+            "1": {
+              "mean_log_likelihood_gain": -0.115766521066,
+              "cumulative_log_likelihood_gain": -74.206340003519
+            },
+            "2": {
+              "mean_log_likelihood_gain": -0.025895000792,
+              "cumulative_log_likelihood_gain": -16.598695507732
+            },
+            "4": {
+              "mean_log_likelihood_gain": -0.005025424992,
+              "cumulative_log_likelihood_gain": -3.22129741999
+            },
+            "0.1": {
+              "mean_log_likelihood_gain": -10.387678983271,
+              "cumulative_log_likelihood_gain": -6658.502228276642
+            },
+            "0.2": {
+              "mean_log_likelihood_gain": -3.038607339868,
+              "cumulative_log_likelihood_gain": -1947.747304855446
+            },
+            "0.35": {
+              "mean_log_likelihood_gain": -1.010829425512,
+              "cumulative_log_likelihood_gain": -647.941661753053
+            },
+            "0.5": {
+              "mean_log_likelihood_gain": -0.489257346537,
+              "cumulative_log_likelihood_gain": -313.61395913018
+            },
+            "0.75": {
+              "mean_log_likelihood_gain": -0.211593789137,
+              "cumulative_log_likelihood_gain": -135.631618837039
+            },
+            "1.5": {
+              "mean_log_likelihood_gain": -0.048692677427,
+              "cumulative_log_likelihood_gain": -31.212006230481
+            },
+            "uniform": {
+              "mean_log_likelihood_gain": 0,
+              "cumulative_log_likelihood_gain": 0
+            }
+          }
+        },
+        "rank_only": {
+          "selected_temperature": "uniform",
+          "selected_mean_gain": 0,
+          "selected_cumulative_gain": 0,
+          "temperatures": {
+            "1": {
+              "mean_log_likelihood_gain": -0.173378938592,
+              "cumulative_log_likelihood_gain": -111.135899637791
+            },
+            "2": {
+              "mean_log_likelihood_gain": -0.038229789924,
+              "cumulative_log_likelihood_gain": -24.505295341119
+            },
+            "4": {
+              "mean_log_likelihood_gain": -0.00687323964,
+              "cumulative_log_likelihood_gain": -4.405746609525
+            },
+            "0.1": {
+              "mean_log_likelihood_gain": -12.613641043801,
+              "cumulative_log_likelihood_gain": -8085.343909076352
+            },
+            "0.2": {
+              "mean_log_likelihood_gain": -4.080873826614,
+              "cumulative_log_likelihood_gain": -2615.840122859634
+            },
+            "0.35": {
+              "mean_log_likelihood_gain": -1.44903826387,
+              "cumulative_log_likelihood_gain": -928.833527140521
+            },
+            "0.5": {
+              "mean_log_likelihood_gain": -0.719168218805,
+              "cumulative_log_likelihood_gain": -460.986828253962
+            },
+            "0.75": {
+              "mean_log_likelihood_gain": -0.315746071772,
+              "cumulative_log_likelihood_gain": -202.393232005714
+            },
+            "1.5": {
+              "mean_log_likelihood_gain": -0.072633798883,
+              "cumulative_log_likelihood_gain": -46.558265084198
+            },
+            "uniform": {
+              "mean_log_likelihood_gain": 0,
+              "cumulative_log_likelihood_gain": 0
+            }
+          }
+        }
+      }
+    },
+    "selection": {
+      "criterion": "Validation mean complete-subset log-likelihood gain versus uniform; uniform fallback; ties prefer larger T",
+      "magnitude_temperature": "uniform",
+      "rank_only_temperature": "uniform"
+    }
+  },
+  "blind_inference": {
+    "primary_endpoint": "paired mean log-likelihood gain: magnitude minus rank-only",
+    "selected_pair": {
+      "magnitude_temperature": "uniform",
+      "rank_temperature": "uniform",
+      "mean_delta": 0,
+      "cumulative_delta": 0,
+      "block_sign_flip": {
+        "observed_sum": 0,
+        "blocks": 33,
+        "replicates": 50000,
+        "extreme": 50000,
+        "p": 1,
+        "mc_se": 0,
+        "p_holm_100": 1
+      },
+      "bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "seed": 20261110,
+        "ci95": [
+          0,
+          0
+        ]
+      }
+    },
+    "paired_family": {
+      "size": 100,
+      "temperatures": [
+        "uniform",
+        "0.1",
+        "0.2",
+        "0.35",
+        "0.5",
+        "0.75",
+        "1",
+        "1.5",
+        "2",
+        "4"
+      ],
+      "block_length": 20,
+      "sign_flip_replicates": 10000,
+      "selected_pair_raw_p": 1,
+      "selected_pair_holm_p": 1,
+      "min_raw_p": 0.000099990001,
+      "min_holm_p": 0.0099990001,
+      "any_pair_holm_below_0_05": true,
+      "holm_significant_pair_count": 50,
+      "interpretation": "Holm-significant paired contrasts are relative sharpness comparisons; all 18 fixed models have no e-process evidence versus uniform, and the Validation-selected magnitude/rank pair is uniform/uniform. This is not predictive lift.",
+      "tests": [
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "uniform",
+          "mean_delta": 0,
+          "cumulative_delta": 0,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "0.1",
+          "mean_delta": 12.613641043801,
+          "cumulative_delta": 8085.343909076352,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "0.2",
+          "mean_delta": 4.080873826614,
+          "cumulative_delta": 2615.840122859634,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "0.35",
+          "mean_delta": 1.44903826387,
+          "cumulative_delta": 928.833527140521,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "0.5",
+          "mean_delta": 0.719168218805,
+          "cumulative_delta": 460.986828253962,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "0.75",
+          "mean_delta": 0.315746071772,
+          "cumulative_delta": 202.393232005714,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "1",
+          "mean_delta": 0.173378938592,
+          "cumulative_delta": 111.135899637791,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "1.5",
+          "mean_delta": 0.072633798883,
+          "cumulative_delta": 46.558265084198,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "2",
+          "mean_delta": 0.038229789924,
+          "cumulative_delta": 24.505295341119,
+          "p": 0.001799820018,
+          "p_holm": 0.088191180883
+        },
+        {
+          "magnitude_temperature": "uniform",
+          "rank_temperature": "4",
+          "mean_delta": 0.00687323964,
+          "cumulative_delta": 4.405746609525,
+          "p": 0.134386561344,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "uniform",
+          "mean_delta": -10.387678983271,
+          "cumulative_delta": -6658.502228276642,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "0.1",
+          "mean_delta": 2.22596206053,
+          "cumulative_delta": 1426.841680799701,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "0.2",
+          "mean_delta": -6.306805156657,
+          "cumulative_delta": -4042.662105417009,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "0.35",
+          "mean_delta": -8.938640719401,
+          "cumulative_delta": -5729.668701136122,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "0.5",
+          "mean_delta": -9.668510764466,
+          "cumulative_delta": -6197.515400022688,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "0.75",
+          "mean_delta": -10.071932911499,
+          "cumulative_delta": -6456.10899627093,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "1",
+          "mean_delta": -10.214300044678,
+          "cumulative_delta": -6547.366328638846,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "1.5",
+          "mean_delta": -10.315045184388,
+          "cumulative_delta": -6611.943963192445,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "2",
+          "mean_delta": -10.349449193347,
+          "cumulative_delta": -6633.996932935529,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.1",
+          "rank_temperature": "4",
+          "mean_delta": -10.38080574363,
+          "cumulative_delta": -6654.096481667118,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "uniform",
+          "mean_delta": -3.038607339868,
+          "cumulative_delta": -1947.747304855446,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "0.1",
+          "mean_delta": 9.575033703933,
+          "cumulative_delta": 6137.596604220907,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "0.2",
+          "mean_delta": 1.042266486746,
+          "cumulative_delta": 668.092818004185,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "0.35",
+          "mean_delta": -1.589569075998,
+          "cumulative_delta": -1018.913777714925,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "0.5",
+          "mean_delta": -2.319439121063,
+          "cumulative_delta": -1486.760476601485,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "0.75",
+          "mean_delta": -2.722861268096,
+          "cumulative_delta": -1745.354072849733,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "1",
+          "mean_delta": -2.865228401276,
+          "cumulative_delta": -1836.611405217657,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "1.5",
+          "mean_delta": -2.965973540985,
+          "cumulative_delta": -1901.189039771248,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "2",
+          "mean_delta": -3.000377549944,
+          "cumulative_delta": -1923.242009514328,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.2",
+          "rank_temperature": "4",
+          "mean_delta": -3.031734100228,
+          "cumulative_delta": -1943.341558245922,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "uniform",
+          "mean_delta": -1.010829425512,
+          "cumulative_delta": -647.941661753053,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "0.1",
+          "mean_delta": 11.602811618289,
+          "cumulative_delta": 7437.402247323286,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "0.2",
+          "mean_delta": 3.070044401102,
+          "cumulative_delta": 1967.89846110658,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "0.35",
+          "mean_delta": 0.438208838358,
+          "cumulative_delta": 280.891865387468,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "0.5",
+          "mean_delta": -0.291661206707,
+          "cumulative_delta": -186.954833499091,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "0.75",
+          "mean_delta": -0.69508335374,
+          "cumulative_delta": -445.548429747339,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "1",
+          "mean_delta": -0.837450486919,
+          "cumulative_delta": -536.805762115262,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "1.5",
+          "mean_delta": -0.938195626628,
+          "cumulative_delta": -601.383396668855,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "2",
+          "mean_delta": -0.972599635588,
+          "cumulative_delta": -623.436366411934,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.35",
+          "rank_temperature": "4",
+          "mean_delta": -1.003956185871,
+          "cumulative_delta": -643.535915143528,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "uniform",
+          "mean_delta": -0.489257346537,
+          "cumulative_delta": -313.61395913018,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "0.1",
+          "mean_delta": 12.124383697264,
+          "cumulative_delta": 7771.729949946163,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "0.2",
+          "mean_delta": 3.591616480077,
+          "cumulative_delta": 2302.226163729455,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "0.35",
+          "mean_delta": 0.959780917333,
+          "cumulative_delta": 615.219568010341,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "0.5",
+          "mean_delta": 0.229910872268,
+          "cumulative_delta": 147.372869123781,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "0.75",
+          "mean_delta": -0.173511274765,
+          "cumulative_delta": -111.220727124466,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "1",
+          "mean_delta": -0.315878407944,
+          "cumulative_delta": -202.478059492389,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "1.5",
+          "mean_delta": -0.416623547654,
+          "cumulative_delta": -267.055694045982,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "2",
+          "mean_delta": -0.451027556613,
+          "cumulative_delta": -289.108663789061,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.5",
+          "rank_temperature": "4",
+          "mean_delta": -0.482384106896,
+          "cumulative_delta": -309.208212520655,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "uniform",
+          "mean_delta": -0.211593789137,
+          "cumulative_delta": -135.631618837039,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "0.1",
+          "mean_delta": 12.402047254663,
+          "cumulative_delta": 7949.712290239302,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "0.2",
+          "mean_delta": 3.869280037477,
+          "cumulative_delta": 2480.208504022592,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "0.35",
+          "mean_delta": 1.237444474732,
+          "cumulative_delta": 793.201908303482,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "0.5",
+          "mean_delta": 0.507574429668,
+          "cumulative_delta": 325.355209416922,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "0.75",
+          "mean_delta": 0.104152282634,
+          "cumulative_delta": 66.761613168675,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "1",
+          "mean_delta": -0.038214850545,
+          "cumulative_delta": -24.495719199248,
+          "p": 0.999800019999,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "1.5",
+          "mean_delta": -0.138959990254,
+          "cumulative_delta": -89.073353752841,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "2",
+          "mean_delta": -0.173363999214,
+          "cumulative_delta": -111.12632349592,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "0.75",
+          "rank_temperature": "4",
+          "mean_delta": -0.204720549497,
+          "cumulative_delta": -131.225872227514,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "uniform",
+          "mean_delta": -0.115766521066,
+          "cumulative_delta": -74.206340003519,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "0.1",
+          "mean_delta": 12.497874522735,
+          "cumulative_delta": 8011.137569072828,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "0.2",
+          "mean_delta": 3.965107305548,
+          "cumulative_delta": 2541.633782856114,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "0.35",
+          "mean_delta": 1.333271742803,
+          "cumulative_delta": 854.627187137002,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "0.5",
+          "mean_delta": 0.603401697739,
+          "cumulative_delta": 386.780488250443,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "0.75",
+          "mean_delta": 0.199979550705,
+          "cumulative_delta": 128.186892002195,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "1",
+          "mean_delta": 0.057612417526,
+          "cumulative_delta": 36.929559634272,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "1.5",
+          "mean_delta": -0.043132722183,
+          "cumulative_delta": -27.648074919321,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "2",
+          "mean_delta": -0.077536731143,
+          "cumulative_delta": -49.7010446624,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "1",
+          "rank_temperature": "4",
+          "mean_delta": -0.108893281426,
+          "cumulative_delta": -69.800593393994,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "uniform",
+          "mean_delta": -0.048692677427,
+          "cumulative_delta": -31.212006230481,
+          "p": 0.999300069994,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "0.1",
+          "mean_delta": 12.564948366374,
+          "cumulative_delta": 8054.131902845871,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "0.2",
+          "mean_delta": 4.032181149187,
+          "cumulative_delta": 2584.62811662915,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "0.35",
+          "mean_delta": 1.400345586443,
+          "cumulative_delta": 897.621520910039,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "0.5",
+          "mean_delta": 0.670475541378,
+          "cumulative_delta": 429.77482202348,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "0.75",
+          "mean_delta": 0.267053394345,
+          "cumulative_delta": 171.181225775233,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "1",
+          "mean_delta": 0.124686261166,
+          "cumulative_delta": 79.92389340731,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "1.5",
+          "mean_delta": 0.023941121457,
+          "cumulative_delta": 15.346258853717,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "2",
+          "mean_delta": -0.010462887503,
+          "cumulative_delta": -6.706710889362,
+          "p": 0.995100489952,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "1.5",
+          "rank_temperature": "4",
+          "mean_delta": -0.041819437786,
+          "cumulative_delta": -26.806259620956,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "uniform",
+          "mean_delta": -0.025895000792,
+          "cumulative_delta": -16.598695507732,
+          "p": 0.993100689932,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "0.1",
+          "mean_delta": 12.587746043009,
+          "cumulative_delta": 8068.745213568611,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "0.2",
+          "mean_delta": 4.054978825822,
+          "cumulative_delta": 2599.241427351899,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "0.35",
+          "mean_delta": 1.423143263078,
+          "cumulative_delta": 912.23483163279,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "0.5",
+          "mean_delta": 0.693273218013,
+          "cumulative_delta": 444.38813274623,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "0.75",
+          "mean_delta": 0.28985107098,
+          "cumulative_delta": 185.794536497982,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "1",
+          "mean_delta": 0.1474839378,
+          "cumulative_delta": 94.537204130059,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "1.5",
+          "mean_delta": 0.046738798091,
+          "cumulative_delta": 29.959569576466,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "2",
+          "mean_delta": 0.012334789132,
+          "cumulative_delta": 7.906599833387,
+          "p": 0.001099890011,
+          "p_holm": 0.05499450055
+        },
+        {
+          "magnitude_temperature": "2",
+          "rank_temperature": "4",
+          "mean_delta": -0.019021761152,
+          "cumulative_delta": -12.192948898207,
+          "p": 1,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "uniform",
+          "mean_delta": -0.005025424992,
+          "cumulative_delta": -3.22129741999,
+          "p": 0.84191580842,
+          "p_holm": 1
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "0.1",
+          "mean_delta": 12.608615618809,
+          "cumulative_delta": 8082.122611656348,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "0.2",
+          "mean_delta": 4.075848401622,
+          "cumulative_delta": 2612.618825439639,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "0.35",
+          "mean_delta": 1.444012838878,
+          "cumulative_delta": 925.612229720531,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "0.5",
+          "mean_delta": 0.714142793813,
+          "cumulative_delta": 457.765530833971,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "0.75",
+          "mean_delta": 0.31072064678,
+          "cumulative_delta": 199.171934585724,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "1",
+          "mean_delta": 0.1683535136,
+          "cumulative_delta": 107.914602217801,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "1.5",
+          "mean_delta": 0.067608373891,
+          "cumulative_delta": 43.336967664208,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "2",
+          "mean_delta": 0.033204364932,
+          "cumulative_delta": 21.283997921129,
+          "p": 0.000099990001,
+          "p_holm": 0.0099990001
+        },
+        {
+          "magnitude_temperature": "4",
+          "rank_temperature": "4",
+          "mean_delta": 0.001847814648,
+          "cumulative_delta": 1.184449189535,
+          "p": 0.143085691431,
+          "p_holm": 1
+        }
+      ]
+    },
+    "model_vs_uniform": {
+      "family_size": 18,
+      "correction": "Holm across 18 fixed model/temperature e-process p-values",
+      "tests": [
+        {
+          "model": "magnitude",
+          "temperature": "0.1",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -6658.502228276642,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "magnitude",
+          "temperature": "0.2",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -1947.747304855446,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "magnitude",
+          "temperature": "0.35",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -647.941661753053,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "magnitude",
+          "temperature": "0.5",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -313.61395913018,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "magnitude",
+          "temperature": "0.75",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -135.631618837039,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "magnitude",
+          "temperature": "1",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -74.206340003519,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "magnitude",
+          "temperature": "1.5",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -31.212006230481,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "magnitude",
+          "temperature": "2",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -16.598695507732,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "magnitude",
+          "temperature": "4",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -3.22129741999,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "0.1",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -8085.343909076352,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "0.2",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -2615.840122859634,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "0.35",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -928.833527140521,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "0.5",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -460.986828253962,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "0.75",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -202.393232005714,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "1",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -111.135899637791,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "1.5",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -46.558265084198,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "2",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -24.505295341119,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        },
+        {
+          "model": "rank",
+          "temperature": "4",
+          "p": 1,
+          "cumulative_log_likelihood_gain": -4.405746609525,
+          "e_process_p": 1,
+          "p_holm": 1,
+          "p_bonferroni_43": 1
+        }
+      ]
+    }
+  },
+  "diagnostics": {
+    "top5_random_expected_mean_hits": 0.625,
+    "top20_random_expected_mean_hits": 2.5,
+    "blind_top5_mean_hits": 0.622464898596,
+    "blind_top20_mean_hits": 2.525741029641,
+    "representative_exhaustive_normalization_relative_error": {
+      "magnitude": 3.2862601528904634e-14,
+      "rank_only": 1.4915846335838978e-12
+    }
+  },
+  "validation": {
+    "status": "PASS",
+    "checks": [
+      {
+        "id": "source_provenance",
+        "status": "PASS",
+        "detail": "Pinned archive, exact active scorer and active-engine report blob IDs match the protocol."
+      },
+      {
+        "id": "archive_integrity",
+        "status": "PASS",
+        "detail": "3403 unique chronological rows; every outcome is a sorted distinct 5-of-40 draw."
+      },
+      {
+        "id": "score_vector_integrity",
+        "status": "PASS",
+        "detail": "All 3203 score vectors contain each number 1..40 exactly once, finite and source-sorted."
+      },
+      {
+        "id": "strict_prior_cutoffs",
+        "status": "PASS",
+        "detail": "All targets scored from archive[0:t]; maximum training outcome index is t-1."
+      },
+      {
+        "id": "subset_partition_dp",
+        "status": "PASS",
+        "detail": "Fifth elementary-symmetric DP agrees with exhaustive small-n enumeration; uniform normalizer equals 658008."
+      },
+      {
+        "id": "exhaustive_subset_normalization",
+        "status": "PASS",
+        "detail": "Both representative finite-temperature PMFs exhaustively sum over all 658008 subsets; max relative error 1.492e-12."
+      },
+      {
+        "id": "future_mutation_invariance",
+        "status": "PASS",
+        "detail": "9/9 fixed-cutoff comparisons preserved the prior-only score vector."
+      },
+      {
+        "id": "deterministic_replay",
+        "status": "PASS",
+        "detail": "8/8 fixed-cutoff scorer replays were identical."
+      },
+      {
+        "id": "chronological_split_reconciliation",
+        "status": "PASS",
+        "detail": "1921 discovery + 641 validation + 641 historical blind OOS = 3203 targets."
+      },
+      {
+        "id": "paired_family_holm",
+        "status": "PASS",
+        "detail": "100 fixed magnitude-temperature × rank-temperature comparisons have finite Holm-adjusted p-values."
+      },
+      {
+        "id": "uniform_eprocess_family",
+        "status": "PASS",
+        "detail": "18 fixed model/temperature likelihood-ratio e-process p-values corrected with Holm."
+      }
+    ]
+  },
+  "decision": {
+    "incremental_score_magnitude_lift_demonstrated": false,
+    "promotion_allowed": false,
+    "production_change_allowed": false,
+    "prospective_freezes_changed": false,
+    "q60_h101_h102_changed": false
+  },
+  "limitations": [
+    "Historical blind OOS has been exposed to earlier SONAR research, including Q100 and Q103; it is not a virgin holdout.",
+    "The active SONAR score is heuristic, not a calibrated probability.",
+    "Q104 is a historical diagnostic; any positive result requires prospective frozen confirmation and completion of Q60.",
+    "The paired block sign-flip assumes exchangeability of contiguous 20-target block sums; bootstrap is approximate under nonstationarity.",
+    "The 81-pair Holm family is a declared sensitivity screen; it does not erase unknown analyst degrees of freedom from the wider research history."
+  ]
+}
