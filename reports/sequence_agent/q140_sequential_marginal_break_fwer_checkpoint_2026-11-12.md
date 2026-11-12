@@ -24,6 +24,7 @@
 - Holdout inference: 12 endpoints, 10,000 paired block sign-flips and 10,000 circular block-bootstrap replicates, block length 20, Holm correction.
 
 ## Integrity
+- Replay recovery: the first CI run correctly detected that the checkpoint contains one em dash (UTF-8 length is 2 bytes greater than character count); the manifest byte length was corrected from 1,878 to 1,880 using actual UTF-8 bytes.
 - 32/32 checks passed.
 - Future-suffix invariance: 9/9.
 - Source hash, strict-prior cutoffs, deterministic replay and exact normalization verified.
