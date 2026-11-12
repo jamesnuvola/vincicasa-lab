@@ -1,0 +1,77 @@
+{
+  "experiment_id": "Q107",
+  "status": "PASS",
+  "checks_passed": 12,
+  "checks_total": 12,
+  "checks": [
+    {
+      "name": "archive_schema_and_chronology",
+      "status": "PASS",
+      "detail": "all 3,404 rows are unique chronological valid 5-of-40 draws"
+    },
+    {
+      "name": "pinned_archive_and_app_blobs",
+      "status": "PASS",
+      "detail": "source blobs match pinned main commit"
+    },
+    {
+      "name": "analysis_prefix_blob",
+      "status": "PASS",
+      "detail": "first 3,403 rows reproduce the pre-append archive blob; appended row excluded"
+    },
+    {
+      "name": "app_data_row_by_row",
+      "status": "PASS",
+      "detail": "all app modelDraws match the archive, including the separately excluded row"
+    },
+    {
+      "name": "exact_hypergeometric_null",
+      "status": "PASS",
+      "detail": "exact numerators sum to 658008"
+    },
+    {
+      "name": "walk_forward_count_and_splits",
+      "status": "PASS",
+      "detail": "3,100 targets split 1,860/620/620"
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "status": "PASS",
+      "detail": "all targets have strict prior cutoffs and exact training-pair counts"
+    },
+    {
+      "name": "forecast_probability_normalization",
+      "status": "PASS",
+      "detail": "all M0/M1/M2 probabilities finite, positive and normalized"
+    },
+    {
+      "name": "future_mutation_invariance_9_cutoffs",
+      "status": "PASS",
+      "detail": "mutating target and all future draws leaves both prior-only forecasts unchanged at nine cutoffs"
+    },
+    {
+      "name": "synthetic_second_order_sensitivity",
+      "status": "PASS",
+      "detail": "a synthetic lag-2 state with distinct outcomes changes M2 relative to M1"
+    },
+    {
+      "name": "synthetic_no_pair_fallback",
+      "status": "PASS",
+      "detail": "when no pair-state observations exist, M2 equals M1 exactly"
+    },
+    {
+      "name": "deterministic_inference_replay",
+      "status": "PASS",
+      "detail": "fixed-seed block sign-flip and bootstrap reproduce exactly"
+    }
+  ],
+  "replay": "The dedicated Q107 PR workflow executes the Node runner with --check against persisted artifacts; execution status is recorded in GitHub Actions.",
+  "inference_constants": {
+    "alpha": 200,
+    "block_length": 20,
+    "block_sign_flip_replicates": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "seed": 20261111,
+    "holm_family_size": 4
+  }
+}

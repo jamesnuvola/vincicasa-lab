@@ -1,0 +1,343 @@
+{
+  "experiment_id": "Q107",
+  "title": "Second-order overlap memory conditional on first-order state",
+  "decision": "NO_SECOND_ORDER_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "pinned_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+    "current_archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "analysis_prefix_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "app_data_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "analysis_draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "excluded_appended_row": {
+      "d": "2026-11-10",
+      "n": [
+        1,
+        7,
+        11,
+        22,
+        25
+      ]
+    },
+    "excluded_reason": "Official VinciCasa archive and official bulletin page still list contest 314 as pending; the row is not used in any Q107 calculation."
+  },
+  "hypothesis": "K[t-2] adds predictive information about K[t] conditional on K[t-1].",
+  "definition": {
+    "overlap": "K_t=|D_(t-1)∩D_t|",
+    "target": "K_t",
+    "lag1": "K_(t-1)",
+    "lag2": "K_(t-2)",
+    "exact_null_numerators": [
+      324632,
+      261800,
+      65450,
+      5950,
+      175,
+      1
+    ],
+    "exact_null_denominator": 658008,
+    "exact_null_probabilities": [
+      0.493355703882,
+      0.397867503131,
+      0.099466875783,
+      0.009042443253,
+      0.000265954213,
+      0.000001519738
+    ],
+    "expected_overlap": 0.625
+  },
+  "models": {
+    "alpha": 200,
+    "M0": "Exact Hypergeometric(40,5,5) null.",
+    "M1": "First-order state shrinkage toward M0 with alpha=200.",
+    "M2": "Second-order pair-state shrinkage toward the corresponding M1 distribution with alpha=200.",
+    "parameter_selection": "None; no tuning on Validation or Blind OOS."
+  },
+  "walk_forward": {
+    "warmup_transition_pairs": 300,
+    "first_target_index": 303,
+    "targets": 3100,
+    "splits": {
+      "discovery": {
+        "targets": 1860,
+        "first_target": "2018-05-16",
+        "last_target": "2023-06-18"
+      },
+      "validation": {
+        "targets": 620,
+        "first_target": "2023-06-19",
+        "last_target": "2025-02-27"
+      },
+      "historical_blind_oos": {
+        "targets": 620,
+        "first_target": "2025-02-28",
+        "last_target": "2026-11-09"
+      }
+    },
+    "strict_prior_rule": "For each target draw index t, only draws[0..t-1] are read; training transition targets j=3..t-1, with exactly t-3 prior transition examples."
+  },
+  "metrics": {
+    "discovery": {
+      "m0": {
+        "brier": 0.591501449983,
+        "logloss": 0.997027088606
+      },
+      "m1": {
+        "brier": 0.592620294126,
+        "logloss": 0.99938387269
+      },
+      "m2": {
+        "brier": 0.593852559746,
+        "logloss": 1.001883578298
+      },
+      "m1_vs_m0": {
+        "brier_gain": -0.001118844143,
+        "logloss_gain": -0.002356784084
+      },
+      "m2_vs_m1": {
+        "brier_gain": -0.00123226562,
+        "logloss_gain": -0.002499705608
+      },
+      "m2_vs_m0": {
+        "brier_gain": -0.002351109763,
+        "logloss_gain": -0.004856489692
+      },
+      "observed_overlap_counts": [
+        922,
+        724,
+        198,
+        15,
+        1,
+        0
+      ],
+      "observed_mean_overlap": 0.628494623656
+    },
+    "validation": {
+      "m0": {
+        "brier": 0.590929242344,
+        "logloss": 0.98956237296
+      },
+      "m1": {
+        "brier": 0.591581353999,
+        "logloss": 0.992722697105
+      },
+      "m2": {
+        "brier": 0.591694346486,
+        "logloss": 0.993050972584
+      },
+      "m1_vs_m0": {
+        "brier_gain": -0.000652111655,
+        "logloss_gain": -0.003160324145
+      },
+      "m2_vs_m1": {
+        "brier_gain": -0.000112992487,
+        "logloss_gain": -0.000328275479
+      },
+      "m2_vs_m0": {
+        "brier_gain": -0.000765104142,
+        "logloss_gain": -0.003488599624
+      },
+      "observed_overlap_counts": [
+        290,
+        265,
+        59,
+        6,
+        0,
+        0
+      ],
+      "observed_mean_overlap": 0.646774193548
+    },
+    "historical_blind_oos": {
+      "m0": {
+        "brier": 0.58300222822,
+        "logloss": 0.962938477257
+      },
+      "m1": {
+        "brier": 0.583548463289,
+        "logloss": 0.963478497742
+      },
+      "m2": {
+        "brier": 0.584063627693,
+        "logloss": 0.964467076603
+      },
+      "m1_vs_m0": {
+        "brier_gain": -0.000546235069,
+        "logloss_gain": -0.000540020485
+      },
+      "m2_vs_m1": {
+        "brier_gain": -0.000515164404,
+        "logloss_gain": -0.000988578861
+      },
+      "m2_vs_m0": {
+        "brier_gain": -0.001061399473,
+        "logloss_gain": -0.001528599346
+      },
+      "observed_overlap_counts": [
+        311,
+        244,
+        64,
+        1,
+        0,
+        0
+      ],
+      "observed_mean_overlap": 0.604838709677
+    },
+    "all_target_overlap_counts": [
+      1523,
+      1233,
+      321,
+      22,
+      1,
+      0
+    ],
+    "state_pair_target_counts": [
+      [
+        739,
+        615,
+        161,
+        7,
+        0,
+        0
+      ],
+      [
+        609,
+        480,
+        131,
+        13,
+        1,
+        0
+      ],
+      [
+        161,
+        132,
+        27,
+        1,
+        0,
+        0
+      ],
+      [
+        14,
+        6,
+        1,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "lag2_pair_support": {
+      "min": 0,
+      "median": 278,
+      "max": 811
+    }
+  },
+  "blind_inference": {
+    "method": "One-sided block sign-flip of contiguous block sums; circular moving-block bootstrap for 95% CI.",
+    "block_length": 20,
+    "sign_flip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "seed": 20261111,
+    "holm_family_size": 4,
+    "endpoints": [
+      {
+        "name": "m2_vs_m1_brier",
+        "n": 620,
+        "observed_mean": -0.000515164404,
+        "blocks": 31,
+        "replicates": 50000,
+        "p_one_sided": 0.770824583508,
+        "monte_carlo_se": 0.001879630346,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.002093513261,
+            "upper": 0.001061978459
+          }
+        },
+        "p_holm_4": 1
+      },
+      {
+        "name": "m2_vs_m1_logloss",
+        "n": 620,
+        "observed_mean": -0.00098857886,
+        "blocks": 31,
+        "replicates": 50000,
+        "p_one_sided": 0.731905361893,
+        "monte_carlo_se": 0.001980989545,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.004035984424,
+            "upper": 0.001652329271
+          }
+        },
+        "p_holm_4": 1
+      },
+      {
+        "name": "m2_vs_m0_brier",
+        "n": 620,
+        "observed_mean": -0.001061399474,
+        "blocks": 31,
+        "replicates": 50000,
+        "p_one_sided": 0.87538249235,
+        "monte_carlo_se": 0.001477063321,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.002946046738,
+            "upper": 0.000883012231
+          }
+        },
+        "p_holm_4": 1
+      },
+      {
+        "name": "m2_vs_m0_logloss",
+        "n": 620,
+        "observed_mean": -0.001528599345,
+        "blocks": 31,
+        "replicates": 50000,
+        "p_one_sided": 0.779524409512,
+        "monte_carlo_se": 0.001853983103,
+        "bootstrap": {
+          "replicates": 10000,
+          "block_length": 20,
+          "ci95": {
+            "lower": -0.005303723289,
+            "upper": 0.002108316006
+          }
+        },
+        "p_holm_4": 1
+      }
+    ]
+  },
+  "interpretation": {
+    "primary": "M2 versus M1 tests incremental second-order information after conditioning on the first-order overlap state.",
+    "secondary": "M2 versus M0 tests whether the second-order model improves over the exact hypergeometric overlap null.",
+    "caveat": "The historical Blind OOS segment is not virgin: Q102 previously studied lag-1 overlap-state memory on the same archive. Q107 is exploratory and cannot establish prospective predictability."
+  },
+  "integrity": {
+    "maximum_probability_normalization_error": 0,
+    "minimum_forecast_probability": 3.2223e-8,
+    "exact_null_numerator_sum": 658008,
+    "exact_null_denominator": 658008
+  }
+}
