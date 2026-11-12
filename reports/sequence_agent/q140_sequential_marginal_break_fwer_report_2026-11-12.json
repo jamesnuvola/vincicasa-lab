@@ -1,0 +1,336 @@
+{
+  "experiment": "Q140",
+  "title": "Sequential per-number marginal change detection with global FWER control",
+  "source": {
+    "archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_rows": 3405,
+    "eligible_draws": 3404,
+    "eligible_cutoff": "2026-11-10",
+    "excluded_row": {
+      "date": "2026-11-11",
+      "numbers": [
+        1,
+        21,
+        22,
+        27,
+        29
+      ]
+    }
+  },
+  "design": {
+    "targets": 3204,
+    "window_draws": 200,
+    "first_half_draws": 100,
+    "recent_half_draws": 100,
+    "discovery": 1922,
+    "validation": 641,
+    "blind_oos_historical": 641,
+    "shrinkage_alpha": 200,
+    "tests_per_walk_forward": 128160,
+    "global_fwer_alpha": 0.05,
+    "nominal_per_test_alpha": 3.9013732833957553e-7,
+    "implemented_per_test_threshold": 3.900343375e-7,
+    "threshold_rounding": "slightly conservative relative to exact 0.05/128160"
+  },
+  "models": {
+    "M0": "Uniform exact 5-of-40 subset distribution.",
+    "M1": "Always-on recent-100 frequency weights with alpha=200 shrinkage toward p=0.125 and exact e5 normalization.",
+    "M2": "Sparse adaptation: only numbers passing the global exact change test receive the same recent-100 weight; all others retain weight 1."
+  },
+  "change_detection": {
+    "test": "Two-sided Fisher exact conditional hypergeometric test of first-half count given total occurrences in the 200-draw window.",
+    "familywise_tests": 128160,
+    "per_test_alpha": 3.900343375e-7,
+    "flagged_number_target_events": 0,
+    "targets_with_any_alarm": 0,
+    "flagged_number_frequency": {},
+    "alarms_by_split": {
+      "discovery": 0,
+      "validation": 0,
+      "blind_oos_historical": 0
+    }
+  },
+  "scoring": {
+    "joint_subset_log_loss": "-log(product of selected weights / e5(weights))",
+    "marginal_brier": "mean squared error over 40 exact marginal inclusion probabilities",
+    "gain_direction": "baseline loss minus model loss; positive favors model"
+  },
+  "split_results": {
+    "discovery": {
+      "targets": 1922,
+      "alarms": 0,
+      "alarm_rate": 0,
+      "comparisons": {
+        "M1_M0": {
+          "mean_logloss_gain": -0.014919728647916531,
+          "mean_brier_gain": -0.0000837044283721622,
+          "logloss_gain_min": -0.6448511293301937,
+          "logloss_gain_max": 0.6084301303240967,
+          "brier_gain_min": -0.0035128615707258337,
+          "brier_gain_max": 0.003511650107497072
+        },
+        "M2_M0": {
+          "mean_logloss_gain": 0,
+          "mean_brier_gain": 0,
+          "logloss_gain_min": 0,
+          "logloss_gain_max": 0,
+          "brier_gain_min": 0,
+          "brier_gain_max": 0
+        },
+        "M2_M1": {
+          "mean_logloss_gain": 0.014919728647916531,
+          "mean_brier_gain": 0.0000837044283721622,
+          "logloss_gain_min": -0.6084301303240967,
+          "logloss_gain_max": 0.6448511293301937,
+          "brier_gain_min": -0.003511650107497072,
+          "brier_gain_max": 0.0035128615707258337
+        }
+      }
+    },
+    "validation": {
+      "targets": 641,
+      "alarms": 0,
+      "alarm_rate": 0,
+      "comparisons": {
+        "M1_M0": {
+          "mean_logloss_gain": -0.024512597029955716,
+          "mean_brier_gain": -0.000135665826698134,
+          "logloss_gain_min": -0.5660223038266601,
+          "logloss_gain_max": 0.5596219166702241,
+          "brier_gain_min": -0.0030568090101741607,
+          "brier_gain_max": 0.0032120895889109213
+        },
+        "M2_M0": {
+          "mean_logloss_gain": 0,
+          "mean_brier_gain": 0,
+          "logloss_gain_min": 0,
+          "logloss_gain_max": 0,
+          "brier_gain_min": 0,
+          "brier_gain_max": 0
+        },
+        "M2_M1": {
+          "mean_logloss_gain": 0.024512597029955716,
+          "mean_brier_gain": 0.000135665826698134,
+          "logloss_gain_min": -0.5596219166702241,
+          "logloss_gain_max": 0.5660223038266601,
+          "brier_gain_min": -0.0032120895889109213,
+          "brier_gain_max": 0.0030568090101741607
+        }
+      }
+    },
+    "blind_oos_historical": {
+      "targets": 641,
+      "alarms": 0,
+      "alarm_rate": 0,
+      "comparisons": {
+        "M1_M0": {
+          "mean_logloss_gain": -0.017227858597229653,
+          "mean_brier_gain": -0.00009533775489905585,
+          "logloss_gain_min": -0.6100482102164584,
+          "logloss_gain_max": 0.589730197912008,
+          "brier_gain_min": -0.0033338287308287418,
+          "brier_gain_max": 0.0033813542396889523
+        },
+        "M2_M0": {
+          "mean_logloss_gain": 0,
+          "mean_brier_gain": 0,
+          "logloss_gain_min": 0,
+          "logloss_gain_max": 0,
+          "brier_gain_min": 0,
+          "brier_gain_max": 0
+        },
+        "M2_M1": {
+          "mean_logloss_gain": 0.017227858597229653,
+          "mean_brier_gain": 0.00009533775489905585,
+          "logloss_gain_min": -0.589730197912008,
+          "logloss_gain_max": 0.6100482102164584,
+          "brier_gain_min": -0.0033813542396889523,
+          "brier_gain_max": 0.0033338287308287418
+        }
+      }
+    }
+  },
+  "inference": {
+    "endpoints": [
+      {
+        "split": "validation",
+        "comparison": "M1_M0",
+        "metric": "ll",
+        "mean_gain": -0.024512597029955716,
+        "p_raw": 0.9999000099990001,
+        "bootstrap_95": {
+          "lower": -0.035977433729452175,
+          "upper": -0.012856826662890815,
+          "median": -0.02455036160354257
+        },
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "comparison": "M1_M0",
+        "metric": "br",
+        "mean_gain": -0.000135665826698134,
+        "p_raw": 0.9999000099990001,
+        "bootstrap_95": {
+          "lower": -0.00019991342379625674,
+          "upper": -0.00007073180248354673,
+          "median": -0.00013574977019495637
+        },
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "comparison": "M2_M0",
+        "metric": "ll",
+        "mean_gain": 0,
+        "p_raw": 1,
+        "bootstrap_95": {
+          "lower": 0,
+          "upper": 0,
+          "median": 0
+        },
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "comparison": "M2_M0",
+        "metric": "br",
+        "mean_gain": 0,
+        "p_raw": 1,
+        "bootstrap_95": {
+          "lower": 0,
+          "upper": 0,
+          "median": 0
+        },
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "comparison": "M2_M1",
+        "metric": "ll",
+        "mean_gain": 0.024512597029955716,
+        "p_raw": 0.00019998000199980003,
+        "bootstrap_95": {
+          "lower": 0.01322663756558885,
+          "upper": 0.03609936026787128,
+          "median": 0.024568820211435523
+        },
+        "p_holm": 0.0023997600239976003
+      },
+      {
+        "split": "validation",
+        "comparison": "M2_M1",
+        "metric": "br",
+        "mean_gain": 0.000135665826698134,
+        "p_raw": 0.00029997000299970003,
+        "bootstrap_95": {
+          "lower": 0.00007025354888992131,
+          "upper": 0.00019918115897857162,
+          "median": 0.00013612083647436432
+        },
+        "p_holm": 0.0032996700329967
+      },
+      {
+        "split": "blind_oos_historical",
+        "comparison": "M1_M0",
+        "metric": "ll",
+        "mean_gain": -0.017227858597229653,
+        "p_raw": 0.9849015098490151,
+        "bootstrap_95": {
+          "lower": -0.031473267610149014,
+          "upper": -0.0029126683624303563,
+          "median": -0.017334027777738896
+        },
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos_historical",
+        "comparison": "M1_M0",
+        "metric": "br",
+        "mean_gain": -0.00009533775489905585,
+        "p_raw": 0.9844015598440156,
+        "bootstrap_95": {
+          "lower": -0.0001745908711571194,
+          "upper": -0.000015329379699215285,
+          "median": -0.00009485711349528429
+        },
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos_historical",
+        "comparison": "M2_M0",
+        "metric": "ll",
+        "mean_gain": 0,
+        "p_raw": 1,
+        "bootstrap_95": {
+          "lower": 0,
+          "upper": 0,
+          "median": 0
+        },
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos_historical",
+        "comparison": "M2_M0",
+        "metric": "br",
+        "mean_gain": 0,
+        "p_raw": 1,
+        "bootstrap_95": {
+          "lower": 0,
+          "upper": 0,
+          "median": 0
+        },
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos_historical",
+        "comparison": "M2_M1",
+        "metric": "ll",
+        "mean_gain": 0.017227858597229653,
+        "p_raw": 0.016798320167983202,
+        "bootstrap_95": {
+          "lower": 0.002938916285448467,
+          "upper": 0.03154844761661388,
+          "median": 0.01722077169535227
+        },
+        "p_holm": 0.15118488151184883
+      },
+      {
+        "split": "blind_oos_historical",
+        "comparison": "M2_M1",
+        "metric": "br",
+        "mean_gain": 0.00009533775489905585,
+        "p_raw": 0.014998500149985002,
+        "bootstrap_95": {
+          "lower": 0.000013335730457274166,
+          "upper": 0.00017601983230335845,
+          "median": 0.00009550061465222199
+        },
+        "p_holm": 0.14998500149985
+      }
+    ],
+    "holm_family_size": 12,
+    "holm_method": "Holm across all 12 one-sided holdout endpoints",
+    "paired_block_sign_flip_replicates": 10000,
+    "circular_block_bootstrap_replicates": 10000,
+    "block_length": 20,
+    "discovery_inference": "descriptive only"
+  },
+  "decision": "NO_SEQUENTIAL_MARGINAL_CHANGE_LIFT_DEMONSTRATED",
+  "limitations": [
+    "Exploratory within broad Q00-Q139 family; Holm covers only Q140's 12 holdout endpoints.",
+    "Historical Blind OOS is not a virgin prospective sample.",
+    "Global Bonferroni alarm threshold is intentionally conservative; absence of alarms does not prove exact stationarity.",
+    "Test addresses marginal temporal change only, not higher-order dependence.",
+    "Contest 315 is excluded because the official VinciCasa archive still lists it as pending."
+  ],
+  "governance": {
+    "research_only": true,
+    "no_archive_mutation": true,
+    "no_freeze_mutation": true,
+    "no_q60_increment": true,
+    "no_engine_promotion": true,
+    "no_merge": true,
+    "human_review_required": true
+  }
+}
