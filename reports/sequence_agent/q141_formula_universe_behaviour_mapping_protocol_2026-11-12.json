@@ -1,0 +1,169 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141",
+  "title": "Formula Universe & Behaviour Mapping",
+  "registration_date": "2026-11-12",
+  "status": "REGISTERED_INVENTORY_AND_PROTOCOL_ONLY",
+  "base_main_sha": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+  "source_archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+  "eligible_draw_count": 3404,
+  "eligible_cutoff": "2026-11-10",
+  "quarantined_target": {
+    "date": "2026-11-11",
+    "contest": 315,
+    "reason": "Official primary archive pending; exclude until five numbers are primary-source verified."
+  },
+  "research_question": "Can a broad formula universe describe historical five-number outcomes, and can strictly pre-target observable state anticipate formula-family usefulness?",
+  "layers": [
+    "formula_universe",
+    "behaviour_mapping",
+    "ex_ante_family_anticipation"
+  ],
+  "formula_output_types": [
+    "number_ranking",
+    "quintet_ranking_or_probability",
+    "draw_descriptor_or_condition",
+    "meta_selector"
+  ],
+  "input_families": [
+    "per_number_prior_state",
+    "position_and_rank",
+    "local_geometry_and_gaps",
+    "cooccurrence_and_residual_graph",
+    "whole_draw_descriptors",
+    "temporal_state"
+  ],
+  "operator_families": [
+    "linear_affine_contrast_ratio",
+    "products_and_interactions",
+    "conditional_piecewise_gates",
+    "polynomial_and_spline",
+    "rank_ordinal_monotone_distance",
+    "modular_residue_periodic",
+    "gap_and_order_statistic",
+    "temporal_difference_and_change",
+    "graph_network",
+    "ensembles_and_complementary_unions"
+  ],
+  "canonicalization": {
+    "typed_ast": true,
+    "deterministic_serialization": true,
+    "stable_formula_id": true,
+    "syntactic_deduplication": true,
+    "semantic_deduplication_requires_proof_or_finite_domain_equality": true,
+    "correlation_is_not_equivalence": true,
+    "retain_alias_and_rejection_lineage": true
+  },
+  "prior_work_inventory": [
+    {
+      "task": "Q83",
+      "formula_count": 80730,
+      "description": "five-feature equal-weight combinations",
+      "status": "branch artifact; older source archive; reconcile before reuse"
+    },
+    {
+      "task": "Q86",
+      "formula_count": 296010,
+      "description": "six-feature combinations",
+      "status": "branch artifact; older source archive; reconcile before reuse"
+    },
+    {
+      "task": "Q87",
+      "formula_count": 888030,
+      "description": "seven-feature combinations",
+      "status": "branch artifact; older source archive; reconcile before reuse"
+    },
+    {
+      "task": "Q90",
+      "formula_count": 330429,
+      "description": "declared expanded grammar over a discovery-selected 20-feature subset from 59 features",
+      "status": "checkpoint formula acceptance pass; repository persistence/main CI/human review and nested anticipation pending"
+    },
+    {
+      "task": "Q91",
+      "formula_count": null,
+      "description": "nested strict-prior formula anticipation",
+      "status": "pending; upstream evidence stale per PR description"
+    },
+    {
+      "task": "Q92",
+      "formula_count": 8436285,
+      "description": "C(27,10) combinadic finite universe core",
+      "status": "synthetic combinadic tests only; walk-forward metrics/target ledger/persistence pending"
+    },
+    {
+      "task": "Q140",
+      "formula_count": null,
+      "description": "sequential marginal change detection",
+      "status": "no alarms; no predictive lift demonstrated; separate diagnostic"
+    }
+  ],
+  "chronological_protocol": {
+    "target_cutoff": "strictly_before_target",
+    "splits": [
+      "discovery",
+      "validation",
+      "historical_blind_oos",
+      "prospective_shadow"
+    ],
+    "historical_blind_oos_label": "exposed_historical_not_virgin",
+    "retrospective_oracle": "descriptive_only_never_predictive_evidence",
+    "prospective_freezes": "append_only_no_reconstruction"
+  },
+  "primary_question_for_selector": "Do signals observable before target t predict which formula family will have useful coverage on target t?",
+  "required_baselines": [
+    "uniform_5_of_40",
+    "registered_prior_only_sonar",
+    "fixed_family_allocation",
+    "uniform_family_allocation",
+    "discovery_selected_single_family",
+    "recency_only_control",
+    "complexity_matched_control"
+  ],
+  "required_controls": [
+    "full_search_family_multiplicity",
+    "paired_chronological_inference",
+    "block_aware_uncertainty",
+    "future_suffix_invariance",
+    "deterministic_replay",
+    "exact_output_hash_readback",
+    "no_target_leakage"
+  ],
+  "milestones": [
+    {
+      "id": "Q141-A",
+      "name": "Inventory and lineage audit",
+      "status": "PENDING"
+    },
+    {
+      "id": "Q141-B",
+      "name": "Typed canonical formula registry",
+      "status": "PENDING"
+    },
+    {
+      "id": "Q141-C",
+      "name": "Formula behaviour atlas",
+      "status": "PENDING"
+    },
+    {
+      "id": "Q141-D",
+      "name": "Ex-ante formula-family anticipation",
+      "status": "PENDING"
+    }
+  ],
+  "governance": {
+    "research_only": true,
+    "draft_pr_required": true,
+    "auto_merge": false,
+    "auto_promotion": false,
+    "shadow_insertion": false,
+    "canonical_archive_mutation": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "compute_policy": "Deterministic shards, bounded batches, streaming aggregation; no naive formula_count × target_count run if infeasible; disclose all screening, sampling and exclusions.",
+  "completion_policy": "A valid null result completes an analytical stage; promotion requires separate independent prospective evidence and human review."
+}
