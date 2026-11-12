@@ -489,6 +489,7 @@ def main():
             "max_abs_score_delta": 0.0,
             "legacy_numpy_score_mismatches": 0, "legacy_numpy_rank_mismatches": 0,
             "legacy_numpy_max_abs_score_delta": 0.0, "legacy_numpy_max_rank_displacement": 0,
+            "legacy_numpy_max_flipped_pair_score_gap": 0.0,
             "raw_top5_hits": 0, "canonical_top5_hits": 0, "legacy_top5_hits": 0,
             "raw_top10_hits": 0, "canonical_top10_hits": 0, "legacy_top10_hits": 0,
             "raw_top20_hits": 0, "canonical_top20_hits": 0, "legacy_top20_hits": 0,
@@ -507,6 +508,7 @@ def main():
     global_max_delta = 0.0
     global_legacy_numpy_max_delta = 0.0
     global_legacy_numpy_max_rank_displacement = 0
+    global_legacy_numpy_max_flipped_pair_score_gap = 0.0
 
     for i, draw in enumerate(draws):
         if i >= base.MIN_HISTORY:
@@ -538,6 +540,7 @@ def main():
             target_max_delta = 0.0
             target_legacy_numpy_max_delta = 0.0
             target_legacy_numpy_max_rank_displacement = 0
+            target_legacy_numpy_max_flipped_pair_score_gap = 0.0
             raw_hits = Counter()
             canonical_hits = Counter()
             legacy_hits = Counter()
@@ -571,6 +574,15 @@ def main():
                     target_rank_mismatches += 1
                 if not legacy_rank_ok:
                     target_legacy_numpy_rank_mismatches += 1
+                    pair_i, pair_j = np.triu_indices(40, 1)
+                    legacy_order = legacy_scores[pair_i] >= legacy_scores[pair_j]
+                    canonical_order = canon_scores[pair_i] >= canon_scores[pair_j]
+                    flipped = legacy_order != canonical_order
+                    if np.any(flipped):
+                        gaps = np.abs(legacy_scores[pair_i[flipped]] - legacy_scores[pair_j[flipped]])
+                        flip_gap = float(np.max(gaps))
+                        target_legacy_numpy_max_flipped_pair_score_gap = max(target_legacy_numpy_max_flipped_pair_score_gap, flip_gap)
+                        global_legacy_numpy_max_flipped_pair_score_gap = max(global_legacy_numpy_max_flipped_pair_score_gap, flip_gap)
                 legacy_displacement = int(np.max(np.abs(legacy_ranks.astype(int) - canon_ranks.astype(int))))
                 target_legacy_numpy_max_rank_displacement = max(target_legacy_numpy_max_rank_displacement, legacy_displacement)
                 global_legacy_numpy_max_rank_displacement = max(global_legacy_numpy_max_rank_displacement, legacy_displacement)
@@ -601,6 +613,7 @@ def main():
             acc["legacy_numpy_rank_mismatches"] += target_legacy_numpy_rank_mismatches
             acc["legacy_numpy_max_abs_score_delta"] = max(acc["legacy_numpy_max_abs_score_delta"], target_legacy_numpy_max_delta)
             acc["legacy_numpy_max_rank_displacement"] = max(acc["legacy_numpy_max_rank_displacement"], target_legacy_numpy_max_rank_displacement)
+            acc["legacy_numpy_max_flipped_pair_score_gap"] = max(acc["legacy_numpy_max_flipped_pair_score_gap"], target_legacy_numpy_max_flipped_pair_score_gap)
             for k in (5, 10, 20):
                 acc[f"raw_top{k}_hits"] += raw_hits[k]
                 acc[f"canonical_top{k}_hits"] += canonical_hits[k]
@@ -627,6 +640,7 @@ def main():
                 "stable_raw_vs_canonical_max_abs_score_delta": f"{target_max_delta:.17g}",
                 "legacy_numpy_max_abs_score_delta": f"{target_legacy_numpy_max_delta:.17g}",
                 "legacy_numpy_max_rank_displacement": target_legacy_numpy_max_rank_displacement,
+                "legacy_numpy_max_flipped_pair_score_gap": f"{target_legacy_numpy_max_flipped_pair_score_gap:.17g}",
                 "stable_raw_top5_hit_share": f"{raw_hits[5] / (5 * comparisons):.12g}",
                 "canonical_top5_hit_share": f"{canonical_hits[5] / (5 * comparisons):.12g}",
                 "legacy_numpy_top5_hit_share": f"{legacy_hits[5] / (5 * comparisons):.12g}",
@@ -665,14 +679,23 @@ def main():
             "rank_comparisons": acc["rank_comparisons"],
             "rank_mismatches": acc["rank_mismatches"],
             "max_abs_score_delta": acc["max_abs_score_delta"],
-            "raw_mean_top5_hit_share": acc["raw_top5_hits"] / denom,
+            "legacy_numpy_score_mismatches": acc["legacy_numpy_score_mismatches"],
+            "legacy_numpy_rank_mismatches": acc["legacy_numpy_rank_mismatches"],
+            "legacy_numpy_max_abs_score_delta": acc["legacy_numpy_max_abs_score_delta"],
+            "legacy_numpy_max_rank_displacement": acc["legacy_numpy_max_rank_displacement"],
+            "legacy_numpy_max_flipped_pair_score_gap": acc["legacy_numpy_max_flipped_pair_score_gap"],
+            "stable_raw_mean_top5_hit_share": acc["raw_top5_hits"] / denom,
             "canonical_mean_top5_hit_share": acc["canonical_top5_hits"] / denom,
-            "raw_mean_top10_hit_share": acc["raw_top10_hits"] / denom,
+            "legacy_numpy_mean_top5_hit_share": acc["legacy_top5_hits"] / denom,
+            "stable_raw_mean_top10_hit_share": acc["raw_top10_hits"] / denom,
             "canonical_mean_top10_hit_share": acc["canonical_top10_hits"] / denom,
-            "raw_mean_top20_hit_share": acc["raw_top20_hits"] / denom,
+            "legacy_numpy_mean_top10_hit_share": acc["legacy_top10_hits"] / denom,
+            "stable_raw_mean_top20_hit_share": acc["raw_top20_hits"] / denom,
             "canonical_mean_top20_hit_share": acc["canonical_top20_hits"] / denom,
-            "raw_mean_actual_rank": acc["raw_rank_sum"] / (targets * len(samples) * 5),
+            "legacy_numpy_mean_top20_hit_share": acc["legacy_top20_hits"] / denom,
+            "stable_raw_mean_actual_rank": acc["raw_rank_sum"] / (targets * len(samples) * 5),
             "canonical_mean_actual_rank": acc["canonical_rank_sum"] / (targets * len(samples) * 5),
+            "legacy_numpy_mean_actual_rank": acc["legacy_rank_sum"] / (targets * len(samples) * 5),
             "uniform_reference": {"top5": 0.125, "top10": 0.25, "top20": 0.5, "mean_actual_rank": 20.5},
         }
 
@@ -739,6 +762,7 @@ def main():
             "legacy_numpy_rank_mismatch_rate": total_legacy_numpy_rank_mismatches / total_rank_comparisons,
             "legacy_numpy_max_abs_score_delta": global_legacy_numpy_max_delta,
             "legacy_numpy_max_rank_displacement": global_legacy_numpy_max_rank_displacement,
+            "legacy_numpy_max_flipped_pair_score_gap": global_legacy_numpy_max_flipped_pair_score_gap,
             "legacy_numpy_note": "Legacy NumPy mean is compared with stable canonical math.fsum evaluation. Small score differences can change exact lexicographic ranks for near-ties; this is an implementation sensitivity, not evidence of different mathematical functions.",
             "metrics_by_split": split_metrics,
         },
