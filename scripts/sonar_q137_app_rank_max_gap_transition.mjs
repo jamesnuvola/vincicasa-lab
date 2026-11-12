@@ -359,7 +359,7 @@ function main() {
       quartile_bin_masses: binMasses.map(x => round(x, 12)),
       alpha: ALPHA
     },
-    split_results: splitSummary,
+    split_results: summary,
     blind_inference: inference.map(x => ({
       comparison: x.comparison,
       metric: x.metric,
