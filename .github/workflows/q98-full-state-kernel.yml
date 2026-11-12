@@ -1,0 +1,29 @@
+name: Q98 full-state geometry kernel
+on:
+  pull_request:
+    paths:
+      - "data/storico_daily.csv"
+      - "reports/sequence_agent/q98_full_state_kernel_*"
+      - "scripts/sonar_q98_full_state_kernel.mjs"
+      - "scripts/validate_sonar_q98_full_state_kernel.mjs"
+      - ".github/workflows/q98-full-state-kernel.yml"
+  push:
+    branches:
+      - "research/q98-lag1-full-draw-geometry-kernel-20261110"
+permissions:
+  contents: read
+jobs:
+  exact-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Verify canonical source archive Git blob
+        run: test "$(git hash-object data/storico_daily.csv)" = "8d3e19f0b417024ba32e576697eac0648d12ab86"
+      - name: Exact deterministic replay and synthetic leakage tests
+        run: node scripts/sonar_q98_full_state_kernel.mjs --verify
+      - name: Independent persisted report and ledger validation
+        run: node scripts/validate_sonar_q98_full_state_kernel.mjs
