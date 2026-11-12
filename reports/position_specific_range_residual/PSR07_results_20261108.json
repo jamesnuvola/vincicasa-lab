@@ -1,0 +1,819 @@
+{
+  "archive": {
+    "draws": 3401,
+    "first_date": "2017-07-17",
+    "git_blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "last_date": "2026-11-07"
+  },
+  "blind_oos_primary_inference": [
+    {
+      "block_length": 7,
+      "bootstrap_replicates": 2000,
+      "ci95_lower": -0.000669489581771,
+      "ci95_upper": 0.000373125802652,
+      "holm_adjusted_p_5_positions": 1.0,
+      "mean_brier_improvement_vs_global": -0.000160511257725,
+      "n": 776,
+      "position": 1,
+      "primary_endpoint": "blind-OOS paired Brier improvement vs global shrinkage with same selected alpha",
+      "raw_one_sided_centered_block_p": 0.708145927036,
+      "seed": 20262117,
+      "selected_alpha": 1000,
+      "survives_holm_0_05": false
+    },
+    {
+      "block_length": 7,
+      "bootstrap_replicates": 2000,
+      "ci95_lower": -0.000275145827512,
+      "ci95_upper": 0.000503714531348,
+      "holm_adjusted_p_5_positions": 1.0,
+      "mean_brier_improvement_vs_global": 0.000119421961372,
+      "n": 776,
+      "position": 2,
+      "primary_endpoint": "blind-OOS paired Brier improvement vs global shrinkage with same selected alpha",
+      "raw_one_sided_centered_block_p": 0.269865067466,
+      "seed": 20263126,
+      "selected_alpha": 1000,
+      "survives_holm_0_05": false
+    },
+    {
+      "block_length": 7,
+      "bootstrap_replicates": 2000,
+      "ci95_lower": -0.000611583115487,
+      "ci95_upper": 0.00024251844623,
+      "holm_adjusted_p_5_positions": 1.0,
+      "mean_brier_improvement_vs_global": -0.000170530375322,
+      "n": 776,
+      "position": 3,
+      "primary_endpoint": "blind-OOS paired Brier improvement vs global shrinkage with same selected alpha",
+      "raw_one_sided_centered_block_p": 0.792603698151,
+      "seed": 20264135,
+      "selected_alpha": 1000,
+      "survives_holm_0_05": false
+    },
+    {
+      "block_length": 7,
+      "bootstrap_replicates": 2000,
+      "ci95_lower": -0.000617116026632,
+      "ci95_upper": 0.000119260421856,
+      "holm_adjusted_p_5_positions": 1.0,
+      "mean_brier_improvement_vs_global": -0.000273032507979,
+      "n": 776,
+      "position": 4,
+      "primary_endpoint": "blind-OOS paired Brier improvement vs global shrinkage with same selected alpha",
+      "raw_one_sided_centered_block_p": 0.92303848076,
+      "seed": 20265144,
+      "selected_alpha": 1000,
+      "survives_holm_0_05": false
+    },
+    {
+      "block_length": 7,
+      "bootstrap_replicates": 2000,
+      "ci95_lower": -0.000290068334711,
+      "ci95_upper": 0.000795387955107,
+      "holm_adjusted_p_5_positions": 0.962018990505,
+      "mean_brier_improvement_vs_global": 0.000248480532001,
+      "n": 776,
+      "position": 5,
+      "primary_endpoint": "blind-OOS paired Brier improvement vs global shrinkage with same selected alpha",
+      "raw_one_sided_centered_block_p": 0.192403798101,
+      "seed": 20266153,
+      "selected_alpha": 1000,
+      "survives_holm_0_05": false
+    }
+  ],
+  "experiment_id": "SONAR_PSR07_PREVIOUS_DRAW_P3_MEDIAN_STATE",
+  "hypothesis": {
+    "feature": "P3 (middle ordered statistic) of the immediately preceding draw",
+    "null_expectation": "under independent uniform 5-subset draws, preceding P3 state has no incremental predictive information",
+    "quantitative_claim": "state-conditioned position marginals improve blind-OOS Brier score over same-alpha global position shrinkage",
+    "target": "next draw ordered-position marginal P1..P5"
+  },
+  "integrity": {
+    "actual_grid_rows": 46515,
+    "actual_selected_ledger_rows": 15505,
+    "actual_validation_grid_rows": 11625,
+    "candidate_and_global_probability_normalization_checks": 93030,
+    "duplicate_grid_keys": 0,
+    "duplicate_selected_target_position_keys": 0,
+    "exact_order_statistic_prior_normalization_checks": 5,
+    "expected_grid_rows": 46515,
+    "expected_selected_ledger_rows": 15505,
+    "expected_validation_grid_rows": 11625,
+    "last_training_target_index_rule": "target_index - 1; outcome date equals cutoff date and is strictly before target date",
+    "max_probability_normalization_error": 4.4408920985e-16,
+    "selected_alpha_by_position": {
+      "P1": 1000,
+      "P2": 1000,
+      "P3": 1000,
+      "P4": 1000,
+      "P5": 1000
+    },
+    "selected_ledger_rows": 15505,
+    "selected_ledger_sha256": "f2ad33ff6cf7e8c6941dc730cb922fe0e93ed3fc5fdb2a8a42a512541b430b90",
+    "strict_prefix_train_n_t_minus_2_checks": 3101,
+    "target_cutoff_before_target_date_checks": 3101,
+    "train_n_rule": "target_index - 2, training target indices 2..target_index-1 inclusive"
+  },
+  "limitations": [
+    "The historical blind partition overlaps previous SONAR research; it is not independent lab-wide confirmation.",
+    "The five ordered-position marginals are dependent; this experiment does not produce or validate a joint ticket.",
+    "A prior-draw association, if observed, is not causal and can arise from historical selection or sampling noise.",
+    "Top-1, Top-5, log-loss and rank diagnostics are secondary/descriptive; only five position-level Brier endpoints form the Holm primary family.",
+    "This is a discrete statistical state experiment, not a physical Navier–Stokes field or a claim that fluid dynamics governs VinciCasa.",
+    "No engine promotion, merge, or prospective gate completion is authorized."
+  ],
+  "next_action": "No primary position survives Holm at 0.05. Preserve PSR-07 as a valid null/exploratory result; do not tune the median-state cutpoints or alpha grid on blind OOS. The next research iteration should move to a separately registered joint-dependence diagnostic or independent prospective shadow evidence.",
+  "protocol": {
+    "alpha_grid": [
+      100,
+      300,
+      1000
+    ],
+    "bootstrap": {
+      "block_length": 7,
+      "holm_family": "five predeclared position-level primary Brier endpoints",
+      "method": "circular moving-block bootstrap; centered-null one-sided p and percentile 95% CI",
+      "replicates": 2000,
+      "seed_base": 20261108
+    },
+    "scored_targets": 3101,
+    "selection": "validation-only maximum mean Brier improvement vs global shrinkage with same alpha; ties choose smaller alpha",
+    "split_rule": "chronological 50% discovery / 25% validation / 25% final blind OOS",
+    "warmup_target_index": 300
+  },
+  "reproducibility": {
+    "deterministic": true,
+    "fixed_seed": 20261108,
+    "ledger_format": "CSV with stable field order and LF line endings",
+    "no_generated_timestamp": true,
+    "numpy_rng": "PCG64 via numpy.random.default_rng"
+  },
+  "schema_version": "1.0",
+  "split_metrics": [
+    {
+      "brier_improvement_vs_global": 5.19325042581e-05,
+      "brier_improvement_vs_prior": -0.000175266608981,
+      "first_target": "2018-05-13",
+      "global_top1_rate": 0.114193548387,
+      "global_top5_rate": 0.502580645161,
+      "last_target": "2022-08-09",
+      "logloss_improvement_vs_global": 0.00177760595778,
+      "logloss_improvement_vs_prior": -0.00284323015922,
+      "max_state_training_n": 506,
+      "mean_rank_improvement_vs_global": -0.00709677419355,
+      "mean_state_training_n": 269.754193548,
+      "min_state_training_n": 69,
+      "n": 1550,
+      "position": 1,
+      "prior_top1_rate": 0.114193548387,
+      "prior_top5_rate": 0.502580645161,
+      "selected_alpha": 1000,
+      "split": "discovery",
+      "state_top1_rate": 0.114193548387,
+      "state_top5_rate": 0.506451612903,
+      "top1_delta_vs_global": 0.0,
+      "top5_delta_vs_global": 0.00387096774194
+    },
+    {
+      "brier_improvement_vs_global": 5.64967381301e-05,
+      "brier_improvement_vs_prior": 0.000249965675957,
+      "first_target": "2022-08-10",
+      "global_top1_rate": 0.0993548387097,
+      "global_top5_rate": 0.501935483871,
+      "last_target": "2024-09-22",
+      "logloss_improvement_vs_global": 0.00025113083801,
+      "logloss_improvement_vs_prior": -0.000268234193014,
+      "max_state_training_n": 709,
+      "mean_rank_improvement_vs_global": 0.0322580645161,
+      "mean_state_training_n": 561.556129032,
+      "min_state_training_n": 405,
+      "n": 775,
+      "position": 1,
+      "prior_top1_rate": 0.0993548387097,
+      "prior_top5_rate": 0.501935483871,
+      "selected_alpha": 1000,
+      "split": "validation",
+      "state_top1_rate": 0.0993548387097,
+      "state_top5_rate": 0.505806451613,
+      "top1_delta_vs_global": 0.0,
+      "top5_delta_vs_global": 0.00387096774194
+    },
+    {
+      "brier_improvement_vs_global": -0.000160511257725,
+      "brier_improvement_vs_prior": -0.000487031234906,
+      "first_target": "2024-09-23",
+      "global_top1_rate": 0.123711340206,
+      "global_top5_rate": 0.509020618557,
+      "last_target": "2026-11-07",
+      "logloss_improvement_vs_global": -0.00185655620045,
+      "logloss_improvement_vs_prior": -0.00696352780741,
+      "max_state_training_n": 931,
+      "mean_rank_improvement_vs_global": -0.0322164948454,
+      "mean_state_training_n": 758.31185567,
+      "min_state_training_n": 577,
+      "n": 776,
+      "position": 1,
+      "prior_top1_rate": 0.123711340206,
+      "prior_top5_rate": 0.509020618557,
+      "selected_alpha": 1000,
+      "split": "blind_oos",
+      "state_top1_rate": 0.123711340206,
+      "state_top5_rate": 0.503865979381,
+      "top1_delta_vs_global": 0.0,
+      "top5_delta_vs_global": -0.00515463917526
+    },
+    {
+      "brier_improvement_vs_global": -1.8098959111e-05,
+      "brier_improvement_vs_prior": -0.000221116960068,
+      "first_target": "2018-05-13",
+      "global_top1_rate": 0.0516129032258,
+      "global_top5_rate": 0.258064516129,
+      "last_target": "2022-08-09",
+      "logloss_improvement_vs_global": -0.000789440072312,
+      "logloss_improvement_vs_prior": -0.00344117650314,
+      "max_state_training_n": 506,
+      "mean_rank_improvement_vs_global": 0.0264516129032,
+      "mean_state_training_n": 269.754193548,
+      "min_state_training_n": 69,
+      "n": 1550,
+      "position": 2,
+      "prior_top1_rate": 0.058064516129,
+      "prior_top5_rate": 0.274838709677,
+      "selected_alpha": 1000,
+      "split": "discovery",
+      "state_top1_rate": 0.0606451612903,
+      "state_top5_rate": 0.265161290323,
+      "top1_delta_vs_global": 0.00903225806452,
+      "top5_delta_vs_global": 0.00709677419355
+    },
+    {
+      "brier_improvement_vs_global": 0.00015171863194,
+      "brier_improvement_vs_prior": -0.000385804932749,
+      "first_target": "2022-08-10",
+      "global_top1_rate": 0.0529032258065,
+      "global_top5_rate": 0.270967741935,
+      "last_target": "2024-09-22",
+      "logloss_improvement_vs_global": 0.00131223584104,
+      "logloss_improvement_vs_prior": -0.0062241837671,
+      "max_state_training_n": 709,
+      "mean_rank_improvement_vs_global": 0.0761290322581,
+      "mean_state_training_n": 561.556129032,
+      "min_state_training_n": 405,
+      "n": 775,
+      "position": 2,
+      "prior_top1_rate": 0.0554838709677,
+      "prior_top5_rate": 0.296774193548,
+      "selected_alpha": 1000,
+      "split": "validation",
+      "state_top1_rate": 0.04,
+      "state_top5_rate": 0.290322580645,
+      "top1_delta_vs_global": -0.0129032258065,
+      "top5_delta_vs_global": 0.0193548387097
+    },
+    {
+      "brier_improvement_vs_global": 0.000119421961372,
+      "brier_improvement_vs_prior": -0.000279225949797,
+      "first_target": "2024-09-23",
+      "global_top1_rate": 0.0502577319588,
+      "global_top5_rate": 0.27706185567,
+      "last_target": "2026-11-07",
+      "logloss_improvement_vs_global": 0.00526009203444,
+      "logloss_improvement_vs_prior": -0.00311587341779,
+      "max_state_training_n": 931,
+      "mean_rank_improvement_vs_global": 0.0219072164948,
+      "mean_state_training_n": 758.31185567,
+      "min_state_training_n": 577,
+      "n": 776,
+      "position": 2,
+      "prior_top1_rate": 0.0567010309278,
+      "prior_top5_rate": 0.284793814433,
+      "selected_alpha": 1000,
+      "split": "blind_oos",
+      "state_top1_rate": 0.0438144329897,
+      "state_top5_rate": 0.271907216495,
+      "top1_delta_vs_global": -0.00644329896907,
+      "top5_delta_vs_global": -0.00515463917526
+    },
+    {
+      "brier_improvement_vs_global": 0.000127199108394,
+      "brier_improvement_vs_prior": 7.79553057156e-06,
+      "first_target": "2018-05-13",
+      "global_top1_rate": 0.0361290322581,
+      "global_top5_rate": 0.245161290323,
+      "last_target": "2022-08-09",
+      "logloss_improvement_vs_global": 0.00100886938541,
+      "logloss_improvement_vs_prior": -0.000633101965148,
+      "max_state_training_n": 506,
+      "mean_rank_improvement_vs_global": 0.0606451612903,
+      "mean_state_training_n": 269.754193548,
+      "min_state_training_n": 69,
+      "n": 1550,
+      "position": 3,
+      "prior_top1_rate": 0.0387096774194,
+      "prior_top5_rate": 0.241935483871,
+      "selected_alpha": 1000,
+      "split": "discovery",
+      "state_top1_rate": 0.0554838709677,
+      "state_top5_rate": 0.23935483871,
+      "top1_delta_vs_global": 0.0193548387097,
+      "top5_delta_vs_global": -0.0058064516129
+    },
+    {
+      "brier_improvement_vs_global": -0.000102974561469,
+      "brier_improvement_vs_prior": -0.000416941835165,
+      "first_target": "2022-08-10",
+      "global_top1_rate": 0.0670967741935,
+      "global_top5_rate": 0.25935483871,
+      "last_target": "2024-09-22",
+      "logloss_improvement_vs_global": 0.00142609021556,
+      "logloss_improvement_vs_prior": -0.00768677809447,
+      "max_state_training_n": 709,
+      "mean_rank_improvement_vs_global": -0.0206451612903,
+      "mean_state_training_n": 561.556129032,
+      "min_state_training_n": 405,
+      "n": 775,
+      "position": 3,
+      "prior_top1_rate": 0.0516129032258,
+      "prior_top5_rate": 0.28,
+      "selected_alpha": 1000,
+      "split": "validation",
+      "state_top1_rate": 0.0451612903226,
+      "state_top5_rate": 0.268387096774,
+      "top1_delta_vs_global": -0.021935483871,
+      "top5_delta_vs_global": 0.00903225806452
+    },
+    {
+      "brier_improvement_vs_global": -0.000170530375322,
+      "brier_improvement_vs_prior": -0.000170042845611,
+      "first_target": "2024-09-23",
+      "global_top1_rate": 0.0528350515464,
+      "global_top5_rate": 0.225515463918,
+      "last_target": "2026-11-07",
+      "logloss_improvement_vs_global": -0.00403110331527,
+      "logloss_improvement_vs_prior": -0.00305661275828,
+      "max_state_training_n": 931,
+      "mean_rank_improvement_vs_global": -0.0219072164948,
+      "mean_state_training_n": 758.31185567,
+      "min_state_training_n": 577,
+      "n": 776,
+      "position": 3,
+      "prior_top1_rate": 0.0399484536082,
+      "prior_top5_rate": 0.230670103093,
+      "selected_alpha": 1000,
+      "split": "blind_oos",
+      "state_top1_rate": 0.0451030927835,
+      "state_top5_rate": 0.243556701031,
+      "top1_delta_vs_global": -0.00773195876289,
+      "top5_delta_vs_global": 0.0180412371134
+    },
+    {
+      "brier_improvement_vs_global": 4.08430277997e-05,
+      "brier_improvement_vs_prior": -0.000267874241784,
+      "first_target": "2018-05-13",
+      "global_top1_rate": 0.0516129032258,
+      "global_top5_rate": 0.25935483871,
+      "last_target": "2022-08-09",
+      "logloss_improvement_vs_global": 0.00161368405087,
+      "logloss_improvement_vs_prior": -0.00350719334397,
+      "max_state_training_n": 506,
+      "mean_rank_improvement_vs_global": 0.0348387096774,
+      "mean_state_training_n": 269.754193548,
+      "min_state_training_n": 69,
+      "n": 1550,
+      "position": 4,
+      "prior_top1_rate": 0.0593548387097,
+      "prior_top5_rate": 0.274838709677,
+      "selected_alpha": 1000,
+      "split": "discovery",
+      "state_top1_rate": 0.0522580645161,
+      "state_top5_rate": 0.269032258065,
+      "top1_delta_vs_global": 0.000645161290323,
+      "top5_delta_vs_global": 0.00967741935484
+    },
+    {
+      "brier_improvement_vs_global": -0.000232927925837,
+      "brier_improvement_vs_prior": -0.000333755243843,
+      "first_target": "2022-08-10",
+      "global_top1_rate": 0.0503225806452,
+      "global_top5_rate": 0.283870967742,
+      "last_target": "2024-09-22",
+      "logloss_improvement_vs_global": -0.000330532219062,
+      "logloss_improvement_vs_prior": -0.00369071208615,
+      "max_state_training_n": 709,
+      "mean_rank_improvement_vs_global": -0.0658064516129,
+      "mean_state_training_n": 561.556129032,
+      "min_state_training_n": 405,
+      "n": 775,
+      "position": 4,
+      "prior_top1_rate": 0.0464516129032,
+      "prior_top5_rate": 0.285161290323,
+      "selected_alpha": 1000,
+      "split": "validation",
+      "state_top1_rate": 0.0490322580645,
+      "state_top5_rate": 0.278709677419,
+      "top1_delta_vs_global": -0.00129032258065,
+      "top5_delta_vs_global": -0.00516129032258
+    },
+    {
+      "brier_improvement_vs_global": -0.000273032507979,
+      "brier_improvement_vs_prior": -0.000138257561641,
+      "first_target": "2024-09-23",
+      "global_top1_rate": 0.0567010309278,
+      "global_top5_rate": 0.268041237113,
+      "last_target": "2026-11-07",
+      "logloss_improvement_vs_global": -0.00550614758644,
+      "logloss_improvement_vs_prior": -0.00529674365987,
+      "max_state_training_n": 931,
+      "mean_rank_improvement_vs_global": -0.0747422680412,
+      "mean_state_training_n": 758.31185567,
+      "min_state_training_n": 577,
+      "n": 776,
+      "position": 4,
+      "prior_top1_rate": 0.055412371134,
+      "prior_top5_rate": 0.271907216495,
+      "selected_alpha": 1000,
+      "split": "blind_oos",
+      "state_top1_rate": 0.0541237113402,
+      "state_top5_rate": 0.274484536082,
+      "top1_delta_vs_global": -0.00257731958763,
+      "top5_delta_vs_global": 0.00644329896907
+    },
+    {
+      "brier_improvement_vs_global": 0.000117917230178,
+      "brier_improvement_vs_prior": -0.000109822883147,
+      "first_target": "2018-05-13",
+      "global_top1_rate": 0.117419354839,
+      "global_top5_rate": 0.494193548387,
+      "last_target": "2022-08-09",
+      "logloss_improvement_vs_global": 0.00375604739023,
+      "logloss_improvement_vs_prior": -0.00189426442831,
+      "max_state_training_n": 506,
+      "mean_rank_improvement_vs_global": 0.00322580645161,
+      "mean_state_training_n": 269.754193548,
+      "min_state_training_n": 69,
+      "n": 1550,
+      "position": 5,
+      "prior_top1_rate": 0.117419354839,
+      "prior_top5_rate": 0.494193548387,
+      "selected_alpha": 1000,
+      "split": "discovery",
+      "state_top1_rate": 0.117419354839,
+      "state_top5_rate": 0.494193548387,
+      "top1_delta_vs_global": 0.0,
+      "top5_delta_vs_global": 0.0
+    },
+    {
+      "brier_improvement_vs_global": -3.2446117261e-05,
+      "brier_improvement_vs_prior": -0.000327930246176,
+      "first_target": "2022-08-10",
+      "global_top1_rate": 0.154838709677,
+      "global_top5_rate": 0.527741935484,
+      "last_target": "2024-09-22",
+      "logloss_improvement_vs_global": -0.00159217964832,
+      "logloss_improvement_vs_prior": -0.00581472233021,
+      "max_state_training_n": 709,
+      "mean_rank_improvement_vs_global": -0.0296774193548,
+      "mean_state_training_n": 561.556129032,
+      "min_state_training_n": 405,
+      "n": 775,
+      "position": 5,
+      "prior_top1_rate": 0.154838709677,
+      "prior_top5_rate": 0.527741935484,
+      "selected_alpha": 1000,
+      "split": "validation",
+      "state_top1_rate": 0.154838709677,
+      "state_top5_rate": 0.527741935484,
+      "top1_delta_vs_global": 0.0,
+      "top5_delta_vs_global": 0.0
+    },
+    {
+      "brier_improvement_vs_global": 0.000248480532001,
+      "brier_improvement_vs_prior": 0.000132302514978,
+      "first_target": "2024-09-23",
+      "global_top1_rate": 0.123711340206,
+      "global_top5_rate": 0.518041237113,
+      "last_target": "2026-11-07",
+      "logloss_improvement_vs_global": 0.00211286580392,
+      "logloss_improvement_vs_prior": -0.00320406468807,
+      "max_state_training_n": 931,
+      "mean_rank_improvement_vs_global": 0.014175257732,
+      "mean_state_training_n": 758.31185567,
+      "min_state_training_n": 577,
+      "n": 776,
+      "position": 5,
+      "prior_top1_rate": 0.123711340206,
+      "prior_top5_rate": 0.518041237113,
+      "selected_alpha": 1000,
+      "split": "blind_oos",
+      "state_top1_rate": 0.123711340206,
+      "state_top5_rate": 0.518041237113,
+      "top1_delta_vs_global": 0.0,
+      "top5_delta_vs_global": 0.0
+    }
+  ],
+  "status": "EXPLORATORY_NO_PROMOTION",
+  "theoretical_p3_state": {
+    "exact_prior_state_masses": [
+      0.26386913229,
+      0.23613086771,
+      0.277619724988,
+      0.222380275012
+    ],
+    "exact_quartile_cutpoints": [
+      15,
+      20,
+      26
+    ],
+    "state_labels": [
+      "P3_Q1_M<=15",
+      "P3_Q2_M=16..20",
+      "P3_Q3_M=21..26",
+      "P3_Q4_M>=27"
+    ]
+  },
+  "validation_selection": [
+    {
+      "candidates": [
+        {
+          "alpha": 100,
+          "mean_brier_improvement_vs_global": -0.000278542293454,
+          "mean_brier_improvement_vs_prior": -0.000140564829041,
+          "mean_logloss_improvement_vs_global": -0.00951138022574,
+          "mean_rank_improvement_vs_global": -0.021935483871,
+          "n": 775,
+          "top1_delta_vs_global": 0.00258064516129,
+          "top5_delta_vs_global": 0.00129032258065
+        },
+        {
+          "alpha": 300,
+          "mean_brier_improvement_vs_global": -3.93489593192e-05,
+          "mean_brier_improvement_vs_prior": 0.000121862409788,
+          "mean_logloss_improvement_vs_global": -0.00304172815237,
+          "mean_rank_improvement_vs_global": 0.0167741935484,
+          "n": 775,
+          "top1_delta_vs_global": 0.00516129032258,
+          "top5_delta_vs_global": 0.00387096774194
+        },
+        {
+          "alpha": 1000,
+          "mean_brier_improvement_vs_global": 5.64967381301e-05,
+          "mean_brier_improvement_vs_prior": 0.000249965675957,
+          "mean_logloss_improvement_vs_global": 0.00025113083801,
+          "mean_rank_improvement_vs_global": 0.0322580645161,
+          "n": 775,
+          "top1_delta_vs_global": 0.0,
+          "top5_delta_vs_global": 0.00387096774194
+        }
+      ],
+      "position": 1,
+      "selected_alpha": 1000,
+      "selected_validation_brier_improvement_vs_global": 5.64967381301e-05,
+      "selection_metric": "validation maximum mean Brier improvement vs global shrinkage with same alpha; ties choose smaller alpha"
+    },
+    {
+      "candidates": [
+        {
+          "alpha": 100,
+          "mean_brier_improvement_vs_global": -0.000721492089966,
+          "mean_brier_improvement_vs_prior": -0.00156702834379,
+          "mean_logloss_improvement_vs_global": -0.0173399877449,
+          "mean_rank_improvement_vs_global": -0.0464516129032,
+          "n": 775,
+          "top1_delta_vs_global": -0.0116129032258,
+          "top5_delta_vs_global": 0.00903225806452
+        },
+        {
+          "alpha": 300,
+          "mean_brier_improvement_vs_global": -0.000242150768942,
+          "mean_brier_improvement_vs_prior": -0.000994166079755,
+          "mean_logloss_improvement_vs_global": -0.0060922555939,
+          "mean_rank_improvement_vs_global": 0.0129032258065,
+          "n": 775,
+          "top1_delta_vs_global": -0.0116129032258,
+          "top5_delta_vs_global": 0.0129032258065
+        },
+        {
+          "alpha": 1000,
+          "mean_brier_improvement_vs_global": 0.00015171863194,
+          "mean_brier_improvement_vs_prior": -0.000385804932749,
+          "mean_logloss_improvement_vs_global": 0.00131223584104,
+          "mean_rank_improvement_vs_global": 0.0761290322581,
+          "n": 775,
+          "top1_delta_vs_global": -0.0129032258065,
+          "top5_delta_vs_global": 0.0193548387097
+        }
+      ],
+      "position": 2,
+      "selected_alpha": 1000,
+      "selected_validation_brier_improvement_vs_global": 0.00015171863194,
+      "selection_metric": "validation maximum mean Brier improvement vs global shrinkage with same alpha; ties choose smaller alpha"
+    },
+    {
+      "candidates": [
+        {
+          "alpha": 100,
+          "mean_brier_improvement_vs_global": -0.00123905694941,
+          "mean_brier_improvement_vs_prior": -0.00180553353886,
+          "mean_logloss_improvement_vs_global": -0.0210034387063,
+          "mean_rank_improvement_vs_global": -0.274838709677,
+          "n": 775,
+          "top1_delta_vs_global": -0.0206451612903,
+          "top5_delta_vs_global": -0.00129032258065
+        },
+        {
+          "alpha": 300,
+          "mean_brier_improvement_vs_global": -0.000641916083301,
+          "mean_brier_improvement_vs_prior": -0.00112891902148,
+          "mean_logloss_improvement_vs_global": -0.00769393948082,
+          "mean_rank_improvement_vs_global": -0.161290322581,
+          "n": 775,
+          "top1_delta_vs_global": -0.0206451612903,
+          "top5_delta_vs_global": 0.0
+        },
+        {
+          "alpha": 1000,
+          "mean_brier_improvement_vs_global": -0.000102974561469,
+          "mean_brier_improvement_vs_prior": -0.000416941835165,
+          "mean_logloss_improvement_vs_global": 0.00142609021556,
+          "mean_rank_improvement_vs_global": -0.0206451612903,
+          "n": 775,
+          "top1_delta_vs_global": -0.021935483871,
+          "top5_delta_vs_global": 0.00903225806452
+        }
+      ],
+      "position": 3,
+      "selected_alpha": 1000,
+      "selected_validation_brier_improvement_vs_global": -0.000102974561469,
+      "selection_metric": "validation maximum mean Brier improvement vs global shrinkage with same alpha; ties choose smaller alpha"
+    },
+    {
+      "candidates": [
+        {
+          "alpha": 100,
+          "mean_brier_improvement_vs_global": -0.00110429432387,
+          "mean_brier_improvement_vs_prior": -0.00133153608661,
+          "mean_logloss_improvement_vs_global": -0.0139329212068,
+          "mean_rank_improvement_vs_global": -0.251612903226,
+          "n": 775,
+          "top1_delta_vs_global": 0.00129032258065,
+          "top5_delta_vs_global": -0.0245161290323
+        },
+        {
+          "alpha": 300,
+          "mean_brier_improvement_vs_global": -0.000666028275268,
+          "mean_brier_improvement_vs_prior": -0.000852282652369,
+          "mean_logloss_improvement_vs_global": -0.00624110006856,
+          "mean_rank_improvement_vs_global": -0.156129032258,
+          "n": 775,
+          "top1_delta_vs_global": 0.00258064516129,
+          "top5_delta_vs_global": -0.0206451612903
+        },
+        {
+          "alpha": 1000,
+          "mean_brier_improvement_vs_global": -0.000232927925837,
+          "mean_brier_improvement_vs_prior": -0.000333755243843,
+          "mean_logloss_improvement_vs_global": -0.000330532219062,
+          "mean_rank_improvement_vs_global": -0.0658064516129,
+          "n": 775,
+          "top1_delta_vs_global": -0.00129032258065,
+          "top5_delta_vs_global": -0.00516129032258
+        }
+      ],
+      "position": 4,
+      "selected_alpha": 1000,
+      "selected_validation_brier_improvement_vs_global": -0.000232927925837,
+      "selection_metric": "validation maximum mean Brier improvement vs global shrinkage with same alpha; ties choose smaller alpha"
+    },
+    {
+      "candidates": [
+        {
+          "alpha": 100,
+          "mean_brier_improvement_vs_global": -0.0009496482443,
+          "mean_brier_improvement_vs_prior": -0.00144857202892,
+          "mean_logloss_improvement_vs_global": -0.0177729293363,
+          "mean_rank_improvement_vs_global": -0.132903225806,
+          "n": 775,
+          "top1_delta_vs_global": -0.00774193548387,
+          "top5_delta_vs_global": -0.00516129032258
+        },
+        {
+          "alpha": 300,
+          "mean_brier_improvement_vs_global": -0.000464831979362,
+          "mean_brier_improvement_vs_prior": -0.000900692201798,
+          "mean_logloss_improvement_vs_global": -0.00882395941544,
+          "mean_rank_improvement_vs_global": -0.0890322580645,
+          "n": 775,
+          "top1_delta_vs_global": -0.00903225806452,
+          "top5_delta_vs_global": 0.0
+        },
+        {
+          "alpha": 1000,
+          "mean_brier_improvement_vs_global": -3.2446117261e-05,
+          "mean_brier_improvement_vs_prior": -0.000327930246176,
+          "mean_logloss_improvement_vs_global": -0.00159217964832,
+          "mean_rank_improvement_vs_global": -0.0296774193548,
+          "n": 775,
+          "top1_delta_vs_global": 0.0,
+          "top5_delta_vs_global": 0.0
+        }
+      ],
+      "position": 5,
+      "selected_alpha": 1000,
+      "selected_validation_brier_improvement_vs_global": -3.2446117261e-05,
+      "selection_metric": "validation maximum mean Brier improvement vs global shrinkage with same alpha; ties choose smaller alpha"
+    }
+  ],
+  "walk_forward": {
+    "split_counts": {
+      "blind_oos": 776,
+      "discovery": 1550,
+      "validation": 775
+    },
+    "split_dates": {
+      "blind_oos": [
+        "2024-09-23",
+        "2026-11-07"
+      ],
+      "discovery": [
+        "2018-05-13",
+        "2022-08-09"
+      ],
+      "validation": [
+        "2022-08-10",
+        "2024-09-22"
+      ]
+    },
+    "state_distribution_by_split": [
+      {
+        "expected_counts_from_exact_p3_prior": [
+          408.99715505,
+          366.00284495,
+          430.310573732,
+          344.689426268
+        ],
+        "interpretation": "descriptive marginal state-frequency control; not a dependence or predictive test",
+        "n": 1550,
+        "observed_state_counts": [
+          425,
+          377,
+          414,
+          334
+        ],
+        "split": "discovery",
+        "state_labels": [
+          "P3_Q1_M<=15",
+          "P3_Q2_M=16..20",
+          "P3_Q3_M=21..26",
+          "P3_Q4_M>=27"
+        ]
+      },
+      {
+        "expected_counts_from_exact_p3_prior": [
+          204.498577525,
+          183.001422475,
+          215.155286866,
+          172.344713134
+        ],
+        "interpretation": "descriptive marginal state-frequency control; not a dependence or predictive test",
+        "n": 775,
+        "observed_state_counts": [
+          191,
+          192,
+          220,
+          172
+        ],
+        "split": "validation",
+        "state_labels": [
+          "P3_Q1_M<=15",
+          "P3_Q2_M=16..20",
+          "P3_Q3_M=21..26",
+          "P3_Q4_M>=27"
+        ]
+      },
+      {
+        "expected_counts_from_exact_p3_prior": [
+          204.762446657,
+          183.237553343,
+          215.432906591,
+          172.567093409
+        ],
+        "interpretation": "descriptive marginal state-frequency control; not a dependence or predictive test",
+        "n": 776,
+        "observed_state_counts": [
+          204,
+          177,
+          222,
+          173
+        ],
+        "split": "blind_oos",
+        "state_labels": [
+          "P3_Q1_M<=15",
+          "P3_Q2_M=16..20",
+          "P3_Q3_M=21..26",
+          "P3_Q4_M>=27"
+        ]
+      }
+    ]
+  }
+}
