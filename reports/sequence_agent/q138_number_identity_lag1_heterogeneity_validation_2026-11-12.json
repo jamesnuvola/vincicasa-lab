@@ -1,0 +1,196 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q138",
+  "status": "PASS",
+  "check_count": 29,
+  "passed_count": 29,
+  "checks": [
+    {
+      "name": "source_blob_sha_pinned",
+      "passed": true
+    },
+    {
+      "name": "protocol_blob_sha_pinned",
+      "passed": true
+    },
+    {
+      "name": "protocol_identity_and_source_reconciled",
+      "passed": true
+    },
+    {
+      "name": "archive_rows_3405",
+      "passed": true
+    },
+    {
+      "name": "eligible_prefix_3404",
+      "passed": true
+    },
+    {
+      "name": "disputed_2026_11_11_excluded",
+      "passed": true
+    },
+    {
+      "name": "last_eligible_date_2026_11_10",
+      "passed": true
+    },
+    {
+      "name": "five_distinct_numbers_1_to_40",
+      "passed": true
+    },
+    {
+      "name": "dates_strictly_daily_and_monotonic",
+      "passed": true
+    },
+    {
+      "name": "warmup_200_and_target_count_3204",
+      "passed": true
+    },
+    {
+      "name": "target_range_2018_02_02_to_2026_11_10",
+      "passed": true
+    },
+    {
+      "name": "split_1922_641_641",
+      "passed": true
+    },
+    {
+      "name": "first_target_has_199_prior_transitions",
+      "passed": true
+    },
+    {
+      "name": "training_transition_count_increases_one_by_one",
+      "passed": true
+    },
+    {
+      "name": "strict_prior_calendar_cutoff",
+      "passed": true
+    },
+    {
+      "name": "score_before_target_update",
+      "passed": true
+    },
+    {
+      "name": "fixed_alpha_200",
+      "passed": true
+    },
+    {
+      "name": "exact_subset_count_658008",
+      "passed": true
+    },
+    {
+      "name": "uniform_joint_logloss_exact",
+      "passed": true
+    },
+    {
+      "name": "uniform_marginal_brier_exact",
+      "passed": true
+    },
+    {
+      "name": "marginal_probabilities_sum_to_five",
+      "passed": true
+    },
+    {
+      "name": "marginal_probabilities_in_unit_interval",
+      "passed": true
+    },
+    {
+      "name": "all_model_scores_and_parameters_finite",
+      "passed": true
+    },
+    {
+      "name": "deterministic_full_replay",
+      "passed": true
+    },
+    {
+      "name": "future_suffix_invariance_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "six_inference_endpoints",
+      "passed": true
+    },
+    {
+      "name": "holm_adjusted_p_values_valid",
+      "passed": true
+    },
+    {
+      "name": "no_archive_freeze_q60_or_engine_mutation",
+      "passed": true
+    },
+    {
+      "name": "no_protected_pr_or_auto_merge_mutation",
+      "passed": true
+    }
+  ],
+  "counts": {
+    "archive_draw_rows": 3405,
+    "eligible_prefix_draws": 3404,
+    "targets": 3204,
+    "discovery": 1922,
+    "validation": 641,
+    "blind_oos": 641,
+    "exact_subsets": 658008,
+    "inference_endpoints": 6,
+    "holm_family_size": 6,
+    "future_suffix_tests": 9,
+    "future_suffix_passed": 9
+  },
+  "source_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+  "protocol_blob_sha": "be4f48c2c99dabb8c8cc28c1bed3446574a99afd",
+  "max_marginal_sum_error": 6e-15,
+  "marginal_probability_range": [
+    0.094098493813,
+    0.171637227175
+  ],
+  "max_abs_theta": 0.400894708367,
+  "deterministic_replay": true,
+  "future_suffix_checks": [
+    {
+      "drawPrefix": 250,
+      "targets": 50,
+      "identical": true
+    },
+    {
+      "drawPrefix": 400,
+      "targets": 200,
+      "identical": true
+    },
+    {
+      "drawPrefix": 700,
+      "targets": 500,
+      "identical": true
+    },
+    {
+      "drawPrefix": 1000,
+      "targets": 800,
+      "identical": true
+    },
+    {
+      "drawPrefix": 1400,
+      "targets": 1200,
+      "identical": true
+    },
+    {
+      "drawPrefix": 1800,
+      "targets": 1600,
+      "identical": true
+    },
+    {
+      "drawPrefix": 2200,
+      "targets": 2000,
+      "identical": true
+    },
+    {
+      "drawPrefix": 2700,
+      "targets": 2500,
+      "identical": true
+    },
+    {
+      "drawPrefix": 3100,
+      "targets": 2900,
+      "identical": true
+    }
+  ],
+  "decision": "NO_IDENTITY_SPECIFIC_LAG1_LIFT_DEMONSTRATED",
+  "interpretation": "PASS certifies the Q138 computation and replay checks; it does not imply predictive lift or promotion eligibility."
+}
