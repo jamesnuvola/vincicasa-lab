@@ -9,10 +9,10 @@ on:
 permissions:
   contents: read
 
-# Cancel superseded research-branch runs so several expensive historical searches
-# do not compete after each incremental commit.
+# Keep push and pull-request concurrency groups separate: only push runs persist outputs.
+# Push runs on the same full ref remain serialized; the persistence step also recovers stale-head conflicts.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: ${{ !(startsWith(github.head_ref, 'research/q141-') || startsWith(github.ref, 'refs/heads/research/q141-')) }}
 
 jobs:
