@@ -184,8 +184,8 @@ def verify_c5_readback():
         "historical_code_lineage_receipt_count": receipt["code_lineage_verified"],
         "current_source_lineage_drift": lineage_drift,
         "drift_resolution": "Q80 report/manifest metadata replay allowed; Q80 ledger SHA-256 and archive lineage revalidated exactly.",
-        "blind_oos_effect": report["primary"]["mae_improvement"],
-        "blind_oos_p": report["primary"]["one_sided_block_signflip_p"],
+        "blind_oos_effect": report["primary_blind_oos"]["mae_improvement"],
+        "blind_oos_p": report["primary_blind_oos"]["one_sided_block_signflip_p"],
     }
 
 def descriptive_transition_atlas(q7_rows, y, transition):
