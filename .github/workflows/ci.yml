@@ -63,6 +63,22 @@ jobs:
             reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv
             reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json
           retention-days: 90
+      - name: Test Q141-C2 current-state margin selector leakage and determinism
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_formula_family_margin_selector.py -v
+      - name: Run Q141-C2 strict-prior current-state margin selector
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_formula_family_margin_selector.py
+      - name: Upload Q141-C2 reproducibility bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-c2-margin-selector-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json
+            reports/sequence_agent/q141_formula_family_margin_selector_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json
+          retention-days: 90
       # PR runs validate and upload; only the push run persists to avoid concurrent add/add conflicts.
       - name: Persist Q141 outputs append-only to the research branch
         if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-')
@@ -71,6 +87,7 @@ jobs:
         run: |
           git add reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json
           git add reports/sequence_agent/q141_formula_family_pair_union_report_2026-11-12.json reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json
+          git add reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json reports/sequence_agent/q141_formula_family_margin_selector_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json
           if git diff --cached --quiet; then
             echo "Q141 outputs already match this exact checkout; no branch update needed."
           else
