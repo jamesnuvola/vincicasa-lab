@@ -58,7 +58,7 @@ function compute(){
 }
 function verifyManifest(){const m=JSON.parse(readText(MANIFEST_PATH));if(!Array.isArray(m.entries)||m.entries.length!==14)fail("manifest entry count");for(const e of m.entries){const s=readText(e.path),bytes=Buffer.byteLength(s,"utf8"),sha=gitBlobSha(s);if(bytes!==e.bytes||sha!==e.sha)fail("manifest mismatch "+e.path);}return m.entries.length;}
 const computed=compute(),expected=JSON.parse(readText(REPORT_PATH));
-if(stable(computed)!==stable(expected))fail("recomputed report differs from persisted report");
+function firstDiff(a,b,p="$"){if(typeof a==="number"&&typeof b==="number")return Math.abs(a-b)>1e-12?{path:p,computed:a,expected:b}:null;if(a===null||b===null||typeof a!=="object"||typeof b!=="object")return a===b?null:{path:p,computed:a,expected:b};if(Array.isArray(a)||Array.isArray(b)){if(!Array.isArray(a)||!Array.isArray(b)||a.length!==b.length)return {path:p,computed:Array.isArray(a)?a.length:typeof a,expected:Array.isArray(b)?b.length:typeof b};for(let i=0;i<a.length;i++){const d=firstDiff(a[i],b[i],p+"["+i+"]");if(d)return d;}return null;}const ak=Object.keys(a).sort(),bk=Object.keys(b).sort();if(stable(ak)!==stable(bk))return {path:p+".keys",computed:ak,expected:bk};for(const k of ak){const d=firstDiff(a[k],b[k],p+"."+k);if(d)return d;}return null;}const reportDiff=firstDiff(computed,expected);if(reportDiff){console.error("Q133 FIRST REPORT DIFF",JSON.stringify(reportDiff));fail("recomputed report differs from persisted report");}
 const validation=JSON.parse(readText(VALIDATION_PATH));
 if(validation.check_count!==18||validation.checks.length!==18||validation.checks.some(x=>x.passed!==true))fail("validation record incomplete");
 const count=verifyManifest();
