@@ -24,7 +24,7 @@ The two ledgers must match on target date, cutoff date, actual quintet and split
 ## Predictors
 
 Use the previous 50 target rows only:
-1. Q7 own-granularity baseline: rolling mean of Q7 \`mean_percentile_all\`.
+1. Q7 own-granularity baseline: rolling mean of Q7 \`mean_percentile_all_formulas\`.
 2. Q80 equal-family rolling mean of Top-5 number hits.
 3. Dispersion across the six Q80 family-specific rolling mean Top-5 hit counts.
 4. Normalized Shannon entropy of the six rolling family means.
