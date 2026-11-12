@@ -1,0 +1,395 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q139",
+  "title": "Weekday-conditioned number inclusion beyond pooled frequency",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "epistemic_status": "PROTOCOL_COMMITTED_BEFORE_COMPUTATION; EXPLORATORY_WITHIN_Q00_Q139_FAMILY",
+  "generated_at_utc": "2026-11-12T07:41:00Z",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_rows": 3405,
+    "eligible_prefix_draws": 3404,
+    "first_eligible_date": "2017-07-17",
+    "last_eligible_date": "2026-11-10",
+    "disputed_2026_11_11_excluded": true,
+    "source_kind": "pinned canonical main prefix through 2026-11-10; historical strict-prior reconstruction"
+  },
+  "protocol": {
+    "branch": "research/q139-weekday-conditioned-subset-20261112",
+    "blob_sha": "20f5e36799057c98f0d3338c050939c93f1a9ca5",
+    "registered_at_utc": "2026-11-12T07:41:00Z"
+  },
+  "hypothesis": "The weekday known before a target may condition number inclusion rates beyond a pooled historical frequency model. A weekday-conditioned fixed-size 5-of-40 subset distribution may improve joint subset log-loss and marginal inclusion Brier over both uniform and pooled-frequency baselines.",
+  "models": {
+    "M0": "Uniform exact 5-of-40 subset.",
+    "M1": "Pooled number-frequency tilt; alpha=200, shrinkage toward 0.125.",
+    "M2": "Target-weekday-specific number-frequency tilt; alpha=200, shrinkage toward pooled M1 rates.",
+    "normalization": "Exact elementary-symmetric polynomial e5 over all 40 number weights; every outcome is a five-number subset."
+  },
+  "design": {
+    "warmup_draws": 200,
+    "targets": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "discovery": 1922,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "exact_subsets": 658008,
+    "alpha": 200,
+    "strict_prior": true,
+    "score_before_update": true,
+    "parameter_tuning": "none"
+  },
+  "split_results": {
+    "discovery": {
+      "targets": 1922,
+      "models": {
+        "M0": {
+          "jointSubsetLogLoss": 13.396972368289,
+          "marginalInclusionBrier": 0.109375
+        },
+        "M1": {
+          "jointSubsetLogLoss": 13.410385095184,
+          "marginalInclusionBrier": 0.109450238904
+        },
+        "M2": {
+          "jointSubsetLogLoss": 13.429027502823,
+          "marginalInclusionBrier": 0.109553346784
+        }
+      },
+      "gains": {
+        "M1_vs_M0": {
+          "jointLogLoss": -0.013412726896,
+          "marginalBrier": -0.000075238904
+        },
+        "M2_vs_M1": {
+          "jointLogLoss": -0.018642407639,
+          "marginalBrier": -0.00010310788
+        },
+        "M2_vs_M0": {
+          "jointLogLoss": -0.032055134535,
+          "marginalBrier": -0.000178346784
+        }
+      },
+      "weekdayHistoryDrawsMean": 165.35691987513
+    },
+    "validation": {
+      "targets": 641,
+      "models": {
+        "M0": {
+          "jointSubsetLogLoss": 13.396972368288,
+          "marginalInclusionBrier": 0.109375
+        },
+        "M1": {
+          "jointSubsetLogLoss": 13.404685502432,
+          "marginalInclusionBrier": 0.109418839209
+        },
+        "M2": {
+          "jointSubsetLogLoss": 13.411641022558,
+          "marginalInclusionBrier": 0.109454481892
+        }
+      },
+      "gains": {
+        "M1_vs_M0": {
+          "jointLogLoss": -0.007713134144,
+          "marginalBrier": -0.000043839209
+        },
+        "M2_vs_M1": {
+          "jointLogLoss": -0.006955520126,
+          "marginalBrier": -0.000035642683
+        },
+        "M2_vs_M0": {
+          "jointLogLoss": -0.014668654269,
+          "marginalBrier": -0.000079481892
+        }
+      },
+      "weekdayHistoryDrawsMean": 348.429017160686
+    },
+    "blind_oos": {
+      "targets": 641,
+      "models": {
+        "M0": {
+          "jointSubsetLogLoss": 13.396972368288,
+          "marginalInclusionBrier": 0.109375
+        },
+        "M1": {
+          "jointSubsetLogLoss": 13.40023974931,
+          "marginalInclusionBrier": 0.109394161742
+        },
+        "M2": {
+          "jointSubsetLogLoss": 13.411912660718,
+          "marginalInclusionBrier": 0.109464031417
+        }
+      },
+      "gains": {
+        "M1_vs_M0": {
+          "jointLogLoss": -0.003267381022,
+          "marginalBrier": -0.000019161742
+        },
+        "M2_vs_M1": {
+          "jointLogLoss": -0.011672911409,
+          "marginalBrier": -0.000069869675
+        },
+        "M2_vs_M0": {
+          "jointLogLoss": -0.01494029243,
+          "marginalBrier": -0.000089031417
+        }
+      },
+      "weekdayHistoryDrawsMean": 440
+    }
+  },
+  "inference": [
+    {
+      "split": "validation",
+      "comparison": "M1_vs_M0",
+      "metric": "joint",
+      "meanGain": -0.007713134143756633,
+      "signFlip": {
+        "meanGain": -0.007713134143756633,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 9673,
+        "pRaw": 0.9673032696730327
+      },
+      "bootstrap95": [
+        -0.015618423716241446,
+        -0.000015531211702325962
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "validation",
+      "comparison": "M1_vs_M0",
+      "metric": "brier",
+      "meanGain": -0.00004383920908613681,
+      "signFlip": {
+        "meanGain": -0.00004383920908613681,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 9712,
+        "pRaw": 0.9712028797120288
+      },
+      "bootstrap95": [
+        -0.00008792856641881006,
+        -0.0000014390953831480194
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "validation",
+      "comparison": "M2_vs_M1",
+      "metric": "joint",
+      "meanGain": -0.006955520125588637,
+      "signFlip": {
+        "meanGain": -0.006955520125588637,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 7741,
+        "pRaw": 0.7741225877412259
+      },
+      "bootstrap95": [
+        -0.023764075391415163,
+        0.00994576226478187
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "validation",
+      "comparison": "M2_vs_M1",
+      "metric": "brier",
+      "meanGain": -0.00003564268264390402,
+      "signFlip": {
+        "meanGain": -0.00003564268264390402,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 7590,
+        "pRaw": 0.7590240975902409
+      },
+      "bootstrap95": [
+        -0.0001289269944416321,
+        0.00005753515510603043
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "validation",
+      "comparison": "M2_vs_M0",
+      "metric": "joint",
+      "meanGain": -0.014668654269345272,
+      "signFlip": {
+        "meanGain": -0.014668654269345272,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 9131,
+        "pRaw": 0.9131086891310869
+      },
+      "bootstrap95": [
+        -0.03421625205775276,
+        0.005495959107959389
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "validation",
+      "comparison": "M2_vs_M0",
+      "metric": "brier",
+      "meanGain": -0.00007948189173004082,
+      "signFlip": {
+        "meanGain": -0.00007948189173004082,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 9132,
+        "pRaw": 0.9132086791320868
+      },
+      "bootstrap95": [
+        -0.00019000856883252275,
+        0.00003100741095784545
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "blind_oos",
+      "comparison": "M1_vs_M0",
+      "metric": "joint",
+      "meanGain": -0.0032673810216685972,
+      "signFlip": {
+        "meanGain": -0.0032673810216685972,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 7795,
+        "pRaw": 0.7795220477952205
+      },
+      "bootstrap95": [
+        -0.010545607679280752,
+        0.004354522437187783
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "blind_oos",
+      "comparison": "M1_vs_M0",
+      "metric": "brier",
+      "meanGain": -0.00001916174212640965,
+      "signFlip": {
+        "meanGain": -0.00001916174212640965,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 7864,
+        "pRaw": 0.7864213578642136
+      },
+      "bootstrap95": [
+        -0.00006042567206639939,
+        0.000022198299839555626
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "blind_oos",
+      "comparison": "M2_vs_M1",
+      "metric": "joint",
+      "meanGain": -0.01167291140854077,
+      "signFlip": {
+        "meanGain": -0.01167291140854077,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 8814,
+        "pRaw": 0.8814118588141185
+      },
+      "bootstrap95": [
+        -0.030723463210933975,
+        0.006940139269641908
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "blind_oos",
+      "comparison": "M2_vs_M1",
+      "metric": "brier",
+      "meanGain": -0.00006986967528466924,
+      "signFlip": {
+        "meanGain": -0.00006986967528466924,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 8999,
+        "pRaw": 0.8999100089991001
+      },
+      "bootstrap95": [
+        -0.0001771439370383724,
+        0.00003480830791590723
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "blind_oos",
+      "comparison": "M2_vs_M0",
+      "metric": "joint",
+      "meanGain": -0.014940292430209367,
+      "signFlip": {
+        "meanGain": -0.014940292430209367,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 9285,
+        "pRaw": 0.9285071492850715
+      },
+      "bootstrap95": [
+        -0.03481844672719579,
+        0.004471132128527477
+      ],
+      "pHolm": 1
+    },
+    {
+      "split": "blind_oos",
+      "comparison": "M2_vs_M0",
+      "metric": "brier",
+      "meanGain": -0.00008903141741107888,
+      "signFlip": {
+        "meanGain": -0.00008903141741107888,
+        "replicates": 10000,
+        "blockLength": 20,
+        "blocks": 33,
+        "extreme": 9417,
+        "pRaw": 0.9417058294170583
+      },
+      "bootstrap95": [
+        -0.00019927346560127013,
+        0.000016814764368782524
+      ],
+      "pHolm": 1
+    }
+  ],
+  "integrity": {
+    "checks_total": 30,
+    "checks_passed": 30,
+    "future_suffix_checks": 9,
+    "future_suffix_passed": 9,
+    "max_marginal_sum_error": 5.329070518200751e-15,
+    "minimum_marginal_probability": 0.08132209890068622,
+    "maximum_marginal_probability": 0.18501420867099863,
+    "deterministic_replay": true
+  },
+  "decision": "NO_WEEKDAY_INCREMENTAL_LIFT_DEMONSTRATED",
+  "interpretation": "The weekday-conditioned model is assessed against the pooled-frequency control and exact uniform fixed-size baseline. A positive point estimate alone is insufficient; the predeclared holdout family uses paired block sign-flip inference, circular block-bootstrap intervals and Holm correction across 12 endpoints.",
+  "limitations": [
+    "This is an exploratory hypothesis within a large cumulative Q00-Q139 research family; Holm covers only the 12 predeclared Q139 holdout endpoints, not the full historical research family.",
+    "The historical Blind OOS has been exposed to prior SONAR research and is not a virgin prospective holdout.",
+    "The walk-forward is a strict-prior historical reconstruction, not a contemporaneous forecast freeze.",
+    "Weekday is an exogenous calendar covariate; the experiment does not establish a causal weekday mechanism.",
+    "The disputed 2026-11-11 draw is excluded because its five-number primary-source provenance remains unresolved.",
+    "No model can guarantee or establish a winning quintet."
+  ],
+  "next_action": "If weekday conditioning fails to improve on the pooled frequency model on historical Blind OOS after Holm correction, retain M0 as reference and M1/M2 as research controls; prioritize source-clean prospective freezes rather than further calendar or lag variants."
+}
