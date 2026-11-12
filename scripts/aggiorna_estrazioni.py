@@ -114,6 +114,19 @@ def parse_estrazioni(html):
 
     return out
 
+def merge_page_results(target, page_results):
+    """Merge page results without silently replacing conflicting dates."""
+    for data, numbers in page_results.items():
+        if data in target and target[data] != numbers:
+            raise ValueError(f"conflicting source results for {data}: {target[data]} vs {numbers}")
+        target[data] = numbers
+
+
+def page_contains_new_draw(page_results, latest_date):
+    """A page is a valid stopping point only if it contains a date newer than the CSV."""
+    return any(data > latest_date for data in page_results)
+
+
 def main():
     rows = list(csv.DictReader(open(CSV)))
     ultima = max(r["data"].strip() for r in rows)
@@ -123,8 +136,11 @@ def main():
     errori = []
     for url in URLS:
         try:
-            trovate.update(parse_estrazioni(fetch(url)))
-            if trovate:
+            page_results = parse_estrazioni(fetch(url))
+            merge_page_results(trovate, page_results)
+            # Do not stop on a stale archive page that contains only old draws:
+            # continue to the homepage and other configured sources.
+            if page_contains_new_draw(page_results, ultima):
                 break
         except Exception as e:  # noqa: BLE001
             errori.append(f"{url}: {e}")
