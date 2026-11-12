@@ -3,7 +3,12 @@
 import re
 import unittest
 
-from aggiorna_estrazioni import MESI, parse_estrazioni
+from aggiorna_estrazioni import (
+    MESI,
+    merge_page_results,
+    page_contains_new_draw,
+    parse_estrazioni,
+)
 
 
 def legacy_window_parse(html):
@@ -79,6 +84,17 @@ class ArchiveParserTests(unittest.TestCase):
                     f"<td>{numbers}</td><td>Dettagli</td></tr></table>"
                 )
                 self.assertEqual(parse_estrazioni(html), {})
+
+    def test_stale_archive_page_does_not_short_circuit_fallback(self):
+        stale = {"2026-11-10": [1, 7, 11, 22, 25]}
+        fresh = {"2026-11-11": [1, 21, 22, 27, 29]}
+        self.assertFalse(page_contains_new_draw(stale, "2026-11-10"))
+        self.assertTrue(page_contains_new_draw(fresh, "2026-11-10"))
+
+    def test_conflicting_sources_fail_closed(self):
+        merged = {"2026-11-10": [1, 7, 11, 22, 25]}
+        with self.assertRaises(ValueError):
+            merge_page_results(merged, {"2026-11-10": [1, 8, 11, 22, 25]})
 
     def test_conflicting_duplicate_date_fails_closed(self):
         html = """
