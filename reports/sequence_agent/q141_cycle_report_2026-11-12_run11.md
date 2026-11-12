@@ -2,7 +2,7 @@
 
 **Status:** Q141-C4 walk-forward complete; exact remote Git readback verified  
 **Date:** 2026-11-12  
-**Research branch:** \`research/q141-formula-universe-behaviour-mapping-20261112\`  
+**Research branch:** `research/q141-formula-universe-behaviour-mapping-20261112`  
 **PR:** #89 remains open and draft
 
 ## Recovery and starting state
@@ -17,12 +17,12 @@ This is a meta-quality forecast for a formula universe, not a prediction of the 
 
 ## Data and alignment audit
 
-- Q141/Q80 C0 source: 3,404 eligible draws through 2026-11-10; archive blob \`fcb453ed06c8002314f826dbac79d6935f9ac103\`.
+- Q141/Q80 C0 source: 3,404 eligible draws through 2026-11-10; archive blob `fcb453ed06c8002314f826dbac79d6935f9ac103`.
 - Q80 C0 behaviour ledger: 3,354 target rows.
-- Q7 source: 3,387 draws through 2026-10-24; archive blob \`7dab05ba49ace909fe8783eef729605049c65e50\`, verified as an exact Q141 prefix.
+- Q7 source: 3,387 draws through 2026-10-24; archive blob `7dab05ba49ace909fe8783eef729605049c65e50`, verified as an exact Q141 prefix.
 - Q7 B8 ledger: 3,286 target rows across 1,023 formulas and 658,008 candidate quintets.
 - Exact join: 3,286/3,286 rows matched on target date, cutoff date, actual quintet and target-index identity; zero mismatches.
-- Q7 \`prior_draws\` equals Q80 C0 \`target_index\`.
+- Q7 `prior_draws` equals Q80 C0 `target_index`.
 - Contest 315 and the 18-row Q141 suffix after the Q7 prefix were excluded.
 - Q80 C0 split labels were deliberately not compared: its 3,354-target universe has different 60/20/20 boundaries from the 3,286-target Q7 universe. Q7 split labels are authoritative.
 
@@ -65,7 +65,7 @@ The interval crosses zero, the estimate is slightly negative, and the practical 
 
 The first runs exposed real implementation/persistence issues; they were not counted as successful validations:
 
-1. Run 43303609368: Q7 ledger stores \`mean_percentile_all_formulas\`, not \`mean_percentile_all\`; corrected to the exact source column.
+1. Run 43303609368: Q7 ledger stores `mean_percentile_all_formulas`, not `mean_percentile_all`; corrected to the exact source column.
 2. Run 43303779254: relative output directory caused Git-path resolution failure; script now resolves output paths before hashing.
 3. Run 43303931371: a concurrent test-file commit advanced the branch during execution; the exact readback correctly rejected stale source lineage.
 4. Run 43303935726: concurrent output commits caused add/add conflicts during retry; persistence was changed to preserve generated outputs, reset to the current remote research-branch head, then stage and push, making recovery idempotent.
@@ -75,10 +75,10 @@ The final workflow ran 7 unit tests successfully, completed the full walk-forwar
 
 ## Persistence and verification
 
-- Report Git blob: \`4c42cb2e50491e30e295067504793998bca3f645\`; SHA-256 \`52d8b35dde04ea357c7de9ad17410c7a81a382680b63bae4286776d22aa43ef1\`.
-- Target ledger: 3,186 rows; Git blob \`acdc618ee9dd716b5859f11252f83107295ada9f\`; SHA-256 \`84e3254dcd0d330a3c0bda3e89bafc3c51ea1e8482aa9ebcca11342516f01ec5\`.
+- Report Git blob: `4c42cb2e50491e30e295067504793998bca3f645`; SHA-256 `52d8b35dde04ea357c7de9ad17410c7a81a382680b63bae4286776d22aa43ef1`.
+- Target ledger: 3,186 rows; Git blob `acdc618ee9dd716b5859f11252f83107295ada9f`; SHA-256 `84e3254dcd0d330a3c0bda3e89bafc3c51ea1e8482aa9ebcca11342516f01ec5`.
 - Remote readback: 2 output files and 11 source/code lineage entries verified by bytes, SHA-256 and Git blob SHA-1.
-- Checkpoint status: \`REMOTE_GIT_READBACK_VERIFIED\`.
+- Checkpoint status: `REMOTE_GIT_READBACK_VERIFIED`.
 - C4 workflow: [run 43304123032](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43304123032), success.
 - Q141-C3 and Q90 AST dedicated workflows also passed on the same code head.
 - General repository CI remains pending/action-required; it is not claimed as passed.
@@ -95,6 +95,6 @@ Build a descriptive cross-granularity behaviour atlas with feature-level lineage
 
 ## Governance
 
-- PR #89 stays open/draft; base remains \`0bf1ef0\` while main has advanced to \`59763b1\`. No automatic rebase or merge.
+- PR #89 stays open/draft; base remains `0bf1ef0` while main has advanced to `59763b1`. No automatic rebase or merge.
 - PRs #6, #7 and #8 remain open and unmerged; untouched.
 - No canonical archive mutation, no forecast shadow insertion, no engine promotion.
