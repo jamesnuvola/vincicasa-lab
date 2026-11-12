@@ -115,8 +115,8 @@ def load_q7_rank_matrix(draws):
                 else:
                     if status!="SCORED": raise RuntimeError(f"Q7 target not scored: {day}")
                     v=np.asarray(row[5:],dtype=np.int32)
-                    if v.shape!=(FORMULAS,) or np.any(v<0) or np.any(v>=CANDIDATES):
-                        raise RuntimeError(f"invalid Q7 rank at {day}")
+                    if v.shape!=(FORMULAS,) or np.any(v<1) or np.any(v>CANDIDATES):
+                        raise RuntimeError(f"invalid one-based Q7 rank at {day}")
                     ranks[i]=v
                 meta[i]={"target_date":day,"cutoff_date":cutoff,"prior_draws":i,"actual_quintet":actual,"status":status}
                 count+=1
@@ -133,7 +133,7 @@ def split_sizes(n):
 def select_formula_mask(ranks,target_index,window=WINDOW):
     if target_index<window+1: raise ValueError("not enough strictly prior scored targets")
     history=ranks[target_index-window:target_index]
-    if history.shape!=(window,FORMULAS) or np.any(history<0): raise ValueError("invalid prior rank window")
+    if history.shape!=(window,FORMULAS) or np.any(history<1) or np.any(history>CANDIDATES): raise ValueError("invalid prior rank window")
     return int(np.argmin(history.mean(axis=0))+1)
 
 def holm_adjust(p):
@@ -181,8 +181,8 @@ def summarize_split(name,positions,test_indices,ranks,masks,static_mask,fmap,tes
     idx=test_indices[positions]; selected=masks[positions]
     dyn=ranks[idx,selected-1].astype(np.float64); static=ranks[idx,static_mask-1].astype(np.float64)
     allr=ranks[idx].astype(np.float64); uniform=allr.mean(axis=1)
-    u20=(allr<20).mean(axis=1); u100=(allr<100).mean(axis=1)
-    d20=(dyn<20).astype(float); d100=(dyn<100).astype(float)
+    u20=(allr<=20).mean(axis=1); u100=(allr<=100).mean(axis=1)
+    d20=(dyn<=20).astype(float); d100=(dyn<=100).astype(float)
     dp=(uniform-dyn)/(CANDIDATES-1); d20e=d20-u20; d100e=d100-u100
     ds=(static-dyn)/(CANDIDATES-1)
     add_test(tests,name,"dynamic_vs_uniform_formula","percentile_gain",dp,offset+1)
@@ -196,24 +196,24 @@ def summarize_split(name,positions,test_indices,ranks,masks,static_mask,fmap,tes
         key=lambda z:(-z["selected_targets"],z["formula_mask"]))
     return {
       "targets":int(len(idx)),
-      "dynamic_selector":{"mean_zero_based_rank":float(dyn.mean()),
-        "mean_percentile_score":float((1-dyn/(CANDIDATES-1)).mean()),
+      "dynamic_selector":{"mean_one_based_rank":float(dyn.mean()),
+        "mean_percentile_score":float((1-(dyn-1)/(CANDIDATES-1)).mean()),
         "top20_count":int(d20.sum()),"top20_rate":float(d20.mean()),
         "top100_count":int(d100.sum()),"top100_rate":float(d100.mean()),
         "unique_formulas_selected":int(len(unique)),
         "formula_switches":int(np.count_nonzero(selected[1:]!=selected[:-1])),
         "top_selected_formulas":chosen[:10]},
-      "uniform_formula_expectation":{"mean_zero_based_rank":float(uniform.mean()),
-        "mean_percentile_score":float((1-uniform/(CANDIDATES-1)).mean()),
+      "uniform_formula_expectation":{"mean_one_based_rank":float(uniform.mean()),
+        "mean_percentile_score":float((1-(uniform-1)/(CANDIDATES-1)).mean()),
         "expected_top20_hits":float(u20.sum()),"top20_rate":float(u20.mean()),
         "expected_top100_hits":float(u100.sum()),"top100_rate":float(u100.mean())},
       "discovery_static_formula":{"formula_mask":int(static_mask),"formula_id":fmap[static_mask]["formula_id"],
-        "features":fmap[static_mask]["features"],"mean_zero_based_rank":float(static.mean()),
-        "mean_percentile_score":float((1-static/(CANDIDATES-1)).mean()),
-        "top20_count":int(np.count_nonzero(static<20)),"top20_rate":float(np.mean(static<20)),
-        "top100_count":int(np.count_nonzero(static<100)),"top100_rate":float(np.mean(static<100)),
+        "features":fmap[static_mask]["features"],"mean_one_based_rank":float(static.mean()),
+        "mean_percentile_score":float((1-(static-1)/(CANDIDATES-1)).mean()),
+        "top20_count":int(np.count_nonzero(static<=20)),"top20_rate":float(np.mean(static<=20)),
+        "top100_count":int(np.count_nonzero(static<=100)),"top100_rate":float(np.mean(static<=100)),
         "selection_status":"in_sample_on_discovery" if name=="discovery" else "frozen_after_discovery"},
-      "random_quintet_null":{"expected_zero_based_rank":(CANDIDATES-1)/2,
+      "random_quintet_null":{"expected_one_based_rank":(CANDIDATES+1)/2,
         "expected_percentile_score":.5,"top20_probability":20/CANDIDATES,"top100_probability":100/CANDIDATES},
       "dynamic_minus_uniform_formula":{"mean_rank_improvement":float((uniform-dyn).mean()),
         "mean_percentile_gain":float(dp.mean()),"top20_excess":float(d20e.mean()),"top100_excess":float(d100e.mean())},
@@ -252,16 +252,16 @@ def run():
         m=int(masks[pos]); sr=int(ranks[t,m-1]); ur=float(ranks[t].mean()); st=int(ranks[t,static_mask-1])
         ledger.append({**meta[int(t)],"split":str(split_labels[pos]),"selected_formula_mask":m,
             "selected_formula_id":fmap[m]["formula_id"],"selected_formula_features":"|".join(fmap[m]["features"]),
-            "selected_prior_100_mean_rank":float(prior_means[pos]),"selected_actual_quintet_rank_zero_based":sr,
-            "selected_percentile_score":float(1-sr/(CANDIDATES-1)),"uniform_formula_mean_rank":ur,
-            "uniform_formula_top20_probability":float(np.mean(ranks[t]<20)),
-            "uniform_formula_top100_probability":float(np.mean(ranks[t]<100)),
+            "selected_prior_100_mean_rank":float(prior_means[pos]),"selected_actual_quintet_rank_one_based":sr,
+            "selected_percentile_score":float(1-(sr-1)/(CANDIDATES-1)),"uniform_formula_mean_rank":ur,
+            "uniform_formula_top20_probability":float(np.mean(ranks[t]<=20)),
+            "uniform_formula_top100_probability":float(np.mean(ranks[t]<=100)),
             "discovery_static_formula_id":fmap[static_mask]["formula_id"],
-            "discovery_static_formula_rank_zero_based":st,"dynamic_top20":int(sr<20),"dynamic_top100":int(sr<100),
-            "static_top20":int(st<20),"static_top100":int(st<100),
+            "discovery_static_formula_rank_one_based":st,"dynamic_top20":int(sr<=20),"dynamic_top100":int(sr<=100),
+            "static_top20":int(st<=20),"static_top100":int(st<=100),
             "delta_percentile_vs_uniform_formula":float((ur-sr)/(CANDIDATES-1)),
-            "delta_top20_vs_uniform_formula":float((sr<20)-np.mean(ranks[t]<20)),
-            "delta_top100_vs_uniform_formula":float((sr<100)-np.mean(ranks[t]<100)),
+            "delta_top20_vs_uniform_formula":float((sr<=20)-np.mean(ranks[t]<=20)),
+            "delta_top100_vs_uniform_formula":float((sr<=100)-np.mean(ranks[t]<=100)),
             "delta_percentile_vs_discovery_static":float((st-sr)/(CANDIDATES-1))})
     OUT.mkdir(parents=True,exist_ok=True)
     with LEDGER_PATH.open("w",newline="",encoding="utf-8") as f:
@@ -274,7 +274,7 @@ def run():
       "primary_estimand":"Blind OOS mean normalized percentile gain versus the per-target mean rank of all 1,023 registered formulas.",
       "formula_universe":{"formula_count":FORMULAS,"candidate_quintet_count":CANDIDATES,
         "feature_family_count":len(families),"feature_families":families,
-        "formula_selection":"argmin mean zero-based exact quintet rank over previous 100 scored targets",
+        "formula_selection":"argmin mean one-based exact quintet rank over previous 100 scored targets",
         "tie_break":"smallest integer formula_mask","mask_mapping":"rank_mask_MMMM maps to formula_id FMMMM; masks 1..1023"},
       "source":{"q7_repository_commit":Q7_COMMIT,"q7_archive_git_blob_sha1":Q7_ARCHIVE_BLOB,
         "q7_walkforward_manifest_git_blob_sha1":Q7_WF_MANIFEST_BLOB,
