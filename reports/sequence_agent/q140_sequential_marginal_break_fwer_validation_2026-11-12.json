@@ -1,0 +1,143 @@
+{
+  "experiment": "Q140",
+  "checks": [
+    {
+      "id": "source_blob_sha",
+      "pass": true
+    },
+    {
+      "id": "archive_3405_rows",
+      "pass": true
+    },
+    {
+      "id": "disputed_315_row_excluded",
+      "pass": true
+    },
+    {
+      "id": "clean_cutoff_2026_11_10",
+      "pass": true
+    },
+    {
+      "id": "chronological_unique_dates",
+      "pass": true
+    },
+    {
+      "id": "all_draws_valid_5of40",
+      "pass": true
+    },
+    {
+      "id": "target_count_3204",
+      "pass": true
+    },
+    {
+      "id": "strict_prior_cutoff",
+      "pass": true
+    },
+    {
+      "id": "global_test_count_128160",
+      "pass": true
+    },
+    {
+      "id": "threshold_conservative_vs_nominal",
+      "pass": true
+    },
+    {
+      "id": "marginal_sum_5_t200",
+      "pass": true
+    },
+    {
+      "id": "normalizers_finite_t200",
+      "pass": true
+    },
+    {
+      "id": "marginal_sum_5_t1921",
+      "pass": true
+    },
+    {
+      "id": "normalizers_finite_t1921",
+      "pass": true
+    },
+    {
+      "id": "marginal_sum_5_t1922",
+      "pass": true
+    },
+    {
+      "id": "normalizers_finite_t1922",
+      "pass": true
+    },
+    {
+      "id": "marginal_sum_5_t2562",
+      "pass": true
+    },
+    {
+      "id": "normalizers_finite_t2562",
+      "pass": true
+    },
+    {
+      "id": "marginal_sum_5_t2563",
+      "pass": true
+    },
+    {
+      "id": "normalizers_finite_t2563",
+      "pass": true
+    },
+    {
+      "id": "marginal_sum_5_t3403",
+      "pass": true
+    },
+    {
+      "id": "normalizers_finite_t3403",
+      "pass": true
+    },
+    {
+      "id": "deterministic_replay",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_1",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_2",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_3",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_4",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_5",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_6",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_7",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_8",
+      "pass": true
+    },
+    {
+      "id": "future_suffix_invariance_9",
+      "pass": true
+    }
+  ],
+  "checks_passed": 32,
+  "checks_total": 32,
+  "future_suffix_invariance_passed": 9,
+  "deterministic_replay": true,
+  "source_rows": 3405,
+  "eligible_rows": 3404,
+  "target_rows": 3204,
+  "exact_normalization": "Exact marginal inclusion probabilities for M0/M1/M2 sum to five at all tested boundary/sample targets.",
+  "anti_leakage": "Each target reads only its prior 200 eligible draws; target is scored before the target row enters any future history.",
+  "status": "PASS"
+}
