@@ -9,18 +9,18 @@ from aggiorna_estrazioni import MESI, parse_estrazioni
 def legacy_window_parse(html):
     """The pre-Q132 parser, retained only to demonstrate the look-ahead defect."""
     text = re.sub(r"<[^>]+>", " ", html)
-    text = re.sub(r"\\s+", " ", text)
+    text = re.sub(r"\s+", " ", text)
     out = {}
     pattern = re.compile(
-        r"(\\d{1,2})\\s+(Gennaio|Febbraio|Marzo|Aprile|Maggio|Giugno|Luglio|"
-        r"Agosto|Settembre|Ottobre|Novembre|Dicembre)\\s+(\\d{4})",
+        r"(\d{1,2})\s+(Gennaio|Febbraio|Marzo|Aprile|Maggio|Giugno|Luglio|"
+        r"Agosto|Settembre|Ottobre|Novembre|Dicembre)\s+(\d{4})",
         re.IGNORECASE,
     )
     for match in pattern.finditer(text):
         day, month, year = int(match.group(1)), match.group(2).lower(), int(match.group(3))
         date = f"{year}-{MESI[month]:02d}-{day:02d}"
         window = text[match.end():match.end() + 260]
-        tokens = [int(x) for x in re.findall(r"\\b(\\d{1,2})\\b", window)]
+        tokens = [int(x) for x in re.findall(r"\b(\d{1,2})\b", window)]
         tokens = [value for value in tokens if 1 <= value <= 40]
         for i in range(len(tokens) - 4):
             candidate = tokens[i:i + 5]
