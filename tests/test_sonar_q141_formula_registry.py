@@ -64,13 +64,15 @@ class Q141FormulaRegistryTests(unittest.TestCase):
         formulas = [(0,), (0, 25), (0, 1, 25), (0, 1, 25, 26), (1, 2, 3, 26)]
         for columns in formulas:
             signature, scale = registry.canonicalize_formula(columns)
-            raw_scores = matrix[:, list(columns)].mean(axis=1)
+            stable_raw = registry.stable_raw_scores(matrix, columns)
+            legacy_numpy = matrix[:, list(columns)].mean(axis=1)
             canonical = registry.canonical_scores(matrix, signature, scale)
-            self.assertTrue(np.allclose(raw_scores, canonical, rtol=0.0, atol=1e-12))
-            self.assertTrue(np.array_equal(base.rank_scores(raw_scores), base.rank_scores(canonical)))
+            self.assertTrue(np.allclose(stable_raw, canonical, rtol=0.0, atol=1e-12))
+            self.assertTrue(np.array_equal(base.rank_scores(stable_raw), base.rank_scores(canonical)))
+            self.assertTrue(np.allclose(legacy_numpy, canonical, rtol=0.0, atol=1e-12))
 
         columns = (0, 1, 25)
-        raw_scores = matrix[:, list(columns)].mean(axis=1)
+        raw_scores = registry.stable_raw_scores(matrix, columns)
         naive_deleted = matrix[:, [0, 1]].mean(axis=1)
         self.assertFalse(np.allclose(raw_scores, naive_deleted, rtol=0.0, atol=1e-12))
 
