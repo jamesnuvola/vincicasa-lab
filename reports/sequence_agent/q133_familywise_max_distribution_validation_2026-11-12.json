@@ -1,6 +1,6 @@
 {
   "experiment_id": "Q133",
-  "status": "REPLAY_EXPECTED_TO_PASS",
+  "status": "PASS",
   "protocol_status": "EXPLORATORY_POST_HOC",
   "check_count": 18,
   "checks": [
@@ -95,6 +95,44 @@
       "detail": "23/200 unchanged; no promotion"
     }
   ],
-  "github_replay": "PENDING_AT_COMMIT_CREATION",
-  "overall_ci": "PENDING_AT_COMMIT_CREATION"
+  "github_replay": {
+    "status": "SUCCESS",
+    "run_id": 43145405208,
+    "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43145405208",
+    "head_sha": "48da9c33070196cfaf68a1072713aef88667566f"
+  },
+  "overall_ci": "IN_PROGRESS_AT_CHECKPOINT",
+  "push_replay": {
+    "status": "SUCCESS",
+    "run_id": 43145400153,
+    "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43145400153",
+    "head_sha": "48da9c33070196cfaf68a1072713aef88667566f"
+  },
+  "recovery_events": [
+    {
+      "run_id": 43144765617,
+      "issue": "SyntaxError: duplicate declaration of last",
+      "fix": "renamed target grouping variable to previousTarget"
+    },
+    {
+      "run_id": 43144853286,
+      "issue": "Git blob SHA header and CSV regexes were double-escaped",
+      "fix": "corrected NUL byte and single-escape regex literals"
+    },
+    {
+      "run_id": 43144927106,
+      "issue": "overall descriptive report used a stale summary from the earlier RNG pass",
+      "fix": "recomputed overall mean and null as split-size-weighted means; difference +0.00038264669163456944"
+    },
+    {
+      "run_id": 43145054221,
+      "issue": "report interpretation text still contained the previous overall difference",
+      "fix": "synchronized interpretation with corrected weighted summary"
+    },
+    {
+      "run_id": 43145167999,
+      "issue": "exact Top10/Top20 null histograms omitted zero-count bins while replay initialized them",
+      "fix": "made histogram support data-driven and initialized unseen bins on first count"
+    }
+  ]
 }
