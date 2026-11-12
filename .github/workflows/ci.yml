@@ -13,10 +13,12 @@ permissions:
 # do not compete after each incremental commit.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ !startsWith(github.head_ref || github.ref, 'research/q141-') }}
 
 jobs:
   validate:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -29,6 +31,26 @@ jobs:
           node-version: 20
       - name: Install data-generation dependency
         run: pip install numpy
+      - name: Test Q141 formula-family leakage and determinism
+        if: github.event_name == 'pull_request'
+        run: python tests/test_sonar_q141_formula_family_anticipation.py -v
+      - name: Run Q141 strict-prior formula-family walk-forward
+        if: github.event_name == 'pull_request'
+        run: python scripts/sonar_q141_formula_family_anticipation.py
+      - name: Persist Q141 outputs append-only to the research branch
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: |
+          git add reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json
+          if git diff --cached --quiet; then
+            echo "Q141 outputs already match this exact checkout; no branch update needed."
+          else
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Persist Q141 formula-family behaviour walk-forward"
+            git push origin "HEAD:${BRANCH_NAME}"
+          fi
       - name: Audit canonical historical archive
         run: python scripts/audit_dataset.py
       - name: Rebuild generated app data
