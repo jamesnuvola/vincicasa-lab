@@ -1,0 +1,38 @@
+name: SONAR Q92 Ten-Feature Combinadic Acceptance
+on:
+  push:
+    branches:
+      - research/sonar-q92-implementation-20261109
+    paths:
+      - "scripts/sonar_q92_common.py"
+      - "tests/test_sonar_q92_combinadic.py"
+      - ".github/workflows/sonar-q92-combinadic.yml"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+    paths:
+      - "scripts/sonar_q92_common.py"
+      - "tests/test_sonar_q92_combinadic.py"
+      - ".github/workflows/sonar-q92-combinadic.yml"
+permissions:
+  contents: read
+concurrency:
+  group: sonar-q92-combinadic-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: false
+jobs:
+  q92-combinadic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Q92 combinadic module
+        run: python -m py_compile scripts/sonar_q92_common.py tests/test_sonar_q92_combinadic.py
+      - name: Run exact universe, shard partition and seeded synthetic regressions
+        run: python tests/test_sonar_q92_combinadic.py -v
