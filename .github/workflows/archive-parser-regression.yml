@@ -1,0 +1,25 @@
+name: Archive parser regression
+on:
+  pull_request:
+    paths:
+      - "scripts/aggiorna_estrazioni.py"
+      - "scripts/test_aggiorna_estrazioni.py"
+      - "reports/data_quality/contest315_provenance_conflict_2026-11-12.json"
+      - ".github/workflows/archive-parser-regression.yml"
+  push:
+    branches:
+      - "audit/strict-vincicasa-archive-parser-20261112"
+permissions:
+  contents: read
+jobs:
+  parser-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test row-bound parser and adversarial fixtures
+        run: python scripts/test_aggiorna_estrazioni.py
+      - name: Verify canonical CSV and generated app data remain structurally aligned
+        run: python scripts/audit_dataset.py --check-json
