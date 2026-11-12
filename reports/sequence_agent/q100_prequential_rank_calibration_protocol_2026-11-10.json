@@ -1,0 +1,79 @@
+{
+  "experiment_id": "Q100",
+  "title": "Prequential rank-order calibration audit of the active SONAR hybrid engine",
+  "preregistered_date": "2026-11-10",
+  "status": "PREREGISTERED_BEFORE_Q100_SCORING",
+  "hypothesis": {
+    "null": "Conditional on the history available before target t, the five target numbers occupy a uniformly random 5-subset of the engine's 40 deterministic ranks; expected mean rank is exactly 20.5.",
+    "alternative": "The active engine ranks future drawn numbers toward the top; mean rank of the five target numbers is below 20.5.",
+    "primary_estimand": "gain_t = 20.5 - mean(rank_t(n) for n in target_draw_t); primary blind estimand is the mean gain over the historical OOS segment.",
+    "direction": "one-sided positive gain"
+  },
+  "fixed_engine": {
+    "model_id": "APP::SONAR_HYBRID_RECENCY_ANALOG_FULL_HISTORY",
+    "implementation_commit": "502a0bcd0eba90c98d1e00eef1f711145d30a7ce",
+    "implementation_source_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "reproduction": "Execute the exact committed overlapCount, sonarTransitionProfile and sonarAnalogCore functions from src/VinciCasaLab.jsx; no weights or code are changed."
+  },
+  "data": {
+    "source": "data/storico_daily.csv",
+    "source_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "total_draws": 3403,
+    "warmup_draws": 200,
+    "targets": 3203
+  },
+  "splits": {
+    "rule": "Reuse the active_engine_walkforward chronological 60/20/20 split; no parameter selection or retuning.",
+    "discovery": {
+      "targets": 1921,
+      "ordinal_start": 0,
+      "ordinal_end_exclusive": 1921
+    },
+    "validation": {
+      "targets": 641,
+      "ordinal_start": 1921,
+      "ordinal_end_exclusive": 2562
+    },
+    "historical_blind_oos": {
+      "targets": 641,
+      "ordinal_start": 2562,
+      "ordinal_end_exclusive": 3203
+    }
+  },
+  "exact_null": {
+    "rank_set": "For any pre-target permutation of ranks 1..40, a uniform 5-of-40 draw maps to a uniform 5-subset of ranks.",
+    "mean_rank": 20.5,
+    "rank_sum_support": [
+      15,
+      190
+    ],
+    "exact_subset_count": 658008,
+    "construction": "Integer dynamic programming over 5-subsets of ranks 1..40; Monte Carlo draws rank sums from the exact 658008-subset empirical CDF."
+  },
+  "inference": {
+    "primary_endpoint": "Mean blind-OOS gain_t.",
+    "conditional_null_test": "100000 Monte Carlo replicates; each replicate samples 641 independent rank-sum outcomes from the exact 5-of-40 rank-sum PMF; lower-tail rank sum is favorable; fixed xorshift32 seed 0x5100A100; add-one p-value.",
+    "multiplicity": "Conservative Bonferroni adjustment by 43 candidate configurations (42 fixed-rule configurations plus the active app engine) to reflect the pre-existing model-search family. This does not correct unknown analyst degrees of freedom outside that catalog.",
+    "effect_interval": "10000 circular block-bootstrap replicates, block length 20, fixed seed 0x5100A101; percentile 95% CI for mean gain.",
+    "secondary_outputs": "Top5/Top10/Top20 and eight consecutive 5-rank-bin hit means are descriptive only; no secondary p-values or tuning."
+  },
+  "integrity_checks": [
+    "Archive dates strictly increasing and unique; each row is a sorted 5-subset of 1..40.",
+    "For target index t, engine receives only archive rows with indices < t.",
+    "Every forecast contains exactly one rank for each number 1..40.",
+    "Reproduced Top5/Top10/Top20 means reconcile to active_engine_walkforward.json within its published rounding.",
+    "Future-mutation invariance: changing target and later archive rows cannot change the forecast for selected historical cutoffs.",
+    "Deterministic replay on fixed cutoffs.",
+    "No target or future outcomes are passed to the engine."
+  ],
+  "guardrails": [
+    "This is an exploratory calibration audit of an already researched engine, not a virgin prospective holdout.",
+    "No engine parameters are changed and no model is promoted.",
+    "Historical blind OOS has been exposed to prior SONAR research.",
+    "A small p-value cannot establish future winning probability or justify a ticket.",
+    "No merge or production change; human review required."
+  ],
+  "next_action": "If no rank-order lift is demonstrated, stop retrospective tuning of this engine and continue Q60 append-only prospective collection."
+}

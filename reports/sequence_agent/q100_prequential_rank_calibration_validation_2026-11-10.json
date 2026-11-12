@@ -1,0 +1,80 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "id": "canonical_archive_integrity",
+      "status": "PASS",
+      "detail": "3403 unique chronological rows; each is a sorted five-number subset of 1..40."
+    },
+    {
+      "id": "source_provenance",
+      "status": "PASS",
+      "detail": "Git blob SHA-1 of archive and active scorer match the preregistered blobs and active report."
+    },
+    {
+      "id": "strict_prior_scoring",
+      "status": "PASS",
+      "detail": "Each target is scored from archive prefix [0,t); no target or future row is passed to the scorer."
+    },
+    {
+      "id": "rank_permutation",
+      "status": "PASS",
+      "detail": "All 3203 forecasts rank every integer 1..40 exactly once."
+    },
+    {
+      "id": "active_report_reconciliation",
+      "status": "PASS",
+      "detail": "Top5/Top10/Top20 means reproduce the active engine report in all three chronological splits within 1.1e-6."
+    },
+    {
+      "id": "future_mutation_invariance",
+      "status": "PASS",
+      "detail": "Mutating target and later draws leaves pre-target score vectors unchanged at nine fixed cutoffs."
+    },
+    {
+      "id": "deterministic_replay",
+      "status": "PASS",
+      "detail": "Repeated fixed-prefix score vectors are identical at nine fixed cutoffs."
+    },
+    {
+      "id": "exact_rank_null",
+      "status": "PASS",
+      "detail": "Dynamic programming enumerates exactly 658008 five-subsets; expected mean rank is exactly 20.5."
+    },
+    {
+      "id": "monte_carlo_seed_replay",
+      "status": "PASS",
+      "detail": "Repeated 1000-replicate conditional-null runs with the fixed seed produce identical extreme counts and p-values."
+    },
+    {
+      "id": "split_reconciliation",
+      "status": "PASS",
+      "detail": "1921 Discovery + 641 Validation + 641 historical Blind OOS = 3203 targets."
+    }
+  ],
+  "provenance": {
+    "archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "scorer_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_report_blob_sha": "ff07b6da4948bb89467067c2552d9b1f78bc9549"
+  },
+  "reconciliation": {
+    "discovery": {
+      "top5": 2.0145757417822097e-7,
+      "top10": 2.9724102024175636e-7,
+      "top20": 4.5601249354376705e-7,
+      "pass": true
+    },
+    "validation": {
+      "top5": 3.978159126560854e-7,
+      "top10": 1.40405616244621e-7,
+      "top20": 4.726989080161559e-7,
+      "pass": true
+    },
+    "oos": {
+      "top5": 1.014040562630214e-7,
+      "top10": 3.322932915494903e-7,
+      "top20": 2.9641185506079637e-8,
+      "pass": true
+    }
+  }
+}
