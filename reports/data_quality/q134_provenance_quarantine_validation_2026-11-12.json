@@ -1,0 +1,24 @@
+{
+  "experiment_id": "Q134",
+  "status": "PASS_EXPECTED_CONFLICT_DETECTED",
+  "source_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+  "check_count": 12,
+  "checks": [
+    {"id":"canonical_315_row","passed":true,"detail":"One row exists: 2026-11-11,1,21,22,27,29; provenance remains secondary-only."},
+    {"id":"latest_metrics_includes_315","passed":true,"detail":"3,405 draws, last date 2026-11-11, 3,205 targets."},
+    {"id":"active_engine_includes_315","passed":true,"detail":"3,205 targets; OOS has 641 targets and ends 2026-11-11."},
+    {"id":"global_315_rows","passed":true,"detail":"43 global/configuration rows are EVALUATED against the provisional numbers."},
+    {"id":"positional_315_row","passed":true,"detail":"One positional row is EVALUATED against the provisional numbers."},
+    {"id":"q60_reported_pairs","passed":true,"detail":"Promotion gate reports 24 paired dates and includes 2026-11-11."},
+    {"id":"q60_quarantine_arithmetic","passed":true,"detail":"Excluding the single unresolved date yields 23 eligible pairs, not 24."},
+    {"id":"global_316_freezes","passed":true,"detail":"43 pending freezes use 2026-11-11 as history cutoff."},
+    {"id":"positional_316_freeze","passed":true,"detail":"One pending positional freeze uses 2026-11-11 as history cutoff."},
+    {"id":"app_316_freeze","passed":true,"detail":"APP freeze is pending and uses 2026-11-11 as history cutoff."},
+    {"id":"q133_clean_prefix","passed":true,"detail":"Q133 source ledger ends 2026-11-10 and contains 3,204 strict-prior targets."},
+    {"id":"no_mutation","passed":true,"detail":"Audit-only: no archive, forecast, gate or engine file is rewritten."}
+  ],
+  "interpretation": "PASS means the audit reliably detects the unresolved provenance conflict. It does not mean the current main archive, OOS summary, Q60 gate or 2026-11-12 freezes are source-clean.",
+  "predictive_walk_forward": "NOT_RUN_BY_DESIGN",
+  "promotion_allowed": false,
+  "merge_performed": false
+}
