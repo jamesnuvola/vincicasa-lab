@@ -1,0 +1,26 @@
+name: SONAR PSR-11 prior Top-20 overlap state
+on:
+  push:
+    branches:
+      - research/sonar-psr11-frequency-top20-overlap-state-20261108
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/sonar_psr11_frequency_top20_overlap_state.mjs
+      - tests/test_sonar_psr11_frequency_top20_overlap_state.mjs
+      - reports/position_specific_range_residual/PSR11_*
+      - .github/workflows/sonar-psr11-frequency-top20-overlap-state.yml
+jobs:
+  replay-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Verify canonical archive Git blob
+        run: test "$(git hash-object data/storico_daily.csv)" = "5d2efd70684e918b27d8f06386d545647898336d"
+      - name: Recompute archive and verify committed outputs byte-for-byte
+        run: node scripts/sonar_psr11_frequency_top20_overlap_state.mjs --verify
+      - name: Test exact state masses, strict-prefix, no target leakage, normalization, and replay
+        run: node tests/test_sonar_psr11_frequency_top20_overlap_state.mjs
