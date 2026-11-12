@@ -1,0 +1,1105 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "SONAR_PSR09_POSITION_RECENCY_MARGINALS",
+  "status": "EXPLORATORY_NO_PROMOTION",
+  "hypothesis": {
+    "claim": "Rolling-window empirical marginal for each sorted position adds predictive information over exact uniform 5-of-40 order-statistic prior and cumulative empirical marginal.",
+    "model": "q_i,t(n)=(C_i,t,W_eff(n)+alpha*pi_i(n))/(W_eff+alpha)",
+    "quantitativeEndpoints": "per-position blind-OOS multiclass Brier improvement vs exact prior (primary) and cumulative empirical same-alpha comparator (secondary)",
+    "scope": "Five one-dimensional sorted-position marginal laws; not a joint quintet model or ticket."
+  },
+  "runner": {
+    "path": "scripts/sonar_psr09_position_recency_walkforward.cjs",
+    "gitBlobSha": "af58cb53621a7e17c1dd5ce80977d298f08331ec"
+  },
+  "archive": {
+    "draws": 3401,
+    "firstDate": "2017-07-17",
+    "lastDate": "2026-11-07",
+    "gitBlobSha": "5d2efd70684e918b27d8f06386d545647898336d"
+  },
+  "protocol": {
+    "registrationStatus": "Protocol persisted on research branch before the PSR-09 computation; historical OOS was previously inspected by the broader SONAR project.",
+    "warmup": 200,
+    "scoredTargets": 3201,
+    "windowGrid": [
+      30,
+      90,
+      180,
+      365,
+      730
+    ],
+    "alphaGrid": [
+      100,
+      300,
+      1000
+    ],
+    "splitRule": "chronological 60% discovery / 20% validation / 20% blind OOS after warm-up",
+    "splits": {
+      "discovery": {
+        "n": 1920,
+        "first": "2018-02-02",
+        "last": "2023-05-06"
+      },
+      "validation": {
+        "n": 640,
+        "first": "2023-05-07",
+        "last": "2025-02-04"
+      },
+      "blind_oos": {
+        "n": 641,
+        "first": "2025-02-05",
+        "last": "2026-11-07"
+      }
+    },
+    "selection": "validation maximum mean multiclass Brier improvement vs cumulative empirical position marginal with same alpha; ties choose larger alpha, then larger W",
+    "primary": "five blind-OOS position-wise Brier improvements vs exact order-statistic prior",
+    "secondary": "five blind-OOS position-wise Brier improvements vs cumulative empirical same-alpha comparator",
+    "inference": "circular moving-block bootstrap; 95% percentile CI; one-sided centered-null p; Holm across ten primary+secondary endpoints",
+    "bootstrap": {
+      "replicates": 2000,
+      "blockLength": 7,
+      "seedBase": 20261108
+    }
+  },
+  "prior": {
+    "denominator": 658008,
+    "positions": [
+      {
+        "position": 1,
+        "support": [
+          1,
+          36
+        ],
+        "exactCountSum": 658008,
+        "probabilitySum": "1.0000000000000002e+0",
+        "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
+      },
+      {
+        "position": 2,
+        "support": [
+          2,
+          37
+        ],
+        "exactCountSum": 658008,
+        "probabilitySum": "9.9999999999999989e-1",
+        "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
+      },
+      {
+        "position": 3,
+        "support": [
+          3,
+          38
+        ],
+        "exactCountSum": 658008,
+        "probabilitySum": "1.0000000000000000e+0",
+        "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
+      },
+      {
+        "position": 4,
+        "support": [
+          4,
+          39
+        ],
+        "exactCountSum": 658008,
+        "probabilitySum": "1.0000000000000000e+0",
+        "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
+      },
+      {
+        "position": 5,
+        "support": [
+          5,
+          40
+        ],
+        "exactCountSum": 658008,
+        "probabilitySum": "1.0000000000000000e+0",
+        "formula": "C(n-1,i-1)*C(40-n,5-i)/C(40,5)"
+      }
+    ]
+  },
+  "validationSelection": [
+    {
+      "position": 1,
+      "selectedW": 730,
+      "selectedAlpha": 1000,
+      "selectionMetric": "validation mean Brier improvement vs cumulative empirical position marginal with same alpha",
+      "grid": [
+        {
+          "W": 730,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000019925928,
+          "meanBrierImprovementVsExactPrior": -0.000033235571,
+          "meanLogLossImprovementVsGlobal": 0.000092264615,
+          "meanLogLossImprovementVsExactPrior": 0.002226129429
+        },
+        {
+          "W": 90,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000057113701,
+          "meanBrierImprovementVsExactPrior": -0.000070423344,
+          "meanLogLossImprovementVsGlobal": -0.003381000355,
+          "meanLogLossImprovementVsExactPrior": -0.001247135542
+        },
+        {
+          "W": 30,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000075927484,
+          "meanBrierImprovementVsExactPrior": -0.000089237127,
+          "meanLogLossImprovementVsGlobal": -0.003901378775,
+          "meanLogLossImprovementVsExactPrior": -0.001767513962
+        },
+        {
+          "W": 365,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000120787072,
+          "meanBrierImprovementVsExactPrior": -0.000134096715,
+          "meanLogLossImprovementVsGlobal": -0.000249928708,
+          "meanLogLossImprovementVsExactPrior": 0.001883936106
+        },
+        {
+          "W": 180,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000233974918,
+          "meanBrierImprovementVsExactPrior": -0.00024728456,
+          "meanLogLossImprovementVsGlobal": -0.005493716536,
+          "meanLogLossImprovementVsExactPrior": -0.003359851723
+        },
+        {
+          "W": 30,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000341013535,
+          "meanBrierImprovementVsExactPrior": -0.000440791014,
+          "meanLogLossImprovementVsGlobal": -0.008668067786,
+          "meanLogLossImprovementVsExactPrior": -0.007013904996
+        },
+        {
+          "W": 730,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000435487429,
+          "meanBrierImprovementVsExactPrior": -0.000535264908,
+          "meanLogLossImprovementVsGlobal": -0.003430246344,
+          "meanLogLossImprovementVsExactPrior": -0.001776083554
+        },
+        {
+          "W": 90,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000446441365,
+          "meanBrierImprovementVsExactPrior": -0.000546218844,
+          "meanLogLossImprovementVsGlobal": -0.008618730813,
+          "meanLogLossImprovementVsExactPrior": -0.006964568022
+        },
+        {
+          "W": 365,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000648352052,
+          "meanBrierImprovementVsExactPrior": -0.000748129531,
+          "meanLogLossImprovementVsGlobal": -0.004986315741,
+          "meanLogLossImprovementVsExactPrior": -0.00333215295
+        },
+        {
+          "W": 730,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.000876041183,
+          "meanBrierImprovementVsExactPrior": -0.001018564044,
+          "meanLogLossImprovementVsGlobal": -0.00798155688,
+          "meanLogLossImprovementVsExactPrior": -0.006614618581
+        },
+        {
+          "W": 180,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000944340222,
+          "meanBrierImprovementVsExactPrior": -0.001044117701,
+          "meanLogLossImprovementVsGlobal": -0.015079457893,
+          "meanLogLossImprovementVsExactPrior": -0.013425295103
+        },
+        {
+          "W": 365,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001494574432,
+          "meanBrierImprovementVsExactPrior": -0.001637097293,
+          "meanLogLossImprovementVsGlobal": -0.014517856489,
+          "meanLogLossImprovementVsExactPrior": -0.01315091819
+        },
+        {
+          "W": 30,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001908837547,
+          "meanBrierImprovementVsExactPrior": -0.002051360408,
+          "meanLogLossImprovementVsGlobal": -0.027631554408,
+          "meanLogLossImprovementVsExactPrior": -0.026264616109
+        },
+        {
+          "W": 90,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.002154188752,
+          "meanBrierImprovementVsExactPrior": -0.002296711613,
+          "meanLogLossImprovementVsGlobal": -0.028386048063,
+          "meanLogLossImprovementVsExactPrior": -0.027019109764
+        },
+        {
+          "W": 180,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.002547791316,
+          "meanBrierImprovementVsExactPrior": -0.002690314177,
+          "meanLogLossImprovementVsGlobal": -0.037422330014,
+          "meanLogLossImprovementVsExactPrior": -0.036055391715
+        }
+      ]
+    },
+    {
+      "position": 2,
+      "selectedW": 180,
+      "selectedAlpha": 1000,
+      "selectionMetric": "validation mean Brier improvement vs cumulative empirical position marginal with same alpha",
+      "grid": [
+        {
+          "W": 180,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000560213595,
+          "meanBrierImprovementVsExactPrior": 0.000026893607,
+          "meanLogLossImprovementVsGlobal": 0.004051603821,
+          "meanLogLossImprovementVsExactPrior": -0.002684291852
+        },
+        {
+          "W": 90,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.00045063051,
+          "meanBrierImprovementVsExactPrior": -0.000082689479,
+          "meanLogLossImprovementVsGlobal": 0.00528529163,
+          "meanLogLossImprovementVsExactPrior": -0.001450604043
+        },
+        {
+          "W": 30,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000442238076,
+          "meanBrierImprovementVsExactPrior": -0.000091081912,
+          "meanLogLossImprovementVsGlobal": 0.005979169882,
+          "meanLogLossImprovementVsExactPrior": -0.000756725791
+        },
+        {
+          "W": 180,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": 0.000301332936,
+          "meanBrierImprovementVsExactPrior": -0.000418784736,
+          "meanLogLossImprovementVsGlobal": -0.004317792443,
+          "meanLogLossImprovementVsExactPrior": -0.014023924665
+        },
+        {
+          "W": 30,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": 0.000256357776,
+          "meanBrierImprovementVsExactPrior": -0.000463759896,
+          "meanLogLossImprovementVsGlobal": 0.004405773482,
+          "meanLogLossImprovementVsExactPrior": -0.00530035874
+        },
+        {
+          "W": 365,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000154110062,
+          "meanBrierImprovementVsExactPrior": -0.000379209926,
+          "meanLogLossImprovementVsGlobal": 0.001398808578,
+          "meanLogLossImprovementVsExactPrior": -0.005337087095
+        },
+        {
+          "W": 90,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": 0.000118325604,
+          "meanBrierImprovementVsExactPrior": -0.000601792068,
+          "meanLogLossImprovementVsGlobal": -0.000056618089,
+          "meanLogLossImprovementVsExactPrior": -0.009762750312
+        },
+        {
+          "W": 730,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000041096808,
+          "meanBrierImprovementVsExactPrior": -0.000574416797,
+          "meanLogLossImprovementVsGlobal": 0.000849996162,
+          "meanLogLossImprovementVsExactPrior": -0.005885899511
+        },
+        {
+          "W": 730,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000468798259,
+          "meanBrierImprovementVsExactPrior": -0.001188915931,
+          "meanLogLossImprovementVsGlobal": -0.004732939018,
+          "meanLogLossImprovementVsExactPrior": -0.01443907124
+        },
+        {
+          "W": 365,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.00048891935,
+          "meanBrierImprovementVsExactPrior": -0.001209037021,
+          "meanLogLossImprovementVsGlobal": -0.008062807681,
+          "meanLogLossImprovementVsExactPrior": -0.017768939903
+        },
+        {
+          "W": 730,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.000842793575,
+          "meanBrierImprovementVsExactPrior": -0.001641031072,
+          "meanLogLossImprovementVsGlobal": -0.011014178117,
+          "meanLogLossImprovementVsExactPrior": -0.022033403648
+        },
+        {
+          "W": 180,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.000920576907,
+          "meanBrierImprovementVsExactPrior": -0.001718814404,
+          "meanLogLossImprovementVsGlobal": -0.031109984414,
+          "meanLogLossImprovementVsExactPrior": -0.042129209944
+        },
+        {
+          "W": 30,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001410329478,
+          "meanBrierImprovementVsExactPrior": -0.002208566974,
+          "meanLogLossImprovementVsGlobal": -0.016500902485,
+          "meanLogLossImprovementVsExactPrior": -0.027520128015
+        },
+        {
+          "W": 365,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001447366944,
+          "meanBrierImprovementVsExactPrior": -0.002245604441,
+          "meanLogLossImprovementVsGlobal": -0.023738384638,
+          "meanLogLossImprovementVsExactPrior": -0.034757610168
+        },
+        {
+          "W": 90,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001684178105,
+          "meanBrierImprovementVsExactPrior": -0.002482415602,
+          "meanLogLossImprovementVsGlobal": -0.029201917781,
+          "meanLogLossImprovementVsExactPrior": -0.040221143311
+        }
+      ]
+    },
+    {
+      "position": 3,
+      "selectedW": 30,
+      "selectedAlpha": 300,
+      "selectionMetric": "validation mean Brier improvement vs cumulative empirical position marginal with same alpha",
+      "grid": [
+        {
+          "W": 30,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": 0.00033000601,
+          "meanBrierImprovementVsExactPrior": -0.000094574267,
+          "meanLogLossImprovementVsGlobal": 0.012227584754,
+          "meanLogLossImprovementVsExactPrior": 0.001594097275
+        },
+        {
+          "W": 30,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000310893517,
+          "meanBrierImprovementVsExactPrior": 0.000028999619,
+          "meanLogLossImprovementVsGlobal": 0.008808634126,
+          "meanLogLossImprovementVsExactPrior": 0.001529037364
+        },
+        {
+          "W": 90,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000103735221,
+          "meanBrierImprovementVsExactPrior": -0.000178158677,
+          "meanLogLossImprovementVsGlobal": 0.00562995896,
+          "meanLogLossImprovementVsExactPrior": -0.001649637802
+        },
+        {
+          "W": 180,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000001551707,
+          "meanBrierImprovementVsExactPrior": -0.000283445604,
+          "meanLogLossImprovementVsGlobal": 0.004949289972,
+          "meanLogLossImprovementVsExactPrior": -0.00233030679
+        },
+        {
+          "W": 730,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000122120152,
+          "meanBrierImprovementVsExactPrior": -0.000404014049,
+          "meanLogLossImprovementVsGlobal": 0.0006784467,
+          "meanLogLossImprovementVsExactPrior": -0.006601150062
+        },
+        {
+          "W": 365,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000165109613,
+          "meanBrierImprovementVsExactPrior": -0.00044700351,
+          "meanLogLossImprovementVsGlobal": 0.001040560521,
+          "meanLogLossImprovementVsExactPrior": -0.006239036241
+        },
+        {
+          "W": 90,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000472126832,
+          "meanBrierImprovementVsExactPrior": -0.000896707109,
+          "meanLogLossImprovementVsGlobal": 0.000298228748,
+          "meanLogLossImprovementVsExactPrior": -0.010335258731
+        },
+        {
+          "W": 730,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000507580321,
+          "meanBrierImprovementVsExactPrior": -0.000932160598,
+          "meanLogLossImprovementVsGlobal": -0.005819700161,
+          "meanLogLossImprovementVsExactPrior": -0.01645318764
+        },
+        {
+          "W": 180,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000705448974,
+          "meanBrierImprovementVsExactPrior": -0.001130029251,
+          "meanLogLossImprovementVsGlobal": -0.002742784916,
+          "meanLogLossImprovementVsExactPrior": -0.013376272395
+        },
+        {
+          "W": 30,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.000815873092,
+          "meanBrierImprovementVsExactPrior": -0.001303665509,
+          "meanLogLossImprovementVsGlobal": 0.00033673278,
+          "meanLogLossImprovementVsExactPrior": -0.011801057739
+        },
+        {
+          "W": 365,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.00084275257,
+          "meanBrierImprovementVsExactPrior": -0.001267332847,
+          "meanLogLossImprovementVsGlobal": -0.009227879729,
+          "meanLogLossImprovementVsExactPrior": -0.019861367208
+        },
+        {
+          "W": 730,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.000856382626,
+          "meanBrierImprovementVsExactPrior": -0.001344175043,
+          "meanLogLossImprovementVsGlobal": -0.013542883917,
+          "meanLogLossImprovementVsExactPrior": -0.025680674436
+        },
+        {
+          "W": 365,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001744194886,
+          "meanBrierImprovementVsExactPrior": -0.002231987304,
+          "meanLogLossImprovementVsGlobal": -0.026532165211,
+          "meanLogLossImprovementVsExactPrior": -0.038669955729
+        },
+        {
+          "W": 180,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.002343638586,
+          "meanBrierImprovementVsExactPrior": -0.002831431004,
+          "meanLogLossImprovementVsGlobal": -0.02848990443,
+          "meanLogLossImprovementVsExactPrior": -0.040627694949
+        },
+        {
+          "W": 90,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.002694485832,
+          "meanBrierImprovementVsExactPrior": -0.00318227825,
+          "meanLogLossImprovementVsGlobal": -0.029962979985,
+          "meanLogLossImprovementVsExactPrior": -0.042100770504
+        }
+      ]
+    },
+    {
+      "position": 4,
+      "selectedW": 90,
+      "selectedAlpha": 1000,
+      "selectionMetric": "validation mean Brier improvement vs cumulative empirical position marginal with same alpha",
+      "grid": [
+        {
+          "W": 90,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000120327503,
+          "meanBrierImprovementVsExactPrior": -0.000037214044,
+          "meanLogLossImprovementVsGlobal": 0.002662545953,
+          "meanLogLossImprovementVsExactPrior": -0.000639200862
+        },
+        {
+          "W": 30,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000120097348,
+          "meanBrierImprovementVsExactPrior": -0.000037444198,
+          "meanLogLossImprovementVsGlobal": 0.002267744286,
+          "meanLogLossImprovementVsExactPrior": -0.001034002528
+        },
+        {
+          "W": 730,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000065612516,
+          "meanBrierImprovementVsExactPrior": -0.000091929031,
+          "meanLogLossImprovementVsGlobal": 0.003217288435,
+          "meanLogLossImprovementVsExactPrior": -0.000084458379
+        },
+        {
+          "W": 365,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000038130547,
+          "meanBrierImprovementVsExactPrior": -0.000119411,
+          "meanLogLossImprovementVsGlobal": 0.002218636692,
+          "meanLogLossImprovementVsExactPrior": -0.001083110122
+        },
+        {
+          "W": 180,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.00000903659,
+          "meanBrierImprovementVsExactPrior": -0.000148504957,
+          "meanLogLossImprovementVsGlobal": 0.000749222898,
+          "meanLogLossImprovementVsExactPrior": -0.002552523916
+        },
+        {
+          "W": 30,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000047943811,
+          "meanBrierImprovementVsExactPrior": -0.000294687178,
+          "meanLogLossImprovementVsGlobal": -0.00091835544,
+          "meanLogLossImprovementVsExactPrior": -0.005764719609
+        },
+        {
+          "W": 730,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000190126442,
+          "meanBrierImprovementVsExactPrior": -0.000436869809,
+          "meanLogLossImprovementVsGlobal": 0.000576941626,
+          "meanLogLossImprovementVsExactPrior": -0.004269422543
+        },
+        {
+          "W": 90,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000231378802,
+          "meanBrierImprovementVsExactPrior": -0.00047812217,
+          "meanLogLossImprovementVsGlobal": -0.002188277253,
+          "meanLogLossImprovementVsExactPrior": -0.007034641421
+        },
+        {
+          "W": 365,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000369260129,
+          "meanBrierImprovementVsExactPrior": -0.000616003496,
+          "meanLogLossImprovementVsGlobal": -0.002938208456,
+          "meanLogLossImprovementVsExactPrior": -0.007784572625
+        },
+        {
+          "W": 730,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.00046412635,
+          "meanBrierImprovementVsExactPrior": -0.000750888131,
+          "meanLogLossImprovementVsGlobal": -0.003033833992,
+          "meanLogLossImprovementVsExactPrior": -0.008562487283
+        },
+        {
+          "W": 180,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000558764553,
+          "meanBrierImprovementVsExactPrior": -0.00080550792,
+          "meanLogLossImprovementVsGlobal": -0.007920083141,
+          "meanLogLossImprovementVsExactPrior": -0.01276644731
+        },
+        {
+          "W": 365,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001039059664,
+          "meanBrierImprovementVsExactPrior": -0.001325821445,
+          "meanLogLossImprovementVsGlobal": -0.01302705045,
+          "meanLogLossImprovementVsExactPrior": -0.018555703741
+        },
+        {
+          "W": 30,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001483092852,
+          "meanBrierImprovementVsExactPrior": -0.001769854632,
+          "meanLogLossImprovementVsGlobal": -0.022625134574,
+          "meanLogLossImprovementVsExactPrior": -0.028153787866
+        },
+        {
+          "W": 90,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001953338842,
+          "meanBrierImprovementVsExactPrior": -0.002240100623,
+          "meanLogLossImprovementVsGlobal": -0.027533480824,
+          "meanLogLossImprovementVsExactPrior": -0.033062134115
+        },
+        {
+          "W": 180,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.00200322477,
+          "meanBrierImprovementVsExactPrior": -0.002289986551,
+          "meanLogLossImprovementVsGlobal": -0.031817842584,
+          "meanLogLossImprovementVsExactPrior": -0.037346495876
+        }
+      ]
+    },
+    {
+      "position": 5,
+      "selectedW": 365,
+      "selectedAlpha": 1000,
+      "selectionMetric": "validation mean Brier improvement vs cumulative empirical position marginal with same alpha",
+      "grid": [
+        {
+          "W": 365,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000274249202,
+          "meanBrierImprovementVsExactPrior": 0.000097454641,
+          "meanLogLossImprovementVsGlobal": 0.001434243459,
+          "meanLogLossImprovementVsExactPrior": -0.004151476016
+        },
+        {
+          "W": 180,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000264766676,
+          "meanBrierImprovementVsExactPrior": 0.000087972116,
+          "meanLogLossImprovementVsGlobal": 0.004333796246,
+          "meanLogLossImprovementVsExactPrior": -0.001251923229
+        },
+        {
+          "W": 30,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.00006688993,
+          "meanBrierImprovementVsExactPrior": -0.000109904631,
+          "meanLogLossImprovementVsGlobal": 0.004471566268,
+          "meanLogLossImprovementVsExactPrior": -0.001114153207
+        },
+        {
+          "W": 180,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": 0.000028241929,
+          "meanBrierImprovementVsExactPrior": -0.000236944555,
+          "meanLogLossImprovementVsGlobal": -0.001014247889,
+          "meanLogLossImprovementVsExactPrior": -0.008605226586
+        },
+        {
+          "W": 90,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": 0.000022384027,
+          "meanBrierImprovementVsExactPrior": -0.000154410534,
+          "meanLogLossImprovementVsGlobal": 0.002989597887,
+          "meanLogLossImprovementVsExactPrior": -0.002596121587
+        },
+        {
+          "W": 365,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000025874719,
+          "meanBrierImprovementVsExactPrior": -0.000291061204,
+          "meanLogLossImprovementVsGlobal": -0.006637791555,
+          "meanLogLossImprovementVsExactPrior": -0.014228770252
+        },
+        {
+          "W": 730,
+          "alpha": 1000,
+          "meanBrierImprovementVsGlobal": -0.000217696804,
+          "meanBrierImprovementVsExactPrior": -0.000394491365,
+          "meanLogLossImprovementVsGlobal": 0.000963576497,
+          "meanLogLossImprovementVsExactPrior": -0.004622142977
+        },
+        {
+          "W": 30,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000259300966,
+          "meanBrierImprovementVsExactPrior": -0.000524487451,
+          "meanLogLossImprovementVsGlobal": 0.00222731478,
+          "meanLogLossImprovementVsExactPrior": -0.005363663917
+        },
+        {
+          "W": 90,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000491793378,
+          "meanBrierImprovementVsExactPrior": -0.000756979863,
+          "meanLogLossImprovementVsGlobal": -0.003289932549,
+          "meanLogLossImprovementVsExactPrior": -0.010880911246
+        },
+        {
+          "W": 730,
+          "alpha": 300,
+          "meanBrierImprovementVsGlobal": -0.000666246823,
+          "meanBrierImprovementVsExactPrior": -0.000931433307,
+          "meanLogLossImprovementVsGlobal": -0.003383105927,
+          "meanLogLossImprovementVsExactPrior": -0.010974084623
+        },
+        {
+          "W": 365,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.000701038772,
+          "meanBrierImprovementVsExactPrior": -0.001005295882,
+          "meanLogLossImprovementVsGlobal": -0.020739041718,
+          "meanLogLossImprovementVsExactPrior": -0.029175176561
+        },
+        {
+          "W": 180,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001037421057,
+          "meanBrierImprovementVsExactPrior": -0.001341678167,
+          "meanLogLossImprovementVsGlobal": -0.019227581157,
+          "meanLogLossImprovementVsExactPrior": -0.027663716
+        },
+        {
+          "W": 730,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.001050298176,
+          "meanBrierImprovementVsExactPrior": -0.001354555285,
+          "meanLogLossImprovementVsGlobal": -0.008221916706,
+          "meanLogLossImprovementVsExactPrior": -0.01665805155
+        },
+        {
+          "W": 30,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.002069829993,
+          "meanBrierImprovementVsExactPrior": -0.002374087103,
+          "meanLogLossImprovementVsGlobal": -0.014969023136,
+          "meanLogLossImprovementVsExactPrior": -0.023405157979
+        },
+        {
+          "W": 90,
+          "alpha": 100,
+          "meanBrierImprovementVsGlobal": -0.002344414931,
+          "meanBrierImprovementVsExactPrior": -0.00264867204,
+          "meanLogLossImprovementVsGlobal": -0.027039033668,
+          "meanLogLossImprovementVsExactPrior": -0.035475168511
+        }
+      ]
+    }
+  ],
+  "splitMetrics": [
+    {
+      "position": 1,
+      "selectedW": 730,
+      "selectedAlpha": 1000,
+      "metrics": {
+        "discovery": {
+          "n": 1920,
+          "meanBrierImprovementVsExactPrior": -0.000133975194,
+          "meanBrierImprovementVsGlobalSameAlpha": -0.000004141469,
+          "meanLogLossImprovementVsExactPrior": -0.004519817987,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.000030310297
+        },
+        "validation": {
+          "n": 640,
+          "meanBrierImprovementVsExactPrior": -0.000033235571,
+          "meanBrierImprovementVsGlobalSameAlpha": -0.000019925928,
+          "meanLogLossImprovementVsExactPrior": 0.002226129429,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.000092264615
+        },
+        "blind_oos": {
+          "n": 641,
+          "meanBrierImprovementVsExactPrior": 0.000055574246,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000366250243,
+          "meanLogLossImprovementVsExactPrior": -0.002938869902,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.003827636848
+        }
+      }
+    },
+    {
+      "position": 2,
+      "selectedW": 180,
+      "selectedAlpha": 1000,
+      "metrics": {
+        "discovery": {
+          "n": 1920,
+          "meanBrierImprovementVsExactPrior": -0.00016376811,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000074072731,
+          "meanLogLossImprovementVsExactPrior": -0.002119669388,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.001061440233
+        },
+        "validation": {
+          "n": 640,
+          "meanBrierImprovementVsExactPrior": 0.000026893607,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000560213595,
+          "meanLogLossImprovementVsExactPrior": -0.002684291852,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.004051603821
+        },
+        "blind_oos": {
+          "n": 641,
+          "meanBrierImprovementVsExactPrior": -0.000360361337,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000006213983,
+          "meanLogLossImprovementVsExactPrior": -0.006437905782,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.00211172217
+        }
+      }
+    },
+    {
+      "position": 3,
+      "selectedW": 30,
+      "selectedAlpha": 300,
+      "metrics": {
+        "discovery": {
+          "n": 1920,
+          "meanBrierImprovementVsExactPrior": -0.000095446732,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000493596645,
+          "meanLogLossImprovementVsExactPrior": -0.002471756406,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.00779585244
+        },
+        "validation": {
+          "n": 640,
+          "meanBrierImprovementVsExactPrior": -0.000094574267,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.00033000601,
+          "meanLogLossImprovementVsExactPrior": 0.001594097275,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.012227584754
+        },
+        "blind_oos": {
+          "n": 641,
+          "meanBrierImprovementVsExactPrior": -0.000289453451,
+          "meanBrierImprovementVsGlobalSameAlpha": -0.000309753345,
+          "meanLogLossImprovementVsExactPrior": -0.005089466055,
+          "meanLogLossImprovementVsGlobalSameAlpha": -0.006365567561
+        }
+      }
+    },
+    {
+      "position": 4,
+      "selectedW": 90,
+      "selectedAlpha": 1000,
+      "metrics": {
+        "discovery": {
+          "n": 1920,
+          "meanBrierImprovementVsExactPrior": -0.00005187359,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.00024774972,
+          "meanLogLossImprovementVsExactPrior": -0.000445744076,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.004804844542
+        },
+        "validation": {
+          "n": 640,
+          "meanBrierImprovementVsExactPrior": -0.000037214044,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000120327503,
+          "meanLogLossImprovementVsExactPrior": -0.000639200862,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.002662545953
+        },
+        "blind_oos": {
+          "n": 641,
+          "meanBrierImprovementVsExactPrior": -0.000083703146,
+          "meanBrierImprovementVsGlobalSameAlpha": -0.000375174967,
+          "meanLogLossImprovementVsExactPrior": -0.000999451882,
+          "meanLogLossImprovementVsGlobalSameAlpha": -0.003124969968
+        }
+      }
+    },
+    {
+      "position": 5,
+      "selectedW": 365,
+      "selectedAlpha": 1000,
+      "metrics": {
+        "discovery": {
+          "n": 1920,
+          "meanBrierImprovementVsExactPrior": -0.000143296143,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000134905127,
+          "meanLogLossImprovementVsExactPrior": -0.003739169623,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.001231716131
+        },
+        "validation": {
+          "n": 640,
+          "meanBrierImprovementVsExactPrior": 0.000097454641,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000274249202,
+          "meanLogLossImprovementVsExactPrior": -0.004151476016,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.001434243459
+        },
+        "blind_oos": {
+          "n": 641,
+          "meanBrierImprovementVsExactPrior": 0.000022537437,
+          "meanBrierImprovementVsGlobalSameAlpha": 0.000064300036,
+          "meanLogLossImprovementVsExactPrior": -0.002117221492,
+          "meanLogLossImprovementVsGlobalSameAlpha": 0.00287264562
+        }
+      }
+    }
+  ],
+  "blindInference": [
+    {
+      "position": 1,
+      "comparator": "exact_order_statistic_prior",
+      "primary": true,
+      "n": 641,
+      "mean": 0.000055574246,
+      "ci95": [
+        -0.000390688114,
+        0.000499065179
+      ],
+      "rawCenteredOneSidedP": 0.398300849575,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20262105,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 1,
+      "comparator": "cumulative_empirical_same_alpha",
+      "primary": false,
+      "n": 641,
+      "mean": 0.000366250243,
+      "ci95": [
+        -0.000185919684,
+        0.000895725708
+      ],
+      "rawCenteredOneSidedP": 0.088955522239,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20312105,
+      "holmAdjustedP": 0.889555222389
+    },
+    {
+      "position": 2,
+      "comparator": "exact_order_statistic_prior",
+      "primary": true,
+      "n": 641,
+      "mean": -0.000360361337,
+      "ci95": [
+        -0.000677862083,
+        -0.000010741511
+      ],
+      "rawCenteredOneSidedP": 0.985007496252,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20263102,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 2,
+      "comparator": "cumulative_empirical_same_alpha",
+      "primary": false,
+      "n": 641,
+      "mean": 0.000006213983,
+      "ci95": [
+        -0.000371615819,
+        0.000380794071
+      ],
+      "rawCenteredOneSidedP": 0.48375812094,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20313102,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 3,
+      "comparator": "exact_order_statistic_prior",
+      "primary": true,
+      "n": 641,
+      "mean": -0.000289453451,
+      "ci95": [
+        -0.000735683176,
+        0.000134304009
+      ],
+      "rawCenteredOneSidedP": 0.906046976512,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20264099,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 3,
+      "comparator": "cumulative_empirical_same_alpha",
+      "primary": false,
+      "n": 641,
+      "mean": -0.000309753345,
+      "ci95": [
+        -0.000983515806,
+        0.000363392733
+      ],
+      "rawCenteredOneSidedP": 0.838580709645,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20314099,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 4,
+      "comparator": "exact_order_statistic_prior",
+      "primary": true,
+      "n": 641,
+      "mean": -0.000083703146,
+      "ci95": [
+        -0.000338053819,
+        0.000176056951
+      ],
+      "rawCenteredOneSidedP": 0.740129935032,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20265096,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 4,
+      "comparator": "cumulative_empirical_same_alpha",
+      "primary": false,
+      "n": 641,
+      "mean": -0.000375174967,
+      "ci95": [
+        -0.000752863615,
+        0.000030383624
+      ],
+      "rawCenteredOneSidedP": 0.974012993503,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20315096,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 5,
+      "comparator": "exact_order_statistic_prior",
+      "primary": true,
+      "n": 641,
+      "mean": 0.000022537437,
+      "ci95": [
+        -0.000497924968,
+        0.000524648208
+      ],
+      "rawCenteredOneSidedP": 0.468265867066,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20266093,
+      "holmAdjustedP": 1
+    },
+    {
+      "position": 5,
+      "comparator": "cumulative_empirical_same_alpha",
+      "primary": false,
+      "n": 641,
+      "mean": 0.000064300036,
+      "ci95": [
+        -0.000480097099,
+        0.000604894119
+      ],
+      "rawCenteredOneSidedP": 0.413793103448,
+      "bootstrapReplicates": 2000,
+      "blockLength": 7,
+      "seed": 20316093,
+      "holmAdjustedP": 1
+    }
+  ],
+  "integrity": {
+    "archiveRows": 3401,
+    "scoredTargets": 3201,
+    "warmupTargetRowIndexZeroBased": 200,
+    "strictPrefixChecks": 3201,
+    "targetCutoffBeforeTargetChecks": 3201,
+    "exactPriorNormalizationChecks": 5,
+    "candidateProbabilityNormalizationChecks": 240075,
+    "globalSameAlphaNormalizationChecks": 48015,
+    "normalizationChecks": 288090,
+    "maxProbabilityNormalizationError": "7.771561e-16",
+    "maxExactPriorNormalizationError": "2.220446e-16",
+    "expectedSelectedLedgerRows": 16005,
+    "perPositionLedgerRows": [
+      3201,
+      3201,
+      3201,
+      3201,
+      3201
+    ],
+    "duplicateTargetPositionKeys": 0,
+    "trainPrefixRule": "target row t uses archive rows 0..t-1 only; W_eff=min(W,t); cumulative comparator uses all t prior rows",
+    "featureCutoffRule": "target cutoff is row t-1 date; strictly earlier than target date"
+  },
+  "diagnosis": [
+    "This experiment isolates a recency effect in one-dimensional position marginals; PSR-07/08 conditioned on previous-draw states and pairwise joint cells, so the hypothesis is distinct.",
+    "Selection is validation-only, but the archive blind segment was inspected in prior SONAR work; results are retrospective and not independent confirmation.",
+    "Position order-statistic priors are nonuniform by construction; comparing only raw hit rates would confound intrinsic position difficulty, so the primary endpoint is multiclass Brier against the exact prior.",
+    "The cumulative empirical same-alpha comparator controls whether any apparent gain is attributable specifically to recency rather than simply empirical deviations from the theoretical prior.",
+    "Cross-runtime replay initially exposed sub-ULP Math.log drift in descriptive log-loss fields; report JSON values are canonicalized to 12 decimals, log-loss ledger gains to 9 decimals, and small normalization-error magnitudes are retained as scientific-notation strings."
+  ],
+  "limitations": [
+    "Historical data cannot demonstrate a physical fluid-dynamics mechanism or lottery predictability.",
+    "Five marginal laws do not describe the dependence among all five ordered numbers.",
+    "Window/alpha selection may overfit validation; blind test is historical and previously seen by other project analyses.",
+    "No prospective Q60 gate completion; no engine promotion or ticket recommendation."
+  ],
+  "decision": "No promotion. Record the position-specific marginal results as exploratory; retain the exact order-statistic prior unless a position endpoint survives Holm and the prospective Q60 gate later passes.",
+  "nextAction": "Inspect the per-position blind endpoints and selected windows; if no Holm-adjusted endpoint survives, do not tune PSR-09 on this historical blind slice. Continue append-only prospective shadow evaluation toward the registered 200 paired-target Q60 gate."
+}
