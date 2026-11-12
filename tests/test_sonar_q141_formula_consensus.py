@@ -93,6 +93,11 @@ class FormulaConsensusTests(unittest.TestCase):
         for name in controls_a:
             self.assertTrue(np.array_equal(controls_a[name], controls_c[name]))
 
+    def test_git_blob_sha1_uses_the_canonical_nul_header(self):
+        data = b"abc"
+        expected = hashlib.sha1(b"blob 3\\0abc").hexdigest()
+        self.assertEqual(consensus.git_blob_sha1(data), expected)
+
     def test_alias_canonicalization_uses_one_vote_per_unique_formula(self):
         raw_sample = registry.sample_formulas()
         ids = {

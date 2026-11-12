@@ -43,7 +43,7 @@ def sha256_bytes(data: bytes) -> str:
 
 
 def git_blob_sha1(data: bytes) -> str:
-    return hashlib.sha1(f"blob {len(data)}\\0".encode("ascii") + data).hexdigest()
+    return hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
 
 
 def build_formula_sample():
@@ -498,6 +498,13 @@ def run():
                 "artifact_upload_and_output_commit": "completed",
                 "root_cause": "The first serialization wrote a literal backslash-n suffix after JSON documents, so the remote verifier rejected the manifest as extra trailing data.",
                 "recovery": "Serialize actual newline characters, rerun the same frozen preregistered experiment, then verify remote JSON parsing and all manifest file SHA-256 values.",
+            },
+            {
+                "run_id": 43273210888,
+                "failed_stage": "independent_git_blob_identity_audit",
+                "computation_unit_tests_and_sha256_remote_readback": "passed",
+                "root_cause": "The Git blob helper escaped the header terminator as the two literal characters backslash-zero instead of a NUL byte; the SHA-256 checks were correct, but the manifest Git blob SHA-1 fields did not match GitHub blob IDs.",
+                "recovery": "Use the actual NUL byte in the Git blob header, add a unit test against the canonical Git blob SHA-1 for b'abc', and verify each manifest Git blob SHA-1 with git rev-parse during remote readback.",
             }
         ],
         "next_action": prereg["next_action"],
