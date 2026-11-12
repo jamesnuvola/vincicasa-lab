@@ -385,7 +385,7 @@ function main() {
     title: "APP rank-space adjacent-pair interaction",
     status: "COMPLETED_EXPLORATORY_NO_PROMOTION",
     decision: "NO_PAIRWISE_RANK_ADJACENCY_INCREMENTAL_LIFT_DEMONSTRATED",
-    generated_at_utc: "2026-11-12T04:44:43Z",
+    generated_at_utc: "2026-11-12T04:57:22Z",
     epistemic_status: "EXPLORATORY_POST_HOC_EXTENSION_OF_Q135",
     source: {
       upstream_experiment: "Q123",
@@ -531,7 +531,7 @@ function main() {
   const manifest = {
     schema_version: "1.0",
     experiment_id: "Q136",
-    generated_at_utc: "2026-11-12T04:44:43Z",
+    generated_at_utc: "2026-11-12T04:57:22Z",
     artifact_count: artifacts.length,
     artifacts: artifacts.map(path => ({
       path,
