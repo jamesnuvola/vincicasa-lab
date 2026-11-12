@@ -150,6 +150,8 @@ jobs:
             git config user.name "sonar-q141-research"
             git config user.email "actions@users.noreply.github.com"
             git commit -m "Record Q141 Q7 exact remote readback"
+            git fetch origin "$BRANCH_NAME"
+            git rebase "origin/$BRANCH_NAME"
             git push origin "HEAD:$BRANCH_NAME"
           fi
           git fetch origin "$BRANCH_NAME"
