@@ -31,6 +31,24 @@ jobs:
           node-version: 20
       - name: Install data-generation dependency
         run: pip install numpy
+      - name: Test Q141-B1 canonical formula registry and future-suffix invariance
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_formula_registry.py -v
+      - name: Run Q141-B1 exact alias canonicalization walk-forward
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_formula_registry.py
+      - name: Upload Q141-B1 formula registry bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-b1-formula-registry-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_formula_registry.json
+            reports/sequence_agent/q141_formula_alias_walkforward_report_2026-11-12.json
+            reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json
+            reports/sequence_agent/q141_formula_registry_checkpoint_2026-11-12.json
+          retention-days: 90
       - name: Test Q141 formula-family leakage and determinism
         if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
         run: python tests/test_sonar_q141_formula_family_anticipation.py -v
@@ -88,6 +106,7 @@ jobs:
           git add reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json
           git add reports/sequence_agent/q141_formula_family_pair_union_report_2026-11-12.json reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json
           git add reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json reports/sequence_agent/q141_formula_family_margin_selector_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json
+          git add reports/sequence_agent/q141_formula_registry.json reports/sequence_agent/q141_formula_alias_walkforward_report_2026-11-12.json reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json reports/sequence_agent/q141_formula_registry_checkpoint_2026-11-12.json
           if git diff --cached --quiet; then
             echo "Q141 outputs already match this exact checkout; no branch update needed."
           else
