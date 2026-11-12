@@ -1,0 +1,46 @@
+name: Q136 APP rank adjacency interaction replay
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - "scripts/sonar_q136_rank_adjacency_interaction.mjs"
+      - "reports/sequence_agent/q136_*"
+      - ".github/workflows/q136-rank-adjacency-interaction.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Run exact rank-pair subset replay
+        run: node scripts/sonar_q136_rank_adjacency_interaction.mjs
+      - name: Check generated artifacts
+        run: git diff --check
+      - name: Persist deterministic report, ledger, validation, checkpoint and manifest
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q136_rank_adjacency_interaction_report_2026-11-12.json
+          git add reports/sequence_agent/q136_rank_adjacency_interaction_target_ledger_2026-11-12.csv
+          git add reports/sequence_agent/q136_rank_adjacency_interaction_validation_2026-11-12.json
+          git add reports/sequence_agent/q136_rank_adjacency_interaction_checkpoint_2026-11-12.md
+          git add reports/sequence_agent/q136_rank_adjacency_interaction_persistence_manifest_2026-11-12.json
+          if git diff --cached --quiet; then
+            echo "Q136 artifacts already match the deterministic replay."
+          else
+            git commit -m "Persist Q136 rank adjacency interaction replay"
+            git push origin "HEAD:${HEAD_REF}"
+          fi
