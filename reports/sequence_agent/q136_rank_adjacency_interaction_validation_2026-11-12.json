@@ -1,0 +1,120 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q136",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "source_blob_sha_pinned",
+      "passed": true
+    },
+    {
+      "name": "source_rows_3204",
+      "passed": true
+    },
+    {
+      "name": "source_date_range_2018_02_02_to_2026_11_10",
+      "passed": true
+    },
+    {
+      "name": "target_indices_consecutive",
+      "passed": true
+    },
+    {
+      "name": "all_history_cutoffs_strictly_prior",
+      "passed": true
+    },
+    {
+      "name": "all_targets_have_five_distinct_ranks",
+      "passed": true
+    },
+    {
+      "name": "all_ranks_in_1_to_40",
+      "passed": true
+    },
+    {
+      "name": "discovery_1922",
+      "passed": true
+    },
+    {
+      "name": "validation_641",
+      "passed": true
+    },
+    {
+      "name": "blind_oos_641",
+      "passed": true
+    },
+    {
+      "name": "grid_has_15_models",
+      "passed": true
+    },
+    {
+      "name": "nonzero_interaction_family_has_12_models",
+      "passed": true
+    },
+    {
+      "name": "all_models_enumerate_658008_subsets",
+      "passed": true
+    },
+    {
+      "name": "uniform_normalizer_is_658008",
+      "passed": true
+    },
+    {
+      "name": "q135_partition_reconciles",
+      "passed": true
+    },
+    {
+      "name": "all_model_marginals_sum_to_five",
+      "passed": true
+    },
+    {
+      "name": "discovery_selected_nested_q135_baseline",
+      "passed": true
+    },
+    {
+      "name": "validation_and_blind_not_used_for_selection",
+      "passed": true
+    },
+    {
+      "name": "future_suffix_mutation_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "randomization_seed_reproducible",
+      "passed": true
+    },
+    {
+      "name": "holm_family_has_48_tests",
+      "passed": true
+    },
+    {
+      "name": "all_p_values_in_unit_interval",
+      "passed": true
+    },
+    {
+      "name": "no_disputed_2026_11_11_target",
+      "passed": true
+    },
+    {
+      "name": "selected_model_is_not_a_new_engine",
+      "passed": true
+    }
+  ],
+  "counts": {
+    "source_rows": 3204,
+    "discovery": 1922,
+    "validation": 641,
+    "blind_oos": 641,
+    "candidate_models": 15,
+    "nonzero_interaction_models": 12,
+    "inferential_endpoints": 48,
+    "future_mutation_tests": 9,
+    "future_mutation_passed": 9
+  },
+  "source_blob_sha": "36d7af1fb3cceda5976eb99a78931f58d1a3d28a",
+  "selected_model": {
+    "beta": 0.0005,
+    "gamma": 0
+  },
+  "decision": "NO_PAIRWISE_RANK_ADJACENCY_INCREMENTAL_LIFT_DEMONSTRATED"
+}
