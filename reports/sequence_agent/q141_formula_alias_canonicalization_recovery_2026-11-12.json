@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B1-RECOVERY-1",
+  "parent_task": "Q141-B1",
+  "status": "AMENDMENT_BEFORE_RERUN",
+  "registered_at": "2026-11-12",
+  "original_preregistration": "reports/sequence_agent/q141_formula_alias_canonicalization_preregistration_2026-11-12.json",
+  "original_preregistration_mutated": false,
+  "failed_runs": [
+    {
+      "run_id": 43222532830,
+      "head_sha": "ac1d1e5d06977dc74d68d7e666b66c31c2e6fa08",
+      "failure": "Synthetic fixture did not preserve the two exact alias columns.",
+      "recovery": "Fixture now enforces matrix[:,25]=matrix[:,0] and matrix[:,26]=matrix[:,1]."
+    },
+    {
+      "run_id": 43222764935,
+      "head_sha": "d13261bfd593b08f4417af377e605c5466fa35c1",
+      "targets": 3354,
+      "formula_instances_per_target": 120,
+      "comparisons": 402480,
+      "alias_mismatches": 0,
+      "score_mismatches_at_1e_12": 0,
+      "rank_mismatches": 2311,
+      "rank_mismatch_rate": 0.005741900218644405,
+      "failure": "Legacy NumPy mean and canonical math.fsum scores were within 1e-12 but exact ranks differed for near-tied candidates."
+    }
+  ],
+  "root_cause": "Floating-point summation order changes exact score ordering for near-ties under an unquantized ranker; this is an implementation sensitivity, not a mathematical formula non-equivalence.",
+  "recovery_protocol": {
+    "primary": "Compare stable raw formula evaluation and canonical weighted AST using math.fsum; require score tolerance 1e-12 and identical ranks.",
+    "diagnostic": "Keep legacy NumPy mean evaluation as a separate path; report score deltas, rank mismatch count/rate, maximum rank displacement and maximum score gap among pairwise order flips.",
+    "production_guardrail": "Do not change production ranker or forecast engine; require a separate tie-policy audit."
+  },
+  "statistical_policy": "No p-values or multiple-testing correction for deterministic algebraic identity/property checks; no predictive-lift claim.",
+  "acceptance": [
+    "7 unit tests pass",
+    "3,354 strict-prior targets",
+    "0 alias mismatches",
+    "0 stable raw-vs-canonical score mismatches",
+    "0 stable raw-vs-canonical rank mismatches",
+    "legacy NumPy tie sensitivity fully reported",
+    "exact Git readback and manifest verification"
+  ],
+  "governance": {
+    "no_archive_mutation": true,
+    "no_shadow_insertion": true,
+    "no_engine_promotion": true,
+    "no_auto_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
