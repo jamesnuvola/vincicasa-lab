@@ -1,0 +1,162 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-C4",
+  "registered_at": "2026-11-12T21:39:08+01:00",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "hypothesis": "Prior-only rolling behaviour of Q80 per-number families contains information about the next target's Q7 whole-quintet formula-universe rank quality beyond Q7's own rolling rank-quality baseline.",
+  "estimand": "Forecast the target-level mean normalized percentile across the fixed 1,023 Q7 quintet-scoring formulas. This is a meta-quality outcome for the formula universe, not a direct prediction of winning numbers or an expected hit count.",
+  "sources": {
+    "q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q141_eligible_draws": 3404,
+    "q141_cutoff": "2026-11-10",
+    "q141_contest_315_used": false,
+    "q80_c0_report_path": "reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json",
+    "q80_c0_manifest_path": "reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json",
+    "q80_c0_ledger_path": "reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv",
+    "q80_c0_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q80_c0_targets": 3354,
+    "q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_archive_draws": 3387,
+    "q7_cutoff": "2026-10-24",
+    "q7_exact_prefix_of_q141": true,
+    "q7_complexity_report_path": "reports/sequence_agent/q7_formula_complexity_walkforward_report_2026-11-12.json",
+    "q7_complexity_manifest_path": "reports/sequence_agent/q141_q7_ast_complexity_manifest_2026-11-12.json",
+    "q7_ledger_path": "reports/sequence_agent/q7_formula_complexity_walkforward_target_ledger_2026-11-12.csv",
+    "q7_formula_count": 1023,
+    "q7_candidate_quintets": 658008,
+    "q7_targets": 3286,
+    "contest_315_and_q141_suffix_rows_excluded": true
+  },
+  "join_contract": {
+    "key": "target_date",
+    "exact_fields": [
+      "target_date",
+      "cutoff_date",
+      "actual_quintet",
+      "split"
+    ],
+    "index_identity": "q7.prior_draws must equal q80_c0.target_index",
+    "q7_rows": 3286,
+    "q80_c0_rows": 3354,
+    "expected_common_rows": 3286,
+    "source_window_rule": "For Q7 targets through 2026-10-24, only Q80 C0 ledger rows strictly before the target index may enter predictors."
+  },
+  "outcome": {
+    "name": "q7_mean_percentile_all",
+    "source_column": "mean_percentile_all",
+    "definition": "Mean normalized percentile rank of the realized quintet across all 1,023 Q7 formulas on that target; 0.5 is the random-quintet reference.",
+    "range": [
+      0,
+      1
+    ]
+  },
+  "predictors": {
+    "rolling_window_targets": 50,
+    "strict_prior": true,
+    "q7_baseline": [
+      "q7_roll50_mean_percentile"
+    ],
+    "q80_features": [
+      "q80_roll50_equal_family_top5_hits",
+      "q80_roll50_family_dispersion",
+      "q80_roll50_family_entropy_normalized",
+      "q80_equal_family_recent25_minus_previous25"
+    ],
+    "q80_family_columns": [
+      "frequency_change_top5_hits",
+      "frequency_level_top5_hits",
+      "lag_memory_top5_hits",
+      "neighbour_field_top5_hits",
+      "position_dependence_top5_hits",
+      "recency_gap_top5_hits"
+    ],
+    "definitions": {
+      "q80_roll50_equal_family_top5_hits": "Mean equal-family Top-5 hit count over the previous 50 Q80 targets.",
+      "q80_roll50_family_dispersion": "Population standard deviation across the six family-specific mean Top-5 hit counts, each computed over the previous 50 Q80 targets.",
+      "q80_roll50_family_entropy_normalized": "Shannon entropy of the six non-negative rolling family mean Top-5 hit counts, normalized by log(6).",
+      "q80_equal_family_recent25_minus_previous25": "Mean equal-family Top-5 hits over the most recent 25 prior Q80 targets minus the preceding 25 prior Q80 targets."
+    }
+  },
+  "models": {
+    "q7_only_ridge": {
+      "features": [
+        "q7_roll50_mean_percentile"
+      ],
+      "role": "Primary baseline model using only prior Q7 target outcomes."
+    },
+    "cross_granularity_ridge": {
+      "features": [
+        "q7_roll50_mean_percentile",
+        "q80_roll50_equal_family_top5_hits",
+        "q80_roll50_family_dispersion",
+        "q80_roll50_family_entropy_normalized",
+        "q80_equal_family_recent25_minus_previous25"
+      ],
+      "role": "Augmented model testing incremental transfer from Q80 per-number behaviour into Q7 quintet-rank quality."
+    },
+    "estimator": "Ridge regression with intercept; features standardized on training rows only; alpha=1.0 fixed; intercept unpenalized; predictions clipped to [0,1].",
+    "tuning": "No hyperparameter tuning, feature selection, or model selection after registration."
+  },
+  "walkforward": {
+    "original_split_counts": {
+      "discovery": 1972,
+      "validation": 657,
+      "blind_oos": 657
+    },
+    "q7_initial_feature_warmup": 50,
+    "discovery_prequential_scoring_start_offset": 100,
+    "discovery_prequential_training": "At each Discovery target, fit using only earlier Discovery rows with valid features; minimum 50 training rows.",
+    "frozen_model_fit": "At end of Discovery, fit both models on Discovery rows with valid features (offsets 50..1971).",
+    "validation_and_blind": "Freeze model coefficients after Discovery. Update rolling predictor state only with outcomes from targets strictly before the current target; do not refit coefficients in Validation or Blind OOS.",
+    "expected_evaluated_counts": {
+      "discovery": 1872,
+      "validation": 657,
+      "blind_oos": 657
+    },
+    "target_order": "Build predictors from prior rows, predict current Q7 mean percentile, then reveal current Q7 outcome to future rolling state."
+  },
+  "baselines": [
+    "constant_random_reference_0.5",
+    "q7_roll50_mean_percentile",
+    "q7_only_ridge"
+  ],
+  "primary_endpoint": {
+    "name": "blind_oos_mae_improvement_cross_granularity_vs_q7_only",
+    "definition": "MAE(q7_only_ridge) minus MAE(cross_granularity_ridge); positive values favour cross-granularity transfer.",
+    "alternative": "one-sided positive improvement",
+    "minimum_practical_effect": 0.005,
+    "significance_level": 0.05
+  },
+  "inference": {
+    "primary_test": "One-sided block sign-flip test on paired absolute-error improvement.",
+    "block_length": 20,
+    "sign_flip_replicates": 20000,
+    "confidence_interval": "95% circular moving-block bootstrap of paired absolute-error improvement.",
+    "bootstrap_replicates": 20000,
+    "seed": 14120261124,
+    "multiplicity": "One confirmatory primary endpoint is registered; no within-experiment multiplicity correction is required. RMSE, bias, correlation and model-vs-0.5 metrics are descriptive only and receive no confirmatory p-values."
+  },
+  "leakage_and_reproducibility": [
+    "Verify Q80 C0 and Q7 source archive identities and Q7 exact-prefix provenance.",
+    "Verify all 3,286 Q7 targets match Q80 C0 target date, cutoff, actual quintet, split and target index.",
+    "For each target, use exactly the previous 50 Q80 target rows and previous 50 Q7 target outcomes.",
+    "Mutating current/future Q80 or Q7 outcomes must not change current predictors.",
+    "Discovery predictions are expanding prequential; Validation/Blind coefficients are frozen at Discovery end.",
+    "No Validation or Blind outcomes may enter coefficient fitting or hyperparameter selection.",
+    "Deterministic model fitting, block inference, ledger ordering and byte-identical replay."
+  ],
+  "interpretation": "The outcome is the retrospective rank quality of a fixed formula universe, not the winning quintet itself. A positive result would only justify an independent prospective shadow replication; historical Blind OOS is exposed by prior SONAR research and is not virgin evidence.",
+  "decision_rule": "Flag for independent prospective replication only if the primary Blind OOS MAE improvement is at least 0.005 and the one-sided block sign-flip p-value is below 0.05. No engine promotion, forecast selection or canonical archive mutation.",
+  "governance": {
+    "research_only": true,
+    "no_merge": true,
+    "no_auto_promotion": true,
+    "no_shadow_insertion": true,
+    "no_canonical_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
