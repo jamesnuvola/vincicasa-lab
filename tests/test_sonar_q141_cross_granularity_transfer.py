@@ -105,6 +105,11 @@ class CrossGranularityTransferTests(unittest.TestCase):
         self.assertLessEqual(p1, 1.0)
         self.assertLessEqual(ci1[0], ci1[1])
 
+    def test_relative_output_directory_is_resolved_before_git_path_hashing(self):
+        resolved = c4.resolve_output_dir(Path("reports/sequence_agent"))
+        self.assertTrue(resolved.is_absolute())
+        self.assertTrue(resolved.as_posix().endswith("reports/sequence_agent"))
+
     def test_preregistered_split_boundaries_and_feature_sets_are_fixed(self):
         self.assertEqual(c4.DISCOVERY_END, 1972)
         self.assertEqual(c4.VALIDATION_END, 2629)
