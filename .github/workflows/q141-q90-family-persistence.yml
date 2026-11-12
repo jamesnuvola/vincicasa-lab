@@ -1,0 +1,102 @@
+name: Q141-B7 Q90 family persistence
+
+on:
+  push:
+    branches:
+      - research/q141-formula-universe-behaviour-mapping-20261112
+    paths:
+      - ".github/workflows/q141-q90-family-persistence.yml"
+      - "scripts/sonar_q141_q90_family_persistence.py.gz"
+      - "tests/test_sonar_q141_q90_family_persistence.py.gz"
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: q141-b7-q90-family-persistence
+  cancel-in-progress: false
+
+jobs:
+  q90-family-persistence:
+    if: github.ref_name == 'research/q141-formula-universe-behaviour-mapping-20261112'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install numerical dependency
+        run: pip install numpy
+
+      - name: Restore readable runner and unit tests
+        run: |
+          gzip -dc scripts/sonar_q141_q90_family_persistence.py.gz > scripts/sonar_q141_q90_family_persistence.py
+          gzip -dc tests/test_sonar_q141_q90_family_persistence.py.gz > tests/test_sonar_q141_q90_family_persistence.py
+          python -m py_compile scripts/sonar_q141_q90_family_persistence.py tests/test_sonar_q141_q90_family_persistence.py
+
+      - name: Run synthetic leakage and scoring tests
+        run: python -m unittest discover -s tests -p 'test_sonar_q141_q90_family_persistence.py' -v
+
+      - name: Download the exact pinned Q90 artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/q90
+          curl -L --fail --retry 3 \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/artifacts/13627507532/zip" \
+            -o /tmp/q90/q90-expanded-formula-bundle.zip
+          echo "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077  /tmp/q90/q90-expanded-formula-bundle.zip" | sha256sum -c -
+
+      - name: Execute strict-prior Q141-B7 walk-forward
+        run: |
+          python scripts/sonar_q141_q90_family_persistence.py \
+            --artifact-path /tmp/q90/q90-expanded-formula-bundle.zip \
+            --output-dir reports/sequence_agent
+          python - <<'PY'
+          import json, hashlib
+          from pathlib import Path
+          root=Path("reports/sequence_agent")
+          m=json.loads((root/"q141_q90_family_persistence_manifest_2026-11-12.json").read_text())
+          for key in ("report","ledger"):
+              path=root/m[f"{key}_path"]
+              actual=hashlib.sha256(path.read_bytes()).hexdigest()
+              if actual != m[f"{key}_sha256"]:
+                  raise SystemExit(f"Q141_B7_BLOCKED: {key} output hash mismatch")
+          PY
+
+      - name: Persist results on the research branch only
+        run: |
+          test "$GITHUB_REF_NAME" = "research/q141-formula-universe-behaviour-mapping-20261112"
+          git config user.name "sonar-q141-research"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/sequence_agent/q141_q90_family_persistence_*
+          if ! git diff --cached --quiet; then
+            git commit -m "Q141-B7: persist Q90 family persistence walk-forward"
+            git push origin "HEAD:$GITHUB_REF_NAME"
+          else
+            echo "Q141-B7 outputs already match the repository."
+          fi
+
+      - name: Verify exact remote Git readback
+        run: |
+          git fetch origin "$GITHUB_REF_NAME"
+          for f in \
+            reports/sequence_agent/q141_q90_family_persistence_report_2026-11-12.json \
+            reports/sequence_agent/q141_q90_family_persistence_target_ledger_2026-11-12.csv \
+            reports/sequence_agent/q141_q90_family_persistence_manifest_2026-11-12.json \
+            reports/sequence_agent/q141_q90_family_persistence_checkpoint_2026-11-12.json; do
+            local_sha=$(sha256sum "$f" | cut -d' ' -f1)
+            remote_sha=$(git show "origin/$GITHUB_REF_NAME:$f" | sha256sum | cut -d' ' -f1)
+            test "$local_sha" = "$remote_sha"
+            echo "$f $local_sha"
+          done
