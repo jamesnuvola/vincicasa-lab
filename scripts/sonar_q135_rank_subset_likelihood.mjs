@@ -178,7 +178,7 @@ function main(){
   const upstreamProtocol=JSON.parse(read(P.upstreamProtocol));
   if(upstreamReport.experiment_id!=="Q123"||upstreamReport.source?.base_commit!=="ea46a70c4c90db5dad44d5374a97f89a84e50ad9"||upstreamReport.walk_forward?.targets!==3204||upstreamReport.walk_forward?.last_target!=="2026-11-10")fail("upstream Q123 report provenance mismatch");
   if(upstreamProtocol.experiment_id!=="Q123"||upstreamProtocol.status!=="PREREGISTERED_BEFORE_CALCULATION"||upstreamProtocol.source?.archive_draws!==3404||upstreamProtocol.source?.archive_last_date!=="2026-11-10")fail("upstream Q123 protocol provenance mismatch");
-  if(JSON.stringify(protocol.selection.beta_grid)!==JSON.stringify(BETAS))fail("protocol beta grid differs from runner");
+  if(!Array.isArray(protocol.selection.beta_grid)||protocol.selection.beta_grid.length!==BETAS.length||protocol.selection.beta_grid.some((x,i)=>Math.abs(x-BETAS[i])>1e-15))fail("protocol beta grid differs from runner");
   if(protocol.inference.randomization_replicates!==RANDOM_REPS||protocol.inference.bootstrap_replicates!==BOOT_REPS||protocol.inference.bootstrap_block_length!==BLOCK)fail("protocol inference settings differ from runner");
   if(protocol.source.upstream_head_commit!==EXPECTED_Q123_HEAD)fail("Q123 upstream commit pin mismatch");
   const rows=parseLedger(read(P.source));
