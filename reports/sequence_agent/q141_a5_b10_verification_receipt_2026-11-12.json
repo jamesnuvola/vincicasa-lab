@@ -1,59 +1,21 @@
 {
-  "formula_metric_replay": [
+  "formula_metric_replay":[
     {"formula_count":1900,"max_abs_mean_top5_share_diff_vs_q90_metrics":2.1371793224034263e-15,"split":"discovery"},
     {"formula_count":1900,"max_abs_mean_top5_share_diff_vs_q90_metrics":9.43689570931383e-16,"split":"validation"},
     {"formula_count":1900,"max_abs_mean_top5_share_diff_vs_q90_metrics":9.43689570931383e-16,"split":"blind_oos"}
   ],
-  "governance": {"no_canonical_archive_mutation":true,"no_engine_promotion":true,"no_merge":true,"no_shadow_insertion":true,"protected_prs":[6,7,8]},
-  "local_execution": {
-    "all_byte_identical":true,"full_walkforward_runs":2,"outputs_compared":8,"pytest":"7 passed",
-    "runner_sha256":"830eef969bcbb19067f74c879dde8b7ba5b697d656da360ab54a9a01639d3821",
-    "output_hashes":[
-      {"bytes":1309,"file":"q141_a5_b10_checkpoint.json","identical":true,"sha256":"c033bb41f99ac6e76bf21f81df0d0b84f3f51c416dd7c8868a05a0054e1d0e97"},
-      {"bytes":402716,"file":"q141_a5_b10_formula_sample.csv","identical":true,"sha256":"ee4b50b4e0fd52e4bd2cee62c41a3f2f158fa168032811788c698376983fe958"},
-      {"bytes":1645,"file":"q141_a5_b10_manifest.json","identical":true,"sha256":"9afc39fae2fa980f71b389c7a7bc50ef8e70f70f2bc8c2a893f31d90e8d875b6"},
-      {"bytes":13284,"file":"q141_a5_b10_report.json","identical":true,"sha256":"acca3fe705943d1859e04eacd3704dc5e31a5c527443decbfc4fcc18ee16e430"},
-      {"bytes":421101,"file":"q141_a5_b10_target_ledger.csv","identical":true,"sha256":"fe02394c447c5ee9d5309db0b44f066c3c557fb9acfa1d5dd55ab292194c67c8"},
-      {"bytes":175,"file":"q141_a5_formula_replay_reconciliation.csv","identical":true,"sha256":"c4a762afb2dfeb4463ce41e60bd1d8db05ba3cce4a52640505164f4c59a09754"},
-      {"bytes":2044,"file":"q141_a5_q90_feature_coverage.csv","identical":true,"sha256":"c256d24d387d660bea7f3ff58d28b9d4c5e0145774373cbe56791e1147863a98"},
-      {"bytes":15865,"file":"q141_a5_q90_selected_feature_rank_correlations.csv","identical":true,"sha256":"4bba8f4c1da12c16a9d436b9bb8efeef865ce7e8a2318468039cc520aa1d27ab"}
-    ]
+  "governance":{"no_canonical_archive_mutation":true,"no_engine_promotion":true,"no_merge":true,"no_shadow_insertion":true,"protected_prs":[6,7,8]},
+  "local_execution":{"all_byte_identical":true,"full_walkforward_runs":2,"output_hashes_note":"Hashes refer to the two complete deterministic runner outputs before post-run repository_storage metadata was appended to the manifest; all eight runner outputs were byte-identical.","outputs_compared":8,"pytest":"7 passed","runner_sha256":"830eef969bcbb19067f74c879dde8b7ba5b697d656da360ab54a9a01639d3821"},
+  "primary_blind_oos":{"block_length":20,"block_signflip_one_sided_p":0.4470776461176941,"blocks":34,"bootstrap_replicates":20000,"ci95_circular_moving_block":[-0.004477611940298508,0.0056716417910447755],"comparison":"base-feature-set-balanced Borda minus raw formula-weighted Borda Top-5 hit share","confirmatory_endpoint_count":1,"criteria_met":false,"effect":0.0005970149253731342,"practical_threshold":0.005,"seed":14120261112},
+  "q90_ast_registry":{"duplicate_ast_count":0,"formula_total":330429,"manifest_git_blob_sha1":"f1543a7e27d290c683386ec08a6a3adb9d2ff77a","remote_blobs_verified":8,"unique_ast_ids":330429},
+  "repository_artifacts":{
+    "reports/sequence_agent/q141_a5_b10_report_2026-11-12.json.gz.b64":{"base64_text_bytes":5632,"base64_text_git_blob_sha1":"ca99f256e1d4bf590d34c3dc7b468c2cf9c911c2","base64_text_sha256":"64ae60431a606101bd83d41904e00aa1273d3775d1526a3b65af2271ad26e00d","compressed_bytes":4223,"compressed_sha256":"732bac522aa923f556f03141766f03688060554fda201632654e5201e710f645"},
+    "scripts/sonar_q141_q90_lineage_borda.py.gz.b64":{"base64_text_bytes":13732,"base64_text_git_blob_sha1":"ceef62e28e1c77f0eecd8e85342bcc4e78930570","base64_text_sha256":"6c0ddc68cb948e4f6df14faaf591764937d3a6b79c8874f83383f2b48f0cd3dd","compressed_bytes":10297,"compressed_sha256":"ad7ecaaffa3d1f9562990eb531b9fb2f43eea2176d1c6a2e4e5a5541f4f70e65"}
   },
-  "primary_blind_oos": {
-    "block_length":20,"block_signflip_one_sided_p":0.4470776461176941,"blocks":34,"bootstrap_replicates":20000,
-    "ci95_circular_moving_block":[-0.004477611940298508,0.0056716417910447755],
-    "comparison":"base-feature-set-balanced Borda minus raw formula-weighted Borda Top-5 hit share",
-    "confirmatory_endpoint_count":1,"criteria_met":false,"effect":0.0005970149253731342,
-    "multiplicity":"One preregistered confirmatory Blind OOS endpoint; Discovery/Validation and family/feature diagnostics are descriptive only.",
-    "practical_threshold":0.005,"seed":14120261112
-  },
-  "q90_ast_registry": {
-    "duplicate_ast_count":0,"formula_total":330429,"manifest_git_blob_sha1":"f1543a7e27d290c683386ec08a6a3adb9d2ff77a",
-    "remote_blobs_verified":8,"unique_ast_ids":330429
-  },
-  "repository_artifacts": {
-    "reports/sequence_agent/q141_a5_b10_report_2026-11-12.json.gz.b64": {
-      "base64_text_bytes":5632,"base64_text_git_blob_sha1":"ca99f256e1d4bf590d34c3dc7b468c2cf9c911c2",
-      "base64_text_sha256":"64ae60431a606101bd83d41904e00aa1273d3775d1526a3b65af2271ad26e00d",
-      "compressed_bytes":4223,"compressed_sha256":"732bac522aa923f556f03141766f03688060554fda201632654e5201e710f645"
-    },
-    "reports/sequence_agent/q141_a5_b10_target_ledger_summary_2026-11-12.csv.gz.b64": {
-      "base64_text_bytes":28020,"base64_text_git_blob_sha1":"0e1e5c04d38c7a293c90960d043d75d2bac692ac",
-      "base64_text_sha256":"43449f9604fc740eaf81d3c6d251b9410d52732c0db94ece45774cfb57a40d44",
-      "compressed_bytes":21014,"compressed_sha256":"17b6a9e0ddd0f98eae3b79712c0a26fed2d683b1f631e3741d1fcbbcfff31706"
-    },
-    "scripts/sonar_q141_q90_lineage_borda.py.gz.b64": {
-      "base64_text_bytes":13732,"base64_text_git_blob_sha1":"ceef62e28e1c77f0eecd8e85342bcc4e78930570",
-      "base64_text_sha256":"6c0ddc68cb948e4f6df14faaf591764937d3a6b79c8874f83383f2b48f0cd3dd",
-      "compressed_bytes":10297,"compressed_sha256":"ad7ecaaffa3d1f9562990eb531b9fb2f43eea2176d1c6a2e4e5a5541f4f70e65"
-    }
-  },
-  "source": {"all_member_sha256_verified":true,"member_count":17,"q90_artifact_id":13627507532,"q90_artifact_sha256":"12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077"},
-  "source_archive_reconciliation": {
-    "exact_prefix_after_line_ending_normalization":true,
-    "excluded_dates":["2026-11-08","2026-11-09","2026-11-10","2026-11-11"],
-    "excluded_suffix_draws":4,"prior_c6_checkpoint_count_error":3404,"q141_draws":3405,"q90_draws":3401
-  },
+  "repository_artifacts_note":"The full target ledger is generated by the runner and included in the run manifest; the repository stores the human/machine report, deterministic runner and workflow. The full ledger is uploaded as a workflow artifact if the workflow run is approved and completes.",
+  "schema_version":"1.0",
+  "source":{"all_member_sha256_verified":true,"member_count":17,"q90_artifact_id":13627507532,"q90_artifact_sha256":"12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077"},
+  "source_archive_reconciliation":{"exact_prefix_after_line_ending_normalization":true,"excluded_dates":["2026-11-08","2026-11-09","2026-11-10","2026-11-11"],"excluded_suffix_draws":4,"prior_c6_checkpoint_count_error":3404,"q141_draws":3405,"q90_draws":3401},
   "status":"LOCAL_EXECUTION_AND_SOURCE_REMOTE_READBACK_VERIFIED_PENDING_OUTPUT_REMOTE_READBACK",
   "task_id":"Q141_A5_B10_VERIFICATION_RECEIPT"
 }
