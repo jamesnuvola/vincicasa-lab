@@ -42,7 +42,7 @@ jobs:
           git add reports/sequence_agent/q139_weekday_conditioned_subset_persistence_manifest_2026-11-12.json
           if ! git diff --cached --quiet; then
             git commit -m "Persist Q139 weekday-conditioned subset replay"
-            git push
+            git push origin HEAD:refs/heads/research/q139-weekday-conditioned-subset-20261112
           fi
       - name: Require byte-identical persisted outputs on pull request
         if: github.event_name == 'pull_request'
