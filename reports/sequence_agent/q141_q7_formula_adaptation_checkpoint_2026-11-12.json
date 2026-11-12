@@ -1,24 +1,10 @@
 {
   "schema_version": "1.0",
   "task_id": "Q141-B6",
-  "status": "PREREGISTERED_AWAITING_WALKFORWARD",
-  "checkpoint_date": "2026-11-12",
-  "source_q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
-  "source_q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
-  "source_q7_walkforward_manifest_blob_sha1": "aae2c7768c9d37bf633a13939f2b686bcce83a27",
-  "source_q7_runner_blob_sha1": "ad1c7fa721f316b3af0018f5da4a0a905bb62dcf",
-  "source_q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
-  "formula_count": 1023,
-  "candidate_quintets": 658008,
-  "source_targets": 3387,
-  "selector_burnin": 100,
-  "eligible_targets": 3286,
-  "split_counts": {
-    "discovery": 1972,
-    "validation": 657,
-    "blind_oos": 657
-  },
-  "rank_convention": "one-based; 1 is best",
-  "execution_step": "python scripts/sonar_q141_q7_formula_adaptation.py",
-  "next_step": "Verify all 34 source rank-part hashes and cutoffs, run the rolling-100 prequential selector, calculate 11 Holm-adjusted tests, persist report and target ledger."
+  "status": "COMPUTED_BUNDLE_READY_FOR_GIT_PERSISTENCE",
+  "report_sha256": "6c2cf9d0e2043e0a7d4741c01c791f6be2f90b25b0ce6c9de5a4bb4850e58424",
+  "ledger_sha256": "f9a47a450f3ff7abae88e0266da4ef0b3129b321e7d8fda368da89948bea674b",
+  "manifest_sha256": "06999debd5aa9276126fe805128dea713f5e1f55fd4d1d3c268916b9b3ef24e4",
+  "decision": "NO_FORMULA_PERSISTENCE_LIFT_DEMONSTRATED",
+  "next_action": "Persist Q90's 59-feature matrix and 330,429-formula bundle as hash-pinned repository objects, then construct a separate per-number AST lineage before cross-granularity tests."
 }
