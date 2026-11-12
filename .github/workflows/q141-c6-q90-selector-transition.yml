@@ -54,7 +54,7 @@ jobs:
       - name: Upload Q141-C6 evidence bundle
         uses: actions/upload-artifact@v4
         with:
-          name: q141-c6-selector-transition-\${{ github.sha }}
+          name: q141-c6-selector-transition-${{ github.sha }}
           path: |
             reports/sequence_agent/q141_q90_selector_transition_report_2026-11-12.json
             reports/sequence_agent/q141_q90_selector_transition_target_ledger_2026-11-12.csv
@@ -73,7 +73,7 @@ jobs:
             reports/sequence_agent/q141_q90_selector_transition_manifest_2026-11-12.json
             reports/sequence_agent/q141_q90_selector_transition_checkpoint_2026-11-12.json
           )
-          for file in "\${files[@]}"; do
+          for file in "${files[@]}"; do
             mkdir -p "$temp_dir/$(dirname "$file")"
             cp "$file" "$temp_dir/$file"
           done
@@ -81,8 +81,8 @@ jobs:
           for attempt in 1 2 3; do
             git fetch origin "$BRANCH_NAME"
             git reset --hard "origin/$BRANCH_NAME"
-            for file in "\${files[@]}"; do cp "$temp_dir/$file" "$file"; done
-            git add "\${files[@]}"
+            for file in "${files[@]}"; do cp "$temp_dir/$file" "$file"; done
+            git add "${files[@]}"
             if git diff --cached --quiet; then pushed=true; break; fi
             git config user.name "sonar-q141-research"
             git config user.email "actions@users.noreply.github.com"
@@ -109,7 +109,7 @@ jobs:
           checkpoint_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{checkpoint_path}"])
           checkpoint = json.loads(checkpoint_bytes)
           def blob_sha(data):
-              return hashlib.sha1(f"blob {len(data)}\\0".encode("ascii") + data).hexdigest()
+              return hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
           verified, lineage = [], []
           for label, expected in manifest["files"].items():
               remote = subprocess.check_output(["git", "show", f"origin/{branch}:{expected['path']}"])
@@ -131,13 +131,13 @@ jobs:
           }
           receipt_path = prefix + "q141_q90_selector_transition_remote_readback_2026-11-12.json"
           with open(receipt_path, "w", encoding="utf-8") as f:
-              json.dump(receipt, f, sort_keys=True, indent=2); f.write("\\n")
+              json.dump(receipt, f, sort_keys=True, indent=2); f.write("\n")
           checkpoint["status"] = "REMOTE_GIT_READBACK_VERIFIED"
           checkpoint["remote_readback_receipt"] = receipt_path
           checkpoint["remote_files_verified"] = len(verified)
           checkpoint["remote_code_lineage_verified"] = len(lineage)
           with open(checkpoint_path, "w", encoding="utf-8") as f:
-              json.dump(checkpoint, f, sort_keys=True, indent=2); f.write("\\n")
+              json.dump(checkpoint, f, sort_keys=True, indent=2); f.write("\n")
           PY
           git add reports/sequence_agent/q141_q90_selector_transition_remote_readback_2026-11-12.json
           git add reports/sequence_agent/q141_q90_selector_transition_checkpoint_2026-11-12.json
