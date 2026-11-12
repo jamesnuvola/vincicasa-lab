@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q135",
+  "title": "APP rank-weighted fixed-size subset likelihood",
+  "protocol_status": "PREREGISTERED_BEFORE_Q135_CALCULATION",
+  "epistemic_status": "EXPLORATORY_POST_HOC_EXTENSION_OF_Q123",
+  "preregistered_at_utc": "2026-11-12T03:47:07Z",
+  "base_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "upstream_experiment": "Q123",
+    "upstream_branch": "research/q123-app-ordinal-rank-skill-20261111",
+    "upstream_head_commit": "93b494b089abf485b6616f71b90baec79e39c796",
+    "upstream_source_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+    "upstream_rank_ledger_path": "reports/sequence_agent/q123_app_ordinal_rank_skill_target_ledger_2026-11-11.csv",
+    "copied_rank_ledger_path": "reports/sequence_agent/q135_source_q123_rank_ledger_2026-11-12.csv",
+    "rank_ledger_git_blob_sha1": "36d7af1fb3cceda5976eb99a78931f58d1a3d28a",
+    "draws": 3404,
+    "target_rows": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "disputed_2026_11_11_excluded": true
+  },
+  "hypothesis": "The exact APP ordinal ranking can be converted into a calibrated probability distribution over 5-number subsets using a fixed-size exponential tilt. If smaller APP ranks contain useful inclusion information, a positive rank-decay parameter selected only on Discovery should improve proper subset log score and marginal-inclusion Brier score on later Validation and Blind OOS targets versus the uniform 5-of-40 baseline.",
+  "model": {
+    "subset_probability": "P_beta(S|ranks)=exp(-beta*sum_{r in S} r)/Z(beta), for |S|=5 and ranks 1..40.",
+    "partition_function": "Z(beta)=sum_{A subset {1..40}, |A|=5} exp(-beta*sum_{r in A} r), computed by exact elementary-symmetric-polynomial dynamic programming.",
+    "marginal_inclusion_probability": "p_r(beta)=exp(-beta*r)*e_4(weights excluding r)/Z(beta); sum_r p_r=5.",
+    "uniform_baseline": "beta=0; P(S)=1/C(40,5); marginal p_r=1/8.",
+    "log_likelihood_gain_per_target": "-beta*rank_sum-log(Z(beta))+log(C(40,5)); positive is better.",
+    "brier_delta_per_target": "sum_r (p_r-y_r)^2 - 4.375; negative is better."
+  },
+  "selection": {
+    "beta_grid": [
+      0,
+      0.00025,
+      0.0005,
+      0.00075,
+      0.001,
+      0.00125,
+      0.0015,
+      0.00175,
+      0.002,
+      0.00225,
+      0.0025,
+      0.00275,
+      0.003,
+      0.00325,
+      0.0035,
+      0.00375,
+      0.004,
+      0.00425,
+      0.0045,
+      0.00475,
+      0.005
+    ],
+    "rule": "Select the beta with the highest mean Discovery log-likelihood gain; ties choose the smaller beta. Freeze that single beta for Validation and Blind OOS; no retuning.",
+    "family_size_on_holdouts": 4,
+    "multiple_testing": "Holm across Validation/Blind OOS x log-likelihood/Brier endpoints. Discovery grid is training selection; its 21 candidate values are not counted as independent confirmatory tests."
+  },
+  "sample": {
+    "warmup_draws": 200,
+    "targets": 3204,
+    "chronological_split": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "strict_prior": true,
+    "split_rule": "Chronological 60/20/remainder; first two split sizes rounded."
+  },
+  "inference": {
+    "randomization_replicates": 10000,
+    "randomization": "Conditional Monte Carlo: independently sample a uniform 5-subset of ranks 1..40 for every target; compare aggregate log-likelihood gain upper tail and Brier-delta lower tail.",
+    "sampler": "Seeded xorshift32 plus rejection sampling to an acceptance range exactly divisible by 40; five distinct ranks sampled without replacement.",
+    "bootstrap_replicates": 10000,
+    "bootstrap": "Paired target-level circular moving-block bootstrap, block length 20, percentile 95% intervals.",
+    "randomization_seeds": {
+      "validation": "0x1352026",
+      "blind_oos": "0x2462026"
+    },
+    "bootstrap_seeds": {
+      "validation": "0x135135",
+      "blind_oos": "0x246246"
+    },
+    "assumptions": [
+      "Official draws are independent uniform 5-of-40 subsets under the null.",
+      "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+      "Q135 is an exploratory post-hoc extension of Q123, not independent confirmatory evidence."
+    ]
+  },
+  "leakage_controls": [
+    "Use only the immutable Q123 rank ledger derived from the exact APP scorer on strict-prior prefixes.",
+    "Verify the source ledger Git blob SHA and every target index/date/history_cutoff.",
+    "Require history_cutoff < target_date and strictly chronological target rows.",
+    "Exclude 2026-11-11 and all later data; source ledger ends 2026-11-10.",
+    "Select beta on Discovery only; no Validation or Blind OOS retuning.",
+    "Verify the exact partition function at beta=0 equals C(40,5)=658008.",
+    "Verify marginal inclusion probabilities sum to five within numerical tolerance.",
+    "Replay randomization and bootstrap with fixed seeds.",
+    "Persist source, report, target ledger, validation, checkpoint and manifest."
+  ],
+  "decision_rule": "Report a supportive exploratory result only if Blind OOS mean log-likelihood gain is positive with Holm-adjusted p<0.05 and Blind OOS Brier delta is negative. Otherwise record no demonstrated rank-subset likelihood lift. No production promotion or engine change.",
+  "guardrails": [
+    "Research-only; no production scorer, archive, existing freeze, Q60 gate or metrics are modified.",
+    "No historical freeze reconstruction.",
+    "No new prospective freeze is created by Q135.",
+    "No automatic merge or model promotion.",
+    "Do not modify PR #6, #7 or #8."
+  ]
+}
