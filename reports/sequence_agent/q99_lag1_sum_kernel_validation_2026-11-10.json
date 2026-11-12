@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "id": "exact_5_of_40_sum_null",
+      "status": "PASS",
+      "detail": "DP enumerates exactly 658008 five-subsets; 176 sum categories normalize to one."
+    },
+    {
+      "id": "strict_prior_transition_boundary",
+      "status": "PASS",
+      "detail": "For every target, all transition outcomes end at index <= target_index-1."
+    },
+    {
+      "id": "probability_normalization",
+      "status": "PASS",
+      "detail": "All 12412 model PMFs sum to one; max error 1.3766765505351941e-14."
+    },
+    {
+      "id": "target_future_mutation_invariance",
+      "status": "PASS",
+      "detail": "Changing target and all future sums leaves the forecast at the tested target unchanged."
+    },
+    {
+      "id": "deterministic_prediction_replay",
+      "status": "PASS",
+      "detail": "Repeated fixed-input forecast is byte-equivalent at the metric-object level."
+    },
+    {
+      "id": "chronological_split_reconciliation",
+      "status": "PASS",
+      "detail": "1400 Discovery + 850 Validation + 853 historical Blind OOS = 3103 targets."
+    }
+  ],
+  "archive_cutoff": "2026-11-09",
+  "archive_draws": 3403,
+  "source_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+  "protocol_blob_sha": "388a7550ae2a7a486d5ad35e17ea6a203a1367b1",
+  "runner_blob_sha": "708d0bb9e40179a229b7efeac77694eb61f7ee7d"
+}

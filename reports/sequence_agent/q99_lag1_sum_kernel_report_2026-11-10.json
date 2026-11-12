@@ -1,0 +1,347 @@
+{
+  "experiment_id": "Q99",
+  "title": "Lag-1 continuous sum-state kernel for next-draw sum distribution",
+  "status": "HISTORICAL_EXPLORATORY_COMPLETE",
+  "generated_date": "2026-11-10",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "draws": 3403
+  },
+  "hypothesis": "The previous draw sum may condition the next draw sum distribution beyond the exact combinatorial 5-of-40 null.",
+  "formula": {
+    "exact_null": "p0(s) = count of 5-subsets summing to s / 658008, s=15..190",
+    "kernel": "w_i(h)=exp(-0.5*((S_i-S_(t-1))/SD0)^2/h^2)",
+    "conditional": "p_t(s)=[200*p0(s)+sum_{i=0}^{t-2}w_i(h)*1(S_(i+1)=s)]/[200+sum_{i=0}^{t-2}w_i(h)]",
+    "alpha": 200,
+    "bandwidths": [
+      0.25,
+      0.5,
+      1,
+      2
+    ],
+    "state_sd_exact_null": 24.452334585202152
+  },
+  "walk_forward": {
+    "targets": 3103,
+    "minimum_prior_draws": 300,
+    "split_sizes": {
+      "discovery": 1400,
+      "validation": 850,
+      "blind_oos_historical": 853
+    },
+    "selection_rule": "Validation-only maximum Brier gain versus exact null; tie to smaller bandwidth.",
+    "selected_bandwidth": 2,
+    "splits": {
+      "discovery": {
+        "targets": 1400,
+        "bandwidths": {
+          "1": {
+            "mean_brier_gain_vs_exact_null": -0.0006053736330888327,
+            "mean_logloss_gain_vs_exact_null": -0.05023388497479511,
+            "mean_model_brier": 0.9893590993008095,
+            "mean_model_logloss": 4.667384233248668
+          },
+          "2": {
+            "mean_brier_gain_vs_exact_null": -0.0005918445956389482,
+            "mean_logloss_gain_vs_exact_null": -0.05145504727708535,
+            "mean_model_brier": 0.9893455702633596,
+            "mean_model_logloss": 4.668605395550945
+          },
+          "0.25": {
+            "mean_brier_gain_vs_exact_null": -0.0005727334979014428,
+            "mean_logloss_gain_vs_exact_null": -0.04138288880869663,
+            "mean_model_brier": 0.9893264591656207,
+            "mean_model_logloss": 4.658533237082566
+          },
+          "0.5": {
+            "mean_brier_gain_vs_exact_null": -0.0006428520632923315,
+            "mean_logloss_gain_vs_exact_null": -0.04973850007637117,
+            "mean_model_brier": 0.9893965777310122,
+            "mean_model_logloss": 4.66688884835022
+          }
+        }
+      },
+      "validation": {
+        "targets": 850,
+        "bandwidths": {
+          "1": {
+            "mean_brier_gain_vs_exact_null": -0.0006054898765893131,
+            "mean_logloss_gain_vs_exact_null": -0.04340311457244569,
+            "mean_model_brier": 0.9889002421712513,
+            "mean_model_logloss": 4.6443773616144535
+          },
+          "2": {
+            "mean_brier_gain_vs_exact_null": -0.0005326131566269403,
+            "mean_logloss_gain_vs_exact_null": -0.039880707843401385,
+            "mean_model_brier": 0.9888273654512857,
+            "mean_model_logloss": 4.640854954885407
+          },
+          "0.25": {
+            "mean_brier_gain_vs_exact_null": -0.0010612302058322085,
+            "mean_logloss_gain_vs_exact_null": -0.056824016046328654,
+            "mean_model_brier": 0.9893559825004914,
+            "mean_model_logloss": 4.657798263088332
+          },
+          "0.5": {
+            "mean_brier_gain_vs_exact_null": -0.0007935089495407676,
+            "mean_logloss_gain_vs_exact_null": -0.0507179483317059,
+            "mean_model_brier": 0.9890882612442002,
+            "mean_model_logloss": 4.651692195373708
+          }
+        }
+      },
+      "blind_oos_historical": {
+        "targets": 853,
+        "bandwidths": {
+          "1": {
+            "mean_brier_gain_vs_exact_null": -0.0003667984135464838,
+            "mean_logloss_gain_vs_exact_null": -0.03448584878104254,
+            "mean_model_brier": 0.9892731921026807,
+            "mean_model_logloss": 4.680170806789542
+          },
+          "2": {
+            "mean_brier_gain_vs_exact_null": -0.00028506654693400384,
+            "mean_logloss_gain_vs_exact_null": -0.029276254525875504,
+            "mean_model_brier": 0.9891914602360671,
+            "mean_model_logloss": 4.674961212534374
+          },
+          "0.25": {
+            "mean_brier_gain_vs_exact_null": -0.0005528510643434437,
+            "mean_logloss_gain_vs_exact_null": -0.046996378022807164,
+            "mean_model_brier": 0.9894592447534768,
+            "mean_model_logloss": 4.692681336031305
+          },
+          "0.5": {
+            "mean_brier_gain_vs_exact_null": -0.0004931319947131098,
+            "mean_logloss_gain_vs_exact_null": -0.043919325658740266,
+            "mean_model_brier": 0.9893995256838447,
+            "mean_model_logloss": 4.6896042836672365
+          }
+        }
+      }
+    }
+  },
+  "blind_inference": {
+    "family_size": 8,
+    "correction": "Holm step-down across four bandwidths x two endpoints",
+    "tests": [
+      {
+        "bandwidth": 0.25,
+        "endpoint": "brier_gain",
+        "mean_gain": -0.0005528510643434437,
+        "block_bootstrap_ci95": [
+          -0.0009336213108076575,
+          -0.00017010814261640925
+        ],
+        "block_signflip_p_one_sided": 0.9951400971980561,
+        "block_length": 20,
+        "bootstrap_replicates": 10000,
+        "signflip_replicates": 50000,
+        "n": 853,
+        "holm_adjusted_p": 1
+      },
+      {
+        "bandwidth": 0.25,
+        "endpoint": "logloss_gain",
+        "mean_gain": -0.046996378022807164,
+        "block_bootstrap_ci95": [
+          -0.06987780177327538,
+          -0.02405257362890676
+        ],
+        "block_signflip_p_one_sided": 0.999940001199976,
+        "block_length": 20,
+        "bootstrap_replicates": 10000,
+        "signflip_replicates": 50000,
+        "n": 853,
+        "holm_adjusted_p": 1
+      },
+      {
+        "bandwidth": 0.5,
+        "endpoint": "brier_gain",
+        "mean_gain": -0.0004931319947131098,
+        "block_bootstrap_ci95": [
+          -0.0008025829958653885,
+          -0.0001723473212956623
+        ],
+        "block_signflip_p_one_sided": 0.997740045199096,
+        "block_length": 20,
+        "bootstrap_replicates": 10000,
+        "signflip_replicates": 50000,
+        "n": 853,
+        "holm_adjusted_p": 1
+      },
+      {
+        "bandwidth": 0.5,
+        "endpoint": "logloss_gain",
+        "mean_gain": -0.043919325658740266,
+        "block_bootstrap_ci95": [
+          -0.06570561826375554,
+          -0.02357874190608958
+        ],
+        "block_signflip_p_one_sided": 0.99990000199996,
+        "block_length": 20,
+        "bootstrap_replicates": 10000,
+        "signflip_replicates": 50000,
+        "n": 853,
+        "holm_adjusted_p": 1
+      },
+      {
+        "bandwidth": 1,
+        "endpoint": "brier_gain",
+        "mean_gain": -0.0003667984135464838,
+        "block_bootstrap_ci95": [
+          -0.0006032773914529844,
+          -0.00012420396856029046
+        ],
+        "block_signflip_p_one_sided": 0.997020059598808,
+        "block_length": 20,
+        "bootstrap_replicates": 10000,
+        "signflip_replicates": 50000,
+        "n": 853,
+        "holm_adjusted_p": 1
+      },
+      {
+        "bandwidth": 1,
+        "endpoint": "logloss_gain",
+        "mean_gain": -0.03448584878104254,
+        "block_bootstrap_ci95": [
+          -0.0540462466771267,
+          -0.01700810278594507
+        ],
+        "block_signflip_p_one_sided": 0.999740005199896,
+        "block_length": 20,
+        "bootstrap_replicates": 10000,
+        "signflip_replicates": 50000,
+        "n": 853,
+        "holm_adjusted_p": 1
+      },
+      {
+        "bandwidth": 2,
+        "endpoint": "brier_gain",
+        "mean_gain": -0.00028506654693400384,
+        "block_bootstrap_ci95": [
+          -0.0004952091831016266,
+          -0.0000745655068541465
+        ],
+        "block_signflip_p_one_sided": 0.9932201355972881,
+        "block_length": 20,
+        "bootstrap_replicates": 10000,
+        "signflip_replicates": 50000,
+        "n": 853,
+        "holm_adjusted_p": 1
+      },
+      {
+        "bandwidth": 2,
+        "endpoint": "logloss_gain",
+        "mean_gain": -0.029276254525875504,
+        "block_bootstrap_ci95": [
+          -0.049084670434206334,
+          -0.012132555271373274
+        ],
+        "block_signflip_p_one_sided": 0.999240015199696,
+        "block_length": 20,
+        "bootstrap_replicates": 10000,
+        "signflip_replicates": 50000,
+        "n": 853,
+        "holm_adjusted_p": 1
+      }
+    ],
+    "selected_bandwidth_primary_test": {
+      "bandwidth": 2,
+      "endpoint": "brier_gain",
+      "mean_gain": -0.00028506654693400384,
+      "block_bootstrap_ci95": [
+        -0.0004952091831016266,
+        -0.0000745655068541465
+      ],
+      "block_signflip_p_one_sided": 0.9932201355972881,
+      "block_length": 20,
+      "bootstrap_replicates": 10000,
+      "signflip_replicates": 50000,
+      "n": 853,
+      "holm_adjusted_p": 1
+    }
+  },
+  "integrity": {
+    "archive_rows": 3403,
+    "unique_increasing_dates": true,
+    "all_draws_valid_sorted_5_of_40": true,
+    "exact_null_subset_count": 658008,
+    "exact_null_probability_sum": 1,
+    "exact_null_mean_sum": 102.49999999999996,
+    "exact_null_sd_sum": 24.452334585202152,
+    "target_count": 3103,
+    "strict_prior_cutoff_checks": 3103,
+    "all_training_outcomes_strictly_before_target": true,
+    "probability_normalization_checks": 12412,
+    "max_probability_sum_error": 1.3766765505351941e-14,
+    "min_kernel_weight_total": 1.1678157604197175,
+    "max_kernel_weight_total": 3015.558883905096
+  },
+  "validation": {
+    "status": "PASS",
+    "tests": [
+      {
+        "id": "exact_5_of_40_sum_null",
+        "status": "PASS",
+        "detail": "DP enumerates exactly 658008 five-subsets; 176 sum categories normalize to one."
+      },
+      {
+        "id": "strict_prior_transition_boundary",
+        "status": "PASS",
+        "detail": "For every target, all transition outcomes end at index <= target_index-1."
+      },
+      {
+        "id": "probability_normalization",
+        "status": "PASS",
+        "detail": "All 12412 model PMFs sum to one; max error 1.3766765505351941e-14."
+      },
+      {
+        "id": "target_future_mutation_invariance",
+        "status": "PASS",
+        "detail": "Changing target and all future sums leaves the forecast at the tested target unchanged."
+      },
+      {
+        "id": "deterministic_prediction_replay",
+        "status": "PASS",
+        "detail": "Repeated fixed-input forecast is byte-equivalent at the metric-object level."
+      },
+      {
+        "id": "chronological_split_reconciliation",
+        "status": "PASS",
+        "detail": "1400 Discovery + 850 Validation + 853 historical Blind OOS = 3103 targets."
+      }
+    ],
+    "archive_cutoff": "2026-11-09",
+    "archive_draws": 3403,
+    "source_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86"
+  },
+  "decision": {
+    "primary_gate": "NOT_MET",
+    "predictive_lift_demonstrated": false,
+    "selected_blind_brier_gain": -0.00028506654693400384,
+    "selected_blind_logloss_gain": -0.029276254525875504,
+    "selected_primary_holm_p": 1,
+    "research_only": true,
+    "merge_allowed": false,
+    "production_change_allowed": false,
+    "promotion_allowed": false,
+    "human_review_required": true
+  },
+  "limitations": [
+    "Historical Blind OOS is already exposed to prior SONAR research and is not a virgin prospective holdout.",
+    "The experiment models only the marginal distribution of the next draw sum, not a coherent quintet distribution.",
+    "Kernel bandwidth is selected on Validation; Blind OOS is not used for tuning.",
+    "The block sign-flip test assumes exchangeability of contiguous block signs; its p-value is Monte Carlo.",
+    "This test does not establish a physical mechanism or predict future winning numbers."
+  ],
+  "next_action": "Do not tune this lag-1 sum kernel further unless a separate prospective protocol is approved. Continue Q60 append-only prospective collection; never reconstruct missing freezes.",
+  "protocol_commit": "c3586c7bf4ca9d44e09dd317321c43eddfa54ccd",
+  "protocol_blob_sha": "388a7550ae2a7a486d5ad35e17ea6a203a1367b1",
+  "runner_blob_sha": "708d0bb9e40179a229b7efeac77694eb61f7ee7d",
+  "runner_commit": "4fa306467cec32155ea1bce7f7cbc3e21480bb41",
+  "branch": "research/q99-lag1-sum-kernel-20261110"
+}
