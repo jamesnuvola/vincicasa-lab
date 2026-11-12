@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "SONAR-FD10-P5-CONTINUOUS-MARKOV-KERNEL-2026-11-10",
+  "registered_at_utc": "2026-11-10T14:51:00.296Z",
+  "status": "PREREGISTERED_RESEARCH_ONLY",
+  "question": "Does a fixed Gaussian-kernel estimate of the next P5 maximum, conditioned on the immediately previous P5 maximum, improve probabilistic ranking over the exact order-statistic null?",
+  "hypothesis": {
+    "predictor": "previous_draw_maximum",
+    "target": "P5_t = maximum of the five numbers in draw t",
+    "kernel": "K_h(c,m)=exp(-0.5*((c-m)/h)^2), with c the previous maximum of a historical transition and m=P5_(t-1)",
+    "candidate_bandwidths": [
+      1.5,
+      3,
+      6,
+      12
+    ],
+    "shrinkage": "p_t(n)=(alpha*p0(n)+sum_c K_h(c,m_t)*N[c,n])/(alpha+sum_c K_h(c,m_t)*N[c,.])",
+    "alpha": 200,
+    "exact_null": "p0(n)=C(n-1,4)/C(40,5), n=5..40",
+    "direction": "lower multiclass Brier score and higher Top-5 maximum hit rate than the exact null"
+  },
+  "temporal_protocol": {
+    "source": "data/storico_daily.csv",
+    "source_git_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "expected_draw_count": 3403,
+    "expected_first_date": "2017-07-17",
+    "expected_last_date": "2026-11-09",
+    "warmup_target_index": 300,
+    "target_indexing": "zero-based row index",
+    "splits": {
+      "discovery": {
+        "start_index_inclusive": 300,
+        "end_index_exclusive": 1700,
+        "targets": 1400
+      },
+      "validation": {
+        "start_index_inclusive": 1700,
+        "end_index_exclusive": 2550,
+        "targets": 850
+      },
+      "blind_oos": {
+        "start_index_inclusive": 2550,
+        "end_index_exclusive": 3403,
+        "targets": 853
+      }
+    },
+    "cutoff_rule": "For target row t, only transitions (P5[j-1],P5[j]) with j<t may be in the model state. Score target t before adding transition (P5[t-1],P5[t]) to the state for later targets.",
+    "selection_rule": "Select one bandwidth using minimum validation mean multiclass Brier score; ties choose the larger bandwidth. No OOS-based selection or retuning."
+  },
+  "endpoints": {
+    "primary": "Blind OOS mean multiclass Brier improvement = Brier(exact null) - Brier(kernel model); positive is better.",
+    "secondary": "Blind OOS Top-5 hit-rate difference = model Top-5 hit indicator minus exact-null Top-5 hit indicator; positive is better.",
+    "descriptive": [
+      "Top-10 hit rate",
+      "Top-20 hit rate",
+      "mean rank of actual P5",
+      "multiclass log loss"
+    ]
+  },
+  "inference": {
+    "paired_null": "One-sided block sign-flip test on target-paired differences, contiguous blocks of 7 targets, with the final partial block retained.",
+    "permutations": 50000,
+    "seed": 10102026,
+    "bootstrap": "Circular moving-block bootstrap of target-paired differences, block length 7, percentile 95% interval.",
+    "bootstrap_replicates": 10000,
+    "bootstrap_seed": 10102027,
+    "multiple_testing": "Holm step-down across all 8 preregistered blind-OOS p-values: 4 bandwidths x (primary Brier improvement, secondary Top-5 improvement).",
+    "alpha_level": 0.05
+  },
+  "guardrails": [
+    "The exact order-statistic null is analytical and fixed before evaluating targets.",
+    "The model uses only previous maxima from already completed draws; target P5 is read only after its ranking is fixed.",
+    "No feature, bandwidth, shrinkage or split is selected using blind OOS.",
+    "All four fixed bandwidths are reported; no post-hoc bandwidth is added.",
+    "The experiment is research-only and cannot change production SONAR or any prospective freeze.",
+    "Historical blind OOS has been exposed to prior laboratory work and is not a virgin holdout.",
+    "The 8-test Holm family covers this experiment only, not the full prior SONAR research history."
+  ],
+  "decision_policy": {
+    "promotion_allowed": false,
+    "merge_allowed": false,
+    "human_review_required": true,
+    "prospective_confirmation_required": true
+  },
+  "next_action": "Run the fixed strict-prior walk-forward, persist every target's cutoff and candidate metrics, independently replay in CI, and retain the experiment as exploratory regardless of historical result."
+}

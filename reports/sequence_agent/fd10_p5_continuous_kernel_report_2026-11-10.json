@@ -1,0 +1,332 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "SONAR-FD10-P5-CONTINUOUS-MARKOV-KERNEL-2026-11-10",
+  "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
+  "validation_status": "EXPLORATORY_NOT_PROMOTABLE",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "draw_count": 3403,
+    "walkforward_targets": 3103
+  },
+  "method": {
+    "target": "P5, the maximum of the five drawn numbers",
+    "state": "previous draw's P5 maximum",
+    "kernel": "exp(-0.5*((historical_previous_P5-current_previous_P5)/bandwidth)^2)",
+    "bandwidths": [
+      1.5,
+      3,
+      6,
+      12
+    ],
+    "dirichlet_shrinkage_ess": 200,
+    "selection": "minimum validation multiclass Brier; exact ties choose larger bandwidth",
+    "ranking_tie_break": "descending probability, then descending candidate number",
+    "cutoff": "all historical transitions j<t; target scored before transition t is added"
+  },
+  "exact_order_statistic_null": {
+    "pmf": "C(n-1,4)/C(40,5), n=5..40",
+    "top5_probability": 0.5066442961179803,
+    "top10_probability": 0.7834281650071124,
+    "top20_probability": 0.9764379764379765,
+    "expected_rank": 6.833333333333333,
+    "top5_candidates": [
+      36,
+      37,
+      38,
+      39,
+      40
+    ]
+  },
+  "chronological_splits": {
+    "discovery": {
+      "targets": 1400,
+      "first_target": "2018-05-13",
+      "last_target": "2022-03-12"
+    },
+    "validation": {
+      "targets": 850,
+      "first_target": "2022-03-13",
+      "last_target": "2024-07-09"
+    },
+    "blind_oos": {
+      "targets": 853,
+      "first_target": "2024-07-10",
+      "last_target": "2026-11-09"
+    }
+  },
+  "validation_selected_bandwidth": 1.5,
+  "split_results": {
+    "discovery": {
+      "exact_null": {
+        "targets": 1400,
+        "top5_hits": 696,
+        "top5_rate": 0.49714285714285716,
+        "top10_hits": 1089,
+        "top10_rate": 0.7778571428571428,
+        "top20_hits": 1365,
+        "top20_rate": 0.975,
+        "mean_rank": 7.005714285714285,
+        "mean_brier": 0.9293868700009001,
+        "mean_log_loss": 2.8522067406311225
+      },
+      "bandwidths": {
+        "3": {
+          "targets": 1400,
+          "top5_hits": 687,
+          "top5_rate": 0.4907142857142857,
+          "top10_hits": 1088,
+          "top10_rate": 0.7771428571428571,
+          "top20_hits": 1368,
+          "top20_rate": 0.9771428571428571,
+          "mean_rank": 7.077142857142857,
+          "mean_brier": 0.9303620626245918,
+          "mean_log_loss": 2.8667213401151423
+        },
+        "6": {
+          "targets": 1400,
+          "top5_hits": 690,
+          "top5_rate": 0.4928571428571429,
+          "top10_hits": 1089,
+          "top10_rate": 0.7778571428571428,
+          "top20_hits": 1362,
+          "top20_rate": 0.9728571428571429,
+          "mean_rank": 7.079285714285715,
+          "mean_brier": 0.9302800353166198,
+          "mean_log_loss": 2.866944604750803
+        },
+        "12": {
+          "targets": 1400,
+          "top5_hits": 687,
+          "top5_rate": 0.4907142857142857,
+          "top10_hits": 1089,
+          "top10_rate": 0.7778571428571428,
+          "top20_hits": 1364,
+          "top20_rate": 0.9742857142857143,
+          "mean_rank": 7.060714285714286,
+          "mean_brier": 0.9301453606584188,
+          "mean_log_loss": 2.8675802879990067
+        },
+        "1.5": {
+          "targets": 1400,
+          "top5_hits": 687,
+          "top5_rate": 0.4907142857142857,
+          "top10_hits": 1087,
+          "top10_rate": 0.7764285714285715,
+          "top20_hits": 1366,
+          "top20_rate": 0.9757142857142858,
+          "mean_rank": 7.075714285714286,
+          "mean_brier": 0.930337386892415,
+          "mean_log_loss": 2.8636801692523868
+        }
+      }
+    },
+    "validation": {
+      "exact_null": {
+        "targets": 850,
+        "top5_hits": 434,
+        "top5_rate": 0.5105882352941177,
+        "top10_hits": 669,
+        "top10_rate": 0.7870588235294118,
+        "top20_hits": 830,
+        "top20_rate": 0.9764705882352941,
+        "mean_rank": 6.707058823529412,
+        "mean_brier": 0.9244720200473585,
+        "mean_log_loss": 2.8093162741848245
+      },
+      "bandwidths": {
+        "3": {
+          "targets": 850,
+          "top5_hits": 433,
+          "top5_rate": 0.5094117647058823,
+          "top10_hits": 669,
+          "top10_rate": 0.7870588235294118,
+          "top20_hits": 827,
+          "top20_rate": 0.9729411764705882,
+          "mean_rank": 6.750588235294118,
+          "mean_brier": 0.9246404674730595,
+          "mean_log_loss": 2.8199458479123796
+        },
+        "6": {
+          "targets": 850,
+          "top5_hits": 434,
+          "top5_rate": 0.5105882352941177,
+          "top10_hits": 669,
+          "top10_rate": 0.7870588235294118,
+          "top20_hits": 828,
+          "top20_rate": 0.9741176470588235,
+          "mean_rank": 6.735294117647059,
+          "mean_brier": 0.9246875809168581,
+          "mean_log_loss": 2.816821475077981
+        },
+        "12": {
+          "targets": 850,
+          "top5_hits": 434,
+          "top5_rate": 0.5105882352941177,
+          "top10_hits": 669,
+          "top10_rate": 0.7870588235294118,
+          "top20_hits": 830,
+          "top20_rate": 0.9764705882352941,
+          "mean_rank": 6.732941176470589,
+          "mean_brier": 0.9247329237053553,
+          "mean_log_loss": 2.8150147879110614
+        },
+        "1.5": {
+          "targets": 850,
+          "top5_hits": 432,
+          "top5_rate": 0.508235294117647,
+          "top10_hits": 669,
+          "top10_rate": 0.7870588235294118,
+          "top20_hits": 825,
+          "top20_rate": 0.9705882352941176,
+          "mean_rank": 6.788235294117647,
+          "mean_brier": 0.9245638183938162,
+          "mean_log_loss": 2.8224271456165253
+        }
+      }
+    },
+    "blind_oos": {
+      "exact_null": {
+        "targets": 853,
+        "top5_hits": 447,
+        "top5_rate": 0.5240328253223916,
+        "top10_hits": 655,
+        "top10_rate": 0.7678780773739742,
+        "top20_hits": 827,
+        "top20_rate": 0.9695193434935522,
+        "mean_rank": 7.021101992966003,
+        "mean_brier": 0.9275551633470573,
+        "mean_log_loss": 2.8654807032981156
+      },
+      "bandwidths": {
+        "3": {
+          "targets": 853,
+          "top5_hits": 447,
+          "top5_rate": 0.5240328253223916,
+          "top10_hits": 654,
+          "top10_rate": 0.7667057444314185,
+          "top20_hits": 824,
+          "top20_rate": 0.9660023446658851,
+          "mean_rank": 7.025791324736225,
+          "mean_brier": 0.9276964965921859,
+          "mean_log_loss": 2.8758503235158113
+        },
+        "6": {
+          "targets": 853,
+          "top5_hits": 447,
+          "top5_rate": 0.5240328253223916,
+          "top10_hits": 655,
+          "top10_rate": 0.7678780773739742,
+          "top20_hits": 827,
+          "top20_rate": 0.9695193434935522,
+          "mean_rank": 7.035169988276671,
+          "mean_brier": 0.9277201490029464,
+          "mean_log_loss": 2.873843758944683
+        },
+        "12": {
+          "targets": 853,
+          "top5_hits": 447,
+          "top5_rate": 0.5240328253223916,
+          "top10_hits": 655,
+          "top10_rate": 0.7678780773739742,
+          "top20_hits": 827,
+          "top20_rate": 0.9695193434935522,
+          "mean_rank": 7.026963657678781,
+          "mean_brier": 0.9277702262364352,
+          "mean_log_loss": 2.874223841816043
+        },
+        "1.5": {
+          "targets": 853,
+          "top5_hits": 445,
+          "top5_rate": 0.5216881594372802,
+          "top10_hits": 652,
+          "top10_rate": 0.7643610785463072,
+          "top20_hits": 824,
+          "top20_rate": 0.9660023446658851,
+          "mean_rank": 7.046893317702227,
+          "mean_brier": 0.9278270908487392,
+          "mean_log_loss": 2.877750164006498
+        }
+      }
+    }
+  },
+  "blind_oos_inference": {
+    "n": 853,
+    "primary_endpoint": "paired Brier improvement (exact null minus kernel model)",
+    "secondary_endpoint": "paired Top-5 hit indicator improvement",
+    "raw_p_values": {
+      "h1.5_brier_improvement": 0.7404851902961941,
+      "h1.5_top5_improvement": 0.8541029179416412,
+      "h3_brier_improvement": 0.6656466870662586,
+      "h3_top5_improvement": 1,
+      "h6_brier_improvement": 0.7335653286934262,
+      "h6_top5_improvement": 1,
+      "h12_brier_improvement": 0.7972440551188976,
+      "h12_top5_improvement": 1
+    },
+    "holm_adjusted_p_values": {
+      "h3_brier_improvement": 1,
+      "h6_brier_improvement": 1,
+      "h1.5_brier_improvement": 1,
+      "h12_brier_improvement": 1,
+      "h1.5_top5_improvement": 1,
+      "h3_top5_improvement": 1,
+      "h6_top5_improvement": 1,
+      "h12_top5_improvement": 1
+    },
+    "holm_family_size": 8,
+    "selected_bandwidth": 1.5,
+    "selected_brier_improvement_mean": -0.0002719275016848681,
+    "selected_brier_improvement_block_bootstrap_ci95": [
+      -0.0011178095177981704,
+      0.0005703489532532731
+    ],
+    "selected_brier_holm_p": 1,
+    "selected_top5_improvement_mean": -0.0023446658851113715,
+    "selected_top5_improvement_block_bootstrap_ci95": [
+      -0.009378663540445486,
+      0.0035169988276670576
+    ],
+    "selected_top5_holm_p": 1,
+    "decision": "NO_PREDICTIVE_LIFT_DEMONSTRATED"
+  },
+  "statistical_controls": {
+    "block_signflip": {
+      "block_length": 7,
+      "replicates": 50000,
+      "seed": 10102026,
+      "alternative": "positive paired improvement",
+      "tail_block_retained": true
+    },
+    "circular_block_bootstrap": {
+      "block_length": 7,
+      "replicates": 10000,
+      "seed_brier": 10102027,
+      "seed_top5": 10102028,
+      "interval": "percentile 95%"
+    },
+    "multiple_testing": "Holm across 4 fixed bandwidths x 2 blind-OOS endpoints; no correction claimed for the wider historical SONAR search."
+  },
+  "integrity": {
+    "strict_prior_target_cutoffs": 3103,
+    "target_scored_before_own_transition_update": true,
+    "future_outcomes_used_for_predictors": false,
+    "all_targets_cutoff_precedes_target": true,
+    "missing_or_reconstructed_forecasts": 0
+  },
+  "limitations": [
+    "The chronological historical Blind OOS segment has been exposed to earlier laboratory work and is not a virgin holdout.",
+    "The block sign-flip test assumes exchangeability of contiguous seven-target block signs under the null; strong nonstationarity can invalidate it.",
+    "The model tests only one-step dependence of P5 on the previous P5; it does not establish a physical mechanism or causal relationship.",
+    "The Holm family covers this fixed FD-10 bandwidth grid and two endpoints only, not all earlier SONAR experiments.",
+    "No prospective freeze or future outcome is used; historical performance cannot validate future lottery predictions."
+  ],
+  "decision_policy": {
+    "promotion_allowed": false,
+    "merge_allowed": false,
+    "human_review_required": true
+  },
+  "next_action": "Keep FD-10 exploratory. If human review accepts the implementation, freeze the selected bandwidth as a separate prospective shadow model and evaluate only after at least 200 newly frozen targets; do not retune on this historical OOS."
+}

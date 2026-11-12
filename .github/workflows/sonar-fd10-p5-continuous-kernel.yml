@@ -1,0 +1,57 @@
+name: SONAR FD-10 P5 continuous-kernel walk-forward
+on:
+  push:
+    branches:
+      - research/fd10-p5-continuous-kernel-20261110
+    paths:
+      - ".github/workflows/sonar-fd10-p5-continuous-kernel.yml"
+      - "scripts/sonar_fd10_p5_continuous_kernel.py"
+      - "scripts/verify_sonar_fd10_outputs.py"
+      - "tests/test_sonar_fd10_p5_continuous_kernel.py"
+      - "reports/sequence_agent/fd10_p5_continuous_kernel_protocol_2026-11-10.json"
+      - "reports/sequence_agent/fd10_p5_continuous_kernel_report_2026-11-10.json"
+      - "reports/sequence_agent/fd10_p5_continuous_kernel_target_ledger_2026-11-10.csv"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/sonar-fd10-p5-continuous-kernel.yml"
+      - "scripts/sonar_fd10_p5_continuous_kernel.py"
+      - "scripts/verify_sonar_fd10_outputs.py"
+      - "tests/test_sonar_fd10_p5_continuous_kernel.py"
+      - "reports/sequence_agent/fd10_p5_continuous_kernel_protocol_2026-11-10.json"
+      - "reports/sequence_agent/fd10_p5_continuous_kernel_report_2026-11-10.json"
+      - "reports/sequence_agent/fd10_p5_continuous_kernel_target_ledger_2026-11-10.csv"
+permissions:
+  contents: read
+jobs:
+  fd10:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile implementation, verifier and tests
+        run: python -m py_compile scripts/sonar_fd10_p5_continuous_kernel.py scripts/verify_sonar_fd10_outputs.py tests/test_sonar_fd10_p5_continuous_kernel.py
+      - name: Run FD-10 regression tests
+        run: python tests/test_sonar_fd10_p5_continuous_kernel.py -v
+      - name: Rebuild full strict-prior walk-forward from canonical archive
+        run: |
+          python scripts/sonar_fd10_p5_continuous_kernel.py \
+            --archive-csv data/storico_daily.csv \
+            --source-blob-sha 8d3e19f0b417024ba32e576697eac0648d12ab86 \
+            --report-out /tmp/fd10_report.json \
+            --ledger-out /tmp/fd10_ledger.csv \
+            --permutations 50000 \
+            --bootstrap-replicates 10000
+      - name: Verify persisted report and per-target ledger by independent replay
+        run: |
+          python scripts/verify_sonar_fd10_outputs.py \
+            reports/sequence_agent/fd10_p5_continuous_kernel_report_2026-11-10.json \
+            /tmp/fd10_report.json \
+            reports/sequence_agent/fd10_p5_continuous_kernel_target_ledger_2026-11-10.csv \
+            /tmp/fd10_ledger.csv
