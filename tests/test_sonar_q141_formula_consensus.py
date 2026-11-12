@@ -95,7 +95,7 @@ class FormulaConsensusTests(unittest.TestCase):
 
     def test_git_blob_sha1_uses_the_canonical_nul_header(self):
         data = b"abc"
-        expected = hashlib.sha1(b"blob 3\\0abc").hexdigest()
+        expected = hashlib.sha1(b"blob 3\0abc").hexdigest()
         self.assertEqual(consensus.git_blob_sha1(data), expected)
 
     def test_alias_canonicalization_uses_one_vote_per_unique_formula(self):
