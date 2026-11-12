@@ -1,0 +1,344 @@
+{
+  "title": "SONAR Three-Engine Complementarity Exploratory Run",
+  "run_date": "2026-10-16",
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "first_date": "2017-07-17",
+    "last_date": "2026-10-15",
+    "total_draws": 3378,
+    "targets": 3178,
+    "min_history": 200,
+    "sha": "0afd8ca45a4c00f6e054a6131f5341f8f3148b4b"
+  },
+  "definitions": {
+    "M": "frequency in last 20 draws minus frequency in preceding 100 draws",
+    "A": "equal blend of rank-percentile recency decay (half-life 60 draws) and historical analogues based on three-draw coarse signatures (sum bins of 25, range bins of 7, odd-count), with recency discount",
+    "T": "numbers from chronological successors of prior draws whose immediately preceding draw matches latest draw's coarse sum and range bins, with recency discount",
+    "note": "Exploratory proxies of the three concepts, not a final production implementation. All features use history before target."
+  },
+  "chronological_split": "discovery first 60% of evaluated targets; validation next 20%; OOS final 20%; splits are chronological by target index.",
+  "correctness_categories": {
+    "all": {
+      "n": 3178,
+      "correct_shared_all3": {
+        "meanCorrect": 0.8439,
+        "targetsWithAny": 1940
+      },
+      "correct_shared_MA": {
+        "meanCorrect": 0.5846,
+        "targetsWithAny": 1487
+      },
+      "correct_shared_MT": {
+        "meanCorrect": 0.4289,
+        "targetsWithAny": 1159
+      },
+      "correct_shared_AT": {
+        "meanCorrect": 0.663,
+        "targetsWithAny": 1656
+      },
+      "M_only_correct": {
+        "meanCorrect": 0.6586,
+        "targetsWithAny": 1621
+      },
+      "A_only_correct": {
+        "meanCorrect": 0.4172,
+        "targetsWithAny": 1137
+      },
+      "T_only_correct": {
+        "meanCorrect": 0.5755,
+        "targetsWithAny": 1474
+      },
+      "missed_by_all": {
+        "meanCorrect": 0.8282,
+        "targetsWithAny": 1910
+      }
+    },
+    "oos": {
+      "n": 675,
+      "correct_shared_all3": {
+        "meanCorrect": 0.8504,
+        "targetsWithAny": 409
+      },
+      "correct_shared_MA": {
+        "meanCorrect": 0.5837,
+        "targetsWithAny": 306
+      },
+      "correct_shared_MT": {
+        "meanCorrect": 0.4252,
+        "targetsWithAny": 247
+      },
+      "correct_shared_AT": {
+        "meanCorrect": 0.6533,
+        "targetsWithAny": 345
+      },
+      "M_only_correct": {
+        "meanCorrect": 0.64,
+        "targetsWithAny": 333
+      },
+      "A_only_correct": {
+        "meanCorrect": 0.4444,
+        "targetsWithAny": 257
+      },
+      "T_only_correct": {
+        "meanCorrect": 0.5837,
+        "targetsWithAny": 318
+      },
+      "missed_by_all": {
+        "meanCorrect": 0.8193,
+        "targetsWithAny": 402
+      }
+    }
+  },
+  "metrics": {
+    "all": {
+      "n": 3178,
+      "strategies": {
+        "M": {
+          "n": 3178,
+          "mean": 2.516,
+          "p3plus": 0.5088,
+          "p4plus": 0.1721,
+          "full5": 102
+        },
+        "A": {
+          "n": 3178,
+          "mean": 2.5088,
+          "p3plus": 0.506,
+          "p4plus": 0.1696,
+          "full5": 76
+        },
+        "T": {
+          "n": 3178,
+          "mean": 2.5113,
+          "p3plus": 0.5009,
+          "p4plus": 0.174,
+          "full5": 67
+        },
+        "10M_5A_5T": {
+          "n": 3178,
+          "mean": 2.5362,
+          "p3plus": 0.5113,
+          "p4plus": 0.1797,
+          "full5": 82
+        },
+        "5M_10A_5T": {
+          "n": 3178,
+          "mean": 2.5378,
+          "p3plus": 0.5148,
+          "p4plus": 0.1762,
+          "full5": 80
+        },
+        "5M_5A_10T": {
+          "n": 3178,
+          "mean": 2.5252,
+          "p3plus": 0.4981,
+          "p4plus": 0.1787,
+          "full5": 80
+        },
+        "8M_8A_4T": {
+          "n": 3178,
+          "mean": 2.5371,
+          "p3plus": 0.5107,
+          "p4plus": 0.179,
+          "full5": 86
+        },
+        "4M_8A_8T": {
+          "n": 3178,
+          "mean": 2.5233,
+          "p3plus": 0.5072,
+          "p4plus": 0.1743,
+          "full5": 72
+        }
+      }
+    },
+    "discovery": {
+      "n": 1827,
+      "strategies": {
+        "M": {
+          "n": 1827,
+          "mean": 2.5369,
+          "p3plus": 0.5189,
+          "p4plus": 0.1746,
+          "full5": 66
+        },
+        "A": {
+          "n": 1827,
+          "mean": 2.514,
+          "p3plus": 0.5014,
+          "p4plus": 0.1669,
+          "full5": 51
+        },
+        "T": {
+          "n": 1827,
+          "mean": 2.5118,
+          "p3plus": 0.503,
+          "p4plus": 0.1757,
+          "full5": 34
+        },
+        "10M_5A_5T": {
+          "n": 1827,
+          "mean": 2.5638,
+          "p3plus": 0.5276,
+          "p4plus": 0.1812,
+          "full5": 50
+        },
+        "5M_10A_5T": {
+          "n": 1827,
+          "mean": 2.5692,
+          "p3plus": 0.5255,
+          "p4plus": 0.1834,
+          "full5": 50
+        },
+        "5M_5A_10T": {
+          "n": 1827,
+          "mean": 2.5402,
+          "p3plus": 0.5074,
+          "p4plus": 0.1806,
+          "full5": 46
+        },
+        "8M_8A_4T": {
+          "n": 1827,
+          "mean": 2.5649,
+          "p3plus": 0.5222,
+          "p4plus": 0.185,
+          "full5": 50
+        },
+        "4M_8A_8T": {
+          "n": 1827,
+          "mean": 2.5397,
+          "p3plus": 0.5129,
+          "p4plus": 0.1757,
+          "full5": 40
+        }
+      }
+    },
+    "validation": {
+      "n": 676,
+      "strategies": {
+        "M": {
+          "n": 676,
+          "mean": 2.4763,
+          "p3plus": 0.4941,
+          "p4plus": 0.1627,
+          "full5": 13
+        },
+        "A": {
+          "n": 676,
+          "mean": 2.4719,
+          "p3plus": 0.5044,
+          "p4plus": 0.1642,
+          "full5": 12
+        },
+        "T": {
+          "n": 676,
+          "mean": 2.5089,
+          "p3plus": 0.4941,
+          "p4plus": 0.176,
+          "full5": 16
+        },
+        "10M_5A_5T": {
+          "n": 676,
+          "mean": 2.4808,
+          "p3plus": 0.4956,
+          "p4plus": 0.1672,
+          "full5": 10
+        },
+        "5M_10A_5T": {
+          "n": 676,
+          "mean": 2.466,
+          "p3plus": 0.497,
+          "p4plus": 0.1598,
+          "full5": 11
+        },
+        "5M_5A_10T": {
+          "n": 676,
+          "mean": 2.4719,
+          "p3plus": 0.4749,
+          "p4plus": 0.1642,
+          "full5": 12
+        },
+        "8M_8A_4T": {
+          "n": 676,
+          "mean": 2.4778,
+          "p3plus": 0.4896,
+          "p4plus": 0.1627,
+          "full5": 17
+        },
+        "4M_8A_8T": {
+          "n": 676,
+          "mean": 2.4675,
+          "p3plus": 0.4985,
+          "p4plus": 0.1494,
+          "full5": 14
+        }
+      }
+    },
+    "oos": {
+      "n": 675,
+      "strategies": {
+        "M": {
+          "n": 675,
+          "mean": 2.4993,
+          "p3plus": 0.4963,
+          "p4plus": 0.1748,
+          "full5": 23
+        },
+        "A": {
+          "n": 675,
+          "mean": 2.5319,
+          "p3plus": 0.52,
+          "p4plus": 0.1822,
+          "full5": 13
+        },
+        "T": {
+          "n": 675,
+          "mean": 2.5126,
+          "p3plus": 0.5022,
+          "p4plus": 0.1674,
+          "full5": 17
+        },
+        "10M_5A_5T": {
+          "n": 675,
+          "mean": 2.517,
+          "p3plus": 0.483,
+          "p4plus": 0.1881,
+          "full5": 22
+        },
+        "5M_10A_5T": {
+          "n": 675,
+          "mean": 2.5244,
+          "p3plus": 0.5037,
+          "p4plus": 0.1733,
+          "full5": 19
+        },
+        "5M_5A_10T": {
+          "n": 675,
+          "mean": 2.5378,
+          "p3plus": 0.4963,
+          "p4plus": 0.1881,
+          "full5": 22
+        },
+        "8M_8A_4T": {
+          "n": 675,
+          "mean": 2.5215,
+          "p3plus": 0.5007,
+          "p4plus": 0.1793,
+          "full5": 19
+        },
+        "4M_8A_8T": {
+          "n": 675,
+          "mean": 2.5348,
+          "p3plus": 0.5007,
+          "p4plus": 0.1956,
+          "full5": 18
+        }
+      }
+    }
+  },
+  "guardrails": [
+    "Retrospective only; not prospective forecasts.",
+    "Multiple strategies/allocations were explored, so the best observed configuration is selection-biased.",
+    "No promotion; use results to define a frozen follow-up experiment.",
+    "Lottery draws may be random; observed historical excess can be noise."
+  ]
+}
