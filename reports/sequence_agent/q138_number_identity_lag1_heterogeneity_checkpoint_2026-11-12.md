@@ -1,7 +1,7 @@
 # Q138 checkpoint — number-identity-specific lag-1 heterogeneity
 
 - Status: COMPLETED_EXPLORATORY_NO_PROMOTION.
-- Protocol was committed before Q138 computation (branch research/q138-number-identity-lag1-heterogeneity-20261112, protocol commit 7a15f1a15304860baf1b383dc78f04a750de2fcd).
+- Protocol was committed before Q138 computation (branch research/q138-number-identity-lag1-heterogeneity-20261112; protocol commit 7a15f1a15304860baf1b383dc78f04a750de2fcd).
 - Source: pinned main archive blob fcb453ed06c8002314f826dbac79d6935f9ac103; 3,405 rows include the disputed 2026-11-11 row, which is excluded; eligible prefix is 3,404 draws through 2026-11-10.
 - Walk-forward: 3,204 strict-prior targets; Discovery / Validation / historical Blind OOS = 1,922 / 641 / 641.
 - M0 uniform exact 5-of-40; M1 pooled lag-1 recurrence tilt; M2 identity-specific lag-1 effects shrunk toward pooled conditional rates; fixed alpha=200.
