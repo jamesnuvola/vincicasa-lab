@@ -1,0 +1,24 @@
+name: SONAR PSR-10 previous-sum quartile state
+on:
+  push:
+    branches:
+      - research/sonar-psr10-previous-sum-quartile-20261108
+  pull_request:
+    branches: [main]
+    paths:
+      - scripts/sonar_psr10_previous_sum_state_walkforward.mjs
+      - tests/test_sonar_psr10_previous_sum_state_walkforward.mjs
+      - reports/position_specific_range_residual/PSR10_*
+      - .github/workflows/sonar-psr10-previous-sum-quartile.yml
+jobs:
+  replay-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Recompute pinned archive and verify committed outputs byte-for-byte
+        run: node scripts/sonar_psr10_previous_sum_state_walkforward.mjs --verify
+      - name: Run strict-prefix, quartile, and deterministic synthetic tests
+        run: node tests/test_sonar_psr10_previous_sum_state_walkforward.mjs
