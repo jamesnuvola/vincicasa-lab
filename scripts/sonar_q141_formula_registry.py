@@ -367,6 +367,8 @@ def build_registry(archive_blob_sha, dates):
             "type": "weighted_mean",
             "version": 1,
             "serialization": "EWMEAN1|feature_name=primitive_integer_weight;...",
+            "stable_evaluation": "math.fsum over the primitive weighted terms; raw and canonical expressions use the same order-stable summation semantics.",
+            "legacy_evaluation_note": "Historical NumPy mean may differ by sub-tolerance floating-point amounts and alter exact ranks for near-ties; retain as a separate compatibility diagnostic until a tie policy is reviewed.",
             "equivalence": "Two raw equal-weight subset formulas are equivalent iff their canonical feature multiplicity vectors are proportional; divide by GCD to obtain the unique primitive integer vector.",
             "multiplicity_is_semantic": True,
             "correlation_based_deduplication": False,
