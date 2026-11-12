@@ -125,8 +125,8 @@ def summarize_rows(rows, expected_split_counts=EXPECTED_SPLITS):
             delta = acc[f"top{k}_delta_hits"]
             topk[str(k)] = {
                 "uniform_reference_hit_share": UNIFORM[k],
-                "stable_mean_hit_share": acc["stable_hits"][k] / slots,
-                "legacy_numpy_mean_hit_share": acc["legacy_hits"][k] / slots,
+                "stable_mean_hit_share": acc["stable_hits"][k] / slots if slots else 0.0,
+                "legacy_numpy_mean_hit_share": acc["legacy_hits"][k] / slots if slots else 0.0,
                 "legacy_minus_stable_hit_count": delta,
                 "targets_with_any_hit_share_change": acc[f"top{k}_diff_targets"],
                 "legacy_minus_stable_percentage_points": (delta / slots * 100.0) if slots else 0.0,
