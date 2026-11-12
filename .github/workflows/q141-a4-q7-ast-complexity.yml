@@ -1,0 +1,164 @@
+name: Q141-A4 Q7 typed AST and B8 complexity walk-forward
+
+on:
+  push:
+    branches:
+      - research/q141-formula-universe-behaviour-mapping-20261112
+    paths:
+      - "scripts/sonar_q141_q7_ast_import_complexity.py"
+      - "tests/test_sonar_q141_q7_ast_import_complexity.py"
+      - "reports/sequence_agent/q141_q7_complexity_preregistration_2026-11-12.json"
+      - "reports/sequence_agent/q141_q7_complexity_preregistration_2026-11-12.md"
+      - ".github/workflows/q141-a4-q7-ast-complexity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q141-a4-q7-ast-complexity
+  cancel-in-progress: false
+
+jobs:
+  q7-ast-and-complexity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Q141 research branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Checkout pinned Q7 source
+        uses: actions/checkout@v4
+        with:
+          repository: jamesnuvola/vincicasa-lab
+          ref: 7a37cab601c5f9386131a00246963f8e4aeabf74
+          path: q7-source
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install numerical dependency
+        run: python -m pip install "numpy>=1.26,<3"
+
+      - name: Run Q141-A4/B8 unit tests
+        run: python -m unittest discover -s tests -p "test_sonar_q141_q7_ast_import_complexity.py" -v
+
+      - name: Import Q7 typed AST and run preregistered complexity walk-forward
+        run: |
+          set -euo pipefail
+          python scripts/sonar_q141_q7_ast_import_complexity.py \
+            --q7-root q7-source \
+            --q141-archive data/storico_daily.csv \
+            --output-dir reports/sequence_agent
+
+      - name: Upload Q141-A4/B8 outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-a4-b8-q7-ast-complexity-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q7_typed_ast_catalog_part_00.jsonl.gz
+            reports/sequence_agent/q7_typed_ast_snapshot_2026-10-25.jsonl.gz
+            reports/sequence_agent/q7_typed_ast_import_report_2026-11-12.json
+            reports/sequence_agent/q7_formula_complexity_walkforward_report_2026-11-12.json
+            reports/sequence_agent/q7_formula_complexity_walkforward_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_q7_ast_complexity_manifest_2026-11-12.json
+            reports/sequence_agent/q141_q7_ast_complexity_checkpoint_2026-11-12.json
+          retention-days: 90
+
+      - name: Persist outputs append-only
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git add reports/sequence_agent/q7_typed_ast_catalog_part_00.jsonl.gz
+          git add reports/sequence_agent/q7_typed_ast_snapshot_2026-10-25.jsonl.gz
+          git add reports/sequence_agent/q7_typed_ast_import_report_2026-11-12.json
+          git add reports/sequence_agent/q7_formula_complexity_walkforward_report_2026-11-12.json
+          git add reports/sequence_agent/q7_formula_complexity_walkforward_target_ledger_2026-11-12.csv
+          git add reports/sequence_agent/q141_q7_ast_complexity_manifest_2026-11-12.json
+          git add reports/sequence_agent/q141_q7_ast_complexity_checkpoint_2026-11-12.json
+          if git diff --cached --quiet; then
+            echo "Q141-A4/B8 outputs already match this checkout."
+          else
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Persist Q141 Q7 typed AST and complexity walk-forward"
+            pushed=false
+            for attempt in 1 2 3; do
+              git fetch origin "$BRANCH_NAME"
+              if git rebase "origin/$BRANCH_NAME" && git push origin "HEAD:$BRANCH_NAME"; then
+                pushed=true
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                git rebase --abort || true
+                echo "Remote branch advanced; retrying append-only persistence."
+              fi
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Q141-A4/B8 persistence failed after three attempts."
+              exit 1
+            fi
+          fi
+
+      - name: Verify exact remote Git readback and persist receipt
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH_NAME"
+          python - <<'PY'
+          import hashlib, json, os, subprocess
+          branch = os.environ["BRANCH_NAME"]
+          manifest_path = "reports/sequence_agent/q141_q7_ast_complexity_manifest_2026-11-12.json"
+          checkpoint_path = "reports/sequence_agent/q141_q7_ast_complexity_checkpoint_2026-11-12.json"
+          manifest_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{manifest_path}"])
+          manifest = json.loads(manifest_bytes)
+          checkpoint = json.loads(subprocess.check_output(["git", "show", f"origin/{branch}:{checkpoint_path}"]))
+          verified = []
+          for name, expected in manifest["files"].items():
+              path = expected["path"]
+              remote = subprocess.check_output(["git", "show", f"origin/{branch}:{path}"])
+              sha = hashlib.sha256(remote).hexdigest()
+              blob = hashlib.sha1(f"blob {len(remote)}\0".encode() + remote).hexdigest()
+              if sha != expected["sha256"] or len(remote) != expected["bytes"] or blob != expected["git_blob_sha1"]:
+                  raise SystemExit(f"remote exact-readback mismatch: {path}")
+              verified.append({"path": path, "bytes": len(remote), "sha256": sha, "git_blob_sha1": blob})
+          receipt = {
+              "schema_version": "1.0",
+              "task_id": "Q141_A4_B8_REMOTE_READBACK",
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "branch": branch,
+              "manifest_git_blob_sha1": hashlib.sha1(f"blob {len(manifest_bytes)}\0".encode() + manifest_bytes).hexdigest(),
+              "checkpoint_status": checkpoint["status"],
+              "files_verified": len(verified),
+              "files": verified,
+          }
+          path = "reports/sequence_agent/q141_q7_ast_complexity_remote_readback_2026-11-12.json"
+          with open(path, "w", encoding="utf-8") as f:
+              json.dump(receipt, f, sort_keys=True, indent=2)
+              f.write("\n")
+          print(f"Exact remote Git readback verified for {len(verified)} files.")
+          PY
+          git add reports/sequence_agent/q141_q7_ast_complexity_remote_readback_2026-11-12.json
+          if ! git diff --cached --quiet; then
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Record Q141 Q7 exact remote readback"
+            git push origin "HEAD:$BRANCH_NAME"
+          fi
+          git fetch origin "$BRANCH_NAME"
+          python - <<'PY'
+          import json, os, subprocess
+          branch = os.environ["BRANCH_NAME"]
+          path = "reports/sequence_agent/q141_q7_ast_complexity_remote_readback_2026-11-12.json"
+          receipt = json.loads(subprocess.check_output(["git", "show", f"origin/{branch}:{path}"]))
+          if receipt.get("status") != "REMOTE_GIT_READBACK_VERIFIED" or receipt.get("files_verified") != 5:
+              raise SystemExit("remote readback receipt verification failed")
+          print("Remote readback receipt itself verified.")
+          PY
