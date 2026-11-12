@@ -86,3 +86,22 @@ The canonical Q60 prospective gate remains `INSUFFICIENT_PROSPECTIVE_CASES`: 24 
 2. Implement Q141-B's typed AST, deterministic formula IDs, alias graph and proof-based semantic deduplication.
 3. Reconcile all candidate features against one canonical, pinned archive before any comparable full-universe walk-forward replay.
 4. Only after the registry is stable, build the broader behaviour atlas and test pre-target state signals for family transitions. Do not spend another cycle tuning rolling hit windows or selecting a pair from Blind OOS.
+
+
+### Q141-C2 — Current-state family margin selector
+
+The C2 preregistration was frozen before execution. Its runner initially failed closed because the preregistration stored `formula_policy.no_tuning` as a descriptive string while the validator required the boolean `true`. This was a schema mismatch, not a statistical failure: the description was preserved as `no_tuning_policy`, and the boolean flag was corrected. The C2 unit tests and walk-forward runner then passed.
+
+- Source: same pinned 3,404-draw prefix through 2026-11-10; contest 315 excluded.
+- Targets: 3,354 (Discovery 2,013 / Validation 671 / Blind OOS 670).
+- Policy: choose the six-family score with the largest prior-only standardized fifth-minus-sixth score margin; no outcome warm-up or parameter tuning; 2,458 family switches.
+- Blind primary Top-5 gain vs equal-family: **+0.002985** (below preregistered +0.005 practical threshold); 95% block-bootstrap CI **[-0.01134, +0.01701]**; raw paired p=**0.7007**, Holm-24 p=**1.0**.
+- Blind Top-5 vs uniform: 412 hits vs 418.75 expected; exact p=0.65366, Holm-6 p=1.0. Blind Top-20: 1,740 vs 1,675 expected; raw p=0.00931, Holm-6 p=0.05588 (not significant at 0.05).
+- Margin calibration: 18 family × split tests; zero survive Holm. No evidence that a larger current-state margin signals greater family usefulness.
+- Decision: `NO_CURRENT_STATE_MARGIN_LIFT_DEMONSTRATED`. No family or engine is promoted.
+
+The C2 report, manifest and 3,354-row target ledger are present on the Q141 branch. The manifest records code SHA256 `539bc37d…`, report SHA256 `fa9b98cc…` and target-ledger SHA256 `24f88e7a…`; Git tree readback confirms the report blob `f8c5f353…`, manifest blob `7900d0f2…` and ledger blob `a7410fd3…` (3,570,421 bytes). The full workflow run `43212004991` completed successfully on head `a925ab62…`, including Q141-C0/C1/C2, append-only output persistence, archive/data audits, prospective-gate checks, positional/regime/residual/hazard lab and application build.
+
+## Updated diagnosis and next action
+
+Across Q141-C0, C1 and C2, three distinct approaches—rolling historical family success, size-conditioned pair unions and current-state margin selection—have not demonstrated a reproducible blind-holdout lift. This does not prove all formula families are useless; the tested universe is only six coarse Q80-derived families and the historical blind tail is exposed. The main actionable bottleneck remains the fragmented formula lineage and absence of a canonical typed registry. Stop adding small variants of these three selectors. Proceed to Q141-B: import the exact Q80/Q89 feature definitions, reconcile Q80-Q92 source hashes and build deterministic typed formula IDs with proof-based deduplication before expanding the behaviour atlas.
