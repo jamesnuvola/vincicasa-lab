@@ -84,7 +84,11 @@ def summarize_rows(rows, expected_split_counts=EXPECTED_SPLITS):
         previous_target = target_date
         if formula_count != 120:
             raise ValueError(f"Q141_B2_BLOCKED: expected 120 formula samples, got {formula_count}")
-        for key in ("alias_mismatches", "stable_raw_vs_canonical_score_mismatches",
+        for key in ("alias_freq5_recent5_equal", "alias_freq10_recent10_equal",
+                    "standardized_aliases_equal"):
+            if as_int(row, key) != 1:
+                raise ValueError(f"Q141_B2_BLOCKED: exact alias identity failed in {key}")
+        for key in ("stable_raw_vs_canonical_score_mismatches",
                     "stable_raw_vs_canonical_rank_mismatches"):
             if as_int(row, key) != 0:
                 raise ValueError(f"Q141_B2_BLOCKED: nonzero identity mismatch in {key}")
