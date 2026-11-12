@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-Q89-Q92-2026-11-09T01:12Z",
+  "recorded_at_utc": "2026-11-09T01:12:44Z",
+  "canonical_main": {
+    "commit_sha": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+    "archive_git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "draw_count": 3402,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-08",
+    "latest_quintet": [
+      3,
+      7,
+      10,
+      16,
+      27
+    ]
+  },
+  "q89": {
+    "status": "VALIDATED_PENDING_HUMAN_REVIEW; exact-head CI on updated branch pending",
+    "source_archive": {
+      "draw_count": 3401,
+      "last_date": "2026-11-07",
+      "source_archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed"
+    },
+    "formula_count": 4686825,
+    "target_count": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metrics_rows": 14060475,
+    "global_holm_family_size": 42181425,
+    "formula_split_rows_holm_below_0_05": 0,
+    "minimum_holm_p_max_endpoint_family": 1,
+    "selected_candidate": {
+      "formula_id": "P9_06_09_12_14_15_17_18_19_23",
+      "discovery_mean_number_hits_top5": 0.1375435106911984,
+      "discovery_mean_rank_of_actual_numbers": 20.143411238189955,
+      "validation_mean_number_hits_top5": 0.12985074626865672,
+      "validation_mean_rank_of_actual_numbers": 20.60179104477612
+    },
+    "q88_control": {
+      "formula_id": "P8_00_08_11_12_15_16_19_23",
+      "discovery_mean_number_hits_top5": 0.1370462456489309,
+      "discovery_mean_rank_of_actual_numbers": 20.336350074589756,
+      "validation_mean_number_hits_top5": 0.12955223880597014,
+      "validation_mean_rank_of_actual_numbers": 20.46179104477612
+    },
+    "blind_oos_vs_uniform": {
+      "q89": {
+        "top5": 0.11761194029850747,
+        "top10": 0.23582089552238805,
+        "top20": 0.4955223880597015,
+        "mean_rank": 20.613731343283582
+      },
+      "uniform": {
+        "top5": 0.125,
+        "top10": 0.25,
+        "top20": 0.5,
+        "mean_rank": 20.5
+      },
+      "note": "Q89 selected candidate underperformed the uniform marginal baseline on all three hit-share endpoints and mean rank."
+    },
+    "paired_blind_oos_q89_minus_q88": {
+      "targets": 670,
+      "bootstrap": {
+        "method": "circular moving-block percentile CI",
+        "replicates": 20000,
+        "block_length": 7,
+        "seed": 890027
+      },
+      "signflip": {
+        "method": "circular block sign-flip two-sided",
+        "replicates": 20000,
+        "block_length": 7,
+        "seed": 890028
+      },
+      "holm_family_size": 3,
+      "endpoints": {
+        "top5": {
+          "delta_hit_share": 0.007761194029850746,
+          "delta_percentage_points": 0.7761194029850746,
+          "ci95_hit_share": [
+            -0.0029850746268656717,
+            0.018507462686567163
+          ],
+          "p_raw": 0.17984100794960253,
+          "p_holm": 0.5395230238488076
+        },
+        "top10": {
+          "delta_hit_share": -0.008059701492537314,
+          "delta_percentage_points": -0.8059701492537313,
+          "ci95_hit_share": [
+            -0.022686567164179106,
+            0.00626865671641791
+          ],
+          "p_raw": 0.3008349582520874,
+          "p_holm": 0.6016699165041748
+        },
+        "top20": {
+          "delta_hit_share": 0.008656716417910448,
+          "delta_percentage_points": 0.8656716417910447,
+          "ci95_hit_share": [
+            -0.008059701492537314,
+            0.02537313432835821
+          ],
+          "p_raw": 0.32693365331733415,
+          "p_holm": 0.6016699165041748
+        }
+      },
+      "decision": "NO_SIGNIFICANT_GAIN"
+    },
+    "persistence": {
+      "commit_sha": "95bb4e8b4a950fb4ba80d46e44fd91fef83f6def",
+      "parent_sha": "d062bf9ea5068235a136c8adf011108c89440274",
+      "verified_files": 478,
+      "verified_bytes": 518672991,
+      "exact_commit_bytes_verified": true,
+      "acceptance_workflow_run": 42538247699,
+      "acceptance_conclusion": "success",
+      "human_review": "pending"
+    },
+    "current_branch_head": {
+      "commit_sha": "cebd9faa2a1c2e74b3047337525b4a011ffcdc43",
+      "pr_number": 20,
+      "pr_state": "open",
+      "pr_draft": true,
+      "merged": false
+    },
+    "current_head_ci": {
+      "exact_head_full_ci": {
+        "run_id": 42545388202,
+        "status": "in_progress",
+        "conclusion": null
+      },
+      "exact_head_q89_acceptance": "not yet run on cebd9faa; persisted Q89 acceptance evidence remains from commit 95bb4e8",
+      "recovery_run_on_prior_head": {
+        "run_id": 42543847422,
+        "head_sha": "f88c63122de1e485e3db48532fe62ded94cb458d",
+        "status": "in_progress",
+        "stale_after_branch_update": true
+      },
+      "recovery_run_on_stale_head": {
+        "run_id": 42544972936,
+        "head_sha": "9b9355b9b75abbbf37f86413b6ee33adcbeed076",
+        "status": "pending",
+        "stale_after_branch_update": true
+      },
+      "generic_ci_on_prior_head": {
+        "run_id": 42544972840,
+        "status": "cancelled"
+      },
+      "q91_cross_trigger_failure": {
+        "run_id": 42545185052,
+        "head_sha": "d59e4311faff9549e60a992dc0b256b06fbf7718",
+        "status": "failure",
+        "cause": "Q91 workflow checked out Q89 PR head/base merge context without scripts/sonar_q91_nested_walkforward.py; Q91 workflow definition is in the Q88 base branch and PR #12's fix is not integrated."
+      }
+    },
+    "limitations": [
+      "Finite equal-weight nine-feature grammar only.",
+      "Catalog-level p-values use a continuity-corrected normal approximation to summed hypergeometric counts; exploratory.",
+      "Historical blind OOS has prior SONAR exposure and is not independent prospective confirmation.",
+      "Q89 candidate selected on 2026-11-07 archive is not admissible as Q92 control on the 2026-11-08 archive."
+    ]
+  },
+  "ci_root_cause": {
+    "run_id": 42542237049,
+    "failure": "Q80_Q86_ACCEPTANCE_BLOCKED: research branch archive blob differs from canonical main archive.",
+    "diagnosis": "Q89 is stacked on Q88's 2026-11-07 archive (3,401 draws); main is at 2026-11-08 (3,402 draws). The Q89 persisted output lineage is pinned to 2026-11-07.",
+    "correction_commits": [
+      {
+        "sha": "9b9355b9b75abbbf37f86413b6ee33adcbeed076",
+        "scope": "CI skips only the Q80-Q86 main-archive alignment validator on the named stacked Q89 branch, with explicit log output."
+      },
+      {
+        "sha": "d59e4311faff9549e60a992dc0b256b06fbf7718",
+        "scope": "Q89 workflow push path filter and PR trigger scope to avoid repeated aggregate on every synchronize."
+      },
+      {
+        "sha": "b57b10bc72973999bdbfba2cd25ffbd8882d8b1a",
+        "scope": "Q89 branch CI runs lightweight Q80-Q86 unit tests, skipping long full catalog runs and stale main-archive validation on this stacked branch."
+      },
+      {
+        "sha": "cebd9faa2a1c2e74b3047337525b4a011ffcdc43",
+        "scope": "Q89 recovery concurrency isolated by head SHA; recovery guarded to opened/reopened/edited PR actions."
+      }
+    ],
+    "verification": "Workflow blobs read back from exact commits; full current-head CI on cebd9faa remains in progress. The Q80-Q86 main-archive validator is intentionally not claimed as run on this stacked Q89 branch.",
+    "q91_block": "Q91 remains a separate cross-trigger failure on the Q88 base branch. PR #12 contains a fix but it is not available in the Q89 PR's base; PR #8 is left untouched."
+  },
+  "q92": {
+    "protocol_id": "Q92-ten-feature-equal-weight-catalog-2026-11-09",
+    "status": "PREREGISTERED_IMPLEMENTATION_PENDING",
+    "protocol_branch": "research/sonar-q92-ten-feature-prereg-20261109",
+    "protocol_commit": "b8f5bc67df2fea3dd19d3709e482851e67028fda",
+    "archive_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "formula_count": 8436285,
+    "formula_size": 10,
+    "shard_count": 15,
+    "formulas_per_shard": 562419,
+    "target_count": 3352,
+    "split_counts": {
+      "discovery": 2012,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "metric_rows": 25308855,
+    "global_holm_family_size": 75926565,
+    "primary_comparison": "paired Blind OOS Top-5 hit-share Q92 minus Q89 control selected by the identical Discovery→Validation rule on the same 2026-11-08 archive",
+    "execution_gate": "Do not execute Q92 until Q89 control is refreshed on the same canonical archive and exact-head CI passes.",
+    "limitations": [
+      "Finite equal-weight ten-feature catalog only; weighted, nonlinear, conditional, and interaction formula families remain untested.",
+      "The infinite mathematical formula universe is not exhausted.",
+      "Historical Blind OOS is not independent prospective confirmation.",
+      "Global formula-family p-values are approximate and exploratory."
+    ],
+    "next_action": "Complete current-head Q89 CI, implement an append-only Q89 control refresh for the 2026-11-08 archive and Q92 ten-feature evaluator/acceptance tests, then run Q92 only after the refreshed Q89 control is accepted."
+  },
+  "prospective_gate": {
+    "queue_status": "QUEUE_VALID",
+    "overall_cycle_status": "INCOMPLETE",
+    "blocking_task": "Q60",
+    "complete_paired_targets": 21,
+    "required_paired_targets": 200,
+    "source_queue_blob_sha": "04fc41ada14dcf34da6a557225617e28be4671a0"
+  },
+  "guardrails": {
+    "no_automatic_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "preserve_immutable_2026_10_25_freeze": true,
+    "prs_6_7_8_untouched": true,
+    "human_review_required": true
+  },
+  "next_action": "Wait for current-head generic CI on cebd9faa. Trigger Q89 recovery acceptance on the current head via PR edited event only after CI is stable; then refresh the Q89 nine-feature control on the 2026-11-08 archive and implement Q92. Do not run Q92 before the refreshed Q89 control is accepted."
+}

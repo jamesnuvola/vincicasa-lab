@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q92",
+  "status": "IMPLEMENTATION_SOURCE_SNAPSHOT_PENDING_CI",
+  "recorded_at_utc": "2026-11-09T01:10:15Z",
+  "preregistration": {
+    "path": "reports/sequence_agent/q92_preregistration_2026-11-09.json",
+    "git_blob_sha1": "e7cc679a5df83def6be0b0aa771ceca8e688695d"
+  },
+  "canonical_archive": {
+    "path": "data/storico_daily.csv",
+    "main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+    "git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+    "draw_count": 3402,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-08",
+    "latest_quintet": [
+      3,
+      7,
+      10,
+      16,
+      27
+    ]
+  },
+  "pinned_feature_engines": [
+    {
+      "id": "Q80",
+      "path": "scripts/sonar_per_number_condition_grammar.py",
+      "source_branch": "research/per-number-condition-grammar-20261026",
+      "source_head": "0f3851a27f6ab2122b568383460a91f853e098c0",
+      "git_blob_sha1": "9378585de7cef817a3d10d5831a8917251ee0181",
+      "copied_into_q92_branch": true
+    },
+    {
+      "id": "Q81",
+      "path": "scripts/sonar_per_number_condition_4plus_grammar.py",
+      "source_branch": "research/sonar-q89-nine-feature-20261108",
+      "source_head": "95bb4e8b4a950fb4ba80d46e44fd91fef83f6def",
+      "git_blob_sha1": "f9cbf1c64deb2f2eabf7e6f35ba2523a9404625b",
+      "copied_into_q92_branch": true
+    }
+  ],
+  "q92_code": [
+    {
+      "path": "scripts/sonar_q92_common.py",
+      "git_blob_sha1": "ede509e08383baba8ca0c6feb0a5c2a56dd24af7"
+    },
+    {
+      "path": "scripts/sonar_per_number_condition_10plus_shard.py",
+      "git_blob_sha1": "7cc7170676e1c1d8c9a83c22b9db95495186f36b"
+    },
+    {
+      "path": "tests/test_sonar_q92_formula_universe.py",
+      "git_blob_sha1": "437a5b6e205049ce1305fe958aed89036dbd618a"
+    },
+    {
+      "path": ".github/workflows/sonar-q92-ten-feature.yml",
+      "git_blob_sha1": "09e4d3bd8a58a0e4904918cffacee58cd3a7af1e"
+    }
+  ],
+  "root_cause_log": [
+    {
+      "failure": "Q92 dedicated unit workflow lacked numpy",
+      "root_cause": "the test imported the shard evaluator which uses numpy; workflow setup did not install numpy",
+      "correction": "add explicit numpy installation"
+    },
+    {
+      "failure": "Q92 shard import failed on main base",
+      "root_cause": "main did not contain Q80/Q81 source modules because they reside on separate unmerged research branches",
+      "correction": "pin and copy exact Q80/Q81 Git blobs into Q92 branch"
+    },
+    {
+      "failure": "Q92 regression tests raised NameError np",
+      "root_cause": "new test methods used np without importing numpy",
+      "correction": "add import numpy as np"
+    }
+  ],
+  "execution_gate": "No Q92 shard evaluation until the Q89 nine-feature comparator is refreshed on the same 2026-11-08 archive, the current Q89 paired-ledger defect is corrected, and the Q92 preflight/acceptance workflow is implemented.",
+  "next_action": "Complete current-head Q89 CI; implement and validate the same-archive Q89 refresh; then preregister/execute Q92 distributed shards."
+}
