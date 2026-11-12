@@ -2,34 +2,34 @@
   "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
   "source": "data/storico_daily.csv",
   "first_date": "2017-07-17",
-  "last_date": "2026-11-10",
-  "draws": 3404,
+  "last_date": "2026-11-11",
+  "draws": 3405,
   "warmup_draws": 500,
-  "evaluated_targets": 2904,
+  "evaluated_targets": 2905,
   "same_targets_and_splits": true,
   "global_top20_definition": "Rank numbers by frequency in the previous 100 draws; deterministic ties resolve by smaller number.",
   "raw_positional_union_definition": "Union the top 3 smoothed values for each of P1-P5 before any completion; report raw union size before deduplication (set union) and before filling.",
   "completion_to_20_rule": "Keep the union seeds ranked by summed position-conditioned scores; fill remaining slots with the global trailing-100 frequency ranking until 20 distinct numbers are selected.",
   "raw_positional_union_size": {
-    "targets": 2904,
-    "mean_raw_union_size": 14.621556473829202,
+    "targets": 2905,
+    "mean_raw_union_size": 14.621342512908779,
     "minimum_raw_union_size": 12,
     "maximum_raw_union_size": 15,
     "size_distribution": {
       "12": 5,
       "13": 113,
-      "14": 858,
+      "14": 859,
       "15": 1928
     }
   },
   "overall": {
     "global_top20": {
-      "targets": 2904,
-      "mean_hits": 2.509297520661157,
+      "targets": 2905,
+      "mean_hits": 2.509122203098107,
       "hit_distribution": {
         "0": 64,
         "1": 446,
-        "2": 914,
+        "2": 915,
         "3": 973,
         "4": 441,
         "5": 66
@@ -38,12 +38,12 @@
       "top20_4plus": 507
     },
     "position_seed_mix_top20": {
-      "targets": 2904,
-      "mean_hits": 2.5079201101928374,
+      "targets": 2905,
+      "mean_hits": 2.5077452667814115,
       "hit_distribution": {
         "0": 76,
         "1": 432,
-        "2": 934,
+        "2": 935,
         "3": 946,
         "4": 435,
         "5": 81
@@ -51,32 +51,32 @@
       "top20_5of5": 81,
       "top20_4plus": 516
     },
-    "mean_hit_delta_mix_minus_global": -0.0013774104683195176,
+    "mean_hit_delta_mix_minus_global": -0.001376936316695332,
     "random_top20_5of5_baseline_rate": 0.02356202356202356,
-    "random_top20_5of5_expected_count": 68.42411642411642
+    "random_top20_5of5_expected_count": 68.44767844767844
   },
   "chronological_splits": {
     "discovery": {
-      "targets": 1742,
+      "targets": 1743,
       "raw_positional_union_size": {
-        "targets": 1742,
-        "mean_raw_union_size": 14.599885189437428,
+        "targets": 1743,
+        "mean_raw_union_size": 14.600114744693059,
         "minimum_raw_union_size": 12,
         "maximum_raw_union_size": 15,
         "size_distribution": {
           "12": 5,
           "13": 73,
           "14": 536,
-          "15": 1128
+          "15": 1129
         }
       },
       "global_top20": {
-        "targets": 1742,
-        "mean_hits": 2.5367393800229623,
+        "targets": 1743,
+        "mean_hits": 2.536431440045898,
         "hit_distribution": {
           "0": 37,
           "1": 251,
-          "2": 556,
+          "2": 557,
           "3": 580,
           "4": 274,
           "5": 44
@@ -85,12 +85,12 @@
         "top20_4plus": 318
       },
       "position_seed_mix_top20": {
-        "targets": 1742,
-        "mean_hits": 2.5126291618828933,
+        "targets": 1743,
+        "mean_hits": 2.5123350545037293,
         "hit_distribution": {
           "0": 46,
           "1": 265,
-          "2": 549,
+          "2": 550,
           "3": 567,
           "4": 262,
           "5": 53
@@ -98,7 +98,7 @@
         "top20_5of5": 53,
         "top20_4plus": 315
       },
-      "random_top20_5of5_expected_count": 41.04504504504504
+      "random_top20_5of5_expected_count": 41.06860706860707
     },
     "validation": {
       "targets": 581,
@@ -147,13 +147,13 @@
       "targets": 581,
       "raw_positional_union_size": {
         "targets": 581,
-        "mean_raw_union_size": 14.67986230636833,
+        "mean_raw_union_size": 14.678141135972462,
         "minimum_raw_union_size": 13,
         "maximum_raw_union_size": 15,
         "size_distribution": {
           "13": 20,
-          "14": 146,
-          "15": 415
+          "14": 147,
+          "15": 414
         }
       },
       "global_top20": {
@@ -189,7 +189,7 @@
   },
   "per_target_paired": {
     "mix_better": 691,
-    "tie": 1486,
+    "tie": 1487,
     "global_better": 727
   },
   "guardrail": "All forecasts are pre-target. Retrospective OOS is exploratory and does not authorize promotion."
