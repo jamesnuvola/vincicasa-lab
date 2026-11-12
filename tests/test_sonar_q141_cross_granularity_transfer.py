@@ -26,7 +26,7 @@ def synthetic_ledgers(n=60):
             "cutoff_date": (target_date - dt.timedelta(days=1)).isoformat(),
             "actual_quintet": "1 2 3 4 5",
             "split": "discovery",
-            "mean_percentile_all": str(0.35 + 0.002 * i),
+            "mean_percentile_all_formulas": str(0.35 + 0.002 * i),
         })
     c0 = []
     for index in range(160):
@@ -60,9 +60,9 @@ class CrossGranularityTransferTests(unittest.TestCase):
         original_matrix, _ = c4.build_features(q7, c0)
         mutated_q7 = copy.deepcopy(q7)
         mutated_c0 = copy.deepcopy(c0)
-        mutated_q7[target_offset]["mean_percentile_all"] = "0.999999"
+        mutated_q7[target_offset]["mean_percentile_all_formulas"] = "0.999999"
         for i in range(target_offset + 1, len(mutated_q7)):
-            mutated_q7[i]["mean_percentile_all"] = "0.000001"
+            mutated_q7[i]["mean_percentile_all_formulas"] = "0.000001"
         target_index = int(q7[target_offset]["prior_draws"])
         for row in mutated_c0:
             if int(row["target_index"]) >= target_index:
