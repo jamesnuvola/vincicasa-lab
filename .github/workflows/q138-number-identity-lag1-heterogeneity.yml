@@ -1,0 +1,38 @@
+name: Q138 number-identity lag-1 heterogeneity replay
+
+on:
+  push:
+    branches:
+      - research/q138-number-identity-lag1-heterogeneity-20261112
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "reports/sequence_agent/q138_*"
+      - "scripts/sonar_q138_number_identity_lag1_heterogeneity.mjs"
+      - ".github/workflows/q138-number-identity-lag1-heterogeneity.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Replay fixed-size lag-1 identity model
+        run: node scripts/sonar_q138_number_identity_lag1_heterogeneity.mjs
+      - name: Require byte-identical persisted outputs
+        run: |
+          git diff --exit-code -- reports/sequence_agent/q138_number_identity_lag1_heterogeneity_report_2026-11-12.json
+          git diff --exit-code -- reports/sequence_agent/q138_number_identity_lag1_heterogeneity_target_ledger_2026-11-12.csv
+          git diff --exit-code -- reports/sequence_agent/q138_number_identity_lag1_heterogeneity_validation_2026-11-12.json
+          git diff --exit-code -- reports/sequence_agent/q138_number_identity_lag1_heterogeneity_checkpoint_2026-11-12.md
+          git diff --exit-code -- reports/sequence_agent/q138_number_identity_lag1_heterogeneity_persistence_manifest_2026-11-12.json
