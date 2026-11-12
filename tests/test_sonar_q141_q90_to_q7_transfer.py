@@ -21,15 +21,15 @@ class Q141C5Tests(unittest.TestCase):
     def test_family_state_bounds_and_trend(self):
         rows = []
         for i in range(50):
-            rows.append({"a": str(0.2 if i < 25 else 0.8), "b": str(0.8 if i < 25 else 0.2)})
-        equal, dispersion, entropy, trend = family_state(rows, ("a", "b"), 1.0)
+            rows.append({"a": str(0.2 if i < 25 else 0.8), "b": str(0.8 if i < 25 else 0.2), "equal": "0.5"})
+        equal, dispersion, entropy, trend = family_state(rows, ("a", "b"), 1.0, "equal")
         self.assertAlmostEqual(equal, 0.5)
         self.assertAlmostEqual(dispersion, 0.0)
         self.assertAlmostEqual(entropy, 1.0)
         self.assertAlmostEqual(trend, 0.0)
 
     def test_family_state_rejects_out_of_range(self):
-        rows = [{"a": "1.2", "b": "0.1"} for _ in range(50)]
+        rows = [{"a": "1.2", "b": "0.1", "equal": "0.2"} for _ in range(50)]
         with self.assertRaises(RuntimeError):
             family_state(rows, ("a", "b"), 1.0)
 
