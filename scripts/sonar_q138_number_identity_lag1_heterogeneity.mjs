@@ -263,12 +263,12 @@ function main() {
     validation: { check_count: checks.length, passed_count: checks.filter(x => x[1]).length,
       future_suffix_checks: suffixChecks.length, future_suffix_passed: suffixChecks.filter(x => x.identical).length },
     decision: "NO_IDENTITY_SPECIFIC_LAG1_LIFT_DEMONSTRATED",
-    interpretation: "M2 shows a small positive Blind OOS point estimate versus M1 and M0, but Discovery and Validation gains are negative, all six Holm-adjusted p-values equal 1.000, and all six block-bootstrap intervals include zero. No predictive advantage is demonstrated.",
+    interpretation: "M2 shows a small positive Blind OOS point estimate versus M1 and M0, but the Discovery and Validation gains are negative, all six Holm-adjusted p-values equal 1.000, and all six block-bootstrap intervals include zero. No predictive advantage is demonstrated.",
     limitations: [
       "Q138 belongs to a large exploratory family; Holm corrects only the six Q138 Blind OOS endpoints, not the full Q00-Q137 research family.",
       "The historical Blind OOS is not virgin after prior SONAR research.",
       "Historical strict-prior reconstruction is not a contemporaneous freeze made before each target.",
-      "Q111 already tested a common lag-1 exact-subset recurrence tilt and selected the uniform model on Validation; Q138 tests identity-specific heterogeneity beyond a pooled lag-1 effect. Q112 tested a distinct lag-2 identity rebound.",
+      "Q111 already tested a common lag-1 exact-subset recurrence tilt and selected the uniform model on Validation; Q138's incremental question is identity-specific heterogeneity beyond a pooled lag-1 effect. Q112 tested a distinct lag-2 identity rebound.",
       "The 2026-11-11 draw is excluded because its primary number provenance remains unresolved in the official archive workflow.",
       "The experiment estimates a conditional distribution over all five-number subsets; it does not guarantee or establish a winning quintet."
     ],
