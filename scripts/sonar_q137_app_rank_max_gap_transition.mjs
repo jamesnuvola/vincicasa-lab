@@ -357,7 +357,7 @@ function main() {
       exact_null_mean_gap: round(nullMean, 12),
       quartile_thresholds: thresholds,
       quartile_bin_masses: binMasses.map(x => round(x, 12)),
-      alpha: alpha
+      alpha: ALPHA
     },
     split_results: splitSummary,
     blind_inference: inference.map(x => ({
@@ -460,7 +460,8 @@ function main() {
     "",
     "- First Node 20 replay failed at parse time because the runner contained duplicate const ledger declarations. The duplicate block was removed; the validation now checks scored.length.",
     "- Second Node 20 replay failed with ReferenceError: combinationCount was not defined. The report now reads the exact enumeration count from nullData.combinations.",
-    "- Both failures were runner assembly defects; no target, estimator, split, alpha, random seed, score, or inferential result was changed.",
+    "- Third Node 20 replay failed with ReferenceError: alpha was not defined in report metadata. The report now uses the fixed ALPHA constant.",
+    "- All three failures were runner assembly defects; no target, estimator, split, alpha value, random seed, score, or inferential result was changed.",
     "- The next replay must confirm byte-identical report, ledger, validation, checkpoint, and manifest before this experiment is treated as technically complete.",
     "",
     "## Next action",
