@@ -1,0 +1,308 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q138",
+  "title": "Number-identity-specific lag-1 persistence beyond pooled overlap",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "epistemic_status": "PROTOCOL_COMMITTED_BEFORE_COMPUTATION; EXPLORATORY_WITHIN_Q00_Q138_FAMILY",
+  "generated_at_utc": "2026-11-12T06:46:33Z",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_draw_rows": 3405,
+    "eligible_prefix_draws": 3404,
+    "first_eligible_date": "2017-07-17",
+    "last_eligible_date": "2026-11-10",
+    "disputed_2026_11_11_excluded": true,
+    "source_kind": "historical strict-prior reconstruction, not contemporaneous freezes"
+  },
+  "protocol": {
+    "branch": "research/q138-number-identity-lag1-heterogeneity-20261112",
+    "commit": "7a15f1a15304860baf1b383dc78f04a750de2fcd",
+    "blob_sha": "be4f48c2c99dabb8c8cc28c1bed3446574a99afd"
+  },
+  "hypothesis": "The identity of each number in the immediately preceding draw may carry heterogeneous recurrence/avoidance information beyond a single pooled overlap effect. A per-number lag-1 conditional fixed-size subset distribution may improve joint subset log-loss and marginal inclusion Brier over both the uniform 5-of-40 null and a pooled lag-1 model.",
+  "models": {
+    "M0": "Uniform fixed-size 5-of-40 subset, exact joint probability 1/658008 and marginal inclusion 0.125.",
+    "M1": "Pooled lag-1 conditional recurrence tilt with alpha=200; common theta estimated from prior transitions only.",
+    "M2": "Per-number lag-1 conditional recurrence/avoidance effects, each shrunk toward pooled conditional rates with alpha=200; normalized as a fixed-size 5-subset distribution using exact e5.",
+    "scoring": "Exact joint subset log-loss and mean marginal inclusion Brier across 40 numbers; target scored before updating transition counts."
+  },
+  "design": {
+    "warmup_draws": 200,
+    "target_count": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "discovery": 1922,
+    "validation": 641,
+    "blind_oos": 641,
+    "exact_subsets": 658008,
+    "alpha": 200,
+    "prior_transitions_first_target": 199,
+    "strict_prior": true,
+    "disputed_2026_11_11_excluded": true
+  },
+  "split_results": {
+    "discovery": {
+      "targets": 1922,
+      "meanPooledTheta": 0.037584939879,
+      "meanAbsIdentityTheta": 0.101240144653,
+      "meanIdentityThetaSd": 0.113318871534,
+      "modelScores": {
+        "M0": {
+          "jointSubsetLogLoss": 13.396972368288,
+          "marginalInclusionBrier": 0.109375
+        },
+        "M1": {
+          "jointSubsetLogLoss": 13.397501065245,
+          "marginalInclusionBrier": 0.109378055479
+        },
+        "M2": {
+          "jointSubsetLogLoss": 13.403252549746,
+          "marginalInclusionBrier": 0.109411768043
+        }
+      },
+      "gains": {
+        "M1_vs_M0": {
+          "jointLogLoss": -0.000528696956,
+          "marginalBrier": -0.000003055479
+        },
+        "M2_vs_M1": {
+          "jointLogLoss": -0.005751484501,
+          "marginalBrier": -0.000033712564
+        },
+        "M2_vs_M0": {
+          "jointLogLoss": -0.006280181457,
+          "marginalBrier": -0.000036768043
+        }
+      }
+    },
+    "validation": {
+      "targets": 641,
+      "meanPooledTheta": 0.022698482255,
+      "meanAbsIdentityTheta": 0.085000688339,
+      "meanIdentityThetaSd": 0.102225483055,
+      "modelScores": {
+        "M0": {
+          "jointSubsetLogLoss": 13.396972368288,
+          "marginalInclusionBrier": 0.109375
+        },
+        "M1": {
+          "jointSubsetLogLoss": 13.396829837701,
+          "marginalInclusionBrier": 0.109374204321
+        },
+        "M2": {
+          "jointSubsetLogLoss": 13.407317489642,
+          "marginalInclusionBrier": 0.109433672457
+        }
+      },
+      "gains": {
+        "M1_vs_M0": {
+          "jointLogLoss": 0.000142530587,
+          "marginalBrier": 7.95679e-7
+        },
+        "M2_vs_M1": {
+          "jointLogLoss": -0.010487651941,
+          "marginalBrier": -0.000059468136
+        },
+        "M2_vs_M0": {
+          "jointLogLoss": -0.010345121354,
+          "marginalBrier": -0.000058672457
+        }
+      }
+    },
+    "blind_oos": {
+      "targets": 641,
+      "meanPooledTheta": 0.020010050865,
+      "meanAbsIdentityTheta": 0.082157141924,
+      "meanIdentityThetaSd": 0.097206065425,
+      "modelScores": {
+        "M0": {
+          "jointSubsetLogLoss": 13.396972368288,
+          "marginalInclusionBrier": 0.109375
+        },
+        "M1": {
+          "jointSubsetLogLoss": 13.397533573264,
+          "marginalInclusionBrier": 0.10937817237
+        },
+        "M2": {
+          "jointSubsetLogLoss": 13.395773929683,
+          "marginalInclusionBrier": 0.109369647709
+        }
+      },
+      "gains": {
+        "M1_vs_M0": {
+          "jointLogLoss": -0.000561204976,
+          "marginalBrier": -0.00000317237
+        },
+        "M2_vs_M1": {
+          "jointLogLoss": 0.001759643581,
+          "marginalBrier": 0.000008524661
+        },
+        "M2_vs_M0": {
+          "jointLogLoss": 0.001198438605,
+          "marginalBrier": 0.000005352291
+        }
+      }
+    }
+  },
+  "blind_inference": [
+    {
+      "comparison": "M1_vs_M0",
+      "metric": "joint",
+      "mean_gain": -0.000561204976,
+      "paired_block_sign_flip": {
+        "replicates": 50000,
+        "block_length": 20,
+        "blocks": 33,
+        "extreme": 41828,
+        "p_raw": 0.836563268735
+      },
+      "circular_block_bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "ci_95": [
+          -0.001586982766,
+          0.000429515923
+        ]
+      },
+      "holm_family_size": 6,
+      "p_holm": 1
+    },
+    {
+      "comparison": "M1_vs_M0",
+      "metric": "brier",
+      "mean_gain": -0.00000317237,
+      "paired_block_sign_flip": {
+        "replicates": 50000,
+        "block_length": 20,
+        "blocks": 33,
+        "extreme": 41848,
+        "p_raw": 0.836963260735
+      },
+      "circular_block_bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "ci_95": [
+          -0.000008949763,
+          0.000002439808
+        ]
+      },
+      "holm_family_size": 6,
+      "p_holm": 1
+    },
+    {
+      "comparison": "M2_vs_M1",
+      "metric": "joint",
+      "mean_gain": 0.001759643581,
+      "paired_block_sign_flip": {
+        "replicates": 50000,
+        "block_length": 20,
+        "blocks": 33,
+        "extreme": 13664,
+        "p_raw": 0.273294534109
+      },
+      "circular_block_bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "ci_95": [
+          -0.003564261222,
+          0.007204404253
+        ]
+      },
+      "holm_family_size": 6,
+      "p_holm": 1
+    },
+    {
+      "comparison": "M2_vs_M1",
+      "metric": "brier",
+      "mean_gain": 0.000008524661,
+      "paired_block_sign_flip": {
+        "replicates": 50000,
+        "block_length": 20,
+        "blocks": 33,
+        "extreme": 14948,
+        "p_raw": 0.29897402052
+      },
+      "circular_block_bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "ci_95": [
+          -0.000021638176,
+          0.000039340187
+        ]
+      },
+      "holm_family_size": 6,
+      "p_holm": 1
+    },
+    {
+      "comparison": "M2_vs_M0",
+      "metric": "joint",
+      "mean_gain": 0.001198438605,
+      "paired_block_sign_flip": {
+        "replicates": 50000,
+        "block_length": 20,
+        "blocks": 33,
+        "extreme": 17073,
+        "p_raw": 0.341473170537
+      },
+      "circular_block_bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "ci_95": [
+          -0.004245556768,
+          0.006793507283
+        ]
+      },
+      "holm_family_size": 6,
+      "p_holm": 1
+    },
+    {
+      "comparison": "M2_vs_M0",
+      "metric": "brier",
+      "mean_gain": 0.000005352291,
+      "paired_block_sign_flip": {
+        "replicates": 50000,
+        "block_length": 20,
+        "blocks": 33,
+        "extreme": 18779,
+        "p_raw": 0.37559248815
+      },
+      "circular_block_bootstrap": {
+        "replicates": 10000,
+        "block_length": 20,
+        "ci_95": [
+          -0.000025767948,
+          0.000037245475
+        ]
+      },
+      "holm_family_size": 6,
+      "p_holm": 1
+    }
+  ],
+  "overall_descriptive": {
+    "mean_pooled_theta": 0.03109064425,
+    "mean_abs_identity_theta": 0.094173447947,
+    "mean_identity_theta_sd": 0.107875934352,
+    "max_abs_theta": 0.400894708367,
+    "max_marginal_sum_error": 6e-15
+  },
+  "validation": {
+    "check_count": 29,
+    "passed_count": 29,
+    "future_suffix_checks": 9,
+    "future_suffix_passed": 9
+  },
+  "decision": "NO_IDENTITY_SPECIFIC_LAG1_LIFT_DEMONSTRATED",
+  "interpretation": "M2 shows a small positive Blind OOS point estimate versus M1 and M0, but the Discovery and Validation gains are negative, all six Holm-adjusted p-values equal 1.000, and all six block-bootstrap intervals include zero. No predictive advantage is demonstrated.",
+  "limitations": [
+    "Q138 belongs to a large exploratory family; Holm corrects only the six Q138 Blind OOS endpoints, not the full Q00-Q137 research family.",
+    "The historical Blind OOS is not virgin after prior SONAR research.",
+    "Historical strict-prior reconstruction is not a contemporaneous freeze made before each target.",
+    "Q111 already tested a common lag-1 exact-subset recurrence tilt and selected the uniform model on Validation; Q138's incremental question is identity-specific heterogeneity beyond a pooled lag-1 effect. Q112 tested a distinct lag-2 identity rebound.",
+    "The 2026-11-11 draw is excluded because its primary number provenance remains unresolved in the official archive workflow.",
+    "The experiment estimates a conditional distribution over all five-number subsets; it does not guarantee or establish a winning quintet."
+  ],
+  "next_action": "Retain M0 as reference and M1/M2 as research controls only. Do not promote. Resolve contest 315 provenance and continue clean prospective freezes before starting another related lag model."
+}
