@@ -11,8 +11,12 @@
 
 ## Recovery
 
-- No experiment or CI failure occurred in the deterministic calculation.
-- If the Node 20 replay fails, retain this checkpoint and the pinned source blob; diagnose serialization or runtime differences without changing estimator, split, alpha, or inferential design.
+- First Node 20 replay failed at parse time because the runner contained duplicate const ledger declarations. The duplicate block was removed; the validation now checks scored.length.
+- Second Node 20 replay failed with ReferenceError: combinationCount was not defined. The report now reads the exact enumeration count from nullData.combinations.
+- Third Node 20 replay failed with ReferenceError: alpha was not defined in report metadata. The report now uses the fixed ALPHA constant.
+- Fourth Node 20 replay executed the experiment but the byte-diff check detected that split_results was omitted because the runner referenced splitSummary instead of the local summary variable. The reference is corrected.
+- These were runner assembly defects; no target, estimator, split, alpha value, random seed, score, or inferential result was changed.
+- The next replay must confirm byte-identical report, ledger, validation, checkpoint, and manifest before this experiment is treated as technically complete.
 
 ## Next action
 
