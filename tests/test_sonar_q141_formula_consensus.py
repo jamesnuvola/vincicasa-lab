@@ -2,6 +2,7 @@
 """Synthetic leakage, determinism and tie-policy tests for Q141-C3."""
 from __future__ import annotations
 
+import hashlib
 import random
 import sys
 import unittest

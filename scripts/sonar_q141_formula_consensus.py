@@ -505,6 +505,12 @@ def run():
                 "computation_unit_tests_and_sha256_remote_readback": "passed",
                 "root_cause": "The Git blob helper escaped the header terminator as the two literal characters backslash-zero instead of a NUL byte; the SHA-256 checks were correct, but the manifest Git blob SHA-1 fields did not match GitHub blob IDs.",
                 "recovery": "Use the actual NUL byte in the Git blob header, add a unit test against the canonical Git blob SHA-1 for b'abc', and verify each manifest Git blob SHA-1 with git rev-parse during remote readback.",
+            },
+            {
+                "run_id": 43273673008,
+                "failed_stage": "git_blob_helper_unit_test",
+                "root_cause": "The first recovery patch did not insert the hashlib import because it matched an escaped newline rather than the source line; the test fixture already contained the correct NUL escape.",
+                "recovery": "Insert the missing hashlib import by matching the literal import token and rerun the full deterministic workflow.",
             }
         ],
         "next_action": prereg["next_action"],
