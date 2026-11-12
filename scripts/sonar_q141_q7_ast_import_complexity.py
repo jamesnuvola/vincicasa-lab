@@ -371,7 +371,7 @@ def write_json(path: Path, value):
 def file_info(path: Path, relative_to: Path, rows: int | None = None):
     data = path.read_bytes()
     info = {
-        "path": str(path.relative_to(relative_to)),
+        "path": str(path.resolve().relative_to(relative_to.resolve())),
         "bytes": len(data),
         "sha256": sha256_bytes(data),
         "git_blob_sha1": git_blob_sha1_bytes(data),
