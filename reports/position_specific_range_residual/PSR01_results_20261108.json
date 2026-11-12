@@ -1,0 +1,508 @@
+{
+  "experiment": "PSR-01",
+  "status": "EXPLORATORY_NULL_NO_PROMOTION",
+  "archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-07"
+  },
+  "execution": {
+    "workflow": "Test VinciCasa Lab",
+    "run_id": 42468531051,
+    "run_number": 587,
+    "conclusion": "success",
+    "branch": "research/sonar-psr01-isolated-20261108",
+    "pr": 13,
+    "artifact_id": 13612463509,
+    "artifact_digest": "sha256:c98c176a45308274ca2bea70960571c9650b8955b5f3a4bae28e0aff5e954d27",
+    "artifact_expires_at": "2027-02-06T09:45:35Z"
+  },
+  "method": {
+    "warmup": 250,
+    "test_targets": 3151,
+    "split_counts": {
+      "discovery": 1575,
+      "validation": 788,
+      "blind_oos": 788
+    },
+    "split_dates": {
+      "discovery": [
+        "2018-03-24",
+        "2022-07-15"
+      ],
+      "validation": [
+        "2022-07-16",
+        "2024-09-10"
+      ],
+      "blind_oos": [
+        "2024-09-11",
+        "2026-11-07"
+      ]
+    },
+    "alpha": 20,
+    "posterior_formula": "q_i,t(n)=(c_i,t(n)+alpha*pi_i(n))/(N_t+alpha)",
+    "prior": "pi_i(n)=C(n-1,i-1)*C(40-n,5-i)/C(40,5), n=i..35+i",
+    "bootstrap": {
+      "type": "circular moving-block",
+      "block_length": 7,
+      "replicates": 2000,
+      "seed": 20261108,
+      "one_sided_benefit": true,
+      "multiple_testing": "Holm across 20 blind-OOS endpoints"
+    }
+  },
+  "split_metrics": [
+    {
+      "split": "discovery",
+      "position": 1,
+      "n": 1575,
+      "observed_range_coverage": 0.99809524,
+      "expected_prior_range_coverage": 0.998501373,
+      "mean_range_width": 28.1448,
+      "empirical_top1_hit_rate": 0.11555556,
+      "theoretical_mode_hit_rate": 0.11555556,
+      "empirical_top1_delta": 0,
+      "posterior_top1_delta": 0,
+      "brier_improvement": -0.001072276,
+      "logloss_improvement": -0.025929516
+    },
+    {
+      "split": "discovery",
+      "position": 2,
+      "n": 1575,
+      "observed_range_coverage": 0.99936508,
+      "expected_prior_range_coverage": 0.998568088,
+      "mean_range_width": 32.6152,
+      "empirical_top1_hit_rate": 0.05396825,
+      "theoretical_mode_hit_rate": 0.05777778,
+      "empirical_top1_delta": -0.00380952,
+      "posterior_top1_delta": -0.00380952,
+      "brier_improvement": -0.000989774,
+      "logloss_improvement": -0.019490361
+    },
+    {
+      "split": "discovery",
+      "position": 3,
+      "n": 1575,
+      "observed_range_coverage": 0.99873016,
+      "expected_prior_range_coverage": 0.9995359501,
+      "mean_range_width": 35.6127,
+      "empirical_top1_hit_rate": 0.04444444,
+      "theoretical_mode_hit_rate": 0.03873016,
+      "empirical_top1_delta": 0.00571429,
+      "posterior_top1_delta": 0.00444444,
+      "brier_improvement": -0.001006986,
+      "logloss_improvement": -0.021346083
+    },
+    {
+      "split": "discovery",
+      "position": 4,
+      "n": 1575,
+      "observed_range_coverage": 0.99809524,
+      "expected_prior_range_coverage": 0.9989758411,
+      "mean_range_width": 33.1549,
+      "empirical_top1_hit_rate": 0.04825397,
+      "theoretical_mode_hit_rate": 0.05650794,
+      "empirical_top1_delta": -0.00825397,
+      "posterior_top1_delta": -0.00634921,
+      "brier_improvement": -0.001177116,
+      "logloss_improvement": -0.028526728
+    },
+    {
+      "split": "discovery",
+      "position": 5,
+      "n": 1575,
+      "observed_range_coverage": 0.99746032,
+      "expected_prior_range_coverage": 0.9992096183,
+      "mean_range_width": 29.8552,
+      "empirical_top1_hit_rate": 0.11619048,
+      "theoretical_mode_hit_rate": 0.11619048,
+      "empirical_top1_delta": 0,
+      "posterior_top1_delta": 0,
+      "brier_improvement": -0.000934773,
+      "logloss_improvement": -0.026385916
+    },
+    {
+      "split": "validation",
+      "position": 1,
+      "n": 788,
+      "observed_range_coverage": 0.99873096,
+      "expected_prior_range_coverage": 0.9998841142,
+      "mean_range_width": 31.7107,
+      "empirical_top1_hit_rate": 0.09263959,
+      "theoretical_mode_hit_rate": 0.09898477,
+      "empirical_top1_delta": -0.00634518,
+      "posterior_top1_delta": -0.00634518,
+      "brier_improvement": 0.000046048,
+      "logloss_improvement": -0.007683607
+    },
+    {
+      "split": "validation",
+      "position": 2,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 0.9999452894,
+      "mean_range_width": 35,
+      "empirical_top1_hit_rate": 0.05076142,
+      "theoretical_mode_hit_rate": 0.05837563,
+      "empirical_top1_delta": -0.00761421,
+      "posterior_top1_delta": -0.00761421,
+      "brier_improvement": -0.00098033,
+      "logloss_improvement": -0.015857096
+    },
+    {
+      "split": "validation",
+      "position": 3,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 1,
+      "mean_range_width": 36,
+      "empirical_top1_hit_rate": 0.06345178,
+      "theoretical_mode_hit_rate": 0.04949239,
+      "empirical_top1_delta": 0.01395939,
+      "posterior_top1_delta": 0.01649746,
+      "brier_improvement": -0.000519045,
+      "logloss_improvement": -0.013925706
+    },
+    {
+      "split": "validation",
+      "position": 4,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 0.9999452894,
+      "mean_range_width": 35,
+      "empirical_top1_hit_rate": 0.05203046,
+      "theoretical_mode_hit_rate": 0.05076142,
+      "empirical_top1_delta": 0.00126904,
+      "posterior_top1_delta": 0.00253807,
+      "brier_improvement": -0.000210539,
+      "logloss_improvement": -0.006054321
+    },
+    {
+      "split": "validation",
+      "position": 5,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 0.9999148947,
+      "mean_range_width": 32,
+      "empirical_top1_hit_rate": 0.15736041,
+      "theoretical_mode_hit_rate": 0.15736041,
+      "empirical_top1_delta": 0,
+      "posterior_top1_delta": 0,
+      "brier_improvement": -0.000486912,
+      "logloss_improvement": -0.007252053
+    },
+    {
+      "split": "blind_oos",
+      "position": 1,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 0.9999148947,
+      "mean_range_width": 32,
+      "empirical_top1_hit_rate": 0.10913706,
+      "theoretical_mode_hit_rate": 0.12309645,
+      "empirical_top1_delta": -0.01395939,
+      "posterior_top1_delta": -0.01395939,
+      "brier_improvement": -0.000476703,
+      "logloss_improvement": -0.011091478
+    },
+    {
+      "split": "blind_oos",
+      "position": 2,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 0.9999452894,
+      "mean_range_width": 35,
+      "empirical_top1_hit_rate": 0.05076142,
+      "theoretical_mode_hit_rate": 0.05583756,
+      "empirical_top1_delta": -0.00507614,
+      "posterior_top1_delta": -0.00507614,
+      "brier_improvement": -0.000553845,
+      "logloss_improvement": -0.015376709
+    },
+    {
+      "split": "blind_oos",
+      "position": 3,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 1,
+      "mean_range_width": 36,
+      "empirical_top1_hit_rate": 0.05203046,
+      "theoretical_mode_hit_rate": 0.04060914,
+      "empirical_top1_delta": 0.01142132,
+      "posterior_top1_delta": 0.01142132,
+      "brier_improvement": -0.000120548,
+      "logloss_improvement": -0.000933232
+    },
+    {
+      "split": "blind_oos",
+      "position": 4,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 0.9999452894,
+      "mean_range_width": 35,
+      "empirical_top1_hit_rate": 0.05329949,
+      "theoretical_mode_hit_rate": 0.05456853,
+      "empirical_top1_delta": -0.00126904,
+      "posterior_top1_delta": -0.00634518,
+      "brier_improvement": 0.000085341,
+      "logloss_improvement": -0.001280666
+    },
+    {
+      "split": "blind_oos",
+      "position": 5,
+      "n": 788,
+      "observed_range_coverage": 1,
+      "expected_prior_range_coverage": 0.9999148947,
+      "mean_range_width": 32,
+      "empirical_top1_hit_rate": 0.12309645,
+      "theoretical_mode_hit_rate": 0.12309645,
+      "empirical_top1_delta": 0,
+      "posterior_top1_delta": 0,
+      "brier_improvement": -0.000249063,
+      "logloss_improvement": -0.016028962
+    }
+  ],
+  "blind_oos_inference": [
+    {
+      "position": 1,
+      "endpoint": "empirical_mode_hit_delta",
+      "mean_improvement": -0.013959391,
+      "ci95": [
+        -0.040609137,
+        0.015228426
+      ],
+      "p_one_sided_raw": 0.844078,
+      "p_holm": 1
+    },
+    {
+      "position": 1,
+      "endpoint": "posterior_mode_hit_delta",
+      "mean_improvement": -0.013959391,
+      "ci95": [
+        -0.040609137,
+        0.013959391
+      ],
+      "p_one_sided_raw": 0.831084,
+      "p_holm": 1
+    },
+    {
+      "position": 1,
+      "endpoint": "brier_improvement",
+      "mean_improvement": -0.000476703,
+      "ci95": [
+        -0.001263598,
+        0.000320781
+      ],
+      "p_one_sided_raw": 0.887556,
+      "p_holm": 1
+    },
+    {
+      "position": 1,
+      "endpoint": "logloss_improvement",
+      "mean_improvement": -0.011091478,
+      "ci95": [
+        -0.027015343,
+        -0.000499262
+      ],
+      "p_one_sided_raw": 0.923538,
+      "p_holm": 1
+    },
+    {
+      "position": 2,
+      "endpoint": "empirical_mode_hit_delta",
+      "mean_improvement": -0.005076142,
+      "ci95": [
+        -0.025380711,
+        0.016497462
+      ],
+      "p_one_sided_raw": 0.698151,
+      "p_holm": 1
+    },
+    {
+      "position": 2,
+      "endpoint": "posterior_mode_hit_delta",
+      "mean_improvement": -0.005076142,
+      "ci95": [
+        -0.025380711,
+        0.016497462
+      ],
+      "p_one_sided_raw": 0.711644,
+      "p_holm": 1
+    },
+    {
+      "position": 2,
+      "endpoint": "brier_improvement",
+      "mean_improvement": -0.000553845,
+      "ci95": [
+        -0.000884978,
+        -0.000237686
+      ],
+      "p_one_sided_raw": 1,
+      "p_holm": 1
+    },
+    {
+      "position": 2,
+      "endpoint": "logloss_improvement",
+      "mean_improvement": -0.015376709,
+      "ci95": [
+        -0.031488296,
+        -0.004394063
+      ],
+      "p_one_sided_raw": 0.968516,
+      "p_holm": 1
+    },
+    {
+      "position": 3,
+      "endpoint": "empirical_mode_hit_delta",
+      "mean_improvement": 0.01142132,
+      "ci95": [
+        -0.008883249,
+        0.032994924
+      ],
+      "p_one_sided_raw": 0.138431,
+      "p_holm": 1
+    },
+    {
+      "position": 3,
+      "endpoint": "posterior_mode_hit_delta",
+      "mean_improvement": 0.01142132,
+      "ci95": [
+        -0.008883249,
+        0.032994924
+      ],
+      "p_one_sided_raw": 0.138431,
+      "p_holm": 1
+    },
+    {
+      "position": 3,
+      "endpoint": "brier_improvement",
+      "mean_improvement": -0.000120548,
+      "ci95": [
+        -0.000615245,
+        0.000360125
+      ],
+      "p_one_sided_raw": 0.693153,
+      "p_holm": 1
+    },
+    {
+      "position": 3,
+      "endpoint": "logloss_improvement",
+      "mean_improvement": -0.000933232,
+      "ci95": [
+        -0.00803406,
+        0.005987071
+      ],
+      "p_one_sided_raw": 0.5997,
+      "p_holm": 1
+    },
+    {
+      "position": 4,
+      "endpoint": "empirical_mode_hit_delta",
+      "mean_improvement": -0.001269036,
+      "ci95": [
+        -0.025380711,
+        0.024111675
+      ],
+      "p_one_sided_raw": 0.548226,
+      "p_holm": 1
+    },
+    {
+      "position": 4,
+      "endpoint": "posterior_mode_hit_delta",
+      "mean_improvement": -0.006345178,
+      "ci95": [
+        -0.030456853,
+        0.019035533
+      ],
+      "p_one_sided_raw": 0.703148,
+      "p_holm": 1
+    },
+    {
+      "position": 4,
+      "endpoint": "brier_improvement",
+      "mean_improvement": 0.000085341,
+      "ci95": [
+        -0.000414888,
+        0.000542101
+      ],
+      "p_one_sided_raw": 0.369815,
+      "p_holm": 1
+    },
+    {
+      "position": 4,
+      "endpoint": "logloss_improvement",
+      "mean_improvement": -0.001280666,
+      "ci95": [
+        -0.008311415,
+        0.005667142
+      ],
+      "p_one_sided_raw": 0.633683,
+      "p_holm": 1
+    },
+    {
+      "position": 5,
+      "endpoint": "empirical_mode_hit_delta",
+      "mean_improvement": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "p_one_sided_raw": 1,
+      "p_holm": 1
+    },
+    {
+      "position": 5,
+      "endpoint": "posterior_mode_hit_delta",
+      "mean_improvement": 0,
+      "ci95": [
+        0,
+        0
+      ],
+      "p_one_sided_raw": 1,
+      "p_holm": 1
+    },
+    {
+      "position": 5,
+      "endpoint": "brier_improvement",
+      "mean_improvement": -0.000249063,
+      "ci95": [
+        -0.000835255,
+        0.000350398
+      ],
+      "p_one_sided_raw": 0.77961,
+      "p_holm": 1
+    },
+    {
+      "position": 5,
+      "endpoint": "logloss_improvement",
+      "mean_improvement": -0.016028962,
+      "ci95": [
+        -0.035136436,
+        -0.001472189
+      ],
+      "p_one_sided_raw": 0.94003,
+      "p_holm": 1
+    }
+  ],
+  "integrity": {
+    "strict_prefix_train_n_equals_target_index": true,
+    "dates_unique_chronological": true,
+    "sorted_distinct_numbers_valid": true,
+    "position_domain_valid": true,
+    "detail_rows": 15755,
+    "unique_target_dates": 3151,
+    "duplicate_target_position_rows": 0,
+    "prior_marginal_sum_check": "PASS",
+    "bootstrap_seed_fixed": true
+  },
+  "decision": {
+    "range": "no demonstrated predictive edge; expected prior coverage already >=99.9915% in blind OOS",
+    "p3_top1": "retain exploratory +1.1421 pp; CI crosses zero, raw p 0.138431, Holm 1.0",
+    "proper_scores": "no corrected improvement; Brier mostly negative, log-loss negative in all positions",
+    "motor": "unchanged"
+  },
+  "next_action": "Register prior-only previous-draw odd-count-conditioned position residual test with fixed alpha, exact prior and global empirical controls; nested chronological splits; Holm across five position-level Brier endpoints."
+}

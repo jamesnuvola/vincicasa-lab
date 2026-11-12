@@ -49,5 +49,32 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Run SONAR PSR-01 position-specific walk-forward
+        run: node scripts/sonar_psr01_position_specific_range_walkforward.mjs data/storico_daily.csv reports/position_specific_range_residual
+      - name: Upload PSR-01 experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr01-walkforward
+          path: reports/position_specific_range_residual/psr01_walkforward_*
+          if-no-files-found: warn
+      - name: Run SONAR PSR-02 odd-count-conditioned position walk-forward
+        run: node scripts/sonar_psr02_position_oddcount_residual_walkforward.mjs data/storico_daily.csv reports/position_specific_range_residual
+      - name: Upload PSR-02 experiment artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-psr02-walkforward
+          path: reports/position_specific_range_residual/psr02_walkforward_*
+          if-no-files-found: warn
+      - name: Run P5 exact order-statistic prior audit
+        run: node scripts/sonar_p5_orderstat_prior_audit.mjs data/storico_daily.csv reports/sequence_agent/p5_pooled_logistic_walkforward_2026-11-07.json reports/sequence_agent/p5_logistic_rolling_and_permutation_audit_2026-11-07.json reports/position_specific_range_residual
+      - name: Upload P5 prior audit artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sonar-p5-orderstat-prior-audit
+          path: reports/position_specific_range_residual/p5_orderstat_prior_audit_20261108.*
+          if-no-files-found: warn
       - name: Build web application
         run: npm install && npm run build
