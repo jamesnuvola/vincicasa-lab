@@ -123,11 +123,11 @@ jobs:
                 echo "Research branch advanced during computation; rebasing the output commit onto its latest head."
                 git fetch origin "$BRANCH_NAME"
                 if ! git rebase FETCH_HEAD; then
-        conflicts="$(git diff --name-only --diff-filter=U)"
-        if [ -z "$conflicts" ]; then
-          echo "Q141 rebase failed without a resolvable conflict list."
-          exit 1
-        fi
+                  conflicts="$(git diff --name-only --diff-filter=U)"
+                  if [ -z "$conflicts" ]; then
+                    echo "Q141 rebase failed without a resolvable conflict list."
+                    exit 1
+                  fi
         while IFS= read -r path; do
           case "$path" in
             reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_family_pair_union_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_margin_selector_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_registry.json|reports/sequence_agent/q141_formula_alias_walkforward_report_2026-11-12.json|reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_registry_checkpoint_2026-11-12.json)
