@@ -218,7 +218,7 @@ def build_features(q7_rows: list[dict[str, str]], c0_rows: list[dict[str, str]])
         q7_prior = q7_rows[i - WINDOW:i]
         if len(q7_prior) != WINDOW:
             raise RuntimeError("Q141-C4 Q7 prior window length mismatch")
-        q7_prior_y = np.asarray([float(row["mean_percentile_all"]) for row in q7_prior], dtype=np.float64)
+        q7_prior_y = np.asarray([float(row["mean_percentile_all_formulas"]) for row in q7_prior], dtype=np.float64)
         if not np.isfinite(q7_prior_y).all():
             raise RuntimeError("Q141-C4 non-finite Q7 prior target outcome")
         if any(row["target_date"] >= q7["target_date"] for row in q7_prior):
@@ -368,7 +368,7 @@ def main() -> None:
     q7_rows = read_csv(Q7_LEDGER)
     joined, _ = validate_and_join(q7_rows, c0_rows)
     feature_matrix, feature_rows = build_features(q7_rows, c0_rows)
-    y = np.asarray([float(row["mean_percentile_all"]) for row in q7_rows], dtype=np.float64)
+    y = np.asarray([float(row["mean_percentile_all_formulas"]) for row in q7_rows], dtype=np.float64)
     if not np.isfinite(y).all() or np.any(y < 0) or np.any(y > 1):
         raise RuntimeError("Q141-C4 Q7 target percentile outside [0,1] or non-finite")
 
@@ -442,7 +442,7 @@ def main() -> None:
                     "prior_draws": int(q7["prior_draws"]),
                     "split": split,
                     "actual_quintet": q7["actual_quintet"],
-                    "q7_mean_percentile_all": float(y[i]),
+                    "q7_mean_percentile_all_formulas": float(y[i]),
                     "q7_roll50_mean_percentile": feature["q7_roll50_mean_percentile"],
                     "q80_roll50_equal_family_top5_hits": feature["q80_roll50_equal_family_top5_hits"],
                     "q80_roll50_family_dispersion": feature["q80_roll50_family_dispersion"],
@@ -579,7 +579,7 @@ def main() -> None:
 
     ledger_columns = [
         "target_index", "target_date", "cutoff_date", "prior_draws", "split", "actual_quintet",
-        "q7_mean_percentile_all", "q7_roll50_mean_percentile",
+        "q7_mean_percentile_all_formulas", "q7_roll50_mean_percentile",
         "q80_roll50_equal_family_top5_hits", "q80_roll50_family_dispersion",
         "q80_roll50_family_entropy_normalized", "q80_equal_family_recent25_minus_previous25",
         "q80_last_prior_target_index", "q7_last_prior_target_date",
