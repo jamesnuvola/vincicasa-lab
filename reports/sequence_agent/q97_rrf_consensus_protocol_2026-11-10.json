@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "SONAR-Q97-FIVE-MODEL-RRF-CONSENSUS-2026-11-10",
+  "registration_status": "POST_HOC_EXPLORATORY_FIXED_SPECIFICATION",
+  "status": "PROTOCOL_FROZEN_BEFORE_PERSISTED_CI_REPLAY",
+  "hypothesis": "An equal-weight reciprocal-rank-fusion consensus of five prior-only SONAR rankings improves Top-20 mean hits over BASE_EQUAL42 and is not materially inferior to its component rankings.",
+  "source": {
+    "workflow_run_id": 42755127353,
+    "artifact_id": 13735162512,
+    "artifact_sha256": "a00b1dd2090679f93d604132697994c60bb69bbbd443d25e737597ae3d53cdc0",
+    "target_ledger_sha256": "be4e24f4a4a90261950583cf5752065bd3b735d8351d3637fba4fadeaed67b04",
+    "archive_git_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "archive_sha256": "ba0c8f4e78805e72d04a1b731e1882a9edd3ac71a2bc35c92409540d9ebdec61",
+    "draws": 3403,
+    "targets": 3203,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-09"
+  },
+  "source_models": [
+    "BASE_EQUAL42",
+    "Q90_PAIR_INTERACTION",
+    "Q93_SPECTRAL_K2",
+    "Q94_STABILITY",
+    "Q94_INSTABILITY"
+  ],
+  "formula": {
+    "score": "S(n)=sum_m 1/(20+r_m(n))",
+    "rrf_constant_c": 20,
+    "weights": "1.0 for each of the five fixed source rankings",
+    "candidate_domain": "1..40",
+    "tie_break": "descending score, then ascending number",
+    "tuning": "none; one fixed formula and one fixed c=20",
+    "baseline_is_included_as_one_of_five_sources": true
+  },
+  "walk_forward": {
+    "cutoff_rule": "Every source rank vector is taken from the Q94 target ledger for that target; cutoff_date must be strictly earlier than target_date.",
+    "minimum_prior_draws": 200,
+    "split_counts": {
+      "discovery": 1921,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "selection": "No parameter or model selection. Discovery and Validation are descriptive; Blind OOS is evaluated once."
+  },
+  "endpoints": {
+    "primary": "Top-20 mean hits per target versus BASE_EQUAL42",
+    "secondary": [
+      "Top-10 mean hits per target",
+      "Top-5 mean hits per target"
+    ],
+    "comparators": "Q97_RRF5 is compared with each of the five fixed source rankings."
+  },
+  "inference": {
+    "paired_test": "One-sided block sign-flip on target-paired hit-count differences; contiguous blocks of 20, final partial block retained.",
+    "signflip_replicates": 50000,
+    "bootstrap": "Circular moving-block bootstrap, block length 20, percentile 95% interval.",
+    "bootstrap_replicates": 10000,
+    "multiple_testing": "One global Holm family across 5 comparators x 3 endpoints = 15 Blind OOS tests.",
+    "exact_null": "Per-target Hypergeometric(40,k,5), convolved over each split for BASE_EQUAL42 and Q97_RRF5."
+  },
+  "guardrails": [
+    "The five source rankings must each be complete permutations of 1..40.",
+    "Actual target quintets are read only after the RRF ranking has been constructed.",
+    "No source rank, formula, c value, split or endpoint is changed after evaluation.",
+    "The source snapshot preserves all five full 40-number rankings for each target.",
+    "No production engine, prospective freeze or Q60 ledger is modified.",
+    "No merge or promotion is permitted."
+  ],
+  "limitations": [
+    "This is post-hoc exploratory because the component families were previously examined.",
+    "The historical Blind OOS is prior-exposed and is not a virgin prospective holdout.",
+    "Block sign-flip inference assumes exchangeability of contiguous 20-target block signs under the null.",
+    "RRF is a ranking aggregation, not a physical or causal mechanism.",
+    "No historical result establishes an advantage for future random draws.",
+    "BASE_EQUAL42 is included in the RRF ensemble; its comparator is therefore an anchored/nested comparison.",
+    "Holm covers the 15 Q97 comparisons only, not all prior SONAR research branches."
+  ],
+  "decision_policy": {
+    "engine_promotion_allowed": false,
+    "production_change_allowed": false,
+    "merge_allowed": false,
+    "human_review_required": true,
+    "prospective_confirmation_required": true
+  },
+  "next_action": "Stop retrospective RRF tuning; continue the separate Q60 append-only prospective cohort until at least 200 complete paired targets.",
+  "evidence_workflow_artifact": "q97-rrf-consensus-evidence",
+  "persistence": "Generated outputs are uploaded as a workflow artifact; repository copies are maintained by the GitHub connector after readback verification."
+}

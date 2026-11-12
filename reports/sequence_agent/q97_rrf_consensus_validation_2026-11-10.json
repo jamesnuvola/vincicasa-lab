@@ -1,0 +1,36 @@
+{
+  "decision": "NOT_MET",
+  "experiment_id": "SONAR-Q97-FIVE-MODEL-RRF-CONSENSUS-2026-11-10",
+  "holm_family_size": 15,
+  "human_review_required": true,
+  "outputs": {
+    "checkpoint_sha256": "8f8512c80ce4ef05ea256925a9d0ce5dee9675b5ce8fb21a678f244c53e46e4a",
+    "report_sha256": "8784a7a3669e95e76a0c9754c6d3ba1b303834be78eef29cd3aeeb2ed5a24fb8",
+    "source_snapshot_sha256": "0ab47d5b5eea8bb0b9062fef064bfc74a93ca8cb080e44625915b569ba2e9c54",
+    "target_ledger_sha256": "fde511032c5eed18735d9456f113a97b9182fc06105dfa4df3c57a968b1a65ed"
+  },
+  "paired_test_count": 15,
+  "rank_vector_checks": 16015,
+  "source_ledger_sha256": "be4e24f4a4a90261950583cf5752065bd3b735d8351d3637fba4fadeaed67b04",
+  "split_counts": {
+    "blind_oos": 641,
+    "discovery": 1921,
+    "validation": 641
+  },
+  "status": "PASS",
+  "strict_prior_cutoffs": 3203,
+  "target_count": 3203,
+  "workflow_execution": {
+    "run_id": 42848795188,
+    "regression_tests": "6/6 PASS",
+    "strict_prior_replay": "PASS",
+    "final_push": "FAIL: remote fatal error in commit_refs",
+    "recovery": "connector persistence and SHA-256 readback PASS",
+    "revised_artifact_upload_workflow": "configured; rerun not verified"
+  },
+  "methodological_caveats": [
+    "BASE_EQUAL42 is included as one of the five RRF inputs.",
+    "The 15-test Holm family is Q97-local, not a correction across all prior SONAR research."
+  ],
+  "script_sha256": "fcf7dfc0e723a6de399d4223620d9f742bd2b596bd4fc7b331df4ae8e24c5b72"
+}
