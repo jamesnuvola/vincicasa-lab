@@ -1,0 +1,236 @@
+{
+  "artifact_member_readback": [
+    {
+      "bytes": 1727,
+      "path": "adaptive_novelty_checkpoint_2026-11-01.json",
+      "sha256": "5782d08ece77898787b007f0d6da260537aafe8496f1e94c335d050a88ef845c"
+    },
+    {
+      "bytes": 3094,
+      "path": "adaptive_novelty_checkpoint_2026-11-02.json",
+      "sha256": "2791748a71d92ce3eaf1dc5e98e6e4de4c7e19dd2d694719e11bc759fc2ecba1"
+    },
+    {
+      "bytes": 575,
+      "path": "adaptive_novelty_checkpoint_2026-11-07.json",
+      "sha256": "99b4044d10a1a4a81bb82e10cc48c6b58a1104610cb277a103a7ddbfdf37df9a"
+    },
+    {
+      "bytes": 8215,
+      "path": "adaptive_novelty_feature_catalog.json",
+      "sha256": "0761324a35faade7e5dc9a053d19146f21d349ba9e8237b334691c6b1e5517a5"
+    },
+    {
+      "bytes": 21345478,
+      "path": "adaptive_novelty_feature_matrix.npz",
+      "sha256": "681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49"
+    },
+    {
+      "bytes": 6944,
+      "path": "adaptive_novelty_formula_metrics_manifest.json",
+      "sha256": "2ae099e714d1eae46688e4ade37b4eda1a8303cee729e5879faff5b1fff6d6cb"
+    },
+    {
+      "bytes": 23358,
+      "path": "adaptive_novelty_regime_drift.json",
+      "sha256": "9ee2f4f295f3e0f4f8e7b0371eb14430d9f9b776524cd6eee389d60b5e8cd830"
+    },
+    {
+      "bytes": 8074,
+      "path": "adaptive_novelty_rule_anticipation_metrics.csv",
+      "sha256": "ff4b0ad4263a480d7ce02bc84040e686871b10abdc6552e4b26ccebf97097785"
+    },
+    {
+      "bytes": 38377,
+      "path": "adaptive_novelty_split_metrics.csv",
+      "sha256": "4230582d3062066d28c2a6d35da7cc6ca8bee657e9d6bcdee03a2b205ecbf352"
+    },
+    {
+      "bytes": 24151026,
+      "path": "adaptive_novelty_target_ledger.csv",
+      "sha256": "4e72f13912a69ae4182a9bda4a8de62e59fd4d67056bc42151d96f679ee1f569"
+    },
+    {
+      "bytes": 1287,
+      "path": "q90_checkpoint_2026-11-07.json",
+      "sha256": "3da9755582727ebe96747f7d3b7a9cdb27f1afea70ac02066fb5de54fd7b1ee8"
+    },
+    {
+      "bytes": 24620,
+      "path": "q90_feature_selection.json",
+      "sha256": "0e752f901f1d5f8f7c4b7d8436f38e3939ee2ab7018dc4229a0e1fddd3c08ed9"
+    },
+    {
+      "bytes": 80772093,
+      "path": "q90_formula_catalog.csv",
+      "sha256": "a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586"
+    },
+    {
+      "bytes": 62214,
+      "path": "q90_formula_family_split_summary.json",
+      "sha256": "aff80ea4ed4204a55237ea626e2ee54d9816d648e879e9cef7bcc8ee27106f70"
+    },
+    {
+      "bytes": 4555,
+      "path": "q90_formula_metrics_manifest.json",
+      "sha256": "30ea0587f00fab25b06358a32aa01e6dd72b82ffa673dc99981c522cd1a95272"
+    },
+    {
+      "bytes": 238901597,
+      "path": "q90_split_metrics.csv",
+      "sha256": "3192a5ab2a64e8526321b6b5c322320dfc5636e337eadde573b5e27b0461ec2a"
+    },
+    {
+      "bytes": 4852794,
+      "path": "q90_target_ledger.csv",
+      "sha256": "553ea2519f109cf0913f86a43210481f7e9ac346128f18698d425036d4e1c120"
+    }
+  ],
+  "artifact_members_verified": 17,
+  "ast_semantics": {
+    "commutative_canonicalization": [
+      "mean terms sorted by feature index",
+      "product factors sorted by feature index"
+    ],
+    "conditional_gate": "linear mean of four features plus 1/4 times indicator(feature >= threshold)",
+    "feature_namespace": "Q89",
+    "linear_mean": "arithmetic mean of selected per-target z-scored Q89 feature columns",
+    "output_type": "per_number_score",
+    "pairwise_interaction": "linear mean of four features plus 1/4 times candidate-wise z-score of one pairwise product",
+    "rational_parameters": true
+  },
+  "decision": "Q90_FORMULAS_IMPORTED_AS_TYPED_PER_NUMBER_AST; NO_PREDICTIVE_CLAIM",
+  "feature_universe": {
+    "selected_feature_names": [
+      "lag_2",
+      "lag_10",
+      "neighbor_pm2_history",
+      "neighbor_balance_pm2_recent",
+      "neighbor_balance_pm1_recent",
+      "cooccurrence_surprise_recent",
+      "ewma_acceleration_7_30",
+      "ewma_acceleration_3_14",
+      "ewma_hit_hl_3",
+      "gap_hazard_residual",
+      "gap_hazard_empirical",
+      "gap_slope_recent",
+      "rank_velocity_5_20",
+      "rank_consensus_27",
+      "feature_disagreement_27",
+      "transition_profile_affinity",
+      "regime_sum_affinity",
+      "conditional_frequency_prev_draw_regime",
+      "novelty_residual_20",
+      "novelty_residual_50"
+    ],
+    "selected_features": 20,
+    "selection_rule": "Within each family, average the rank of mean_actual_number_rank (ascending) and mean_number_hits_top5 (descending); select top 3, except residual_surprise top 2. Validation and blind_oos outcomes do not enter feature selection.",
+    "selection_split": "discovery",
+    "source_namespace": "Q89",
+    "total_features": 59
+  },
+  "formula_counts": {
+    "by_type": {
+      "conditional_gate": 38760,
+      "linear_mean": 262599,
+      "pairwise_interaction": 29070
+    },
+    "duplicate_ast_count": 0,
+    "gate_feature_threshold_variants": 40,
+    "pairwise_interaction_pairs": 190,
+    "total": 330429,
+    "unique_canonical_ast_ids": 330429,
+    "unique_source_formula_ids": 330429
+  },
+  "limitations": [
+    "Q90 catalog covers only the 20 Discovery-selected features from the 59-feature Q89 matrix.",
+    "Q90 source archive ends 2026-11-07 and contains 3,401 draws; it is not the full Q141 archive.",
+    "This is a structural AST import, not a replay or validation of predictive performance.",
+    "Q7 quintet-scoring formulas remain a separate output type and are not imported here."
+  ],
+  "next_action": "Import Q7's 1,023 quintet-ranking formulas as a distinct AST/output type; then reconcile source windows and scoring semantics before a common-source behaviour atlas.",
+  "readback": {
+    "formula_type_counts": {
+      "conditional_gate": 38760,
+      "linear_mean": 262599,
+      "pairwise_interaction": 29070
+    },
+    "rows": 330429,
+    "unique_ast_ids": 330429,
+    "unique_source_formula_ids": 330429
+  },
+  "recovery_history": [
+    {
+      "failed_stage": "Q90_manifest_schema_validation",
+      "recovery": "Read the nested formula grammar count, assert the declared per-type counts and feature-matrix shape/dtype, and add a unit test for the persisted manifest schema.",
+      "root_cause": "The Q90 formula count is nested at formula_grammar.formula_count, not at the manifest top level.",
+      "run_id": 43275277890
+    }
+  ],
+  "schema_version": "1.0",
+  "shards": [
+    {
+      "bytes": 2992420,
+      "git_blob_sha1": "2c6a51df5d029015fa7b95e80606037ee9e50fc4",
+      "path": "q90_typed_ast_catalog_part_00.jsonl.gz",
+      "rows": 50000,
+      "sha256": "471f8bcd11e443a331bb1de16edc22c51dbba2dee4b081ed0ca7fccf07292056"
+    },
+    {
+      "bytes": 2979527,
+      "git_blob_sha1": "224130ce087664117a8c521a92a1f1d0112a304b",
+      "path": "q90_typed_ast_catalog_part_01.jsonl.gz",
+      "rows": 50000,
+      "sha256": "66ee97b8c2c93b76600caa8d29cde9e671a23156d28bb7be1037bab2fa359c95"
+    },
+    {
+      "bytes": 3015800,
+      "git_blob_sha1": "51f940b4b3a37177a2df91b407897a886bd174cf",
+      "path": "q90_typed_ast_catalog_part_02.jsonl.gz",
+      "rows": 50000,
+      "sha256": "cd5effa76d12e75d75f372a7d304c56027481897d12e0c9962b2349ffd2021ca"
+    },
+    {
+      "bytes": 3080997,
+      "git_blob_sha1": "ab763fbeee490b3fae073125f25a372696508a49",
+      "path": "q90_typed_ast_catalog_part_03.jsonl.gz",
+      "rows": 50000,
+      "sha256": "ec81a0d15d47b295ae48271819d4d7feded3c78830e13c8906d3377deb893706"
+    },
+    {
+      "bytes": 3082498,
+      "git_blob_sha1": "2561c7e8bf0b8b4a4b73c2bb684ae6fbc8742764",
+      "path": "q90_typed_ast_catalog_part_04.jsonl.gz",
+      "rows": 50000,
+      "sha256": "2a7cb81a416be6f0911bb33b5edcfdc39b0e9be00ca81aae74c6397b5f4d6121"
+    },
+    {
+      "bytes": 2911552,
+      "git_blob_sha1": "2f4a07db443122d169a14896311e5f5ade6859ba",
+      "path": "q90_typed_ast_catalog_part_05.jsonl.gz",
+      "rows": 50000,
+      "sha256": "f29fd394ae53574faa29e4f906f47a791feda909ee4fe2ffb75df1323ba70c4f"
+    },
+    {
+      "bytes": 1681144,
+      "git_blob_sha1": "74a324274f0f0065989b951b1eda5d8be1168db1",
+      "path": "q90_typed_ast_catalog_part_06.jsonl.gz",
+      "rows": 30429,
+      "sha256": "8961f63b5eed4355ee9c2e63a7824dc49dcc53e39c2594bb0549961bb7d4aaf3"
+    }
+  ],
+  "source": {
+    "artifact_id": 13627507532,
+    "artifact_zip_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "q89_feature_matrix_sha256": "681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49",
+    "q90_archive_cutoff": "2026-11-07",
+    "q90_archive_draws": 3401,
+    "q90_archive_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_exact_head_sha": "30480c640c1c1f5667e28562f75247cd8661f8ad",
+    "q90_feature_selection_sha256": "0e752f901f1d5f8f7c4b7d8436f38e3939ee2ab7018dc4229a0e1fddd3c08ed9",
+    "q90_formula_catalog_sha256": "a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586",
+    "workflow_run_id": 42504717670
+  },
+  "status": "Q90_TYPED_AST_IMPORT_COMPLETED",
+  "task_id": "Q141-A3"
+}
