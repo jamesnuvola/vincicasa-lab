@@ -181,7 +181,9 @@ def prior_window(rows: list[dict[str, str]], keys: list[int], target_index: int,
     prior = rows[max(0, cut - window):cut]
     if len(prior) != window:
         raise RuntimeError(f"target {target_index}: expected {window} prior rows in {key_name}, found {len(prior)}")
-    if int(prior[-1][key_name]) != target_index - 1:
+    expected_keys = list(range(target_index - window, target_index))
+    actual_keys = [int(row[key_name]) for row in prior]
+    if actual_keys != expected_keys:
         raise RuntimeError(f"target {target_index}: {key_name} prior window is not contiguous")
     if any(int(row[key_name]) >= target_index for row in prior):
         raise RuntimeError(f"target {target_index}: current/future row entered {key_name} features")
