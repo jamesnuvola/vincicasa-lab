@@ -251,6 +251,13 @@ def sample_formulas():
         raise RuntimeError("Q141_B1_BLOCKED: deterministic sample size mismatch")
     return all_samples
 
+def stable_raw_scores(matrix, columns):
+    """Evaluate the raw expression with order-stable summation."""
+    result = np.empty(40, dtype=np.float64)
+    for number in range(40):
+        result[number] = math.fsum(float(matrix[number, idx]) for idx in columns) / len(columns)
+    return result
+
 def canonical_scores(matrix, signature, scale):
     weights = [(idx, weight * scale) for idx, weight in signature]
     denominator = sum(weight for _, weight in weights)
@@ -480,10 +487,12 @@ def main():
             "formula_score_comparisons": 0, "score_mismatches": 0,
             "rank_comparisons": 0, "rank_mismatches": 0,
             "max_abs_score_delta": 0.0,
-            "raw_top5_hits": 0, "canonical_top5_hits": 0,
-            "raw_top10_hits": 0, "canonical_top10_hits": 0,
-            "raw_top20_hits": 0, "canonical_top20_hits": 0,
-            "raw_rank_sum": 0.0, "canonical_rank_sum": 0.0,
+            "legacy_numpy_score_mismatches": 0, "legacy_numpy_rank_mismatches": 0,
+            "legacy_numpy_max_abs_score_delta": 0.0, "legacy_numpy_max_rank_displacement": 0,
+            "raw_top5_hits": 0, "canonical_top5_hits": 0, "legacy_top5_hits": 0,
+            "raw_top10_hits": 0, "canonical_top10_hits": 0, "legacy_top10_hits": 0,
+            "raw_top20_hits": 0, "canonical_top20_hits": 0, "legacy_top20_hits": 0,
+            "raw_rank_sum": 0.0, "canonical_rank_sum": 0.0, "legacy_rank_sum": 0.0,
         } for split in EXPECTED_SPLITS
     }
     ledger_rows = []
@@ -493,7 +502,11 @@ def main():
     total_score_mismatches = 0
     total_rank_comparisons = 0
     total_rank_mismatches = 0
+    total_legacy_numpy_score_mismatches = 0
+    total_legacy_numpy_rank_mismatches = 0
     global_max_delta = 0.0
+    global_legacy_numpy_max_delta = 0.0
+    global_legacy_numpy_max_rank_displacement = 0
 
     for i, draw in enumerate(draws):
         if i >= base.MIN_HISTORY:
@@ -520,48 +533,81 @@ def main():
             acc["alias_mismatches"] += alias_mismatches
             target_score_mismatches = 0
             target_rank_mismatches = 0
+            target_legacy_numpy_score_mismatches = 0
+            target_legacy_numpy_rank_mismatches = 0
             target_max_delta = 0.0
+            target_legacy_numpy_max_delta = 0.0
+            target_legacy_numpy_max_rank_displacement = 0
             raw_hits = Counter()
             canonical_hits = Counter()
+            legacy_hits = Counter()
             raw_rank_sum = 0.0
             canonical_rank_sum = 0.0
+            legacy_rank_sum = 0.0
             for columns, (signature, scale) in zip(samples, sample_signatures):
-                raw_scores = standardized[:, list(columns)].mean(axis=1)
+                # Legacy NumPy mean is measured separately because near-ties can be
+                # reordered by floating-point summation order despite equal scores.
+                legacy_scores = standardized[:, list(columns)].mean(axis=1)
+                raw_scores = stable_raw_scores(standardized, columns)
                 canon_scores = canonical_scores(standardized, signature, scale)
                 delta = float(np.max(np.abs(raw_scores - canon_scores)))
+                legacy_delta = float(np.max(np.abs(legacy_scores - canon_scores)))
                 target_max_delta = max(target_max_delta, delta)
+                target_legacy_numpy_max_delta = max(target_legacy_numpy_max_delta, legacy_delta)
                 global_max_delta = max(global_max_delta, delta)
+                global_legacy_numpy_max_delta = max(global_legacy_numpy_max_delta, legacy_delta)
                 score_ok = bool(np.allclose(raw_scores, canon_scores, rtol=0.0, atol=SCORE_TOLERANCE))
+                legacy_score_ok = bool(np.allclose(legacy_scores, canon_scores, rtol=0.0, atol=SCORE_TOLERANCE))
                 if not score_ok:
                     target_score_mismatches += 1
+                if not legacy_score_ok:
+                    target_legacy_numpy_score_mismatches += 1
                 raw_ranks = base.rank_scores(raw_scores)
                 canon_ranks = base.rank_scores(canon_scores)
+                legacy_ranks = base.rank_scores(legacy_scores)
                 rank_ok = bool(np.array_equal(raw_ranks, canon_ranks))
+                legacy_rank_ok = bool(np.array_equal(legacy_ranks, canon_ranks))
                 if not rank_ok:
                     target_rank_mismatches += 1
+                if not legacy_rank_ok:
+                    target_legacy_numpy_rank_mismatches += 1
+                legacy_displacement = int(np.max(np.abs(legacy_ranks.astype(int) - canon_ranks.astype(int))))
+                target_legacy_numpy_max_rank_displacement = max(target_legacy_numpy_max_rank_displacement, legacy_displacement)
+                global_legacy_numpy_max_rank_displacement = max(global_legacy_numpy_max_rank_displacement, legacy_displacement)
                 raw_metric = base.rank_metrics(raw_ranks, draw)
                 canon_metric = base.rank_metrics(canon_ranks, draw)
+                legacy_metric = base.rank_metrics(legacy_ranks, draw)
                 for k in (5, 10, 20):
                     raw_hits[k] += raw_metric[f"top{k}_hits"]
                     canonical_hits[k] += canon_metric[f"top{k}_hits"]
+                    legacy_hits[k] += legacy_metric[f"top{k}_hits"]
                 raw_rank_sum += sum(int(raw_ranks[value]) for value in draw)
                 canonical_rank_sum += sum(int(canon_ranks[value]) for value in draw)
+                legacy_rank_sum += sum(int(legacy_ranks[value]) for value in draw)
 
             comparisons = len(samples)
             total_score_comparisons += comparisons
             total_rank_comparisons += comparisons
             total_score_mismatches += target_score_mismatches
             total_rank_mismatches += target_rank_mismatches
+            total_legacy_numpy_score_mismatches += target_legacy_numpy_score_mismatches
+            total_legacy_numpy_rank_mismatches += target_legacy_numpy_rank_mismatches
             acc["formula_score_comparisons"] += comparisons
             acc["score_mismatches"] += target_score_mismatches
             acc["rank_comparisons"] += comparisons
             acc["rank_mismatches"] += target_rank_mismatches
             acc["max_abs_score_delta"] = max(acc["max_abs_score_delta"], target_max_delta)
+            acc["legacy_numpy_score_mismatches"] += target_legacy_numpy_score_mismatches
+            acc["legacy_numpy_rank_mismatches"] += target_legacy_numpy_rank_mismatches
+            acc["legacy_numpy_max_abs_score_delta"] = max(acc["legacy_numpy_max_abs_score_delta"], target_legacy_numpy_max_delta)
+            acc["legacy_numpy_max_rank_displacement"] = max(acc["legacy_numpy_max_rank_displacement"], target_legacy_numpy_max_rank_displacement)
             for k in (5, 10, 20):
                 acc[f"raw_top{k}_hits"] += raw_hits[k]
                 acc[f"canonical_top{k}_hits"] += canonical_hits[k]
+                acc[f"legacy_top{k}_hits"] += legacy_hits[k]
             acc["raw_rank_sum"] += raw_rank_sum
             acc["canonical_rank_sum"] += canonical_rank_sum
+            acc["legacy_rank_sum"] += legacy_rank_sum
             ledger_rows.append({
                 "target_index": i,
                 "target_offset": offset,
@@ -574,15 +620,22 @@ def main():
                 "alias_freq10_recent10_equal": int(np.array_equal(features[:, 1], features[:, 26])),
                 "standardized_aliases_equal": int(standardized_aliases_ok),
                 "formula_sample_count": comparisons,
-                "score_mismatches": target_score_mismatches,
-                "rank_mismatches": target_rank_mismatches,
-                "max_abs_score_delta": f"{target_max_delta:.17g}",
-                "raw_mean_top5_hit_share": f"{raw_hits[5] / (5 * comparisons):.12g}",
-                "canonical_mean_top5_hit_share": f"{sum(canonical_hits[5] for _ in [0]) / (5 * comparisons):.12g}",
-                "raw_mean_top10_hit_share": f"{raw_hits[10] / (5 * comparisons):.12g}",
-                "canonical_mean_top10_hit_share": f"{canonical_hits[10] / (5 * comparisons):.12g}",
-                "raw_mean_top20_hit_share": f"{raw_hits[20] / (5 * comparisons):.12g}",
-                "canonical_mean_top20_hit_share": f"{canonical_hits[20] / (5 * comparisons):.12g}",
+                "stable_raw_vs_canonical_score_mismatches": target_score_mismatches,
+                "stable_raw_vs_canonical_rank_mismatches": target_rank_mismatches,
+                "legacy_numpy_score_mismatches": target_legacy_numpy_score_mismatches,
+                "legacy_numpy_rank_mismatches": target_legacy_numpy_rank_mismatches,
+                "stable_raw_vs_canonical_max_abs_score_delta": f"{target_max_delta:.17g}",
+                "legacy_numpy_max_abs_score_delta": f"{target_legacy_numpy_max_delta:.17g}",
+                "legacy_numpy_max_rank_displacement": target_legacy_numpy_max_rank_displacement,
+                "stable_raw_top5_hit_share": f"{raw_hits[5] / (5 * comparisons):.12g}",
+                "canonical_top5_hit_share": f"{canonical_hits[5] / (5 * comparisons):.12g}",
+                "legacy_numpy_top5_hit_share": f"{legacy_hits[5] / (5 * comparisons):.12g}",
+                "stable_raw_top10_hit_share": f"{raw_hits[10] / (5 * comparisons):.12g}",
+                "canonical_top10_hit_share": f"{canonical_hits[10] / (5 * comparisons):.12g}",
+                "legacy_numpy_top10_hit_share": f"{legacy_hits[10] / (5 * comparisons):.12g}",
+                "stable_raw_top20_hit_share": f"{raw_hits[20] / (5 * comparisons):.12g}",
+                "canonical_top20_hit_share": f"{canonical_hits[20] / (5 * comparisons):.12g}",
+                "legacy_numpy_top20_hit_share": f"{legacy_hits[20] / (5 * comparisons):.12g}",
             })
         # Strict-prior state update: target i is appended only after all its formulas are scored.
         for value in draw:
@@ -640,9 +693,9 @@ def main():
     report = {
         "schema_version": "1.0",
         "task_id": "Q141-B1",
-        "status": "EXACT_ALIAS_CANONICALIZATION_WALKFORWARD_PASS",
-        "decision": "RAW_Q80_FORMULA_COUNTS_OVERSTATE_EXACT_UNIQUE_WEIGHTED_MEAN_FUNCTIONS",
-        "hypothesis": "Exact aliases and multiplicity-preserving weighted-mean canonicalization reduce the combined k=1..10 Q80 formula ID universe by 41.0164% without changing sampled per-target scores or rankings.",
+        "status": "EXACT_ALIAS_CANONICALIZATION_PASS_WITH_LEGACY_NUMERICAL_TIE_SENSITIVITY",
+        "decision": "EXACT_ALIAS_COLLAPSE_CONFIRMED; LEGACY_NUMPY_RANKING_HAS_FLOATING_TIE_SENSITIVITY",
+        "hypothesis": "Exact aliases and multiplicity-preserving weighted-mean canonicalization reduce the combined k=1..10 Q80 formula ID universe by 41.0164%; stable raw and canonical scores/ranks are invariant, while legacy NumPy mean ranks are separately audited for floating-point tie sensitivity.",
         "source": {
             "archive_path": "data/storico_daily.csv",
             "archive_git_blob_sha1": archive_blob_sha,
@@ -681,6 +734,12 @@ def main():
             "rank_mismatches": total_rank_mismatches,
             "score_abs_tolerance": SCORE_TOLERANCE,
             "max_abs_score_delta": global_max_delta,
+            "legacy_numpy_score_mismatches": total_legacy_numpy_score_mismatches,
+            "legacy_numpy_rank_mismatches": total_legacy_numpy_rank_mismatches,
+            "legacy_numpy_rank_mismatch_rate": total_legacy_numpy_rank_mismatches / total_rank_comparisons,
+            "legacy_numpy_max_abs_score_delta": global_legacy_numpy_max_delta,
+            "legacy_numpy_max_rank_displacement": global_legacy_numpy_max_rank_displacement,
+            "legacy_numpy_note": "Legacy NumPy mean is compared with stable canonical math.fsum evaluation. Small score differences can change exact lexicographic ranks for near-ties; this is an implementation sensitivity, not evidence of different mathematical functions.",
             "metrics_by_split": split_metrics,
         },
         "statistical_inference": {
@@ -692,11 +751,13 @@ def main():
             "archive_blob_verified": True,
             "target_and_split_counts_verified": dict(split_counts) == EXPECTED_SPLITS,
             "exact_alias_columns_verified": total_alias_mismatches == 0,
-            "sampled_formula_scores_verified": total_score_mismatches == 0,
-            "sampled_formula_ranks_verified": total_rank_mismatches == 0,
+            "sampled_stable_raw_vs_canonical_scores_verified": total_score_mismatches == 0,
+            "sampled_stable_raw_vs_canonical_ranks_verified": total_rank_mismatches == 0,
+            "legacy_numpy_tie_sensitivity_measured": True,
+            "legacy_numpy_rank_mismatch_count": total_legacy_numpy_rank_mismatches,
             "exact_formula_counts_verified": nominal_total == 16628808 and global_unique == 9808263,
             "future_suffix_invariance": "covered by dedicated synthetic unit test",
-            "deterministic_replay": "covered by exact source pin, deterministic sample seed and unit tests",
+            "deterministic_sample_and_stable_sum_replay": "covered by exact source pin, deterministic sample seed and unit tests",
         },
         "limitations": [
             "The exact reduction applies only to equal-weight subset formulas over the 27 Q80 columns and the two source-proven exact aliases.",
@@ -704,10 +765,15 @@ def main():
             "No exact semantic aliases are asserted for the 32 Q89 extension features.",
             "Q90 interactions/gates, Q7 candidate-quintet formulas and graph/field operator families require separate typed AST definitions.",
             "Historical Blind OOS is exposed research history, not virgin prospective evidence.",
+            "Legacy NumPy mean and stable math.fsum can differ by tiny floating-point amounts; the first walk-forward attempt found 2,311 sampled target-formula rank differences despite score differences within tolerance. Stable raw and canonical summation is therefore the mathematical identity reference; no production ranker is changed by this experiment.",
             "The sampled walk-forward validates implementation invariance; it does not exhaustively rescore all 16,628,808 raw formula IDs.",
             "No predictive improvement or formula-selection advantage is claimed.",
         ],
-        "next_action": "Import and canonicalize Q90 interaction/gate ASTs and the Q7 candidate-quintet AST as separate output types; then reconcile source archives before a common-source behaviour atlas.",
+        "recovery_history": [
+            {"run_id": 43222532830, "head_sha": "ac1d1e5d06977dc74d68d7e666b66c31c2e6fa08", "failure": "Synthetic test initially generated independent values for the two source-proven alias columns; fixture corrected to enforce alias equality.", "recovery": "Updated synthetic fixture; all seven unit tests passed on the next run."},
+            {"run_id": 43222764935, "head_sha": "d13261bfd593b08f4417af377e605c5466fa35c1", "failure": "0 alias mismatches and 0 score mismatches, but 2,311 raw NumPy-versus-canonical rank mismatches.", "root_cause": "Floating-point summation order changed exact ranks for near-tied scores even though absolute score differences remained within 1e-12.", "recovery": "Separate stable raw and canonical math.fsum evaluations from legacy NumPy ranking; preserve and report legacy rank sensitivity rather than treating it as mathematical non-equivalence."}
+        ],
+        "next_action": "Audit Q80 legacy tie policy before any canonical evaluator could replace it; then import Q90 interaction/gate ASTs and Q7 candidate-quintet AST as separate output types and reconcile source archives before a common-source behaviour atlas.",
         "target_ledger": str(LEDGER.relative_to(ROOT)),
     }
     OUT.mkdir(parents=True, exist_ok=True)
@@ -737,6 +803,8 @@ def main():
         "sample_formula_instances": len(samples),
         "score_comparisons": total_score_comparisons,
         "rank_comparisons": total_rank_comparisons,
+        "legacy_numpy_score_mismatches": total_legacy_numpy_score_mismatches,
+        "legacy_numpy_rank_mismatches": total_legacy_numpy_rank_mismatches,
         "registry_path": str(REGISTRY.relative_to(ROOT)),
         "registry_sha256": sha256_file(REGISTRY),
         "report_path": str(REPORT.relative_to(ROOT)),
@@ -772,6 +840,7 @@ def main():
         "sample_formula_instances": len(samples),
         "score_mismatches": total_score_mismatches,
         "rank_mismatches": total_rank_mismatches,
+        "legacy_numpy_rank_mismatches": total_legacy_numpy_rank_mismatches,
         "max_abs_score_delta": global_max_delta,
         "manifest_sha256": sha256_file(MANIFEST),
     }, sort_keys=True))
