@@ -7,7 +7,7 @@ Date: 2026-11-12
 
 A formula that ranked realized quintets well over the previous 100 scored targets may retain enough temporal usefulness that selecting it before the next target improves exact quintet rank. This is tested on the separate Q7 quintet-scoring grammar, not pooled with per-number formula families.
 
-For target t, choose the formula mask m minimizing the mean zero-based exact quintet rank over targets t-100 through t-1. The current target rank is excluded from the selector.
+For target t, choose the formula mask m minimizing the mean one-based exact quintet rank over targets t-100 through t-1. The current target rank is excluded from the selector.
 
 ## Source and lineage
 
@@ -24,7 +24,7 @@ Execution verifies that the Q7 archive is an exact prefix of the pinned Q141 arc
 - Dynamic selector: minimum mean exact quintet rank over the previous 100 scored targets; ties go to the smallest integer mask.
 - Static control: one formula selected on Discovery only and frozen for Validation and Blind OOS.
 - Uniform formula control: per-target expected rank and Top-20/Top-100 rate across all 1,023 registered formula IDs.
-- The theoretical uniform quintet null has mean zero-based rank 329,003.5, Top-20 probability 20/658,008 and Top-100 probability 100/658,008.
+- The theoretical uniform quintet null has mean one-based rank 329,004.5, Top-20 probability 20/658,008 and Top-100 probability 100/658,008.
 
 ## Chronological evaluation
 
