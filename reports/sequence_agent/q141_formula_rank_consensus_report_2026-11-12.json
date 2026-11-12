@@ -1005,6 +1005,16 @@
     "tie_policy": "ascending number for exact ties",
     "top5_vote": "rank descending by formula Top-5 vote count, ties by mean rank then ascending number"
   },
+  "recovery_history": [
+    {
+      "artifact_upload_and_output_commit": "completed",
+      "computation_and_unit_tests": "passed",
+      "failed_stage": "exact_remote_git_readback",
+      "recovery": "Serialize actual newline characters, rerun the same frozen preregistered experiment, then verify remote JSON parsing and all manifest file SHA-256 values.",
+      "root_cause": "The first serialization wrote a literal backslash-n suffix after JSON documents, so the remote verifier rejected the manifest as extra trailing data.",
+      "run_id": 43272932529
+    }
+  ],
   "schema_version": "1.0",
   "source": {
     "archive_path": "data/storico_daily.csv",
@@ -1217,4 +1227,4 @@
     "strict_prior": true,
     "update_order": "compute features and ranks for target i using draws[:i], score target, then append draw i to historical state"
   }
-}\n
+}
