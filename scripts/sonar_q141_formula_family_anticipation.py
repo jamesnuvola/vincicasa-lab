@@ -208,7 +208,7 @@ def split_name(offset, target_count):
 def summarize_metrics(rows, model, fixed_family=None):
     metrics = []
     for row in rows:
-        if model == "fixed_discovery_family":
+        if model in ("fixed_discovery_family", "families"):
             metrics.append(row["families"][fixed_family])
         else:
             metrics.append(row[model])
