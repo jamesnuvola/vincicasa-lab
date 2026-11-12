@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-C5",
+  "date": "2026-11-12",
+  "status": "PREREGISTERED_BEFORE_EXECUTION",
+  "hypothesis": "Prior-only Q90 seven-family behaviour state adds predictive information about next-target Q7 quintet-universe rank quality beyond the frozen Q7+Q80 cross-granularity baseline.",
+  "estimand": "Target-level mean normalized percentile of the realized quintet across the fixed 1,023 Q7 quintet_score formulas; 0.5 is the random-quintet reference. This is a meta-quality forecast, not a winning-number or winning-quintet prediction.",
+  "source_lineage": {
+    "q141_archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_archive_git_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_cutoff": "2026-10-24",
+    "q7_draws": 3387,
+    "q7_targets": 3286,
+    "q80_archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q80_cutoff": "2026-11-10",
+    "q80_targets": 3354,
+    "q90_archive_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "q90_cutoff": "2026-11-07",
+    "q90_full_formula_count": 330429,
+    "q90_sample_formula_count": 700,
+    "q90_targets": 3351,
+    "common_aligned_targets": 3286,
+    "contest_315_excluded": true
+  },
+  "models": {
+    "baseline_m0": {
+      "name": "Q7-only",
+      "predictors": [
+        "q7_roll50_mean_percentile"
+      ],
+      "ridge_alpha": 1
+    },
+    "baseline_m1": {
+      "name": "Q7+Q80",
+      "predictors": [
+        "q7_roll50_mean_percentile",
+        "q80_roll50_equal_family_top5_hits",
+        "q80_roll50_family_dispersion",
+        "q80_roll50_family_entropy_normalized",
+        "q80_equal_family_recent25_minus_previous25"
+      ],
+      "ridge_alpha": 1,
+      "role": "Primary comparator; same fixed feature construction as Q141-C4."
+    },
+    "augmented_m2": {
+      "name": "Q7+Q80+Q90",
+      "additional_predictors": [
+        "q90_roll50_equal_family_top5_share",
+        "q90_roll50_family_dispersion",
+        "q90_roll50_family_entropy_normalized",
+        "q90_equal_family_recent25_minus_previous25"
+      ],
+      "ridge_alpha": 1
+    }
+  },
+  "walkforward": {
+    "strict_prior": true,
+    "window": 50,
+    "minimum_training_rows": 50,
+    "discovery_end_offset": 1972,
+    "validation_end_offset": 2629,
+    "expected_split_counts": {
+      "discovery": 1972,
+      "validation": 657,
+      "blind_oos": 657
+    },
+    "discovery_predictions": "Expanding prequential fits; each target is predicted before its outcome is available.",
+    "holdout_policy": "Fit coefficients at the end of Discovery and freeze them for Validation and Blind OOS; rolling feature state may update only after each target is scored.",
+    "q90_sample_policy": "Use the fixed, outcome-independent Q141-B7 sample of 100 formulas per Q90 family (700/330429); do not resample or select formulas on this experiment."
+  },
+  "primary_endpoint": {
+    "split": "blind_oos",
+    "statistic": "mean(abs_error_M1) - mean(abs_error_M2); positive favours adding Q90",
+    "practical_threshold_mae": 0.005,
+    "alternative": "one-sided positive improvement"
+  },
+  "inference": {
+    "block_length": 20,
+    "signflip_replicates": 20000,
+    "moving_block_bootstrap_replicates": 20000,
+    "confidence_level": 0.95,
+    "seed": 14120261125,
+    "multiplicity": "One confirmatory primary endpoint (M2 versus M1); M2 versus M0 and all atlas correlations are descriptive only. No data-driven endpoint switching."
+  },
+  "guardrails": {
+    "no_parameter_tuning": true,
+    "no_validation_or_blind_refitting": true,
+    "no_future_or_current_target_predictors": true,
+    "no_formula_resampling": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "no_canonical_archive_mutation": true,
+    "no_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ],
+    "historical_blind_is_not_virgin": true
+  }
+}
