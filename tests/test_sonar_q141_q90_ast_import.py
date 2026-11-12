@@ -88,6 +88,10 @@ class Q90AstImportTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             importer.build_ast(row, NAMES, FAMILIES)
 
+    def test_q90_formula_count_is_nested_in_formula_grammar(self):
+        manifest = {"formula_grammar": {"formula_count": 330429, "formula_type_counts": importer.EXPECTED_FORMULA_COUNTS}}
+        self.assertEqual(importer.q90_formula_count(manifest), 330429)
+
     def test_git_blob_sha1_uses_canonical_nul_header(self):
         data = b"abc"
         self.assertEqual(importer.git_blob_sha1(data), hashlib.sha1(b"blob 3\0abc").hexdigest())

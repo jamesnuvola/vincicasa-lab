@@ -108,6 +108,10 @@ def load_json_member(archive: zipfile.ZipFile, name: str) -> dict:
         return json.load(handle)
 
 
+def q90_formula_count(manifest: dict) -> int:
+    return int(manifest["formula_grammar"]["formula_count"])
+
+
 def feature_context(archive: zipfile.ZipFile):
     catalog = load_json_member(archive, "adaptive_novelty_feature_catalog.json")
     selection = load_json_member(archive, "q90_feature_selection.json")
@@ -126,8 +130,14 @@ def feature_context(archive: zipfile.ZipFile):
         raise RuntimeError("Q141_A3_BLOCKED: selected feature references are invalid")
     if q90_manifest["archive"]["blob_sha"] != EXPECTED_Q90_ARCHIVE_BLOB:
         raise RuntimeError("Q141_A3_BLOCKED: Q90 formula manifest archive mismatch")
-    if q90_manifest["formula_count"] != EXPECTED_FORMULA_TOTAL:
+    if q90_formula_count(q90_manifest) != EXPECTED_FORMULA_TOTAL:
         raise RuntimeError("Q141_A3_BLOCKED: Q90 formula manifest count mismatch")
+    if q90_manifest["formula_grammar"]["formula_type_counts"] != EXPECTED_FORMULA_COUNTS:
+        raise RuntimeError("Q141_A3_BLOCKED: Q90 formula type-count manifest mismatch")
+    if q90_manifest["q89_feature_matrix"]["shape"] != [3351, 40, 59]:
+        raise RuntimeError("Q141_A3_BLOCKED: Q89 feature matrix shape mismatch")
+    if q90_manifest["q89_feature_matrix"]["dtype"] != "float32":
+        raise RuntimeError("Q141_A3_BLOCKED: Q89 feature matrix dtype mismatch")
     if q90_manifest["q89_feature_matrix"]["sha256"] != EXPECTED_Q90_MATRIX_SHA256:
         raise RuntimeError("Q141_A3_BLOCKED: Q89 feature matrix SHA-256 mismatch")
     if q90_manifest["formula_catalog_sha256"] != EXPECTED_Q90_CATALOG_SHA256:
@@ -452,6 +462,14 @@ def run(args):
         "artifact_member_readback": verified_members,
         "shards": writer.shards,
         "readback": readback_summary,
+        "recovery_history": [
+            {
+                "run_id": 43275277890,
+                "failed_stage": "Q90_manifest_schema_validation",
+                "root_cause": "The Q90 formula count is nested at formula_grammar.formula_count, not at the manifest top level.",
+                "recovery": "Read the nested formula grammar count, assert the declared per-type counts and feature-matrix shape/dtype, and add a unit test for the persisted manifest schema.",
+            }
+        ],
         "limitations": [
             "Q90 catalog covers only the 20 Discovery-selected features from the 59-feature Q89 matrix.",
             "Q90 source archive ends 2026-11-07 and contains 3,401 draws; it is not the full Q141 archive.",
