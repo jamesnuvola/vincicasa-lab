@@ -1,0 +1,25 @@
+name: Q134 provenance quarantine audit
+
+on:
+  pull_request:
+    paths:
+      - "scripts/audit_q134_provenance_quarantine.py"
+      - "reports/data_quality/q134_provenance_quarantine_*.json"
+      - "reports/data_quality/q134_provenance_quarantine_checkpoint_2026-11-12.md"
+      - ".github/workflows/q134-provenance-quarantine.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  provenance-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Detect provenance contamination and verify pinned blobs
+        run: python scripts/audit_q134_provenance_quarantine.py
