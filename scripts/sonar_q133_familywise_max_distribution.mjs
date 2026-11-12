@@ -26,8 +26,8 @@ function exactFamilyNull(rows,k){const masks=rows.map(r=>mask(r["top"+k],k));con
 function compute(){
  const ledgerText=readText(LEDGER_PATH),bytes=Buffer.byteLength(ledgerText,"utf8"),sha=gitBlobSha(ledgerText);
  if(sha!==EXPECTED_LEDGER_SHA||bytes!==EXPECTED_LEDGER_BYTES)fail("ledger SHA/bytes mismatch "+sha+"/"+bytes);
- const rows=parseCsv(ledgerText,LEDGER_PATH),groups=[];let last=null,g=null;
- for(const r of rows){if(r.target_date!==last){if(g)groups.push(g);last=r.target_date;g={date:r.target_date,cutoff:r.history_cutoff,actual:r.actual_numbers,masks:[],hits:[],ids:[]};}
+ const rows=parseCsv(ledgerText,LEDGER_PATH),groups=[];let previousTarget=null,g=null;
+ for(const r of rows){if(r.target_date!==previousTarget){if(g)groups.push(g);previousTarget=r.target_date;g={date:r.target_date,cutoff:r.history_cutoff,actual:r.actual_numbers,masks:[],hits:[],ids:[]};}
  if(r.history_cutoff!==g.cutoff||r.actual_numbers!==g.actual)fail("target-level inconsistency "+r.target_date);
  if(r.evaluation_mode!=="RETROSPECTIVE_WALK_FORWARD_RULE_FIXED_NOW")fail("unexpected evaluation mode");
  g.masks.push(mask(r.top20,20));g.hits.push(Number(r.hit_count));g.ids.push(r.config_id);}
