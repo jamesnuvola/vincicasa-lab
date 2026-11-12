@@ -31,7 +31,7 @@ class Q141C5Tests(unittest.TestCase):
     def test_family_state_rejects_out_of_range(self):
         rows = [{"a": "1.2", "b": "0.1", "equal": "0.2"} for _ in range(50)]
         with self.assertRaises(RuntimeError):
-            family_state(rows, ("a", "b"), 1.0)
+            family_state(rows, ("a", "b"), 1.0, "equal")
 
     def test_ridge_is_finite_and_deterministic(self):
         x = np.asarray([[0.0], [1.0], [2.0], [3.0], [4.0]], dtype=float)
