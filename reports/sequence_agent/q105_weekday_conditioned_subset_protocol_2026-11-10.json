@@ -1,0 +1,94 @@
+{
+  "experiment_id": "Q105",
+  "title": "Weekday-conditioned number inclusion model versus global-frequency and exact-uniform subset baselines",
+  "preregistered_at_utc": "2026-11-10T22:45:29Z",
+  "status": "PREREGISTERED_NOT_RUN",
+  "hypothesis": "The weekday of the target draw may carry incremental information about which numbers are selected, beyond the global historical inclusion frequencies.",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "target_2026_11_10_excluded_until_official_publication": true
+  },
+  "forecast": {
+    "warmup_draws": 200,
+    "target_count": 3203,
+    "splits": {
+      "discovery": {
+        "targets": 1921,
+        "from_target_offset": 0
+      },
+      "validation": {
+        "targets": 641,
+        "from_target_offset": 1921
+      },
+      "historical_blind_oos": {
+        "targets": 641,
+        "from_target_offset": 2562
+      }
+    },
+    "weekday_definition": "UTC weekday of ISO calendar date; dates are date-only and this avoids local timezone/DST ambiguity.",
+    "prior_only_rule": "For target index t, use only archive rows i<t. Target draw is scored only after both model forecasts have been frozen in memory.",
+    "prior_equivalent_draws": 200,
+    "baseline_inclusion_probability": 0.125,
+    "per_number_probability": "p_t(n)=(200/8 + c_t(n))/(200 + N_t), where c_t(n) is the count of prior draws containing n and N_t is the number of eligible prior draws.",
+    "global_model": "Use all prior draws for c_t(n), N_t.",
+    "weekday_model": "Use only prior draws whose ISO weekday equals the target weekday for c_t(n), N_t.",
+    "fixed_cardinality_subset_probability": "P(D|F)=product_{n in D} odds_t(n) / e_5(odds_t(1),...,odds_t(40)), odds=p/(1-p), where e_5 is the fifth elementary symmetric polynomial over all 40 weights.",
+    "exact_uniform_baseline": "P0(D)=1/658008.",
+    "hyperparameters": "No tuning. Prior equivalent draw count fixed at 200 before execution. No feature selection or post-hoc subgroup tuning."
+  },
+  "endpoints": {
+    "primary": "Blind OOS paired mean log-likelihood gain weekday model minus global model.",
+    "secondary_inferential": "Blind OOS mean log-likelihood gain weekday model minus exact uniform 5-of-40.",
+    "descriptive_only": [
+      "Discovery and Validation mean log-likelihood gains",
+      "Top-5 and Top-20 mean hit counts",
+      "weekday-specific descriptive summaries"
+    ],
+    "direction": "One-sided alternative: positive gain favors the first named model."
+  },
+  "inference": {
+    "blind_targets": 641,
+    "block_length": 20,
+    "block_sign_flip_replicates": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "seed": 20261110,
+    "confidence_level": 0.95,
+    "multiplicity": "Holm correction across exactly the two preregistered Blind OOS inferential endpoints. No additional subgroup p-values."
+  },
+  "integrity_checks": [
+    "Archive header, date uniqueness, strict chronology, five distinct sorted integers in 1..40.",
+    "All forecast counts and probability weights are computed from rows strictly before the target.",
+    "Exact e5 dynamic-programming normalizer; compare against brute-force enumeration for a small synthetic weight vector.",
+    "Exhaustive 658008-subset normalization for representative global and weekday forecasts.",
+    "Future-mutation invariance at nine fixed cutoffs.",
+    "Deterministic replay at eight fixed cutoffs.",
+    "All probability and log-likelihood values finite; subset probabilities normalized.",
+    "Target dates and split counts reconcile exactly to 1921/641/641."
+  ],
+  "limitations": [
+    "The historical blind OOS period has already been exposed to prior SONAR research and is not a virgin holdout.",
+    "Weekday is a calendar covariate, not evidence of a physical mechanism in the draw process.",
+    "The model predicts a distribution over complete 5-number subsets; it does not establish an improved single ticket or a winning probability.",
+    "A positive historical result would remain exploratory and require prospective frozen confirmation under Q60."
+  ],
+  "guardrails": {
+    "research_only": true,
+    "modify_production_engine": false,
+    "modify_frozen_forecasts": false,
+    "reconstruct_missing_freezes": false,
+    "modify_q60_h101_h102": false,
+    "auto_merge": false,
+    "auto_promote": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
