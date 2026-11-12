@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q60-H101-RRF-2026-11-10",
+  "status": "EXPERIMENT_TESTS_PASS_FULL_CI_PENDING",
+  "verified_at": "2026-11-10T12:56:24+01:00",
+  "implementation": {
+    "script": "scripts/sonar_q60_h101_rrf.py",
+    "tests": "tests/test_sonar_q60_h101_rrf.py",
+    "workflow": ".github/workflows/sonar-q60-h101-rrf.yml",
+    "commits": {
+      "protocol": "f7f7e3805eccc673e7b5a3eab188e3313ca683d8",
+      "script": "80305e7ac80d4f53aca23f73e3904228d158d3b9",
+      "test_import_fix": "924eaff4c544906debd265041c21c3f9f9986cd6",
+      "freeze": "79f9e5e4f4324aa2144c9292dec4dedd0b5df8b2",
+      "ci": "6dfe0f4fb3858a48107f671d3f6754efbc557438",
+      "report": "a4c8d337d3e3ac4ee790295ff01a51fcac4e3594",
+      "ledger": "61b4e958f71e3c60e86a8dccece8cd6a9462effb",
+      "workflow": "bf56db106be6ee122e6d3a3d82d76ff4ecc095ab"
+    }
+  },
+  "ci_evidence": {
+    "run_id": 42811251203,
+    "run_url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/42811251203",
+    "h101_specific_step": "Test Q60 H101 reciprocal-rank fusion freeze",
+    "step_conclusion": "success",
+    "verified_components": [
+      "py_compile for implementation and tests",
+      "5 H101 unit and freeze-guard tests",
+      "regenerated 2026-11-10 freeze from canonical source CSVs",
+      "byte-for-byte diff against persisted H101 shadow row"
+    ],
+    "overall_general_ci": "IN_PROGRESS",
+    "custom_workflow_run_visibility": "Not independently available through the current run-query interface; the exact freeze/test step is visible and passed in the general CI job."
+  },
+  "freeze": {
+    "target_date": "2026-11-10",
+    "registered_at": "2026-11-10T12:49:26+01:00",
+    "frozen_at": "2026-11-10T12:49:51+01:00",
+    "history_cutoff": "2026-11-09",
+    "status": "FROZEN_PENDING",
+    "top20": "26 16 36 12 15 29 25 38 1 10 17 28 37 39 5 9 18 3 23 2",
+    "target_outcome_read": false
+  },
+  "historical_audit": {
+    "n": 22,
+    "status": "EXPLORATORY_ONLY",
+    "rrf_top20_total": 56,
+    "global_top20_total": 56,
+    "positional_top20_total": 56,
+    "rrf_vs_global_top20_exact_signflip_p": 1,
+    "rrf_vs_positional_top20_exact_signflip_p": 1,
+    "rrf_vs_uniform_top20_exact_upper_p": 0.4599202821346578,
+    "holm_adjusted_p_values": [
+      0.875,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "discovery_validation_blind_oos": "Not claimed for the already-inspected 22-pair exploratory replay."
+  },
+  "guards": {
+    "parent_forecasts_unchanged": true,
+    "existing_freezes_modified": false,
+    "prior_day_cutoff_verified": true,
+    "source_freezes_precede_fusion_freeze": true,
+    "fusion_freeze_precedes_nominal_draw": true,
+    "outcome_used_in_freeze_generation": false,
+    "promotion_allowed": false,
+    "merge_allowed": false
+  },
+  "next_action": "Wait for canonical 2026-11-10 outcome; append only after official archive update. Continue the preregistered 200 new H101 targets with 100/50/50 chronological reporting splits and final-only inference."
+}
