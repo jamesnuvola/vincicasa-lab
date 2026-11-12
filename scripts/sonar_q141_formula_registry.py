@@ -80,6 +80,12 @@ Q92_COMMON_SOURCE = {
     "path": "scripts/sonar_q92_common.py",
     "blob": "647025282b57938ca66549757ef512e2bfd3dfb5",
 }
+Q89_COMMON_SOURCE = {
+    "branch": "research/sonar-q89-nine-feature-20261108",
+    "commit": "5e7301fe2f3bdeb3c85cfd9a4ee810cfdc9c9f77",
+    "path": "scripts/sonar_q89_common.py",
+    "blob": "f3b6f253c6c34d1ea9bd99985437835a1dd06317",
+}
 
 ALIASES = {"recent_5": "freq_5", "recent_10": "freq_10"}
 RAW_FEATURE_NAMES = list(base.FEATURE_NAMES)
@@ -312,6 +318,7 @@ def build_formula_grammars():
             "unique_canonical_formula_count_within_size": unique_k,
             "raw_alias_redundancy_within_size": raw_count - unique_k,
             "source": SOURCE_BY_SIZE[k],
+            "combinadic_common_source": Q89_COMMON_SOURCE if k == 9 else (Q92_COMMON_SOURCE if k == 10 else None),
             "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled.",
         })
     return rows
@@ -570,7 +577,7 @@ def main():
                 "score_mismatches": target_score_mismatches,
                 "rank_mismatches": target_rank_mismatches,
                 "max_abs_score_delta": f"{target_max_delta:.17g}",
-                "raw_mean_top5_hit_share": f"{sum(raw_hits[5] for _ in [0]) / (5 * comparisons):.12g}",
+                "raw_mean_top5_hit_share": f"{raw_hits[5] / (5 * comparisons):.12g}",
                 "canonical_mean_top5_hit_share": f"{sum(canonical_hits[5] for _ in [0]) / (5 * comparisons):.12g}",
                 "raw_mean_top10_hit_share": f"{raw_hits[10] / (5 * comparisons):.12g}",
                 "canonical_mean_top10_hit_share": f"{canonical_hits[10] / (5 * comparisons):.12g}",
