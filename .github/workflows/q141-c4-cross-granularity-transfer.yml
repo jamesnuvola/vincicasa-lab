@@ -54,35 +54,48 @@ jobs:
             reports/sequence_agent/q141_cross_granularity_transfer_checkpoint_2026-11-12.json
           retention-days: 90
 
-      - name: Persist computed outputs append-only
+      - name: Persist computed outputs with stale-head recovery
         env:
           BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
         run: |
           set -euo pipefail
-          git add reports/sequence_agent/q141_cross_granularity_transfer_report_2026-11-12.json
-          git add reports/sequence_agent/q141_cross_granularity_transfer_target_ledger_2026-11-12.csv
-          git add reports/sequence_agent/q141_cross_granularity_transfer_manifest_2026-11-12.json
-          git add reports/sequence_agent/q141_cross_granularity_transfer_checkpoint_2026-11-12.json
-          git config user.name "sonar-q141-research"
-          git config user.email "actions@users.noreply.github.com"
-          if ! git diff --cached --quiet; then
-            git commit -m "Persist Q141-C4 cross-granularity transfer results"
-            pushed=false
-            for attempt in 1 2 3; do
-              git fetch origin "$BRANCH_NAME"
-              if git rebase "origin/$BRANCH_NAME" && git push origin "HEAD:$BRANCH_NAME"; then
-                pushed=true
-                break
-              fi
-              if [ "$attempt" -lt 3 ]; then
-                git rebase --abort || true
-                echo "Remote branch advanced; retrying append-only Q141-C4 persistence."
-              fi
+          temp_dir="$(mktemp -d)"
+          files=(
+            reports/sequence_agent/q141_cross_granularity_transfer_report_2026-11-12.json
+            reports/sequence_agent/q141_cross_granularity_transfer_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_cross_granularity_transfer_manifest_2026-11-12.json
+            reports/sequence_agent/q141_cross_granularity_transfer_checkpoint_2026-11-12.json
+          )
+          for file in "${files[@]}"; do
+            mkdir -p "$temp_dir/$(dirname "$file")"
+            cp "$file" "$temp_dir/$file"
+          done
+          pushed=false
+          for attempt in 1 2 3; do
+            git fetch origin "$BRANCH_NAME"
+            git reset --hard "origin/$BRANCH_NAME"
+            for file in "${files[@]}"; do
+              cp "$temp_dir/$file" "$file"
             done
-            if [ "$pushed" != "true" ]; then
-              echo "Q141-C4 output persistence failed after three attempts."
-              exit 1
+            git add "${files[@]}"
+            if git diff --cached --quiet; then
+              echo "Q141-C4 outputs already match the remote branch."
+              pushed=true
+              break
             fi
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Persist Q141-C4 cross-granularity transfer results"
+            if git push origin "HEAD:$BRANCH_NAME"; then
+              pushed=true
+              break
+            fi
+            echo "Remote branch advanced during Q141-C4 persistence; resetting to remote and retrying."
+          done
+          rm -rf "$temp_dir"
+          if [ "$pushed" != "true" ]; then
+            echo "Q141-C4 output persistence failed after three attempts."
+            exit 1
           fi
 
       - name: Verify exact remote Git readback and persist receipt
