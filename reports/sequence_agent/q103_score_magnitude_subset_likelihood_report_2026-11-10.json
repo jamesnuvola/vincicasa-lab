@@ -1,0 +1,408 @@
+{
+  "experiment_id": "Q103",
+  "title": "Active SONAR score-magnitude calibration as a 5-of-40 subset likelihood",
+  "status": "NO_PREDICTIVE_LIFT_DEMONSTRATED",
+  "generated_date": "2026-11-10",
+  "source": {
+    "main_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b",
+    "archive_blob_sha1": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "scorer_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_engine_report_blob_sha1": "ff07b6da4948bb89467067c2552d9b1f78bc9549",
+    "protocol_blob_sha1": "34e0aca868daf9e1f65113c89a131c63c3ff3b01",
+    "runner_blob_sha1": "6d0cfaf6c2d8ff826f3795d2393cd04983a55fab",
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09"
+  },
+  "model": {
+    "distribution": "Fisher noncentral hypergeometric over complete unordered 5-subsets",
+    "subset_probability": "product(weights for selected numbers) / e5(all 40 weights)",
+    "weight": "exp((score - max_score) / temperature)",
+    "exact_subset_count": 658008,
+    "temperatures": [
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      0.75,
+      1,
+      1.5,
+      2,
+      4
+    ],
+    "null_control": "uniform 5-of-40; log-likelihood gain exactly zero"
+  },
+  "walk_forward": {
+    "warmup": 200,
+    "targets": 3203,
+    "splits": {
+      "discovery": {
+        "targets": 1921,
+        "first_target": "2018-02-02",
+        "last_target": "2023-05-07",
+        "mean_top5_hits": 0.641853201458,
+        "mean_top20_hits": 2.522644456012,
+        "models": {
+          "1": {
+            "mean_log_likelihood_gain": -0.050781544852,
+            "cumulative_log_likelihood_gain": -97.551347661053,
+            "mean_conditional_null_expected_gain": -0.055998499474
+          },
+          "2": {
+            "mean_log_likelihood_gain": -0.011338470674,
+            "cumulative_log_likelihood_gain": -21.781202164172,
+            "mean_conditional_null_expected_gain": -0.013946947985
+          },
+          "4": {
+            "mean_log_likelihood_gain": -0.002174835961,
+            "cumulative_log_likelihood_gain": -4.177859881798,
+            "mean_conditional_null_expected_gain": -0.003479074617
+          },
+          "0.1": {
+            "mean_log_likelihood_gain": -5.092278516907,
+            "cumulative_log_likelihood_gain": -9782.267030977924,
+            "mean_conditional_null_expected_gain": -5.14444806313
+          },
+          "0.2": {
+            "mean_log_likelihood_gain": -1.368868618187,
+            "cumulative_log_likelihood_gain": -2629.596615537102,
+            "mean_conditional_null_expected_gain": -1.394953391299
+          },
+          "0.35": {
+            "mean_log_likelihood_gain": -0.445008121978,
+            "cumulative_log_likelihood_gain": -854.860602320308,
+            "mean_conditional_null_expected_gain": -0.459913706613
+          },
+          "0.5": {
+            "mean_log_likelihood_gain": -0.214655895775,
+            "cumulative_log_likelihood_gain": -412.353975782966,
+            "mean_conditional_null_expected_gain": -0.225089805019
+          },
+          "0.75": {
+            "mean_log_likelihood_gain": -0.092799259129,
+            "cumulative_log_likelihood_gain": -178.267376787689,
+            "mean_conditional_null_expected_gain": -0.099755198626
+          },
+          "1.5": {
+            "mean_log_likelihood_gain": -0.021350130577,
+            "cumulative_log_likelihood_gain": -41.013600838646,
+            "mean_conditional_null_expected_gain": -0.024828100325
+          },
+          "uniform": {
+            "mean_log_likelihood_gain": 0,
+            "cumulative_log_likelihood_gain": 0,
+            "mean_conditional_null_expected_gain": 0
+          }
+        }
+      },
+      "validation": {
+        "targets": 641,
+        "first_target": "2023-05-08",
+        "last_target": "2025-02-06",
+        "mean_top5_hits": 0.634945397816,
+        "mean_top20_hits": 2.436817472699,
+        "models": {
+          "1": {
+            "mean_log_likelihood_gain": -0.068395405706,
+            "cumulative_log_likelihood_gain": -43.841455057476,
+            "mean_conditional_null_expected_gain": -0.051755030733
+          },
+          "2": {
+            "mean_log_likelihood_gain": -0.021202210847,
+            "cumulative_log_likelihood_gain": -13.590617152947,
+            "mean_conditional_null_expected_gain": -0.01288202336
+          },
+          "4": {
+            "mean_log_likelihood_gain": -0.007372657766,
+            "cumulative_log_likelihood_gain": -4.725873627864,
+            "mean_conditional_null_expected_gain": -0.003212564022
+          },
+          "0.1": {
+            "mean_log_likelihood_gain": -5.02028509742,
+            "cumulative_log_likelihood_gain": -3218.002747446078,
+            "mean_conditional_null_expected_gain": -4.853881347687
+          },
+          "0.2": {
+            "mean_log_likelihood_gain": -1.383256406949,
+            "cumulative_log_likelihood_gain": -886.667356854062,
+            "mean_conditional_null_expected_gain": -1.300054532082
+          },
+          "0.35": {
+            "mean_log_likelihood_gain": -0.473989887422,
+            "cumulative_log_likelihood_gain": -303.827517837557,
+            "mean_conditional_null_expected_gain": -0.426445958927
+          },
+          "0.5": {
+            "mean_log_likelihood_gain": -0.241642486369,
+            "cumulative_log_likelihood_gain": -154.892833762533,
+            "mean_conditional_null_expected_gain": -0.208361736422
+          },
+          "0.75": {
+            "mean_log_likelihood_gain": -0.114427255898,
+            "cumulative_log_likelihood_gain": -73.347871030497,
+            "mean_conditional_null_expected_gain": -0.092240089267
+          },
+          "1.5": {
+            "mean_log_likelihood_gain": -0.034030408147,
+            "cumulative_log_likelihood_gain": -21.813491621959,
+            "mean_conditional_null_expected_gain": -0.022936824831
+          },
+          "uniform": {
+            "mean_log_likelihood_gain": 0,
+            "cumulative_log_likelihood_gain": 0,
+            "mean_conditional_null_expected_gain": 0
+          }
+        }
+      },
+      "historical_blind_oos": {
+        "targets": 641,
+        "first_target": "2025-02-07",
+        "last_target": "2026-11-09",
+        "mean_top5_hits": 0.622464898596,
+        "mean_top20_hits": 2.525741029641,
+        "models": {
+          "1": {
+            "mean_log_likelihood_gain": -0.049091323378,
+            "cumulative_log_likelihood_gain": -31.467538285088,
+            "mean_conditional_null_expected_gain": -0.056618646271
+          },
+          "2": {
+            "mean_log_likelihood_gain": -0.010313035595,
+            "cumulative_log_likelihood_gain": -6.610655816077,
+            "mean_conditional_null_expected_gain": -0.014076697041
+          },
+          "4": {
+            "mean_log_likelihood_gain": -0.001626483235,
+            "cumulative_log_likelihood_gain": -1.042575753355,
+            "mean_conditional_null_expected_gain": -0.003508313958
+          },
+          "0.1": {
+            "mean_log_likelihood_gain": -5.223633371644,
+            "cumulative_log_likelihood_gain": -3348.348991223895,
+            "mean_conditional_null_expected_gain": -5.298906600574
+          },
+          "0.2": {
+            "mean_log_likelihood_gain": -1.389145575815,
+            "cumulative_log_likelihood_gain": -890.442314097534,
+            "mean_conditional_null_expected_gain": -1.42678219028
+          },
+          "0.35": {
+            "mean_log_likelihood_gain": -0.446297095448,
+            "cumulative_log_likelihood_gain": -286.076438182147,
+            "mean_conditional_null_expected_gain": -0.467803732285
+          },
+          "0.5": {
+            "mean_log_likelihood_gain": -0.213291020118,
+            "cumulative_log_likelihood_gain": -136.719543895753,
+            "mean_conditional_null_expected_gain": -0.228345665904
+          },
+          "0.75": {
+            "mean_log_likelihood_gain": -0.090938787185,
+            "cumulative_log_likelihood_gain": -58.291762585268,
+            "mean_conditional_null_expected_gain": -0.100975217708
+          },
+          "1.5": {
+            "mean_log_likelihood_gain": -0.020055628722,
+            "cumulative_log_likelihood_gain": -12.855658011086,
+            "mean_conditional_null_expected_gain": -0.025073843984
+          },
+          "uniform": {
+            "mean_log_likelihood_gain": 0,
+            "cumulative_log_likelihood_gain": 0,
+            "mean_conditional_null_expected_gain": 0
+          }
+        }
+      }
+    },
+    "selected_temperature_validation": "uniform",
+    "validation_selection_rule": "maximum mean log-likelihood gain; uniform included; ties favor larger temperature"
+  },
+  "blind_inference": {
+    "primary_endpoint": "cumulative prequential complete-quintet log-likelihood gain versus uniform",
+    "null": "conditional independent uniform 5-of-40 draws",
+    "e_process": "exp(sum_t log(P_T(D_t|F_{t-1}) / P_uniform(D_t))) is a likelihood-ratio test martingale under the null",
+    "tests": [
+      {
+        "temperature": "0.1",
+        "mean_log_likelihood_gain": -5.223633371644,
+        "cumulative_log_likelihood_gain": -3348.348991223891,
+        "log_e_value": -3348.348991223891,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "temperature": "0.2",
+        "mean_log_likelihood_gain": -1.389145575815,
+        "cumulative_log_likelihood_gain": -890.442314097554,
+        "log_e_value": -890.442314097554,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "temperature": "0.35",
+        "mean_log_likelihood_gain": -0.446297095448,
+        "cumulative_log_likelihood_gain": -286.076438182162,
+        "log_e_value": -286.076438182162,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "temperature": "0.5",
+        "mean_log_likelihood_gain": -0.213291020118,
+        "cumulative_log_likelihood_gain": -136.719543895752,
+        "log_e_value": -136.719543895752,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "temperature": "0.75",
+        "mean_log_likelihood_gain": -0.090938787185,
+        "cumulative_log_likelihood_gain": -58.291762585271,
+        "log_e_value": -58.291762585271,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "temperature": "1",
+        "mean_log_likelihood_gain": -0.049091323378,
+        "cumulative_log_likelihood_gain": -31.467538285079,
+        "log_e_value": -31.467538285079,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "temperature": "1.5",
+        "mean_log_likelihood_gain": -0.020055628722,
+        "cumulative_log_likelihood_gain": -12.855658011087,
+        "log_e_value": -12.855658011087,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "temperature": "2",
+        "mean_log_likelihood_gain": -0.010313035595,
+        "cumulative_log_likelihood_gain": -6.610655816079,
+        "log_e_value": -6.610655816079,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      },
+      {
+        "temperature": "4",
+        "mean_log_likelihood_gain": -0.001626483235,
+        "cumulative_log_likelihood_gain": -1.04257575335,
+        "log_e_value": -1.04257575335,
+        "e_process_p_value": 1,
+        "p_bonferroni_43": 1,
+        "p_holm": 1
+      }
+    ],
+    "correction": "Holm step-down across 9 fixed temperatures; Bonferroni x43 catalogue screen shown separately",
+    "selected_validation_model": {
+      "temperature": "uniform",
+      "mean_log_likelihood_gain": 0,
+      "cumulative_log_likelihood_gain": 0,
+      "circular_block_bootstrap_95_ci": [
+        0,
+        0
+      ],
+      "bootstrap_replicates": 10000,
+      "block_length": 20,
+      "seed": 20261110,
+      "inference": {
+        "temperature": "uniform",
+        "mean_log_likelihood_gain": 0,
+        "cumulative_log_likelihood_gain": 0,
+        "e_process_p_value": 1,
+        "p_holm": 1,
+        "p_bonferroni_43": 1
+      }
+    }
+  },
+  "diagnostics": {
+    "selected_model_conditional_null_expected_gain_mean": 0,
+    "top20_random_expected_mean_hits": 2.5,
+    "top5_random_expected_mean_hits": 0.625,
+    "blind_top20_mean_hits": 2.525741029641,
+    "blind_top5_mean_hits": 0.622464898596,
+    "exhaustive_subset_normalization_relative_error": 0
+  },
+  "validation": {
+    "status": "PASS",
+    "checks": [
+      {
+        "id": "source_provenance",
+        "status": "PASS",
+        "detail": "Archive, scorer, active report and preregistered protocol Git blob SHA-1 values match the pinned contract."
+      },
+      {
+        "id": "archive_integrity",
+        "status": "PASS",
+        "detail": "3403 unique chronological rows; every row is a sorted distinct 5-of-40 draw."
+      },
+      {
+        "id": "score_vector_integrity",
+        "status": "PASS",
+        "detail": "All 3203 prior-only score vectors contain each number 1..40 exactly once with finite descending scores and source tie-break."
+      },
+      {
+        "id": "strict_prior_cutoffs",
+        "status": "PASS",
+        "detail": "Every target t is scored from archive[0:t]; maximum training outcome index is t-1, strictly before target t."
+      },
+      {
+        "id": "subset_partition_dp",
+        "status": "PASS",
+        "detail": "Fifth elementary symmetric DP equals exhaustive small-n enumeration; uniform 40-node normalizer equals 658008."
+      },
+      {
+        "id": "exact_subset_normalization",
+        "status": "PASS",
+        "detail": "One representative finite-temperature forecast was exhaustively summed over all 658008 subsets; relative normalization error 0."
+      },
+      {
+        "id": "future_mutation_invariance",
+        "status": "PASS",
+        "detail": "9/9 future-mutation comparisons preserved the complete score vector."
+      },
+      {
+        "id": "deterministic_replay",
+        "status": "PASS",
+        "detail": "8/8 fixed-cutoff scorer replays were byte-identical."
+      },
+      {
+        "id": "split_reconciliation",
+        "status": "PASS",
+        "detail": "1921 discovery + 641 validation + 641 historical blind OOS = 3203 targets."
+      },
+      {
+        "id": "likelihood_ratio_validity",
+        "status": "PASS",
+        "detail": "Each subset PMF is normalized and predictable from the strict prior; exp(cumulative log gain) is the registered likelihood-ratio test martingale under the conditional uniform null."
+      }
+    ]
+  },
+  "interpretation": "This tests whether the magnitude of the active engine's pre-target scores supports a coherent probability distribution over complete quintets that improves sequential log score over the exact uniform 5-of-40 null. It does not alter or promote the active ranking engine.",
+  "limitations": [
+    "Historical blind OOS was already examined by previous SONAR research, including Q100 rank calibration; it is not a virgin holdout.",
+    "The source scores are heuristic normalized ranking scores, not calibrated probabilities.",
+    "The product-weight subset model is a research calibration layer, not a replacement production engine.",
+    "The e-process assumes each next draw is conditionally uniform under the null; the test is valid only for the registered fixed temperature family.",
+    "Holm covers the nine fixed temperatures; Bonferroni x43 is only a conservative catalogue screen and cannot correct unknown analyst degrees of freedom.",
+    "Any positive historical signal requires a new prospectively frozen cohort and Q60 completion."
+  ],
+  "decision": {
+    "predictive_lift_demonstrated": false,
+    "promotion_allowed": false,
+    "production_change_allowed": false,
+    "prospective_freezes_changed": false,
+    "q60_h101_h102_changed": false
+  }
+}
