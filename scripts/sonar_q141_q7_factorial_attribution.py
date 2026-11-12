@@ -501,10 +501,10 @@ def run(q7_root: Path, q141_archive: Path, output_dir: Path) -> dict:
         "split_counts": report["walkforward"]["split_counts"],
         "flagged_endpoints": flagged,
         "blind_tests": tests,
-        "report": str(report_path.relative_to(ROOT)),
-        "ledger": str(ledger_path.relative_to(ROOT)),
-        "manifest": str(manifest_path.relative_to(ROOT)),
-        "checkpoint": str(checkpoint_path.relative_to(ROOT)),
+        "report": str(report_path.resolve().relative_to(ROOT.resolve())),
+        "ledger": str(ledger_path.resolve().relative_to(ROOT.resolve())),
+        "manifest": str(manifest_path.resolve().relative_to(ROOT.resolve())),
+        "checkpoint": str(checkpoint_path.resolve().relative_to(ROOT.resolve())),
     }, sort_keys=True, separators=(",", ":"), allow_nan=False))
     print("SONAR_Q141_B9_SUMMARY_END")
     return report
