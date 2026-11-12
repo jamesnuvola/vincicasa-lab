@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q139",
+  "title": "Weekday-conditioned number inclusion beyond pooled frequency",
+  "status": "PROTOCOL_ONLY_BEFORE_COMPUTATION",
+  "epistemic_status": "NEW_EXPLORATORY_HYPOTHESIS_WITHIN_Q00_Q139_FAMILY; NOT_INDEPENDENT_CONFIRMATION",
+  "registered_at_utc": "2026-11-12T07:41:00Z",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_rows": 3405,
+    "eligible_prefix_rows": 3404,
+    "eligible_prefix_last_date": "2026-11-10",
+    "disputed_date": "2026-11-11",
+    "disputed_row_excluded": true
+  },
+  "hypothesis": "The weekday known before a target may condition number inclusion rates beyond a pooled historical frequency model. A weekday-conditioned fixed-size 5-of-40 subset distribution may improve joint subset log-loss and marginal inclusion Brier over both uniform and pooled-frequency baselines.",
+  "definitions": {
+    "draw": "D_t is a five-element subset of {1,...,40}.",
+    "weekday": "UTC weekday computed from the target's ISO calendar date; known before the draw.",
+    "global_rate": "p_i=(alpha*p0+C_i)/(alpha+N), where N is prior draw count, C_i prior appearances of number i, p0=5/40.",
+    "weekday_rate": "p_i,d=(alpha*p_i+C_i,d)/(alpha+N_d), where N_d is the number of prior draws on weekday d and C_i,d is the number of prior appearances of i on weekday d.",
+    "weights": "w_i=exp(logit(p_i)-logit(p0)) for M1; w_i,d=exp(logit(p_i,d)-logit(p0)) for M2.",
+    "subset_distribution": "P(S|x)=product_{i in S}w_i / e_5(w_1,...,w_40), over every five-number subset."
+  },
+  "models": {
+    "M0": "Uniform 5-of-40; joint probability 1/658008; marginal inclusion 0.125.",
+    "M1": "Pooled number-frequency model with fixed alpha=200 shrinkage toward p0=0.125.",
+    "M2": "Weekday-conditioned number-frequency model with fixed alpha=200 shrinkage toward the pooled M1 rates; target weekday is known ex ante."
+  },
+  "design": {
+    "warmup_draws": 200,
+    "target_count": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "discovery": 1922,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "update_order": "For each target, compute weekday and estimate all rates from strictly prior draws; score target before updating global and weekday counts with its outcome.",
+    "parameter_tuning": "None; alpha=200 fixed in this protocol. No model/weekday subgroup search.",
+    "primary_metric": "Joint five-subset log-loss under exact fixed-size normalization; lower is better.",
+    "secondary_metric": "Mean marginal Bernoulli Brier score over 40 number-inclusion probabilities; lower is better."
+  },
+  "inference": {
+    "comparisons": [
+      "M1_vs_M0",
+      "M2_vs_M1",
+      "M2_vs_M0"
+    ],
+    "metrics": [
+      "joint_subset_log_loss_gain",
+      "marginal_inclusion_brier_gain"
+    ],
+    "splits": [
+      "validation",
+      "blind_oos"
+    ],
+    "endpoint_count": 12,
+    "gain_direction": "Baseline loss minus model loss; positive favors the model.",
+    "paired_block_sign_flip": {
+      "replicates": 10000,
+      "block_length": 20,
+      "one_sided": "upper"
+    },
+    "circular_block_bootstrap": {
+      "replicates": 10000,
+      "block_length": 20,
+      "ci": 0.95
+    },
+    "multiple_testing": "Holm across all 12 predeclared validation and historical Blind OOS endpoints."
+  },
+  "integrity": {
+    "strict_prior_cutoff": true,
+    "target_scored_before_update": true,
+    "exact_fixed_size_normalization": true,
+    "marginal_probability_sum_must_equal": 5,
+    "future_suffix_invariance_checks": 9,
+    "deterministic_replay": true,
+    "source_blob_sha_pinned": true,
+    "excluded_disputed_draw_must_not_appear": true
+  },
+  "guardrails": {
+    "research_only": true,
+    "production_engine_mutation": false,
+    "canonical_archive_mutation": false,
+    "prospective_freeze_mutation": false,
+    "q60_mutation": false,
+    "auto_promotion": false,
+    "auto_merge": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "limitations": [
+    "This is an exploratory hypothesis within a large cumulative Q00-Q139 research family; Holm covers only the 12 predeclared Q139 holdout endpoints, not the full historical research family.",
+    "The historical Blind OOS has been exposed to prior SONAR research and is not a virgin prospective holdout.",
+    "The walk-forward is a strict-prior historical reconstruction, not a contemporaneous forecast freeze.",
+    "Weekday is an exogenous calendar covariate; the experiment does not establish a causal weekday mechanism.",
+    "The disputed 2026-11-11 draw is excluded because its five-number primary-source provenance remains unresolved.",
+    "No model can guarantee or establish a winning quintet."
+  ],
+  "next_action": "If weekday conditioning fails to improve on the pooled frequency model on historical Blind OOS after Holm correction, retain M0 as reference and M1/M2 as research controls; prioritize source-clean prospective freezes rather than further calendar or lag variants."
+}
