@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141_CYCLE_CHECKPOINT",
+  "cycle": 11,
+  "status": "Q141_C4_COMPLETE_REMOTE_GIT_READBACK_VERIFIED_NO_TRANSFER_LIFT",
+  "resumed_from": "reports/sequence_agent/q141_cycle_checkpoint_2026-11-12_run10.json",
+  "resumed_from_git_blob_sha1": "47b8e660fa1dc9590bd0b67c63d223dd6b3c96e7",
+  "date": "2026-11-12",
+  "branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+  "branch_head": "96e1e9726831131bc04d8f634e24e9bb69c5a2a0",
+  "pr89": {
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "base_sha": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "head_sha": "96e1e9726831131bc04d8f634e24e9bb69c5a2a0"
+  },
+  "main_head": "59763b12705c8f17e30fe3a3ceb7f307285ed37e",
+  "task": "Q141-C4",
+  "workflow": {
+    "run_id": 43304123032,
+    "head_sha": "4a4a39166abd3f6b4d2a712a6722bef8c5e079de",
+    "status": "completed",
+    "conclusion": "success",
+    "unit_tests": 7
+  },
+  "source": {
+    "q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_exact_q141_prefix": true,
+    "q141_draws": 3404,
+    "q7_draws": 3387,
+    "q7_cutoff": "2026-10-24",
+    "contest_315_used": false,
+    "q141_suffix_rows_excluded": 18
+  },
+  "alignment": {
+    "q80_c0_rows": 3354,
+    "q7_rows": 3286,
+    "matched_rows": 3286,
+    "mismatches": 0,
+    "target_index_identity_verified": true,
+    "split_source": "Q7 authoritative; C0 split labels ignored due different universe lengths"
+  },
+  "walkforward": {
+    "strict_prior": true,
+    "window": 50,
+    "discovery_prequential_start_offset": 100,
+    "evaluated_targets": {
+      "discovery": 1872,
+      "validation": 657,
+      "blind_oos": 657,
+      "total": 3186
+    },
+    "validation_blind_coefficients_frozen": true
+  },
+  "result": {
+    "decision": "NO_CROSS_GRANULARITY_TRANSFER_LIFT_DEMONSTRATED",
+    "blind_mae_q7_only": 0.20477553303122525,
+    "blind_mae_cross_granularity": 0.20523005726285215,
+    "blind_mae_improvement": -0.00045452423162688443,
+    "ci95": [
+      -0.0014366318846522088,
+      0.0004732986804032804
+    ],
+    "one_sided_block_signflip_p": 0.8035098245087745,
+    "practical_threshold": 0.005,
+    "block_length": 20,
+    "replicates": 20000
+  },
+  "persistence": {
+    "report_path": "reports/sequence_agent/q141_cross_granularity_transfer_report_2026-11-12.json",
+    "report_git_blob_sha1": "4c42cb2e50491e30e295067504793998bca3f645",
+    "ledger_path": "reports/sequence_agent/q141_cross_granularity_transfer_target_ledger_2026-11-12.csv",
+    "ledger_git_blob_sha1": "acdc618ee9dd716b5859f11252f83107295ada9f",
+    "manifest_path": "reports/sequence_agent/q141_cross_granularity_transfer_manifest_2026-11-12.json",
+    "manifest_git_blob_sha1": "86fd48770e655d29f4d413938e6629c6016ead63",
+    "receipt_path": "reports/sequence_agent/q141_cross_granularity_transfer_remote_readback_2026-11-12.json",
+    "receipt_git_blob_sha1": "143b6a45aaf172f8a9a07955644624774ce7b50",
+    "remote_files_verified": 2,
+    "remote_code_lineage_verified": 11,
+    "checkpoint_status": "REMOTE_GIT_READBACK_VERIFIED"
+  },
+  "recovery": {
+    "failed_runs": [
+      {
+        "run_id": 43303609368,
+        "cause": "wrong Q7 ledger column name; corrected to mean_percentile_all_formulas"
+      },
+      {
+        "run_id": 43303779254,
+        "cause": "relative output directory was not resolved before Git path hashing"
+      },
+      {
+        "run_id": 43303931371,
+        "cause": "remote readback correctly rejected stale test-file lineage after a concurrent branch advance"
+      },
+      {
+        "run_id": 43303935726,
+        "cause": "add/add conflicts while retrying output persistence against a branch that already contained the generated files"
+      }
+    ],
+    "final_recovery": "Preserve generated outputs, reset to current remote research-branch head before staging, rerun, then exact remote readback; final run 43304123032 passed."
+  },
+  "ci": {
+    "c4": "success",
+    "q141_c3": "success",
+    "q90_ast": "success",
+    "general_repository_ci": "pending_or_action_required_not_claimed_passed"
+  },
+  "protected_prs": [
+    {
+      "number": 6,
+      "state": "open",
+      "merged": false,
+      "head_sha": "8510531bdaf7e861fad28722b929c001f1ff39f3"
+    },
+    {
+      "number": 7,
+      "state": "open",
+      "merged": false,
+      "head_sha": "7a37cab601c5f9386131a00246963f8e4aeabf74"
+    },
+    {
+      "number": 8,
+      "state": "open",
+      "merged": false,
+      "head_sha": "f422ec62623a47adfbdec4e685125dea5d00f308"
+    }
+  ],
+  "governance": {
+    "no_merge": true,
+    "no_auto_rebase": true,
+    "no_auto_promotion": true,
+    "no_shadow_insertion": true,
+    "no_canonical_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "next_action": "Build a descriptive cross-granularity behaviour atlas with feature-level lineage, keeping Q80/Q90 per-number_score and Q7 quintet_score types separate. Do not tune on this historical Blind OOS."
+}
