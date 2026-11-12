@@ -638,12 +638,13 @@ def run(q7_root: Path, q141_archive: Path, output_dir: Path):
         writer = csv.DictWriter(f, fieldnames=fields)
         writer.writeheader()
         writer.writerows(ledger_rows)
+    repo_root = Path.cwd()
     outputs = [
-        file_info(ast_path, out, len(ast_records)),
-        file_info(snapshot_path, out, len(snapshots)),
-        file_info(import_report_path, out),
-        file_info(complexity_report_path, out),
-        file_info(ledger_path, out, len(ledger_rows)),
+        file_info(ast_path, repo_root, len(ast_records)),
+        file_info(snapshot_path, repo_root, len(snapshots)),
+        file_info(import_report_path, repo_root),
+        file_info(complexity_report_path, repo_root),
+        file_info(ledger_path, repo_root, len(ledger_rows)),
     ]
     manifest = {
         "schema_version": "1.0",
