@@ -67,11 +67,11 @@ class _ArchiveTableParser(HTMLParser):
 
 
 _DATE_RE = re.compile(
-    r"(\\d{1,2})\\s+(Gennaio|Febbraio|Marzo|Aprile|Maggio|Giugno|Luglio|"
-    r"Agosto|Settembre|Ottobre|Novembre|Dicembre)\\s+(\\d{4})",
+    r"(\d{1,2})\s+(Gennaio|Febbraio|Marzo|Aprile|Maggio|Giugno|Luglio|"
+    r"Agosto|Settembre|Ottobre|Novembre|Dicembre)\s+(\d{4})",
     re.IGNORECASE,
 )
-_RESULT_CELL_RE = re.compile(r"\\s*\\d{1,2}(?:\\s+\\d{1,2}){4}\\s*")
+_RESULT_CELL_RE = re.compile(r"\s*\d{1,2}(?:\s+\d{1,2}){4}\s*")
 
 
 def parse_estrazioni(html):
@@ -99,7 +99,7 @@ def parse_estrazioni(html):
         if not _RESULT_CELL_RE.fullmatch(result_cell):
             continue
 
-        nums = [int(x) for x in re.findall(r"\\d{1,2}", result_cell)]
+        nums = [int(x) for x in re.findall(r"\d{1,2}", result_cell)]
         if (
             len(nums) != 5
             or len(set(nums)) != 5
