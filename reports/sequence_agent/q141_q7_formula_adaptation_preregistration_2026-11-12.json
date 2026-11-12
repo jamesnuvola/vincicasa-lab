@@ -4,7 +4,7 @@
   "status": "PREREGISTERED_EXECUTION_PENDING",
   "registered_at": "2026-11-12",
   "hypothesis": "Selecting the Q7 quintet-scoring formula with the lowest mean exact quintet rank over the previous 100 scored targets improves the next target's normalized percentile rank versus uniform selection from the 1,023-formula grammar and versus a static Discovery-selected formula.",
-  "estimand": "For each target t, choose formula mask argmin_m mean(rank[s,m]) over the preceding 100 scored targets s<t. Compare its zero-based exact quintet rank with the per-target mean rank across all 1,023 formula masks and with one static formula selected only on Discovery.",
+  "estimand": "For each target t, choose formula mask argmin_m mean(rank[s,m]) over the preceding 100 scored targets s<t. Compare its one-based exact quintet rank with the per-target mean rank across all 1,023 formula masks and with one static formula selected only on Discovery.",
   "source": {
     "q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
     "q7_archive_git_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
@@ -29,9 +29,9 @@
     "static_control": "single formula selected by minimum mean rank on Discovery only; frozen for Validation and Blind OOS",
     "uniform_formula_control": "per-target mean rank and Top-20/Top-100 fraction across all 1,023 formula IDs",
     "random_quintet_null": {
-      "mean_zero_based_rank": 329003.5,
       "top20_probability": 0.0000303947672368725,
-      "top100_probability": 0.0001519738361843625
+      "top100_probability": 0.0001519738361843625,
+      "mean_one_based_rank": 329004.5
     },
     "minimum_practical_primary_effect": 0.005
   },
