@@ -62,6 +62,10 @@ FEATURE_B = (
 )
 
 
+def resolve_output_dir(path: Path) -> Path:
+    return Path(path).expanduser().resolve()
+
+
 def sha256_bytes(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -360,7 +364,7 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-dir", type=Path, default=OUT)
     args = parser.parse_args()
-    output_dir = args.output_dir
+    output_dir = resolve_output_dir(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     source = verify_sources()
