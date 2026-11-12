@@ -1,0 +1,94 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B6",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "registered_at": "2026-11-12",
+  "hypothesis": "Selecting the Q7 quintet-scoring formula with the lowest mean exact quintet rank over the previous 100 scored targets improves the next target's normalized percentile rank versus uniform selection from the 1,023-formula grammar and versus a static Discovery-selected formula.",
+  "estimand": "For each target t, choose formula mask argmin_m mean(rank[s,m]) over the preceding 100 scored targets s<t. Compare its zero-based exact quintet rank with the per-target mean rank across all 1,023 formula masks and with one static formula selected only on Discovery.",
+  "source": {
+    "q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "q7_archive_git_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_walkforward_manifest_git_blob_sha1": "aae2c7768c9d37bf633a13939f2b686bcce83a27",
+    "q7_formula_catalog_manifest_git_blob_sha1": "5cdf9c24431ea23b2176aa6a19133b7f4435980c",
+    "q7_strict_prior_runner_git_blob_sha1": "ad1c7fa721f316b3af0018f5da4a0a905bb62dcf",
+    "q141_archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_archive_draws": 3387,
+    "q7_cutoff": "2026-10-24",
+    "q7_archive_must_equal_q141_prefix": true
+  },
+  "formula_universe": {
+    "candidate_quintets": 658008,
+    "formula_masks": 1023,
+    "mask_mapping": "rank_mask_MMMM maps directly to formula_id FMMMM; masks 1..1023",
+    "formula_features": "All non-empty subsets of the 10 declared Q7 feature families; fixed equal-weight grammar."
+  },
+  "policy": {
+    "rolling_window_scored_targets": 100,
+    "selection": "minimum mean zero-based actual-quintet rank over previous 100 scored targets",
+    "tie_break": "smallest integer formula mask",
+    "static_control": "single formula selected by minimum mean rank on Discovery only; frozen for Validation and Blind OOS",
+    "uniform_formula_control": "per-target mean rank and Top-20/Top-100 fraction across all 1,023 formula IDs",
+    "random_quintet_null": {
+      "mean_zero_based_rank": 329003.5,
+      "top20_probability": 0.0000303947672368725,
+      "top100_probability": 0.0001519738361843625
+    },
+    "minimum_practical_primary_effect": 0.005
+  },
+  "walkforward": {
+    "target_source": "Q7 exact strict-prior rank ledger; current outcome is used only to score ranks already generated from prior draws",
+    "minimum_burnin": 100,
+    "first_target_index": 101,
+    "eligible_targets": 3286,
+    "splits": {
+      "discovery": 1972,
+      "validation": 657,
+      "blind_oos": 657
+    },
+    "split_rule": "chronological 60% / 20% / 20%, fixed before scoring",
+    "target_update_order": "Q7 runner scores target from prior state then adds target to state; selector reads only prior 100 rank rows"
+  },
+  "inference": {
+    "primary": "Blind OOS normalized percentile gain versus uniform selection over the Q7 formula IDs",
+    "secondary": [
+      "Top-20 excess versus uniform formula expectation",
+      "Top-100 excess versus uniform formula expectation",
+      "normalized percentile gain versus the Discovery-frozen static formula"
+    ],
+    "tests": {
+      "discovery": 3,
+      "validation": 4,
+      "blind_oos": 4,
+      "total": 11
+    },
+    "block_length": 100,
+    "sign_flip_replicates": 20000,
+    "moving_block_bootstrap_replicates": 20000,
+    "seed": 14120261116,
+    "correction": "Holm-Bonferroni across all 11 registered aggregate tests",
+    "alternative": "one-sided improvement"
+  },
+  "guardrails": {
+    "strict_prior_only": true,
+    "no_formula_selection_on_current_target": true,
+    "no_parameter_tuning": true,
+    "no_validation_or_blind_winner_selection": true,
+    "verify_all_source_part_hashes": true,
+    "verify_archive_prefix_identity": true,
+    "no_canonical_archive_mutation": true,
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "limitations": [
+    "Q7 is a quintet-scoring grammar, distinct from per-number Q80/Q90 feature ASTs.",
+    "Historical Blind OOS is exposed prior research history, not virgin prospective evidence.",
+    "Holm correction covers only the 11 registered aggregate tests, not the full Q00-Q141 research family.",
+    "Q7 ends on 2026-10-24; later archive rows are excluded from this experiment."
+  ]
+}
