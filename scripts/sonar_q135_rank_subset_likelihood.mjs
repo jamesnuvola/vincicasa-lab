@@ -18,7 +18,7 @@ const P={
   workflow:".github/workflows/q135-rank-subset-likelihood.yml"
 };
 const EXPECTED_SOURCE="36d7af1fb3cceda5976eb99a78931f58d1a3d28a";
-const EXPECTED_PROTOCOL="2e5777c5e1e5fd18b69bad86f68d79d58f283a8e";
+const EXPECTED_PROTOCOL="4be703c2cabb0ba49f3085d6771f511cfec3e650";
 const EXPECTED_Q123_REPORT="3d845ed8b9603fc762446eea38ea126262ff5886";
 const EXPECTED_Q123_PROTOCOL="cf69b9bb1ec738a1fc1f17ff02da3a79d4213252";
 const EXPECTED_Q123_HEAD="93b494b089abf485b6616f71b90baec79e39c796";
