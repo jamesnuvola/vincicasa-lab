@@ -91,7 +91,7 @@ function bootstrap(values,seed){
 function randomization(values,beta,model,seed){
   const next=xorshift(seed),n=values.length;
   const observedLL=mean(values.map(x=>-beta*x.rankSum-Math.log(model.z)+LOGC));
-  const observedBrier=mean(values.map(x=>model.sumSquares+0.625-2*x.pSelected));
+  const observedBrier=mean(values.map(x=>model.sumSquares+0.625-2*x.draw_ranks.reduce((a,r)=>a+model.p[r-1],0)));
   let llExtreme=0,brierExtreme=0;
   for(let b=0;b<RANDOM_REPS;b++){
     let rankTotal=0,pTotal=0;
