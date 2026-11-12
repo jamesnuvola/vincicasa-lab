@@ -56,6 +56,13 @@ class Q141FamilyAnticipationTests(unittest.TestCase):
         self.assertEqual(int(ranks[9]), 1)
         self.assertEqual(int(ranks[0]), 2)
 
+    def test_family_metric_aggregation_uses_selected_family(self):
+        rows = [{"families": {"frequency_level": {"top5_hits": 2, "top10_hits": 3, "top20_hits": 4, "mean_rank": 17.0}}}]
+        summary = q141.summarize_metrics(rows, "families", "frequency_level")
+        self.assertEqual(summary["targets"], 1)
+        self.assertAlmostEqual(summary["mean_number_hits_top5"], 0.4)
+        self.assertAlmostEqual(summary["mean_actual_number_rank"], 17.0)
+
     def test_split_counts(self):
         counts = {}
         n = 3354
