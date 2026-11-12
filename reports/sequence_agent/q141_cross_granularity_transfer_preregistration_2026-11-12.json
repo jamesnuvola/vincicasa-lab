@@ -32,14 +32,14 @@
     "exact_fields": [
       "target_date",
       "cutoff_date",
-      "actual_quintet",
-      "split"
+      "actual_quintet"
     ],
     "index_identity": "q7.prior_draws must equal q80_c0.target_index",
     "q7_rows": 3286,
     "q80_c0_rows": 3354,
     "expected_common_rows": 3286,
-    "source_window_rule": "For Q7 targets through 2026-10-24, only Q80 C0 ledger rows strictly before the target index may enter predictors."
+    "source_window_rule": "For Q7 targets through 2026-10-24, only Q80 C0 ledger rows strictly before the target index may enter predictors.",
+    "split_policy": "Use the Q7 ledger split as authoritative. Do not compare Q80 C0 split labels because C0 and Q7 have different target-universe lengths and therefore different 60/20/20 split boundaries."
   },
   "outcome": {
     "name": "q7_mean_percentile_all",
