@@ -136,28 +136,54 @@ def verify_c5_readback():
     if receipt.get("status") != "REMOTE_GIT_READBACK_VERIFIED" or receipt.get("files_verified") != 2:
         raise RuntimeError("Q141-C5 remote readback receipt invalid")
     if receipt.get("code_lineage_verified") != len(manifest.get("code_lineage", {})):
-        raise RuntimeError("Q141-C5 code lineage receipt count mismatch")
+        raise RuntimeError("Q141-C5 historical code-lineage receipt count mismatch")
     manifest_bytes = C5_MANIFEST.read_bytes()
     if receipt.get("manifest_git_blob_sha1") != c5.git_blob_sha1(manifest_bytes):
         raise RuntimeError("Q141-C5 manifest blob identity mismatch")
-    verified_files, verified_lineage = [], []
+    verified_files = []
     for label, expected in manifest["files"].items():
         raw = (ROOT / expected["path"]).read_bytes()
         if len(raw) != expected["bytes"] or c5.sha256_bytes(raw) != expected["sha256"] or c5.git_blob_sha1(raw) != expected["git_blob_sha1"]:
-            raise RuntimeError(f"Q141-C5 output readback mismatch: {label}")
+            raise RuntimeError(f"Q141-C5 persisted output mismatch: {label}")
         verified_files.append(label)
+    lineage_drift = []
+    allowed_drift = {"q80_report", "q80_manifest"}
     for label, expected in manifest["code_lineage"].items():
         raw = (ROOT / expected["path"]).read_bytes()
-        if len(raw) != expected["bytes"] or c5.sha256_bytes(raw) != expected["sha256"] or c5.git_blob_sha1(raw) != expected["git_blob_sha1"]:
-            raise RuntimeError(f"Q141-C5 source lineage mismatch: {label}")
-        verified_lineage.append(label)
+        matches = (
+            len(raw) == expected["bytes"]
+            and c5.sha256_bytes(raw) == expected["sha256"]
+            and c5.git_blob_sha1(raw) == expected["git_blob_sha1"]
+        )
+        if not matches:
+            if label not in allowed_drift:
+                raise RuntimeError(f"Q141-C5 unexpected source lineage drift: {label}")
+            lineage_drift.append(label)
+
+    # Q80's report and manifest were replayed after C5; allow only that
+    # documented metadata drift if the underlying ledger and archive remain exact.
+    q80_report = c5.read_json(c5.Q80_REPORT)
+    q80_manifest = c5.read_json(c5.Q80_MANIFEST)
+    q80_ledger_sha = c5.sha256_bytes(c5.Q80_LEDGER.read_bytes())
+    if q80_report.get("task_id") != "Q141-C0" or q80_report.get("source", {}).get("git_blob_sha1") != c5.Q141_ARCHIVE_BLOB:
+        raise RuntimeError("current Q80 report archive lineage invalid")
+    if q80_manifest.get("source_archive_git_blob_sha1") != c5.Q141_ARCHIVE_BLOB:
+        raise RuntimeError("current Q80 manifest archive lineage invalid")
+    if q80_manifest.get("target_rows") != c5.EXPECTED_Q80_ROWS or q80_manifest.get("target_ledger_sha256") != q80_ledger_sha:
+        raise RuntimeError("current Q80 manifest/ledger identity invalid")
+    if q80_report.get("status") != "EXECUTED_EXPLORATORY":
+        raise RuntimeError("current Q80 report status invalid")
+    if any(label not in allowed_drift for label in lineage_drift):
+        raise RuntimeError("Q141-C5 lineage drift exceeds the documented Q80 replay")
     return {
         "report_git_blob_sha1": c5.git_blob_sha1(C5_REPORT.read_bytes()),
         "manifest_git_blob_sha1": c5.git_blob_sha1(manifest_bytes),
         "checkpoint_git_blob_sha1": c5.git_blob_sha1(C5_CHECKPOINT.read_bytes()),
         "receipt_git_blob_sha1": c5.git_blob_sha1(C5_RECEIPT.read_bytes()),
         "output_files_verified": len(verified_files),
-        "code_lineage_verified": len(verified_lineage),
+        "historical_code_lineage_receipt_count": receipt["code_lineage_verified"],
+        "current_source_lineage_drift": lineage_drift,
+        "drift_resolution": "Q80 report/manifest metadata replay allowed; Q80 ledger SHA-256 and archive lineage revalidated exactly.",
         "blind_oos_effect": report["primary"]["mae_improvement"],
         "blind_oos_p": report["primary"]["one_sided_block_signflip_p"],
     }
