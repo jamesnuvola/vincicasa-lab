@@ -1,0 +1,257 @@
+{
+  "experiment": "Q131_overlap_count_lag1_markov",
+  "generated_at_utc": "2026-11-12T00:41:31Z",
+  "scientific_status": "EXPLORATORY_NULL",
+  "preregistration_status": "FORMAL_SPECIFICATION_FOLLOWS_INITIAL_EXPLORATORY_COMPUTATION",
+  "decision": "NO_OVERLAP_MARKOV_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "base_commit": "06e9e470054a86a0b710657db35e0c2259ef6b0a",
+    "path": "data/storico_daily.csv",
+    "blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "rows": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "The overlap count between consecutive 5-of-40 draws may exhibit first-order Markov dependence that improves one-step-ahead probability forecasts of the next overlap count.",
+  "definition": {
+    "overlap": "O_t = |D_t ∩ D_(t-1)|",
+    "support": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "null": "Independent uniform 5-of-40 draws imply Hypergeometric(N=40,K=5,n=5) overlap distribution and no predictive lag-1 dependence.",
+    "models": {
+      "M0": "Exact hypergeometric probabilities.",
+      "M1": "Prequential empirical marginal overlap distribution with 200 pseudo-observations from M0.",
+      "M2": "Prequential conditional distribution P(O_t | O_(t-1)), shrunk by 200 observations toward M1."
+    }
+  },
+  "protocol": {
+    "warmup_draws": 200,
+    "targets": 3204,
+    "first_target_zero_based_draw_index": 200,
+    "split": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "shrinkage_strength": 200,
+    "block_length": 20,
+    "block_signflip_replicates": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "seed": 13120261112,
+    "scoring": "Multiclass Brier score and log-loss; score before updating marginal and transition counts.",
+    "inference": "One-sided block sign-flip for positive score gain; circular moving-block bootstrap; Holm across four within-run endpoints."
+  },
+  "baseline": {
+    "probabilities": [
+      0.493355703882,
+      0.397867503131,
+      0.099466875783,
+      0.009042443253,
+      0.000265954213,
+      0.000001519738
+    ],
+    "mean": 0.625,
+    "observed_overlap_counts": [
+      1668,
+      1349,
+      358,
+      27,
+      1,
+      0
+    ],
+    "observed_mean": 0.631795474581
+  },
+  "chronological_segments": {
+    "discovery": {
+      "targets": 1922,
+      "observed_mean_overlap": 0.633714880333,
+      "observed_counts": [
+        943,
+        758,
+        204,
+        16,
+        1,
+        0
+      ],
+      "models": {
+        "M0": {
+          "brier": 0.59247079156,
+          "logloss": 0.998541336242
+        },
+        "M1": {
+          "brier": 0.593166749367,
+          "logloss": 1.001186119355
+        },
+        "M2": {
+          "brier": 0.594142472835,
+          "logloss": 1.002921971793
+        }
+      }
+    },
+    "validation": {
+      "targets": 641,
+      "observed_mean_overlap": 0.645865834633,
+      "observed_counts": [
+        302,
+        270,
+        63,
+        6,
+        0,
+        0
+      ],
+      "models": {
+        "M0": {
+          "brier": 0.591897558734,
+          "logloss": 0.991960800432
+        },
+        "M1": {
+          "brier": 0.592339283621,
+          "logloss": 0.993168618206
+        },
+        "M2": {
+          "brier": 0.592749995365,
+          "logloss": 0.995519852119
+        }
+      }
+    },
+    "blind_oos": {
+      "targets": 641,
+      "observed_mean_overlap": 0.608424336973,
+      "observed_counts": [
+        319,
+        255,
+        66,
+        1,
+        0,
+        0
+      ],
+      "models": {
+        "M0": {
+          "brier": 0.583559889997,
+          "logloss": 0.963226075721
+        },
+        "M1": {
+          "brier": 0.583773821519,
+          "logloss": 0.963300667351
+        },
+        "M2": {
+          "brier": 0.584139912121,
+          "logloss": 0.963862241743
+        }
+      }
+    }
+  },
+  "blind_oos_inference": [
+    {
+      "name": "M1_vs_M0_brier",
+      "gain": -0.000213931521,
+      "p_raw": 0.792584148317,
+      "ci95": [
+        -0.000679035759,
+        0.000254681082
+      ],
+      "blocks": 33,
+      "p_holm": 1
+    },
+    {
+      "name": "M1_vs_M0_logloss",
+      "gain": -0.000074591629,
+      "p_raw": 0.540469190616,
+      "ci95": [
+        -0.001378506543,
+        0.001261440591
+      ],
+      "blocks": 33,
+      "p_holm": 1
+    },
+    {
+      "name": "M2_vs_M1_brier",
+      "gain": -0.000366090603,
+      "p_raw": 0.861042779144,
+      "ci95": [
+        -0.001035243912,
+        0.000280337996
+      ],
+      "blocks": 33,
+      "p_holm": 1
+    },
+    {
+      "name": "M2_vs_M1_logloss",
+      "gain": -0.000561574392,
+      "p_raw": 0.708625827483,
+      "ci95": [
+        -0.002463291387,
+        0.001280584425
+      ],
+      "blocks": 33,
+      "p_holm": 1
+    }
+  ],
+  "multiple_testing": {
+    "method": "Holm-Bonferroni",
+    "family_size": 4,
+    "scope": "Four Q131 endpoints only; does not correct accumulated Q00-Q130 research."
+  },
+  "related_prior_work": {
+    "q50": "Structural recurrence/hazard already includes overlap-category age/hazard; its age model underperformed marginal frequency. Q131 tests lag-1 Markov dependence of numeric overlap counts.",
+    "q127_q128": "Low/high and adjacent-run transition studies are related sequential-structure diagnostics; Q131 is not independent of the full research family."
+  },
+  "prospective_315": {
+    "target_date": "2026-11-11",
+    "contest": 315,
+    "status": "PROVISIONAL_SECONDARY_SOURCE_CORROBORATED",
+    "numbers": [
+      1,
+      21,
+      22,
+      27,
+      29
+    ],
+    "official_sisal_page": "Confirms contest 315 and prize profile, but extracted official text does not show the five numbers.",
+    "secondary_sources": [
+      "https://www.estrazionedellotto.it/vinci-casa/risultati-vinci-casa",
+      "https://www.estrazionidioggi.com/vincicasa/estrazioni/vincicasa-estrazione-del-mercoledi-11-novembre-2026.html"
+    ],
+    "shadow_scoring": {
+      "global_42_rules": {
+        "top20_max": 5,
+        "top10_max": 3,
+        "top5_max": 2,
+        "best_top20_config": "pair_affinity_50"
+      },
+      "app_engine": {
+        "top20_hits": 3,
+        "top10_hits": 2,
+        "top5_hits": 0
+      },
+      "positional_engine": {
+        "top20_hits": 2,
+        "top10_hits": 2,
+        "top5_hits": 1
+      }
+    },
+    "canonical_archive_updated": false,
+    "q60_incremented": false,
+    "reason": "Official combination not yet present in official archive/bulletin; provisional secondary-source scoring excluded from canonical walk-forward and Q60."
+  },
+  "q60": {
+    "status": "INSUFFICIENT_PROSPECTIVE_CASES",
+    "valid_complete_pairs": 23,
+    "minimum_required": 200,
+    "incremented": false
+  },
+  "limitations": [
+    "The initial exploratory computation preceded this formal written specification; Q131 is not a preregistered confirmatory experiment.",
+    "Historical Blind OOS is chronological but not a virgin holdout and has been repeatedly examined across the SONAR research program.",
+    "Holm correction covers four Q131 endpoints only, not all prior Q00-Q130 research.",
+    "Overlap-count transitions share draws structurally; block-based inference is used, but results remain exploratory.",
+    "No predictive claim about the next VinciCasa five-number combination is supported."
+  ]
+}
