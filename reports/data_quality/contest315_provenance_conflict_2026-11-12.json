@@ -1,0 +1,60 @@
+{
+  "experiment": "Q132_archive_parser_row_integrity_audit",
+  "generated_at_utc": "2026-11-12T01:42:05Z",
+  "status": "PROVENANCE_CONFLICT_REQUIRES_HUMAN_REVIEW",
+  "source_main_commit": "50078e442509564bbc1d150ac6aea82421e22979",
+  "canonical_archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "rows": 3405,
+    "last_date": "2026-11-11",
+    "appended_row": "2026-11-11,1,21,22,27,29",
+    "append_commit": "50078e442509564bbc1d150ac6aea82421e22979",
+    "append_commit_time_utc": "2026-11-12T01:39:53Z"
+  },
+  "official_archive_observation": {
+    "url": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+    "checked_at_local": "2026-11-12T02:42:05+01:00",
+    "visible_contest_315": "In programmazione / In attesa",
+    "visible_contest_316": "In programmazione / In attesa",
+    "evidence_lines": "183-184 in the retrieved official archive page",
+    "status": "OFFICIAL_VISIBLE_PAGE_DOES_NOT_CONFIRM_315_NUMBERS"
+  },
+  "updater_diagnostic": {
+    "path": "scripts/aggiorna_estrazioni.py",
+    "old_parser": "Strip HTML tags, find a date, scan the next 260 characters, then take the first five strictly increasing tokens in 1..40.",
+    "row_bound": false,
+    "raw_response_snapshot_persisted": false,
+    "exact_token_origin_reconstructed": false,
+    "root_cause": "The parser associates numbers by proximity in flattened page text rather than by the result cell belonging to the same contest row. The generic dataset audit validates shape and ranges but not source-row provenance."
+  },
+  "observed_freezes_for_2026_11_11": {
+    "cutoff": "2026-11-10",
+    "global_freq_100_top20_hits_if_provisional_numbers": "2/5 (1,29)",
+    "positional_top20_hits_if_provisional_numbers": "2/5 (1,29)",
+    "app_top20_hits_if_provisional_numbers": "3/5 (1,21,27)",
+    "best_of_42_top20_if_provisional_numbers": "5/5",
+    "status": "PROVISIONAL_ONLY_NOT_CANONICAL_SCORING"
+  },
+  "q60": {
+    "current_complete_pairs": 23,
+    "required_pairs": 200,
+    "remaining": 177,
+    "increment_for_2026_11_11": 0,
+    "reason": "The official archive page does not yet publish the 315 combination; the existing paired freezes remain pending."
+  },
+  "quantitative_hypothesis": {
+    "statement": "A parser that binds a date and exactly five valid sorted numbers to cells in the same table row will reject incomplete contest rows and unrelated numbers elsewhere in the page.",
+    "acceptance_rule": "The first cell must contain one supported Italian date; the second cell must contain exactly five distinct ascending integers in 1..40; no look-ahead outside the row is permitted.",
+    "test_plan": "Six deterministic unit tests: valid row, pending row with nearby unrelated numbers, script numbers outside the row, six-token result cell, invalid ordering/range/duplicates, conflicting duplicate date.",
+    "predictive_walk_forward": "NOT_RUN",
+    "reason": "The newly appended 315 row has unresolved official-source provenance. Running a new predictive walk-forward or scoring the next target on this archive would risk training on an unverified outcome."
+  },
+  "limits": [
+    "The raw HTML response fetched by the scheduled updater was not persisted, so the exact source fragment that produced the 315 row cannot be reconstructed.",
+    "The official archive currently shows contest 315 as in programmazione; this is a provenance conflict, not proof that the secondary numbers are false.",
+    "This audit is a data-pipeline test, not a predictive validation and has no Discovery/Validation/Blind OOS split.",
+    "The existing main archive and generated app JSON are not rewritten by this research PR; the row remains flagged for human review."
+  ],
+  "next_action": "Review the row-bound parser and regression tests. Independently confirm contest 315 in the official archive or official bulletin. Only then either preserve the row as verified or submit a separate reviewed correction; do not evaluate/increment Q60 or freeze a new target while the source conflict remains."
+}
