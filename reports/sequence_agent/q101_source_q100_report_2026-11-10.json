@@ -1,0 +1,136 @@
+{
+  "experiment_id": "Q100",
+  "title": "Prequential rank-order calibration audit of the active SONAR hybrid engine",
+  "status": "EXPLORATORY_NO_PREDICTIVE_LIFT_DEMONSTRATED",
+  "generated_date": "2026-11-10",
+  "source": {
+    "archive": "data/storico_daily.csv",
+    "archive_blob_sha": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "scorer": "src/VinciCasaLab.jsx",
+    "scorer_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_report_blob_sha": "ff07b6da4948bb89467067c2552d9b1f78bc9549",
+    "main_base_commit": "d075d84efdbb1f0b890f3132ebdf6a6a7e1d825b"
+  },
+  "data": {
+    "draws": 3403,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-09",
+    "warmup_draws": 200,
+    "targets": 3203
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1921,
+      "mean_rank": 20.438001041124426,
+      "mean_rank_gain_vs_exact_null": 0.06199895887558573,
+      "mean_top5_hits": 0.6418532014575742,
+      "mean_top10_hits": 1.2493492972410203,
+      "mean_top20_hits": 2.5226444560124937,
+      "top20_5of5_count": 51,
+      "mean_hits_by_rank_bin_1_5_to_36_40": [
+        0.6418532014575742,
+        0.6074960957834461,
+        0.6330036439354503,
+        0.6402915148360229,
+        0.5908381051535658,
+        0.6491410723581468,
+        0.6257157730348777,
+        0.6116605934409162
+      ]
+    },
+    "validation": {
+      "targets": 641,
+      "mean_rank": 20.745085803432136,
+      "mean_rank_gain_vs_exact_null": -0.24508580343213723,
+      "mean_top5_hits": 0.6349453978159126,
+      "mean_top10_hits": 1.2464898595943839,
+      "mean_top20_hits": 2.436817472698908,
+      "top20_5of5_count": 10,
+      "mean_hits_by_rank_bin_1_5_to_36_40": [
+        0.6349453978159126,
+        0.6115444617784711,
+        0.5772230889235569,
+        0.6131045241809673,
+        0.6645865834633385,
+        0.6162246489859594,
+        0.592823712948518,
+        0.6895475819032761
+      ]
+    },
+    "historical_blind_oos": {
+      "targets": 641,
+      "mean_rank": 20.331357254290168,
+      "mean_rank_gain_vs_exact_null": 0.1686427457098286,
+      "mean_top5_hits": 0.6224648985959438,
+      "mean_top10_hits": 1.3166926677067083,
+      "mean_top20_hits": 2.5257410296411855,
+      "top20_5of5_count": 20,
+      "mean_hits_by_rank_bin_1_5_to_36_40": [
+        0.6224648985959438,
+        0.6942277691107644,
+        0.6146645865834633,
+        0.594383775351014,
+        0.6146645865834633,
+        0.6053042121684867,
+        0.6521060842433697,
+        0.6021840873634945
+      ]
+    },
+    "overall": {
+      "targets": 3203,
+      "mean_rank": 20.478114267873895,
+      "mean_rank_gain_vs_exact_null": 0.021885732126131853,
+      "mean_top5_hits": 0.6365906962222916,
+      "mean_top10_hits": 1.2622541367467999,
+      "mean_top20_hits": 2.5060880424601937,
+      "top20_5of5_count": 81,
+      "mean_hits_by_rank_bin_1_5_to_36_40": [
+        0.6365906962222916,
+        0.6256634405245083,
+        0.6181704651888854,
+        0.6256634405245083,
+        0.6103652825476116,
+        0.6337808304714331,
+        0.6244146113019045,
+        0.6253512332188573
+      ]
+    }
+  },
+  "primary_inference": {
+    "endpoint": "mean rank of the five target numbers; lower is better",
+    "exact_null_mean_rank": 20.5,
+    "exact_null_rank_sum_mean_per_target": 102.5,
+    "exact_null_rank_sum_variance_per_target": 597.9166666666661,
+    "blind_mean_rank": 20.331357254290168,
+    "blind_mean_gain": 0.1686427457098286,
+    "observed_blind_rank_sum": 65162,
+    "null_expected_blind_rank_sum": 65702.5,
+    "monte_carlo_replicates": 100000,
+    "monte_carlo_extreme_replicates": 19136,
+    "p_one_sided_raw": 0.19136808631913682,
+    "family_size_bonferroni": 43,
+    "p_bonferroni_43": 1,
+    "block_bootstrap_replicates": 10000,
+    "block_length": 20,
+    "mean_gain_ci95": [
+      -0.22230889235569426,
+      0.5574102964118562
+    ]
+  },
+  "interpretation": "The blind historical segment has a small favorable point estimate, but the interval includes zero and the exact conditional-null test is not significant; the conservative 43-model family adjustment is 1.0. The ranking is not validated.",
+  "decision": {
+    "predictive_lift_demonstrated": false,
+    "promotion_allowed": false,
+    "production_change_allowed": false,
+    "merge_allowed": false,
+    "human_review_required": true
+  },
+  "limitations": [
+    "The historical Blind OOS segment has been exposed to prior SONAR research and is not a virgin prospective holdout.",
+    "The active engine was selected after extensive prior experimentation; Bonferroni across 43 catalogued configurations is conservative but cannot cover unknown analyst degrees of freedom.",
+    "The exact conditional null assumes independent uniform 5-of-40 draws; the pre-target ranking is predictable from prior history.",
+    "The circular block-bootstrap interval is an uncertainty summary, not evidence of stationarity.",
+    "Rank-order calibration is a diagnostic of the existing engine, not a new production predictor or a winning-number guarantee."
+  ],
+  "next_action": "Do not tune the active engine from this historical rank audit. Preserve all freezes and continue Q60 append-only prospective collection; score the 2026-11-10 freezes only after the official result is added to the canonical archive."
+}

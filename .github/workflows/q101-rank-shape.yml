@@ -1,0 +1,29 @@
+name: Q101 nonlinear rank-shape replay
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "scripts/sonar_q101_nonlinear_rank_shape.js"
+      - ".github/workflows/q101-rank-shape.yml"
+      - "reports/sequence_agent/q101_*"
+  push:
+    branches:
+      - research/q101-nonlinear-rank-shape-20261110
+jobs:
+  q101-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Reproduce Q101 nonlinear rank-shape audit
+        run: node scripts/sonar_q101_nonlinear_rank_shape.js
+      - name: Require byte-identical persisted outputs
+        run: |
+          git diff --exit-code -- \
+            reports/sequence_agent/q101_nonlinear_rank_shape_report_2026-11-10.json \
+            reports/sequence_agent/q101_nonlinear_rank_shape_validation_2026-11-10.json \
+            reports/sequence_agent/q101_nonlinear_rank_shape_checkpoint_2026-11-10.md \
+            reports/sequence_agent/q101_nonlinear_rank_shape_persistence_manifest_2026-11-10.json

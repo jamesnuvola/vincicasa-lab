@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "tests": [
+    {
+      "id": "source_blob_provenance",
+      "status": "PASS",
+      "detail": "Archive, Q100 protocol/report/validation/ledger, scorer and active report Git blob hashes match the pinned source evidence."
+    },
+    {
+      "id": "q100_source_validation",
+      "status": "PASS",
+      "detail": "The pinned Q100 validation artifact reports PASS and its provenance matches the canonical archive, scorer and active report."
+    },
+    {
+      "id": "canonical_archive_integrity",
+      "status": "PASS",
+      "detail": "3403 unique chronological draws; every row is a sorted five-number subset of 1..40."
+    },
+    {
+      "id": "strict_prior_cutoff_reconciliation",
+      "status": "PASS",
+      "detail": "All 3203 target indices, target dates, previous-day cutoffs and maximum training indices reconcile to the canonical archive."
+    },
+    {
+      "id": "rank_value_integrity",
+      "status": "PASS",
+      "detail": "All 3203 five-rank vectors contain five distinct integer ranks in 1..40."
+    },
+    {
+      "id": "rank_summary_reconciliation",
+      "status": "PASS",
+      "detail": "Rank sums, means, Top5/Top10/Top20 and eight band counts recompute exactly from the Q100 ledger."
+    },
+    {
+      "id": "chronological_split_reconciliation",
+      "status": "PASS",
+      "detail": "1921 Discovery + 641 Validation + 641 historical Blind OOS = 3203 targets."
+    },
+    {
+      "id": "q100_report_reconciliation",
+      "status": "PASS",
+      "detail": "Per-band means and mean ranks reconcile to the pinned Q100 report in all three splits."
+    },
+    {
+      "id": "exact_multivariate_hypergeometric_law",
+      "status": "PASS",
+      "detail": "All 792 band-count compositions are enumerated; integer weights sum to exactly 658008 five-subsets."
+    },
+    {
+      "id": "monte_carlo_seed_replay",
+      "status": "PASS",
+      "detail": "Repeated 1000-replicate runs with the fixed seed produce identical extreme counts and p-values."
+    },
+    {
+      "id": "conditional_null_full_run",
+      "status": "PASS",
+      "detail": "The registered 20000-replicate Blind OOS conditional randomization completed."
+    }
+  ],
+  "provenance": {
+    "archive": "8d3e19f0b417024ba32e576697eac0648d12ab86",
+    "source_ledger": "50f384ec3fec77ba505d30374daa7e0ddd54afbe",
+    "q100_protocol": "927266f5f5cb3906b0faec7e67ce8955edb1e643",
+    "q100_report": "9de459c57e3120958a9bc6ba2de63d00e34f53f2",
+    "q100_validation": "b3498f334007e7b7dd135e9a407409f0f15523ad",
+    "scorer": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_report": "ff07b6da4948bb89467067c2552d9b1f78bc9549"
+  },
+  "checks": {
+    "cutoff_errors": 0,
+    "actual_draw_mismatches": 0,
+    "invalid_rank_vectors": 0,
+    "rank_summary_mismatches": 0,
+    "split_mismatches": 0,
+    "compositions": 792,
+    "subset_weight_sum": 658008
+  },
+  "monte_carlo": {
+    "replicates": 20000,
+    "extreme": 5053,
+    "p": 0.2526873656317184,
+    "replay_extreme_a": 238,
+    "replay_extreme_b": 238
+  }
+}
