@@ -581,7 +581,9 @@ def main():
                     canonical_order = canon_scores[pair_i] >= canon_scores[pair_j]
                     flipped = legacy_order != canonical_order
                     if np.any(flipped):
-                        gaps = np.abs(legacy_scores[pair_i[flipped]] - legacy_scores[pair_j[flipped]])
+                        legacy_gaps = np.abs(legacy_scores[pair_i[flipped]] - legacy_scores[pair_j[flipped]])
+                        canonical_gaps = np.abs(canon_scores[pair_i[flipped]] - canon_scores[pair_j[flipped]])
+                        gaps = np.maximum(legacy_gaps, canonical_gaps)
                         flip_gap = float(np.max(gaps))
                         target_legacy_numpy_max_flipped_pair_score_gap = max(target_legacy_numpy_max_flipped_pair_score_gap, flip_gap)
                         global_legacy_numpy_max_flipped_pair_score_gap = max(global_legacy_numpy_max_flipped_pair_score_gap, flip_gap)
