@@ -15,6 +15,7 @@ REPORT=OUT/"q141_formula_size_trend_report_2026-11-12.json"
 LEDGER=OUT/"q141_formula_size_trend_target_ledger_2026-11-12.csv"
 MANIFEST=OUT/"q141_formula_size_trend_manifest_2026-11-12.json"
 CHECKPOINT=OUT/"q141_formula_size_trend_checkpoint_2026-11-12.json"
+FORMULA_SAMPLE=OUT/"q141_formula_size_trend_formula_sample_2026-11-12.csv"
 SEED,SAMPLE_PER_MASS,BLOCK_LENGTH,REPLICATES=14120261113,120,20,20000
 EXPECTED_COUNTS=[25,300,2348,13202,57201,198605,567479,1359622,2768832,4840649]
 EXPECTED_SPLITS={"discovery":2013,"validation":671,"blind_oos":670}
@@ -126,6 +127,19 @@ def main():
     formulas_by_mass=sample_formulas_by_mass(); sample_counts={m:len(formulas_by_mass[m]) for m in MASSES}
     total_formulas=sum(sample_counts.values())
     if total_formulas!=1105: raise RuntimeError("Q141-B3: total sampled formula count mismatch")
+    with FORMULA_SAMPLE.open("w",newline="",encoding="utf-8") as handle:
+        writer=csv.writer(handle)
+        writer.writerow(["primitive_mass","formula_id","support_size","canonical_feature_weights"])
+        for mass in MASSES:
+            for formula in formulas_by_mass[mass]:
+                weights=";".join(
+                    f"{registry.CANONICAL_FEATURE_NAMES[index]}:{weight}"
+                    for index,weight in formula["signature"]
+                )
+                writer.writerow([mass,formula["formula_id"],formula["support_size"],weights])
+    formula_sample_bytes=FORMULA_SAMPLE.read_bytes()
+    formula_sample_sha256=sha256_bytes(formula_sample_bytes)
+    formula_sample_git_blob_sha1=git_blob_sha1(formula_sample_bytes)
     prefix,pos_prefix=base.build_prefix_arrays(draws); pair_counts=np.zeros((40,40),dtype=np.int32); occurrence_lists=[[] for _ in range(40)]
     target_rows=[]
     for i,draw in enumerate(draws):
@@ -195,12 +209,18 @@ def main():
                 out[f"mass_{m}_top10_share"]=f"{row['top10'][m]:.17g}"; out[f"mass_{m}_top20_share"]=f"{row['top20'][m]:.17g}"
                 out[f"mass_{m}_mean_actual_rank"]=f"{row['mean_rank'][m]:.17g}"
             w.writerow(out)
-    report={"schema_version":"1.0","task_id":"Q141-B3","status":"COMPLETE_EXPLORATORY_WALKFORWARD","decision":"NO_COMPLEXITY_TREND_LIFT_DEMONSTRATED",
+    blind_primary_test=next(x for x in tests if x["id"]=="slope_top5_blind_oos")
+    decision=("POSITIVE_COMPLEXITY_TREND_SIGNAL_EXPLORATORY_ONLY"
+        if blind_primary_test["p_holm_25_tests"]<0.05 and blind_primary_test["ci95"][0]>0
+        else "NO_COMPLEXITY_TREND_LIFT_DEMONSTRATED")
+    report={"schema_version":"1.0","task_id":"Q141-B3","status":"COMPLETE_EXPLORATORY_WALKFORWARD","decision":decision,
         "hypothesis":prereg["hypothesis"],"source":{"archive_git_blob_sha1":archive_blob,"eligible_draws":len(draws),"cutoff":dates[-1],
         "excluded_rows_after_cutoff":excluded,"contest_315_used":False},
         "formula_universe":{"raw_q80_features":27,"canonical_q80_features":25,"exact_aliases":registry.ALIASES,
         "canonical_formula_count_k1_to_k10":sum(EXPECTED_COUNTS),"canonical_formula_count_by_primitive_mass":EXPECTED_COUNTS,
         "sampled_formula_count":total_formulas,"sampled_formula_count_by_mass":{str(k):sample_counts[k] for k in MASSES},
+        "sample_catalog_path":str(FORMULA_SAMPLE.relative_to(ROOT)),"sample_catalog_sha256":formula_sample_sha256,
+        "sample_catalog_git_blob_sha1":formula_sample_git_blob_sha1,
         "sampling":"uniform without replacement from exact canonical signatures within each primitive mass; all 25 mass-1 functions included","seed":SEED},
         "walkforward":{"targets":len(target_rows),"minimum_prior_history":base.MIN_HISTORY,"split_counts":EXPECTED_SPLITS,
         "strict_prior_cutoffs_rechecked":True,"target_scored_before_state_update":True,"metrics_by_split":split_summary,
@@ -226,14 +246,17 @@ def main():
     manifest={"schema_version":"1.0","task_id":"Q141-B3","status":"PERSISTENCE_BUNDLE_READY","source_archive_git_blob_sha1":archive_blob,
         "preregistration_sha256":sha256_bytes(prereg_bytes),"sampled_formula_count":total_formulas,"canonical_formula_count":sum(EXPECTED_COUNTS),
         "target_rows":len(target_rows),"split_counts":EXPECTED_SPLITS,"ledger_sha256":sha256_bytes(ledger_bytes),"ledger_git_blob_sha1":git_blob_sha1(ledger_bytes),
+        "formula_sample_sha256":formula_sample_sha256,"formula_sample_git_blob_sha1":formula_sample_git_blob_sha1,
         "report_sha256":sha256_bytes(report_bytes),"runner_sha256":sha256_bytes(Path(__file__).read_bytes()),"runner_path":str(Path(__file__).relative_to(ROOT)),
         "decision":report["decision"],"next_action":report["next_action"]}
     manifest_bytes=(json.dumps(manifest,indent=2,sort_keys=True)+"\n").encode("utf-8"); MANIFEST.write_bytes(manifest_bytes)
     checkpoint={"schema_version":"1.0","task_id":"Q141-B3","status":"COMPUTED_BUNDLE_READY_FOR_GIT_PERSISTENCE","source_archive_git_blob_sha1":archive_blob,
         "report_sha256":sha256_bytes(report_bytes),"ledger_sha256":sha256_bytes(ledger_bytes),"manifest_sha256":sha256_bytes(manifest_bytes),
+        "formula_sample_sha256":formula_sample_sha256,"formula_sample_git_blob_sha1":formula_sample_git_blob_sha1,
         "target_rows":len(target_rows),"sampled_formula_count":total_formulas,"next_action":report["next_action"]}
     CHECKPOINT.write_text(json.dumps(checkpoint,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     print(json.dumps({"status":report["status"],"decision":report["decision"],"targets":len(target_rows),"sampled_formula_count":total_formulas,
         "selected_mass":selected_mass,"blind_primary":report["statistical_inference"]["primary_blind_top5_complexity_slope"],
-        "report_sha256":manifest["report_sha256"],"ledger_sha256":manifest["ledger_sha256"]},sort_keys=True))
+        "report_sha256":manifest["report_sha256"],"ledger_sha256":manifest["ledger_sha256"],
+        "formula_sample_sha256":formula_sample_sha256},sort_keys=True))
 if __name__=="__main__": main()
