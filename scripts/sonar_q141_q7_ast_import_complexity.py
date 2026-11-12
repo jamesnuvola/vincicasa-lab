@@ -271,13 +271,14 @@ def moving_block_ci(values, block_length=BLOCK_LENGTH, replicates=REPLICATES, se
         raise ValueError("invalid paired series for moving-block bootstrap")
     rng = np.random.default_rng(seed)
     samples = np.empty(replicates, dtype=np.float64)
-    for r in range(replicates):
-        indices = []
-        while len(indices) < n:
-            start = int(rng.integers(0, n))
-            take = min(block_length, n - len(indices))
-            indices.extend(((start + np.arange(take)) % n).tolist())
-        samples[r] = float(x[np.asarray(indices[:n], dtype=np.int32)].mean())
+    block_count = int(math.ceil(n / block_length))
+    offsets = np.arange(block_length, dtype=np.int32)
+    for first in range(0, replicates, 500):
+        last = min(replicates, first + 500)
+        starts = rng.integers(0, n, size=(last - first, block_count), dtype=np.int32)
+        indices = (starts[:, :, None] + offsets[None, None, :]) % n
+        indices = indices.reshape(last - first, -1)[:, :n]
+        samples[first:last] = x[indices].mean(axis=1)
     lo, hi = np.quantile(samples, [0.025, 0.975])
     return [float(lo), float(hi)]
 
