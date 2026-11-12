@@ -1,0 +1,33 @@
+name: Q140 exact sequential marginal break replay
+
+on:
+  push:
+    branches:
+      - research/q140-sequential-marginal-break-fwer-20261112
+    paths:
+      - data/storico_daily.csv
+      - reports/sequence_agent/q140_sequential_marginal_break_fwer_*
+      - scripts/sonar_q140_sequential_marginal_break_fwer.mjs
+      - .github/workflows/q140-replay.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - data/storico_daily.csv
+      - reports/sequence_agent/q140_sequential_marginal_break_fwer_*
+      - scripts/sonar_q140_sequential_marginal_break_fwer.mjs
+      - .github/workflows/q140-replay.yml
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Recompute Q140 and verify persisted outputs
+        run: node scripts/sonar_q140_sequential_marginal_break_fwer.mjs
