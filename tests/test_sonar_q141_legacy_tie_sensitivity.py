@@ -44,7 +44,7 @@ class LegacyTieSensitivityTests(unittest.TestCase):
             make_row(0, top5_delta_hits=-1, top10_delta_hits=1, rank_mismatches=1),
             make_row(1, split="validation", top5_delta_hits=1, top20_delta_hits=0),
         ]
-        result = audit.summarize_rows(rows)
+        result = audit.summarize_rows(rows, expected_split_counts=None)
         all_rows = result["all"]
         self.assertEqual(all_rows["legacy_rank_mismatches"], 1)
         self.assertEqual(all_rows["formula_target_comparisons"], 240)
@@ -73,6 +73,7 @@ class LegacyTieSensitivityTests(unittest.TestCase):
     def test_nonchronological_targets_fail_closed(self):
         rows = [make_row(0), make_row(1)]
         rows[1]["target_date"] = rows[0]["target_date"]
+        rows[1]["cutoff_date"] = (date.fromisoformat(rows[1]["target_date"]) - timedelta(days=1)).isoformat()
         with self.assertRaisesRegex(ValueError, "not strictly chronological"):
             audit.summarize_rows(rows)
 

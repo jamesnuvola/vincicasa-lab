@@ -50,7 +50,7 @@ def as_float(row, key):
     return value
 
 
-def summarize_rows(rows):
+def summarize_rows(rows, expected_split_counts=EXPECTED_SPLITS):
     if not rows:
         raise ValueError("Q141_B2_BLOCKED: empty target ledger")
     accum = {
@@ -117,8 +117,8 @@ def summarize_rows(rows):
 
     result = {}
     for split, acc in accum.items():
-        if split != "all" and acc["targets"] != EXPECTED_SPLITS[split]:
-            raise ValueError(f"Q141_B2_BLOCKED: {split} target count {acc['targets']} != {EXPECTED_SPLITS[split]}")
+        if expected_split_counts is not None and split != "all" and acc["targets"] != expected_split_counts[split]:
+            raise ValueError(f"Q141_B2_BLOCKED: {split} target count {acc['targets']} != {expected_split_counts[split]}")
         slots = acc["formula_target_comparisons"] * 5
         topk = {}
         for k in (5, 10, 20):
