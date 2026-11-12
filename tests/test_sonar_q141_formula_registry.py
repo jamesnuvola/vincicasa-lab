@@ -59,6 +59,8 @@ class Q141FormulaRegistryTests(unittest.TestCase):
     def test_canonical_score_matches_raw_formula_and_naive_deletion_fails(self):
         rng = np.random.default_rng(14120261112)
         matrix = rng.normal(size=(40, 27))
+        matrix[:, 25] = matrix[:, 0]
+        matrix[:, 26] = matrix[:, 1]
         formulas = [(0,), (0, 25), (0, 1, 25), (0, 1, 25, 26), (1, 2, 3, 26)]
         for columns in formulas:
             signature, scale = registry.canonicalize_formula(columns)
