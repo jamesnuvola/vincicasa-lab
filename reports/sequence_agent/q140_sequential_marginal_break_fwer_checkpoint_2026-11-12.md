@@ -29,6 +29,12 @@
 - Future-suffix invariance: 9/9.
 - Source hash, strict-prior cutoffs, deterministic replay and exact normalization verified.
 
+## Repository reconciliation at recovery
+- Main shadow ledger: 1,321 rows = 1,278 evaluated + 43 pending; pending target 2026-11-12 consists of 42 global configurations (24 family, 12 pair, 6 chain) plus one APP engine row.
+- latest_metrics.json: 1,320 total = 1,278 evaluated + 42 pending. The one-row difference is the pending APP row appended by sonar_active_engine_walkforward.mjs after sonar_sequence_agent.py writes latest_metrics.json in the workflow.
+- Positional daily-lab file: two data rows only; 2026-10-13 evaluated and 2026-10-14 pending. There is no 2026-11-12 positional freeze in the current main tree; earlier summaries claiming 44 freezes for that date were not supported by the repository.
+- Q60 gate lists 24 paired dates through 2026-11-11; 2026-11-11 remains quarantined, leaving 23 source-clean pairs.
+
 ## Limits and next action
 - Exploratory within Q00-Q139; historical Blind OOS is not virgin.
 - No alarms do not prove stationarity; higher-order dependence is outside scope.
