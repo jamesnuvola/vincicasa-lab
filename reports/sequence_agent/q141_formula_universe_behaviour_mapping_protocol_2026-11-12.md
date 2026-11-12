@@ -185,3 +185,22 @@ The next quantitative hypothesis is that at least one pair of distinct formula f
 Under the sequential uniform 5-of-40 null, conditional on the history before target `t`, `H_t ~ Hypergeometric(40, U_t, 5)`. Because `U_t` is itself adaptive but fixed before the target, C1 will use a predictable conditional hypergeometric e-process: a preregistered equal mixture over fixed positive lambda values, with Ville's maximum-e-value p-value. Holm correction covers all 45 pair × split tests. This avoids the invalid shortcut of convolving unconditional hypergeometric distributions while the candidate-set size is adaptive.
 
 C1 remains a historical exploratory test of six coarse families. Its Holm family does not control the entire prior Q00-Q141 research program. A null result will be retained as a valid finding; no pair will be selected from Blind OOS or promoted.
+
+
+## Q141-C1 completed — 2026-11-12
+
+The size-adjusted pair-union experiment completed on 3,354 strict-prior targets (2,013 / 671 / 670) across 15 family pairs and 45 pair × split tests. The target × pair ledger contains 50,310 rows. The conditional hypergeometric e-process handled the adaptive union size; Holm covered all 45 tests.
+
+Blind OOS had four positive-excess pairs but **zero** Holm-significant pairs. The smallest raw anytime p was 0.03605 for frequency_level + position_dependence, but its Holm-adjusted p was 1.0. The largest excess was +0.02332 hits/target for frequency_level + neighbour_field (799 observed vs 783.375 size-conditioned expected), raw p=0.05032 and Holm p=1.0. Discovery had 9/15 positive-excess pairs, Validation 1/15, and Blind OOS 4/15: no stable pairwise complementarity was demonstrated.
+
+The C1 workflow run [43199107862](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43199107862) passed the C0/C1 tests, C1 acceptance, archive and generated-data audits, prospective gate checks and full project CI. The report, manifest and 50,310-row ledger were independently downloaded from its artifact; their SHA256 and Git blob IDs matched the committed files.
+
+## Q141-A provenance audit — 2026-11-12
+
+The new inventory report is `reports/sequence_agent/q141_formula_universe_inventory_lineage_audit_2026-11-12.md`. It confirms that formula counts from Q83–Q92 cannot be summed: their feature grammars overlap and their source archive hashes differ. Q88's metrics manifest and refreshed checkpoint pin different archives. Q90's artifact is externally verified but not stored as Git objects. Q91's artifact and all 34 score shards now have exact Git-object readback verified; its persisted Holm column was blank, so 36 raw p-values were independently adjusted (minimum Holm p=1.0, zero significant).
+
+The Q60 prospective promotion gate remains insufficient at 24 paired dates (23 source-clean) versus the required 200. No engine promotion is allowed.
+
+## Workflow persistence correction
+
+The first concurrent PR/push validation pair both attempted to persist the same generated outputs. The push run succeeded; the PR run encountered an add/add conflict while rebasing. The workflow now keeps PR runs validation-only and performs append-only persistence only on push events to the dedicated `research/q141-*` branches.

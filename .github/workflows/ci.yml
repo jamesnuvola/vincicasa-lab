@@ -63,8 +63,9 @@ jobs:
             reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv
             reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json
           retention-days: 90
+      # PR runs validate and upload; only the push run persists to avoid concurrent add/add conflicts.
       - name: Persist Q141 outputs append-only to the research branch
-        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-')
         env:
           BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
         run: |
