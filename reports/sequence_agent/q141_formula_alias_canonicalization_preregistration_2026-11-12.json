@@ -1,0 +1,114 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B1",
+  "parent_task": "Q141-B",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "registered_at": "2026-11-12",
+  "current_main_commit": "70dcf8cc128884d9739959406d5662ef76daa253",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draw_count": 3404,
+    "cutoff": "2026-11-10",
+    "excluded_contest": {
+      "date": "2026-11-11",
+      "contest": 315
+    }
+  },
+  "aliases": [
+    {
+      "raw_feature": "recent_5",
+      "canonical_feature": "freq_5",
+      "raw_indices": [
+        0,
+        25
+      ]
+    },
+    {
+      "raw_feature": "recent_10",
+      "canonical_feature": "freq_10",
+      "raw_indices": [
+        1,
+        26
+      ]
+    }
+  ],
+  "formula_grammar": {
+    "feature_count_raw": 27,
+    "feature_count_canonical": 25,
+    "formula_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "nominal_formula_count": 16628808,
+    "expected_unique_canonical_formula_count": 9808263,
+    "expected_redundant_formula_count": 6820545,
+    "expected_reduction_fraction": 0.41016439,
+    "canonicalization": "Map exact aliases; count feature multiplicities; divide integer weights by their GCD; retain primitive rational weighted-mean AST."
+  },
+  "hypothesis": "The 27-column Q80 equal-weight formula universe contains 16,628,808 raw combinations of sizes 1..10 but exactly 9,808,263 distinct canonical weighted-mean functions after the two proven alias pairs are represented as multiplicities; canonical scores/ranks remain invariant on all 3,354 strict-prior targets.",
+  "walkforward": {
+    "minimum_prior_history": 50,
+    "expected_targets": 3354,
+    "expected_splits": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "feature_cutoff": "strictly before target",
+    "sample_formula_count_per_size": 12,
+    "total_sample_formula_instances": 120,
+    "all_40_number_scores": true,
+    "score_abs_tolerance": 1e-12,
+    "rank_equality_required": true,
+    "update_order": "score target before appending it to occurrence and pair state"
+  },
+  "baselines": [
+    "raw_index_subset_formula_ids",
+    "canonical_weighted_mean_AST"
+  ],
+  "controls": [
+    "naive_alias_deletion_negative_control",
+    "exact_alias_column_equality",
+    "future_suffix_invariance",
+    "deterministic_replay"
+  ],
+  "uniform_reference": {
+    "top5_number_hit_share": 0.125,
+    "top10_number_hit_share": 0.25,
+    "top20_number_hit_share": 0.5
+  },
+  "inference": {
+    "p_values": "not applicable: deterministic algebraic identity and property verification, not inferential hypothesis testing",
+    "multiple_testing": "not applicable; no family of stochastic significance tests"
+  },
+  "acceptance": [
+    "exact raw and canonical formula counts",
+    "all target dates and split counts reconciled",
+    "both aliases equal on all 3,354 targets",
+    "all 120 sampled formula instances score-match within 1e-12 and rank-match on every target",
+    "future-suffix invariance and deterministic replay tests pass",
+    "registry/report/ledger/manifest persisted and read back by exact Git object hashes"
+  ],
+  "guardrails": {
+    "historical_blind_not_virgin": true,
+    "no_predictive_lift_claim": true,
+    "no_auto_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "no_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
