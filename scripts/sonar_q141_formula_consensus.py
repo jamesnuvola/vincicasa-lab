@@ -490,9 +490,19 @@ def run():
             "No formula-level discovery winner is selected; all consensus policies are frozen before outcomes.",
             "A null result does not establish that every formula or family is useless.",
         ],
+        "recovery_history": [
+            {
+                "run_id": 43272932529,
+                "failed_stage": "exact_remote_git_readback",
+                "computation_and_unit_tests": "passed",
+                "artifact_upload_and_output_commit": "completed",
+                "root_cause": "The first serialization wrote a literal backslash-n suffix after JSON documents, so the remote verifier rejected the manifest as extra trailing data.",
+                "recovery": "Serialize actual newline characters, rerun the same frozen preregistered experiment, then verify remote JSON parsing and all manifest file SHA-256 values.",
+            }
+        ],
         "next_action": prereg["next_action"],
     }
-    report_bytes = (json.dumps(report, sort_keys=True, indent=2) + "\\n").encode("utf-8")
+    report_bytes = (json.dumps(report, sort_keys=True, indent=2) + "\n").encode("utf-8")
     REPORT.write_bytes(report_bytes)
 
     files = {}
@@ -525,7 +535,7 @@ def run():
         "files": files,
         "decision": decision,
     }
-    MANIFEST.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\\n", encoding="utf-8")
+    MANIFEST.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8")
     manifest_sha = sha256_bytes(MANIFEST.read_bytes())
     checkpoint = {
         "schema_version": "1.0",
@@ -539,7 +549,7 @@ def run():
         "target_ledger_sha256": files[str(LEDGER.relative_to(ROOT))]["sha256"],
         "next_action": prereg["next_action"],
     }
-    CHECKPOINT.write_text(json.dumps(checkpoint, sort_keys=True, indent=2) + "\\n", encoding="utf-8")
+    CHECKPOINT.write_text(json.dumps(checkpoint, sort_keys=True, indent=2) + "\n", encoding="utf-8")
 
     for relative, expected in files.items():
         data = (ROOT / relative).read_bytes()
