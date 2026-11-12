@@ -78,14 +78,14 @@ def rankdata_average(values):
     return ranks
 
 
-def spearman_rho(x, y):
+def spearman_rho(x, y, seed):
     rx, ry = rankdata_average(x), rankdata_average(y)
     if len(rx) < 3 or float(np.std(rx)) < 1e-12 or float(np.std(ry)) < 1e-12:
         return None, None
     rho = float(np.corrcoef(rx, ry)[0, 1])
     # Centered rank-product sequence; block sign-flip preserves local dependence.
     products = (rx - rx.mean()) * (ry - ry.mean())
-    p_value = base.block_signflip_p(products, 14120261113)
+    p_value = base.block_signflip_p(products, seed)
     return rho, p_value
 
 
@@ -93,7 +93,7 @@ def summarize(rows, model, fixed_family=None):
     metrics = []
     for row in rows:
         if model == "families":
-            metrics.append(row["families"][fixed_family])
+            metrics.append(row["family_metrics"][fixed_family])
         else:
             metrics.append(row[model])
     n = len(metrics)
@@ -113,7 +113,7 @@ def benefit_deltas(rows, model, comparator, endpoint):
     values = []
     for row in rows:
         candidate = row[model]
-        control = row[comparator] if comparator != "fixed_discovery_family" else row["families"][row["fixed_family"]]
+        control = row[comparator] if comparator != "fixed_discovery_family" else row["family_metrics"][row["fixed_family"]]
         if endpoint == "top5_hit_share":
             values.append((candidate["top5_hits"] - control["top5_hits"]) / 5.0)
         elif endpoint == "top10_hit_share":
@@ -315,7 +315,7 @@ def margin_calibration(rows):
         for family in base.FAMILY_NAMES:
             margins = [r["family_margins"][family] for r in subset]
             hits = [r["family_metrics"][family]["top5_hits"] for r in subset]
-            rho, p_raw = spearman_rho(margins, hits)
+            rho, p_raw = spearman_rho(margins, hits, 14120261113 + seed_index * 19)
             if p_raw is None:
                 p_raw = 1.0
             results.append({
