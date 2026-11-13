@@ -1,0 +1,95 @@
+{
+  "experiment": "Q128",
+  "title": "Prior-only adjacent-run-count transition diagnostic",
+  "status": "PREREGISTERED_BEFORE_CALCULATION",
+  "preregistered_at_utc": "2026-11-11T20:44:54Z",
+  "base_main_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "rows": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "The number of adjacent integer pairs in the immediately preceding draw may add one-step information about the adjacent-pair count in the next draw beyond the exact combinatorial marginal and a prior-only unconditional empirical marginal.",
+  "statistic": {
+    "name": "A_t",
+    "definition": "For sorted draw x1<x2<x3<x4<x5, A_t = sum(i=1..4) 1[x_(i+1)-x_i=1].",
+    "support": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "interpretation": "A_t equals five minus the number of consecutive runs in the selected 5-subset."
+  },
+  "exact_null": {
+    "name": "Uniform 5-of-40 subset law",
+    "formula": "q0(a) = C(4,a) * C(36,5-a) / C(40,5), a=0..4",
+    "denominator": 658008,
+    "derivation": "Choose a of the four internal adjacency links to join the five selected values into 5-a runs, then place those runs among 40 positions with at least one unused position between runs."
+  },
+  "models": {
+    "M0": "Exact combinatorial q0.",
+    "M1": "Prior-only unconditional prequential PMF: (200*q0[a] + prior_count[a])/(200 + prior_n).",
+    "M2": "Prior-only one-step transition PMF conditioned on A_(t-1): (200*M1_t[a] + prior_transition_count[state,a])/(200 + prior_state_count[state])."
+  },
+  "protocol": {
+    "warmup_draws": 200,
+    "target_rule": "For target draw t (zero-based), calculate A_t only after scoring. M1 may use A_0..A_(t-1). M2 may use transition pairs (A_(j-1),A_j) only for 1<=j<=t-1, conditioned on state A_(t-1).",
+    "scoring_order": "Score target t before updating any count with A_t.",
+    "alpha": 200,
+    "tuning": "No parameter tuning, state merging, bin search, or subgroup search.",
+    "target_count": 3204,
+    "chronological_splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "historical_blind_oos": 641
+    },
+    "endpoints": [
+      "multiclass Brier",
+      "multiclass log-loss"
+    ],
+    "comparisons": [
+      "M1 vs M0",
+      "M2 vs M1",
+      "M2 vs M0"
+    ],
+    "inference": {
+      "paired_block_sign_flip_replicates": 50000,
+      "circular_block_bootstrap_replicates": 10000,
+      "block_length": 20,
+      "alternative": "Positive gain means the candidate has lower loss; one-sided randomization test for positive gain.",
+      "multiplicity": "Holm correction across six preregistered Blind OOS endpoints."
+    },
+    "integrity": [
+      "strict-prior cutoffs",
+      "score-before-update",
+      "exact-null normalization",
+      "all forecast PMFs normalized",
+      "future-suffix mutation invariance",
+      "deterministic replay",
+      "source archive row/date/number validation"
+    ]
+  },
+  "guardrails": {
+    "research_only": true,
+    "no_production_scorer_changes": true,
+    "no_forecast_freeze_changes": true,
+    "no_Q60_changes": true,
+    "no_engine_promotion": true,
+    "no_automatic_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ],
+    "limitations": [
+      "Historical Blind OOS is not a virgin holdout.",
+      "Holm correction is local to the six Q128 endpoints and does not correct the entire Q00-Q128 research family.",
+      "The statistic compresses each draw to one run-count value and is not a full quintet predictor."
+    ]
+  },
+  "next_action": "After the official publication of contest 315, append the verified outcome and score only immutable existing freezes; continue Q60 append-only paired collection."
+}

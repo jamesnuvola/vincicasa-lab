@@ -1,0 +1,308 @@
+{
+  "experiment": "Q128",
+  "title": "Prior-only adjacent-run-count transition diagnostic",
+  "status": "COMPLETED_RESEARCH_ONLY",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "preregistration": {
+    "protocol_path": "reports/sequence_agent/q128_adjacency_run_transition_protocol_2026-11-11.json",
+    "protocol_blob_sha": "25c6a837251719412b41d0f9a5161adfedeacbdc",
+    "protocol_commit": "637528eeea81f4cd34ed62aad8ba2d324f74ce67",
+    "base_main_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+    "committed_before_calculation": true
+  },
+  "statistic": {
+    "name": "A_t",
+    "definition": "Count of adjacent integer pairs among the five sorted values; equivalently 5 minus the number of consecutive runs.",
+    "support": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "exact_null": {
+    "formula": "q0(a)=C(4,a)*C(36,5-a)/C(40,5)",
+    "denominator": 658008,
+    "counts": [
+      376992,
+      235620,
+      42840,
+      2520,
+      36
+    ],
+    "probabilities": [
+      0.572929,
+      0.358081,
+      0.065106,
+      0.00383,
+      0.000055
+    ],
+    "expected_mean": 0.5
+  },
+  "design": {
+    "warmup_draws": 200,
+    "targets": 3204,
+    "alpha": 200,
+    "score_before_update": true,
+    "strict_prior_only": true,
+    "split_sizes": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "tuning": "none",
+    "models": {
+      "M0": "exact combinatorial marginal",
+      "M1": "unconditional prequential shrinkage alpha=200 toward M0",
+      "M2": "one-step previous-adjacency-state conditional shrinkage alpha=200 toward current M1"
+    }
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1922,
+      "first_target": "2018-02-02",
+      "last_target": "2023-05-08",
+      "observed_adjacency_mean": 0.509365,
+      "observed_count_distribution": [
+        1087,
+        700,
+        127,
+        7,
+        1
+      ],
+      "previous_state_distribution": [
+        1086,
+        701,
+        127,
+        7,
+        1
+      ],
+      "models": {
+        "m0": {
+          "mean_brier": 0.543214,
+          "mean_logloss": 0.894927
+        },
+        "m1": {
+          "mean_brier": 0.543618,
+          "mean_logloss": 0.897418
+        },
+        "m2": {
+          "mean_brier": 0.543989,
+          "mean_logloss": 0.899478
+        }
+      }
+    },
+    "validation": {
+      "targets": 641,
+      "first_target": "2023-05-09",
+      "last_target": "2025-02-07",
+      "observed_adjacency_mean": 0.474259,
+      "observed_count_distribution": [
+        377,
+        226,
+        36,
+        2,
+        0
+      ],
+      "previous_state_distribution": [
+        378,
+        225,
+        36,
+        2,
+        0
+      ],
+      "models": {
+        "m0": {
+          "mean_brier": 0.526957,
+          "mean_logloss": 0.860469
+        },
+        "m1": {
+          "mean_brier": 0.527414,
+          "mean_logloss": 0.861523
+        },
+        "m2": {
+          "mean_brier": 0.527287,
+          "mean_logloss": 0.861953
+        }
+      }
+    },
+    "blind_oos": {
+      "targets": 641,
+      "first_target": "2025-02-08",
+      "last_target": "2026-11-10",
+      "observed_adjacency_mean": 0.472699,
+      "observed_count_distribution": [
+        381,
+        218,
+        41,
+        1,
+        0
+      ],
+      "previous_state_distribution": [
+        380,
+        219,
+        41,
+        1,
+        0
+      ],
+      "models": {
+        "m0": {
+          "mean_brier": 0.527741,
+          "mean_logloss": 0.863754
+        },
+        "m1": {
+          "mean_brier": 0.52799,
+          "mean_logloss": 0.864265
+        },
+        "m2": {
+          "mean_brier": 0.528473,
+          "mean_logloss": 0.865443
+        }
+      }
+    }
+  },
+  "inference": {
+    "blind_oos_targets": 641,
+    "comparisons": 3,
+    "endpoints": [
+      {
+        "id": "M1_vs_M0_brier",
+        "comparison": "M1_vs_M0",
+        "metric": "brier",
+        "observed_gain": -0.000249,
+        "p_value": 0.894562,
+        "ci95": [
+          -0.000621,
+          0.000133
+        ],
+        "holm_adjusted_p": 1,
+        "sign_flip_replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33
+      },
+      {
+        "id": "M1_vs_M0_logloss",
+        "comparison": "M1_vs_M0",
+        "metric": "logloss",
+        "observed_gain": -0.000511,
+        "p_value": 0.815844,
+        "ci95": [
+          -0.00154,
+          0.000314
+        ],
+        "holm_adjusted_p": 1,
+        "sign_flip_replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33
+      },
+      {
+        "id": "M2_vs_M1_brier",
+        "comparison": "M2_vs_M1",
+        "metric": "brier",
+        "observed_gain": -0.000483,
+        "p_value": 0.729765,
+        "ci95": [
+          -0.002069,
+          0.001083
+        ],
+        "holm_adjusted_p": 1,
+        "sign_flip_replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33
+      },
+      {
+        "id": "M2_vs_M1_logloss",
+        "comparison": "M2_vs_M1",
+        "metric": "logloss",
+        "observed_gain": -0.001178,
+        "p_value": 0.892742,
+        "ci95": [
+          -0.003051,
+          0.000683
+        ],
+        "holm_adjusted_p": 1,
+        "sign_flip_replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33
+      },
+      {
+        "id": "M2_vs_M0_brier",
+        "comparison": "M2_vs_M0",
+        "metric": "brier",
+        "observed_gain": -0.000733,
+        "p_value": 0.834723,
+        "ci95": [
+          -0.002281,
+          0.00079
+        ],
+        "holm_adjusted_p": 1,
+        "sign_flip_replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33
+      },
+      {
+        "id": "M2_vs_M0_logloss",
+        "comparison": "M2_vs_M0",
+        "metric": "logloss",
+        "observed_gain": -0.001689,
+        "p_value": 0.98094,
+        "ci95": [
+          -0.003508,
+          0.000101
+        ],
+        "holm_adjusted_p": 1,
+        "sign_flip_replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33
+      }
+    ],
+    "holm_family_size": 6,
+    "sign_flip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "block_length": 20,
+    "alternative": "positive loss gain favors candidate",
+    "note": "Holm applies only to the six preregistered Q128 endpoints."
+  },
+  "decision": "NO_ADJACENT_RUN_TRANSITION_LIFT_DEMONSTRATED",
+  "interpretation": "M1 and M2 have worse mean Brier and log-loss than the exact combinatorial baseline in all three chronological splits. M2 is also worse than M1 in both Blind OOS proper scores; all six Blind OOS gains are negative and all Holm-adjusted p-values equal 1.000.",
+  "integrity": {
+    "checks_passed": 24,
+    "checks_total": 24,
+    "future_suffix_mutation_passed": 9,
+    "future_suffix_mutation_total": 9,
+    "max_probability_mass_error": 2.220446049250313e-16
+  },
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout.",
+    "Holm correction is local to six Q128 endpoints, not the full Q00-Q128 research family.",
+    "The adjacent-run statistic compresses each draw to one scalar and is not a five-number or quintet probability model.",
+    "Q98 previously tested a broader lag-1 full-draw geometry kernel; Q128 is a narrow exact-statistic audit and is not independent of that broader family.",
+    "No prospective confirmation is available while contest 315 remains officially pending."
+  ],
+  "governance": {
+    "research_only": true,
+    "production_scorer_changed": false,
+    "forecast_freezes_changed": false,
+    "q60_changed": false,
+    "engine_promoted": false,
+    "automatic_merge": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
