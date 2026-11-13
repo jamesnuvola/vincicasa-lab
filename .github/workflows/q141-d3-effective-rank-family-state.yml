@@ -119,7 +119,7 @@ jobs:
               path = prefix + entry["path"]
               data = subprocess.check_output(["git", "show", f"origin/{branch}:{path}"])
               sha256 = hashlib.sha256(data).hexdigest()
-              blob = hashlib.sha1(f"blob {len(data)}\\0".encode() + data).hexdigest()
+              blob = hashlib.sha1(b"blob " + str(len(data)).encode() + bytes([0]) + data).hexdigest()
               if len(data) != entry["bytes"] or sha256 != entry["sha256"] or blob != entry["git_blob_sha1"]:
                   raise SystemExit(f"exact Git readback mismatch: {path}")
               verified.append({"path": path, "bytes": len(data), "sha256": sha256, "git_blob_sha1": blob})
@@ -132,7 +132,7 @@ jobs:
           }
           with open(checkpoint_path, "w", encoding="utf-8") as f:
               json.dump(checkpoint, f, sort_keys=True, indent=2)
-              f.write("\\n")
+              f.write(chr(10))
           PY
           git add reports/sequence_agent/q141_d3_effective_rank_family_state_checkpoint_2026-11-13.json
           git commit -m "Q141-D3: attest exact remote Git readback"
