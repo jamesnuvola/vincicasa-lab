@@ -11,6 +11,7 @@ from sonar_q141_a17_full_universe_spectral import (
     row_center_and_scale,
     split_slices,
     validate_alignment,
+    validate_initial_unscored_row,
 )
 
 class Q141A17Tests(unittest.TestCase):
@@ -91,6 +92,23 @@ class Q141A17Tests(unittest.TestCase):
         self.assertLessEqual(a[0], a[1])
         self.assertTrue(0.0 <= a[0] <= 1.0)
         self.assertTrue(0.0 <= a[1] <= 1.0)
+
+
+    def test_initial_insufficient_history_row_is_excluded_and_reconciled(self):
+        dates = ["2017-07-17", "2017-07-18"]
+        draws = [(12, 16, 20, 31, 32), (10, 12, 23, 37, 39)]
+        self.assertTrue(validate_initial_unscored_row(
+            dates[0], "", "0", "12 16 20 31 32", "INSUFFICIENT_HISTORY",
+            [""] * 8, dates, draws
+        ))
+        self.assertFalse(validate_initial_unscored_row(
+            dates[0], dates[0], "0", "12 16 20 31 32", "INSUFFICIENT_HISTORY",
+            [""] * 8, dates, draws
+        ))
+        self.assertFalse(validate_initial_unscored_row(
+            dates[0], "", "0", "12 16 20 31 32", "SCORED",
+            [""] * 8, dates, draws
+        ))
 
     def test_strict_prior_alignment_checks_cutoff_target_and_outcome(self):
         dates = ["2026-01-01", "2026-01-02", "2026-01-03"]
