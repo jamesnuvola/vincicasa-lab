@@ -1,0 +1,122 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q126",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "archive_sha_pinned",
+      "passed": true
+    },
+    {
+      "name": "application_data_sha_pinned",
+      "passed": true
+    },
+    {
+      "name": "archive_json_rowwise_reconciled",
+      "passed": true
+    },
+    {
+      "name": "draw_count_3404",
+      "passed": true
+    },
+    {
+      "name": "dates_strictly_increasing",
+      "passed": true
+    },
+    {
+      "name": "five_distinct_numbers_1_to_40",
+      "passed": true
+    },
+    {
+      "name": "exact_5_of_40_enumeration_658008",
+      "passed": true
+    },
+    {
+      "name": "exact_null_probability_mass",
+      "passed": true
+    },
+    {
+      "name": "quartile_boundaries_ordered",
+      "passed": true
+    },
+    {
+      "name": "warmup_and_target_count",
+      "passed": true
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "passed": true
+    },
+    {
+      "name": "prequential_global_prior_counts",
+      "passed": true
+    },
+    {
+      "name": "conditional_state_counts_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "probability_masses",
+      "passed": true
+    },
+    {
+      "name": "finite_proper_scores",
+      "passed": true
+    },
+    {
+      "name": "chronological_split_1922_641_641",
+      "passed": true
+    },
+    {
+      "name": "future_suffix_mutation_invariance_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "deterministic_seeded_inference",
+      "passed": true
+    },
+    {
+      "name": "holm_family_has_six_endpoints",
+      "passed": true
+    },
+    {
+      "name": "no_validation_or_blind_tuning",
+      "passed": true
+    }
+  ],
+  "exact_null": {
+    "subsets": 658008,
+    "support_size": 864,
+    "probability_mass": 1,
+    "quartile_cutpoints": {
+      "q25": 182,
+      "q50": 284,
+      "q75": 396
+    }
+  },
+  "target_ledger": {
+    "rows": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "split_sizes": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    }
+  },
+  "future_suffix_mutation_checks": {
+    "passed": 9,
+    "total": 9
+  },
+  "inference": {
+    "endpoints": 6,
+    "sign_flip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "all_p_values_finite": true,
+    "all_holm_finite": true
+  },
+  "limitations": [
+    "No independent prospective outcome exists yet for the 11-Nov target.",
+    "No Q60 or production forecast was changed."
+  ]
+}
