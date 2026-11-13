@@ -271,11 +271,9 @@ jobs:
             fi
           fi
       - name: Verify Q141-D1 remote Git readback
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-')
-        env:
-          BRANCH_NAME: research/q141-d1-standardized-family-advantage-20261113
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-d1-standardized-family-advantage-')
         run: |
-          git fetch origin "$BRANCH_NAME"
+          git fetch origin "$GITHUB_REF_NAME"
           for path in \
             reports/sequence_agent/q141_d1_standardized_family_advantage_report_2026-11-13.json \
             reports/sequence_agent/q141_d1_standardized_family_advantage_target_ledger_2026-11-13.csv \
