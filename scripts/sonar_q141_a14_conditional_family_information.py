@@ -317,6 +317,7 @@ def infer_primary(rows: list[dict]) -> dict:
     result = {}
     for i,(name,left,right) in enumerate(comparisons):
         d = np.asarray([_metric(r,left,5)-_metric(r,right,5) for r in rows], dtype=np.float64)
+        deltas.append(d)
         p = block_signflip_p(d, SIGNFLIP_SEED+i)
         raw_p.append(p)
         result[name] = {
