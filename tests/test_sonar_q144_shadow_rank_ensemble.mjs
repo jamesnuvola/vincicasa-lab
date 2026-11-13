@@ -25,7 +25,7 @@ assert.deepEqual(aggregate.app, Array.from({ length: 20 }, (_, i) => i + 1));
 assert.deepEqual(aggregate.counts, { family: 24, pair: 12, chain: 6 });
 assert.throws(() => aggregateTarget(rows.slice(1)), /42 non-APP rule rows/);
 
-const archiveDates = new Set(["2026-11-12", "2026-10-25", "2026-10-24"]);
+const archiveDates = new Set(["2026-11-13", "2026-11-12", "2026-10-25", "2026-10-24"]);
 assert.equal(validateFreezeRow({
   frozen_at: "2026-11-13T08:00:00+01:00",
   history_cutoff: "2026-11-12"
