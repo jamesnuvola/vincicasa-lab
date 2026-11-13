@@ -3,11 +3,15 @@ name: Test VinciCasa Lab
 on:
   push:
     branches: ["**"]
+    paths-ignore:
+      - 'reports/sequence_agent/q141_a12_structural_markov_*'
+      - 'reports/sequence_agent/q141_cycle_report_2026-11-13_run22.md'
   pull_request:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  actions: read
+  contents: write
 
 # Cancel superseded research-branch runs so several expensive historical searches
 # do not compete after each incremental commit.
@@ -29,6 +33,20 @@ jobs:
           node-version: 20
       - name: Install data-generation dependency
         run: pip install numpy
+      - name: Retrieve pinned Q141-A7 source artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: q141-a7-fresh59-behaviour
+          run-id: 43348144964
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: source
+      - name: Run Q141-A12 prior-only walk-forward and unit tests
+        run: |
+          set -euo pipefail
+          MATRIX="$(find source -name 'q141_a7_fresh59_feature_matrix_2026-11-13.npz' -print -quit)"
+          test -n "$MATRIX"
+          python scripts/sonar_q141_a12_structural_markov_audit.py --input "$MATRIX" --outdir reports/sequence_agent
+          python -m unittest discover -s tests -p 'test_sonar_q141_a12_structural_markov_audit.py' -v
       - name: Audit canonical historical archive
         run: python scripts/audit_dataset.py
       - name: Rebuild generated app data
@@ -51,3 +69,23 @@ jobs:
           python scripts/sonar_position_regime_residual_lab.py
       - name: Build web application
         run: npm install && npm run build
+      - name: Upload Q141-A12 reproducibility artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-a12-structural-markov-output
+          path: |
+            reports/sequence_agent/q141_a12_structural_markov_report_2026-11-13.json
+            reports/sequence_agent/q141_a12_structural_markov_target_ledger_2026-11-13.csv
+            reports/sequence_agent/q141_a12_structural_markov_manifest_2026-11-13.json
+            reports/sequence_agent/q141_a12_structural_markov_checkpoint_2026-11-13.json
+      - name: Persist Q141-A12 outputs to research branch
+        if: github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reports/sequence_agent/q141_a12_structural_markov_report_2026-11-13.json reports/sequence_agent/q141_a12_structural_markov_target_ledger_2026-11-13.csv reports/sequence_agent/q141_a12_structural_markov_preregistration_2026-11-13.md reports/sequence_agent/q141_a12_structural_markov_manifest_2026-11-13.json reports/sequence_agent/q141_a12_structural_markov_checkpoint_2026-11-13.json reports/sequence_agent/q141_cycle_report_2026-11-13_run22.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'Persist Q141-A12 structural Markov audit outputs'
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
