@@ -1,0 +1,799 @@
+{
+  "blind_primary_inference": {
+    "block_length": 20,
+    "bootstrap_replicates": 20000,
+    "comparisons": {
+      "family_baseline": {
+        "blind_mean_hits_per_draw_delta": -0.01353637901861252,
+        "blind_mean_top5_share_delta": -0.0027072758037225042,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.6748662566871656,
+        "bootstrap_ci95": [
+          -0.015566835871404398,
+          0.009137055837563452
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.006344548150946828,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "ridge_without_baseline",
+        "targets": 591
+      },
+      "family_cooccurrence_novelty": {
+        "blind_mean_hits_per_draw_delta": 0.01692047377326565,
+        "blind_mean_top5_share_delta": 0.00338409475465313,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.20488975551222438,
+        "bootstrap_ci95": [
+          -0.0054145516074450084,
+          0.01218274111675127
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.004482326973945229,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "ridge_without_cooccurrence_novelty",
+        "targets": 591
+      },
+      "family_ewma_hit_dynamics": {
+        "blind_mean_hits_per_draw_delta": 0.005076142131979696,
+        "blind_mean_top5_share_delta": 0.0010152284263959391,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.37893105344732764,
+        "bootstrap_ci95": [
+          -0.0047377326565143825,
+          0.00676818950930626
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.0029414572364139784,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "ridge_without_ewma_hit_dynamics",
+        "targets": 591
+      },
+      "family_gap_dynamics": {
+        "blind_mean_hits_per_draw_delta": -0.008460236886632826,
+        "blind_mean_top5_share_delta": -0.001692047377326565,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.6587670616469177,
+        "bootstrap_ci95": [
+          -0.010152284263959392,
+          0.00676818950930626
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.004385229535949517,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "ridge_without_gap_dynamics",
+        "targets": 591
+      },
+      "family_rank_trajectory": {
+        "blind_mean_hits_per_draw_delta": 0.013536379018612526,
+        "blind_mean_top5_share_delta": 0.002707275803722505,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.2416379181040948,
+        "bootstrap_ci95": [
+          -0.0060913705583756335,
+          0.010829103214890017
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.004157361671383996,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "ridge_without_rank_trajectory",
+        "targets": 591
+      },
+      "family_regime_transition_affinity": {
+        "blind_mean_hits_per_draw_delta": -0.025380710659898484,
+        "blind_mean_top5_share_delta": -0.005076142131979697,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.8822558872056397,
+        "bootstrap_ci95": [
+          -0.01353637901861252,
+          0.0037225042301184436
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.004462392906976508,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "ridge_without_regime_transition_affinity",
+        "targets": 591
+      },
+      "family_residual_surprise": {
+        "blind_mean_hits_per_draw_delta": 0.001692047377326565,
+        "blind_mean_top5_share_delta": 0.00033840947546531303,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.3785310734463277,
+        "bootstrap_ci95": [
+          -0.0013536379018612521,
+          0.0023688663282571912
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.0009230727201125537,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "ridge_without_residual_surprise",
+        "targets": 591
+      },
+      "vs_equal_family": {
+        "blind_mean_hits_per_draw_delta": -0.050761421319796954,
+        "blind_mean_top5_share_delta": -0.01015228426395939,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.8940552972351382,
+        "bootstrap_ci95": [
+          -0.026057529610829102,
+          0.004737732656514383
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.007981538511987287,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "equal_family",
+        "targets": 591
+      },
+      "vs_equal_feature": {
+        "blind_mean_hits_per_draw_delta": -0.050761421319796954,
+        "blind_mean_top5_share_delta": -0.01015228426395939,
+        "block_signflip_p_one_sided_gain_gt_zero": 0.9095545222738863,
+        "bootstrap_ci95": [
+          -0.025380710659898477,
+          0.004399323181049068
+        ],
+        "criterion_met": false,
+        "hac_se_lag20": 0.007595733442429544,
+        "holm_p_across_9_primary_tests": 1.0,
+        "left_model": "ridge_full",
+        "practical_threshold_share": 0.005,
+        "right_model": "equal_feature",
+        "targets": 591
+      }
+    },
+    "family_size": 9,
+    "signflip_replicates": 20000
+  },
+  "decision": "NO_FAMILY_CONDITIONAL_LIFT_DEMONSTRATED",
+  "design": {
+    "feature_families": {
+      "baseline": 27,
+      "cooccurrence_novelty": 6,
+      "ewma_hit_dynamics": 7,
+      "gap_dynamics": 6,
+      "rank_trajectory": 5,
+      "regime_transition_affinity": 6,
+      "residual_surprise": 2
+    },
+    "feature_normalization": "per target and per feature across 40 candidate numbers; zero-variance columns set to zero",
+    "model": "rolling ridge regression on within-target z-scored 40x59 feature rows; binary target membership labels",
+    "model_variants": [
+      "full 59 features",
+      "without baseline",
+      "without ewma_hit_dynamics",
+      "without gap_dynamics",
+      "without cooccurrence_novelty",
+      "without rank_trajectory",
+      "without residual_surprise",
+      "without regime_transition_affinity",
+      "equal-feature mean",
+      "equal-family mean"
+    ],
+    "no_hyperparameter_search": true,
+    "practical_threshold_top5_share": 0.005,
+    "primary_endpoint": "Blind OOS Top-5 hit-share delta: full 59-feature ridge minus leave-one-family-out ridge",
+    "protocol_status": "retrospective methodology note; not preregistered before the first exploratory computation",
+    "ridge_alpha": 1000.0,
+    "rolling_training_targets": 400,
+    "secondary_endpoints": "Top-10 and Top-20 hit-share deltas; descriptive only",
+    "splits": {
+      "blind_oos": 591,
+      "discovery": 1774,
+      "validation": 591
+    },
+    "tie_policy": "higher score first; ties by smaller number"
+  },
+  "experiment_id": "Q141-A14",
+  "governance": {
+    "active_engine_mutated": false,
+    "canonical_archive_mutated": false,
+    "engine_promoted": false,
+    "merge": false,
+    "prospective_freezes_mutated": false,
+    "protected_prs_6_7_8_untouched": true,
+    "rebase": false,
+    "shadow_forecasts_mutated": false
+  },
+  "integrity": {
+    "all_target_draws_valid": true,
+    "future_suffix_invariance_tested": true,
+    "max_training_index_less_than_target": true,
+    "scored_targets": 2956,
+    "source_feature_matrix_finite": true,
+    "strict_prior_cutoffs": true,
+    "training_window_exact": true,
+    "warmup_targets": 400
+  },
+  "interpretation": {
+    "full_model_vs_equal_family": -0.01015228426395939,
+    "full_model_vs_equal_feature": -0.01015228426395939,
+    "largest_positive_family": "cooccurrence_novelty",
+    "largest_positive_family_delta": 0.00338409475465313,
+    "positive_point_estimate_families": [
+      {
+        "delta": 0.0010152284263959391,
+        "family": "ewma_hit_dynamics"
+      },
+      {
+        "delta": 0.00338409475465313,
+        "family": "cooccurrence_novelty"
+      },
+      {
+        "delta": 0.002707275803722505,
+        "family": "rank_trajectory"
+      },
+      {
+        "delta": 0.00033840947546531303,
+        "family": "residual_surprise"
+      }
+    ],
+    "summary": "No family meets the fixed +0.005 Top-5 share threshold with a positive block-bootstrap lower bound and Holm-adjusted p<0.05; this is exploratory, not confirmatory."
+  },
+  "limitations": [
+    "The historical Blind OOS overlaps previous SONAR exploration and is not virgin prospective confirmation.",
+    "The methodology note and threshold were recorded after an initial exploratory computation; all historical inferential results remain exploratory, despite the within-report Holm correction.",
+    "The 59 feature columns share upstream history and are not independent measurements.",
+    "Ridge regression ranks per-number membership; it does not model the exact joint probability of a five-number ticket.",
+    "The fixed rolling window and alpha were not tuned; conclusions are specific to this fixed linear model.",
+    "The 40 candidate rows within a target are dependent because exactly five labels are positive.",
+    "Holm correction covers the nine primary comparisons in this report, not the full historical Q00-Q141 research family."
+  ],
+  "schema_version": "1.0",
+  "source": {
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "artifact_id": 14003350043,
+    "artifact_run_id": 43348144964,
+    "artifact_zip_sha256": "9c54699a507e876b7b5b1c0c9e3120ad04c2bcc741dcd5043dc410f81bf6b03a",
+    "feature_count": 59,
+    "first_target_date": "2017-09-05",
+    "last_target_date": "2026-11-12",
+    "matrix_sha256": "81479d7cff00ddcbc6046bcb390efb2ef1b08de6a6f1f2cdb2f89a77c76c6047",
+    "matrix_shape": [
+      3356,
+      40,
+      59
+    ]
+  },
+  "split_metrics": {
+    "blind_oos": {
+      "first_target": "2025-04-01",
+      "last_target": "2026-11-12",
+      "models": {
+        "equal_family": {
+          "top10": {
+            "mean_hit_share": 0.2558375634517766,
+            "mean_hits_per_draw": 1.279187817258883,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.4978003384094755,
+            "mean_hits_per_draw": 2.4890016920473776,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.1279187817258883,
+            "mean_hits_per_draw": 0.6395939086294415,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "equal_feature": {
+          "top10": {
+            "mean_hit_share": 0.255160744500846,
+            "mean_hits_per_draw": 1.27580372250423,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.49746192893401014,
+            "mean_hits_per_draw": 2.487309644670051,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.1279187817258883,
+            "mean_hits_per_draw": 0.6395939086294415,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_full": {
+          "top10": {
+            "mean_hit_share": 0.24297800338409478,
+            "mean_hits_per_draw": 1.214890016920474,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.49441624365482234,
+            "mean_hits_per_draw": 2.472081218274112,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.11776649746192892,
+            "mean_hits_per_draw": 0.5888324873096447,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_baseline": {
+          "top10": {
+            "mean_hit_share": 0.24060913705583756,
+            "mean_hits_per_draw": 1.2030456852791878,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5062605752961082,
+            "mean_hits_per_draw": 2.531302876480541,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12047377326565144,
+            "mean_hits_per_draw": 0.6023688663282571,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_cooccurrence_novelty": {
+          "top10": {
+            "mean_hit_share": 0.23824027072758033,
+            "mean_hits_per_draw": 1.1912013536379016,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.48934010152284274,
+            "mean_hits_per_draw": 2.4467005076142136,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.11438240270727579,
+            "mean_hits_per_draw": 0.5719120135363789,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_ewma_hit_dynamics": {
+          "top10": {
+            "mean_hit_share": 0.24060913705583756,
+            "mean_hits_per_draw": 1.2030456852791878,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.4964467005076142,
+            "mean_hits_per_draw": 2.482233502538071,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.116751269035533,
+            "mean_hits_per_draw": 0.583756345177665,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_gap_dynamics": {
+          "top10": {
+            "mean_hit_share": 0.24399323181049068,
+            "mean_hits_per_draw": 1.2199661590524533,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.4944162436548224,
+            "mean_hits_per_draw": 2.472081218274112,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.11945854483925548,
+            "mean_hits_per_draw": 0.5972927241962774,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_rank_trajectory": {
+          "top10": {
+            "mean_hit_share": 0.2436548223350254,
+            "mean_hits_per_draw": 1.218274111675127,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.49847715736040615,
+            "mean_hits_per_draw": 2.4923857868020307,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.11505922165820642,
+            "mean_hits_per_draw": 0.5752961082910322,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_regime_transition_affinity": {
+          "top10": {
+            "mean_hit_share": 0.2426395939086294,
+            "mean_hits_per_draw": 1.213197969543147,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.4930626057529611,
+            "mean_hits_per_draw": 2.4653130287648057,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12284263959390862,
+            "mean_hits_per_draw": 0.6142131979695431,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_residual_surprise": {
+          "top10": {
+            "mean_hit_share": 0.24433164128595602,
+            "mean_hits_per_draw": 1.22165820642978,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.4944162436548224,
+            "mean_hits_per_draw": 2.472081218274112,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.11742808798646363,
+            "mean_hits_per_draw": 0.5871404399323181,
+            "uniform_expected_hit_share": 0.125
+          }
+        }
+      },
+      "targets": 591
+    },
+    "discovery": {
+      "first_target": "2018-10-10",
+      "last_target": "2023-08-18",
+      "models": {
+        "equal_family": {
+          "top10": {
+            "mean_hit_share": 0.2494926719278467,
+            "mean_hits_per_draw": 1.2474633596392335,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5046223224351748,
+            "mean_hits_per_draw": 2.523111612175874,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12412626832018038,
+            "mean_hits_per_draw": 0.6206313416009019,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "equal_feature": {
+          "top10": {
+            "mean_hit_share": 0.2471251409244645,
+            "mean_hits_per_draw": 1.2356257046223225,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5004509582863584,
+            "mean_hits_per_draw": 2.5022547914317923,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12547914317925593,
+            "mean_hits_per_draw": 0.6273957158962796,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_full": {
+          "top10": {
+            "mean_hit_share": 0.25163472378804963,
+            "mean_hits_per_draw": 1.2581736189402482,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.49966178128523114,
+            "mean_hits_per_draw": 2.4983089064261557,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12536640360766627,
+            "mean_hits_per_draw": 0.6268320180383313,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_baseline": {
+          "top10": {
+            "mean_hit_share": 0.24554678692220971,
+            "mean_hits_per_draw": 1.2277339346110485,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.4934611048478016,
+            "mean_hits_per_draw": 2.467305524239008,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12559188275084554,
+            "mean_hits_per_draw": 0.6279594137542277,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_cooccurrence_novelty": {
+          "top10": {
+            "mean_hit_share": 0.2545659526493799,
+            "mean_hits_per_draw": 1.2728297632468997,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5002254791431793,
+            "mean_hits_per_draw": 2.5011273957158964,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12570462232243518,
+            "mean_hits_per_draw": 0.6285231116121759,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_ewma_hit_dynamics": {
+          "top10": {
+            "mean_hit_share": 0.25287485907553553,
+            "mean_hits_per_draw": 1.2643742953776775,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5002254791431793,
+            "mean_hits_per_draw": 2.5011273957158964,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12536640360766627,
+            "mean_hits_per_draw": 0.6268320180383313,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_gap_dynamics": {
+          "top10": {
+            "mean_hit_share": 0.25197294250281854,
+            "mean_hits_per_draw": 1.2598647125140927,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5024802705749719,
+            "mean_hits_per_draw": 2.5124013528748597,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12671927846674183,
+            "mean_hits_per_draw": 0.6335963923337091,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_rank_trajectory": {
+          "top10": {
+            "mean_hit_share": 0.24859075535512964,
+            "mean_hits_per_draw": 1.2429537767756482,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.49560315670800453,
+            "mean_hits_per_draw": 2.4780157835400227,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12153325817361896,
+            "mean_hits_per_draw": 0.6076662908680948,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_regime_transition_affinity": {
+          "top10": {
+            "mean_hit_share": 0.2511837655016911,
+            "mean_hits_per_draw": 1.2559188275084554,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5020293122886132,
+            "mean_hits_per_draw": 2.510146561443066,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.13235625704622322,
+            "mean_hits_per_draw": 0.6617812852311161,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_residual_surprise": {
+          "top10": {
+            "mean_hit_share": 0.2520856820744081,
+            "mean_hits_per_draw": 1.2604284103720407,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5,
+            "mean_hits_per_draw": 2.5,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12536640360766627,
+            "mean_hits_per_draw": 0.6268320180383313,
+            "uniform_expected_hit_share": 0.125
+          }
+        }
+      },
+      "targets": 1774
+    },
+    "validation": {
+      "first_target": "2023-08-19",
+      "last_target": "2025-03-31",
+      "models": {
+        "equal_family": {
+          "top10": {
+            "mean_hit_share": 0.24568527918781724,
+            "mean_hits_per_draw": 1.2284263959390862,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.49915397631133673,
+            "mean_hits_per_draw": 2.495769881556684,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12351945854483926,
+            "mean_hits_per_draw": 0.6175972927241963,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "equal_feature": {
+          "top10": {
+            "mean_hit_share": 0.2412859560067682,
+            "mean_hits_per_draw": 1.206429780033841,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5065989847715736,
+            "mean_hits_per_draw": 2.532994923857868,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.1248730964467005,
+            "mean_hits_per_draw": 0.6243654822335025,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_full": {
+          "top10": {
+            "mean_hit_share": 0.2609137055837563,
+            "mean_hits_per_draw": 1.3045685279187815,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5174280879864637,
+            "mean_hits_per_draw": 2.5871404399323183,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12656514382402706,
+            "mean_hits_per_draw": 0.6328257191201353,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_baseline": {
+          "top10": {
+            "mean_hit_share": 0.25042301184433163,
+            "mean_hits_per_draw": 1.252115059221658,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5126903553299492,
+            "mean_hits_per_draw": 2.563451776649746,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12250423011844333,
+            "mean_hits_per_draw": 0.6125211505922167,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_cooccurrence_novelty": {
+          "top10": {
+            "mean_hit_share": 0.25549915397631134,
+            "mean_hits_per_draw": 1.2774957698815568,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5099830795262267,
+            "mean_hits_per_draw": 2.5499153976311333,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12825719120135362,
+            "mean_hits_per_draw": 0.6412859560067681,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_ewma_hit_dynamics": {
+          "top10": {
+            "mean_hit_share": 0.2592216582064298,
+            "mean_hits_per_draw": 1.2961082910321489,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5126903553299492,
+            "mean_hits_per_draw": 2.563451776649746,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12927241962774957,
+            "mean_hits_per_draw": 0.6463620981387479,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_gap_dynamics": {
+          "top10": {
+            "mean_hit_share": 0.2565143824027073,
+            "mean_hits_per_draw": 1.2825719120135366,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5164128595600677,
+            "mean_hits_per_draw": 2.582064297800338,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12859560067681894,
+            "mean_hits_per_draw": 0.6429780033840947,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_rank_trajectory": {
+          "top10": {
+            "mean_hit_share": 0.25651438240270724,
+            "mean_hits_per_draw": 1.2825719120135362,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5042301184433164,
+            "mean_hits_per_draw": 2.521150592216582,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.12588832487309642,
+            "mean_hits_per_draw": 0.6294416243654821,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_regime_transition_affinity": {
+          "top10": {
+            "mean_hit_share": 0.2568527918781726,
+            "mean_hits_per_draw": 1.2842639593908631,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5116751269035532,
+            "mean_hits_per_draw": 2.558375634517766,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.1296108291032149,
+            "mean_hits_per_draw": 0.6480541455160744,
+            "uniform_expected_hit_share": 0.125
+          }
+        },
+        "ridge_without_residual_surprise": {
+          "top10": {
+            "mean_hit_share": 0.26023688663282574,
+            "mean_hits_per_draw": 1.3011844331641287,
+            "uniform_expected_hit_share": 0.25
+          },
+          "top20": {
+            "mean_hit_share": 0.5167512690355329,
+            "mean_hits_per_draw": 2.5837563451776644,
+            "uniform_expected_hit_share": 0.5
+          },
+          "top5": {
+            "mean_hit_share": 0.127580372250423,
+            "mean_hits_per_draw": 0.637901861252115,
+            "uniform_expected_hit_share": 0.125
+          }
+        }
+      },
+      "targets": 591
+    }
+  },
+  "status": "COMPLETE_HISTORICAL_EXPLORATORY",
+  "title": "Rolling conditional family-information audit"
+}
