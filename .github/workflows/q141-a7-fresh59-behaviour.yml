@@ -8,6 +8,15 @@ on:
       - "tests/test_sonar_q141_a7_fresh59_behaviour.py"
       - "reports/sequence_agent/q141_a7_b11_preregistration_2026-11-13.md"
       - ".github/workflows/q141-a7-fresh59-behaviour.yml"
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - "scripts/sonar_q141_a7_fresh59_behaviour.py"
+      - "tests/test_sonar_q141_a7_fresh59_behaviour.py"
+      - "reports/sequence_agent/q141_a7_b11_preregistration_2026-11-13.md"
+      - ".github/workflows/q141-a7-fresh59-behaviour.yml"
 permissions:
   contents: write
   actions: read
