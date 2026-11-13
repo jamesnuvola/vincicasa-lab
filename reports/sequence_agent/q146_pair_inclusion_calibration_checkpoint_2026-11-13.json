@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q146",
+  "status": "Q146_COMPUTED_PENDING_DEDICATED_CI_AND_FINAL_READBACK",
+  "branch": "research/q146-pair-inclusion-calibration-20261113",
+  "parent_commit": "e7abea15977000adff5a1bbe869824e2d28a078a",
+  "source_blob_shas": {
+    "archive": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "shadow": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "q144Ledger": "c14e13b0c8e7f7a8c20ae40c9af56101f5209762",
+    "q144Freeze": "df20af45433ae8693b90e06124d31df0ad345dfe",
+    "q145Report": "8ab96c407df9ed2bf256cb01c5a2e9282e6c3412",
+    "q145Checkpoint": "e961e75bda0f7c28342f0f9cd19f8fc8e68afdba",
+    "q145Script": "b0515ae21faa403991994d9535fc82b707a8b9ff",
+    "q145Prereg": "6bb8725ccb57ffad5f803352252ba94c42b29b70"
+  },
+  "sample": {
+    "targets": 31,
+    "discovery": 18,
+    "validation": 6,
+    "historical_blind_oos": 7,
+    "app_targets": 19
+  },
+  "integrity": {
+    "archive_draws": 3406,
+    "shadow_rows": 1364,
+    "strict_prior_rows": 1364,
+    "pending_2026_11_13_rows": 43,
+    "shadow_target_groups": 32,
+    "q144_targets": 31,
+    "all_q144_draws_reconciled": true,
+    "all_top20_hit_counts_recomputed": true,
+    "pair_mass_max_abs_error": 1.24e-13,
+    "observed_pairs_per_draw": 10,
+    "upstream_q145_verifier": "Q145_ARTIFACTS_REPLAYABLE_DEDICATED_CI_PASSED (run 43482722784)"
+  },
+  "decision": "PAIRWISE_CALIBRATION_NOT_ESTABLISHED; KEEP_Q145_FROZEN; HISTORICAL_RESULTS_EXPLORATORY",
+  "next_action": "Complete dedicated Q146 CI; verify all remote artifact hashes; keep Q145 freeze unchanged and reconcile the 2026-11-13 outcome only after official publication."
+}
