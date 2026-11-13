@@ -1,0 +1,259 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q144",
+  "title": "Family-balanced Borda aggregation of pre-target shadow forecasts",
+  "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
+  "generated_at_utc": "2026-11-13T17:42:03Z",
+  "base_main_commit": "4a55fb7da216bd3850b79f862bf10b2cbcafa968",
+  "preregistration_blob_sha": "fef0d86ab401215f6f5560a633bf8bfaa2f80fbf",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "shadow_path": "reports/sequence_agent/shadow_forecasts.csv",
+    "shadow_blob_sha": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "archive_draws": 3406,
+    "shadow_rows": 1364
+  },
+  "hypothesis": {
+    "statement": "A family-balanced rank aggregation of pre-target family, pair and chain Top20 forecasts improves next-draw Top20 hits over the independently frozen APP Top20.",
+    "primary_endpoint": "Blind OOS paired mean Top20-hit difference: Q144 Borda minus APP",
+    "minimum_practical_effect_hits_per_draw": 0.25,
+    "secondary_endpoints": [
+      "Q144 Borda minus equal-type inclusion consensus",
+      "Q144 Borda minus uniform Top20 expectation 2.5"
+    ]
+  },
+  "method": {
+    "rule_counts": {
+      "family": 24,
+      "pair": 12,
+      "chain": 6
+    },
+    "borda_points": "20,19,...,1 for ranks 1..20; zero outside Top20",
+    "type_balance": "Average Borda points within each type, then sum the three type averages",
+    "alternative_consensus": "Sum within-type fractions of rules including each number in Top20",
+    "tie_break": "Smaller number first",
+    "app_engine": "Comparator only; excluded from ensemble input",
+    "no_fitted_parameters": true
+  },
+  "sample": {
+    "completed_target_dates": 31,
+    "discovery_dates": 18,
+    "validation_dates": 6,
+    "historical_blind_oos_dates": 7,
+    "app_comparator_dates": 19,
+    "pending_2026_11_13_source_rows": 43,
+    "split_dates": {
+      "discovery": [
+        "2026-10-12",
+        "2026-10-30"
+      ],
+      "validation": [
+        "2026-10-31",
+        "2026-11-05"
+      ],
+      "blind_oos": [
+        "2026-11-06",
+        "2026-11-12"
+      ]
+    }
+  },
+  "splits": {
+    "discovery": {
+      "target_dates": 18,
+      "borda": {
+        "n": 18,
+        "total_hits": 46,
+        "mean_hits": 2.5555555555555554,
+        "four_plus": 1,
+        "five_of_five": 0
+      },
+      "inclusion": {
+        "n": 18,
+        "total_hits": 48,
+        "mean_hits": 2.6666666666666665,
+        "four_plus": 3,
+        "five_of_five": 0
+      },
+      "app": {
+        "n": 6,
+        "total_hits": 21,
+        "mean_hits": 3.5,
+        "four_plus": 2,
+        "five_of_five": 1
+      },
+      "uniform_top20": {
+        "expected_hits_per_draw": 2.5
+      }
+    },
+    "validation": {
+      "target_dates": 6,
+      "borda": {
+        "n": 6,
+        "total_hits": 13,
+        "mean_hits": 2.1666666666666665,
+        "four_plus": 0,
+        "five_of_five": 0
+      },
+      "inclusion": {
+        "n": 6,
+        "total_hits": 15,
+        "mean_hits": 2.5,
+        "four_plus": 0,
+        "five_of_five": 0
+      },
+      "app": {
+        "n": 6,
+        "total_hits": 16,
+        "mean_hits": 2.6666666666666665,
+        "four_plus": 0,
+        "five_of_five": 0
+      },
+      "uniform_top20": {
+        "expected_hits_per_draw": 2.5
+      }
+    },
+    "blind_oos": {
+      "target_dates": 7,
+      "borda": {
+        "n": 7,
+        "total_hits": 19,
+        "mean_hits": 2.7142857142857144,
+        "four_plus": 0,
+        "five_of_five": 0
+      },
+      "inclusion": {
+        "n": 7,
+        "total_hits": 20,
+        "mean_hits": 2.857142857142857,
+        "four_plus": 2,
+        "five_of_five": 0
+      },
+      "app": {
+        "n": 7,
+        "total_hits": 16,
+        "mean_hits": 2.2857142857142856,
+        "four_plus": 1,
+        "five_of_five": 0
+      },
+      "uniform_top20": {
+        "expected_hits_per_draw": 2.5
+      }
+    }
+  },
+  "blind_inference": {
+    "dates": [
+      "2026-11-06",
+      "2026-11-07",
+      "2026-11-08",
+      "2026-11-09",
+      "2026-11-10",
+      "2026-11-11",
+      "2026-11-12"
+    ],
+    "borda_minus_app_by_target": [
+      1,
+      0,
+      1,
+      -1,
+      1,
+      0,
+      1
+    ],
+    "borda_minus_inclusion_by_target": [
+      0,
+      -1,
+      1,
+      -1,
+      0,
+      0,
+      0
+    ],
+    "borda_minus_uniform_by_target": [
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      -1.5
+    ],
+    "mean_differences": {
+      "borda_minus_app": 0.42857142857142855,
+      "borda_minus_inclusion": -0.14285714285714285,
+      "borda_minus_uniform": 0.21428571428571427
+    },
+    "block_bootstrap_ci_95": {
+      "borda_minus_app": [
+        0,
+        0.7142857142857143
+      ],
+      "borda_minus_inclusion": [
+        -0.42857142857142855,
+        0.14285714285714285
+      ],
+      "borda_minus_uniform": [
+        -0.35714285714285715,
+        0.5
+      ]
+    },
+    "p_values_one_sided_raw": {
+      "borda_vs_app": 0.1875,
+      "borda_vs_inclusion": 0.875,
+      "borda_vs_uniform": 0.360626423573348
+    },
+    "p_values_holm_adjusted": {
+      "borda_vs_app": 0.5625,
+      "borda_vs_uniform": 0.721252847146696,
+      "borda_vs_inclusion": 0.875
+    },
+    "exact_uniform_top20_hypergeometric_pmf": [
+      0.02356202356202356,
+      0.14726264726264726,
+      0.32917532917532916,
+      0.32917532917532916,
+      0.14726264726264726,
+      0.02356202356202356
+    ],
+    "blind_borda_total_hits": 19,
+    "bootstrap": {
+      "replicates": 20000,
+      "circular_block_length": 2,
+      "seeds": [
+        14401,
+        14402,
+        14403
+      ]
+    },
+    "paired_sign_flip_assignments": 128
+  },
+  "integrity": {
+    "archive_draws": 3406,
+    "archive_dates_unique_chronological": true,
+    "shadow_rows": 1364,
+    "completed_targets_reconciled": 31,
+    "historical_shadow_rows_reconciled": 1321,
+    "rule_rows_per_target": 42,
+    "rule_type_counts_per_target": {
+      "family": 24,
+      "pair": 12,
+      "chain": 6
+    },
+    "app_rows": 19,
+    "pending_rows": 43,
+    "pending_rows_without_outcomes": true,
+    "strict_prior_cutoff_checks": 1364,
+    "pre_target_freeze_time_checks": 1364,
+    "source_rows_with_one_day_stale_but_still_prior_cutoff": 42,
+    "source_rows_using_latest_available_cutoff": 1322
+  },
+  "decision": "NO_PROMOTION_HISTORICAL_LIFT_NOT_ESTABLISHED",
+  "limitations": [
+    "The aggregation rule was registered after the component forecast outcomes already existed; historical Blind OOS is not virgin confirmatory evidence.",
+    "Blind OOS contains only seven dates and has low power.",
+    "Component rules are correlated and are not 42 independent information sources.",
+    "The endpoint is Top20 hit count, not exact five-number ticket probability.",
+    "The one-day-stale cutoff rows are conservative prior-only freezes; no leakage was detected, but some component forecasts used less than the latest available history."
+  ],
+  "next_action": "Preserve the separate 2026-11-13 Q144 Top20 freeze. Reconcile it only after official publication. Accumulate at least 100 consecutive prospective Q144 freezes before a confirmatory evaluation; do not tune aggregation weights on the historical 31 dates."
+}
