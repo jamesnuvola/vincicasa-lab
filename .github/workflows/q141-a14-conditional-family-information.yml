@@ -54,7 +54,11 @@ jobs:
           MATRIX="$(find source -name 'q141_a7_fresh59_feature_matrix_2026-11-13.npz' -print -quit)"
           mkdir -p /tmp/q141-a14-replay
           python scripts/sonar_q141_a14_conditional_family_information.py --matrix "$MATRIX" --outdir /tmp/q141-a14-replay
-          diff -ru reports/sequence_agent /tmp/q141-a14-replay
+          for expected in /tmp/q141-a14-replay/q141_a14_*; do
+            target="reports/sequence_agent/$(basename "$expected")"
+            test -f "$target"
+            cmp "$target" "$expected"
+          done
       - name: Persist generated Q141-A14 evidence on research branch
         if: github.event_name == 'push'
         run: |
