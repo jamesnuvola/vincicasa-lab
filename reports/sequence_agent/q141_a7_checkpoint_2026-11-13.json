@@ -10,7 +10,7 @@
   "report_path": "reports/sequence_agent/q141_a7_stability_weighted_report_2026-11-13.json",
   "ledger_path": "reports/sequence_agent/q141_a7_stability_weighted_target_ledger_2026-11-13.csv",
   "matrix_artifact_path": "reports/sequence_agent/q141_a7_fresh59_feature_matrix_2026-11-13.npz",
-  "next_action": "Keep M1 frozen. On the next officially verified draw after 2026-11-12, append a prospective target row and score M1 versus M0 without retuning. Accumulate a preregistered prospective sample before any promotion decision.",
+  "next_action": "Freeze M1 and M0. Collect the next 200 consecutive eligible official draws after 2026-11-12; freeze and hash every prediction before reading the outcome, perform no interim efficacy peeking or retuning, and run one final paired analysis after all 200 targets per the prospective preregistration.",
   "governance": {
     "pr89": "untouched",
     "pr6": "untouched",
@@ -43,5 +43,11 @@
       "ledger_rows": 3356,
       "ledger_sha256": "1ecf22f05314b2082b53b8a0d9d30864dbd7e8c983d38ac3c1e9a37276ed55a0"
     }
+  },
+  "prospective_preregistration_path": "reports/sequence_agent/q141_a7_b11_prospective_preregistration_2026-11-13.md",
+  "cycle_report_path": "reports/sequence_agent/q141_cycle_report_2026-11-13_run15.md",
+  "additional_document_readback": {
+    "reports/sequence_agent/q141_cycle_report_2026-11-13_run15.md": "f51b398002e83ca16f752ff11654d1deaff7492f",
+    "reports/sequence_agent/q141_a7_b11_prospective_preregistration_2026-11-13.md": "e54c495b09477596a6fbcc7c8bc6b514ee5ea058"
   }
 }
