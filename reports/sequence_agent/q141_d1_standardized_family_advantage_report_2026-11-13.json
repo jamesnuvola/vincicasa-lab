@@ -1,0 +1,261 @@
+{
+  "blind_oos_inference": [
+    {
+      "block_count": 34,
+      "block_length": 20,
+      "bootstrap_replicates": 20000,
+      "ci95": [
+        -0.03134328358208955,
+        0.014925373134328358
+      ],
+      "ci95_lower_positive": false,
+      "holm_p_below_0_05": false,
+      "id": "M2_minus_M1",
+      "mean": -0.007462686567164179,
+      "n": 670,
+      "p_holm": 0.7557122143892805,
+      "p_one_sided": 0.7557122143892805,
+      "practical_threshold_met": false,
+      "signflip_replicates": 20000
+    },
+    {
+      "block_count": 34,
+      "block_length": 20,
+      "bootstrap_replicates": 20000,
+      "ci95": [
+        -0.041791044776119404,
+        0.08059701492537313
+      ],
+      "ci95_lower_positive": false,
+      "holm_p_below_0_05": false,
+      "id": "M2_minus_M0",
+      "mean": 0.019402985074626865,
+      "n": 670,
+      "p_holm": 0.536273186340683,
+      "p_one_sided": 0.2681365931703415,
+      "practical_threshold_met": false,
+      "signflip_replicates": 20000
+    }
+  ],
+  "decision": "NO_STANDARDIZED_FAMILY_ADVANTAGE_LIFT_DEMONSTRATED",
+  "design": {
+    "block_length": 20,
+    "bootstrap_replicates": 20000,
+    "co_primary_endpoints": [
+      "M2_minus_M1",
+      "M2_minus_M0"
+    ],
+    "families": [
+      "frequency_change",
+      "frequency_level",
+      "lag_memory",
+      "neighbour_field",
+      "position_dependence",
+      "recency_gap"
+    ],
+    "holm_family_size": 2,
+    "practical_threshold_mean_top5_hits": 0.025,
+    "rolling_window": 100,
+    "scale_floor_lambda": 0.25,
+    "signflip_replicates": 20000,
+    "split_counts": {
+      "blind_oos": 670,
+      "discovery": 2013,
+      "validation": 671
+    },
+    "standardization": "(family_top5_hits - same_target_mean_across_six_families) / sqrt(same_target_population_variance + lambda^2)",
+    "strict_prior": true,
+    "tie_break": "highest rolling mean standardized relative advantage; then lowest rolling mean actual-number rank; then lexicographic family id",
+    "uniform_expected_mean_top5_hits": 0.625,
+    "warmup": "first 100 scored targets use existing equal-family ranking"
+  },
+  "governance": {
+    "active_engine_mutated": false,
+    "canonical_archive_mutated": false,
+    "engine_promoted": false,
+    "merge": false,
+    "protected_prs_6_7_8_untouched": true,
+    "q60_freeze_mutated": false,
+    "rebase": false,
+    "research_only": true,
+    "shadow_forecasts_mutated": false
+  },
+  "integrity": {
+    "all_cutoffs_strictly_prior": true,
+    "archive_blob_verified": true,
+    "dates_strictly_chronological": true,
+    "deterministic_replay": true,
+    "family_hit_counts_valid": true,
+    "future_suffix_invariance": [
+      {
+        "selection_unchanged": true,
+        "target_offset": 100
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 101
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 500
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 2013
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 2684
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 3353
+      }
+    ],
+    "parent_report_blob_verified": true,
+    "source_ledger_blob_verified": true,
+    "split_counts_verified": true,
+    "target_count_verified": true,
+    "target_indices_consecutive": true
+  },
+  "limitations": [
+    "Historical Blind OOS is exposed to prior SONAR research and is not virgin prospective confirmation.",
+    "The six Q80-derived families are coarse and do not exhaust Q141's typed formula universe.",
+    "The endpoint is family-specific Top-5 coverage, not a calibrated exact-quintet probability.",
+    "The fixed 100-target window and lambda=0.25 are not tuned here; standardization may still amplify noise.",
+    "Holm covers the two registered D1 endpoints, not the full Q00-Q141 research family.",
+    "No prospective outcome, Q60 freeze, canonical archive, active engine or existing forecast was changed."
+  ],
+  "metrics_by_split": {
+    "blind_oos": {
+      "M0_equal_family": {
+        "mean_actual_rank": 20.511641791044774,
+        "top10_mean_hits": 1.2134328358208955,
+        "top20_mean_hits": 2.52089552238806,
+        "top5_hit_share": 0.12,
+        "top5_mean_hits": 0.6
+      },
+      "M1_C0_raw_rolling100": {
+        "mean_actual_rank": 20.19044776119403,
+        "top10_mean_hits": 1.2701492537313432,
+        "top20_mean_hits": 2.5880597014925373,
+        "top5_hit_share": 0.12537313432835823,
+        "top5_mean_hits": 0.6268656716417911
+      },
+      "M2_D1": {
+        "mean_actual_rank": 20.320298507462688,
+        "top10_mean_hits": 1.2492537313432837,
+        "top20_mean_hits": 2.555223880597015,
+        "top5_hit_share": 0.12388059701492538,
+        "top5_mean_hits": 0.6194029850746269
+      },
+      "targets": 670,
+      "uniform_expected_top5_mean_hits": 0.625
+    },
+    "discovery": {
+      "M0_equal_family": {
+        "mean_actual_rank": 20.333532041728763,
+        "top10_mean_hits": 1.2533532041728763,
+        "top20_mean_hits": 2.5454545454545454,
+        "top5_hit_share": 0.1269746646795827,
+        "top5_mean_hits": 0.6348733233979136
+      },
+      "M1_C0_raw_rolling100": {
+        "mean_actual_rank": 20.404769001490315,
+        "top10_mean_hits": 1.282662692498758,
+        "top20_mean_hits": 2.503725782414307,
+        "top5_hit_share": 0.1299552906110283,
+        "top5_mean_hits": 0.6497764530551415
+      },
+      "M2_D1": {
+        "mean_actual_rank": 20.393343268753107,
+        "top10_mean_hits": 1.2637853949329358,
+        "top20_mean_hits": 2.516145057128664,
+        "top5_hit_share": 0.1254843517138599,
+        "top5_mean_hits": 0.6274217585692996
+      },
+      "targets": 2013,
+      "uniform_expected_top5_mean_hits": 0.625
+    },
+    "validation": {
+      "M0_equal_family": {
+        "mean_actual_rank": 20.64649776453055,
+        "top10_mean_hits": 1.1982116244411327,
+        "top20_mean_hits": 2.5007451564828616,
+        "top5_hit_share": 0.11594634873323398,
+        "top5_mean_hits": 0.5797317436661699
+      },
+      "M1_C0_raw_rolling100": {
+        "mean_actual_rank": 20.736214605067065,
+        "top10_mean_hits": 1.217585692995529,
+        "top20_mean_hits": 2.46795827123696,
+        "top5_hit_share": 0.12250372578241431,
+        "top5_mean_hits": 0.6125186289120715
+      },
+      "M2_D1": {
+        "mean_actual_rank": 20.665871833084946,
+        "top10_mean_hits": 1.217585692995529,
+        "top20_mean_hits": 2.479880774962742,
+        "top5_hit_share": 0.12280178837555886,
+        "top5_mean_hits": 0.6140089418777943
+      },
+      "targets": 671,
+      "uniform_expected_top5_mean_hits": 0.625
+    }
+  },
+  "next_action": "Keep D1 as a recorded historical null; do not tune the scale floor or rolling window on this Blind OOS. Continue Q141 typed-registry lineage work and preserve Q60 append-only prospective freezes.",
+  "schema_version": "1.0",
+  "selection_diagnostics": {
+    "blind_oos": {
+      "distinct": 5,
+      "selected_counts": {
+        "frequency_change": 63,
+        "frequency_level": 201,
+        "neighbour_field": 153,
+        "position_dependence": 118,
+        "recency_gap": 135
+      },
+      "switch_rate": 0.06726457399103139,
+      "switches": 45
+    },
+    "discovery": {
+      "distinct": 7,
+      "selected_counts": {
+        "WARMUP_EQUAL_FAMILY": 100,
+        "frequency_change": 182,
+        "frequency_level": 144,
+        "lag_memory": 394,
+        "neighbour_field": 441,
+        "position_dependence": 360,
+        "recency_gap": 392
+      },
+      "switch_rate": 0.09791252485089463,
+      "switches": 197
+    },
+    "validation": {
+      "distinct": 6,
+      "selected_counts": {
+        "frequency_change": 6,
+        "frequency_level": 138,
+        "lag_memory": 77,
+        "neighbour_field": 222,
+        "position_dependence": 86,
+        "recency_gap": 142
+      },
+      "switch_rate": 0.07164179104477612,
+      "switches": 48
+    }
+  },
+  "source": {
+    "archive_cutoff": "2026-11-10",
+    "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_path": "data/storico_daily.csv",
+    "eligible_draws": 3404,
+    "parent_report_git_blob_sha1": "d559f939fc721119590cf84a72afc99fb6c36e0d",
+    "target_count": 3354,
+    "target_ledger_git_blob_sha1": "4620ac88199256d90bf8e11a852206bfeb817812",
+    "target_ledger_path": "reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv"
+  },
+  "status": "COMPLETED_HISTORICAL_EXPLORATORY",
+  "task_id": "Q141-D1-STANDARDIZED-FAMILY-ADVANTAGE"
+}
