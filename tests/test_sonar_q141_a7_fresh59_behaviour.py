@@ -1,5 +1,6 @@
 import sys
 import unittest
+import warnings
 from pathlib import Path
 import numpy as np
 
@@ -32,17 +33,21 @@ class Fresh59Tests(unittest.TestCase):
 
     def test_future_suffix_mutation_does_not_change_target_features(self):
         draws=self.draws(72)
-        original=a7.compute_feature_matrix(draws)
-        changed=list(draws)
-        changed[60:]=self.draws(12,seed=991)
-        mutated=a7.compute_feature_matrix(changed)
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            original=a7.compute_feature_matrix(draws)
+            changed=list(draws)
+            changed[60:]=self.draws(12,seed=991)
+            mutated=a7.compute_feature_matrix(changed)
         # Matrix row 10 is the pre-target feature vector for draw index 60.
         np.testing.assert_array_equal(original[:11],mutated[:11])
 
     def test_feature_replay_is_deterministic(self):
         draws=self.draws(66,seed=992)
-        first=a7.compute_feature_matrix(draws)
-        second=a7.compute_feature_matrix(draws)
+        with warnings.catch_warnings():
+            warnings.simplefilter("error", RuntimeWarning)
+            first=a7.compute_feature_matrix(draws)
+            second=a7.compute_feature_matrix(draws)
         np.testing.assert_array_equal(first,second)
         self.assertEqual(first.shape,(16,40,59))
         self.assertEqual(first.dtype,np.float32)
