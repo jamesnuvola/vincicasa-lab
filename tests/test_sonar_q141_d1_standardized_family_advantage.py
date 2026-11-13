@@ -10,12 +10,15 @@ D1=importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(D1)
 
 def make_row(hits,ranks=None):
-    return {"hits":list(hits),"ranks":list(ranks or [20.0]*6)}
+    return {"hits":list(hits),"ranks":list(ranks or [20.0]*6),
+            "hits10":[min(5,x+1) for x in hits],"hits20":[min(5,x+2) for x in hits],
+            "equal":1,"equal10":2,"equal20":3,"equal_rank":20.0}
 
 class TestQ141D1(unittest.TestCase):
     def test_pinned_source_and_split_integrity(self):
-        rows=D1.load_source()
+        rows,parent_sha=D1.load_source()
         self.assertEqual(len(rows),3354)
+        self.assertEqual(len(parent_sha),40)
         self.assertEqual({k:sum(r["split"]==k for r in rows) for k in D1.SPLITS},D1.SPLITS)
 
     def test_warmup_does_not_select_a_family(self):

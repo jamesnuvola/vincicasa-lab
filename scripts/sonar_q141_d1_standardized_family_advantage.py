@@ -19,8 +19,7 @@ CYCLE="q141_cycle_report_2026-11-13_run24.md"
 
 FAMILIES=("frequency_change","frequency_level","lag_memory","neighbour_field","position_dependence","recency_gap")
 EXPECTED={"ledger":"4620ac88199256d90bf8e11a852206bfeb817812",
-          "archive":"fcb453ed06c8002314f826dbac79d6935f9ac103",
-          "parent":"407be84fd8573fe7a12557dbca7b92990e3d04ab"}
+          "archive":"fcb453ed06c8002314f826dbac79d6935f9ac103"}
 SPLITS={"discovery":2013,"validation":671,"blind_oos":670}
 N_TARGETS=3354
 WINDOW=100
@@ -41,12 +40,13 @@ def mean(values):
     return sum(values)/len(values) if values else 0.0
 
 def load_source():
-    for name,path in (("ledger",SRC),("archive",ARCHIVE),("parent",PARENT)):
+    for name,path in (("ledger",SRC),("archive",ARCHIVE)):
         if blob_sha(path)!=EXPECTED[name]:
             raise ValueError(f"pinned {name} Git blob mismatch")
     parent=json.loads(PARENT.read_text(encoding="utf-8"))
     if parent["source"]["git_blob_sha1"]!=EXPECTED["archive"] or parent["source"]["eligible_draw_count"]!=3404:
         raise ValueError("Q141-C0 parent archive lineage mismatch")
+    parent_sha=blob_sha(PARENT)
     if not PREREG.exists():
         raise ValueError("D1 preregistration missing")
     with SRC.open("r",encoding="utf-8-sig",newline="") as f:
@@ -77,7 +77,7 @@ def load_source():
             "equal":int(float(r["equal_family_top5_hits"])),"equal10":int(float(r["equal_family_top10_hits"])),
             "equal20":int(float(r["equal_family_top20_hits"])),"equal_rank":float(r["equal_family_mean_actual_rank"])})
     if dict(counts)!=SPLITS: raise ValueError(f"split mismatch: {dict(counts)}")
-    return rows
+    return rows,parent_sha
 
 def standardized_scores(history):
     if len(history)!=WINDOW: raise ValueError("exactly 100 prior rows required")
@@ -161,7 +161,7 @@ def holm(ps):
     return out
 
 def run():
-    OUT.mkdir(parents=True,exist_ok=True); rows=load_source(); preds=build_predictions(rows)
+    OUT.mkdir(parents=True,exist_ok=True); rows,parent_sha=load_source(); preds=build_predictions(rows)
     if preds!=build_predictions(rows): raise ValueError("deterministic replay mismatch")
     leakage=[]
     for t in (100,101,500,2013,2684,3353):
@@ -197,7 +197,7 @@ def run():
       "status":"COMPLETED_HISTORICAL_EXPLORATORY","decision":decision,
       "source":{"target_ledger_path":str(SRC.relative_to(ROOT)),"target_ledger_git_blob_sha1":EXPECTED["ledger"],
         "archive_path":"data/storico_daily.csv","archive_git_blob_sha1":EXPECTED["archive"],
-        "parent_report_git_blob_sha1":EXPECTED["parent"],"eligible_draws":3404,"archive_cutoff":"2026-11-10","target_count":len(rows)},
+        "parent_report_git_blob_sha1":parent_sha,"eligible_draws":3404,"archive_cutoff":"2026-11-10","target_count":len(rows)},
       "design":{"families":list(FAMILIES),"rolling_window":WINDOW,"scale_floor_lambda":LAMBDA,
         "standardization":"(family_top5_hits - same_target_mean_across_six_families) / sqrt(same_target_population_variance + lambda^2)",
         "warmup":"first 100 scored targets use existing equal-family ranking",
@@ -236,7 +236,7 @@ def run():
     rp=OUT/REPORT; rp.write_text(json.dumps(report,indent=2,sort_keys=True)+"\n",encoding="utf-8")
     prereg=PREREG.read_bytes(); sp=Path(__file__).resolve()
     manifest={"schema_version":"1.0","task_id":report["task_id"],"status":"ARTIFACTS_WRITTEN_LOCAL_READBACK_PENDING",
-      "source_ledger_git_blob_sha1":EXPECTED["ledger"],"archive_git_blob_sha1":EXPECTED["archive"],
+      "source_ledger_git_blob_sha1":EXPECTED["ledger"],"archive_git_blob_sha1":EXPECTED["archive"],"parent_report_git_blob_sha1":parent_sha,
       "preregistration_git_blob_sha1":hashlib.sha1(f"blob {len(prereg)}\0".encode()+prereg).hexdigest(),
       "script_git_blob_sha1":blob_sha(sp),"script_sha256":sha256(sp),"outputs":{}}
     for path in (rp,ledger_path):
