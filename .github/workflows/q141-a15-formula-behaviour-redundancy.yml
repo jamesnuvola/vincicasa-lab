@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: \${{ github.head_ref || github.ref_name }}
-          token: \${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -33,7 +33,7 @@ jobs:
         run: node scripts/sonar_q141_a15_formula_behaviour_redundancy.mjs --verify
       - name: Persist canonical generated outputs
         env:
-          TARGET_BRANCH: \${{ github.head_ref || github.ref_name }}
+          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -44,5 +44,5 @@ jobs:
             echo "Canonical outputs already current."
           else
             git commit -m "Q141-A15: persist canonical Node replay outputs"
-            git push origin "HEAD:\${TARGET_BRANCH}"
+            git push origin "HEAD:${TARGET_BRANCH}"
           fi
