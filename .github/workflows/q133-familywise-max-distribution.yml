@@ -1,0 +1,29 @@
+name: Q133 family-wise maximum-hit distribution replay
+
+on:
+  push:
+    branches: ["research/q133-familywise-max-distribution-20261112"]
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/sonar_q133_familywise_max_distribution.mjs"
+      - "reports/sequence_agent/q133_familywise_max_distribution_*.json"
+      - "reports/sequence_agent/q133_familywise_max_distribution_*.md"
+      - ".github/workflows/q133-familywise-max-distribution.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Replay Q133 and verify report, source hashes and manifest
+        run: node scripts/sonar_q133_familywise_max_distribution.mjs --verify

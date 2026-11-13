@@ -1,0 +1,366 @@
+{
+  "experiment_id": "Q133",
+  "title": "Family-wise maximum-hit distribution calibration across 42 fixed SONAR rules",
+  "generated_at_utc": "2026-11-12T02:44:41Z",
+  "status": "COMPLETE_EXPLORATORY_HISTORICAL_CALIBRATION",
+  "protocol_status": "EXPLORATORY_POST_HOC",
+  "source_commit": "50078e442509564bbc1d150ac6aea82421e22979",
+  "source": {
+    "path": "reports/sequence_agent/historical_rule_ledger.csv",
+    "git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b",
+    "bytes": 30998468,
+    "target_count": 3204,
+    "rows": 134568,
+    "configurations_per_target": 42,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "evaluation_mode": "RETROSPECTIVE_WALK_FORWARD_RULE_FIXED_NOW",
+    "cutoff_rule": "history_cutoff equals the previous calendar date; all Top20 hit counts recomputed from the target numbers"
+  },
+  "hypothesis": {
+    "statistic": "M_t = max_j |D_t intersect Top20_{j,t}|",
+    "null": "For each target, a uniform 5-of-40 draw is evaluated against the same 42 frozen prior-only Top20 sets.",
+    "endpoints": [
+      "mean_max_hits",
+      "rate_max_hits_ge_4",
+      "rate_max_hits_eq_5"
+    ],
+    "direction": "upper-tail"
+  },
+  "design": {
+    "splits": [
+      {
+        "name": "discovery",
+        "targets": 1922,
+        "first": "2018-02-02",
+        "last": "2023-05-08"
+      },
+      {
+        "name": "validation",
+        "targets": 641,
+        "first": "2023-05-09",
+        "last": "2025-02-07"
+      },
+      {
+        "name": "blind_oos",
+        "targets": 641,
+        "first": "2025-02-08",
+        "last": "2026-11-10"
+      }
+    ],
+    "randomizations_per_target": 1000,
+    "random_sampler": "Mulberry32 uint32 stream; rejection sampling with acceptance range [0,4294967279], then five distinct values without replacement",
+    "bootstrap_replicates": 10000,
+    "bootstrap": "paired circular block bootstrap on target-level observed-minus-null differences",
+    "block_length": 20,
+    "inferential_family_size": 9,
+    "multiple_testing": "Holm across 3 endpoints x 3 chronological splits"
+  },
+  "split_results": [
+    {
+      "split": "discovery",
+      "n": 1922,
+      "first": "2018-02-02",
+      "last": "2023-05-08",
+      "observed_max_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 133,
+        "4": 1118,
+        "5": 671
+      },
+      "observed_mean_max_hits": 4.279916753381894,
+      "null_mean_max_hits": 4.2624448491155045,
+      "mean_difference": 0.017471904266389338,
+      "observed_ge4_count": 1789,
+      "null_expected_ge4_count": 1762.347999999998,
+      "observed_ge4_rate": 0.9308012486992716,
+      "null_ge4_rate": 0.9169344432882404,
+      "observed_5of5_count": 671,
+      "null_expected_5of5_count": 664.1320000000007,
+      "observed_5of5_rate": 0.34911550468262226,
+      "null_5of5_rate": 0.34554214360041663,
+      "p_mean": 0.09090909090909091,
+      "p_ge4": 0.011988011988011988,
+      "p_eq5": 0.3966033966033966,
+      "block_bootstrap_95_ci_mean_difference": [
+        -0.009091050988553579,
+        0.0432440166493236
+      ],
+      "block_bootstrap_95_ci_ge4_difference": [
+        0.00004058272632672331,
+        0.026813735691987518
+      ],
+      "block_bootstrap_95_ci_5of5_difference": [
+        -0.017125390218522368,
+        0.02415296566077001
+      ]
+    },
+    {
+      "split": "validation",
+      "n": 641,
+      "first": "2023-05-09",
+      "last": "2025-02-07",
+      "observed_max_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 1,
+        "3": 57,
+        "4": 373,
+        "5": 210
+      },
+      "observed_mean_max_hits": 4.235569422776911,
+      "null_mean_max_hits": 4.266519500780031,
+      "mean_difference": -0.03095007800312022,
+      "observed_ge4_count": 583,
+      "null_expected_ge4_count": 588.7529999999995,
+      "observed_ge4_rate": 0.9095163806552262,
+      "null_ge4_rate": 0.9184914196567855,
+      "observed_5of5_count": 210,
+      "null_expected_5of5_count": 223.10800000000006,
+      "observed_5of5_rate": 0.32761310452418096,
+      "null_5of5_rate": 0.34806240249609993,
+      "p_mean": 0.9110889110889111,
+      "p_ge4": 0.8051948051948052,
+      "p_eq5": 0.8681318681318682,
+      "block_bootstrap_95_ci_mean_difference": [
+        -0.07314040561622462,
+        0.013279251170046795
+      ],
+      "block_bootstrap_95_ci_ge4_difference": [
+        -0.033304212168486794,
+        0.013912636505460192
+      ],
+      "block_bootstrap_95_ci_5of5_difference": [
+        -0.05275351014040559,
+        0.012851794071762878
+      ]
+    },
+    {
+      "split": "blind_oos",
+      "n": 641,
+      "first": "2025-02-08",
+      "last": "2026-11-10",
+      "observed_max_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 55,
+        "4": 372,
+        "5": 214
+      },
+      "observed_mean_max_hits": 4.24804992199688,
+      "null_mean_max_hits": 4.267575663026525,
+      "mean_difference": -0.019525741029645438,
+      "observed_ge4_count": 586,
+      "null_expected_ge4_count": 589.1509999999994,
+      "observed_ge4_rate": 0.9141965678627145,
+      "null_ge4_rate": 0.9191123244929787,
+      "observed_5of5_count": 214,
+      "null_expected_5of5_count": 223.37800000000001,
+      "observed_5of5_rate": 0.3338533541341654,
+      "null_5of5_rate": 0.3484836193447738,
+      "p_mean": 0.8091908091908092,
+      "p_ge4": 0.6983016983016983,
+      "p_eq5": 0.7872127872127872,
+      "block_bootstrap_95_ci_mean_difference": [
+        -0.06335881435257408,
+        0.021829953198127923
+      ],
+      "block_bootstrap_95_ci_ge4_difference": [
+        -0.030006240249610013,
+        0.017226209048361932
+      ],
+      "block_bootstrap_95_ci_5of5_difference": [
+        -0.04650234009360367,
+        0.018326053042121686
+      ]
+    }
+  ],
+  "holm_results": [
+    {
+      "split": "discovery",
+      "endpoint": "max_hits_ge_4",
+      "p": 0.011988011988011988,
+      "p_holm": 0.10789210789210789
+    },
+    {
+      "split": "discovery",
+      "endpoint": "mean_max_hits",
+      "p": 0.09090909090909091,
+      "p_holm": 0.7272727272727273
+    },
+    {
+      "split": "discovery",
+      "endpoint": "max_hits_eq_5",
+      "p": 0.3966033966033966,
+      "p_holm": 1
+    },
+    {
+      "split": "blind_oos",
+      "endpoint": "max_hits_ge_4",
+      "p": 0.6983016983016983,
+      "p_holm": 1
+    },
+    {
+      "split": "blind_oos",
+      "endpoint": "max_hits_eq_5",
+      "p": 0.7872127872127872,
+      "p_holm": 1
+    },
+    {
+      "split": "validation",
+      "endpoint": "max_hits_ge_4",
+      "p": 0.8051948051948052,
+      "p_holm": 1
+    },
+    {
+      "split": "blind_oos",
+      "endpoint": "mean_max_hits",
+      "p": 0.8091908091908092,
+      "p_holm": 1
+    },
+    {
+      "split": "validation",
+      "endpoint": "max_hits_eq_5",
+      "p": 0.8681318681318682,
+      "p_holm": 1
+    },
+    {
+      "split": "validation",
+      "endpoint": "mean_max_hits",
+      "p": 0.9110889110889111,
+      "p_holm": 1
+    }
+  ],
+  "overall_descriptive": {
+    "observed_mean_max_hits": 4.264669163545568,
+    "null_mean_max_hits": 4.264286516853933,
+    "difference": 0.00038264669163456944
+  },
+  "provisional_contest_315": {
+    "target_date": "2026-11-11",
+    "provisional_numbers": [
+      1,
+      21,
+      22,
+      27,
+      29
+    ],
+    "number_provenance_status": "SECONDARY_SOURCE_CORROBORATED_PRIMARY_NUMBER_PROVENANCE_UNRESOLVED",
+    "official_sisal_page_confirms_contest_and_prize_profile_but_retrieved_text_does_not_expose_numbers": true,
+    "official_vincicasa_archive_still_marks_contest_pending": true,
+    "secondary_sources_agree": true,
+    "main_archive_row_present": true,
+    "row_added_by_legacy_updater_commit": "50078e442509564bbc1d150ac6aea82421e22979",
+    "insertion_workflow_run_id": 43136027472,
+    "insertion_time_utc": "2026-11-12T01:39:53Z",
+    "global_freezes": 43,
+    "positional_freezes": 1,
+    "all_freezes_still_pending": true,
+    "family_rule_count": 42,
+    "family_maxima": {
+      "top5": {
+        "observed_max": 2,
+        "distribution": {
+          "0": 21,
+          "1": 105898,
+          "2": 433515,
+          "3": 113466,
+          "4": 5072,
+          "5": 36
+        },
+        "tail_count": 552089,
+        "total_combinations": 658008,
+        "p_familywise": 0.839030832451885
+      },
+      "top10": {
+        "observed_max": 3,
+        "distribution": {
+          "1": 208,
+          "2": 123158,
+          "3": 400323,
+          "4": 126782,
+          "5": 7537
+        },
+        "tail_count": 534642,
+        "total_combinations": 658008,
+        "p_familywise": 0.8125159572527993
+      },
+      "top20": {
+        "observed_max": 5,
+        "distribution": {
+          "3": 39616,
+          "4": 382057,
+          "5": 236335
+        },
+        "tail_count": 236335,
+        "total_combinations": 658008,
+        "p_familywise": 0.35916736574631314
+      }
+    },
+    "best_top20_configuration": "pair_affinity_50",
+    "fixed_comparator_scores": {
+      "freq_100": {
+        "top20": 2,
+        "top10": 2,
+        "top5": 1
+      },
+      "position_seed_mix_top20_v1": {
+        "top20": 2,
+        "top10": 2,
+        "top5": 1
+      },
+      "app_engine": {
+        "top20": 3,
+        "top10": 2,
+        "top5": 0
+      }
+    },
+    "q60": {
+      "current_valid_complete_pairs": 23,
+      "required_pairs": 200,
+      "promotion_allowed": false,
+      "incremented_for_315": false
+    },
+    "sources": [
+      "https://www.sisal.it/vincicasa/ultima-estrazione",
+      "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+      "https://vincicasa.online/archivio/estrazione-11-novembre-2026",
+      "https://www.estrazionedellotto.it/vinci-casa/risultati-vinci-casa"
+    ]
+  },
+  "data_freshness": {
+    "canonical_archive_draws": 3405,
+    "canonical_archive_last_date": "2026-11-11",
+    "latest_metrics_draws": 3404,
+    "latest_metrics_last_date": "2026-11-10",
+    "active_engine_draws": 3404,
+    "active_engine_last_date": "2026-11-10",
+    "global_shadow_rows_pending_for_315": 43,
+    "positional_shadow_rows_pending_for_315": 1,
+    "queue_generated_at_utc": "2026-11-11T22:01:13.170738+00:00",
+    "sequence_agent_refresh_after_archive_append": "NOT_OBSERVED_IN_CURRENT_REPOSITORY_RUNS"
+  },
+  "decision": "NO_FAMILYWISE_MAX_DISTRIBUTION_LIFT_DEMONSTRATED",
+  "interpretation": [
+    "Discovery has a nominal excess in the M>=4 tail (p=0.01199), but Holm-adjusted p=0.10789 across nine endpoints.",
+    "Validation and Blind OOS have negative observed-minus-null mean differences and lower-than-null upper-tail rates.",
+    "The overall descriptive mean difference is effectively zero (+0.000383).",
+    "No predictive advantage or engine promotion is demonstrated."
+  ],
+  "limitations": [
+    "Post-hoc exploratory calibration; not a preregistered confirmatory test.",
+    "The 42-rule family was selected after broader exploration; Holm covers only the nine Q133 endpoints, not Q00-Q133.",
+    "Historical Blind OOS is not a virgin holdout.",
+    "The randomization p-values use 1,000 conditional randomizations per target.",
+    "Contest-315 numbers remain secondary-source corroborated; no Q60 update is authorized."
+  ],
+  "next_action": [
+    "Resolve official primary-source provenance for all five contest-315 numbers.",
+    "Reconcile the already-appended row without rewriting any frozen forecast.",
+    "Refresh latest_metrics and active_engine_walkforward after the archive update.",
+    "Evaluate the 43 global and one positional 2026-11-11 freezes append-only; update Q60 only if eligible."
+  ]
+}
