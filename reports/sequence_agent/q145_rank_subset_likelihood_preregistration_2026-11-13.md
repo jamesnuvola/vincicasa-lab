@@ -1,6 +1,6 @@
 # Q145 — Rank-to-subset likelihood calibration
 
-**Registration:** 2026-11-13, 19:10 Europe/Rome, before the 20:00 target.  
+**Registration:** 2026-11-13, before the 20:00 target; the separate prospective freeze records its exact timestamp.  
 **Status:** research-only; one prospective freeze created for 2026-11-13.  
 **Parent:** Q144 branch `research/q144-shadow-rank-ensemble-20261113`, PR #95.  
 **Pinned sources:** canonical archive blob `6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb`; Q144 ledger blob `c14e13b0c8e7f7a8c20ae40c9af56101f5209762`; Q144 freeze blob `df20af45433ae8693b90e06124d31df0ad345dfe`.
