@@ -1,0 +1,30 @@
+name: Q146 Pair-Inclusion Calibration
+
+on:
+  push:
+    branches:
+      - research/q146-pair-inclusion-calibration-20261113
+  pull_request:
+    branches:
+      - research/q145-rank-subset-likelihood-20261113
+
+permissions:
+  contents: read
+
+concurrency:
+  group: q146-pair-inclusion-calibration-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Test pair inclusion algebra and temporal guards
+        run: node tests/test_sonar_q146_pair_inclusion_calibration.mjs
+      - name: Verify Q145 upstream checkpoint and deterministic Q146 artifacts
+        run: node scripts/sonar_q146_pair_inclusion_calibration.mjs
