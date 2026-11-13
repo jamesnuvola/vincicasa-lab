@@ -391,7 +391,7 @@ def analyse(q90_zip: Path, a6_zip: Path, preregistration: Path, output_dir: Path
     for p in [preregistration, report_path, ledger_path]:
         data = p.read_bytes()
         file_entries[p.name] = {
-            "path": str(p), "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(),
+            "path": p.name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(),
             "git_blob_sha1": git_blob_sha1(data),
         }
     manifest = {
