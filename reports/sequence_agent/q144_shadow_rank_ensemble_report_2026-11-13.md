@@ -20,7 +20,7 @@ Blind OOS paired mean differences:
 - Borda − inclusion: −0.1429; 95% CI [−0.4286, 0.1429]; p=0.8750; Holm p=0.8750.
 - Borda − uniform: +0.2143; 95% CI [−0.3571, 0.5000]; exact hypergeometric-sum p=0.3606; Holm p=0.7213.
 
-No endpoint is significant after Holm. Blind OOS contains only seven target dates.
+No endpoint is significant after Holm. Blind OOS contains only seven target dates. The paired sign-flip test assumes symmetry/exchangeability of within-target differences; Holm covers only the three registered Q144 endpoints, not the full SONAR research history.
 
 ## Integrity
 - 3,406 canonical draws and 1,364 shadow rows pinned by Git blob SHA.
