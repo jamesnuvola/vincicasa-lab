@@ -2,15 +2,15 @@
   "schema_version": "1.0",
   "cycle": 15,
   "task_id": "Q141-A7-B11",
-  "status": "REMOTE_GIT_AND_ARTIFACT_READBACK_VERIFIED",
+  "status": "COMPLETED_LOCAL_PENDING_REMOTE_READBACK",
   "decision": "NO_STABILITY_WEIGHTING_LIFT_DEMONSTRATED",
-  "source_commit": "b5b3d29423502471811f78aa29ff4107151bc29c",
+  "source_commit": "690c726edbc8bdd5afbe822da20fcd0ed7c58444",
   "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
-  "workflow_run_id": 43348824830,
+  "workflow_run_id": 43349434754,
   "report_path": "reports/sequence_agent/q141_a7_stability_weighted_report_2026-11-13.json",
   "ledger_path": "reports/sequence_agent/q141_a7_stability_weighted_target_ledger_2026-11-13.csv",
   "matrix_artifact_path": "reports/sequence_agent/q141_a7_fresh59_feature_matrix_2026-11-13.npz",
-  "next_action": "Freeze M1 and M0. Collect the next 200 consecutive eligible official draws after 2026-11-12; freeze and hash every prediction before reading the outcome, perform no interim efficacy peeking or retuning, and run one final paired analysis after all 200 targets per the prospective preregistration.",
+  "next_action": "Keep M1 frozen. On the next officially verified draw after 2026-11-12, append a prospective target row and score M1 versus M0 without retuning. Accumulate a preregistered prospective sample before any promotion decision.",
   "governance": {
     "pr89": "untouched",
     "pr6": "untouched",
@@ -20,34 +20,5 @@
     "canonical_archive_mutation": false,
     "shadow_insertion": false,
     "merge": false
-  },
-  "remote_readback": {
-    "branch": "research/q141-a7-fresh59-behaviour-20261113",
-    "files": {
-      "reports/sequence_agent/q141_a7_stability_weighted_report_2026-11-13.json": "3dcd7a57088240a008eab468e61a6911745f2a31",
-      "reports/sequence_agent/q141_a7_stability_weighted_target_ledger_2026-11-13.csv": "6d3f904ef839dff00f5bb4fc617486451e8fdcf2",
-      "reports/sequence_agent/q141_a7_fresh59_manifest_2026-11-13.json": "4d0b15d9b9084ee3c09d35e988a549dffaec4eca"
-    },
-    "artifact": {
-      "run_id": 43348824830,
-      "artifact_id": 14002069267,
-      "artifact_name": "q141-a7-fresh59-behaviour",
-      "artifact_sha256": "7a27e5eae699e9f98383d5f54daba2d5ac8634245475273ba6253a753f0ce470",
-      "matrix_sha256": "81479d7cff00ddcbc6046bcb390efb2ef1b08de6a6f1f2cdb2f89a77c76c6047",
-      "matrix_shape": [
-        3356,
-        40,
-        59
-      ],
-      "exact_local_matrix_match": true,
-      "ledger_rows": 3356,
-      "ledger_sha256": "1ecf22f05314b2082b53b8a0d9d30864dbd7e8c983d38ac3c1e9a37276ed55a0"
-    }
-  },
-  "prospective_preregistration_path": "reports/sequence_agent/q141_a7_b11_prospective_preregistration_2026-11-13.md",
-  "cycle_report_path": "reports/sequence_agent/q141_cycle_report_2026-11-13_run15.md",
-  "additional_document_readback": {
-    "reports/sequence_agent/q141_cycle_report_2026-11-13_run15.md": "f51b398002e83ca16f752ff11654d1deaff7492f",
-    "reports/sequence_agent/q141_a7_b11_prospective_preregistration_2026-11-13.md": "e54c495b09477596a6fbcc7c8bc6b514ee5ea058"
   }
 }
