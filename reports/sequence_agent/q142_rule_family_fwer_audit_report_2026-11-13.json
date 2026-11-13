@@ -1,0 +1,410 @@
+{
+  "analysis_governance": {
+    "no_engine_promotion": true,
+    "not_a_new_forecast": true,
+    "preregistered_before_data_inspection": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ],
+    "retrospective": true
+  },
+  "any_rule_5of5": {
+    "descriptive_only": true,
+    "n": 3206,
+    "rate": 0.3418590143480973,
+    "targets": 1096
+  },
+  "best_unadjusted_by_split_endpoint": {
+    "blind_oos_historical": {
+      "4plus": {
+        "config_id": "CHAIN::freq_50>return_fit>position_global",
+        "count": 123,
+        "endpoint": "4plus",
+        "n": 642,
+        "p_holm": 1.0,
+        "p_raw": 0.09062870096489682,
+        "split": "blind_oos_historical"
+      },
+      "5of5": {
+        "config_id": "complement_1",
+        "count": 25,
+        "endpoint": "5of5",
+        "n": 642,
+        "p_holm": 1.0,
+        "p_raw": 0.011333428668294192,
+        "split": "blind_oos_historical"
+      }
+    },
+    "discovery": {
+      "4plus": {
+        "config_id": "complement_1",
+        "count": 362,
+        "endpoint": "4plus",
+        "n": 1923,
+        "p_holm": 1.0,
+        "p_raw": 0.023804966672068963,
+        "split": "discovery"
+      },
+      "5of5": {
+        "config_id": "momentum_20_100",
+        "count": 68,
+        "endpoint": "5of5",
+        "n": 1923,
+        "p_holm": 0.21594196170051164,
+        "p_raw": 0.0008569125464306018,
+        "split": "discovery"
+      }
+    },
+    "validation": {
+      "4plus": {
+        "config_id": "arith_3",
+        "count": 118,
+        "endpoint": "4plus",
+        "n": 641,
+        "p_holm": 1.0,
+        "p_raw": 0.19956302099479498,
+        "split": "validation"
+      },
+      "5of5": {
+        "config_id": "arith_5",
+        "count": 20,
+        "endpoint": "5of5",
+        "n": 641,
+        "p_holm": 1.0,
+        "p_raw": 0.12795110690250433,
+        "split": "validation"
+      }
+    }
+  },
+  "best_unadjusted_test": {
+    "config_id": "momentum_20_100",
+    "count": 68,
+    "endpoint": "5of5",
+    "n": 1923,
+    "p_holm": 0.21594196170051164,
+    "p_raw": 0.0008569125464306018,
+    "split": "discovery"
+  },
+  "decision": "NO_FWER_CONTROLLED_EXCESS_DEMONSTRATED",
+  "decision_criteria": {
+    "observed": "NO_FWER_CONTROLLED_EXCESS_DEMONSTRATED",
+    "support": "at least one Holm p < 0.05"
+  },
+  "discovery_selected_winner": {
+    "by_split": {
+      "blind_oos_historical": {
+        "config_id": "momentum_20_100",
+        "five_count": 22,
+        "five_rate": 0.03426791277258567,
+        "fourplus_count": 107,
+        "fourplus_rate": 0.16666666666666666,
+        "mean_top20_hits": 2.487538940809969,
+        "n": 642,
+        "p4_holm": 1.0,
+        "p4_raw": 0.626290463515224,
+        "p5_holm": 1.0,
+        "p5_raw": 0.05480549257664799
+      },
+      "discovery": {
+        "config_id": "momentum_20_100",
+        "five_count": 68,
+        "five_rate": 0.03536141445657826,
+        "fourplus_count": 335,
+        "fourplus_rate": 0.17420696827873114,
+        "mean_top20_hits": 2.5345813832553303,
+        "n": 1923,
+        "p4_holm": 1.0,
+        "p4_raw": 0.3558596451708569,
+        "p5_holm": 0.21594196170051164,
+        "p5_raw": 0.0008569125464306018
+      },
+      "validation": {
+        "config_id": "momentum_20_100",
+        "five_count": 12,
+        "five_rate": 0.0187207488299532,
+        "fourplus_count": 109,
+        "fourplus_rate": 0.17004680187207488,
+        "mean_top20_hits": 2.489859594383775,
+        "n": 641,
+        "p4_holm": 1.0,
+        "p4_raw": 0.5371957371148587,
+        "p5_holm": 1.0,
+        "p5_raw": 0.825146516683445
+      }
+    },
+    "config_id": "momentum_20_100",
+    "selection": "highest Discovery 5/5 count; lexical tie-break"
+  },
+  "hypothesis": "At least one of 42 fixed Top20 rules has excess 5/5 or 4+/5 coverage over the exact 5/40 null in a chronological split after Holm correction.",
+  "integrity": {
+    "actuals_match_archive": true,
+    "evaluation_mode": "RETROSPECTIVE_WALK_FORWARD_RULE_FIXED_NOW",
+    "rankings_regenerated": false,
+    "rules": 42,
+    "strict_prior_cutoffs_equal_previous_archive_date": true,
+    "targets": 3206,
+    "top20_and_hit_counts_recomputed": true
+  },
+  "limitations": [
+    "Rule family selected after historical outcomes; chronological splits do not remove global post-selection.",
+    "Historical Blind OOS is not virgin prospective evidence.",
+    "Holm covers only 252 tests, not the broader Q00-Q141 search.",
+    "Audit verifies ledger cutoff/outcome alignment but does not regenerate the 42 rankings.",
+    "No future prediction claim follows."
+  ],
+  "multiple_testing": {
+    "alpha": 0.05,
+    "correction": "Holm step-down",
+    "family": "42 rules x 3 chronological splits x 2 endpoints",
+    "global_Q00_Q141_multiplicity_covered": false,
+    "significant": 0,
+    "tests": 252
+  },
+  "next_action": "Keep the 43 2026-11-13 pending shadow freezes append-only; reconcile only after official publication; do not add another selector from this audit.",
+  "null": {
+    "assumption": "IID uniform 5 distinct numbers from 1..40; forecasts predictable from prior history",
+    "expected_top20_hits": 2.5,
+    "p_top20_4plus": 0.17082467082467082,
+    "p_top20_5of5": 0.02356202356202356
+  },
+  "source": {
+    "archive_draws": 3406,
+    "archive_git_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "archive_last_date": "2026-11-12",
+    "archive_sha256": "c41f354e0c85211341dba98dabe041f07deb9084abe0433f7682bc2c1141262f",
+    "ledger_bytes": 31017758,
+    "ledger_git_blob_sha1": "472d6b094c4d533412207baa5cbdc8d9bd43e89e",
+    "ledger_rows": 134652,
+    "ledger_sha256": "df35bb170482df69be996f61f8abbae1a62d4ecce580ebfeba0244916a4c4f70"
+  },
+  "spearman_rank_stability": {
+    "discovery_vs_blind_oos_historical": 0.016081043806961137,
+    "discovery_vs_validation": -0.1756235511459069,
+    "validation_vs_blind_oos_historical": 0.04921730967296833
+  },
+  "splits": {
+    "blind_oos_historical": {
+      "ensemble_mean_top20_hits": 2.496699302774069,
+      "first": "2025-02-09",
+      "last": "2026-11-12",
+      "n": 642,
+      "top5_5of5": [
+        {
+          "config_id": "complement_1",
+          "five_count": 25,
+          "five_rate": 0.03894080996884735,
+          "fourplus_count": 103,
+          "fourplus_rate": 0.16043613707165108,
+          "mean_top20_hits": 2.4813084112149535,
+          "n": 642,
+          "p4_holm": 1.0,
+          "p4_raw": 0.7724113320539676,
+          "p5_holm": 1.0,
+          "p5_raw": 0.011333428668294192
+        },
+        {
+          "config_id": "decay_10",
+          "five_count": 22,
+          "five_rate": 0.03426791277258567,
+          "fourplus_count": 122,
+          "fourplus_rate": 0.19003115264797507,
+          "mean_top20_hits": 2.532710280373832,
+          "n": 642,
+          "p4_holm": 1.0,
+          "p4_raw": 0.10842467480030879,
+          "p5_holm": 1.0,
+          "p5_raw": 0.05480549257664799
+        },
+        {
+          "config_id": "momentum_20_100",
+          "five_count": 22,
+          "five_rate": 0.03426791277258567,
+          "fourplus_count": 107,
+          "fourplus_rate": 0.16666666666666666,
+          "mean_top20_hits": 2.487538940809969,
+          "n": 642,
+          "p4_holm": 1.0,
+          "p4_raw": 0.626290463515224,
+          "p5_holm": 1.0,
+          "p5_raw": 0.05480549257664799
+        },
+        {
+          "config_id": "pair_affinity_50",
+          "five_count": 22,
+          "five_rate": 0.03426791277258567,
+          "fourplus_count": 119,
+          "fourplus_rate": 0.1853582554517134,
+          "mean_top20_hits": 2.5358255451713396,
+          "n": 642,
+          "p4_holm": 1.0,
+          "p4_raw": 0.1767578495730153,
+          "p5_holm": 1.0,
+          "p5_raw": 0.05480549257664799
+        },
+        {
+          "config_id": "freq_20",
+          "five_count": 21,
+          "five_rate": 0.03271028037383177,
+          "fourplus_count": 104,
+          "fourplus_rate": 0.16199376947040497,
+          "mean_top20_hits": 2.4423676012461057,
+          "n": 642,
+          "p4_holm": 1.0,
+          "p4_raw": 0.7389827971873139,
+          "p5_holm": 1.0,
+          "p5_raw": 0.08585791627902002
+        }
+      ]
+    },
+    "discovery": {
+      "ensemble_mean_top20_hits": 2.513681499640938,
+      "first": "2018-02-02",
+      "last": "2023-05-09",
+      "n": 1923,
+      "top5_5of5": [
+        {
+          "config_id": "momentum_20_100",
+          "five_count": 68,
+          "five_rate": 0.03536141445657826,
+          "fourplus_count": 335,
+          "fourplus_rate": 0.17420696827873114,
+          "mean_top20_hits": 2.5345813832553303,
+          "n": 1923,
+          "p4_holm": 1.0,
+          "p4_raw": 0.3558596451708569,
+          "p5_holm": 0.21594196170051164,
+          "p5_raw": 0.0008569125464306018
+        },
+        {
+          "config_id": "freq_20",
+          "five_count": 59,
+          "five_rate": 0.030681227249089962,
+          "fourplus_count": 339,
+          "fourplus_rate": 0.17628705148205928,
+          "mean_top20_hits": 2.5278211128445136,
+          "n": 1923,
+          "p4_holm": 1.0,
+          "p4_raw": 0.2708127881573293,
+          "p5_holm": 1.0,
+          "p5_raw": 0.027309943682432294
+        },
+        {
+          "config_id": "PAIR::freq_20>momentum_10_50",
+          "five_count": 58,
+          "five_rate": 0.03016120644825793,
+          "fourplus_count": 358,
+          "fourplus_rate": 0.18616744669786792,
+          "mean_top20_hits": 2.549141965678627,
+          "n": 1923,
+          "p4_holm": 1.0,
+          "p4_raw": 0.04056459027823113,
+          "p5_holm": 1.0,
+          "p5_raw": 0.03726759526628449
+        },
+        {
+          "config_id": "PAIR::freq_20>position_global",
+          "five_count": 58,
+          "five_rate": 0.03016120644825793,
+          "fourplus_count": 344,
+          "fourplus_rate": 0.17888715548621945,
+          "mean_top20_hits": 2.5439417576703067,
+          "n": 1923,
+          "p4_holm": 1.0,
+          "p4_raw": 0.18132808583274576,
+          "p5_holm": 1.0,
+          "p5_raw": 0.03726759526628449
+        },
+        {
+          "config_id": "PAIR::freq_20>return_fit",
+          "five_count": 56,
+          "five_rate": 0.029121164846593862,
+          "fourplus_count": 336,
+          "fourplus_rate": 0.1747269890795632,
+          "mean_top20_hits": 2.5361414456578264,
+          "n": 1923,
+          "p4_holm": 1.0,
+          "p4_raw": 0.3336628988987227,
+          "p5_holm": 1.0,
+          "p5_raw": 0.06632212333446454
+        }
+      ]
+    },
+    "validation": {
+      "ensemble_mean_top20_hits": 2.486850902607533,
+      "first": "2023-05-10",
+      "last": "2025-02-08",
+      "n": 641,
+      "top5_5of5": [
+        {
+          "config_id": "arith_5",
+          "five_count": 20,
+          "five_rate": 0.031201248049921998,
+          "fourplus_count": 103,
+          "fourplus_rate": 0.1606864274570983,
+          "mean_top20_hits": 2.4633385335413416,
+          "n": 641,
+          "p4_holm": 1.0,
+          "p4_raw": 0.7670481870518908,
+          "p5_holm": 1.0,
+          "p5_raw": 0.12795110690250433
+        },
+        {
+          "config_id": "arith_1",
+          "five_count": 18,
+          "five_rate": 0.028081123244929798,
+          "fourplus_count": 109,
+          "fourplus_rate": 0.17004680187207488,
+          "mean_top20_hits": 2.511700468018721,
+          "n": 641,
+          "p4_holm": 1.0,
+          "p4_raw": 0.5371957371148587,
+          "p5_holm": 1.0,
+          "p5_raw": 0.25799431949669444
+        },
+        {
+          "config_id": "CHAIN::freq_20>pair_affinity_50>complement_1",
+          "five_count": 16,
+          "five_rate": 0.0249609984399376,
+          "fourplus_count": 109,
+          "fourplus_rate": 0.17004680187207488,
+          "mean_top20_hits": 2.5335413416536663,
+          "n": 641,
+          "p4_holm": 1.0,
+          "p4_raw": 0.5371957371148587,
+          "p5_holm": 1.0,
+          "p5_raw": 0.4426083981866278
+        },
+        {
+          "config_id": "PAIR::freq_50>momentum_20_100",
+          "five_count": 16,
+          "five_rate": 0.0249609984399376,
+          "fourplus_count": 116,
+          "fourplus_rate": 0.1809672386895476,
+          "mean_top20_hits": 2.5273010920436816,
+          "n": 641,
+          "p4_holm": 1.0,
+          "p4_raw": 0.2621464953364164,
+          "p5_holm": 1.0,
+          "p5_raw": 0.4426083981866278
+        },
+        {
+          "config_id": "decay_60",
+          "five_count": 16,
+          "five_rate": 0.0249609984399376,
+          "fourplus_count": 93,
+          "fourplus_rate": 0.14508580343213728,
+          "mean_top20_hits": 2.486739469578783,
+          "n": 641,
+          "p4_holm": 1.0,
+          "p4_raw": 0.9649640814708261,
+          "p5_holm": 1.0,
+          "p5_raw": 0.4426083981866278
+        }
+      ]
+    }
+  },
+  "status": "COMPLETED_HISTORICAL_WALK_FORWARD_AUDIT",
+  "task_id": "Q142"
+}
