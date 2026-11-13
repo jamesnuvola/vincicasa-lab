@@ -4,7 +4,7 @@
 
 Q141-D3, **Effective Feature-Rank State & Formula-Family Behaviour**, è stato preregistrato, implementato ed eseguito in walk-forward. Il replay dedicato ha completato 12 test automatici e due esecuzioni identiche. Il report completo e il ledger sono stati generati in un artifact GitHub Actions (run 43429170989, artifact 14038935622, 4 file; 623.081 byte).
 
-La prima persistenza Git è fallita per un push non-fast-forward: il ramo è avanzato mentre il job lavorava. Il workflow è stato corretto per fare `git fetch` e `git reset --hard origin/<branch>` immediatamente prima di copiare e committare gli output. Il nuovo tentativo di persistenza è in corso; fino al readback esatto non dichiaro completata la persistenza remota di report e ledger.
+La prima persistenza Git è fallita per un push non-fast-forward: il ramo è avanzato mentre il job lavorava. Il workflow è stato corretto per fare `git fetch` e `git reset --hard origin/<branch>` immediatamente prima di copiare e committare gli output. Il run 43429685137 ha poi persistito report, ledger, manifest, checkpoint e ricevuta. Il checkpoint remoto indica `REMOTE_GIT_READBACK_VERIFIED`; ho verificato i Git blob SHA e le dimensioni dei tre file nel manifest e dei cinque file elencati nella ricevuta. È emerso un secondo difetto nella generazione della ricevuta (escape del NUL nel Git blob SHA), corretto nel workflow e nella ricevuta. Il run 43429915802 sta ripetendo il ciclo completo e valida anche tutti gli hash della ricevuta; fino alla sua conclusione, l'attestazione manuale è verificata ma il gate CI finale è ancora in corso.
 
 ## Ipotesi e metodo
 
@@ -68,3 +68,7 @@ Q90 contiene 330.429 AST `per_number_score`; Q7 1.023 AST `quintet_score`. I due
 ## Prossima iterazione
 
 Costruire un **common-source AST evaluator**: riconciliare le grammatiche Q90/Q7, ricostruire feature strict-prior su cutoff identici, deduplicare AST per semantica e misurare ridondanza/complementarità e cambi di regime. Mantenere score per numero e score per cinquina in metriche separate. La verifica prospettica B11/Q60 continua senza peek intermedio.
+
+## Nota di governance e recupero
+
+Per errore, una prima versione di questo report è stata creata su `main` e subito rimossa con un commit separato; il report autorevole è sul ramo D3. I due commit amministrativi restano nella storia di `main`, ma non hanno modificato archivio canonico, motori, gate o dati di previsione. La verifica successiva ha confermato che il blob dell'archivio `data/storico_daily.csv` su `main` resta `6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb`.
