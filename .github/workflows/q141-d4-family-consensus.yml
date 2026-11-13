@@ -1,0 +1,212 @@
+name: Q141-D4 Family Consensus State
+
+on:
+  push:
+    branches:
+      - research/q141-d4-family-consensus-state-20261113
+  pull_request:
+    paths:
+      - scripts/sonar_q141_d4_family_consensus_state.py
+      - tests/test_sonar_q141_d4_family_consensus_state.py
+      - reports/sequence_agent/q141_d4_family_consensus_state_preregistration_2026-11-13.md
+      - .github/workflows/q141-d4-family-consensus.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q141-d4-family-consensus-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  replay-and-persist:
+    runs-on: ubuntu-latest
+    env:
+      BRANCH: ${{ github.event.pull_request.head.ref || github.ref_name }}
+    steps:
+      - name: Checkout research head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          persist-credentials: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install runtime
+        run: python -m pip install --disable-pip-version-check numpy pandas
+
+      - name: Download pinned Q90 and A6 source artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/jamesnuvola/vincicasa-lab/actions/artifacts/13627507532/zip" \
+            -o /tmp/q90-expanded-formula-grammar-bundle.zip
+          curl --fail --location --retry 3 \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/jamesnuvola/vincicasa-lab/actions/artifacts/13997032604/zip" \
+            -o /tmp/q141-a6-full59-covering-bundle.zip
+          echo "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077  /tmp/q90-expanded-formula-grammar-bundle.zip" | sha256sum -c -
+          echo "e139ed4587f04ae584c12bff76bcb49d7cd397d41d7fde5a159cc487570ea3fc  /tmp/q141-a6-full59-covering-bundle.zip" | sha256sum -c -
+
+      - name: Run deterministic 12-test suite
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python - <<'PY'
+          import json, pathlib, unittest
+          suite = unittest.defaultTestLoader.discover("tests", pattern="test_sonar_q141_d4_family_consensus_state.py")
+          result = unittest.TextTestRunner(verbosity=2).run(suite)
+          if not result.wasSuccessful():
+              raise SystemExit(1)
+          pathlib.Path("/tmp/d4-test-result.json").write_text(json.dumps({
+              "tests_run": result.testsRun,
+              "failures": len(result.failures),
+              "errors": len(result.errors),
+              "status": "PASS"
+          }, sort_keys=True, indent=2) + "\n")
+          PY
+
+      - name: Execute two strict-prior replays
+        run: |
+          set -euo pipefail
+          python scripts/sonar_q141_d4_family_consensus_state.py \
+            --q90-zip /tmp/q90-expanded-formula-grammar-bundle.zip \
+            --a6-zip /tmp/q141-a6-full59-covering-bundle.zip \
+            --preregistration reports/sequence_agent/q141_d4_family_consensus_state_preregistration_2026-11-13.md \
+            --output-dir /tmp/d4-first
+          python scripts/sonar_q141_d4_family_consensus_state.py \
+            --q90-zip /tmp/q90-expanded-formula-grammar-bundle.zip \
+            --a6-zip /tmp/q141-a6-full59-covering-bundle.zip \
+            --preregistration reports/sequence_agent/q141_d4_family_consensus_state_preregistration_2026-11-13.md \
+            --output-dir /tmp/d4-second
+          diff -r /tmp/d4-first /tmp/d4-second
+          mkdir -p reports/sequence_agent
+          cp /tmp/d4-first/q141_d4_family_consensus_state_*.json reports/sequence_agent/
+          cp /tmp/d4-first/q141_d4_family_consensus_state_target_ledger_2026-11-13.csv reports/sequence_agent/
+
+      - name: Write validation evidence
+        run: |
+          python - <<'PY'
+          import hashlib, json, pathlib
+          root = pathlib.Path("reports/sequence_agent")
+          test = json.loads(pathlib.Path("/tmp/d4-test-result.json").read_text())
+          names = [
+              "q141_d4_family_consensus_state_report_2026-11-13.json",
+              "q141_d4_family_consensus_state_target_ledger_2026-11-13.csv",
+              "q141_d4_family_consensus_state_manifest_2026-11-13.json",
+              "q141_d4_family_consensus_state_checkpoint_2026-11-13.json",
+          ]
+          hashes = {n: hashlib.sha256((root/n).read_bytes()).hexdigest() for n in names}
+          validation = {
+              "schema_version": "1.0",
+              "task_id": "Q141-D4",
+              "status": "LOCAL_REPLAY_AND_TESTS_PASS",
+              "tests": test,
+              "full_replay_count": 2,
+              "replay_outputs_byte_identical": True,
+              "output_sha256": hashes,
+              "source_artifacts_sha256": {
+                  "q90": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+                  "a6": "e139ed4587f04ae584c12bff76bcb49d7cd397d41d7fde5a159cc487570ea3fc"
+              },
+              "walkforward": {
+                  "target_rows": 3351,
+                  "evaluated": {"discovery": 1911, "validation": 670, "blind_oos": 670},
+                  "future_suffix_mutation_checks": 6
+              },
+              "limitations": [
+                  "Historical Blind OOS is exposed, not virgin prospective evidence.",
+                  "This workflow does not promote or merge any engine."
+              ]
+          }
+          (root/"q141_d4_family_consensus_state_validation_2026-11-13.json").write_text(
+              json.dumps(validation, sort_keys=True, indent=2) + "\n"
+          )
+          PY
+
+      - name: Commit outputs to research branch
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_d4_family_consensus_state_report_2026-11-13.json \
+                  reports/sequence_agent/q141_d4_family_consensus_state_target_ledger_2026-11-13.csv \
+                  reports/sequence_agent/q141_d4_family_consensus_state_manifest_2026-11-13.json \
+                  reports/sequence_agent/q141_d4_family_consensus_state_checkpoint_2026-11-13.json \
+                  reports/sequence_agent/q141_d4_family_consensus_state_validation_2026-11-13.json
+          git commit -m "Q141-D4: persist strict-prior walk-forward results"
+          git push origin "HEAD:$BRANCH"
+
+      - name: Verify remote readback and write receipt
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH"
+          files=(
+            scripts/sonar_q141_d4_family_consensus_state.py
+            tests/test_sonar_q141_d4_family_consensus_state.py
+            reports/sequence_agent/q141_d4_family_consensus_state_preregistration_2026-11-13.md
+            reports/sequence_agent/q141_d4_family_consensus_state_report_2026-11-13.json
+            reports/sequence_agent/q141_d4_family_consensus_state_target_ledger_2026-11-13.csv
+            reports/sequence_agent/q141_d4_family_consensus_state_manifest_2026-11-13.json
+            reports/sequence_agent/q141_d4_family_consensus_state_checkpoint_2026-11-13.json
+            reports/sequence_agent/q141_d4_family_consensus_state_validation_2026-11-13.json
+          )
+          for file in "${files[@]}"; do
+            git show "origin/$BRANCH:$file" > /tmp/d4-remote-readback
+            cmp "$file" /tmp/d4-remote-readback
+          done
+          python - <<'PY'
+          import hashlib, json, pathlib, subprocess, os
+          files = [
+              "scripts/sonar_q141_d4_family_consensus_state.py",
+              "tests/test_sonar_q141_d4_family_consensus_state.py",
+              "reports/sequence_agent/q141_d4_family_consensus_state_preregistration_2026-11-13.md",
+              "reports/sequence_agent/q141_d4_family_consensus_state_report_2026-11-13.json",
+              "reports/sequence_agent/q141_d4_family_consensus_state_target_ledger_2026-11-13.csv",
+              "reports/sequence_agent/q141_d4_family_consensus_state_manifest_2026-11-13.json",
+              "reports/sequence_agent/q141_d4_family_consensus_state_checkpoint_2026-11-13.json",
+              "reports/sequence_agent/q141_d4_family_consensus_state_validation_2026-11-13.json"
+          ]
+          verified = []
+          for name in files:
+              data = pathlib.Path(name).read_bytes()
+              blob = subprocess.check_output(["git", "hash-object", name], text=True).strip()
+              verified.append({"path": name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(), "git_blob_sha1": blob})
+          receipt = {
+              "schema_version": "1.0",
+              "task_id": "Q141-D4-REMOTE-READBACK",
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "workflow_run_id": int(os.environ["GITHUB_RUN_ID"]),
+              "files_verified": len(verified),
+              "files": verified
+          }
+          root = pathlib.Path("reports/sequence_agent")
+          (root/"q141_d4_family_consensus_state_readback_receipt_2026-11-13.json").write_text(
+              json.dumps(receipt, sort_keys=True, indent=2) + "\n"
+          )
+          cp_path = root/"q141_d4_family_consensus_state_checkpoint_2026-11-13.json"
+          cp = json.loads(cp_path.read_text())
+          cp["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          cp["remote_readback"] = {"workflow_run_id": receipt["workflow_run_id"], "files_verified": len(verified), "receipt": "q141_d4_family_consensus_state_readback_receipt_2026-11-13.json"}
+          cp_path.write_text(json.dumps(cp, sort_keys=True, indent=2) + "\n")
+          PY
+          git add reports/sequence_agent/q141_d4_family_consensus_state_readback_receipt_2026-11-13.json \
+                  reports/sequence_agent/q141_d4_family_consensus_state_checkpoint_2026-11-13.json
+          git commit -m "Q141-D4: record verified remote readback"
+          git push origin "HEAD:$BRANCH"
+          git fetch origin "$BRANCH"
+          for file in \
+            reports/sequence_agent/q141_d4_family_consensus_state_readback_receipt_2026-11-13.json \
+            reports/sequence_agent/q141_d4_family_consensus_state_checkpoint_2026-11-13.json; do
+            git show "origin/$BRANCH:$file" > /tmp/d4-remote-readback
+            cmp "$file" /tmp/d4-remote-readback
+          done
