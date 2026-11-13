@@ -46,7 +46,7 @@ The direction and threshold are fixed. No state reversal, threshold search, fami
 - Q90 artifact ZIP SHA-256: 12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077.
 - Q90 matrix member: adaptive_novelty_feature_matrix.npz, SHA-256 681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49, shape 3,351 × 40 × 59, float32.
 - Q89 feature catalog member SHA-256: 0761324a35faade5e7dc9a053d19146f21d349ba9e8237b334691c6b1e5517a5.
-- Q141-A6 artifact ZIP SHA-256: e139ed4587f04ae584c12bff76bcbf49d7cd397d41d7fde5a159cc487570ea3fc.
+- Q141-A6 artifact ZIP SHA-256: e139ed4587f04ae584c12bff76bcb49d7cd397d41d7fde5a159cc487570ea3fc.
 - A6 target ledger member SHA-256: 3db21ad7a0d94f3d07f437865282ed306d0a022d9f313095fa4bedbb66d5b32b, 3,351 rows. Target date, cutoff, actual quintet and split must match the Q90 matrix exactly. The A6 ledger supplies realized outcomes only after each forecast ranking has been constructed.
 - The pinned Q90 archive ends 2026-11-07 (3,401 draws). The five later main-archive rows are excluded. No post-cutoff main-archive values are used.
 
