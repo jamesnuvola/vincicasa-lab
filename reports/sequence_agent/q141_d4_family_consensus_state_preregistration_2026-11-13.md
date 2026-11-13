@@ -8,50 +8,46 @@
 
 Do the seven Q89 feature families' pre-target Top-5 sets contain useful agreement information, and does a vote-based family consensus add value specifically when the families disagree more than usual?
 
-For each target (t), use the 59-feature matrix (X_t\in\mathbb{R}^{40\times59}), whose columns are per-target z-scores across the 40 candidates and whose lineage is documented as strict-prior-only.
+For each target t, use the 59-feature matrix X_t in R^(40×59), whose columns are per-target z-scores across the 40 candidates and whose lineage is documented as strict-prior-only.
 
 The fixed seven-family partition is:
-- `baseline_legacy`: the 27 features not listed in Q89's `new_feature_family_map`;
-- `ewma_hit_dynamics`;
-- `gap_dynamics`;
-- `cooccurrence_novelty`;
-- `rank_trajectory`;
-- `residual_surprise`;
-- `regime_transition_affinity`.
+- baseline_legacy: the 27 features not listed in Q89's new_feature_family_map;
+- ewma_hit_dynamics;
+- gap_dynamics;
+- cooccurrence_novelty;
+- rank_trajectory;
+- residual_surprise;
+- regime_transition_affinity.
 
-Each family score for candidate (n) is the arithmetic mean of that family's feature z-scores. Rank each family independently, descending score, ties by ascending number. Let (T_{f,t}) be its Top-5 set.
+Each family score for candidate n is the arithmetic mean of that family's feature z-scores. Rank each family independently, descending score, ties by ascending number. Let T_f,t be its Top-5 set.
 
 The pre-target agreement statistic is the mean pairwise Jaccard similarity:
 
-[
-A_t=\frac{1}{\binom{7}{2}}\sum_{f<g}\frac{|T_{f,t}\cap T_{g,t}|}{|T_{f,t}\cup T_{g,t}|}.
-]
+A_t = (1 / choose(7,2)) * sum_(f<g) |T_f,t intersect T_g,t| / |T_f,t union T_g,t|.
 
 Disagreement state:
 
-[
-H_t=\mathbf{1}\left[A_t<\operatorname{median}(A_{t-100},\ldots,A_{t-1})\right],\quad t\ge100.
-]
+H_t = 1[A_t < median(A_(t-100), ..., A_(t-1))], for t >= 100.
 
-Thus (H_t=1) denotes unusually high family disagreement. The current target's features may define (A_t), but the state threshold uses only the preceding 100 targets. No target outcome enters (A_t), its threshold, or (H_t).
+Thus H_t=1 denotes unusually high family disagreement. The current target's features may define A_t, but the state threshold uses only the preceding 100 targets. No target outcome enters A_t, its threshold, or H_t.
 
 Two Top-5 selectors are compared:
 - **Consensus:** rank candidates by descending number of family Top-5 votes (0–7), then descending mean of the seven family scores, then ascending number.
 - **Equal-family mean:** rank by descending arithmetic mean of the seven family score vectors, ties by ascending number.
 
-For target (t), let (d_t = hits(Consensus_t)-hits(EqualFamily_t)), where hits counts the realized numbers in the forecast Top-5.
+For target t, let d_t = hits(Consensus_t)-hits(EqualFamily_t), where hits counts the realized numbers in the forecast Top-5.
 
-**Primary hypothesis:** on the historical Blind OOS, the mean (d_t) in high-disagreement states exceeds the mean (d_t) in low-disagreement states by at least **+0.025 hits per target** (equivalent to +0.005 of the five-number hit share).
+**Primary hypothesis:** on the historical Blind OOS, the mean d_t in high-disagreement states exceeds the mean d_t in low-disagreement states by at least **+0.025 hits per target** (equivalent to +0.005 of the five-number hit share).
 
 The direction and threshold are fixed. No state reversal, threshold search, family regrouping, or tie-rule change is permitted after outcome inspection.
 
 ## 2. Sources and exact alignment
 
-- Q90 artifact ZIP SHA-256: `12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077`.
-- Q90 matrix member: `adaptive_novelty_feature_matrix.npz`, SHA-256 `681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49`, shape 3,351 × 40 × 59, float32.
-- Q89 feature catalog member SHA-256: `0761324a35faade5e7dc9a053d19146f21d349ba9e8237b334691c6b1e5517a5`.
-- Q141-A6 artifact ZIP SHA-256: `e139ed4587f04ae584c12bff76bcbf3d9d7ab5f5e05b5f0828b1759ed57efe917` is not used; the verified artifact digest is `e139ed4587f04ae584c12bff76bcbf3d9d7d? ` (see the pinned source manifest at execution).
-- A6 target ledger: 3,351 rows; target date, cutoff, actual quintet and split must match the Q90 matrix exactly. The A6 ledger supplies realized outcomes only after each forecast ranking has been constructed.
+- Q90 artifact ZIP SHA-256: 12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077.
+- Q90 matrix member: adaptive_novelty_feature_matrix.npz, SHA-256 681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49, shape 3,351 × 40 × 59, float32.
+- Q89 feature catalog member SHA-256: 0761324a35faade5e7dc9a053d19146f21d349ba9e8237b334691c6b1e5517a5.
+- Q141-A6 artifact ZIP SHA-256: e139ed4587f04ae584c12bff76bcbf3d9d7ab5f5e05b5f0828b1759ed57efe917.
+- A6 target ledger member SHA-256: 3db21ad7a0d94f3d07f437865282ed306d0a022d9f313095fa4bedbb66d5b32b, 3,351 rows. Target date, cutoff, actual quintet and split must match the Q90 matrix exactly. The A6 ledger supplies realized outcomes only after each forecast ranking has been constructed.
 - The pinned Q90 archive ends 2026-11-07 (3,401 draws). The five later main-archive rows are excluded. No post-cutoff main-archive values are used.
 
 The runner must verify the artifact digests, member digests, finite matrix values, exact date/cutoff/actual alignment, prior-draw counts and chronological split counts before scoring.
@@ -68,8 +64,8 @@ The first 100 targets are used only to establish the rolling state threshold. Ex
 ## 4. Endpoints and inference
 
 Blind OOS endpoints:
-1. **Primary:** high-disagreement minus low-disagreement mean paired hit difference (d_t).
-2. **Secondary:** unconditional mean paired hit difference (d_t).
+1. **Primary:** high-disagreement minus low-disagreement mean paired hit difference d_t.
+2. **Secondary:** unconditional mean paired hit difference d_t.
 3. **Baseline control:** consensus mean hits minus the exact uniform 5-of-40 expectation of 0.625 hits/target.
 
 Inference:
