@@ -94,7 +94,7 @@ Acceptance requires the primary effect ≥ +0.025 hits/target, its 95% CI lower 
 - The historical Blind OOS has been exposed to earlier SONAR research and is not virgin prospective evidence.
 - Q89 features are standardized cross-sectionally and include known rank duplicates; equal-family aggregation prevents simple family-size weighting but does not remove within-family redundancy.
 - The seven-family grouping is the persisted Q89 grouping, not a newly optimized semantic taxonomy.
-- This tests per-number Top-5 selections, not exact quintet probability.
+- This tests per-number Top-5 selections, not exact five-number ticket probability.
 - The Q90 feature matrix ends 2026-11-07; it is not the current 3,406-draw main archive.
 - Holm covers these three D4 endpoints only, not the complete Q00–Q141 research family.
 
