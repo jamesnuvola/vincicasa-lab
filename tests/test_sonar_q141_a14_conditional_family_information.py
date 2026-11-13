@@ -68,6 +68,7 @@ class ConditionalFamilyInformationTests(unittest.TestCase):
         raw2=raw.copy(); y2=y.copy()
         rng=np.random.default_rng(45)
         raw2[target+1:]=rng.normal(size=raw2[target+1:].shape)
+        # Future labels and feature rows are deliberately changed.
         y2[target+1:]=0
         x2=A14.standardize_within_target(raw2)
         after=A14.predict_scores_one_target(x2,y2,target)
