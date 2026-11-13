@@ -1,26 +1,154 @@
 {
+  "schema_version": "1.1",
+  "task_id": "Q141-A6",
+  "status": "REMOTE_GIT_READBACK_VERIFIED",
   "decision": "FULL59_COVERING_SAMPLE_LIFT_NOT_DEMONSTRATED",
   "formula_catalog_sha256": "9c3c64403e9ba7d1423f166142adf78aee04159e97282bceffe3112424a9d2b8",
-  "next_action": "Do not tune on historical Blind OOS. Extend Q89 feature lineage to a current archive only after a fresh strict-prior feature-matrix build and independent acceptance.",
-  "q90_replay": {
-    "formula_split_comparisons": 168,
-    "formulas": 56,
-    "max_abs_difference": 2.7755575615628914e-17,
-    "status": "PASS",
-    "tolerance": 1e-12
-  },
-  "report_sha256": "e8868876d885defda2ca48e178064f8dee86f9e6f64d3b29d681346eb124248b",
-  "schema_version": "1.0",
-  "source_members_verified": 17,
-  "source_zip_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
-  "status": "LOCAL_WALKFORWARD_AND_SOURCE_REPLAY_VERIFIED_PENDING_REMOTE_READBACK",
   "target_ledger_sha256": "3db21ad7a0d94f3d07f437865282ed306d0a022d9f313095fa4bedbb66d5b32b",
-  "task_id": "Q141-A6",
+  "report_sha256": "e8868876d885defda2ca48e178064f8dee86f9e6f64d3b29d681346eb124248b",
+  "source_zip_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+  "source_members_verified": 17,
+  "walkforward": {
+    "status": "COMPLETED_HISTORICAL_WALK_FORWARD",
+    "targets": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "first_target": "2017-09-05",
+    "last_target": "2026-11-07",
+    "strict_prior_check": "PASS"
+  },
+  "blind_oos": {
+    "full59_top5_mean": 0.12463891354040607,
+    "selected20_top5_mean": 0.12458313836224286,
+    "uniform_top5": 0.125,
+    "full59_minus_selected20": 0.000055775178163238916,
+    "full59_minus_uniform": -0.00036108645959392346,
+    "selected20_comparison_ci95": [
+      -0.0027591461610864585,
+      0.0028189928734704867
+    ],
+    "selected20_comparison_raw_p": 0.9708514574271286,
+    "selected20_comparison_holm_p": 1,
+    "uniform_comparison_ci95": [
+      -0.00513721796423289,
+      0.004557212585720032
+    ],
+    "uniform_comparison_raw_p": 0.8948052597370132,
+    "uniform_comparison_holm_p": 1,
+    "practical_threshold": 0.005,
+    "blocks": 34
+  },
   "tests": {
+    "deterministic_tests": 7,
+    "passed": 7,
+    "strict_prior_dates": true,
     "all59_feature_coverage": true,
-    "all_pair_coverage": true,
+    "all1711_feature_pairs_covered": true,
     "deterministic_formula_ids": true,
     "matrix_ledger_reconciliation": true,
-    "strict_prior_dates": true
-  }
+    "q90_scoring_replay_max_abs_difference": 2.7755575615628914e-17
+  },
+  "catalog_audit": {
+    "formula_rows": 11100,
+    "unique_formula_ids": 11100,
+    "full59_rows": 5550,
+    "full59_unique_ast_ids": 5550,
+    "selected20_rows": 5550,
+    "selected20_unique_ast_ids": 5550,
+    "unique_ast_ids_across_both_scopes": 11085,
+    "cross_scope_duplicate_ast_rows": 15,
+    "duplicate_pattern": "15 ASTs are the shared L4/I4/G4 variants of the same four-feature set; no within-scope duplicates."
+  },
+  "remote_readback": {
+    "verified_at_utc": "2026-11-13T00:47:27Z",
+    "workflow_run_id": 43336028371,
+    "workflow_job_id": 131592298275,
+    "workflow_conclusion": "success",
+    "workflow_steps": {
+      "deterministic_tests": "success (7/7)",
+      "q90_source_download_and_validation": "success",
+      "strict_prior_walkforward": "success",
+      "reproducibility_step": "success",
+      "persist_step": "skipped",
+      "artifact_upload": "success"
+    },
+    "artifact": {
+      "id": 13997032604,
+      "name": "q141-a6-full59-covering-8ecae7f7f677cbd96d0c92e7907ceb0e44d41278",
+      "bytes": 856732,
+      "sha256": "e139ed4587f04ae584c12bff76bcb49d7cd397d41d7fde5a159cc487570ea3fc"
+    },
+    "remote_files": [
+      {
+        "path": "reports/sequence_agent/q141_a6_formula_catalog_2026-11-13.csv",
+        "bytes": 2833921,
+        "sha256": "9c3c64403e9ba7d1423f166142adf78aee04159e97282bceffe3112424a9d2b8",
+        "expected_git_blob_sha1": "2ba1e54cf373bb3293b6e41a0d237b5d9e9a7b75",
+        "remote_git_blob_sha1": "2ba1e54cf373bb3293b6e41a0d237b5d9e9a7b75",
+        "status": "MATCH"
+      },
+      {
+        "path": "reports/sequence_agent/q141_a6_target_ledger_2026-11-13.csv",
+        "bytes": 1215379,
+        "sha256": "3db21ad7a0d94f3d07f437865282ed306d0a022d9f313095fa4bedbb66d5b32b",
+        "expected_git_blob_sha1": "f77688db9cd86b14d9d59581bb9bc50dd5d12928",
+        "remote_git_blob_sha1": "f77688db9cd86b14d9d59581bb9bc50dd5d12928",
+        "status": "MATCH"
+      },
+      {
+        "path": "reports/sequence_agent/q141_a6_full59_covering_report_2026-11-13.json",
+        "bytes": 6741,
+        "sha256": "e8868876d885defda2ca48e178064f8dee86f9e6f64d3b29d681346eb124248b",
+        "expected_git_blob_sha1": "8a5d095358a7d9aec3b7aa8c2925cf26f1febfac",
+        "remote_git_blob_sha1": "8a5d095358a7d9aec3b7aa8c2925cf26f1febfac",
+        "status": "MATCH"
+      },
+      {
+        "path": "reports/sequence_agent/q141_a6_full59_covering_manifest_2026-11-13.json",
+        "bytes": 1095,
+        "sha256": "b96454e3057a16d64bc521d2a38f9cbb7e24633b5c6310d6c2d4968465bf3a5c",
+        "expected_git_blob_sha1": "4bc9533f4f3f322b5120e9f1bae00f1415138a0a",
+        "remote_git_blob_sha1": "4bc9533f4f3f322b5120e9f1bae00f1415138a0a",
+        "status": "MATCH"
+      },
+      {
+        "path": "reports/sequence_agent/q141_a6_full59_covering_checkpoint_2026-11-13.json",
+        "bytes": 1160,
+        "sha256": "8bb286abf87b8d207e77c699c46ef92c874440a212f76afb3df08a6c021c3409",
+        "expected_git_blob_sha1": "f169b343b4b520fa1458f00352b21d3cb18eebd0",
+        "remote_git_blob_sha1": "f169b343b4b520fa1458f00352b21d3cb18eebd0",
+        "status": "MATCH_BEFORE_CHECKPOINT_UPDATE"
+      }
+    ],
+    "local_replay_checks": {
+      "target_ledger_rows": 3351,
+      "target_index_contiguous": true,
+      "dates_strictly_increasing": true,
+      "every_cutoff_precedes_target": true,
+      "prior_draws_equal_target_index_plus_50": true,
+      "actual_quintets_valid_sorted_unique_1_to_40": true,
+      "split_counts": {
+        "discovery": 2011,
+        "validation": 670,
+        "blind_oos": 670
+      },
+      "top5_delta_reconciles_to_formula_shares": true
+    },
+    "catalog_audit": {
+      "formula_rows": 11100,
+      "unique_formula_ids": 11100,
+      "full59_rows": 5550,
+      "full59_unique_ast_ids": 5550,
+      "selected20_rows": 5550,
+      "selected20_unique_ast_ids": 5550,
+      "unique_ast_ids_across_both_scopes": 11085,
+      "cross_scope_duplicate_ast_rows": 15,
+      "duplicate_pattern": "15 ASTs are the shared L4/I4/G4 variants of the same four-feature set; no within-scope duplicates."
+    },
+    "interpretation": "The run's persist step was skipped. The five outputs were already present in the research branch and exact remote Git blob IDs match the downloaded artifact manifest and locally computed hashes. This is verified repository persistence, but not a successful persistence step in this workflow run."
+  },
+  "next_action": "Do not tune on historical Blind OOS. Build a fresh 59-feature matrix from the latest canonical Q141 archive (main now includes the 2026-11-12 draw), with independently checked feature lineage and strict-prior target cutoffs; run a new preregistered prospective/forward evaluation on a clean research branch. Keep the exposed historical Blind OOS diagnostic-only."
 }
