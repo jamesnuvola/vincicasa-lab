@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A6",
+  "status": "REMOTE_GIT_READBACK_VERIFIED",
+  "verified_at_utc": "2026-11-13T00:47:27Z",
+  "workflow": {
+    "run_id": 43336028371,
+    "job_id": 131592298275,
+    "conclusion": "success",
+    "tests": "7/7 passed",
+    "persist_step": "skipped; outputs already present in branch",
+    "artifact_upload": "success"
+  },
+  "artifact": {
+    "id": 13997032604,
+    "bytes": 856732,
+    "sha256": "e139ed4587f04ae584c12bff76bcb49d7cd397d41d7fde5a159cc487570ea3fc"
+  },
+  "files": [
+    {
+      "path": "reports/sequence_agent/q141_a6_formula_catalog_2026-11-13.csv",
+      "bytes": 2833921,
+      "sha256": "9c3c64403e9ba7d1423f166142adf78aee04159e97282bceffe3112424a9d2b8",
+      "git_blob_sha1": "2ba1e54cf373bb3293b6e41a0d237b5d9e9a7b75"
+    },
+    {
+      "path": "reports/sequence_agent/q141_a6_target_ledger_2026-11-13.csv",
+      "bytes": 1215379,
+      "sha256": "3db21ad7a0d94f3d07f437865282ed306d0a022d9f313095fa4bedbb66d5b32b",
+      "git_blob_sha1": "f77688db9cd86b14d9d59581bb9bc50dd5d12928"
+    },
+    {
+      "path": "reports/sequence_agent/q141_a6_full59_covering_report_2026-11-13.json",
+      "bytes": 6741,
+      "sha256": "e8868876d885defda2ca48e178064f8dee86f9e6f64d3b29d681346eb124248b",
+      "git_blob_sha1": "8a5d095358a7d9aec3b7aa8c2925cf26f1febfac"
+    },
+    {
+      "path": "reports/sequence_agent/q141_a6_full59_covering_manifest_2026-11-13.json",
+      "bytes": 1095,
+      "sha256": "b96454e3057a16d64bc521d2a38f9cbb7e24633b5c6310d6c2d4968465bf3a5c",
+      "git_blob_sha1": "4bc9533f4f3f322b5120e9f1bae00f1415138a0a"
+    },
+    {
+      "path": "reports/sequence_agent/q141_a6_full59_covering_checkpoint_2026-11-13.json",
+      "bytes": 0,
+      "sha256": null,
+      "git_blob_sha1": "8e2055a841b70f06b294b39b1cec0d39e856399f",
+      "note": "Updated checkpoint; remote readback verified after update."
+    }
+  ],
+  "independent_checks": {
+    "ledger_rows": 3351,
+    "index_contiguous": true,
+    "chronological": true,
+    "cutoff_before_target": true,
+    "prior_draws_equal_index_plus_50": true,
+    "quintets_valid_sorted_unique_in_1_to_40": true,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "deltas_recomputed_from_formula_shares": true,
+    "catalog_rows": 11100,
+    "unique_formula_ids": 11100,
+    "unique_ast_ids_per_scope": 5550,
+    "cross_scope_ast_overlap": 15,
+    "within_scope_ast_duplicates": 0
+  },
+  "note": "The 15 cross-scope AST overlaps are the L4/I4/G4 variants for one shared four-feature set; this is shared formula content between the two comparison scopes, not a within-scope duplicate."
+}
