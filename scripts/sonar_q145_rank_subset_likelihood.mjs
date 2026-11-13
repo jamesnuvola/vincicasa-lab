@@ -424,6 +424,6 @@ export function verifyArtifacts() {
   return { status: "Q145_VERIFY_OK", targets: b.report.sample.targets, blind: b.report.sample.historical_blind_oos,
     strictPriorChecks: b.report.integrity.strict_prior_freeze_checks, artifacts: Object.keys(expected).length };
 }
-if (process.argv[1]?.endsWith("sonar_q145_rank_subset_likelihood.mjs")) {
+if (path.basename(process.argv[1] || "") === "sonar_q145_rank_subset_likelihood.mjs") {
   process.stdout.write(JSON.stringify(verifyArtifacts()) + "\n");
 }
