@@ -120,11 +120,25 @@ jobs:
               assert local_sha == info["sha256"]
               assert local_sha == replay_sha, (name, local_sha, replay_sha)
               compared[name] = {"sha256": local_sha, "bytes": len(local)}
+          report["integrity"]["full_replay_byte_identity"] = True
+          report["integrity"]["dedicated_ci_unit_tests"] = "PASS"
+          report_path.write_text(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + "\n")
+          report_md_path = p / "q141_a17_full_universe_spectral_report_2026-11-14.md"
+          report_md_path.write_text(report_md_path.read_text() + "\n\nFull deterministic replay: byte-identical (verified by the dedicated workflow).\n", encoding="utf-8")
+          finalized_hashes = {}
+          for output_path in (report_path, report_md_path):
+              raw = output_path.read_bytes()
+              manifest["outputs"][output_path.name] = {
+                  "bytes": len(raw),
+                  "sha256": hashlib.sha256(raw).hexdigest(),
+              }
+              finalized_hashes[output_path.name] = manifest["outputs"][output_path.name]
           validation = {
               "schema_version": "1.0",
               "experiment_id": "Q141-A17",
               "status": "FULL_REPLAY_BYTE_IDENTICAL",
-              "compared_outputs": compared,
+              "replay_compared_outputs_before_finalization": compared,
+              "finalized_report_hashes": finalized_hashes,
               "unit_tests": "PASS",
               "strict_prior_rows": 3386,
               "evaluated_rows": 2986,
@@ -139,6 +153,7 @@ jobs:
               "bytes": len(raw),
               "sha256": hashlib.sha256(raw).hexdigest(),
           }
+          manifest["status"] = "FINALIZED_WITH_FULL_REPLAY_PENDING_REMOTE_READBACK"
           manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + "\n")
           checkpoint["replay_verified"] = True
           checkpoint["validation_file"] = validation_path.name
@@ -157,6 +172,7 @@ jobs:
           checkpoint = json.loads((p / "q141_a17_full_universe_spectral_checkpoint_2026-11-14.json").read_text())
           validation = json.loads((p / "q141_a17_full_universe_spectral_validation_2026-11-14.json").read_text())
           assert validation["status"] == "FULL_REPLAY_BYTE_IDENTICAL"
+          assert report["integrity"]["full_replay_byte_identity"] is True
           assert checkpoint["replay_verified"] is True
           assert report["design"]["split_counts"] == {"discovery": 1792, "validation": 597, "blind_oos": 597}
           for name, info in manifest["outputs"].items():
@@ -170,7 +186,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add reports/sequence_agent/q141_a17_full_universe_spectral_*
-          git commit -m "Persist Q141-A17 full-universe prequential spectral results"
+          if ! git diff --cached --quiet; then git commit -m "Persist Q141-A17 full-universe prequential spectral results"; else echo "A17 artifacts already match remote; skipping no-op commit"; fi
           git fetch origin "$SONAR_A17_BRANCH:refs/remotes/origin/$SONAR_A17_BRANCH"
           git rebase "origin/$SONAR_A17_BRANCH"
           git push origin "HEAD:$SONAR_A17_BRANCH"
@@ -217,7 +233,7 @@ jobs:
           receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n")
           PY
           git add reports/sequence_agent/q141_a17_full_universe_spectral_checkpoint_2026-11-14.json reports/sequence_agent/q141_a17_full_universe_spectral_readback_receipt_2026-11-14.json
-          git commit -m "Finalize Q141-A17 remote Git readback"
+          if ! git diff --cached --quiet; then git commit -m "Finalize Q141-A17 remote Git readback"; else echo "A17 readback receipt already matches remote; skipping no-op commit"; fi
           git push origin "HEAD:$SONAR_A17_BRANCH"
           git fetch origin "$SONAR_A17_BRANCH:refs/remotes/origin/$SONAR_A17_BRANCH"
           python - <<'PY'
