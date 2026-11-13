@@ -1,0 +1,94 @@
+name: Q142 Fixed Rule Family FWER Audit
+
+on:
+  push:
+    branches:
+      - research/q142-rule-family-fwer-audit-20261113
+    paths:
+      - scripts/sonar_q142_rule_family_fwer_audit.py
+      - tests/test_sonar_q142_rule_family_fwer_audit.py
+      - reports/sequence_agent/q142_rule_family_fwer_audit_protocol_2026-11-13.md
+      - .github/workflows/q142-rule-family-fwer-audit.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q142-rule-family-fwer-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BRANCH: research/q142-rule-family-fwer-audit-20261113
+    steps:
+      - name: Checkout exact research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/q142-rule-family-fwer-audit-20261113
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tests -p 'test_sonar_q142_rule_family_fwer_audit.py' -v
+
+      - name: Recompute exact split-wise FWER audit
+        run: python scripts/sonar_q142_rule_family_fwer_audit.py --root .
+
+      - name: Persist outputs
+        run: |
+          git config user.name "sonar-q142-audit"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/sequence_agent/q142_rule_family_fwer_audit_report_2026-11-13.json reports/sequence_agent/q142_rule_family_fwer_audit_report_2026-11-13.md reports/sequence_agent/q142_rule_family_fwer_audit_summary_2026-11-13.csv reports/sequence_agent/q142_rule_family_fwer_audit_manifest_2026-11-13.json reports/sequence_agent/q142_rule_family_fwer_audit_checkpoint_2026-11-13.json
+          git commit -m "Persist Q142 fixed rule family FWER audit"
+          git push origin HEAD:research/q142-rule-family-fwer-audit-20261113
+
+      - name: Verify remote readback and persist receipt
+        run: |
+          git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+          python - <<'PY'
+          import hashlib, json, pathlib, subprocess, os
+          branch=os.environ["BRANCH"]
+          paths=[
+            "scripts/sonar_q142_rule_family_fwer_audit.py",
+            "tests/test_sonar_q142_rule_family_fwer_audit.py",
+            "reports/sequence_agent/q142_rule_family_fwer_audit_protocol_2026-11-13.md",
+            ".github/workflows/q142-rule-family-fwer-audit.yml",
+            "reports/sequence_agent/q142_rule_family_fwer_audit_report_2026-11-13.json",
+            "reports/sequence_agent/q142_rule_family_fwer_audit_report_2026-11-13.md",
+            "reports/sequence_agent/q142_rule_family_fwer_audit_summary_2026-11-13.csv",
+            "reports/sequence_agent/q142_rule_family_fwer_audit_manifest_2026-11-13.json",
+            "reports/sequence_agent/q142_rule_family_fwer_audit_checkpoint_2026-11-13.json",
+          ]
+          def blobsha(b):
+            return hashlib.sha1(f"blob {len(b)}\0".encode()+b).hexdigest()
+          verified={}
+          for p in paths:
+            local=pathlib.Path(p).read_bytes()
+            remote=subprocess.check_output(["git","show",f"origin/{branch}:{p}"])
+            if local != remote: raise SystemExit(f"remote readback mismatch: {p}")
+            verified[p]={"bytes":len(local),"sha256":hashlib.sha256(local).hexdigest(),"git_blob_sha1":blobsha(local)}
+          receipt={"task_id":"Q142","status":"REMOTE_GIT_READBACK_VERIFIED","branch":branch,"workflow_run_id":os.environ.get("GITHUB_RUN_ID"),"verified_files":verified}
+          receipt_path=pathlib.Path("reports/sequence_agent/q142_rule_family_fwer_audit_readback_receipt_2026-11-13.json")
+          receipt_bytes=(json.dumps(receipt,indent=2,sort_keys=True)+"\n").encode()
+          receipt_path.write_bytes(receipt_bytes)
+          cp=pathlib.Path("reports/sequence_agent/q142_rule_family_fwer_audit_checkpoint_2026-11-13.json")
+          checkpoint=json.loads(cp.read_text())
+          checkpoint["status"]="REMOTE_GIT_READBACK_VERIFIED"
+          checkpoint["workflow_run_id"]=os.environ.get("GITHUB_RUN_ID")
+          checkpoint["readback_receipt_sha256"]=hashlib.sha256(receipt_bytes).hexdigest()
+          cp.write_text(json.dumps(checkpoint,indent=2,sort_keys=True)+"\n")
+          PY
+          git add reports/sequence_agent/q142_rule_family_fwer_audit_readback_receipt_2026-11-13.json reports/sequence_agent/q142_rule_family_fwer_audit_checkpoint_2026-11-13.json
+          git commit -m "Verify Q142 remote artifact readback"
+          git push origin HEAD:research/q142-rule-family-fwer-audit-20261113
+          git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+          for path in scripts/sonar_q142_rule_family_fwer_audit.py tests/test_sonar_q142_rule_family_fwer_audit.py reports/sequence_agent/q142_rule_family_fwer_audit_protocol_2026-11-13.md .github/workflows/q142-rule-family-fwer-audit.yml reports/sequence_agent/q142_rule_family_fwer_audit_report_2026-11-13.json reports/sequence_agent/q142_rule_family_fwer_audit_report_2026-11-13.md reports/sequence_agent/q142_rule_family_fwer_audit_summary_2026-11-13.csv reports/sequence_agent/q142_rule_family_fwer_audit_manifest_2026-11-13.json reports/sequence_agent/q142_rule_family_fwer_audit_checkpoint_2026-11-13.json reports/sequence_agent/q142_rule_family_fwer_audit_readback_receipt_2026-11-13.json; do
+            cmp "$path" <(git show "origin/$BRANCH:$path")
+          done
