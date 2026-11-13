@@ -176,7 +176,7 @@ jobs:
           git push origin "HEAD:${BRANCH_NAME}"
           git fetch origin "${BRANCH_NAME}"
           python - <<'PY'
-          import json, os, subprocess
+          import hashlib, json, os, subprocess
           branch = os.environ["BRANCH_NAME"]
           path = "reports/sequence_agent/q141_d3_effective_rank_family_state_remote_readback_2026-11-13.json"
           receipt = json.loads(subprocess.check_output(["git", "show", f"origin/{branch}:{path}"]))
