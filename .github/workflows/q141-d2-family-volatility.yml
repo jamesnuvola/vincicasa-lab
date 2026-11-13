@@ -1,0 +1,87 @@
+name: Q141-D2 family-volatility replay
+on:
+  push:
+    branches:
+      - research/q141-d2-family-volatility-standardization-20261113
+    paths:
+      - scripts/sonar_q141_d2_family_volatility_standardization.py
+      - tests/test_sonar_q141_d2_family_volatility_standardization.py
+      - reports/sequence_agent/q141_d2_family_volatility_standardization_preregistration_2026-11-13.md
+      - .github/workflows/q141-d2-family-volatility.yml
+  pull_request:
+    branches: [research/q141-d1-standardized-family-advantage-20261113]
+    paths:
+      - scripts/sonar_q141_d2_family_volatility_standardization.py
+      - tests/test_sonar_q141_d2_family_volatility_standardization.py
+      - reports/sequence_agent/q141_d2_family_volatility_standardization_preregistration_2026-11-13.md
+      - .github/workflows/q141-d2-family-volatility.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: q141-d2-family-volatility-${{ github.event.pull_request.head.ref || github.ref }}
+  cancel-in-progress: false
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit and source-integrity tests
+        run: python -m unittest discover -s tests -p 'test_sonar_q141_d2_family_volatility_standardization.py' -v
+      - name: Full strict-prior replay (archive hash required)
+        run: python scripts/sonar_q141_d2_family_volatility_standardization.py
+      - name: Validate generated report and ledger
+        run: |
+          python - <<'PY'
+          import csv, json
+          from pathlib import Path
+          p=Path("reports/sequence_agent")
+          r=json.loads((p/"q141_d2_family_volatility_standardization_report_2026-11-13.json").read_text())
+          assert r["decision"] == "NO_FAMILY_VOLATILITY_STANDARDIZATION_LIFT_DEMONSTRATED"
+          assert r["source"]["archive_check"] == "VERIFIED_LOCAL"
+          with (p/"q141_d2_family_volatility_standardization_target_ledger_2026-11-13.csv").open(newline="") as f:
+              rows=list(csv.DictReader(f))
+          assert len(rows)==3354
+          print("D2 report and 3,354-row ledger validated")
+          PY
+      - name: Persist generated outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_d2_family_volatility_standardization_report_2026-11-13.json \
+                  reports/sequence_agent/q141_d2_family_volatility_standardization_target_ledger_2026-11-13.csv \
+                  reports/sequence_agent/q141_d2_family_volatility_standardization_manifest_2026-11-13.json \
+                  reports/sequence_agent/q141_d2_family_volatility_standardization_checkpoint_2026-11-13.json
+          git commit -m "Q141-D2: persist strict-prior replay outputs" || echo "No output changes to commit"
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            BRANCH="${{ github.event.pull_request.head.ref }}"
+          else
+            BRANCH="${GITHUB_REF_NAME}"
+          fi
+          git push origin "HEAD:${BRANCH}"
+      - name: Verify remote Git readback
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            BRANCH="${{ github.event.pull_request.head.ref }}"
+          else
+            BRANCH="${GITHUB_REF_NAME}"
+          fi
+          git fetch origin "${BRANCH}"
+          test "$(git rev-parse HEAD)" = "$(git rev-parse FETCH_HEAD)"
+          for f in \
+            reports/sequence_agent/q141_d2_family_volatility_standardization_report_2026-11-13.json \
+            reports/sequence_agent/q141_d2_family_volatility_standardization_target_ledger_2026-11-13.csv \
+            reports/sequence_agent/q141_d2_family_volatility_standardization_manifest_2026-11-13.json \
+            reports/sequence_agent/q141_d2_family_volatility_standardization_checkpoint_2026-11-13.json; do
+            git show "FETCH_HEAD:$f" > /tmp/remote-copy
+            cmp "$f" /tmp/remote-copy
+            echo "REMOTE_READBACK_PASS $f"
+          done
