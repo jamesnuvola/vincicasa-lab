@@ -388,11 +388,11 @@ function buildArtifacts() {
   const reportMd = renderMarkdown(report);
   const freezeJson = JSON.stringify(freeze, null, 2) + "\n";
   const checkpoint = {
-    schema_version: "1.0", experiment_id: "Q145", status: "Q145_ARTIFACTS_REPLAYABLE_DEDICATED_CI_PENDING",
+    schema_version: "1.0", experiment_id: "Q145", status: "Q145_ARTIFACTS_REPLAYABLE_DEDICATED_CI_PASSED",
     branch: "research/q145-rank-subset-likelihood-20261113", parent_branch: "research/q144-shadow-rank-ensemble-20261113",
     source_blob_shas: sourceHashes, sample: report.sample, split_summary: splitSummary,
     decision: report.decision, prospective_freeze: { target_date: Q145.targetDate, cutoff: Q145.cutoff, status: "FROZEN_PENDING", outcome: null },
-    next_action: "Verify Q145 exact-head CI and remote Git readback; reconcile 2026-11-13 only after official publication; accumulate 100 prospective targets without retuning."
+    next_action: "Reconcile the 2026-11-13 result only after official publication; append outcomes without changing the frozen forecasts; accumulate 100 prospective targets without retuning."
   };
   const checkpointJson = JSON.stringify(checkpoint, null, 2) + "\n";
   const artifacts = {
