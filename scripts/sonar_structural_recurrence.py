@@ -146,7 +146,7 @@ def make_signatures(rows):
             "range_delta": "" if range_delta is None else str(range_delta),
             "sum_transition": "NA" if sum_delta is None else sum_transition(sum_delta),
             "range_transition": "NA" if range_delta is None else range_transition(range_delta),
-            "mean_gap": str(sum(gaps) / 4),
+            "mean_gap": format(sum(gaps) / 4, "g"),
         }
         signatures.append(row)
         previous_sum = total
