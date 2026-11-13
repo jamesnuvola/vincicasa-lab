@@ -3,6 +3,7 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "sonar_q141_d3_effective_rank_family_state.py"
 spec = importlib.util.spec_from_file_location("q141_d3", SCRIPT)
@@ -62,6 +63,25 @@ class EffectiveRankTests(unittest.TestCase):
         self.assertEqual(len(adjusted), 3)
         self.assertTrue(all(0 <= x <= 1 for x in adjusted))
         self.assertEqual(adjusted, [0.03, 0.06, 0.06])
+
+    def test_formula_counts_are_validated_per_scope(self):
+        rows = []
+        for scope in ["full59", "selected20"]:
+            rows += [{"scope": scope, "formula_type": "linear_mean"}] * 2
+            rows += [{"scope": scope, "formula_type": "pairwise_interaction"}] * 3
+            rows += [{"scope": scope, "formula_type": "conditional_gate"}] * 4
+        catalog = pd.DataFrame(rows)
+        expected = {"linear_mean": 2, "pairwise_interaction": 3, "conditional_gate": 4}
+        result = q.validate_formula_catalog_counts(catalog, expected)
+        self.assertEqual(result["full59"], expected)
+        self.assertEqual(result["selected20"], expected)
+
+    def test_formula_count_validation_rejects_missing_scope(self):
+        catalog = pd.DataFrame([
+            {"scope": "full59", "formula_type": "linear_mean"}
+        ])
+        with self.assertRaises(ValueError):
+            q.validate_formula_catalog_counts(catalog, {"linear_mean": 1})
 
     def test_future_suffix_does_not_change_prior_state(self):
         rng = np.random.default_rng(10)
