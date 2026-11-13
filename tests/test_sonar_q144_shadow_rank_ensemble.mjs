@@ -51,7 +51,7 @@ assert.throws(() => validateFreezeRow({
   history_cutoff: "2026-11-13"
 }, "2026-11-13", archiveDates), /not prior to target/);
 
-assert.equal(exactSignFlipGreater([1, -1]), 0.5);
+assert.equal(exactSignFlipGreater([1, -1]), 0.75);
 assert.equal(exactSignFlipGreater([1, 1]), 0.25);
 const pmf = hypergeometricTop20Pmf();
 assert.ok(Math.abs(pmf.reduce((a, b) => a + b, 0) - 1) < 1e-12);
