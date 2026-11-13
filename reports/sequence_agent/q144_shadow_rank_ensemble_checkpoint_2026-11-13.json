@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "experiment_id": "Q144",
-  "status": "Q144_SPECIFIC_CI_SUCCESS_FULL_REPOSITORY_CI_PENDING",
+  "status": "Q144_DEDICATED_CI_SUCCESS_FULL_REPOSITORY_CI_PENDING",
   "branch": "research/q144-shadow-rank-ensemble-20261113",
+  "validated_code_commit": "405649b8d5485edb8fb13bcc10f0b6e5fc3ce01c",
   "base_main_commit": "4a55fb7da216bd3850b79f862bf10b2cbcafa968",
-  "validated_code_commit": "bf12feb49ad88ba44ad170b7a629e5d42ccfa959",
   "sources": {
     "archive_blob_sha": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
     "shadow_forecasts_blob_sha": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
@@ -12,7 +12,7 @@
   },
   "artifact_blob_shas": {
     "reports/sequence_agent/q144_shadow_rank_ensemble_preregistration_2026-11-13.md": "fef0d86ab401215f6f5560a633bf8bfaa2f80fbf",
-    "scripts/sonar_q144_shadow_rank_ensemble.mjs": "48360c20fcf7a2bac05914758c457365423c2bd2",
+    "scripts/sonar_q144_shadow_rank_ensemble.mjs": "fe6cbcfaa3d7ff90d9977859a089a7018be3854c",
     "tests/test_sonar_q144_shadow_rank_ensemble.mjs": "1ec21255bdcb927594f48ace1613107738c4cfa7",
     ".github/workflows/q144-shadow-rank-ensemble.yml": "eabdb7743502810dd3d02f933b6c044035886cc8",
     ".github/workflows/ci.yml": "12645c21af822c50505860957f31f6f638d46412",
@@ -24,38 +24,37 @@
   },
   "ci": {
     "q144_push_run": {
-      "run_id": 43478356659,
+      "run_id": 43478716025,
       "status": "success",
-      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478356659"
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478716025"
     },
     "q144_pull_request_run": {
       "run_id": 43478364483,
       "status": "success",
       "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478364483"
     },
-    "full_repository_ci_push": {
-      "run_id": 43478364185,
+    "full_repository_ci": {
+      "run_id": 43478715927,
       "status": "in_progress",
-      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478364185"
-    },
-    "full_repository_ci_pull_request": {
-      "run_id": 43478356793,
-      "status": "in_progress",
-      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478356793"
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478715927"
     }
   },
   "failed_attempts": [
     {
       "run_id": 43476902467,
-      "root_cause": "The CLI entrypoint suffix matched the test filename and a group-level freeze timestamp assertion was too strict."
+      "root_cause": "CLI import guard matched the test filename and a group-level freeze timestamp assertion was too strict; corrected to basename guard and per-row timestamp checks."
     },
     {
       "run_id": 43478048046,
-      "root_cause": "The unit test expected the wrong one-sided exact sign-flip tail probability for [1,-1]."
+      "root_cause": "Unit-test fixture omitted the target date from its archive set; fixture corrected."
     },
     {
       "run_id": 43478097546,
-      "root_cause": "The committed report included the pending row in the latest-cutoff count; deterministic replay correctly counted historical rows only (1,279)."
+      "root_cause": "Unit test expected 0.5 instead of the correct one-sided sign-flip tail 0.75 for paired differences [1,-1]; assertion corrected."
+    },
+    {
+      "run_id": 43478582844,
+      "root_cause": "Committed manifest did not match deterministic replay after CI integration; script and manifest synchronized."
     }
   ],
   "measured": {
