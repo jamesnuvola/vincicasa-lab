@@ -152,6 +152,20 @@ def holm_adjust(pvalues):
         adjusted[idx] = running
     return adjusted.tolist()
 
+def validate_formula_catalog_counts(catalog, expected_counts=None):
+    if expected_counts is None:
+        expected_counts = {"linear_mean": 650, "pairwise_interaction": 2100, "conditional_gate": 2800}
+    scopes = sorted(catalog["scope"].astype(str).unique())
+    if scopes != ["full59", "selected20"]:
+        raise ValueError("unexpected A6 formula scopes")
+    scoped_counts = {
+        scope: catalog.loc[catalog["scope"] == scope].groupby("formula_type").size().to_dict()
+        for scope in scopes
+    }
+    if any(scoped_counts[scope] != expected_counts for scope in scopes):
+        raise ValueError("A6 per-scope formula-type counts mismatch")
+    return scoped_counts
+
 
 def validate_inputs(q90_zip: Path, a6_zip: Path, preregistration: Path):
     if sha256_file(q90_zip) != Q90_ZIP_SHA256:
@@ -201,13 +215,7 @@ def validate_inputs(q90_zip: Path, a6_zip: Path, preregistration: Path):
         "discovery": 2011, "validation": 670, "blind_oos": 670
     }:
         raise ValueError("unexpected original split counts")
-    expected_counts = {"linear_mean": 650, "pairwise_interaction": 2100, "conditional_gate": 2800}
-    scoped_counts = {
-        scope: catalog.loc[catalog["scope"] == scope].groupby("formula_type").size().to_dict()
-        for scope in sorted(catalog["scope"].astype(str).unique())
-    }
-    if set(scoped_counts) != {"full59", "selected20"} or any(scoped_counts[s] != expected_counts for s in scoped_counts):
-        raise ValueError("A6 per-scope formula-type counts mismatch")
+    validate_formula_catalog_counts(catalog)
     if manifest["formula_sample"]["catalog_rows"] != 11100:
         raise ValueError("A6 manifest formula count mismatch")
     return matrix, dates, cutoffs, actual, ledger, catalog, names
@@ -349,7 +357,7 @@ def analyse(q90_zip: Path, a6_zip: Path, preregistration: Path, output_dir: Path
             "matrix_shape": list(matrix.shape), "matrix_dtype": "float32",
             "feature_count": int(len(feature_names)), "feature_names": feature_names.tolist(),
             "target_count": n,
-            "a6_formula_counts_by_scope": {scope: catalog.loc[catalog["scope"] == scope].groupby("formula_type").size().to_dict() for scope in sorted(catalog["scope"].astype(str).unique())},
+            "a6_formula_counts_by_scope": validate_formula_catalog_counts(catalog),
         },
         "walkforward": {
             "original_split_counts": {"discovery": 2011, "validation": 670, "blind_oos": 670},
