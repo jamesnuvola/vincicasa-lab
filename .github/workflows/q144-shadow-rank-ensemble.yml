@@ -1,0 +1,30 @@
+name: Q144 Shadow Rank Ensemble
+
+on:
+  push:
+    branches:
+      - research/q144-shadow-rank-ensemble-20261113
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: q144-shadow-rank-ensemble-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Test aggregation, exact inference and temporal guards
+        run: node tests/test_sonar_q144_shadow_rank_ensemble.mjs
+      - name: Verify pinned-source replay and committed artifacts
+        run: node scripts/sonar_q144_shadow_rank_ensemble.mjs --verify

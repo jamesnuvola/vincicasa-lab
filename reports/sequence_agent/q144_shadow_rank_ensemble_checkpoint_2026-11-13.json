@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q144",
+  "status": "Q144_DEDICATED_CI_SUCCESS_FULL_REPOSITORY_CI_PENDING",
+  "branch": "research/q144-shadow-rank-ensemble-20261113",
+  "validated_code_commit": "405649b8d5485edb8fb13bcc10f0b6e5fc3ce01c",
+  "base_main_commit": "4a55fb7da216bd3850b79f862bf10b2cbcafa968",
+  "sources": {
+    "archive_blob_sha": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "shadow_forecasts_blob_sha": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "preregistration_blob_sha": "fef0d86ab401215f6f5560a633bf8bfaa2f80fbf"
+  },
+  "artifact_blob_shas": {
+    "reports/sequence_agent/q144_shadow_rank_ensemble_preregistration_2026-11-13.md": "fef0d86ab401215f6f5560a633bf8bfaa2f80fbf",
+    "scripts/sonar_q144_shadow_rank_ensemble.mjs": "fe6cbcfaa3d7ff90d9977859a089a7018be3854c",
+    "tests/test_sonar_q144_shadow_rank_ensemble.mjs": "1ec21255bdcb927594f48ace1613107738c4cfa7",
+    ".github/workflows/q144-shadow-rank-ensemble.yml": "eabdb7743502810dd3d02f933b6c044035886cc8",
+    ".github/workflows/ci.yml": "12645c21af822c50505860957f31f6f638d46412",
+    "reports/sequence_agent/q144_shadow_rank_ensemble_report_2026-11-13.json": "aa95e3c9ce537c6ca1b565d2d91ab593e0f7aaf6",
+    "reports/sequence_agent/q144_shadow_rank_ensemble_report_2026-11-13.md": "a94527707e9af72594033e5c8f02e1fe8db233b0",
+    "reports/sequence_agent/q144_shadow_rank_ensemble_ledger_2026-11-13.csv": "c14e13b0c8e7f7a8c20ae40c9af56101f5209762",
+    "reports/sequence_agent/q144_shadow_rank_ensemble_freeze_2026-11-13.json": "df20af45433ae8693b90e06124d31df0ad345dfe",
+    "reports/sequence_agent/q144_shadow_rank_ensemble_manifest_2026-11-13.json": "fa790c550b0aab4bd669033a61c76d2f117fa5ea"
+  },
+  "ci": {
+    "q144_push_run": {
+      "run_id": 43478716025,
+      "status": "success",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478716025"
+    },
+    "q144_pull_request_run": {
+      "run_id": 43478364483,
+      "status": "success",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478364483"
+    },
+    "full_repository_ci": {
+      "run_id": 43478715927,
+      "status": "in_progress",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478715927"
+    }
+  },
+  "failed_attempts": [
+    {
+      "run_id": 43476902467,
+      "root_cause": "CLI import guard matched the test filename and a group-level freeze timestamp assertion was too strict; corrected to basename guard and per-row timestamp checks."
+    },
+    {
+      "run_id": 43478048046,
+      "root_cause": "Unit-test fixture omitted the target date from its archive set; fixture corrected."
+    },
+    {
+      "run_id": 43478097546,
+      "root_cause": "Unit test expected 0.5 instead of the correct one-sided sign-flip tail 0.75 for paired differences [1,-1]; assertion corrected."
+    },
+    {
+      "run_id": 43478582844,
+      "root_cause": "Committed manifest did not match deterministic replay after CI integration; script and manifest synchronized."
+    }
+  ],
+  "measured": {
+    "archive_draws": 3406,
+    "shadow_rows": 1364,
+    "completed_target_dates": 31,
+    "historical_shadow_rows_reconciled": 1321,
+    "pending_target_rows": 43,
+    "discovery": 18,
+    "validation": 6,
+    "historical_blind_oos": 7,
+    "blind_borda_mean_hits": 2.7142857142857144,
+    "blind_app_mean_hits": 2.2857142857142856,
+    "blind_equal_type_inclusion_mean_hits": 2.857142857142857,
+    "p_raw": {
+      "borda_vs_app": 0.1875,
+      "borda_vs_inclusion": 0.875,
+      "borda_vs_uniform": 0.360626423573348
+    },
+    "p_holm": {
+      "borda_vs_app": 0.5625,
+      "borda_vs_uniform": 0.721252847146696,
+      "borda_vs_inclusion": 0.875
+    },
+    "stale_prior_cutoff_rows": 42,
+    "multiple_freeze_timestamp_target_groups": 5
+  },
+  "prospective_freeze": {
+    "target_date": "2026-11-13",
+    "history_cutoff": "2026-11-12",
+    "frozen_at_utc": "2026-11-13T17:49:56Z",
+    "top20_ranked": [
+      1,
+      7,
+      25,
+      16,
+      21,
+      12,
+      2,
+      27,
+      3,
+      38,
+      17,
+      9,
+      10,
+      8,
+      36,
+      26,
+      6,
+      4,
+      22,
+      15
+    ],
+    "status": "FROZEN_PENDING",
+    "outcome": null
+  },
+  "decision": "NO_PROMOTION_HISTORICAL_LIFT_NOT_ESTABLISHED",
+  "next_action": "Reconcile the separate 2026-11-13 Q144 freeze only after official publication. Accumulate at least 100 consecutive prospective Q144 freezes before confirmatory evaluation; no tuning on historical dates."
+}
