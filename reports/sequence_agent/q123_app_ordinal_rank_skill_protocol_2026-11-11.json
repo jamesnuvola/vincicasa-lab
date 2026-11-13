@@ -1,0 +1,75 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q123",
+  "title": "APP SONAR full-ranking ordinal skill against exact 5-of-40 null",
+  "status": "PREREGISTERED_BEFORE_CALCULATION",
+  "preregistered_at_utc": "2026-11-11T15:44:07Z",
+  "base_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "scorer_path": "src/VinciCasaLab.jsx",
+    "scorer_git_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "app_data_path": "src/data.json",
+    "app_data_git_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "archive_draws": 3404,
+    "archive_last_date": "2026-11-10"
+  },
+  "hypothesis": "The complete ordinal order of the 40 numbers emitted by the exact APP SONAR scorer contains useful information about the next draw beyond the Top20 set: drawn numbers should occupy smaller ranks more often than a uniformly random 5-of-40 subset.",
+  "estimand": {
+    "forecast": "For target index t, execute the exact committed sonarAnalogCore on draws[0:t] and retain its 40-number score order; target draw is excluded.",
+    "rank_sum": "R_t = sum of the one-based APP ranks of the five target numbers; lower is better.",
+    "primary_endpoint": "Mean rank of the five drawn numbers over the Blind OOS; exact uniform-null expectation is 20.5.",
+    "secondary_endpoints": [
+      "Mean number of target hits in APP ranks 1-5; exact null expectation 0.625.",
+      "Mean number of target hits in APP ranks 1-10; exact null expectation 1.25.",
+      "Mean number of target hits in APP ranks 1-20; exact null expectation 2.5."
+    ],
+    "null": "Conditional on each prior-only ranking, the five drawn ranks are a uniform 5-subset of {1,...,40}; rank-sum distribution is the exact 5-of-40 subset distribution and TopK hit counts are Hypergeometric(40,K,5)."
+  },
+  "models": {
+    "M0": "Exact conditional random-ranking null: every target is a uniform 5-of-40 subset of ranks; E(mean rank)=20.5 and E(TopK hits)=K/8.",
+    "M1": "Exact APP SONAR 40-rank ordering from the committed sonarAnalogCore; no parameter fitting or post-hoc reranking.",
+    "controls": "Top5, Top10, and Top20 cumulative hit means are secondary controls; full-rank mean is the single primary endpoint."
+  },
+  "sample": {
+    "warmup_draws": 200,
+    "scored_target_indices_inclusive": [
+      200,
+      3403
+    ],
+    "scored_targets": 3204,
+    "chronological_split": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "split_rule": "60% discovery, 20% validation, remainder Blind OOS after the 200-draw warmup; first two split sizes use Math.round."
+  },
+  "inference": {
+    "primary_segment": "Historical Blind OOS",
+    "primary_test": "One-sided exact conditional-randomization Monte Carlo for the aggregate rank-sum, 50,000 replicates; each replicate samples 641 independent uniform 5-subsets of ranks and compares the aggregate rank sum (lower is better).",
+    "secondary_tests": "Exact convolution of Hypergeometric(40,K,5) for K=5,10,20 across 641 targets; one-sided upper-tail probabilities.",
+    "multiple_testing": "Holm across the four pre-specified Blind OOS endpoints.",
+    "confidence_intervals": "Circular moving-block bootstrap, 10,000 replicates, block length 20, percentile 95% intervals for mean rank and TopK hit means.",
+    "random_seed": "Fixed xorshift32 seeds persisted in runner; no run-time entropy."
+  },
+  "leakage_controls": [
+    "Pin canonical archive, exact APP scorer source, and APP modelDraws blob SHAs.",
+    "For every target t, execute the scorer on draws[0:t] only; target outcome is scored only after ranking is frozen.",
+    "Verify archive and APP modelDraws reconcile row-by-row.",
+    "Verify all 40 ranks are unique and deterministic; ties use the exact committed smaller-number tie-break.",
+    "Mutate the target and future suffix at nine fixed target indices and verify the current 40-rank order remains unchanged.",
+    "Verify every ledger cutoff date is strictly earlier than its target date.",
+    "Replay report, ledger, validation, freeze, checkpoint, and manifest byte-for-byte."
+  ],
+  "guardrails": [
+    "Research-only diagnostic; no production scorer or ranking changes.",
+    "Prospective Q123 freeze is separate and is not a Q60 paired freeze.",
+    "No Q60 gate edits and no reconstructed historical freezes.",
+    "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+    "No automatic merge or engine promotion.",
+    "Do not modify PR #6, #7, or #8."
+  ],
+  "decision_rule": "Retain ordinal ranking only as a supported research signal if the primary Blind OOS mean-rank endpoint improves over 20.5 with Holm-adjusted p<0.05 and at least one cumulative TopK endpoint is directionally consistent. Otherwise record a null/negative result. No production promotion."
+}
