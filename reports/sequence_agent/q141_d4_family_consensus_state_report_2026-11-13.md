@@ -1,12 +1,12 @@
 # Q141-D4 — Family Top-5 consensus under disagreement states
 
-**Decision: no conditional family-consensus lift demonstrated.** Historical research only; no engine promotion.
+<badge>Research only — no lift demonstrated</badge>
 
 ## Design and source integrity
 
 - Seven fixed Q89 families partition all 59 features: baseline legacy 27, EWMA 7, gap 6, co-occurrence 6, rank trajectory 5, residual surprise 2, regime/transition 6.
-- Each family independently ranks the 40 candidates by its mean per-target feature z-score. Consensus ranks by number of family Top-5 votes, then equal-family mean score, then number ascending.
-- Disagreement is mean pairwise Jaccard of the seven family Top-5 sets. High disagreement means current Jaccard is below the median of the preceding 100 targets.
+- Each family ranks 40 candidates by its mean per-target feature z-score. Consensus ranks by family Top-5 vote count, then equal-family mean score, then ascending number.
+- Disagreement is the mean pairwise Jaccard of the seven family Top-5 sets. High disagreement means current Jaccard is below the median of the preceding 100 targets.
 - Q90 artifact: 3,401 draws through 2026-11-07; 3,351 target rows. Q141-A6 outcome ledger aligns exactly on dates, cutoffs and actual quintets. Five later main-archive rows are excluded.
 - Walk-forward: 3,351 rows; 100 state warm-up; Discovery 1,911 evaluated, Validation 670, historical Blind OOS 670.
 
@@ -32,16 +32,22 @@ Inference used 20,000 circular block-bootstrap replicates (block 20), 20,000 cir
 
 The primary point estimate exceeds the +0.025 practical threshold, but its interval includes zero and Holm p=0.43213. The unconditional lift is near zero. Discovery, Validation and Blind OOS change sign, indicating instability. No acceptance criterion is met.
 
-## Integrity, recovery and limits
+## Validation and persistence
 
-- 12/12 local unit tests passed after correcting a test that incorrectly treated an unmapped legacy feature as invalid; unmapped features correctly belong to baseline_legacy.
-- Two complete local runs produced byte-identical report, ledger, manifest and checkpoint.
+- Dedicated GitHub Actions workflow **43438108859** completed successfully: [run details](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43438108859).
+- 12/12 unit tests passed.
+- Two full strict-prior runs produced byte-identical report, ledger, manifest and checkpoint.
 - Six future-suffix mutation checks passed.
-- Exact source ZIP/member hashes, 3,351 row alignment, strict-prior cutoffs and family partition were verified.
-- A first run stopped on incorrect pinned A6/catalog digests; both were corrected against the actual downloaded artifact bytes before the successful replay.
-- The full 3,351-row ledger is currently a local artifact (466,760 bytes; SHA-256 5d531c4790e5a1635537810b5a57b778e044237b44cd055ee266c5fdea8652cc). The runner, preregistration, tests and workflow are in the research branch. GitHub Actions execution and remote readback of generated outputs have not been observed; do not mark full repository persistence complete.
-- Historical Blind OOS is already exposed, not a virgin holdout. These per-number Top-5 metrics do not establish exact-ticket predictability. Holm covers only D4's three endpoints, not the full SONAR research family.
+- Q90/A6 source ZIP and member hashes, 3,351 row alignment, cutoffs strictly before targets, prior draw counts and family partition were verified.
+- Full 3,351-row ledger is persisted in the repository (466,760 bytes; SHA-256 5d531c4790e5a1635537810b5a57b778e044237b44cd055ee266c5fdea8652cc).
+- Readback receipt records 8/8 files verified; checkpoint status is REMOTE_GIT_READBACK_VERIFIED.
+
+## Recovery and limits
+
+The first local attempt stopped on incorrect pinned A6/catalog digests; both were corrected against downloaded artifact bytes. An initial unit test incorrectly treated an unmapped legacy feature as invalid; the family partition correctly assigns unmapped features to baseline_legacy, and the test was corrected. The successful exact-head workflow repeated the corrected suite and full experiment.
+
+Historical Blind OOS is already exposed, not a virgin holdout. These per-number Top-5 metrics do not establish exact-ticket predictability. Holm covers only D4's three endpoints, not the full SONAR research family. Equal-family averaging reduces family-size weighting but does not remove within-family redundancy.
 
 ## Next action
 
-Keep D4 research-only. Resolve the dedicated workflow trigger and remote readback. Then continue the Common-Source AST Behaviour Atlas: reconcile Q7/Q90/Q141 semantic ASTs, evaluate them on the same strict-prior cutoffs, deduplicate semantic equivalents, and measure incremental information rather than selecting another retrospective winner.
+Keep D4 research-only. Continue the Common-Source AST Behaviour Atlas: reconcile Q7/Q90/Q141 semantic ASTs, evaluate them on identical strict-prior cutoffs with separate per-number and quintet endpoints, deduplicate semantic equivalents, and measure incremental information rather than selecting another retrospective winner.
