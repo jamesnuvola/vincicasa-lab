@@ -12,6 +12,11 @@ The registered practical thresholds are:
 
 Positive gain favours the lag-2 model.
 
+A historical candidate is recorded only if **both** pooled endpoints meet their
+practical threshold, their circular-block-bootstrap 95% interval lower bounds
+are above zero, and their Holm-adjusted IID-null p-values are below 0.05.
+Even then, the result is exploratory and requires a new prospective freeze.
+
 ## Fixed streams and model
 
 - Streams: `sum_transition`, `range_transition`, using the exact fixed vocabularies and bin boundaries from the pinned Q141-A12 builder.
