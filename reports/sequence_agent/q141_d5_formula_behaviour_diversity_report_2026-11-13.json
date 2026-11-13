@@ -1,0 +1,245 @@
+{
+  "decision": "NO_Q90_FORMULA_DIVERSITY_INCREMENTAL_LIFT_DEMONSTRATED",
+  "estimand": "Blind OOS MAE reduction for Q7 mean percentile across 1,023 quintet-score formulas; this is meta-quality prediction, not winning-number prediction.",
+  "feature_definitions": {
+    "boundary_margin": "(fifth-highest vote count - sixth-highest vote count)/700",
+    "pairwise_overlap_fraction": "sum_i C(v_i,2)/(C(700,2)*5)",
+    "unique_top5_share": "unique Top-5 signatures divided by 700",
+    "vote_entropy": "Shannon entropy of 3,500 Top-5 votes over 40 numbers, normalized by log(40)"
+  },
+  "formula_sample": {
+    "count": 700,
+    "families": [
+      "linear_mean_L4",
+      "linear_mean_L5",
+      "linear_mean_L6",
+      "linear_mean_L7",
+      "linear_mean_L8",
+      "pairwise_interaction_I4",
+      "conditional_gate_G4"
+    ],
+    "ordered_ids_sha256": "3ee52f0f270eafb6a8c54c7a7166fe55f2c7730a59ae700ea50b92be6a5412ae",
+    "per_family": 100,
+    "selection": "lowest SHA256(Q141-B7|formula_id) within each family"
+  },
+  "governance": {
+    "no_archive_mutation": true,
+    "no_engine_promotion": true,
+    "no_freeze_mutation": true,
+    "no_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ],
+    "research_only": true
+  },
+  "hypothesis": "Current-target prior-only diversity across a fixed 700-formula Q90 sample improves next-target Q7 meta-quality beyond the frozen C5 Q7+Q80+Q90 baseline.",
+  "integrity": {
+    "c5_baseline_is_strict_prior_and_frozen": true,
+    "c5_baseline_report_replay_max_abs_error": 0.0,
+    "c5_baseline_target_rows_aligned": 3186,
+    "future_suffix_mutation_checks": [
+      {
+        "offset": 150,
+        "target_date": "2018-03-25",
+        "unchanged": true
+      },
+      {
+        "offset": 250,
+        "target_date": "2018-07-03",
+        "unchanged": true
+      },
+      {
+        "offset": 1000,
+        "target_date": "2020-07-22",
+        "unchanged": true
+      },
+      {
+        "offset": 2000,
+        "target_date": "2023-04-18",
+        "unchanged": true
+      },
+      {
+        "offset": 3000,
+        "target_date": "2026-01-12",
+        "unchanged": true
+      },
+      {
+        "offset": 3285,
+        "target_date": "2026-10-24",
+        "unchanged": true
+      }
+    ],
+    "q7_q90_target_rows_aligned": 3286,
+    "q90_family_share_replay_comparisons": 23002,
+    "q90_family_share_replay_max_abs_error": 2.220446049250313e-16,
+    "target_outcomes_not_used_in_current_d5_features": true
+  },
+  "limitations": [
+    "700 fixed formulas are a deterministic sample of the 330,429 Q90 catalogue, not the full universe.",
+    "Q90 uses a 20-feature Discovery-selected subset from 59 available features.",
+    "Q7 outcome is the mean percentile of 1,023 quintet-scoring formulas, not a winning-ticket metric.",
+    "Historical Blind OOS has prior SONAR exposure and is not virgin prospective evidence.",
+    "The one-endpoint correction does not cover the global Q00-Q141 research family."
+  ],
+  "next_action": "If D5 fails, archive and stop adding formula-diversity meta-features; continue the independent prospective evidence programme. If it passes, require a new prospective replication without historical retuning.",
+  "primary_blind_oos": {
+    "block_count": 33,
+    "block_length": 20,
+    "ci95_circular_moving_block": [
+      -0.0012537243097690606,
+      0.0008602765806329649
+    ],
+    "confirmatory_endpoints": 1,
+    "criteria_met": false,
+    "mean_mae_improvement": -0.00019617414493663444,
+    "one_sided_block_signflip_p": 0.631818409079546,
+    "practical_threshold": 0.005,
+    "replicates": 20000,
+    "within_experiment_multiplicity": "not required for one preregistered primary endpoint; global Q00-Q141 multiplicity not covered"
+  },
+  "schema_version": "1.0",
+  "source": {
+    "c5_baseline_rows": 3186,
+    "hashes": {
+      "q141_q90_family_persistence_report_2026-11-12.json": {
+        "bytes": 10122,
+        "git_blob_sha1": "5723a98ba70d194255667d0ad0ea5202d0c45fbf",
+        "sha256": "4c095982aea1e278c1e72aea643f72de80006256a2f3c36a892e5f79228ee1ec"
+      },
+      "q141_q90_family_persistence_target_ledger_2026-11-12.csv": {
+        "bytes": 803659,
+        "git_blob_sha1": "10d16cc343250ef7e0c4b74864871407b93185da",
+        "sha256": "ff72c817f74b54036176d99abbcd2e3cc58bd9df443a690158f9dbe63bb7e6e1"
+      },
+      "q141_q90_to_q7_transfer_report_2026-11-12.json": {
+        "bytes": 19996,
+        "git_blob_sha1": "606faf9368660ff8bc680a3dc30baaf6cc2f34bd",
+        "sha256": "f84e9cde36f9a2ea2339237c8fa4b8a4700c303ec05280724dcac52e758f0e6c"
+      },
+      "q141_q90_to_q7_transfer_target_ledger_2026-11-12.csv": {
+        "bytes": 1393587,
+        "git_blob_sha1": "b0a79cf1f8fc2da5b73cce4ffb6f3a87e8189b1e",
+        "sha256": "0cbdf1ee0c770ba372f1a238079daba1901267c889e9f57d54ec9193ec571bcc"
+      },
+      "q7_formula_complexity_walkforward_report_2026-11-12.json": {
+        "bytes": 19132,
+        "git_blob_sha1": "56c0ce3420e5ac04b6ba279adf665c587d23fee4",
+        "sha256": "6029ff4c7cf1fcd5a43f7bbeeeae214c3a237c32a27e60adbfc26497bc15d542"
+      },
+      "q7_formula_complexity_walkforward_target_ledger_2026-11-12.csv": {
+        "bytes": 685854,
+        "git_blob_sha1": "025fcfa99dc54913fc9b6660aef172bc7cc3ef96",
+        "sha256": "828e4fae76795264f15eb7d2c951848c643c7a446eceedf4e887a85120ca8059"
+      }
+    },
+    "q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_rows": 3286,
+    "q90_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_catalog_sha256": "a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586",
+    "q90_family_rows": 3351,
+    "q90_matrix_sha256": "681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49",
+    "q90_zip_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077"
+  },
+  "split_metrics": {
+    "blind_oos": {
+      "c5_m2_baseline": {
+        "mae": 0.20535843680242577,
+        "mean_error": 0.011597838496691886,
+        "rmse": 0.24152995837379995,
+        "targets": 657
+      },
+      "constant_0_5_mae": 0.20475026271323002,
+      "d5_residual_corrected": {
+        "mae": 0.2055546109473624,
+        "mean_error": 0.016142212222131143,
+        "rmse": 0.24202455153866737,
+        "targets": 657
+      },
+      "mae_improvement_m2_minus_d5": -0.00019617414493663444,
+      "mean_boundary_margin": 0.0489410741465536,
+      "mean_pairwise_overlap": 0.3636054326669883,
+      "mean_unique_top5_share": 0.586910197869102,
+      "mean_vote_entropy": 0.7894302462585802,
+      "q7_meta_quality_mean": 0.4942539369897852,
+      "targets": 657
+    },
+    "discovery": {
+      "c5_m2_baseline": {
+        "mae": 0.20365177070401835,
+        "mean_error": -0.003071801632833295,
+        "rmse": 0.23939981056223278,
+        "targets": 1822
+      },
+      "constant_0_5_mae": 0.20160859131125403,
+      "d5_residual_corrected": {
+        "mae": 0.2038807097212958,
+        "mean_error": 0.011457430322010083,
+        "rmse": 0.24047284246517356,
+        "targets": 1822
+      },
+      "mae_improvement_m2_minus_d5": -0.00022893901727747405,
+      "mean_boundary_margin": 0.04751372118551042,
+      "mean_pairwise_overlap": 0.3594758676511596,
+      "mean_unique_top5_share": 0.5935965187392191,
+      "mean_vote_entropy": 0.7911491759901158,
+      "q7_meta_quality_mean": 0.5032866447719827,
+      "targets": 1822
+    },
+    "validation": {
+      "c5_m2_baseline": {
+        "mae": 0.2035495925805504,
+        "mean_error": 0.013752708932417023,
+        "rmse": 0.24145025212121768,
+        "targets": 657
+      },
+      "constant_0_5_mae": 0.20230612906449563,
+      "d5_residual_corrected": {
+        "mae": 0.2040205562376993,
+        "mean_error": 0.017028370765946432,
+        "rmse": 0.24221233753962074,
+        "targets": 657
+      },
+      "mae_improvement_m2_minus_d5": -0.00047096365714894124,
+      "mean_boundary_margin": 0.047425527288540985,
+      "mean_pairwise_overlap": 0.35325654112155375,
+      "mean_unique_top5_share": 0.6010893672537508,
+      "mean_vote_entropy": 0.7947085163350007,
+      "q7_meta_quality_mean": 0.5032921566166013,
+      "targets": 657
+    }
+  },
+  "status": "COMPLETED_HISTORICAL_WALK_FORWARD",
+  "task_id": "Q141-D5",
+  "walkforward": {
+    "baseline": "Persisted Q141-C5 M2 predictions; source report confirms strict-prior and coefficients frozen after Discovery.",
+    "q7_targets": 3286,
+    "residual_model": "Ridge(alpha=1) predicts C5 residual y-pred_M2 from four current-target D5 features. Discovery is expanding prequential from offsets 100..t-1; model frozen after Discovery.",
+    "scored_targets": {
+      "blind_oos": 657,
+      "discovery": 1822,
+      "total": 3136,
+      "validation": 657
+    },
+    "split_offsets": {
+      "blind_oos": [
+        2629,
+        3286
+      ],
+      "discovery": [
+        150,
+        1972
+      ],
+      "validation": [
+        1972,
+        2629
+      ]
+    },
+    "standardization": "training rows only",
+    "strict_prior": true,
+    "training_rows_first_discovery": 50,
+    "training_rows_frozen": 1872,
+    "warmup_offsets": 150
+  }
+}
