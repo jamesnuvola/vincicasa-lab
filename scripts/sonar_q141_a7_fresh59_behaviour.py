@@ -326,6 +326,8 @@ def main():
         qnames=q["feature_names"].astype(str);qblob=str(q["archive_blob_sha"].item())
     if qblob!=EXPECTED_Q90_ARCHIVE_BLOB or q90.shape!=(EXPECTED_Q90_TARGETS,40,59):
         raise SystemExit("A7_BLOCKED: pinned Q90 matrix identity/shape mismatch")
+    if sha256_file(q90_path)!=EXPECTED_Q90_MATRIX_SHA256:
+        raise SystemExit("A7_BLOCKED: pinned Q90 matrix SHA-256 mismatch")
     if qnames.tolist()!=FEATURE_NAMES or qdates.tolist()!=dates[50:3401] or qcut.tolist()!=dates[49:3400]:
         raise SystemExit("A7_BLOCKED: Q90 prefix date/name lineage mismatch")
     if not np.array_equal(matrix[:EXPECTED_Q90_TARGETS],q90):
