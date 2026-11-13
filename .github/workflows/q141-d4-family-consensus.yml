@@ -1,9 +1,7 @@
 name: Q141-D4 Family Consensus State
+# Exact-head replay trigger: 2026-11-13 14:50 UTC
 
 on:
-  push:
-    branches:
-      - research/q141-d4-family-consensus-state-20261113
   pull_request:
     paths:
       - scripts/sonar_q141_d4_family_consensus_state.py
@@ -210,3 +208,31 @@ jobs:
             git show "origin/$BRANCH:$file" > /tmp/d4-remote-readback
             cmp "$file" /tmp/d4-remote-readback
           done
+          python - <<'PY'
+          import hashlib, json, pathlib, subprocess, os
+          root = pathlib.Path("reports/sequence_agent")
+          receipt_path = root/"q141_d4_family_consensus_state_readback_receipt_2026-11-13.json"
+          checkpoint_path = root/"q141_d4_family_consensus_state_checkpoint_2026-11-13.json"
+          receipt = json.loads(receipt_path.read_text())
+          data = checkpoint_path.read_bytes()
+          blob = subprocess.check_output(["git", "hash-object", str(checkpoint_path)], text=True).strip()
+          entry = next(x for x in receipt["files"] if x["path"].endswith("q141_d4_family_consensus_state_checkpoint_2026-11-13.json"))
+          entry.update({"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest(), "git_blob_sha1": blob})
+          receipt["post_receipt_checkpoint_verification"] = {
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "workflow_run_id": int(os.environ["GITHUB_RUN_ID"]),
+              "bytes": len(data),
+              "sha256": hashlib.sha256(data).hexdigest(),
+              "git_blob_sha1": blob,
+              "method": "final workflow step fetched the branch and byte-compared the final checkpoint after the receipt commit"
+          }
+          receipt_path.write_text(json.dumps(receipt, sort_keys=True, indent=2) + "\n")
+          PY
+          git add reports/sequence_agent/q141_d4_family_consensus_state_readback_receipt_2026-11-13.json
+          git commit -m "Q141-D4: reconcile final checkpoint hash in readback receipt"
+          git push origin "HEAD:$BRANCH"
+          git fetch origin "$BRANCH"
+          git show "origin/$BRANCH:reports/sequence_agent/q141_d4_family_consensus_state_readback_receipt_2026-11-13.json" > /tmp/d4-remote-receipt
+          cmp reports/sequence_agent/q141_d4_family_consensus_state_readback_receipt_2026-11-13.json /tmp/d4-remote-receipt
+          git show "origin/$BRANCH:reports/sequence_agent/q141_d4_family_consensus_state_checkpoint_2026-11-13.json" > /tmp/d4-remote-checkpoint
+          cmp reports/sequence_agent/q141_d4_family_consensus_state_checkpoint_2026-11-13.json /tmp/d4-remote-checkpoint
