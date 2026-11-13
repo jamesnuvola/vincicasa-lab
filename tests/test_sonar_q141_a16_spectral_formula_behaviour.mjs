@@ -1,0 +1,18 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {averageRanks,rankPercentile,holmAdjust,jacobiEigen,summarizeSpectrum,subspaceOverlap,randomSubspaceNull,readInputs,splitRows,buildCorrelation} from "../scripts/sonar_q141_a16_spectral_formula_behaviour.mjs";
+test("average ranks preserve ties",()=>assert.deepEqual(Array.from(averageRanks([3,1,2,2])),[4,1,2.5,2.5]));
+test("average ranks support typed arrays",()=>assert.deepEqual(Array.from(averageRanks(new Float64Array([4,2,2,1]))),[4,2.5,2.5,1]));
+test("rank percentile has exact endpoints",()=>{assert.equal(rankPercentile(1),0);assert.equal(rankPercentile(658008),1);});
+test("Jacobi eigenvalues match a known symmetric matrix",()=>{const e=jacobiEigen([[2,1],[1,2]]);assert.ok(Math.abs(e.eigenvalues[0]-3)<1e-12);assert.ok(Math.abs(e.eigenvalues[1]-1)<1e-12);});
+test("Jacobi eigenvectors reconstruct and remain orthonormal",()=>{const e=jacobiEigen([[4,1,0],[1,3,1],[0,1,2]]);assert.ok(e.orthogonalityMax<1e-12);assert.ok(e.reconstructionMax<1e-12);});
+test("identity spectrum has full participation rank",()=>{const e=jacobiEigen(Array.from({length:8},(_,i)=>Array.from({length:8},(_,j)=>i===j?1:0))),s=summarizeSpectrum(e);assert.equal(s.k80,7);assert.ok(Math.abs(s.participationRatio-8)<1e-12);});
+test("identical subspaces have overlap one",()=>{const u=Array.from({length:4},(_,i)=>Float64Array.from({length:2},(_,j)=>i===j?1:0));assert.equal(subspaceOverlap(u,u,2),1);});
+test("orthogonal subspaces have overlap zero",()=>{const u=Array.from({length:4},(_,i)=>Float64Array.from({length:1},(_,j)=>i===j?1:0)),v=Array.from({length:4},(_,i)=>Float64Array.from({length:1},(_,j)=>i===j+2?1:0));assert.equal(subspaceOverlap(u,v,1),0);});
+test("random-subspace null is deterministic",()=>{const u=Array.from({length:8},(_,i)=>Float64Array.from({length:2},(_,j)=>i===j?1:0));assert.deepEqual(randomSubspaceNull(u,2,.5,12345,200),randomSubspaceNull(u,2,.5,12345,200));});
+test("random-subspace null stays bounded",()=>{const u=Array.from({length:8},(_,i)=>Float64Array.from({length:2},(_,j)=>i===j?1:0)),x=randomSubspaceNull(u,2,.4,77,100);assert.ok(x.mean>=0&&x.mean<=1&&x.p>0&&x.p<=1);});
+test("Holm adjustment is monotone and ordered",()=>assert.deepEqual(holmAdjust([.04,.001,.02]),[.04,.003,.04]));
+test("pinned A15 source reconciles 3386 strict-prior rows",()=>{const x=readInputs();assert.equal(x.archive.length,3387);assert.equal(x.rows.length,3386);assert.equal(x.masks.length,128);assert.equal(x.sourceChecks.length,4);});
+test("chronological split boundaries are exact",()=>{const s=splitRows(readInputs().rows);assert.equal(s.discovery.length,2031);assert.equal(s.validation.length,677);assert.equal(s.blind_oos.length,678);});
+test("target dates, immediate-prior cutoffs and ranks reconcile",()=>{const x=readInputs();for(const r of x.rows){assert.equal(r.cutoff,x.archive[r.index-1][0]);assert.equal(r.date,x.archive[r.index][0]);assert.equal(r.ranks.length,128);assert.ok(r.ranks.every(v=>Number.isInteger(v)&&v>=1&&v<=658008));}});
+test("Discovery matrix is invariant to mutations after its cutoff",()=>{const x=readInputs(),d=x.rows.filter(r=>r.index<=2031),before=buildCorrelation(d).matrix,mut=x.rows.map(r=>r.index>2031?{...r,ranks:r.ranks.map(v=>v===1?2:1)}:r),after=buildCorrelation(mut.filter(r=>r.index<=2031)).matrix;for(let i=0;i<128;i++)for(let j=0;j<128;j++)assert.equal(before[i][j],after[i][j]);});
