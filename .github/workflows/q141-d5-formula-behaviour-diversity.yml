@@ -61,14 +61,14 @@ jobs:
           code=code.replace(oldq,newq)
           oldc='    if not np.isfinite(d).all() or not np.isfinite(base[100:]).all(): raise RuntimeError("missing D5 features or C5 predictions")'
           newc='''    if not np.isfinite(d).all() or not np.isfinite(base[100:]).all(): raise RuntimeError("missing D5 features or C5 predictions")
-          c5_metric_replay_max=0.0
-          for split in ("discovery","validation","blind_oos"):
-              ix=np.asarray([i for i in range(100,len(q7)) if q7[i]["split"]==split],dtype=int)
-              observed=summary(y[ix],base[ix]); expected=c5r["metrics_by_split"][split]["m2_q7_q80_q90_ridge"]
-              for field,ef in (("mae","mae"),("rmse","rmse"),("mean_error","mean_prediction_error")):
-                  err=abs(observed[field]-float(expected[ef])); c5_metric_replay_max=max(c5_metric_replay_max,err)
-                  if err>1e-12: raise RuntimeError(f"C5 report replay mismatch {split}/{field}: {err}")
-              if observed["targets"]!=int(expected["targets"]): raise RuntimeError("C5 report replay target count mismatch")'''
+              c5_metric_replay_max=0.0
+              for split in ("discovery","validation","blind_oos"):
+                  ix=np.asarray([i for i in range(100,len(q7)) if q7[i]["split"]==split],dtype=int)
+                  observed=summary(y[ix],base[ix]); expected=c5r["metrics_by_split"][split]["m2_q7_q80_q90_ridge"]
+                  for field,ef in (("mae","mae"),("rmse","rmse"),("mean_error","mean_prediction_error")):
+                      err=abs(observed[field]-float(expected[ef])); c5_metric_replay_max=max(c5_metric_replay_max,err)
+                      if err>1e-12: raise RuntimeError(f"C5 report replay mismatch {split}/{field}: {err}")
+                  if observed["targets"]!=int(expected["targets"]): raise RuntimeError("C5 report replay target count mismatch")'''
           if oldc not in code: raise SystemExit('expected C5 replay insertion point not found')
           code=code.replace(oldc,newc)
           target.write_text(code)
