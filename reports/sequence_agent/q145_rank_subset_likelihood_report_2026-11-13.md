@@ -39,10 +39,10 @@ All historical inference is exploratory, not virgin confirmation: this PMF trans
 
 ## Integrity and limits
 - 31 historical target rows reconciled against the pinned canonical archive.
-- 1,364 shadow rows checked for strict-prior cutoffs and pre-draw timestamps; 43 pending rows remain outcome-free.
+- 1,364 shadow rows checked for strict-prior cutoffs and pre-draw timestamps; 43 pending 2026-11-13 rows remain outcome-free.
 - 42 component forecasts per completed target (24 family / 12 pair / 6 chain); APP is an external comparator.
 - The PMF is normalized mathematically over all 658,008 quintets; this does not establish calibration or predictive power.
 - Seven historical Blind OOS dates are insufficient for confirmation. No model promotion.
 
 ## Next action
-Keep both probability forecasts frozen and append-only. Reconcile only after official publication. Accumulate at least 100 consecutive prospective targets without retuning.
+Keep the two probability forecasts frozen and append-only. Reconcile only after official publication. Accumulate at least 100 consecutive prospective targets without retuning.
