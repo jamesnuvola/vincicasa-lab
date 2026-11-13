@@ -34,7 +34,7 @@ The primary point estimate exceeds the +0.025 practical threshold, but its inter
 
 ## Validation and persistence
 
-- Dedicated GitHub Actions workflow **43438108859** completed successfully: [run details](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43438108859).
+- Dedicated GitHub Actions workflow **43438810070** completed successfully: [run details](https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43438810070).
 - 12/12 unit tests passed.
 - Two full strict-prior runs produced byte-identical report, ledger, manifest and checkpoint.
 - Six future-suffix mutation checks passed.
