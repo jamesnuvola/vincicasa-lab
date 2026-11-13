@@ -9,14 +9,6 @@ on:
       - tests/test_sonar_q141_d3_effective_rank_family_state.py
       - reports/sequence_agent/q141_d3_effective_rank_family_state_preregistration_2026-11-13.md
       - .github/workflows/q141-d3-effective-rank-family-state.yml
-  pull_request:
-    branches:
-      - research/q141-formula-universe-behaviour-mapping-20261112
-    paths:
-      - scripts/sonar_q141_d3_effective_rank_family_state.py
-      - tests/test_sonar_q141_d3_effective_rank_family_state.py
-      - reports/sequence_agent/q141_d3_effective_rank_family_state_preregistration_2026-11-13.md
-      - .github/workflows/q141-d3-effective-rank-family-state.yml
   workflow_dispatch:
 
 permissions:
@@ -24,7 +16,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: q141-d3-effective-rank-family-state-${{ github.event_name }}
+  group: q141-d3-effective-rank-family-state
   cancel-in-progress: false
 
 jobs:
@@ -90,16 +82,14 @@ jobs:
             cmp "/tmp/q141-d3-run1/$f" "/tmp/q141-d3-run2/$f"
           done
 
-      - name: Stage deterministic D3 outputs for artifact and persistence
-        run: |
-          set -euo pipefail
-          cp /tmp/q141-d3-run1/q141_d3_effective_rank_family_state_* reports/sequence_agent/
-
       - name: Persist deterministic D3 outputs
         env:
-          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+          BRANCH_NAME: ${{ github.ref_name }}
         run: |
           set -euo pipefail
+          git fetch origin "${BRANCH_NAME}"
+          git reset --hard "origin/${BRANCH_NAME}"
+          cp /tmp/q141-d3-run1/q141_d3_effective_rank_family_state_* reports/sequence_agent/
           git config user.name "sonar-q141-d3"
           git config user.email "actions@users.noreply.github.com"
           git add reports/sequence_agent/q141_d3_effective_rank_family_state_report_2026-11-13.json
