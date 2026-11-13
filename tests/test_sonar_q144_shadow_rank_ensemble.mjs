@@ -34,6 +34,10 @@ assert.equal(validateFreezeRow({
   frozen_at: "2026-10-25T23:30:00+01:00",
   history_cutoff: "2026-10-25"
 }, "2026-10-26", archiveDates), true);
+assert.equal(validateFreezeRow({
+  frozen_at: "2026-10-26T09:00:54+01:00",
+  history_cutoff: "2026-10-25"
+}, "2026-10-26", archiveDates), true);
 assert.throws(() => validateFreezeRow({
   frozen_at: "2026-10-25T19:00:00+01:00",
   history_cutoff: "2026-10-25"
@@ -61,4 +65,4 @@ assert.equal(adjusted.a, 0.03);
 assert.equal(adjusted.b, 0.08);
 assert.equal(adjusted.c, 0.2);
 
-process.stdout.write("Q144 unit tests passed: 11 assertions\n");
+process.stdout.write("Q144 unit tests passed\n");
