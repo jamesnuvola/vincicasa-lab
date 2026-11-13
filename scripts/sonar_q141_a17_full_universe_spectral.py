@@ -367,7 +367,7 @@ def main():
     for name, sl in ranges.items():
         split_captures[name] = all_captures[sl.start - WARMUP:sl.stop - WARMUP]
     null = circular_shift_surrogates(
-        z - np.median(z, axis=1, keepdims=True) * 0.0,
+        z,
         ranges,
         NULL_REPLICATES,
         SEED_NULL,
