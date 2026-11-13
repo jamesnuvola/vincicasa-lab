@@ -79,10 +79,9 @@ export function pairInclusionProbabilities(weights) {
   return { pairs, mass };
 }
 
-export function scorePairModel(top20, draw) {
+export function scorePairWeights(weights, draw) {
   if (draw.length !== 5 || new Set(draw).size !== 5 ||
       draw.some(n => !Number.isInteger(n) || n < 1 || n > 40)) throw new Error("Invalid 5-of-40 draw");
-  const weights = rankWeights(top20, 1);
   const { pairs, mass } = pairInclusionProbabilities(weights);
   const selected = new Set(draw);
   const uniform = 10 / 780;
@@ -103,6 +102,10 @@ export function scorePairModel(top20, draw) {
     brierGain: (uniformBrier - modelBrier) / 780,
     compositeLogGain: (modelLog - uniformLog) / 780
   };
+}
+
+export function scorePairModel(top20, draw) {
+  return scorePairWeights(rankWeights(top20, 1), draw);
 }
 
 function validateShadowRows(shadowRows, archiveMap) {
