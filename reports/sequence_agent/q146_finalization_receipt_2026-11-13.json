@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q146",
+  "status": "Q146_DEDICATED_CI_PASSED_REMOTE_READBACK_VERIFIED",
+  "branch": "research/q146-pair-inclusion-calibration-20261113",
+  "verified_head_sha": "bebaf9d9fd9e670224378a0a94ef6313248e74b7",
+  "dedicated_workflow_run_id": 43496118108,
+  "dedicated_workflow_url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43496118108",
+  "tests": {
+    "passed": 8,
+    "total": 8
+  },
+  "deterministic_verification": {
+    "status": "Q146_VERIFY_OK",
+    "historical_targets": 31,
+    "historical_blind_targets": 7,
+    "strict_prior_shadow_rows": 1364,
+    "pending_2026_11_13_rows": 43,
+    "max_pair_mass_abs_error": 1.24e-13,
+    "generated_artifacts_checked": 5
+  },
+  "remote_manifest_readback": {
+    "matched": 8,
+    "total": 8,
+    "all_git_blob_sha1_equal": true
+  },
+  "recovery": {
+    "failed_runs": [
+      43486062000,
+      43495482240,
+      43495658931,
+      43495826858,
+      43495826858
+    ],
+    "root_cause": "The persisted Markdown report differed from the deterministic renderer in a phrase ('were inspected' versus 'had been inspected'); the manifest consequently carried a stale Markdown Git blob SHA. The renderer was normalized to consume the serialized report JSON, first-difference diagnostics were added, and the Markdown plus manifest were regenerated.",
+    "fix_commits": [
+      "3b743e90458156a6d5382fec6bdf17aac1e953cd",
+      "f8ee6631d01c6b4cbdf709524b241b524daec0b5",
+      "d5834f637c674c920388bbad929d1a060451b207"
+    ]
+  },
+  "governance": {
+    "q145_freeze_unchanged": true,
+    "canonical_archive_unchanged": true,
+    "no_engine_promotion": true,
+    "no_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "next_action": "Keep Q145 freeze pending until official five-number outcomes for 2026-11-11 and 2026-11-12 are exposed by a primary source; continue Q60 only with source-clean paired cases."
+}
