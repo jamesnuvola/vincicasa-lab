@@ -263,7 +263,7 @@ export function buildQ144Outputs(archiveCsv, shadowCsv, preregText) {
 
   const ledger = [];
   let cutoffChecks = 0, freezeChecks = 0, reconciledRows = 0, staleCutoffRows = 0, freshCutoffRows = 0;
-  const multipleFreezeTimestampDates = [];\n  const multipleFreezeTimestampDates = [];
+  const multipleFreezeTimestampDates = [];
   for (const date of completedDates) {
     const rows = grouped.get(date);
     const ruleRows = rows.filter(r => ["family", "pair", "chain"].includes(r.config_type));
