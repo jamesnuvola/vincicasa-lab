@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q146",
+  "title": "Pair-inclusion calibration audit of Q145 rank-to-subset PMFs",
+  "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
+  "method": {
+    "pair_probability": "P(i,j included)=w_i*w_j*e3(w excluding i,j)/e5(w)",
+    "rank_utility": "u(r)=(21-r)/20 for ranks 1..20; zero outside Top20",
+    "weights": "w_i=exp(u_i), temperature=1 (unchanged from Q145)",
+    "uniform_pair_probability": 0.01282051282051282,
+    "pair_count": 780,
+    "primary_endpoint": "target-level mean pairwise Brier gain vs uniform",
+    "secondary_endpoint": "target-level mean pairwise Bernoulli composite log-score gain vs uniform; not a joint subset likelihood"
+  },
+  "source_blob_shas": {
+    "archive": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "shadow": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "q144Ledger": "c14e13b0c8e7f7a8c20ae40c9af56101f5209762",
+    "q144Freeze": "df20af45433ae8693b90e06124d31df0ad345dfe",
+    "q145Report": "8ab96c407df9ed2bf256cb01c5a2e9282e6c3412",
+    "q145Checkpoint": "e961e75bda0f7c28342f0f9cd19f8fc8e68afdba",
+    "q145Script": "b0515ae21faa403991994d9535fc82b707a8b9ff",
+    "q145Prereg": "6bb8725ccb57ffad5f803352252ba94c42b29b70"
+  },
+  "integrity": {
+    "archive_draws": 3406,
+    "shadow_rows": 1364,
+    "strict_prior_rows": 1364,
+    "pending_2026_11_13_rows": 43,
+    "shadow_target_groups": 32,
+    "q144_targets": 31,
+    "all_q144_draws_reconciled": true,
+    "all_top20_hit_counts_recomputed": true,
+    "pair_mass_max_abs_error": 1.24e-13,
+    "observed_pairs_per_draw": 10,
+    "upstream_q145_verifier": "Q145_ARTIFACTS_REPLAYABLE_DEDICATED_CI_PASSED (run 43482722784)"
+  },
+  "sample": {
+    "targets": 31,
+    "discovery": 18,
+    "validation": 6,
+    "historical_blind_oos": 7,
+    "app_targets": 19
+  },
+  "splits": {
+    "discovery": {
+      "n": 18,
+      "borda": {
+        "n": 18,
+        "mean_pair_brier_gain": -0.000042028036,
+        "mean_pair_composite_log_gain": -0.001176173263,
+        "mean_pair_mass": 10
+      },
+      "inclusion": {
+        "n": 18,
+        "mean_pair_brier_gain": -0.000023380037,
+        "mean_pair_composite_log_gain": -0.000560656878,
+        "mean_pair_mass": 10
+      },
+      "app": {
+        "n": 6,
+        "mean_pair_brier_gain": 0.000055342724,
+        "mean_pair_composite_log_gain": 0.001774357332,
+        "mean_pair_mass": 10
+      }
+    },
+    "validation": {
+      "n": 6,
+      "borda": {
+        "n": 6,
+        "mean_pair_brier_gain": -0.000068568667,
+        "mean_pair_composite_log_gain": -0.002133077927,
+        "mean_pair_mass": 10
+      },
+      "inclusion": {
+        "n": 6,
+        "mean_pair_brier_gain": -0.000055463499,
+        "mean_pair_composite_log_gain": -0.001573916651,
+        "mean_pair_mass": 10
+      },
+      "app": {
+        "n": 6,
+        "mean_pair_brier_gain": -0.000044889792,
+        "mean_pair_composite_log_gain": -0.001263925821,
+        "mean_pair_mass": 10
+      }
+    },
+    "blind_oos": {
+      "n": 7,
+      "borda": {
+        "n": 7,
+        "mean_pair_brier_gain": -0.000021751581,
+        "mean_pair_composite_log_gain": -0.000494948301,
+        "mean_pair_mass": 10
+      },
+      "inclusion": {
+        "n": 7,
+        "mean_pair_brier_gain": -0.000004302706,
+        "mean_pair_composite_log_gain": 0.000166724144,
+        "mean_pair_mass": 10
+      },
+      "app": {
+        "n": 7,
+        "mean_pair_brier_gain": -0.000039743076,
+        "mean_pair_composite_log_gain": -0.001317332727,
+        "mean_pair_mass": 10
+      }
+    }
+  },
+  "blind_inference": {
+    "raw_p_values": {
+      "borda_vs_uniform": 0.5,
+      "inclusion_vs_uniform": 0.953125,
+      "app_vs_uniform": 0.28125,
+      "borda_vs_inclusion": 0.28125,
+      "borda_vs_app": 0.390625
+    },
+    "holm_adjusted_p_values": {
+      "app_vs_uniform": 1,
+      "borda_vs_inclusion": 1,
+      "borda_vs_app": 1,
+      "borda_vs_uniform": 1,
+      "inclusion_vs_uniform": 1
+    },
+    "bootstrap_ci_95": {
+      "borda_vs_uniform": [
+        -0.000073389157,
+        0.000023733006
+      ],
+      "inclusion_vs_uniform": [
+        -0.000061194663,
+        0.000046396917
+      ],
+      "app_vs_uniform": [
+        -0.000104832737,
+        0.000013375647
+      ],
+      "borda_vs_inclusion": [
+        -0.00003334854,
+        -0.000005023717
+      ],
+      "borda_vs_app": [
+        -0.000005900006,
+        0.000039338135
+      ]
+    },
+    "bootstrap_replicates": 20000,
+    "circular_block_length": 2,
+    "signflip_assignments": 128,
+    "signflip_assumption": "symmetry/exchangeability of target-level paired score differences",
+    "multiplicity_family_size": 5,
+    "caveat": "Historical inference is exploratory, not confirmatory: Q145's PMF transformation was specified after Q144 outcomes were inspected. Blind OOS contains only seven targets."
+  },
+  "decision": "PAIRWISE_CALIBRATION_NOT_ESTABLISHED; KEEP_Q145_FROZEN; HISTORICAL_RESULTS_EXPLORATORY"
+}
