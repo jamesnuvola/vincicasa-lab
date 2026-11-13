@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q146_CHECKPOINT_RECONCILIATION",
+  "status": "Q146_FINALIZATION_RECEIPT_CONFIRMED_APPEND_ONLY",
+  "reconciled_at_utc": "2026-11-13T20:55:00Z",
+  "branch": "research/q146-pair-inclusion-calibration-20261113",
+  "verified_current_branch_head_before_this_note": "9717e91f108f5f17e987549288415609f28d170b",
+  "original_checkpoint": {
+    "path": "reports/sequence_agent/q146_pair_inclusion_calibration_checkpoint_2026-11-13.json",
+    "blob_sha1": "3bfbc3e17f4eba0d4ebe62cfca59ec7125af6851",
+    "recorded_status": "Q146_COMPUTED_REPLAYABLE_PENDING_DEDICATED_CI",
+    "disposition": "Preserved unchanged; its status was stale relative to the later finalization receipt."
+  },
+  "finalization_receipt": {
+    "path": "reports/sequence_agent/q146_finalization_receipt_2026-11-13.json",
+    "blob_sha1": "fe6a0ef6c0a77639713a4aa379d8fd85c9b3b5b2",
+    "status": "Q146_DEDICATED_CI_PASSED_REMOTE_READBACK_VERIFIED",
+    "dedicated_workflow_run_id": 43496118108,
+    "verified_head_sha": "bebaf9d9fd9e670224378a0a94ef6313248e74b7",
+    "tests": "8/8"
+  },
+  "current_branch_manifest_readback": {
+    "manifest_path": "reports/sequence_agent/q146_pair_inclusion_calibration_manifest_2026-11-13.json",
+    "manifest_blob_sha1": "dedec730ce586ff0302a9c7db09dbb147bd7f1fd",
+    "checked_artifacts": 8,
+    "matched_artifacts": 8,
+    "all_git_blob_sha1_equal": true,
+    "current_branch_head": "9717e91f108f5f17e987549288415609f28d170b"
+  },
+  "related_repository_ci": {
+    "main_workflow_run_id": 43496475654,
+    "status": "success"
+  },
+  "q60_state": {
+    "source_clean_paired_targets": 25,
+    "minimum_required": 200,
+    "promotion_allowed": false
+  },
+  "governance": {
+    "q145_freeze_unchanged": true,
+    "canonical_archive_unchanged": true,
+    "protected_prs_6_7_8_untouched": true,
+    "no_engine_promotion": true,
+    "no_merge": true,
+    "no_rebase": true
+  },
+  "next_action": "Keep Q145 frozen until the official 2026-11-13 result appears in the primary archive; continue Q60 append-only toward 200 paired prospective targets."
+}
