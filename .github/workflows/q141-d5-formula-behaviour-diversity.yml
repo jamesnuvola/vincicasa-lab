@@ -47,6 +47,10 @@ jobs:
           target=pathlib.Path('scripts/sonar_q141_d5_formula_behaviour_diversity.py')
           target.write_bytes(source)
           code=target.read_text()
+          oldhash="681152ddfaa0217889f0a1623f0ce1dc969ffabdd4901869cb736b58185ec49"
+          newhash="681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49"
+          if oldhash not in code: raise SystemExit('expected Q90 matrix digest not found in bundled source')
+          code=code.replace(oldhash,newhash)
           old="def ridge_predict(model,x):\n    mean,scale,coef=model; z=(np.asarray(x,float)-mean)/scale\n    return np.clip(np.column_stack([np.ones(len(z)),z])@coef,0,1)"
           new="def ridge_predict(model,x):\n    mean,scale,coef=model; z=(np.asarray(x,float)-mean)/scale\n    return np.column_stack([np.ones(len(z)),z])@coef"
           if old not in code: raise SystemExit('expected residual-clipping source block not found')
@@ -96,7 +100,7 @@ jobs:
           These features are hypothesized to reduce next-target Q7 meta-quality MAE by at least +0.005 beyond the frozen Q141-C5 Q7+Q80+Q90 M2 baseline. The target is mean percentile across 1,023 quintet-scoring formulas, not a winning-number forecast.
 
           ## Frozen sample and scoring
-          Q90 artifact 13627507532, ZIP SHA-256 12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077; matrix 3,351×40×59, SHA-256 681152ddfaa0217889f0a1623f0ce1dc969ffabdd4901869cb736b58185ec49; catalogue 330,429 formulas, SHA-256 a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586. Sample is the lowest SHA-256 of Q141-B7| + formula ID within each family; expected ordered ID digest 3ee52f0f270eafb6a8c54c7a7166fe55f2c7730a59ae700ea50b92be6a5412ae. Linear score is selected-feature mean; I4 adds 0.25 times candidate-wise z-score of the selected feature-pair product; G4 adds 0.25 times the registered gate indicator. Round to 12 decimals; ties by lower number. Q90's 20 selected features are inherited from its Discovery selection over 59 available features.
+          Q90 artifact 13627507532, ZIP SHA-256 12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077; matrix 3,351×40×59, SHA-256 681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49; catalogue 330,429 formulas, SHA-256 a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586. Sample is the lowest SHA-256 of Q141-B7| + formula ID within each family; expected ordered ID digest 3ee52f0f270eafb6a8c54c7a7166fe55f2c7730a59ae700ea50b92be6a5412ae. Linear score is selected-feature mean; I4 adds 0.25 times candidate-wise z-score of the selected feature-pair product; G4 adds 0.25 times the registered gate indicator. Round to 12 decimals; ties by lower number. Q90's 20 selected features are inherited from its Discovery selection over 59 available features.
 
           ## Sources and alignment
           Q7 ledger: 3,286 targets, archive through 2026-10-24. Q90 family ledger: 3,351 targets, archive through 2026-11-07. C5 ledger: 3,186 persisted M2 predictions. Join on prior_draws, target date, cutoff, actual quintet and split. Recompute all seven Q90 family Top-5 shares for all 3,286 common targets and require max error ≤1e-12. Verify every C5 baseline row against Q7 outcomes and source report; recompute C5 M2 split MAE/RMSE/mean error to 1e-12.
