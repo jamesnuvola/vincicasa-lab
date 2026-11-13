@@ -31,7 +31,7 @@
 | borda_vs_inclusion | 0.28125000 | 1.00000000 | [-0.00003335, -0.00000502] |
 | borda_vs_app | 0.39062500 | 1.00000000 | [-0.00000590, 0.00003934] |
 
-The historical split is exploratory, not a virgin prospective test: Q145's rank-to-PMF transformation was specified after Q144 outcomes were inspected. The blind segment contains only seven targets. Sign-flip inference assumes symmetry/exchangeability; Holm covers the five registered Q146 endpoints, not all SONAR experiments.
+The historical split is exploratory, not a virgin prospective test: Q145's rank-to-PMF transformation was specified after Q144 outcomes had been inspected. The blind segment contains only seven targets. Sign-flip inference assumes symmetry/exchangeability; Holm covers the five registered Q146 endpoints, not all SONAR experiments.
 
 ## Integrity
 - 3,406 canonical archive rows; 1,364 shadow rows checked for strict-prior cutoffs and pre-draw timestamps; 43 pending 2026-11-13 rows remain outcome-free.
