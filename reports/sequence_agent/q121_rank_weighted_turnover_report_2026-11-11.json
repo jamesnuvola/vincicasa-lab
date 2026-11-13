@@ -1,0 +1,425 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q121",
+  "title": "Rank-weighted forecast turnover conditional on Top20 set overlap",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_INCREMENTAL_RANK_WEIGHTED_TURNOVER_LIFT_DEMONSTRATED",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "app_data_blob_sha1": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "scorer_path": "src/VinciCasaLab.jsx",
+    "scorer_blob_sha1": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "preregistration": {
+    "path": "reports/sequence_agent/q121_rank_weighted_turnover_protocol_2026-11-11.json",
+    "commit": "14abdc13e3b3958a15ee7d093db6948e20a217df",
+    "commit_time_utc": "2026-11-11T13:49:00Z"
+  },
+  "hypothesis": "Among successive prior-only APP SONAR Top20 forecasts with the same set-overlap state, the mean rank displacement of retained numbers may contain incremental information about the next target's Top20 hit-count distribution.",
+  "method": {
+    "M0": "exact Hypergeometric(40,20,5)",
+    "M1": "Q117 overlap-only prequential model, shrinkage 200",
+    "M2": "hierarchical conditional rank-displacement model, shrinkage 200",
+    "overlap_states": {
+      "LOW": "m<=15",
+      "MID": "16<=m<=17",
+      "HIGH": "m>=18"
+    },
+    "rank_states": {
+      "STABLE": "d<=0.25",
+      "MODERATE": "0.25<d<=0.50",
+      "VOLATILE": "d>0.50"
+    },
+    "selection": "No parameter tuning; thresholds and shrinkage fixed in preregistration.",
+    "update_order": "Score first, then update prior-only state counts.",
+    "metrics": [
+      "multiclass Brier",
+      "realized hit-count log-loss"
+    ]
+  },
+  "walk_forward": {
+    "warmup": 201,
+    "targets": 3203,
+    "first_target": "2018-02-03",
+    "last_target": "2026-11-10",
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 640
+    },
+    "strict_prior": true
+  },
+  "segments": {
+    "discovery": {
+      "targets": 1922,
+      "first_target": "2018-02-03",
+      "last_target": "2023-05-09",
+      "mean_top20_hits": 2.521852237253,
+      "mean_overlap": 17.732570239334,
+      "mean_rank_displacement": 0.143309228429,
+      "hit_distribution": [
+        56,
+        262,
+        607,
+        668,
+        278,
+        51
+      ],
+      "overlap_state_counts": {
+        "LOW": 35,
+        "MID": 689,
+        "HIGH": 1198
+      },
+      "rank_state_counts": {
+        "STABLE": 1913,
+        "MODERATE": 9,
+        "VOLATILE": 0
+      },
+      "joint_state_support": {
+        "MID|STABLE": 688,
+        "HIGH|STABLE": 1191,
+        "LOW|STABLE": 34,
+        "HIGH|MODERATE": 7,
+        "MID|MODERATE": 1,
+        "LOW|MODERATE": 1
+      },
+      "mean_brier_m0": 0.739092157983,
+      "mean_brier_m1": 0.739364972521,
+      "mean_brier_m2": 0.739932892956,
+      "mean_logloss_m0": 1.483961543688,
+      "mean_logloss_m1": 1.485004293429,
+      "mean_logloss_m2": 1.487047503648,
+      "brier_gain_m2_vs_m1": -0.000567920435,
+      "logloss_gain_m2_vs_m1": -0.002043210219,
+      "brier_gain_m2_vs_m0": -0.000840734973,
+      "logloss_gain_m2_vs_m0": -0.00308595996
+    },
+    "validation": {
+      "targets": 641,
+      "first_target": "2023-05-10",
+      "last_target": "2025-02-08",
+      "mean_top20_hits": 2.441497659906,
+      "mean_overlap": 17.739469578783,
+      "mean_rank_displacement": 0.139742494512,
+      "hit_distribution": [
+        24,
+        84,
+        222,
+        218,
+        82,
+        11
+      ],
+      "overlap_state_counts": {
+        "LOW": 13,
+        "MID": 229,
+        "HIGH": 399
+      },
+      "rank_state_counts": {
+        "STABLE": 638,
+        "MODERATE": 3,
+        "VOLATILE": 0
+      },
+      "joint_state_support": {
+        "MID|STABLE": 227,
+        "HIGH|STABLE": 398,
+        "MID|MODERATE": 2,
+        "LOW|STABLE": 13,
+        "HIGH|MODERATE": 1
+      },
+      "mean_brier_m0": 0.730439341752,
+      "mean_brier_m1": 0.731197486772,
+      "mean_brier_m2": 0.731355929282,
+      "mean_logloss_m0": 1.463456934429,
+      "mean_logloss_m1": 1.463345467982,
+      "mean_logloss_m2": 1.46394002128,
+      "brier_gain_m2_vs_m1": -0.000158442511,
+      "logloss_gain_m2_vs_m1": -0.000594553298,
+      "brier_gain_m2_vs_m0": -0.000916587531,
+      "logloss_gain_m2_vs_m0": -0.000483086851
+    },
+    "blind_oos": {
+      "targets": 640,
+      "first_target": "2025-02-09",
+      "last_target": "2026-11-10",
+      "mean_top20_hits": 2.521875,
+      "mean_overlap": 17.8546875,
+      "mean_rank_displacement": 0.129351622473,
+      "hit_distribution": [
+        16,
+        89,
+        208,
+        218,
+        90,
+        19
+      ],
+      "overlap_state_counts": {
+        "LOW": 5,
+        "MID": 201,
+        "HIGH": 434
+      },
+      "rank_state_counts": {
+        "STABLE": 640,
+        "MODERATE": 0,
+        "VOLATILE": 0
+      },
+      "joint_state_support": {
+        "HIGH|STABLE": 434,
+        "MID|STABLE": 201,
+        "LOW|STABLE": 5
+      },
+      "mean_brier_m0": 0.738028910537,
+      "mean_brier_m1": 0.737696859637,
+      "mean_brier_m2": 0.7377291559,
+      "mean_logloss_m0": 1.480346213778,
+      "mean_logloss_m1": 1.479466477697,
+      "mean_logloss_m2": 1.47965708028,
+      "brier_gain_m2_vs_m1": -0.000032296263,
+      "logloss_gain_m2_vs_m1": -0.000190602583,
+      "brier_gain_m2_vs_m0": 0.000299754637,
+      "logloss_gain_m2_vs_m0": 0.000689133498
+    }
+  },
+  "blind_inference": {
+    "family_size": 4,
+    "adjustment": "Holm",
+    "tests": [
+      {
+        "endpoint": "M2_vs_M1_Brier",
+        "metric": "multiclass_brier",
+        "baseline": "M1_overlap_only",
+        "seed": 121001,
+        "inference": {
+          "n": 640,
+          "mean_gain": -0.000032296263,
+          "block_length": 20,
+          "block_count": 32,
+          "sign_flip_replicates": 50000,
+          "sign_flip_extreme": 28763,
+          "p_one_sided_improvement": 0.57526849463,
+          "bootstrap_replicates": 10000,
+          "bootstrap_ci95": [
+            -0.000334320324,
+            0.000286913197
+          ],
+          "p_holm": 1
+        }
+      },
+      {
+        "endpoint": "M2_vs_M1_LogLoss",
+        "metric": "realized_hit_count_logloss",
+        "baseline": "M1_overlap_only",
+        "seed": 121002,
+        "inference": {
+          "n": 640,
+          "mean_gain": -0.000190602583,
+          "block_length": 20,
+          "block_count": 32,
+          "sign_flip_replicates": 50000,
+          "sign_flip_extreme": 32649,
+          "p_one_sided_improvement": 0.652986940261,
+          "bootstrap_replicates": 10000,
+          "bootstrap_ci95": [
+            -0.001019731896,
+            0.000649371661
+          ],
+          "p_holm": 1
+        }
+      },
+      {
+        "endpoint": "M2_vs_M0_Brier",
+        "metric": "multiclass_brier",
+        "baseline": "M0_exact_hypergeometric",
+        "seed": 121003,
+        "inference": {
+          "n": 640,
+          "mean_gain": 0.000299754637,
+          "block_length": 20,
+          "block_count": 32,
+          "sign_flip_replicates": 50000,
+          "sign_flip_extreme": 20416,
+          "p_one_sided_improvement": 0.408331833363,
+          "bootstrap_replicates": 10000,
+          "bootstrap_ci95": [
+            -0.002015081543,
+            0.002581640083
+          ],
+          "p_holm": 1
+        }
+      },
+      {
+        "endpoint": "M2_vs_M0_LogLoss",
+        "metric": "realized_hit_count_logloss",
+        "baseline": "M0_exact_hypergeometric",
+        "seed": 121004,
+        "inference": {
+          "n": 640,
+          "mean_gain": 0.000689133498,
+          "block_length": 20,
+          "block_count": 32,
+          "sign_flip_replicates": 50000,
+          "sign_flip_extreme": 21726,
+          "p_one_sided_improvement": 0.434531309374,
+          "bootstrap_replicates": 10000,
+          "bootstrap_ci95": [
+            -0.005817088282,
+            0.007372231177
+          ],
+          "p_holm": 1
+        }
+      }
+    ]
+  },
+  "support": {
+    "overlap_states": {
+      "LOW": {
+        "n": 53,
+        "c": [
+          1,
+          8,
+          12,
+          21,
+          10,
+          1
+        ]
+      },
+      "MID": {
+        "n": 1119,
+        "c": [
+          40,
+          169,
+          354,
+          387,
+          136,
+          33
+        ]
+      },
+      "HIGH": {
+        "n": 2031,
+        "c": [
+          55,
+          258,
+          671,
+          696,
+          304,
+          47
+        ]
+      }
+    },
+    "joint_states": {
+      "MID|STABLE": {
+        "n": 1116,
+        "c": [
+          40,
+          169,
+          352,
+          386,
+          136,
+          33
+        ]
+      },
+      "HIGH|STABLE": {
+        "n": 2023,
+        "c": [
+          54,
+          258,
+          669,
+          692,
+          303,
+          47
+        ]
+      },
+      "LOW|STABLE": {
+        "n": 52,
+        "c": [
+          1,
+          8,
+          11,
+          21,
+          10,
+          1
+        ]
+      },
+      "HIGH|MODERATE": {
+        "n": 8,
+        "c": [
+          1,
+          0,
+          2,
+          4,
+          1,
+          0
+        ]
+      },
+      "MID|MODERATE": {
+        "n": 3,
+        "c": [
+          0,
+          0,
+          2,
+          1,
+          0,
+          0
+        ]
+      },
+      "LOW|MODERATE": {
+        "n": 1,
+        "c": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "max_probability_normalization_error": 0
+  },
+  "replay": {
+    "identical": true,
+    "ledger_rows": 3203,
+    "future_suffix_invariance": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "passed_future_tests": 9,
+    "total_future_tests": 9
+  },
+  "decision_rule": "Retain M2 only as an exploratory diagnostic if it improves both primary loss metrics on Blind OOS and the Holm-adjusted one-sided tests support improvement; otherwise record a null/negative result. No production promotion.",
+  "recovery_history": [
+    {
+      "run_id": 43031726096,
+      "status": "FAILED_RECOVERED",
+      "root_cause": "ReferenceError: maxNormError was referenced outside the run result object.",
+      "correction": "Use a.maxNormError; committed in runner revision becc75e17baf3690d9ecf4304942d1c44655b5d2."
+    },
+    {
+      "run_id": 43031859358,
+      "status": "FAILED_RECOVERED",
+      "root_cause": "Manifest generation attempted to read output files before --write had created them.",
+      "correction": "Build manifest hashes from the in-memory expected output map; committed in runner revision 71b2a8e537e27c371255b10022267696a4dde2f3."
+    }
+  ],
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout after the extensive prior SONAR experiment family.",
+    "M1 reproduces the Q117 overlap-state model; Q121 tests only whether rank displacement adds information conditional on overlap.",
+    "Fixed displacement thresholds are preregistered and not optimized; sparse joint states may be heavily shrunk.",
+    "Holm covers the four Q121 primary endpoints, not the full Q00-Q121 research family.",
+    "The model predicts Top20 hit-count probabilities only; it does not establish predictability of a specific five-number draw.",
+    "No production scorer, Q60 record or existing forecast freeze is modified."
+  ],
+  "next_action": "Wait for official publication of contest 315; evaluate existing frozen forecasts without retuning; continue Q60 append-only and do not reconstruct missing freezes."
+}
