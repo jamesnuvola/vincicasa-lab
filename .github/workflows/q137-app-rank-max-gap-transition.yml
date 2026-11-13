@@ -1,0 +1,38 @@
+name: Q137 APP rank-space maximum-gap transition replay
+
+on:
+  push:
+    branches:
+      - research/q137-app-rank-max-gap-transition-20261112
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "reports/sequence_agent/q137_*"
+      - "scripts/sonar_q137_app_rank_max_gap_transition.mjs"
+      - ".github/workflows/q137-app-rank-max-gap-transition.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Replay exact combinatorial max-gap transition experiment
+        run: node scripts/sonar_q137_app_rank_max_gap_transition.mjs
+      - name: Require byte-identical persisted outputs
+        run: |
+          git diff --exit-code -- reports/sequence_agent/q137_app_rank_max_gap_transition_report_2026-11-12.json
+          git diff --exit-code -- reports/sequence_agent/q137_app_rank_max_gap_transition_target_ledger_2026-11-12.csv
+          git diff --exit-code -- reports/sequence_agent/q137_app_rank_max_gap_transition_validation_2026-11-12.json
+          git diff --exit-code -- reports/sequence_agent/q137_app_rank_max_gap_transition_checkpoint_2026-11-12.md
+          git diff --exit-code -- reports/sequence_agent/q137_app_rank_max_gap_transition_persistence_manifest_2026-11-12.json
