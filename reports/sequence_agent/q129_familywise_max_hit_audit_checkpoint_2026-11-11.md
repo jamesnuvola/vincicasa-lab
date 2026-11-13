@@ -1,0 +1,49 @@
+# Q129 checkpoint — family-wise maximum Top20 hit audit
+
+- Protocol committed before final calculation: e8f94633ddbf4c08e36d0f331d47a068269d5f2d; protocol blob 07d88d9aa62909b180c282d215bd3036617a311a.
+- Base main: 06e9e470054a86a0b710657db35e0c2259ef6b0a.
+- Source ledger blob: 553e08a3c7a0aabd092d3977b75bf959e90b8b3b; 134,568 rows; 3,204 targets; 42 fixed rule configurations per target.
+- Statistic: maximum Top20 overlap across all 42 rule configurations for each target.
+- Conditional null: 1,000 independent uniform 5-of-40 draws per target; seed 0x01292027.
+- Discovery / Validation / historical Blind OOS: 1,922 / 641 / 641 targets.
+- Blind OOS observed mean max: 4.24804992; null mean: 4.26743370; gain: -0.01938378; one-sided p: 0.813187.
+- Paired circular moving-block bootstrap: 10,000 replicates, block 20; 95% CI [-0.06154134, 0.02171451].
+- Decision: NO_FAMILYWISE_MAX_HIT_LIFT_DEMONSTRATED.
+- 11/11 observation provisional only: secondary-source consensus 1, 21, 22, 27, 29; official archive/bulletin has not exposed the combination. Exact family p(max Top20 5/5) 0.35916737. No canonical archive or Q60 update.
+- Validation: 12/12 checks; 134,568 strict-prior rows; 658,008 exact 5-of-40 combinations.
+- Limitations: 42-rule family selected after archive; historical Blind OOS not virgin; broader Q00-Q128 multiplicity not corrected; conditional randomization assumes independent uniform draws.
+- No scorer change, freeze mutation, Q60 increment, engine promotion, or automatic merge.
+- Next: await official contest 315 combination, then append-only score existing 43 global and one positional freeze.
+
+## Replay recovery — 2026-11-12
+
+- Exact-head replay runs 43117898470 (push) and 43117940502 (pull request) failed at the source-blob guard before statistical recomputation.
+- Root cause confirmed by comparing the protocol value with the base commit Git tree: `protocol.source.git_blob_sha` contained 39 hexadecimal characters; the actual Git blob SHA contains 40 and ends in `...b3b`. The original protocol pin omitted its final `b`. The first Git-tree-based correction exposed this truncated pin.
+- Correction: the protocol source pin now contains the verified 40-character Git blob SHA. The runner checks `git rev-parse HEAD:reports/sequence_agent/historical_rule_ledger.csv` against that pin and requires `git diff --quiet HEAD -- <source path>` before parsing. All row-level strict-prior, count, actual-combination, and hit-count checks remain active.
+- Provenance: original design/preregistration commit `e8f94633ddbf4c08e36d0f331d47a068269d5f2d` is preserved. The post-result correction is limited to the source blob identifier and its provenance note; hypothesis, split, seeds, endpoints, null, bootstrap, and statistical results are unchanged.
+- No protocol, source ledger, statistical result, target freeze, canonical archive, Q60 record, or production scorer was changed.
+- The updated runner blob is `cfba32f0005eee8f62368587f887137e983845dc` (9,735 UTF-8 bytes).
+- Fresh exact-head replay is pending.
+
+## Contest 315 source refresh — 2026-11-12
+
+- Two current secondary pages independently display contest 315 (11/11/2026) as **1, 21, 22, 27, 29**: estrazionedellotto.it latest-results page and the dedicated Estrazioni di Oggi contest article.
+- Sisal's official latest-extraction page confirms contest 315 and the prize profile (0 / 2 / 178 / 1,947), but its extracted page text still does not expose the five numbers. The official VinciCasa archive still labels contest 315 pending and the official bulletin index still shows 10/11 as latest.
+- The result therefore remains `PROVISIONAL_SECONDARY_SOURCE_CORROBORATED`; the shadow scores are unchanged (42-rule Top20 maximum 5; APP Top20 3; positional Top20 2). Do not append to canonical archive or increment Q60.
+- Updated provisional observation blob: `02011d56d326a9a67cb8a22ff3db55f46e13c826`.
+
+## Replay performance recovery — 2026-11-12
+
+- The first corrected exact-head replay reached the checkout stage but spent the run time fetching the repository's full history because the Q129 workflow used `fetch-depth: 0`.
+- The runner only needs the current checkout tree for `git rev-parse HEAD:<source path>` and a clean `git diff HEAD -- <source path>`; it does not traverse history. The workflow now uses `fetch-depth: 1`, preserving the exact current commit/tree checks while avoiding an unnecessary full-history fetch.
+- No statistical computation, source data, protocol, or forecast was changed. Fresh exact-head push and pull-request replays are pending.
+
+- Corrected protocol blob: `3db249baec71921ff78591a88b95278f31de118f`; corrected report blob: `535c8a55839dff5886beec8742a54b64a617ad13`.
+
+## Replay recovery — manifest helper name — 2026-11-12
+
+- After correcting the truncated 39-character source pin, the Node 20 replay advanced through the full historical computation and failed at the final manifest loop with `ReferenceError: gitBlobSha is not defined`.
+- The runner's existing Git-blob hashing helper is named `sha`; the manifest loop called `gitBlobSha`. This was a simple helper-name mismatch, previously masked by the earlier source-pin failure.
+- Correction: manifest verification now calls the existing `sha(value)` helper. No protocol design, statistical result, ledger row, forecast freeze, canonical archive, Q60 state, or production scorer was changed.
+- Updated runner blob: `0a9009ed190bc29e45d741915f62bbc77966ba4d`.
+- A fresh exact-head Node 20 replay is pending.

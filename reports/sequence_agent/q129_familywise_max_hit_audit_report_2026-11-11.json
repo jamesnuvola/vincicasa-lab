@@ -1,0 +1,294 @@
+{
+  "experiment": "Q129",
+  "title": "Family-wise maximum Top20 hit audit across 42 fixed rule configurations",
+  "status": "COMPLETED_RESEARCH_ONLY",
+  "preregistration": {
+    "protocol_path": "reports/sequence_agent/q129_familywise_max_hit_audit_protocol_2026-11-11.json",
+    "protocol_blob_sha": "07d88d9aa62909b180c282d215bd3036617a311a",
+    "protocol_commit": "e8f94633ddbf4c08e36d0f331d47a068269d5f2d",
+    "base_main_commit": "06e9e470054a86a0b710657db35e0c2259ef6b0a",
+    "committed_before_final_calculation": true,
+    "corrected_protocol_blob_sha": "3db249baec71921ff78591a88b95278f31de118f",
+    "protocol_source_pin_correction": {
+      "original_protocol_blob_sha": "07d88d9aa62909b180c282d215bd3036617a311a",
+      "corrected_protocol_blob_sha": "3db249baec71921ff78591a88b95278f31de118f",
+      "original_source_pin_length": 39,
+      "corrected_source_pin_length": 40,
+      "statistical_design_changed": false,
+      "statistical_results_changed": false
+    }
+  },
+  "source": {
+    "path": "reports/sequence_agent/historical_rule_ledger.csv",
+    "git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b",
+    "rows": 134568,
+    "targets": 3204,
+    "first_date": "2018-02-02",
+    "last_date": "2026-11-10",
+    "evaluation_mode": "RETROSPECTIVE_WALK_FORWARD_RULE_FIXED_NOW"
+  },
+  "statistic": {
+    "name": "M_t",
+    "definition": "Maximum intersection size between the target quintet and any of the 42 fixed rule Top20 sets for that same target.",
+    "support": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "family_size": 42
+  },
+  "design": {
+    "warmup_draws": 200,
+    "targets": 3204,
+    "split_sizes": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "randomization_replicates": 1000,
+    "randomization_seed": "0x01292027",
+    "bootstrap_replicates": 10000,
+    "bootstrap_block_length": 20,
+    "bootstrap_seed": "0x01282027",
+    "tuning": "none"
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1922,
+      "first_target": "2018-02-02",
+      "last_target": "2023-05-08",
+      "mean_max_hits": 4.27991675,
+      "observed_max_hit_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 133,
+        "4": 1118,
+        "5": 671
+      },
+      "conditional_null_mean": 4.26341988,
+      "mean_gain": 0.01649688,
+      "randomization_p_upper": 0.118881,
+      "conditional_null_mean_95_interval": [
+        4.23725286,
+        4.28980229
+      ]
+    },
+    "validation": {
+      "targets": 641,
+      "first_target": "2023-05-09",
+      "last_target": "2025-02-07",
+      "mean_max_hits": 4.23556942,
+      "observed_max_hit_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 1,
+        "3": 57,
+        "4": 373,
+        "5": 210
+      },
+      "conditional_null_mean": 4.26628393,
+      "mean_gain": -0.03071451,
+      "randomization_p_upper": 0.913087,
+      "conditional_null_mean_95_interval": [
+        4.22308892,
+        4.31201248
+      ]
+    },
+    "blind_oos": {
+      "targets": 641,
+      "first_target": "2025-02-08",
+      "last_target": "2026-11-10",
+      "mean_max_hits": 4.24804992,
+      "observed_max_hit_distribution": {
+        "0": 0,
+        "1": 0,
+        "2": 0,
+        "3": 55,
+        "4": 372,
+        "5": 214
+      },
+      "conditional_null_mean": 4.2674337,
+      "mean_gain": -0.01938378,
+      "randomization_p_upper": 0.813187,
+      "conditional_null_mean_95_interval": [
+        4.22308892,
+        4.31357254
+      ]
+    }
+  },
+  "primary_inference": {
+    "endpoint": "blind_oos_mean_max_top20_hits",
+    "observed_mean": 4.24804992,
+    "null_expected_mean": 4.2674337,
+    "gain": -0.01938378,
+    "one_sided_randomization_p": 0.813187,
+    "block_bootstrap": {
+      "replicates": 10000,
+      "block_length": 20,
+      "mean_gain": -0.01938378,
+      "ci95": [
+        -0.06154134,
+        0.02171451
+      ]
+    },
+    "confirmatory_endpoints": 1
+  },
+  "multiplicity": {
+    "within_target_family_size": 42,
+    "method": "Recompute the maximum over all 42 Top20 forecasts in every conditional randomization replicate; this preserves dependence/overlap among candidate sets.",
+    "holm": "Not required for the single preregistered Blind OOS endpoint; Discovery and Validation are descriptive.",
+    "broader_research_family_corrected": false,
+    "note": "No correction across the entire historical Q00-Q128 research family."
+  },
+  "prospective_observation": {
+    "target_date": "2026-11-11",
+    "contest": 315,
+    "result_numbers": [
+      1,
+      21,
+      22,
+      27,
+      29
+    ],
+    "status": "PROVISIONAL_SECONDARY_SOURCE_CORROBORATED",
+    "primary_source_status": {
+      "sisal_official_page": "Identifies contest 315 and confirms prize counts, but the extracted official page does not expose the five numbers.",
+      "official_vincicasa_archive": "Still labels contest 315 In programmazione / In attesa at this check.",
+      "official_bulletin_index": "Latest visible bulletin is 10/11/2026; the 11/11 bulletin is not yet visible."
+    },
+    "official_prize_profile": {
+      "points_5_winners": 0,
+      "points_4_winners": 2,
+      "points_3_winners": 178,
+      "points_2_winners": 1947
+    },
+    "secondary_sources": [
+      {
+        "url": "https://www.estrazionedellotto.it/vinci-casa/risultati-vinci-casa",
+        "claim": "Lists contest 315 on 11/11/2026 as 1, 21, 22, 27, 29."
+      },
+      {
+        "url": "https://www.vincicasa.cloud/tabellone-analitico.php",
+        "claim": "Shows 11-11-2026 as the latest draw with 1, 21, 22, 27, 29."
+      },
+      {
+        "url": "https://www.estrazionidioggi.com/",
+        "claim": "Lists the 11/11/2026 contest 315 combination as 1, 21, 22, 27, 29."
+      }
+    ],
+    "sisal_official_url": "https://www.sisal.it/vincicasa/ultima-estrazione",
+    "official_archive_url": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+    "official_bulletins_url": "https://www.vincicasa.it/archivio-estrazioni/bollettini",
+    "scoring": {
+      "result_numbers": [
+        1,
+        21,
+        22,
+        27,
+        29
+      ],
+      "global_rule_family_count": 42,
+      "global_rule_family": {
+        "top20_max": 5,
+        "top10_max": 3,
+        "top5_max": 2,
+        "best_top20_configs": [
+          "pair_affinity_50"
+        ]
+      },
+      "app_engine": {
+        "top20_hits": [
+          1,
+          21,
+          27
+        ],
+        "top10_hits": [
+          1,
+          27
+        ],
+        "top5_hits": []
+      },
+      "positional_engine": {
+        "top20_hits": [
+          1,
+          29
+        ],
+        "top10_hits": [
+          1,
+          29
+        ],
+        "top5_hits": [
+          1
+        ]
+      },
+      "exact_familywise_null": {
+        "denominator": 658008,
+        "distribution_max_hits": [
+          {
+            "3": 39616,
+            "4": 382057,
+            "5": 236335
+          },
+          {
+            "1": 208,
+            "2": 123158,
+            "3": 400323,
+            "4": 126782,
+            "5": 7537
+          },
+          {
+            "0": 21,
+            "1": 105898,
+            "2": 433515,
+            "3": 113466,
+            "4": 5072,
+            "5": 36
+          }
+        ],
+        "p_familywise_tail_at_observed": [
+          0.35916736574631314,
+          0.8125159572527993,
+          0.839030832451885
+        ],
+        "note": "Exact enumeration of all 658,008 5-of-40 outcomes, preserving overlap among the 42 fixed forecast sets."
+      }
+    },
+    "q60": {
+      "status": "UNCHANGED",
+      "valid_complete_pairs": 23,
+      "minimum_required": 200,
+      "incremented": false
+    },
+    "canonical_archive_updated": false,
+    "forecast_freezes_modified": false,
+    "included_in_q129_historical_primary_test": false,
+    "note": "Use as provisional shadow scoring only. Do not append to canonical archive or Q60 until the exact combination is published by the official archive or bulletin."
+  },
+  "decision": "NO_FAMILYWISE_MAX_HIT_LIFT_DEMONSTRATED",
+  "interpretation": "The maximum across 42 configurations is already expected to be high under the conditional null. Discovery is slightly positive, Validation is negative, and Blind OOS is negative with a block-bootstrap interval containing zero. The 42-rule selection effect does not reveal incremental skill.",
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout and has been inspected in earlier SONAR research.",
+    "The 42-rule family was selected after the historical archive was available; target features are strict-prior, but family selection itself is not prospective.",
+    "The conditional randomization assumes independent uniform 5-of-40 outcomes across targets; the block bootstrap is a separate dependence-robust uncertainty summary.",
+    "Only 1000 randomization replicates were used; Monte Carlo p-value resolution is 1/1001.",
+    "The statistic is a post-selection maximum across 42 candidate sets, not the performance of one deployable engine.",
+    "The 11/11/2026 exact combination is corroborated by secondary sources but is not yet visible in the official VinciCasa archive/bulletin; it is excluded from canonical history and Q60."
+  ],
+  "governance": {
+    "research_only": true,
+    "production_scorer_changed": false,
+    "forecast_freezes_changed": false,
+    "q60_changed": false,
+    "engine_promoted": false,
+    "automatic_merge": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}

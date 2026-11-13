@@ -1,0 +1,92 @@
+{
+  "experiment": "Q129",
+  "title": "Family-wise maximum Top20 hit audit across 42 fixed rule configurations",
+  "status": "PREREGISTERED_DESIGN_WITH_SOURCE_PIN_METADATA_CORRECTION",
+  "preregistration_timestamp_utc": "2026-11-11T22:47:10Z",
+  "base_main_commit": "06e9e470054a86a0b710657db35e0c2259ef6b0a",
+  "source": {
+    "path": "reports/sequence_agent/historical_rule_ledger.csv",
+    "git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b",
+    "rows": 134568,
+    "targets": 3204,
+    "configurations_per_target": 42,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "required_history_cutoff": "strictly earlier than target_date",
+    "evaluation_mode": "RETROSPECTIVE_WALK_FORWARD_RULE_FIXED_NOW"
+  },
+  "hypothesis": {
+    "h0": "The per-target maximum Top20 hit count across the fixed 42-rule family is no greater than its conditional uniform 5-of-40 randomization distribution.",
+    "h1": "The mean per-target maximum Top20 hit count exceeds its conditional randomization expectation in the final chronological Blind OOS segment.",
+    "statistic": "M_t = max_j |D_t intersect Top20_{j,t}|, j=1..42.",
+    "primary_endpoint": "Blind OOS mean(M_t) minus its conditional randomization expectation; one-sided positive lift."
+  },
+  "design": {
+    "warmup_draws": 200,
+    "target_count": 3204,
+    "chronological_splits": {
+      "discovery": {
+        "targets": 1922,
+        "first": "2018-02-02",
+        "last": "2023-05-08"
+      },
+      "validation": {
+        "targets": 641,
+        "first": "2023-05-09",
+        "last": "2025-02-07"
+      },
+      "blind_oos": {
+        "targets": 641,
+        "first": "2025-02-08",
+        "last": "2026-11-10"
+      }
+    },
+    "candidate_family": "42 rule configurations in historical_rule_ledger.csv; the family is fixed per target and the maximum is computed after scoring all 42.",
+    "null": "For each target and each replicate, independently draw one uniform 5-of-40 quintet and score its maximum overlap against that target's same 42 Top20 sets. This conditions on the candidate sets and preserves their overlap/dependence.",
+    "randomization_replicates": 1000,
+    "randomization_seed": "0x01292027",
+    "bootstrap": {
+      "method": "paired circular moving-block bootstrap of per-target observed maximum minus per-target Monte Carlo null expectation",
+      "replicates": 10000,
+      "block_length": 20,
+      "seed": "0x01282027"
+    },
+    "tuning": "none",
+    "discovery_validation_role": "descriptive only; no parameter selection",
+    "blind_oos_role": "single confirmatory endpoint"
+  },
+  "multiplicity": {
+    "within_target_family_size": 42,
+    "handling": "The maximum over all 42 forecasts is recomputed inside every conditional randomization replicate, so dependence among the 42 candidate sets is preserved and the within-family selection effect is included.",
+    "broader_research_family": "No correction across the historical Q00-Q128 research family. The source explicitly labels the rows RETROSPECTIVE_WALK_FORWARD_RULE_FIXED_NOW; formula-family selection after seeing the archive remains a material limitation.",
+    "confirmatory_endpoints": 1,
+    "holm": "Not required for the single preregistered Blind OOS primary endpoint. Discovery and Validation are descriptive."
+  },
+  "guardrails": {
+    "research_only": true,
+    "production_scorer_changed": false,
+    "forecast_freezes_changed": false,
+    "q60_changed": false,
+    "engine_promoted": false,
+    "automatic_merge": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "limitations": [
+    "The historical Blind OOS segment is not a virgin holdout and has been inspected by earlier SONAR research.",
+    "The 42-rule family was fixed after the historical archive was available; strict-prior target features do not make the family selection itself prospective.",
+    "The conditional randomization assumes independent uniform 5-of-40 outcomes across targets; the block bootstrap is a separate dependence-robust uncertainty summary.",
+    "Monte Carlo p-value resolution is limited by 1000 randomization replicates.",
+    "The statistic measures a post-selection maximum across candidate Top20 sets, not the performance of one deployable engine."
+  ],
+  "source_sha_correction": {
+    "original_truncated_value": "553e08a3c7a0aabd092d3977b75bf959e90b8b3",
+    "corrected_git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b",
+    "reason": "The original source pin omitted its final hexadecimal character; the corrected 40-character SHA was verified against the base commit Git tree.",
+    "design_changed": false,
+    "statistical_results_changed": false
+  }
+}

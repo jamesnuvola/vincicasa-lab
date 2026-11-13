@@ -1,0 +1,53 @@
+{
+  "experiment": "Q129",
+  "status": "PERSISTED_ARTIFACTS",
+  "source": {
+    "path": "reports/sequence_agent/historical_rule_ledger.csv",
+    "git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3",
+    "rows": 134568,
+    "targets": 3204
+  },
+  "entries": [
+    {
+      "path": "reports/sequence_agent/q129_familywise_max_hit_audit_protocol_2026-11-11.json",
+      "git_blob_sha": "3db249baec71921ff78591a88b95278f31de118f",
+      "bytes_utf8": 4667
+    },
+    {
+      "path": "reports/sequence_agent/q129_familywise_max_hit_audit_report_2026-11-11.json",
+      "git_blob_sha": "535c8a55839dff5886beec8742a54b64a617ad13",
+      "bytes_utf8": 9477
+    },
+    {
+      "path": "reports/sequence_agent/q129_familywise_max_hit_audit_target_ledger_2026-11-11.csv",
+      "git_blob_sha": "251af6f0ea9cb49a025e6f38f32c04d01b77cc1d",
+      "bytes_utf8": 191905
+    },
+    {
+      "path": "reports/sequence_agent/q129_familywise_max_hit_audit_validation_2026-11-11.json",
+      "git_blob_sha": "a577fcaa524562003096d393b6f205b59c63ce85",
+      "bytes_utf8": 1390
+    },
+    {
+      "path": "reports/sequence_agent/q129_familywise_max_hit_audit_checkpoint_2026-11-11.md",
+      "git_blob_sha": "1ab7c53343edd854e508cb394e3c08656183f102",
+      "bytes_utf8": 5496
+    },
+    {
+      "path": "reports/sequence_agent/q129_contest_315_provisional_observation_2026-11-11.json",
+      "git_blob_sha": "02011d56d326a9a67cb8a22ff3db55f46e13c826",
+      "bytes_utf8": 3595
+    },
+    {
+      "path": "scripts/sonar_q129_familywise_max_hit_audit.mjs",
+      "git_blob_sha": "0a9009ed190bc29e45d741915f62bbc77966ba4d",
+      "bytes_utf8": 9728
+    },
+    {
+      "path": ".github/workflows/q129-familywise-max-hit-audit.yml",
+      "git_blob_sha": "0f1253939758176df20c2749432202d75a1e01e6",
+      "bytes_utf8": 940
+    }
+  ],
+  "verification_rule": "Node 20 verifies the source by comparing git rev-parse HEAD:<source path> with the corrected 40-character pinned Git blob SHA and requiring a clean git diff; the workflow uses fetch-depth 1 because no history traversal is required. It then recomputes strict-prior walk-forward, conditional randomization, block bootstrap, provisional freeze scoring over all 658,008 5-of-40 outcomes, and verifies Git blob SHA-1 plus UTF-8 byte counts for all eight entries."
+}
