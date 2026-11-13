@@ -1,0 +1,111 @@
+{
+  "experiment_id": "Q114",
+  "generated_at_utc": "2026-11-11T07:42:54Z",
+  "passed": true,
+  "checks_passed": 17,
+  "checks_total": 17,
+  "checks": [
+    {
+      "name": "source_ledger_has_3203_rows",
+      "passed": true,
+      "observed": 3203
+    },
+    {
+      "name": "source_dates_strictly_increasing",
+      "passed": true
+    },
+    {
+      "name": "hit_values_in_0_to_5",
+      "passed": true
+    },
+    {
+      "name": "lag1_hit_chain_continuity",
+      "passed": true,
+      "observed_mismatches": 0
+    },
+    {
+      "name": "evaluated_targets_3202",
+      "passed": true,
+      "observed": 3202
+    },
+    {
+      "name": "chronological_split_sizes",
+      "passed": true,
+      "observed": {
+        "discovery": 1920,
+        "validation": 641,
+        "blind_oos": 641
+      }
+    },
+    {
+      "name": "strict_prior_update_order",
+      "passed": true,
+      "detail": "Score target i before adding its own outcome; M1 counts j<i, M2 counts j<i and j>=1."
+    },
+    {
+      "name": "all_probability_vectors_normalized",
+      "passed": true,
+      "observed_max_abs_error": 2.220446049250313e-16
+    },
+    {
+      "name": "all_losses_finite",
+      "passed": true
+    },
+    {
+      "name": "first_order_freeze_reconciles_to_q113",
+      "passed": true,
+      "observed_max_abs_diff": 0
+    },
+    {
+      "name": "prospective_state_matches_frozen_q113",
+      "passed": true,
+      "observed": {
+        "lag1": 2,
+        "lag2": 4
+      }
+    },
+    {
+      "name": "active_engine_top20_unchanged",
+      "passed": true
+    },
+    {
+      "name": "future_mutation_invariance_9_of_9",
+      "passed": true,
+      "observed": 9
+    },
+    {
+      "name": "deterministic_replay",
+      "passed": true
+    },
+    {
+      "name": "blind_pair_state_support_valid",
+      "passed": true,
+      "observed": {
+        "min": 2,
+        "median": 143,
+        "max": 370
+      }
+    },
+    {
+      "name": "ledger_row_count_matches_targets",
+      "passed": true,
+      "observed": 3202
+    },
+    {
+      "name": "holm_family_size_two",
+      "passed": true
+    }
+  ],
+  "statistical_replay": {
+    "block_sign_flip_simulations": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "block_length": 20,
+    "seed_set": [
+      1142001,
+      1142002,
+      1142003,
+      1142004
+    ]
+  },
+  "note": "Historical analysis is exploratory, not preregistered; historical Blind OOS is not virgin. Prospective freeze is immutable."
+}

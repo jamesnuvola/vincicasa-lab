@@ -1,0 +1,76 @@
+{
+  "experiment_id": "Q114",
+  "title": "Second-order active-engine Top20 hit-count regime",
+  "status": "EXPLORATORY_NOT_PREREGISTERED",
+  "created_at_utc": "2026-11-11T07:42:54Z",
+  "hypothesis": "Does the pair of prior active-engine Top20 hit counts (H[t-1], H[t-2]) add predictive information for H[t] beyond the exact Hypergeometric(40,20,5) null and the first-order state H[t-1]?",
+  "outcome_definition": "H[t] is the number of winning numbers in the exact active-engine Top20 frozen before target t.",
+  "models": {
+    "M0": "q0(k)=C(20,k)C(20,5-k)/C(40,5), k=0..5.",
+    "M1": "p1(k|a)=[alpha*q0(k)+C_a(k)]/[alpha+N_a], where a=H[t-1], alpha=200.",
+    "M2": "p2(k|a,b)=[alpha*p1(k|a)+C_ab(k)]/[alpha+N_ab], where a=H[t-1], b=H[t-2], alpha=200."
+  },
+  "fixed_parameters": {
+    "alpha": 200,
+    "top20_size": 20,
+    "draw_size": 5,
+    "number_pool": 40
+  },
+  "walk_forward": {
+    "source_targets": 3203,
+    "evaluated_targets": 3202,
+    "excluded_first_source_row": "Lag-2 state unavailable for the first ledger row; its outcome is retained as prior M1 training data.",
+    "split_sizes": {
+      "discovery": 1920,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "order": "For target i, score before adding target i outcome; M1 uses all prior transitions; M2 uses prior transitions with an observed second lag."
+  },
+  "inference": {
+    "primary_comparison": "M2 vs M1",
+    "metrics": [
+      "multiclass Brier score",
+      "log loss"
+    ],
+    "alternative": "one-sided positive gain",
+    "block_sign_flip": {
+      "simulations": 50000,
+      "block_length": 20
+    },
+    "circular_block_bootstrap": {
+      "replicates": 10000,
+      "block_length": 20
+    },
+    "holm_family_size": 2,
+    "seeds": [
+      1142001,
+      1142002,
+      1142003,
+      1142004
+    ]
+  },
+  "data_governance": {
+    "source_main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "source_q113_ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "source_q113_freeze_blob_sha": "ea9387df6ad3c1afd31d19e225892bb624d79f13",
+    "source_ledger_branch": "research/q113-active-engine-hit-regime-20261111",
+    "source_archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0"
+  },
+  "prospective": {
+    "target_date": "2026-11-11",
+    "history_cutoff": "2026-11-10",
+    "freeze_time_local": "2026-11-11T08:42:54+01:00",
+    "lag1_hits": 2,
+    "lag2_hits": 4,
+    "active_engine_top20_reused_from_q113_freeze": true
+  },
+  "limitations": [
+    "Q114 is exploratory and was not preregistered before the initial historical computation; the protocol records this limitation.",
+    "Historical Blind OOS is not a virgin holdout and has been examined by related SONAR research.",
+    "The Top20 hit-count sequence is derived from the active engine and historical outcomes; it tests calibration of hit-count probabilities, not winning-number prediction.",
+    "The fixed alpha=200 is inherited from Q113; no alpha grid or subgroup tuning was performed.",
+    "Holm correction covers the two Q114 primary endpoints only, not the entire Q00-Q114 research family.",
+    "The prospective 2026-11-11 freeze is a single descriptive observation until the official result is available."
+  ]
+}

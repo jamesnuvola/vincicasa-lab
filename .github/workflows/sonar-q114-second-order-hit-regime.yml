@@ -1,0 +1,23 @@
+name: Q114 second-order active-engine hit-regime replay
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "reports/sequence_agent/q114_*"
+      - "scripts/sonar_q114_second_order_hit_regime.mjs"
+      - ".github/workflows/sonar-q114-second-order-hit-regime.yml"
+permissions:
+  contents: read
+jobs:
+  q114-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Syntax check
+        run: node --check scripts/sonar_q114_second_order_hit_regime.mjs
+      - name: Strict-prior replay, future-mutation tests and manifest verification
+        run: node scripts/sonar_q114_second_order_hit_regime.mjs --check
