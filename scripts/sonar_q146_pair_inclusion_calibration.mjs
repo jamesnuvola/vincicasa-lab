@@ -436,7 +436,17 @@ export function verifyArtifacts() {
   for (const [p, content] of Object.entries(expected)) {
     if (!fs.existsSync(path.join(ROOT, p)) || fs.readFileSync(path.join(ROOT, p), "utf8") !== content) mismatches.push(p);
   }
-  if (mismatches.length) throw new Error("Q146 deterministic artifact mismatch: " + mismatches.join(", "));
+  if (mismatches.length) {
+    const detail = mismatches.map(p => {
+      const actual = fs.existsSync(path.join(ROOT, p)) ? fs.readFileSync(path.join(ROOT, p), "utf8") : "";
+      const wanted = expected[p];
+      let i = 0;
+      while (i < actual.length && i < wanted.length && actual[i] === wanted[i]) i++;
+      return p + " first_diff=" + i + " expected=" + JSON.stringify(wanted.slice(Math.max(0, i - 50), i + 100)) +
+        " actual=" + JSON.stringify(actual.slice(Math.max(0, i - 50), i + 100));
+    });
+    throw new Error("Q146 deterministic artifact mismatch: " + detail.join(" || "));
+  }
   return {
     status: "Q146_VERIFY_OK",
     targets: b.report.sample.targets,
