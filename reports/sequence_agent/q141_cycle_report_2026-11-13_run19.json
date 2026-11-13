@@ -1,0 +1,119 @@
+{
+  "cycle": 19,
+  "date": "2026-11-13",
+  "task": "Q141-A9 distributional subset scoring",
+  "status": "COMPLETED_HISTORICAL_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_INCREMENTAL_JOINT_SUBSET_SCORE_DEMONSTRATED",
+  "split_metrics": {
+    "discovery": {
+      "targets": 2014,
+      "m0_joint_nll": 13.39680376432779,
+      "m1_joint_nll": 13.39700255322574,
+      "uniform_joint_nll": 13.396972368288258,
+      "m0_marginal_brier": 0.10937405365357647,
+      "m1_marginal_brier": 0.10937517025923063,
+      "uniform_marginal_brier": 0.109375
+    },
+    "validation": {
+      "targets": 671,
+      "m0_joint_nll": 13.398012383341328,
+      "m1_joint_nll": 13.398240758019702,
+      "uniform_joint_nll": 13.396972368288257,
+      "m0_marginal_brier": 0.10938084557290752,
+      "m1_marginal_brier": 0.10938213647563322,
+      "uniform_marginal_brier": 0.109375
+    },
+    "blind_oos": {
+      "targets": 671,
+      "m0_joint_nll": 13.396983045840013,
+      "m1_joint_nll": 13.397159607996866,
+      "uniform_joint_nll": 13.396972368288257,
+      "m0_marginal_brier": 0.10937505046303567,
+      "m1_marginal_brier": 0.10937605072218923,
+      "uniform_marginal_brier": 0.109375
+    }
+  },
+  "blind_oos_inference": {
+    "m1_vs_m0_joint_nll_gain": {
+      "mean_gain": -0.000176562156849981,
+      "ci95_circular_block_bootstrap": [
+        -0.000581424142791915,
+        0.0002252649729052247
+      ],
+      "p_one_sided_block_signflip": 0.7707614619269036,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m1_vs_uniform_joint_nll_gain": {
+      "mean_gain": -0.00018723970860855005,
+      "ci95_circular_block_bootstrap": [
+        -0.002046807280182517,
+        0.0017154430466372924
+      ],
+      "p_one_sided_block_signflip": 0.5580220988950553,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m0_vs_uniform_joint_nll_gain": {
+      "mean_gain": -1.067755175856904e-05,
+      "ci95_circular_block_bootstrap": [
+        -0.0017108252687144546,
+        0.0017270411193337483
+      ],
+      "p_one_sided_block_signflip": 0.5021248937553122,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m1_vs_m0_marginal_brier_gain": {
+      "mean_gain": -1.0002591535884166e-06,
+      "ci95_circular_block_bootstrap": [
+        -3.2518025351597525e-06,
+        1.2873223034172087e-06
+      ],
+      "p_one_sided_block_signflip": 0.7742112894355282,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m1_vs_uniform_marginal_brier_gain": {
+      "mean_gain": -1.0507221892442378e-06,
+      "ci95_circular_block_bootstrap": [
+        -1.1493953478387163e-05,
+        9.589420477011476e-06
+      ],
+      "p_one_sided_block_signflip": 0.568471576421179,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m0_vs_uniform_marginal_brier_gain": {
+      "mean_gain": -5.0463035655821163e-08,
+      "ci95_circular_block_bootstrap": [
+        -9.392351525061878e-06,
+        9.547256228027568e-06
+      ],
+      "p_one_sided_block_signflip": 0.5083745812709365,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    }
+  },
+  "limitations": [
+    "Historical Blind OOS has been exposed to earlier SONAR research; this is exploratory, not virgin confirmatory evidence.",
+    "Holm correction covers the six A9 endpoints only, not the full Q00-Q141 research family.",
+    "The fixed-size exponential-family distribution is a score-to-probability representation, not a physical model of the lottery.",
+    "Temperature calibration is selected on Discovery and may be misspecified; Discovery metrics are calibration-sample diagnostics.",
+    "The marginal Brier score evaluates 40 inclusion marginals and does not replace the joint subset log score.",
+    "No B11 prospective outcome is read or used; no existing prediction freeze is changed."
+  ],
+  "next_action": "Review the exploratory joint-subset scoring results; keep B11 unchanged and do not promote. Any positive historical result requires a separately preregistered prospective replication."
+}
