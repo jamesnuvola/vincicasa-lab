@@ -1,0 +1,148 @@
+name: SONAR Q141-A13 Non-overlapping Lag-2 Structural Transitions
+on:
+  push:
+    branches:
+      - research/q141-a13-nonoverlap-lag2-20261113
+    paths:
+      - "scripts/sonar_q141_a13_nonoverlap_lag2.py"
+      - "tests/test_sonar_q141_a13_nonoverlap_lag2.py"
+      - "reports/sequence_agent/q141_a13_nonoverlap_lag2_preregistration_2026-11-13.md"
+      - ".github/workflows/q141-a13-nonoverlap-lag2.yml"
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: sonar-q141-a13-nonoverlap-lag2
+  cancel-in-progress: false
+jobs:
+  nonoverlap-lag2-walkforward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: pip install numpy
+      - name: Compile and run deterministic/leakage tests
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python -m py_compile scripts/sonar_q141_a12_structural_markov_audit.py scripts/sonar_q141_a13_nonoverlap_lag2.py tests/test_sonar_q141_a13_nonoverlap_lag2.py
+          python -m unittest discover -s tests -p "test_sonar_q141_a13_nonoverlap_lag2.py" -v
+      - name: Download pinned Q141-A7 matrix artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: q141-a7-fresh59-behaviour
+          path: a7-source
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 43348144964
+      - name: Run strict-prior non-overlapping lag-2 walk-forward
+        run: |
+          python scripts/sonar_q141_a13_nonoverlap_lag2.py \
+            --input a7-source/q141_a7_fresh59_feature_matrix_2026-11-13.npz \
+            --outdir reports/sequence_agent \
+            --iid-reps 2000 \
+            --bootstrap-reps 20000
+      - name: Fail-closed output and leakage validation
+        run: |
+          python - <<'PY'
+          import csv, hashlib, json
+          from pathlib import Path
+          p=Path("reports/sequence_agent")
+          report=json.loads((p/"q141_a13_nonoverlap_lag2_report_2026-11-13.json").read_text())
+          manifest=json.loads((p/"q141_a13_nonoverlap_lag2_manifest_2026-11-13.json").read_text())
+          checkpoint=json.loads((p/"q141_a13_nonoverlap_lag2_checkpoint_2026-11-13.json").read_text())
+          assert report["status"]=="COMPLETED_HISTORICAL_EXPLORATORY_WALK_FORWARD"
+          assert report["source"]["archive_blob_sha1"]=="6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb"
+          assert report["source"]["matrix_sha256"]=="81479d7cff00ddcbc6046bcb390efb2ef1b08de6a6f1f2cdb2f89a77c76c6047"
+          assert report["source"]["a12_feature_builder_blob_sha1"]=="208035ce9d2e949b47cf4caa9cf2ddf71018348c"
+          assert report["design"]["targets"]==2956
+          assert report["design"]["split_counts"]=={"discovery":1774,"validation":591,"blind_oos":591}
+          for key in ("all_cutoffs_precede_targets","phase_matched_training","training_samples_spaced_by_four","training_target_raw_draw_windows_disjoint","last_training_block_ends_at_t_minus_4","future_suffix_invariance","deterministic_full_replay"):
+              assert report["integrity"][key] is True, key
+          with (p/"q141_a13_nonoverlap_lag2_target_ledger_2026-11-13.csv").open(newline="") as f:
+              rows=list(csv.DictReader(f))
+          assert len(rows)==2956
+          for r in rows:
+              t=int(r["target_index"])
+              assert r["cutoff_date"] < r["target_date"]
+              assert int(r["phase_mod4"]) == t % 4
+              assert int(r["sum_transition_max_training_sample_index"]) <= t-4
+              assert int(r["range_transition_max_training_sample_index"]) <= t-4
+              assert int(r["sum_transition_prior_samples"]) >= 99
+              assert int(r["range_transition_prior_samples"]) >= 99
+              assert r["phase_geometry_valid"] == "True"
+          for name,info in manifest["outputs"].items():
+              b=(p/name).read_bytes()
+              assert len(b)==info["bytes"], name
+              assert hashlib.sha256(b).hexdigest()==info["sha256"], name
+          assert manifest["code_sha256"]==hashlib.sha256(Path("scripts/sonar_q141_a13_nonoverlap_lag2.py").read_bytes()).hexdigest()
+          assert checkpoint["status"]=="LOCAL_REPLAY_COMPLETE_PENDING_REMOTE_READBACK"
+          print("A13_OUTPUT_VALIDATION_PASS",len(rows),len(manifest["outputs"]))
+          PY
+      - name: Persist report, ledger, manifest and checkpoint
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a13_nonoverlap_lag2_report_2026-11-13.json \
+                  reports/sequence_agent/q141_a13_nonoverlap_lag2_target_ledger_2026-11-13.csv \
+                  reports/sequence_agent/q141_a13_nonoverlap_lag2_manifest_2026-11-13.json \
+                  reports/sequence_agent/q141_a13_nonoverlap_lag2_checkpoint_2026-11-13.json \
+                  reports/sequence_agent/q141_a13_nonoverlap_lag2_mechanical_independence_note_2026-11-13.md \
+                  reports/sequence_agent/q141_cycle_report_2026-11-13_run23.md
+          git commit -m "Persist Q141-A13 non-overlapping lag-2 walk-forward"
+          git push origin HEAD:research/q141-a13-nonoverlap-lag2-20261113
+      - name: Verify remote Git readback and finalize checkpoint
+        run: |
+          git fetch origin research/q141-a13-nonoverlap-lag2-20261113
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          branch="origin/research/q141-a13-nonoverlap-lag2-20261113"
+          p=Path("reports/sequence_agent")
+          names=[
+            "q141_a13_nonoverlap_lag2_report_2026-11-13.json",
+            "q141_a13_nonoverlap_lag2_target_ledger_2026-11-13.csv",
+            "q141_a13_nonoverlap_lag2_manifest_2026-11-13.json",
+            "q141_a13_nonoverlap_lag2_preregistration_2026-11-13.md",
+            "q141_a13_nonoverlap_lag2_mechanical_independence_note_2026-11-13.md",
+            "q141_cycle_report_2026-11-13_run23.md",
+          ]
+          checked={}
+          for name in names:
+              path=f"reports/sequence_agent/{name}"
+              local=subprocess.check_output(["git","hash-object",path],text=True).strip()
+              remote=subprocess.check_output(["git","rev-parse",f"{branch}:{path}"],text=True).strip()
+              assert local==remote,(path,local,remote)
+              checked[path]=remote
+          cp=p/"q141_a13_nonoverlap_lag2_checkpoint_2026-11-13.json"
+          obj=json.loads(cp.read_text())
+          obj["status"]="REMOTE_GIT_READBACK_VERIFIED"
+          obj["remote_readback"]={"branch":"research/q141-a13-nonoverlap-lag2-20261113","git_blob_sha1":checked}
+          cp.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+"\n")
+          PY
+          git add reports/sequence_agent/q141_a13_nonoverlap_lag2_checkpoint_2026-11-13.json
+          git commit -m "Record Q141-A13 remote readback verification"
+          git push origin HEAD:research/q141-a13-nonoverlap-lag2-20261113
+          git fetch origin research/q141-a13-nonoverlap-lag2-20261113
+          test "$(git hash-object reports/sequence_agent/q141_a13_nonoverlap_lag2_checkpoint_2026-11-13.json)" = "$(git rev-parse origin/research/q141-a13-nonoverlap-lag2-20261113:reports/sequence_agent/q141_a13_nonoverlap_lag2_checkpoint_2026-11-13.json)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: q141-a13-nonoverlap-lag2
+          path: |
+            reports/sequence_agent/q141_a13_nonoverlap_lag2_report_2026-11-13.json
+            reports/sequence_agent/q141_a13_nonoverlap_lag2_target_ledger_2026-11-13.csv
+            reports/sequence_agent/q141_a13_nonoverlap_lag2_manifest_2026-11-13.json
+            reports/sequence_agent/q141_a13_nonoverlap_lag2_checkpoint_2026-11-13.json
+            reports/sequence_agent/q141_a13_nonoverlap_lag2_preregistration_2026-11-13.md
+            reports/sequence_agent/q141_a13_nonoverlap_lag2_mechanical_independence_note_2026-11-13.md
+            reports/sequence_agent/q141_cycle_report_2026-11-13_run23.md
+          if-no-files-found: error
+          retention-days: 90
