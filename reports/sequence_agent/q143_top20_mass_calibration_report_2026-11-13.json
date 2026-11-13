@@ -1,0 +1,280 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q143",
+  "title": "Top20 score-mass concentration as a prior-only hit-count calibration signal",
+  "generated_at_utc": "2026-11-13T16:43:03Z",
+  "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
+  "validation_status": "EXPLORATORY_NOT_PROMOTABLE",
+  "base_main_commit": "4a55fb7da216bd3850b79f862bf10b2cbcafa968",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "app_source_path": "src/VinciCasaLab.jsx",
+    "app_source_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "active_engine_report_blob_sha": "fabc35db913ace880adef789f360516b13915689",
+    "shadow_forecasts_blob_sha": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "q60_gate_blob_sha": "ab6600494731d873ea6aca2cd705e948fd3f6198",
+    "research_queue_blob_sha": "7143ca73b0fd7f2a45beeb9fbece14c3062acf88"
+  },
+  "data": {
+    "draws": 3406,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-12",
+    "prior_only_warmup": 200,
+    "raw_walkforward_targets": 3206,
+    "calibration_window_targets": 400,
+    "evaluated_targets": 2806,
+    "first_evaluated_target": "2019-03-09",
+    "last_evaluated_target": "2026-11-12",
+    "split_sizes": {
+      "discovery": 1683,
+      "validation": 561,
+      "blind_oos": 562
+    }
+  },
+  "hypothesis": {
+    "statement": "A larger share of total active-engine score mass concentrated in the Top20 should predict more Top20 hits on the next draw and improve prior-only hit-count forecasts.",
+    "feature": "top20_score_mass_share = sum(scores ranked 1..20) / sum(scores ranked 1..40)",
+    "direction": "positive",
+    "model": "Rolling univariate OLS using the previous 400 target-level (mass_share, Top20_hit_count) pairs; prediction clipped to [0,5].",
+    "primary_endpoint": "Blind OOS MSE improvement over rolling-400 mean baseline",
+    "minimum_practical_improvement_mse": 0.01,
+    "secondary_endpoints": [
+      "MAE improvement over rolling-400 mean",
+      "MSE improvement over uniform expectation 2.5",
+      "MAE improvement over uniform expectation 2.5"
+    ]
+  },
+  "method": {
+    "scorer": "Exact helper functions overlapCount, sonarTransitionProfile and sonarAnalogCore extracted from committed src/VinciCasaLab.jsx",
+    "target_leakage_control": "For target i, scorer receives draws[0:i] only; actual draw i is used only after ranking is frozen. OLS for target j uses records [j-400,j) only.",
+    "split_rule": "Chronological 60% Discovery / 20% Validation / 20% Blind OOS after 200-draw scoring warmup and 400-target calibration window.",
+    "inference": "20,000 circular moving-block bootstrap replicates (block 20) for percentile 95% CIs; 20,000 block sign-flip replicates (block 20); Holm correction across four endpoints.",
+    "multiple_testing_scope": "Holm controls the four Q143 endpoints only; no global correction across all prior SONAR experiments.",
+    "reproducibility": "Exact current full-history Top20 compared with committed active_engine_walkforward freeze; deterministic seeds and byte-for-byte report/ledger replay in CI."
+  },
+  "baseline": {
+    "uniform_top20_mean_hits": 2.5,
+    "uniform_top20_hit_count_variance": 1.1217948717948718,
+    "rolling_baseline": "mean Top20 hits over previous 400 target records"
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1683,
+      "first_target": "2019-03-09",
+      "last_target": "2023-10-16",
+      "rolling_ols": {
+        "mse": 1.136659376085199,
+        "mae": 0.8820957574582354,
+        "mean_prediction": 2.5399089843634544
+      },
+      "rolling_mean": {
+        "mse": 1.1372022281639904,
+        "mae": 0.8885828877005342,
+        "mean_prediction": 2.5316844919786057
+      },
+      "uniform_2_5": {
+        "mse": null,
+        "mae": null,
+        "mean_prediction": null
+      },
+      "diagnostics": {
+        "observed_mean_hits": 2.532382650029709,
+        "top20_mass_mean": 0.6440731745780423,
+        "top20_mass_sd": 0.01620528069221334,
+        "pearson_mass_vs_hits": -0.05388564898560045,
+        "rolling_beta_mean": -4.840163859714404,
+        "rolling_beta_negative_share": 0.8657159833630422,
+        "low_mass_quartile_mean_hits": 2.5819477434679334,
+        "high_mass_quartile_mean_hits": 2.4228028503562946
+      }
+    },
+    "validation": {
+      "targets": 561,
+      "first_target": "2023-10-17",
+      "last_target": "2025-04-29",
+      "rolling_ols": {
+        "mse": 1.097968678257052,
+        "mae": 0.8581721069180538,
+        "mean_prediction": 2.422280691017865
+      },
+      "rolling_mean": {
+        "mse": 1.101789516488412,
+        "mae": 0.8714483065953659,
+        "mean_prediction": 2.4437655971479537
+      },
+      "uniform_2_5": {
+        "mse": null,
+        "mae": null,
+        "mean_prediction": null
+      },
+      "diagnostics": {
+        "observed_mean_hits": 2.4581105169340463,
+        "top20_mass_mean": 0.6388788382905121,
+        "top20_mass_sd": 0.013757239667901775,
+        "pearson_mass_vs_hits": -0.08348725076557074,
+        "rolling_beta_mean": -7.967262064453478,
+        "rolling_beta_negative_share": 1,
+        "low_mass_quartile_mean_hits": 2.574468085106383,
+        "high_mass_quartile_mean_hits": 2.4326241134751774
+      }
+    },
+    "blind_oos": {
+      "targets": 562,
+      "first_target": "2025-04-30",
+      "last_target": "2026-11-12",
+      "rolling_ols": {
+        "mse": 1.1517004513246527,
+        "mae": 0.8924087167273747,
+        "mean_prediction": 2.5101133963788937
+      },
+      "rolling_mean": {
+        "mse": 1.1450087744661932,
+        "mae": 0.8908941281138795,
+        "mean_prediction": 2.514532918149466
+      },
+      "uniform_2_5": {
+        "mse": null,
+        "mae": null,
+        "mean_prediction": null
+      },
+      "diagnostics": {
+        "observed_mean_hits": 2.494661921708185,
+        "top20_mass_mean": 0.6447941133745043,
+        "top20_mass_sd": 0.015128151047692514,
+        "pearson_mass_vs_hits": 0.018744162561258118,
+        "rolling_beta_mean": -0.6139659776624917,
+        "rolling_beta_negative_share": 0.599644128113879,
+        "low_mass_quartile_mean_hits": 2.482269503546099,
+        "high_mass_quartile_mean_hits": 2.4539007092198584
+      }
+    }
+  },
+  "blind_oos_inference": [
+    {
+      "endpoint": "mse_vs_rolling_mean",
+      "n": 562,
+      "mean_improvement": -0.00669167685846092,
+      "bootstrap_ci95": {
+        "lower": -0.014189379661964303,
+        "upper": -0.0007168625060538279,
+        "replicates": 20000,
+        "block_length": 20
+      },
+      "p_signflip": 0.0375981200939953,
+      "p_holm_4": 0.1503924803759812
+    },
+    {
+      "endpoint": "mae_vs_rolling_mean",
+      "n": 562,
+      "mean_improvement": -0.0015145886134955559,
+      "bootstrap_ci95": {
+        "lower": -0.004478745956929504,
+        "upper": 0.001198371281385414,
+        "replicates": 20000,
+        "block_length": 20
+      },
+      "p_signflip": 0.327683615819209,
+      "p_holm_4": 0.5514724263786811
+    },
+    {
+      "endpoint": "mse_vs_uniform_2_5",
+      "n": 562,
+      "mean_improvement": -0.012020736022162004,
+      "bootstrap_ci95": {
+        "lower": -0.023569265587369142,
+        "upper": -0.001534656399244548,
+        "replicates": 20000,
+        "block_length": 20
+      },
+      "p_signflip": 0.04629768511574421,
+      "p_holm_4": 0.1503924803759812
+    },
+    {
+      "endpoint": "mae_vs_uniform_2_5",
+      "n": 562,
+      "mean_improvement": -0.0027290014248834643,
+      "bootstrap_ci95": {
+        "lower": -0.007131139917946992,
+        "upper": 0.0014813612101047457,
+        "replicates": 20000,
+        "block_length": 20
+      },
+      "p_signflip": 0.27573621318934055,
+      "p_holm_4": 0.5514724263786811
+    }
+  ],
+  "current_state": {
+    "full_history_top20_matches_active_engine_freeze": true,
+    "current_top20_ranked": [
+      25,
+      16,
+      1,
+      12,
+      38,
+      27,
+      26,
+      17,
+      28,
+      36,
+      9,
+      21,
+      34,
+      8,
+      29,
+      15,
+      10,
+      7,
+      23,
+      13
+    ],
+    "current_top5_ranked": [
+      25,
+      16,
+      1,
+      12,
+      38
+    ],
+    "target_date": "2026-11-13",
+    "status": "FROZEN_PENDING",
+    "pending_shadow_forecasts_for_target": 43,
+    "app_freeze_reconciliation": {
+      "rows_checked": 20,
+      "exact_top20_matches": 19,
+      "exact_top20_mismatches": 1,
+      "mismatches": [
+        {
+          "target_date": "2026-10-25",
+          "eligible_for_exact_engine_primary": false,
+          "preserved_without_rewrite": true
+        }
+      ]
+    },
+    "q60": {
+      "status": "INSUFFICIENT_PROSPECTIVE_CASES",
+      "valid_complete_prospective_targets": 25,
+      "minimum_required": 200,
+      "promotion_allowed": false
+    },
+    "research_queue": {
+      "overall_cycle_status": "INCOMPLETE",
+      "blocking_tasks": [
+        "Q60"
+      ],
+      "next_action": "Continue append-only prospective freezes; do not reconstruct historical freezes."
+    }
+  },
+  "decision": {
+    "hypothesis": "NOT_SUPPORTED",
+    "model_promotion": "PROHIBITED",
+    "reason": "Blind OOS rolling OLS worsens MSE and MAE versus both rolling-mean and uniform baselines; mass/hit correlation is near zero in Blind OOS; Holm-adjusted tests are not significant."
+  },
+  "limitations": [
+    "Blind OOS is chronological but exposed to broader SONAR research; not virgin confirmatory data.",
+    "Holm family is local to four Q143 endpoints, not all project experiments.",
+    "Only one active engine and one score-mass feature tested.",
+    "2026-10-25 app freeze has exact Top20 mismatch but Top5 set matches; no per-row source hash/model version, so cause cannot be assigned to source drift versus tie/implementation differences.",
+    "No pending 2026-11-13 outcome used."
+  ],
+  "next_action": "Preserve all 43 target-2026-11-13 shadow freezes. After official publication, reconcile append-only. Add model_version and app_source_blob_sha only to future freeze rows; never rewrite historical freezes. Continue Q60 to 200 complete paired targets."
+}
