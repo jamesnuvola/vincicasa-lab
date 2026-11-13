@@ -63,7 +63,7 @@ Q90 contiene 330.429 AST `per_number_score`; Q7 1.023 AST `quintet_score`. I due
 - Archivio main: 3.406 estrazioni, ultimo risultato ufficiale 12 novembre, concorso 316 (2, 4, 7, 23, 33). Il concorso 317 del 13 novembre è ancora “In programmazione / In attesa” al controllo odierno.
 - Q141-A7/B11: una previsione congelata per il 13 novembre, zero esiti riconciliati; hash invariato `009f56ae414852c223a81a7d209e17bc4f94076b72556c87d15273001470a1f3`.
 - Q60: 25/200 target prospettici validi; gate `INSUFFICIENT_PROSPECTIVE_CASES`, promozione non consentita.
-- PR #92 è draft. PR #6, #7 e #8 restano aperte e invariate; #89, #90 e #91 non sono state modificate. Nessun merge, rebase, mutazione dell'archivio, modifica ai freeze o promozione di motori.
+- PR #92 è draft; il suo controllo generale `Test VinciCasa Lab` (run 43430394550) è ancora pending, quindi non lo considero superato. Il workflow D3 dedicato 43430133247 è invece concluso con successo. PR #6, #7 e #8 restano aperte e invariate; #89, #90 e #91 non sono state modificate. Nessun merge, rebase, mutazione dell'archivio, modifica ai freeze o promozione di motori.
 
 ## Prossima iterazione
 
