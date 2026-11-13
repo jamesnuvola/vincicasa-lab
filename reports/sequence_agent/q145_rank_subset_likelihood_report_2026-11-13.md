@@ -34,7 +34,7 @@ All historical inference is exploratory, not virgin confirmation: this PMF trans
 ## Prospective 2026-11-13 freeze
 - Borda modal quintet: **1 · 7 · 25 · 16 · 21**
 - Equal-type inclusion modal quintet: **1 · 25 · 21 · 16 · 9**
-- Cutoff 2026-11-12; frozen 2026-11-13 at 19:10:07 Europe/Rome; outcome null.
+- Cutoff 2026-11-12; frozen 2026-11-13 at 19:18:07 Europe/Rome; outcome null.
 - The 2026-11-12 repository row has an unresolved discrepancy between official archive pages; the cutoff is preserved but not independently source-confirmed.
 
 ## Integrity and limits
