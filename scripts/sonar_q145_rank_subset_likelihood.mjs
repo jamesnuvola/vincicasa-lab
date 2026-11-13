@@ -391,7 +391,6 @@ function buildArtifacts() {
     next_action: "Verify Q145 exact-head CI and remote Git readback; reconcile 2026-11-13 only after official publication; accumulate 100 prospective targets without retuning."
   };
   const checkpointJson = JSON.stringify(checkpoint, null, 2) + "\n";
-  const read = p => fs.readFileSync(path.join(ROOT, p), "utf8");
   const artifacts = {
     [Q145.preregPath]: preregText,
     "scripts/sonar_q145_rank_subset_likelihood.mjs": read("scripts/sonar_q145_rank_subset_likelihood.mjs"),
