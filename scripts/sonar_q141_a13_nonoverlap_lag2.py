@@ -811,8 +811,8 @@ def main() -> None:
         "decision": report["decision"],
         "targets": report["design"]["targets"],
         "split_counts": report["design"]["split_counts"],
-        "blind_pooled_logloss_gain": report["split_metrics"]["blind_oos"]["pooled_two_feature_mean"]["mean_logloss_gain"],
-        "blind_pooled_brier_gain": report["split_metrics"]["blind_oos"]["pooled_two_feature_mean"]["mean_brier_gain"],
+        "blind_pooled_logloss_gain": report["split_metrics"]["blind_oos"]["pooled_two_feature_mean_logloss_gain"],
+        "blind_pooled_brier_gain": report["split_metrics"]["blind_oos"]["pooled_two_feature_mean_brier_gain"],
         "iid_pooled_p_holm": [
             report["blind_oos_inference"]["iid_mechanical_null"][k]["p_holm_across_two_primary_endpoints"]
             for k in ("logloss_gain", "brier_gain")
