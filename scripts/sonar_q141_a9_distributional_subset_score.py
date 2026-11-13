@@ -285,7 +285,7 @@ def main():
             "m1_marginal_brier": f"{scored['m1_marginal_brier'][i]:.12f}",
             "uniform_marginal_brier": f"{scored['uniform_marginal_brier'][i]:.12f}",
             "m1_vs_m0_joint_gain": f"{scored['m0_joint_nll'][i] - scored['m1_joint_nll'][i]:.12f}",
-            "mean_m1_family_weight": f"{weights[i].mean():.12f}",
+            "m1_family_weights_json": json.dumps(weights[i].tolist(), separators=(",", ":")),
         })
     ledger_path = out_dir / "q141_a9_distributional_subset_score_target_ledger_2026-11-13.csv"
     with ledger_path.open("w", newline="", encoding="utf-8") as f:
