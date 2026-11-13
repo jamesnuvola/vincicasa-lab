@@ -39,8 +39,8 @@ jobs:
         with:
           name: q90-expanded-formula-grammar-bundle
           path: q90-source
-          github-token: \${{ secrets.GITHUB_TOKEN }}
-          repository: \${{ github.repository }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
           run-id: 42504717670
       - name: Rebuild all 59 features and run preregistered walk-forward
         run: |
