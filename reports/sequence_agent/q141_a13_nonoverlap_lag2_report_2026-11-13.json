@@ -1,0 +1,256 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A13-NONOVERLAP-LAG2",
+  "status": "COMPLETED_HISTORICAL_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_NONOVERLAP_LAG2_TRANSITION_LIFT_DEMONSTRATED",
+  "source": {
+    "a7_artifact_run_id": 43348144964,
+    "a7_artifact_id": 14003350043,
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "matrix_sha256": "81479d7cff00ddcbc6046bcb390efb2ef1b08de6a6f1f2cdb2f89a77c76c6047",
+    "a12_feature_builder_blob_sha1": "208035ce9d2e949b47cf4caa9cf2ddf71018348c",
+    "matrix_shape": [
+      3356,
+      40,
+      59
+    ],
+    "feature_count": 59,
+    "draw_rows": 3356,
+    "first_target_date": "2017-09-05",
+    "last_target_date": "2026-11-12"
+  },
+  "design": {
+    "features": [
+      "sum_transition",
+      "range_transition"
+    ],
+    "model": "lag-2 categorical transition from delta[t-2] to delta[t]",
+    "mechanical_overlap_control": "phase-matched modulo-4 training endpoints; each training example uses raw draw rows [s-3,s], examples are spaced by four rows, and the last training block ends at t-4 before target block [t-3,t]",
+    "baseline": "expanding marginal category frequency computed on exactly the same phase-matched, non-overlapping training endpoints",
+    "phase_stride": 4,
+    "base_dirichlet_alpha": 0.5,
+    "transition_shrinkage_alpha": 20.0,
+    "warmup_rows": 400,
+    "targets": 2956,
+    "target_index_start_inclusive": 400,
+    "target_index_end_inclusive": 3355,
+    "split_counts": {
+      "discovery": 1774,
+      "validation": 591,
+      "blind_oos": 591
+    },
+    "primary_endpoint": "Blind OOS pooled mean log-loss gain across sum_transition and range_transition",
+    "secondary_endpoint": "Blind OOS pooled mean multiclass Brier gain across the same two features",
+    "practical_thresholds": {
+      "pooled_logloss_gain": 0.005,
+      "pooled_brier_gain": 0.001
+    },
+    "inference": "2,000 independent uniform 5-of-40 sequence simulations with the exact same modulo-4 phase scorer; circular moving-block bootstrap length 20, 20,000 replicates as interval sensitivity",
+    "multiple_testing": "Holm across two pooled confirmatory endpoints; separate Holm across four feature-specific exploratory metrics; not across the full Q00-Q141 family",
+    "tuning": "none; all bins, phase stride, warmup and smoothing constants fixed"
+  },
+  "split_metrics": {
+    "discovery": {
+      "targets": 1774,
+      "pooled_two_feature_mean_logloss_gain": -0.015442051559037445,
+      "pooled_two_feature_mean_brier_gain": -0.005475220013731686,
+      "features": {
+        "sum_transition": {
+          "mean_logloss_gain": -0.011592112343880454,
+          "mean_brier_gain": -0.004312717184216615
+        },
+        "range_transition": {
+          "mean_logloss_gain": -0.019291990774194436,
+          "mean_brier_gain": -0.0066377228432467576
+        }
+      }
+    },
+    "validation": {
+      "targets": 591,
+      "pooled_two_feature_mean_logloss_gain": -0.008969645938643387,
+      "pooled_two_feature_mean_brier_gain": -0.004510674253113089,
+      "features": {
+        "sum_transition": {
+          "mean_logloss_gain": -0.0095697881135192,
+          "mean_brier_gain": -0.005819224494059812
+        },
+        "range_transition": {
+          "mean_logloss_gain": -0.008369503763767574,
+          "mean_brier_gain": -0.003202124012166366
+        }
+      }
+    },
+    "blind_oos": {
+      "targets": 591,
+      "pooled_two_feature_mean_logloss_gain": -0.0033558889417473125,
+      "pooled_two_feature_mean_brier_gain": -0.0012064185218794436,
+      "features": {
+        "sum_transition": {
+          "mean_logloss_gain": -0.009712350236569604,
+          "mean_brier_gain": -0.0038364435854255667
+        },
+        "range_transition": {
+          "mean_logloss_gain": 0.003000572353074979,
+          "mean_brier_gain": 0.0014236065416666792
+        }
+      }
+    }
+  },
+  "confirmatory_decision_rule": {
+    "logloss": {
+      "practical_threshold_met": false,
+      "bootstrap_ci95_lower_positive": false,
+      "holm_p_below_0_05": false
+    },
+    "brier": {
+      "practical_threshold_met": false,
+      "bootstrap_ci95_lower_positive": false,
+      "holm_p_below_0_05": false
+    }
+  },
+  "blind_oos_inference": {
+    "pooled_logloss_gain": {
+      "mean": -0.003355888941747312,
+      "ci95": [
+        -0.011943528021956256,
+        0.004401708859996488
+      ],
+      "bootstrap_se": 0.004132187202256736,
+      "p_centered_block_bootstrap": 0.7939603019849008,
+      "replicates": 20000,
+      "block_length": 20
+    },
+    "pooled_brier_gain": {
+      "mean": -0.0012064185218794439,
+      "ci95": [
+        -0.0042130639875795255,
+        0.0015889290217423987
+      ],
+      "bootstrap_se": 0.0014808595364121577,
+      "p_centered_block_bootstrap": 0.7941102944852757,
+      "replicates": 20000,
+      "block_length": 20
+    },
+    "iid_mechanical_null": {
+      "logloss_gain": {
+        "observed": -0.003355888941747312,
+        "null_mean": -0.008075280728464595,
+        "null_sd": 0.0036262548420561286,
+        "null_q025_q50_q975": [
+          -0.015057057224607848,
+          -0.00804022464053862,
+          -0.000991341106483408
+        ],
+        "p_iid_upper_tail": 0.0944527736131934,
+        "p_holm_across_two_primary_endpoints": 0.1889055472263868
+      },
+      "brier_gain": {
+        "observed": -0.0012064185218794439,
+        "null_mean": -0.0029532635946419267,
+        "null_sd": 0.0014466721003816838,
+        "null_q025_q50_q975": [
+          -0.005892395553285525,
+          -0.002957789283813638,
+          -0.00011661989585656214
+        ],
+        "p_iid_upper_tail": 0.11544227886056972,
+        "p_holm_across_two_primary_endpoints": 0.1889055472263868
+      }
+    },
+    "feature_specific_exploratory_tests": [
+      {
+        "feature": "sum_transition",
+        "metric": "logloss_gain",
+        "observed_blind_mean_gain": -0.009712350236569604,
+        "iid_null_mean": -0.007991880763972267,
+        "p_iid_upper_tail": 0.631184407796102,
+        "p_holm_across_four_feature_metrics": 1.0
+      },
+      {
+        "feature": "sum_transition",
+        "metric": "brier_gain",
+        "observed_blind_mean_gain": -0.0038364435854255667,
+        "iid_null_mean": -0.0028383218832641185,
+        "p_iid_upper_tail": 0.6931534232883558,
+        "p_holm_across_four_feature_metrics": 1.0
+      },
+      {
+        "feature": "range_transition",
+        "metric": "logloss_gain",
+        "observed_blind_mean_gain": 0.003000572353074979,
+        "iid_null_mean": -0.00815868069295692,
+        "p_iid_upper_tail": 0.017491254372813594,
+        "p_holm_across_four_feature_metrics": 0.06996501749125437
+      },
+      {
+        "feature": "range_transition",
+        "metric": "brier_gain",
+        "observed_blind_mean_gain": 0.0014236065416666792,
+        "iid_null_mean": -0.0030682053060197335,
+        "p_iid_upper_tail": 0.019490254872563718,
+        "p_holm_across_four_feature_metrics": 0.06996501749125437
+      }
+    ],
+    "iid_simulation": {
+      "replicates": 2000,
+      "seed": 14111313,
+      "pooled_null_mean": [
+        -0.00807528072846458,
+        -0.002953263594641931
+      ],
+      "pooled_null_sd": [
+        0.003626254842056129,
+        0.0014466721003816845
+      ],
+      "pooled_null_q025_q50_q975": [
+        [
+          -0.015057057224607848,
+          -0.00804022464053862,
+          -0.000991341106483408
+        ],
+        [
+          -0.005892395553285525,
+          -0.002957789283813638,
+          -0.00011661989585656214
+        ]
+      ]
+    }
+  },
+  "integrity": {
+    "source_archive_blob_pinned": true,
+    "source_matrix_sha256_verified": true,
+    "a12_feature_builder_blob_pinned": true,
+    "matrix_finite": true,
+    "draws_valid_sorted_unique": true,
+    "dates_unique_chronological": true,
+    "all_cutoffs_precede_targets": true,
+    "phase_matched_training": true,
+    "training_samples_spaced_by_four": true,
+    "training_target_raw_draw_windows_disjoint": true,
+    "last_training_block_ends_at_t_minus_4": true,
+    "target_uses_only_prior_state_and_current_target": true,
+    "future_suffix_invariance": true,
+    "deterministic_full_replay": true,
+    "iid_simulation_seed_fixed": true
+  },
+  "limitations": [
+    "Historical Blind OOS has been exposed to prior SONAR research and is exploratory, not virgin confirmation.",
+    "Only two differenced structural streams are tested; this is not a test of all 59 features or all formula families.",
+    "Modulo-4 phase sampling uses approximately one quarter of prior transitions to guarantee disjoint four-draw training blocks; this reduces effective training size.",
+    "The expanding marginal baseline uses the identical phase-matched training sample, so the comparison isolates lag-2 transition information rather than sample-size advantage.",
+    "IID simulations assume independent uniform unordered 5-of-40 draws; this is a statistical reference, not a physical mechanism model.",
+    "The model forecasts structural categories, not individual numbers or exact five-number tickets.",
+    "Holm correction covers the two registered pooled endpoints and separately the four exploratory feature metrics, not the full Q00-Q141 research history.",
+    "No 2026-11-13 prospective outcome is read or appended; B11 remains unchanged."
+  ],
+  "governance": {
+    "b11_freeze_unchanged": true,
+    "canonical_archive_mutated": false,
+    "active_engine_mutated": false,
+    "shadow_forecasts_mutated": false,
+    "engine_promoted": false,
+    "merge": false,
+    "rebase": false,
+    "protected_prs_6_7_8_untouched": true
+  }
+}
