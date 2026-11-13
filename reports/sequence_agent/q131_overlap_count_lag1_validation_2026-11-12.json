@@ -1,0 +1,122 @@
+{
+  "experiment": "Q131_overlap_count_lag1_markov",
+  "generated_at_utc": "2026-11-12T00:41:31Z",
+  "status": "PASS",
+  "check_count": 21,
+  "passed_count": 21,
+  "failed_count": 0,
+  "checks": [
+    {
+      "id": "source_blob_sha_pinned",
+      "passed": true,
+      "detail": "Pinned source blob SHA matches main."
+    },
+    {
+      "id": "source_rows_3404",
+      "passed": true,
+      "detail": "Observed 3404 rows."
+    },
+    {
+      "id": "dates_unique",
+      "passed": true,
+      "detail": "No duplicate dates."
+    },
+    {
+      "id": "dates_chronological",
+      "passed": true,
+      "detail": "Dates strictly increasing."
+    },
+    {
+      "id": "five_numbers_per_draw",
+      "passed": true,
+      "detail": "Every row has five numbers."
+    },
+    {
+      "id": "distinct_numbers_per_draw",
+      "passed": true,
+      "detail": "Every draw has five distinct numbers."
+    },
+    {
+      "id": "number_range",
+      "passed": true,
+      "detail": "All numbers are integers in 1..40."
+    },
+    {
+      "id": "draws_sorted",
+      "passed": true,
+      "detail": "Numbers sorted ascending."
+    },
+    {
+      "id": "overlap_support",
+      "passed": true,
+      "detail": "Overlap counts in 0..5."
+    },
+    {
+      "id": "exact_baseline_normalized",
+      "passed": true,
+      "detail": "Hypergeometric probabilities sum to one."
+    },
+    {
+      "id": "baseline_mean_0_625",
+      "passed": true,
+      "detail": "Exact null mean equals 0.625."
+    },
+    {
+      "id": "target_count_3204",
+      "passed": true,
+      "detail": "Observed 3204 targets."
+    },
+    {
+      "id": "split_1922_641_641",
+      "passed": true,
+      "detail": "Observed 1922/641/641."
+    },
+    {
+      "id": "strict_prior_cutoff",
+      "passed": true,
+      "detail": "Every cutoff precedes target."
+    },
+    {
+      "id": "history_count_prior_only",
+      "passed": true,
+      "detail": "M1 uses only prior overlap observations."
+    },
+    {
+      "id": "transition_count_prior_only",
+      "passed": true,
+      "detail": "M2 uses only completed prior transitions."
+    },
+    {
+      "id": "probabilities_normalized",
+      "passed": true,
+      "detail": "All predictive distributions sum to one."
+    },
+    {
+      "id": "scores_finite",
+      "passed": true,
+      "detail": "All scoring values finite."
+    },
+    {
+      "id": "prefix_replay_invariance",
+      "passed": true,
+      "detail": "First 1,000 targets unchanged when future rows removed."
+    },
+    {
+      "id": "deterministic_replay",
+      "passed": true,
+      "detail": "Independent replay produces identical ledger bytes."
+    },
+    {
+      "id": "blind_split_size",
+      "passed": true,
+      "detail": "Blind historical segment has 641 targets."
+    }
+  ],
+  "inference_replay": {
+    "signflip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "seed": 13120261112,
+    "endpoint_count": 4,
+    "holm_family_size": 4
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "experiment": "Q131_overlap_count_lag1_markov",
+  "specification_created_at_utc": "2026-11-12T00:41:31Z",
+  "status": "EXPLORATORY_SPECIFICATION_AFTER_INITIAL_COMPUTATION",
+  "preregistered_before_first_exploratory_run": false,
+  "confirmation_status": "NOT_CONFIRMATORY",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "base_commit": "06e9e470054a86a0b710657db35e0c2259ef6b0a",
+    "path": "data/storico_daily.csv",
+    "blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "rows": 3404
+  },
+  "hypothesis": "The overlap count between consecutive 5-of-40 draws may exhibit first-order Markov dependence that improves one-step-ahead probability forecasts of the next overlap count.",
+  "definitions": {
+    "O_t": "|D_t ∩ D_(t-1)|",
+    "null_distribution": "Hypergeometric(N=40,K=5,n=5)",
+    "M0": "Prior-free exact null distribution.",
+    "M1": "Prior-only empirical marginal distribution, shrinkage 200 toward M0.",
+    "M2": "Prior-only P(O_t | O_(t-1)), shrinkage 200 toward M1."
+  },
+  "target_protocol": {
+    "warmup_draws": 200,
+    "target_count": 3204,
+    "first_target_zero_based_index": 200,
+    "split": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "score_before_update": true,
+    "cutoff_rule": "history_cutoff is the immediately preceding draw date; no current/future draw enters marginal or transition counts."
+  },
+  "metrics": [
+    "Multiclass Brier score",
+    "Multiclass log-loss"
+  ],
+  "inference": {
+    "block_signflip_replicates": 50000,
+    "circular_block_bootstrap_replicates": 10000,
+    "block_length": 20,
+    "seed": 13120261112,
+    "alternative": "positive gain = comparator loss minus model loss > 0",
+    "holm_family_size": 4
+  },
+  "related_work": "Q50 tested overlap-category age/hazard; Q131 tests lag-1 Markov dependence of numeric overlap counts. Related to prior transition research; no cumulative Q00-Q130 correction.",
+  "guardrails": [
+    "No engine change or promotion.",
+    "No canonical archive update from provisional secondary-only numbers.",
+    "No Q60 increment until official combination publication and complete paired freeze.",
+    "No reconstruction of missing historical freezes.",
+    "Human review required."
+  ]
+}

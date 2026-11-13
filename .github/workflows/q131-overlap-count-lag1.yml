@@ -1,0 +1,23 @@
+name: Q131 overlap-count lag-1 replay
+on:
+  pull_request:
+    paths:
+      - "data/storico_daily.csv"
+      - "scripts/sonar_q131_overlap_count_lag1.mjs"
+      - "reports/sequence_agent/q131_overlap_count_lag1_*"
+      - ".github/workflows/q131-overlap-count-lag1.yml"
+  push:
+    branches:
+      - "research/q131-overlap-count-markov-20261112"
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Replay Q131 and verify persisted artifacts
+        run: node scripts/sonar_q131_overlap_count_lag1.mjs
