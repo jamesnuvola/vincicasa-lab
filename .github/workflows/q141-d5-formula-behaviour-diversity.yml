@@ -178,13 +178,20 @@ jobs:
           PY
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+          git merge --ff-only "origin/$BRANCH"
           git add scripts/sonar_q141_d5_formula_behaviour_diversity.py tests/test_sonar_q141_d5_formula_behaviour_diversity.py reports/sequence_agent/q141_d5_formula_behaviour_diversity_preregistration_2026-11-13.md reports/sequence_agent/q141_d5_formula_behaviour_diversity_report_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv reports/sequence_agent/q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_validation_2026-11-13.json
           git commit -m 'Persist Q141-D5 formula behaviour diversity results'
-          git push origin "HEAD:$BRANCH"
+          if ! git push origin "HEAD:$BRANCH"; then
+            git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+            git rebase "origin/$BRANCH"
+            git push origin "HEAD:$BRANCH"
+          fi
 
       - name: Verify remote readback and persist receipt
         run: |
           git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+          git merge --ff-only "origin/$BRANCH"
           python - <<'PY'
           import hashlib,json,pathlib,subprocess,os
           names=['scripts/sonar_q141_d5_formula_behaviour_diversity.py','tests/test_sonar_q141_d5_formula_behaviour_diversity.py','reports/sequence_agent/q141_d5_formula_behaviour_diversity_preregistration_2026-11-13.md','reports/sequence_agent/q141_d5_formula_behaviour_diversity_report_2026-11-13.json','reports/sequence_agent/q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv','reports/sequence_agent/q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json','reports/sequence_agent/q141_d5_formula_behaviour_diversity_validation_2026-11-13.json']
@@ -204,7 +211,11 @@ jobs:
           PY
           git add reports/sequence_agent/q141_d5_formula_behaviour_diversity_readback_receipt_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json
           git commit -m 'Verify Q141-D5 remote persistence'
-          git push origin "HEAD:$BRANCH"
+          if ! git push origin "HEAD:$BRANCH"; then
+            git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+            git rebase "origin/$BRANCH"
+            git push origin "HEAD:$BRANCH"
+          fi
           git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
           for name in scripts/sonar_q141_d5_formula_behaviour_diversity.py tests/test_sonar_q141_d5_formula_behaviour_diversity.py reports/sequence_agent/q141_d5_formula_behaviour_diversity_preregistration_2026-11-13.md reports/sequence_agent/q141_d5_formula_behaviour_diversity_report_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv reports/sequence_agent/q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_validation_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_readback_receipt_2026-11-13.json; do
             git show "origin/$BRANCH:$name" > "/tmp/$(basename "$name").remote"
