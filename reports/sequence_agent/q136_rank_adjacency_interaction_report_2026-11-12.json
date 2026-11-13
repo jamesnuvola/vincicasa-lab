@@ -1,0 +1,1549 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q136",
+  "title": "APP rank-space adjacent-pair interaction",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_PAIRWISE_RANK_ADJACENCY_INCREMENTAL_LIFT_DEMONSTRATED",
+  "generated_at_utc": "2026-11-12T04:57:22Z",
+  "epistemic_status": "EXPLORATORY_POST_HOC_EXTENSION_OF_Q135",
+  "source": {
+    "upstream_experiment": "Q123",
+    "upstream_model_experiment": "Q135",
+    "source_ledger_path": "reports/sequence_agent/q136_source_q123_rank_ledger_2026-11-12.csv",
+    "source_ledger_blob_sha": "36d7af1fb3cceda5976eb99a78931f58d1a3d28a",
+    "targets": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "disputed_2026_11_11_excluded": true
+  },
+  "hypothesis": "Selected APP ranks may exhibit pairwise adjacency structure beyond individual rank-sum preference. A fixed-size pair-interaction model should improve proper subset likelihood and marginal inclusion Brier versus the Q135 rank-only model if that structure is predictive.",
+  "formula": {
+    "pair_count": "A(S)=sum_{i=1}^4 I(r_(i+1)-r_(i)=1)",
+    "probability": "P_{beta,gamma}(S)=exp(-beta*sum(r)+gamma*A(S))/Z(beta,gamma), |S|=5",
+    "exact_normalizer": "Z enumerates all 658008 five-rank subsets",
+    "brier": "sum_{r=1}^{40}(p_r-y_r)^2; negative delta versus Q135 favors the interaction model",
+    "log_likelihood": "log P_model(S)-log P_Q135(S); positive favors interaction model"
+  },
+  "design": {
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "beta_grid": [
+      0,
+      0.0005,
+      0.001
+    ],
+    "gamma_grid": [
+      -0.5,
+      -0.25,
+      0,
+      0.25,
+      0.5
+    ],
+    "candidate_count": 15,
+    "selection": "Discovery-only maximization of mean exact subset log-likelihood gain versus Q135 beta=0.0005,gamma=0; ties prefer smaller |gamma| then beta closest to 0.0005.",
+    "holdout_candidates": 12,
+    "inference_family_size": 48,
+    "randomization_replicates": 10000,
+    "bootstrap_replicates": 10000,
+    "bootstrap_block_length": 20
+  },
+  "selection": {
+    "baseline": {
+      "beta": 0.0005,
+      "gamma": 0,
+      "partitionZ": 625181.3881443385
+    },
+    "selected": {
+      "beta": 0.0005,
+      "gamma": 0,
+      "discoveryMeanLogGainVsQ135": 0,
+      "discoveryMeanBrierDeltaVsQ135": 0,
+      "identicalToQ135": true
+    },
+    "discovery_grid": [
+      {
+        "beta": 0.0005,
+        "gamma": 0,
+        "meanLogGainVsQ135": 0,
+        "meanBrierDeltaVsQ135": 0
+      },
+      {
+        "beta": 0,
+        "gamma": 0,
+        "meanLogGainVsQ135": -0.000074584266,
+        "meanBrierDeltaVsQ135": 0.000016676512
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0,
+        "meanLogGainVsQ135": -0.000074891706,
+        "meanBrierDeltaVsQ135": 0.000016973642
+      },
+      {
+        "beta": 0.0005,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.012255409946,
+        "meanBrierDeltaVsQ135": -0.000133425712
+      },
+      {
+        "beta": 0,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.01232638257,
+        "meanBrierDeltaVsQ135": -0.000117238373
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.012341136226,
+        "meanBrierDeltaVsQ135": -0.000112723927
+      },
+      {
+        "beta": 0.0005,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.013003811958,
+        "meanBrierDeltaVsQ135": 0.000146348249
+      },
+      {
+        "beta": 0.001,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.013069762456,
+        "meanBrierDeltaVsQ135": 0.000160479553
+      },
+      {
+        "beta": 0,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.013081376721,
+        "meanBrierDeltaVsQ135": 0.000163324708
+      },
+      {
+        "beta": 0.0005,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.04742158872,
+        "meanBrierDeltaVsQ135": 0.00029253777
+      },
+      {
+        "beta": 0.001,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.047480228877,
+        "meanBrierDeltaVsQ135": 0.000304506232
+      },
+      {
+        "beta": 0,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.047501590325,
+        "meanBrierDeltaVsQ135": 0.000309686776
+      },
+      {
+        "beta": 0.0005,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.053827776759,
+        "meanBrierDeltaVsQ135": -0.000236099893
+      },
+      {
+        "beta": 0,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.053894417278,
+        "meanBrierDeltaVsQ135": -0.000220672394
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.053926498828,
+        "meanBrierDeltaVsQ135": -0.000210525935
+      }
+    ]
+  },
+  "split_results": {
+    "discovery": {
+      "targets": 1922,
+      "meanAdjacentRankPairs": 0.504162330905,
+      "models": [
+        {
+          "beta": 0,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.047501590325,
+          "meanBrierDeltaVsQ135": 0.000309686776
+        },
+        {
+          "beta": 0,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.013081376721,
+          "meanBrierDeltaVsQ135": 0.000163324708
+        },
+        {
+          "beta": 0,
+          "gamma": 0,
+          "meanLogGainVsQ135": -0.000074584266,
+          "meanBrierDeltaVsQ135": 0.000016676512
+        },
+        {
+          "beta": 0,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.01232638257,
+          "meanBrierDeltaVsQ135": -0.000117238373
+        },
+        {
+          "beta": 0,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.053894417278,
+          "meanBrierDeltaVsQ135": -0.000220672394
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.04742158872,
+          "meanBrierDeltaVsQ135": 0.00029253777
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.013003811958,
+          "meanBrierDeltaVsQ135": 0.000146348249
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0,
+          "meanLogGainVsQ135": 0,
+          "meanBrierDeltaVsQ135": 0
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.012255409946,
+          "meanBrierDeltaVsQ135": -0.000133425712
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.053827776759,
+          "meanBrierDeltaVsQ135": -0.000236099893
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.047480228877,
+          "meanBrierDeltaVsQ135": 0.000304506232
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.013069762456,
+          "meanBrierDeltaVsQ135": 0.000160479553
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0,
+          "meanLogGainVsQ135": -0.000074891706,
+          "meanBrierDeltaVsQ135": 0.000016973642
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.012341136226,
+          "meanBrierDeltaVsQ135": -0.000112723927
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.053926498828,
+          "meanBrierDeltaVsQ135": -0.000210525935
+        }
+      ]
+    },
+    "validation": {
+      "targets": 641,
+      "meanAdjacentRankPairs": 0.519500780031,
+      "models": [
+        {
+          "beta": 0,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.054421257257,
+          "meanBrierDeltaVsQ135": 0.000101971277
+        },
+        {
+          "beta": 0,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.016166431372,
+          "meanBrierDeltaVsQ135": -0.000028927453
+        },
+        {
+          "beta": 0,
+          "gamma": 0,
+          "meanLogGainVsQ135": 0.000674973365,
+          "meanBrierDeltaVsQ135": -0.000151183361
+        },
+        {
+          "beta": 0,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.007742212658,
+          "meanBrierDeltaVsQ135": -0.000248112349
+        },
+        {
+          "beta": 0,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.045475635084,
+          "meanBrierDeltaVsQ135": -0.000297527435
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.055090813283,
+          "meanBrierDeltaVsQ135": 0.000242327644
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.016838424239,
+          "meanBrierDeltaVsQ135": 0.000116285084
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0,
+          "meanLogGainVsQ135": 0,
+          "meanBrierDeltaVsQ135": 0
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.008420797665,
+          "meanBrierDeltaVsQ135": -0.000089651779
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.046158552196,
+          "meanBrierDeltaVsQ135": -0.000130283354
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.055899011071,
+          "meanBrierDeltaVsQ135": 0.000411327422
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.017653932368,
+          "meanBrierDeltaVsQ135": 0.000292064001
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0,
+          "meanLogGainVsQ135": -0.000824449337,
+          "meanBrierDeltaVsQ135": 0.000184209611
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.009256081575,
+          "meanBrierDeltaVsQ135": 0.000104973479
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.047006831895,
+          "meanBrierDeltaVsQ135": 0.000077115935
+        }
+      ]
+    },
+    "blind_oos": {
+      "targets": 641,
+      "meanAdjacentRankPairs": 0.492979719189,
+      "models": [
+        {
+          "beta": 0,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.042169307179,
+          "meanBrierDeltaVsQ135": -0.000018861118
+        },
+        {
+          "beta": 0,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.010544746505,
+          "meanBrierDeltaVsQ135": 0.00001336599
+        },
+        {
+          "beta": 0,
+          "gamma": 0,
+          "meanLogGainVsQ135": -0.000333606979,
+          "meanBrierDeltaVsQ135": 0.000075080049
+        },
+        {
+          "beta": 0,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.015381058211,
+          "meanBrierDeltaVsQ135": 0.000179416913
+        },
+        {
+          "beta": 0,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.059744745849,
+          "meanBrierDeltaVsQ135": 0.000342253215
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.041830282862,
+          "meanBrierDeltaVsQ135": -0.000086561628
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.010208159029,
+          "meanBrierDeltaVsQ135": -0.000057697632
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0,
+          "meanLogGainVsQ135": 0,
+          "meanBrierDeltaVsQ135": 0
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.015051062876,
+          "meanBrierDeltaVsQ135": 0.000099609507
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.059419082617,
+          "meanBrierDeltaVsQ135": 0.000256970973
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.5,
+          "meanLogGainVsQ135": -0.041629900306,
+          "meanBrierDeltaVsQ135": -0.000125665523
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.25,
+          "meanLogGainVsQ135": -0.010015086814,
+          "meanBrierDeltaVsQ135": -0.000098197883
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0,
+          "meanLogGainVsQ135": 0.000184131006,
+          "meanBrierDeltaVsQ135": -0.000042006772
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.25,
+          "meanLogGainVsQ135": -0.014877766442,
+          "meanBrierDeltaVsQ135": 0.000056069516
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.5,
+          "meanLogGainVsQ135": -0.059258781974,
+          "meanBrierDeltaVsQ135": 0.000212006739
+        }
+      ]
+    }
+  },
+  "holdout_interaction_results": {
+    "validation": [
+      {
+        "beta": 0,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.054421257257,
+        "meanBrierDeltaVsQ135": 0.000101971277
+      },
+      {
+        "beta": 0,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.016166431372,
+        "meanBrierDeltaVsQ135": -0.000028927453
+      },
+      {
+        "beta": 0,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.007742212658,
+        "meanBrierDeltaVsQ135": -0.000248112349
+      },
+      {
+        "beta": 0,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.045475635084,
+        "meanBrierDeltaVsQ135": -0.000297527435
+      },
+      {
+        "beta": 0.0005,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.055090813283,
+        "meanBrierDeltaVsQ135": 0.000242327644
+      },
+      {
+        "beta": 0.0005,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.016838424239,
+        "meanBrierDeltaVsQ135": 0.000116285084
+      },
+      {
+        "beta": 0.0005,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.008420797665,
+        "meanBrierDeltaVsQ135": -0.000089651779
+      },
+      {
+        "beta": 0.0005,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.046158552196,
+        "meanBrierDeltaVsQ135": -0.000130283354
+      },
+      {
+        "beta": 0.001,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.055899011071,
+        "meanBrierDeltaVsQ135": 0.000411327422
+      },
+      {
+        "beta": 0.001,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.017653932368,
+        "meanBrierDeltaVsQ135": 0.000292064001
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.009256081575,
+        "meanBrierDeltaVsQ135": 0.000104973479
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.047006831895,
+        "meanBrierDeltaVsQ135": 0.000077115935
+      }
+    ],
+    "blind_oos": [
+      {
+        "beta": 0,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.042169307179,
+        "meanBrierDeltaVsQ135": -0.000018861118
+      },
+      {
+        "beta": 0,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.010544746505,
+        "meanBrierDeltaVsQ135": 0.00001336599
+      },
+      {
+        "beta": 0,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.015381058211,
+        "meanBrierDeltaVsQ135": 0.000179416913
+      },
+      {
+        "beta": 0,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.059744745849,
+        "meanBrierDeltaVsQ135": 0.000342253215
+      },
+      {
+        "beta": 0.0005,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.041830282862,
+        "meanBrierDeltaVsQ135": -0.000086561628
+      },
+      {
+        "beta": 0.0005,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.010208159029,
+        "meanBrierDeltaVsQ135": -0.000057697632
+      },
+      {
+        "beta": 0.0005,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.015051062876,
+        "meanBrierDeltaVsQ135": 0.000099609507
+      },
+      {
+        "beta": 0.0005,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.059419082617,
+        "meanBrierDeltaVsQ135": 0.000256970973
+      },
+      {
+        "beta": 0.001,
+        "gamma": -0.5,
+        "meanLogGainVsQ135": -0.041629900306,
+        "meanBrierDeltaVsQ135": -0.000125665523
+      },
+      {
+        "beta": 0.001,
+        "gamma": -0.25,
+        "meanLogGainVsQ135": -0.010015086814,
+        "meanBrierDeltaVsQ135": -0.000098197883
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0.25,
+        "meanLogGainVsQ135": -0.014877766442,
+        "meanBrierDeltaVsQ135": 0.000056069516
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0.5,
+        "meanLogGainVsQ135": -0.059258781974,
+        "meanBrierDeltaVsQ135": 0.000212006739
+      }
+    ]
+  },
+  "inference": {
+    "null": "Independent uniform 5-subsets of APP ranks 1..40 under the lottery null",
+    "correction": "Holm-Bonferroni across all 48 holdout endpoints (12 nonzero-gamma models x 2 splits x 2 metrics)",
+    "randomization": {
+      "validation": [
+        {
+          "beta": 0,
+          "gamma": -0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 7659,
+            "pUpper": 0.7659234076592341
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 6380,
+            "pLower": 0.6380361963803619
+          }
+        },
+        {
+          "beta": 0,
+          "gamma": -0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 7518,
+            "pUpper": 0.7518248175182481
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 4320,
+            "pLower": 0.4320567943205679
+          }
+        },
+        {
+          "beta": 0,
+          "gamma": 0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 1913,
+            "pUpper": 0.19138086191380863
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 589,
+            "pLower": 0.058994100589941006
+          }
+        },
+        {
+          "beta": 0,
+          "gamma": 0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 2066,
+            "pUpper": 0.20667933206679331
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 849,
+            "pLower": 0.08499150084991501
+          }
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 7758,
+            "pUpper": 0.7758224177582241
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 8631,
+            "pLower": 0.8631136886311369
+          }
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 7695,
+            "pUpper": 0.7695230476952305
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 8565,
+            "pLower": 0.8565143485651435
+          }
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 2305,
+            "pUpper": 0.23057694230576942
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 1664,
+            "pLower": 0.16648335166483352
+          }
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 2218,
+            "pUpper": 0.22187781221877811
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 1805,
+            "pLower": 0.1805819418058194
+          }
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 7934,
+            "pUpper": 0.7934206579342066
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 9452,
+            "pLower": 0.9452054794520548
+          }
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 8087,
+            "pUpper": 0.8087191280871913
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 9483,
+            "pLower": 0.9483051694830517
+          }
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 2482,
+            "pUpper": 0.24827517248275172
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 5629,
+            "pLower": 0.5629437056294371
+          }
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 2341,
+            "pUpper": 0.23417658234176583
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 3850,
+            "pLower": 0.38506149385061494
+          }
+        }
+      ],
+      "blind_oos": [
+        {
+          "beta": 0,
+          "gamma": -0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 4052,
+            "pUpper": 0.4052594740525947
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 4005,
+            "pLower": 0.40055994400559947
+          }
+        },
+        {
+          "beta": 0,
+          "gamma": -0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 4189,
+            "pUpper": 0.418958104189581
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 5383,
+            "pLower": 0.5383461653834617
+          }
+        },
+        {
+          "beta": 0,
+          "gamma": 0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 6312,
+            "pUpper": 0.6312368763123688
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 8658,
+            "pLower": 0.8658134186581342
+          }
+        },
+        {
+          "beta": 0,
+          "gamma": 0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 6205,
+            "pUpper": 0.6205379462053795
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 8371,
+            "pLower": 0.8371162883711629
+          }
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 4035,
+            "pUpper": 0.40355964403559647
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 2342,
+            "pLower": 0.23427657234276572
+          }
+        },
+        {
+          "beta": 0.0005,
+          "gamma": -0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 3795,
+            "pUpper": 0.3795620437956204
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 2386,
+            "pLower": 0.23867613238676133
+          }
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 5965,
+            "pUpper": 0.5965403459654035
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 7511,
+            "pLower": 0.7511248875112488
+          }
+        },
+        {
+          "beta": 0.0005,
+          "gamma": 0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 6155,
+            "pUpper": 0.6155384461553844
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 7450,
+            "pLower": 0.7450254974502549
+          }
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 3795,
+            "pUpper": 0.3795620437956204
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 1533,
+            "pLower": 0.1533846615338466
+          }
+        },
+        {
+          "beta": 0.001,
+          "gamma": -0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 3688,
+            "pUpper": 0.3688631136886311
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 1312,
+            "pLower": 0.1312868713128687
+          }
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.25,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 5811,
+            "pUpper": 0.5811418858114189
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 4573,
+            "pLower": 0.45735426457354267
+          }
+        },
+        {
+          "beta": 0.001,
+          "gamma": 0.5,
+          "logRandomization": {
+            "replicates": 10000,
+            "extreme": 5948,
+            "pUpper": 0.5948405159484051
+          },
+          "brierRandomization": {
+            "replicates": 10000,
+            "extreme": 5860,
+            "pLower": 0.5860413958604139
+          }
+        }
+      ]
+    },
+    "blind_block_bootstrap_ci95": [
+      {
+        "beta": 0,
+        "gamma": -0.5,
+        "logLikelihoodGainCI95": [
+          -0.06847039922269296,
+          -0.0175788235596664
+        ],
+        "brierDeltaCI95": [
+          -0.0004073213505462968,
+          0.0003514369688201961
+        ]
+      },
+      {
+        "beta": 0,
+        "gamma": -0.25,
+        "logLikelihoodGainCI95": [
+          -0.023638350249107105,
+          0.0016206201097072011
+        ],
+        "brierDeltaCI95": [
+          -0.0002585691628058239,
+          0.00027959000704664986
+        ]
+      },
+      {
+        "beta": 0,
+        "gamma": 0.25,
+        "logLikelihoodGainCI95": [
+          -0.027413819521877544,
+          -0.0029145995530787355
+        ],
+        "brierDeltaCI95": [
+          -0.0001459443772046031,
+          0.0005039566815367464
+        ]
+      },
+      {
+        "beta": 0,
+        "gamma": 0.5,
+        "logLikelihoodGainCI95": [
+          -0.08434458984252266,
+          -0.03415426222941808
+        ],
+        "brierDeltaCI95": [
+          -0.00018342962084433754,
+          0.0008765553117479654
+        ]
+      },
+      {
+        "beta": 0.0005,
+        "gamma": -0.5,
+        "logLikelihoodGainCI95": [
+          -0.06757131250341733,
+          -0.017649315623542938
+        ],
+        "brierDeltaCI95": [
+          -0.00042273014878730617,
+          0.0002487704392603354
+        ]
+      },
+      {
+        "beta": 0.0005,
+        "gamma": -0.25,
+        "logLikelihoodGainCI95": [
+          -0.022688658248626217,
+          0.0014923089900633392
+        ],
+        "brierDeltaCI95": [
+          -0.0002437694253259008,
+          0.00011935510400271375
+        ]
+      },
+      {
+        "beta": 0.0005,
+        "gamma": 0.25,
+        "logLikelihoodGainCI95": [
+          -0.027141546494896394,
+          -0.002180548054958684
+        ],
+        "brierDeltaCI95": [
+          -0.00010557835044359276,
+          0.00031451386389148416
+        ]
+      },
+      {
+        "beta": 0.0005,
+        "gamma": 0.5,
+        "logLikelihoodGainCI95": [
+          -0.08360004985572234,
+          -0.03367805297584626
+        ],
+        "brierDeltaCI95": [
+          -0.0001910963421207408,
+          0.0007137822787338913
+        ]
+      },
+      {
+        "beta": 0.001,
+        "gamma": -0.5,
+        "logLikelihoodGainCI95": [
+          -0.06710181918298638,
+          -0.018023816062861634
+        ],
+        "brierDeltaCI95": [
+          -0.0005352657291570058,
+          0.00028191185516402014
+        ]
+      },
+      {
+        "beta": 0.001,
+        "gamma": -0.25,
+        "logLikelihoodGainCI95": [
+          -0.02271087464557556,
+          0.0020309350268113754
+        ],
+        "brierDeltaCI95": [
+          -0.0003860214614324286,
+          0.00019441212308236934
+        ]
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0.25,
+        "logLikelihoodGainCI95": [
+          -0.02713283664500287,
+          -0.002085254741726737
+        ],
+        "brierDeltaCI95": [
+          -0.00024335513025035345,
+          0.00036224206927271043
+        ]
+      },
+      {
+        "beta": 0.001,
+        "gamma": 0.5,
+        "logLikelihoodGainCI95": [
+          -0.08396003002342406,
+          -0.03365269773013226
+        ],
+        "brierDeltaCI95": [
+          -0.0002903113481189968,
+          0.0007175119068161432
+        ]
+      }
+    ],
+    "tests": [
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0,
+        "gamma": -0.5,
+        "p": 0.765923407659,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0,
+        "gamma": -0.5,
+        "p": 0.63803619638,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0,
+        "gamma": -0.25,
+        "p": 0.751824817518,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0,
+        "gamma": -0.25,
+        "p": 0.432056794321,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0,
+        "gamma": 0.25,
+        "p": 0.191380861914,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0,
+        "gamma": 0.25,
+        "p": 0.05899410059,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0,
+        "gamma": 0.5,
+        "p": 0.206679332067,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0,
+        "gamma": 0.5,
+        "p": 0.08499150085,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.0005,
+        "gamma": -0.5,
+        "p": 0.775822417758,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0.0005,
+        "gamma": -0.5,
+        "p": 0.863113688631,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.0005,
+        "gamma": -0.25,
+        "p": 0.769523047695,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0.0005,
+        "gamma": -0.25,
+        "p": 0.856514348565,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.0005,
+        "gamma": 0.25,
+        "p": 0.230576942306,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0.0005,
+        "gamma": 0.25,
+        "p": 0.166483351665,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.0005,
+        "gamma": 0.5,
+        "p": 0.221877812219,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0.0005,
+        "gamma": 0.5,
+        "p": 0.180581941806,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.001,
+        "gamma": -0.5,
+        "p": 0.793420657934,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0.001,
+        "gamma": -0.5,
+        "p": 0.945205479452,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.001,
+        "gamma": -0.25,
+        "p": 0.808719128087,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0.001,
+        "gamma": -0.25,
+        "p": 0.948305169483,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.001,
+        "gamma": 0.25,
+        "p": 0.248275172483,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0.001,
+        "gamma": 0.25,
+        "p": 0.562943705629,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.001,
+        "gamma": 0.5,
+        "p": 0.234176582342,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "beta": 0.001,
+        "gamma": 0.5,
+        "p": 0.385061493851,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0,
+        "gamma": -0.5,
+        "p": 0.405259474053,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0,
+        "gamma": -0.5,
+        "p": 0.400559944006,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0,
+        "gamma": -0.25,
+        "p": 0.41895810419,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0,
+        "gamma": -0.25,
+        "p": 0.538346165383,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0,
+        "gamma": 0.25,
+        "p": 0.631236876312,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0,
+        "gamma": 0.25,
+        "p": 0.865813418658,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0,
+        "gamma": 0.5,
+        "p": 0.620537946205,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0,
+        "gamma": 0.5,
+        "p": 0.837116288371,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.0005,
+        "gamma": -0.5,
+        "p": 0.403559644036,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0.0005,
+        "gamma": -0.5,
+        "p": 0.234276572343,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.0005,
+        "gamma": -0.25,
+        "p": 0.379562043796,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0.0005,
+        "gamma": -0.25,
+        "p": 0.238676132387,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.0005,
+        "gamma": 0.25,
+        "p": 0.596540345965,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0.0005,
+        "gamma": 0.25,
+        "p": 0.751124887511,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.0005,
+        "gamma": 0.5,
+        "p": 0.615538446155,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0.0005,
+        "gamma": 0.5,
+        "p": 0.74502549745,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.001,
+        "gamma": -0.5,
+        "p": 0.379562043796,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0.001,
+        "gamma": -0.5,
+        "p": 0.153384661534,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.001,
+        "gamma": -0.25,
+        "p": 0.368863113689,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0.001,
+        "gamma": -0.25,
+        "p": 0.131286871313,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.001,
+        "gamma": 0.25,
+        "p": 0.581141885811,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0.001,
+        "gamma": 0.25,
+        "p": 0.457354264574,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "beta": 0.001,
+        "gamma": 0.5,
+        "p": 0.594840515948,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "beta": 0.001,
+        "gamma": 0.5,
+        "p": 0.58604139586,
+        "p_holm": 1
+      }
+    ]
+  },
+  "integrity": {
+    "exact_subset_count_per_model": 658008,
+    "marginal_sum_min": 4.999999999974413,
+    "marginal_sum_max": 5.000000000004109,
+    "future_suffix_mutation": [
+      {
+        "start": 1922,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      },
+      {
+        "start": 1923,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      },
+      {
+        "start": 2000,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      },
+      {
+        "start": 2240,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      },
+      {
+        "start": 2563,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      },
+      {
+        "start": 2800,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      },
+      {
+        "start": 3000,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      },
+      {
+        "start": 3200,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      },
+      {
+        "start": 3203,
+        "selectedBeta": 0.0005,
+        "selectedGamma": 0,
+        "unchanged": true
+      }
+    ],
+    "checks_passed": 24,
+    "checks_total": 24
+  },
+  "limitations": [
+    "Exploratory computation preceded written protocol; not preregistered or confirmatory.",
+    "Q136 reuses Q123 ranks and is a post-hoc extension of Q135, not independent evidence.",
+    "Historical Blind OOS is not virgin after prior SONAR research.",
+    "Holm correction covers only the 48 Q136 holdout endpoints, not all Q00-Q135 experiments.",
+    "Conditional null assumes independent uniform 5-of-40 draws.",
+    "Contest 315 remains excluded from the pinned source ledger; no archive, freeze, Q60, or production engine is modified."
+  ],
+  "next_action": "Keep the Q135 rank-only model unchanged. Do not promote pairwise rank interactions. Continue source-clean prospective collection; resolve contest 315 provenance before evaluating dependent freezes."
+}
