@@ -1,46 +1,63 @@
 {
   "schema_version": "1.0",
   "experiment_id": "Q144",
-  "status": "ARTIFACTS_PERSISTED_READBACK_VERIFIED_AUTOMATED_CI_PENDING",
+  "status": "Q144_SPECIFIC_CI_SUCCESS_FULL_REPOSITORY_CI_PENDING",
   "branch": "research/q144-shadow-rank-ensemble-20261113",
   "base_main_commit": "4a55fb7da216bd3850b79f862bf10b2cbcafa968",
-  "branch_head_before_checkpoint": "e8be250d54b45f9a08100c594e8e168ae3e44ab3",
+  "validated_code_commit": "bf12feb49ad88ba44ad170b7a629e5d42ccfa959",
   "sources": {
     "archive_blob_sha": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
     "shadow_forecasts_blob_sha": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
     "preregistration_blob_sha": "fef0d86ab401215f6f5560a633bf8bfaa2f80fbf"
   },
   "artifact_blob_shas": {
-    "scripts/sonar_q144_shadow_rank_ensemble.mjs": "b91a403890980fc02674769c3a4b4eb168a4569b",
-    "tests/test_sonar_q144_shadow_rank_ensemble.mjs": "4ec2b2464be6ae94cdc2d66f5d7193e14c6ce8c5",
-    ".github/workflows/q144-shadow-rank-ensemble.yml": "eabdb7743502810dd3d02f933b6c044035886cc8",
     "reports/sequence_agent/q144_shadow_rank_ensemble_preregistration_2026-11-13.md": "fef0d86ab401215f6f5560a633bf8bfaa2f80fbf",
-    "reports/sequence_agent/q144_shadow_rank_ensemble_report_2026-11-13.json": "30601bb4db7603fcf0a93c8400522bac934a454f",
-    "reports/sequence_agent/q144_shadow_rank_ensemble_report_2026-11-13.md": "75eabd86829da5aea8b2f4d7c882d7426c36754e",
+    "scripts/sonar_q144_shadow_rank_ensemble.mjs": "48360c20fcf7a2bac05914758c457365423c2bd2",
+    "tests/test_sonar_q144_shadow_rank_ensemble.mjs": "1ec21255bdcb927594f48ace1613107738c4cfa7",
+    ".github/workflows/q144-shadow-rank-ensemble.yml": "eabdb7743502810dd3d02f933b6c044035886cc8",
+    ".github/workflows/ci.yml": "12645c21af822c50505860957f31f6f638d46412",
+    "reports/sequence_agent/q144_shadow_rank_ensemble_report_2026-11-13.json": "aa95e3c9ce537c6ca1b565d2d91ab593e0f7aaf6",
+    "reports/sequence_agent/q144_shadow_rank_ensemble_report_2026-11-13.md": "a94527707e9af72594033e5c8f02e1fe8db233b0",
     "reports/sequence_agent/q144_shadow_rank_ensemble_ledger_2026-11-13.csv": "c14e13b0c8e7f7a8c20ae40c9af56101f5209762",
     "reports/sequence_agent/q144_shadow_rank_ensemble_freeze_2026-11-13.json": "df20af45433ae8693b90e06124d31df0ad345dfe",
-    "reports/sequence_agent/q144_shadow_rank_ensemble_manifest_2026-11-13.json": "022b8225c1d404458ae46e7a3e136283288ab67d"
+    "reports/sequence_agent/q144_shadow_rank_ensemble_manifest_2026-11-13.json": "fa790c550b0aab4bd669033a61c76d2f117fa5ea"
   },
   "ci": {
-    "q144_latest_run": {
-      "run_id": 43477222201,
-      "status": "pending",
-      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43477222201"
+    "q144_push_run": {
+      "run_id": 43478356659,
+      "status": "success",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478356659"
     },
-    "main_full_ci": {
-      "run_id": 43477222139,
+    "q144_pull_request_run": {
+      "run_id": 43478364483,
+      "status": "success",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478364483"
+    },
+    "full_repository_ci_push": {
+      "run_id": 43478364185,
       "status": "in_progress",
-      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43477222139"
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478364185"
     },
-    "earlier_q144_failure": {
-      "run_id": 43476902467,
-      "reason": "The test invocation matched the CLI filename suffix and entered full replay; full replay also exposed an over-strict same-freeze-timestamp assertion on 2026-10-25. Both code defects were corrected; no statistical result was changed."
-    },
-    "unresolved_intermediate_run": {
-      "run_id": 43477061318,
-      "status": "in_progress_without_available_job_logs"
+    "full_repository_ci_pull_request": {
+      "run_id": 43478356793,
+      "status": "in_progress",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43478356793"
     }
   },
+  "failed_attempts": [
+    {
+      "run_id": 43476902467,
+      "root_cause": "The CLI entrypoint suffix matched the test filename and a group-level freeze timestamp assertion was too strict."
+    },
+    {
+      "run_id": 43478048046,
+      "root_cause": "The unit test expected the wrong one-sided exact sign-flip tail probability for [1,-1]."
+    },
+    {
+      "run_id": 43478097546,
+      "root_cause": "The committed report included the pending row in the latest-cutoff count; deterministic replay correctly counted historical rows only (1,279)."
+    }
+  ],
   "measured": {
     "archive_draws": 3406,
     "shadow_rows": 1364,
@@ -53,12 +70,18 @@
     "blind_borda_mean_hits": 2.7142857142857144,
     "blind_app_mean_hits": 2.2857142857142856,
     "blind_equal_type_inclusion_mean_hits": 2.857142857142857,
-    "blind_borda_minus_app_p_raw": 0.1875,
-    "blind_borda_minus_app_p_holm": 0.5625,
-    "blind_borda_minus_uniform_p_holm": 0.721252847146696,
-    "blind_borda_minus_inclusion_p_holm": 0.875,
-    "one_day_stale_prior_cutoff_rows": 42,
-    "target_groups_with_multiple_freeze_timestamps": 5
+    "p_raw": {
+      "borda_vs_app": 0.1875,
+      "borda_vs_inclusion": 0.875,
+      "borda_vs_uniform": 0.360626423573348
+    },
+    "p_holm": {
+      "borda_vs_app": 0.5625,
+      "borda_vs_uniform": 0.721252847146696,
+      "borda_vs_inclusion": 0.875
+    },
+    "stale_prior_cutoff_rows": 42,
+    "multiple_freeze_timestamp_target_groups": 5
   },
   "prospective_freeze": {
     "target_date": "2026-11-13",
@@ -90,5 +113,5 @@
     "outcome": null
   },
   "decision": "NO_PROMOTION_HISTORICAL_LIFT_NOT_ESTABLISHED",
-  "next_action": "Complete Q144 and general CI. Preserve the 2026-11-13 freeze; reconcile only after official publication. Accumulate at least 100 consecutive prospective Q144 target freezes before confirmatory evaluation."
+  "next_action": "Reconcile the separate 2026-11-13 Q144 freeze only after official publication. Accumulate at least 100 consecutive prospective Q144 freezes before confirmatory evaluation; no tuning on historical dates."
 }
