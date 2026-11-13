@@ -1,10 +1,18 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "experiment_id": "Q143",
-  "status": "COMPUTATION_COMPLETE_AWAITING_CI_AND_REMOTE_READBACK",
+  "status": "REMOTE_GIT_READBACK_VERIFIED_CI_SUCCESS",
   "base_main_commit": "4a55fb7da216bd3850b79f862bf10b2cbcafa968",
   "branch": "research/q143-top20-score-mass-calibration-20261113",
-  "generated_at_utc": "2026-11-13T16:43:03Z",
+  "branch_head_verified": "76147badad4bf1a13720914b2a2af4b0cd233df3",
+  "ci": {
+    "run_id": 43468134375,
+    "conclusion": "success",
+    "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43468134375",
+    "q143_replay": "WRITE_OK 2806 targets",
+    "unit_tests": "8/8 passed",
+    "application_build": "success"
+  },
   "source_shas": {
     "archive": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
     "app": "7ccb9a2abfe452ec535913b70225bc109f692304",
@@ -12,6 +20,17 @@
     "shadow": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
     "q60": "ab6600494731d873ea6aca2cd705e948fd3f6198",
     "queue": "7143ca73b0fd7f2a45beeb9fbece14c3062acf88"
+  },
+  "artifact_blob_shas": {
+    "scripts/sonar_q143_top20_mass_calibration.mjs": "43e8fd0e55e52f52d434ea6aac8dfb9b81b49aa6",
+    "tests/test_sonar_q143_top20_mass_calibration.mjs": "9402e80fdb353f07e0931620cfc84dee4feb222d",
+    ".github/workflows/q143-top20-mass-calibration.yml": "3b57c9e74f5d4904a841ff19c4430612c027cc4c",
+    ".github/workflows/ci.yml": "94b2382705c877f0365a848530a56d1d93b56e1f",
+    "reports/sequence_agent/q143_top20_mass_calibration_protocol_2026-11-13.md": "77e8028113315433b3f7451c877b0dd59f05f793",
+    "reports/sequence_agent/q143_top20_mass_calibration_report_2026-11-13.md": "88f371a18f43427120e772a3c636dda9f0ec5c5c",
+    "reports/sequence_agent/q143_top20_mass_calibration_report_2026-11-13.json": "a7b76725dc0d3d41041390b0ad0b5806a6e90fd3",
+    "reports/sequence_agent/q143_top20_mass_calibration_ledger_2026-11-13.csv": "231c9f466728f956e1341717445c8f839e78eedf",
+    "reports/sequence_agent/q143_official_source_discrepancy_2026-11-13.md": "8f1ad0f8eec2127d1a533fca592ed487e8176210"
   },
   "targets": {
     "raw": 3206,
@@ -23,5 +42,5 @@
     "blind_oos": 562
   },
   "decision": "NOT_SUPPORTED_NO_PROMOTION",
-  "next_action": "Run deterministic CI; verify remote readback; preserve prospective freezes and continue Q60."
+  "next_action": "Preserve the 2026-11-13 frozen forecasts. Reconcile only after official publication, append-only. Add model_version and app_source_blob_sha to future freeze rows. Continue Q60 to 200 paired prospective targets."
 }
