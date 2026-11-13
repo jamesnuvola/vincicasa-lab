@@ -158,3 +158,162 @@ def _score_ridge_target(gram: np.ndarray, cross: np.ndarray, x_target: np.ndarra
         sub = gram[np.ix_(cols, cols)]
         beta = np.linalg.solve(sub, cross[cols])
         scores = x_target[:, cols] @ beta
+        results[model_id] = ranking_hits(scores, y_target)
+    return results
+
+
+def predict_scores_one_target(x: np.ndarray, y: np.ndarray, target: int) -> dict:
+    """Return target rankings fitted only on labels from [t-WINDOW, t)."""
+    t = int(target)
+    if t < WINDOW or t >= len(x):
+        raise ValueError("target outside rolling walk-forward range")
+    train_x = x[t-WINDOW:t].reshape(-1, 59)
+    train_y = y[t-WINDOW:t].reshape(-1)
+    gram = train_x.T @ train_x + RIDGE_ALPHA * np.eye(59)
+    cross = train_x.T @ train_y
+    scores = {}
+    for model_id, cols in _variant_columns().items():
+        beta = np.linalg.solve(gram[np.ix_(cols, cols)], cross[cols])
+        scores[model_id] = x[t][:, cols] @ beta
+    return scores
+
+
+def score_one_target(x: np.ndarray, y: np.ndarray, target: int) -> dict:
+    """Independent reference fit for one target; uses [t-WINDOW, t) only."""
+    t = int(target)
+    scores = predict_scores_one_target(x, y, t)
+    return {model_id: ranking_hits(score, y[t]) for model_id, score in scores.items()}
+
+
+def run_walk_forward(matrix: np.ndarray, draws: np.ndarray, dates: np.ndarray,
+                     cutoffs: np.ndarray) -> tuple[list[dict], dict]:
+    x = standardize_within_target(matrix)
+    y = build_labels(draws)
+    n = len(x)
+    if n <= WINDOW:
+        raise ValueError("not enough targets for rolling warmup")
+    flat_x = x[:WINDOW].reshape(-1, 59)
+    flat_y = y[:WINDOW].reshape(-1)
+    gram = flat_x.T @ flat_x + RIDGE_ALPHA * np.eye(59)
+    cross = flat_x.T @ flat_y
+    family_indices = {k: np.asarray(v, dtype=np.int64) for k, v in FEATURE_GROUPS.items()}
+    rows = []
+    for t in range(WINDOW, n):
+        # Score before adding target t to the training sufficient statistics.
+        ridge = _score_ridge_target(gram, cross, x[t], y[t])
+        equal_feature = ranking_hits(x[t].mean(axis=1), y[t])
+        family_scores = np.stack([x[t][:, idx].mean(axis=1) for idx in family_indices.values()], axis=0)
+        equal_family = ranking_hits(family_scores.mean(axis=0), y[t])
+        row = {
+            "target_index": t,
+            "target_date": str(dates[t]),
+            "cutoff_date": str(cutoffs[t]),
+            "training_first_target": str(dates[t-WINDOW]),
+            "training_last_target": str(dates[t-1]),
+            "training_target_count": WINDOW,
+            "training_max_index": t-1,
+        }
+        for model_id, hits in ridge.items():
+            for k, value in zip((5,10,20), hits):
+                row[f"{model_id}_top{k}_hits"] = value
+        for model_id, hits in (("equal_feature", equal_feature), ("equal_family", equal_family)):
+            for k, value in zip((5,10,20), hits):
+                row[f"{model_id}_top{k}_hits"] = value
+        rows.append(row)
+        # Only now does target t become historical data for target t+1.
+        old = x[t-WINDOW].reshape(40, 59)
+        new = x[t].reshape(40, 59)
+        old_y = y[t-WINDOW]
+        new_y = y[t]
+        gram += new.T @ new - old.T @ old
+        cross += new.T @ new_y - old.T @ old_y
+        gram = (gram + gram.T) * 0.5
+    meta = {"standardized_matrix": x, "labels": y,
+            "scored_targets": n-WINDOW, "warmup_targets": WINDOW}
+    return rows, meta
+
+
+def _metric(row: dict, model_id: str, k: int) -> float:
+    return float(row[f"{model_id}_top{k}_hits"]) / 5.0
+
+
+def split_rows(rows: list[dict]) -> dict[str, list[dict]]:
+    n = len(rows)
+    a = int(round(n * 0.60))
+    b = int(round(n * 0.20))
+    return {"discovery": rows[:a], "validation": rows[a:a+b], "blind_oos": rows[a+b:]}
+
+
+def split_summary(rows: list[dict]) -> dict:
+    result = {}
+    for model_id in ALL_MODEL_IDS:
+        result[model_id] = {}
+        for k in (5,10,20):
+            shares = np.asarray([_metric(r, model_id, k) for r in rows], dtype=np.float64)
+            result[model_id][f"top{k}"] = {
+                "mean_hit_share": float(shares.mean()),
+                "mean_hits_per_draw": float(shares.mean()*5.0),
+                "uniform_expected_hit_share": {5:0.125,10:0.25,20:0.5}[k],
+            }
+    return result
+
+
+def circular_block_bootstrap_ci(values: np.ndarray, seed: int,
+                                 reps: int = BOOTSTRAP_REPS,
+                                 block: int = BLOCK_LENGTH) -> list[float]:
+    x = np.asarray(values, dtype=np.float64)
+    n = len(x)
+    rng = np.random.default_rng(seed)
+    blocks = int(math.ceil(n / block))
+    offsets = np.arange(block)
+    starts = rng.integers(0, n, size=(reps, blocks))
+    idx = (starts[:,:,None] + offsets[None,None,:]) % n
+    samples = x[idx].reshape(reps, -1)[:,:n]
+    means = samples.mean(axis=1)
+    return [float(np.quantile(means,0.025)), float(np.quantile(means,0.975))]
+
+
+def block_signflip_p(values: np.ndarray, seed: int,
+                      reps: int = SIGNFLIP_REPS,
+                      block: int = BLOCK_LENGTH) -> float:
+    x = np.asarray(values, dtype=np.float64)
+    n = len(x)
+    block_sums = np.asarray([x[i:i+block].sum() for i in range(0,n,block)], dtype=np.float64)
+    obs = float(x.mean())
+    rng = np.random.default_rng(seed)
+    signs = rng.choice(np.asarray([-1.0,1.0]), size=(reps,len(block_sums)))
+    null = (signs @ block_sums) / n
+    return float((1 + np.sum(null >= obs)) / (reps + 1))
+
+
+def hac_se(values: np.ndarray, max_lag: int = BLOCK_LENGTH) -> float:
+    x = np.asarray(values, dtype=np.float64)
+    n = len(x)
+    z = x - x.mean()
+    var = float(np.dot(z,z)/n)
+    for lag in range(1, min(max_lag,n-1)+1):
+        gamma = float(np.dot(z[lag:],z[:-lag])/n)
+        var += 2.0*(1.0-lag/(max_lag+1.0))*gamma
+    return math.sqrt(max(0.0,var)/n)
+
+
+def holm_adjust(p_values: list[float]) -> list[float]:
+    m = len(p_values)
+    order = sorted(range(m), key=lambda i:p_values[i])
+    adjusted = [0.0]*m
+    running = 0.0
+    for rank, idx in enumerate(order):
+        running = max(running, min(1.0, (m-rank)*p_values[idx]))
+        adjusted[idx] = running
+    return adjusted
+
+
+def infer_primary(rows: list[dict]) -> dict:
+    comparisons = [(f"family_{g}", "ridge_full", f"ridge_without_{g}") for g in FEATURE_GROUPS]
+    comparisons += [("vs_equal_feature", "ridge_full", "equal_feature"),
+                    ("vs_equal_family", "ridge_full", "equal_family")]
+    deltas = []
+    raw_p = []
+    result = {}
+    for i,(name,left,right) in enumerate(comparisons):
+        d = np.asarray([_metric(r,left,5)-_metric(r,right,5) for r in rows], dtype=np.float64)
