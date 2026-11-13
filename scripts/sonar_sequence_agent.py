@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """SONAR Sequence Discovery Agent.
 
+The scheduled workflow must be rerun after each canonical archive refresh.
+
 Reconstructs fixed, leakage-safe candidate-generation rules for VinciCasa,
 logs each rule/draw outcome, searches for repeated success sequences, and
 freezes prospective shadow forecasts. Historical reconstruction is explicitly
