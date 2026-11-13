@@ -83,7 +83,7 @@ def read_archive():
     if not DATA.is_file():
         blocked("data/storico_daily.csv missing")
     raw = DATA.read_bytes()
-    blob_sha = hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + b"\\0" + raw).hexdigest()
+    blob_sha = hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + b"\0" + raw).hexdigest()
     rows = []
     with DATA.open(newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
