@@ -44,7 +44,13 @@ jobs:
           compressed=base64.b64decode(p.read_text().strip())
           assert hashlib.sha256(compressed).hexdigest()=='3e7601618d074c9bfd21d596a9121c228ce85c625fbb53aa1081b4c94b409023'
           source=lzma.decompress(compressed)
-          pathlib.Path('scripts/sonar_q141_d5_formula_behaviour_diversity.py').write_bytes(source)
+          target=pathlib.Path('scripts/sonar_q141_d5_formula_behaviour_diversity.py')
+          target.write_bytes(source)
+          code=target.read_text()
+          old="def ridge_predict(model,x):\n    mean,scale,coef=model; z=(np.asarray(x,float)-mean)/scale\n    return np.clip(np.column_stack([np.ones(len(z)),z])@coef,0,1)"
+          new="def ridge_predict(model,x):\n    mean,scale,coef=model; z=(np.asarray(x,float)-mean)/scale\n    return np.column_stack([np.ones(len(z)),z])@coef"
+          if old not in code: raise SystemExit('expected residual-clipping source block not found')
+          target.write_text(code.replace(old,new))
           PY
           cat > tests/test_sonar_q141_d5_formula_behaviour_diversity.py <<'PY'
           import unittest, numpy as np
@@ -71,9 +77,9 @@ jobs:
               def test_future_suffix_cannot_change_current_row_features(self):
                   p=self.make_plan(); m=np.random.default_rng(2).normal(size=(12,40,59)); before=formula_top5_and_features(m[5],p)[1]
                   m[6:]=np.random.default_rng(3).normal(size=m[6:].shape); after=formula_top5_and_features(m[5],p)[1]; np.testing.assert_array_equal(before,after)
-              def test_ridge_prediction_is_finite_and_clipped(self):
-                  rng=np.random.default_rng(4); x=rng.normal(size=(100,4)); y=np.clip(.5+.03*x[:,0],0,1); model=ridge_fit(x[:70],y[:70]); pred=ridge_predict(model,x[70:])
-                  self.assertTrue(np.isfinite(pred).all()); self.assertTrue(np.all((pred>=0)&(pred<=1)))
+              def test_ridge_residual_prediction_is_finite_and_unclipped(self):
+                  rng=np.random.default_rng(4); x=rng.normal(size=(100,4)); y=.8*x[:,0]-.3*x[:,1]; model=ridge_fit(x[:70],y[:70]); pred=ridge_predict(model,x[70:])
+                  self.assertTrue(np.isfinite(pred).all()); self.assertLess(float(pred.min()),0.0); self.assertGreater(float(pred.max()),0.0)
               def test_prior_only_training_slice_excludes_current(self):
                   t=15; train=np.arange(10,t); self.assertEqual(train[-1],14); self.assertNotIn(t,train)
 
@@ -96,7 +102,7 @@ jobs:
           Q7 ledger: 3,286 targets, archive through 2026-10-24. Q90 family ledger: 3,351 targets, archive through 2026-11-07. C5 ledger: 3,186 persisted M2 predictions. Join on prior_draws, target date, cutoff, actual quintet and split. Recompute all seven Q90 family Top-5 shares for all 3,286 common targets and require max error ≤1e-12. Verify every C5 baseline row against Q7 outcomes and source report; recompute C5 M2 split MAE/RMSE/mean error to 1e-12.
 
           ## Walk-forward
-          D5 residual learner uses ridge alpha 1 on Q7 mean percentile minus C5 M2 prediction, with the four D5 features. Offsets 100–149 are residual warm-up. Score offsets 150–1971 (Discovery 1,822), 1972–2628 (Validation 657), 2629–3285 (Blind OOS 657). Discovery fits expand using offsets 100..t−1 only; coefficients freeze after Discovery using offsets 100–1971 (1,872 rows). Standardization uses training rows only. Current target is scored before its outcome can enter a later fit.
+          D5 residual learner uses ridge alpha 1 on Q7 mean percentile minus C5 M2 prediction, with the four D5 features. Offsets 100–149 are residual warm-up. Score offsets 150–1971 (Discovery 1,822), 1972–2628 (Validation 657), 2629–3285 (Blind OOS 657). Discovery fits expand using offsets 100..t−1 only; coefficients freeze after Discovery using offsets 100–1971 (1,872 rows). Standardization uses training rows only. Residual corrections are not clipped; only baseline plus correction is clipped to [0,1]. Current target is scored before its outcome can enter a later fit.
 
           ## Primary inference
           Blind OOS mean abs_error(C5 M2) minus abs_error(D5 M3), positive favours D5. Practical threshold +0.005. 95% circular moving-block bootstrap, block 20, 20,000 replicates, seed 14120261114; one-sided chronological block sign-flip, block 20, 20,000 replicates, seed 14120261115. Support requires point estimate ≥0.005, lower CI >0 and p<0.05. One confirmatory endpoint; no within-experiment multiplicity correction required. Global Q00–Q141 multiplicity is not covered.
