@@ -219,6 +219,7 @@ jobs:
           cp_path = p / "q141_a17_full_universe_spectral_checkpoint_2026-11-14.json"
           cp = json.loads(cp_path.read_text())
           cp["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          cp["next_action"] = "Human review of the A17 research PR; no merge or promotion without explicit approval."
           cp["remote_readback"] = {"branch": "research/q141-a17-full-universe-spectral-20261114", "files": checked}
           cp_path.write_text(json.dumps(cp, ensure_ascii=False, sort_keys=True, indent=2) + "\n")
           receipt = {
