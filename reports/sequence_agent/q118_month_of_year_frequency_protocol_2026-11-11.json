@@ -1,0 +1,95 @@
+{
+  "experiment_id": "Q118",
+  "title": "Month-of-year conditioned number inclusion",
+  "status": "PREREGISTERED_BEFORE_COMPUTATION",
+  "preregistered_at_utc": "2026-11-11T11:46:47Z",
+  "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "Month-of-year-conditioned historical number inclusion rates may add predictive information beyond global-frequency and exact uniform 5-of-40 baselines.",
+  "models": {
+    "M0": "Exact uniform 5-of-40 subset distribution; each number inclusion probability 0.125.",
+    "M1": {
+      "global_beta": 200,
+      "p_global": "(C_n + beta/40)/(5*t + beta)",
+      "subset_probability": "product(40*p_global[n] for n in S)/e5(40*p_global)"
+    },
+    "M12": {
+      "month_key": "UTC calendar month-of-year 1..12",
+      "alpha_grid": [
+        25,
+        50,
+        100,
+        200,
+        400,
+        800,
+        1600,
+        3200
+      ],
+      "p_month": "(C_month,n + alpha*p_global[n])/(5*N_month + alpha)",
+      "subset_probability": "product(40*p_month[n] for n in S)/e5(40*p_month)",
+      "marginal_inclusion": "w_n*e4(w without n)/e5(w)"
+    }
+  },
+  "walk_forward": {
+    "minimum_history": 200,
+    "targets": 3204,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior_cutoffs": true,
+    "update_rule": "score each target before adding its draw to global or month-of-year counts"
+  },
+  "selection": {
+    "criterion": "minimum Validation mean joint subset log-loss",
+    "tie_break": "larger alpha",
+    "blind_oos_used_for_selection": false
+  },
+  "metrics": [
+    "joint subset log-loss",
+    "mean marginal inclusion Brier across 40 numbers"
+  ],
+  "inference": {
+    "primary_family": [
+      "M12_vs_M0_joint_logloss",
+      "M12_vs_M0_marginal_brier",
+      "M12_vs_M1_joint_logloss",
+      "M12_vs_M1_marginal_brier"
+    ],
+    "method": "one-sided paired block sign-flip for improvement",
+    "replicates": 50000,
+    "block_length": 20,
+    "bootstrap": "circular moving-block bootstrap",
+    "bootstrap_replicates": 10000,
+    "holm_family_size": 4
+  },
+  "integrity_checks": [
+    "chronological unique dates",
+    "five distinct integers in 1..40",
+    "strict prior cutoffs",
+    "exact subset normalization",
+    "marginal inclusion probabilities sum to 5",
+    "9 future-suffix mutation invariance checks",
+    "deterministic replay",
+    "source blob SHA pinned"
+  ],
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+    "Historical rankings/frequencies are reconstructed, not contemporaneously frozen forecasts.",
+    "Holm correction covers the four Q118 endpoints only, not the full Q00-Q118 research family.",
+    "The month-of-year model is a research probability model, not the production SONAR scorer."
+  ],
+  "guardrails": [
+    "No production scorer changes.",
+    "No Q60 record or existing freeze changes.",
+    "No merge or engine promotion.",
+    "Do not modify PR #6, #7, or #8."
+  ]
+}

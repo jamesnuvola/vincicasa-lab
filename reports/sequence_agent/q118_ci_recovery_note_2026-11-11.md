@@ -1,0 +1,3 @@
+# Q118 CI recovery note
+
+The first Node 20 PR run reached the Q118 replay step after all preceding repository checks passed, then failed on two runner-only defects: (1) a local `fs` binding collided with the imported `node:fs` module; (2) the runner's `mean` helper returned a sum rather than an average. Both defects were corrected on the source branch. The corrected runner was replayed in a V8 harness against the pinned archive and persisted artifacts: 3,204 targets, alpha=3200, four inference comparisons, byte-identical 3,205-line ledger, matching prospective freeze, and 9/9 future-suffix checks. This note exists only to trigger a fresh PR validation run; it does not alter the experiment, data, forecast, or Q60.

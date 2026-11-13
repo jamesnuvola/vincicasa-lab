@@ -49,5 +49,8 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Replay Q118 month-of-year experiment (Node 20)
+        run: node scripts/sonar_q118_month_of_year_frequency.mjs
+
       - name: Build web application
         run: npm install && npm run build
