@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import {
-  pairInclusionProbabilities, scorePairModel, validateShadowTemporalRow,
+  pairInclusionProbabilities, scorePairModel, scorePairWeights, validateShadowTemporalRow,
   buildArtifacts
 } from "../scripts/sonar_q146_pair_inclusion_calibration.mjs";
 
@@ -33,8 +33,7 @@ test("pair inclusion probabilities remain finite and bounded", () => {
 
 test("uniform ranking weights have zero pairwise Brier and composite-log gain", () => {
   const draw = [1, 2, 3, 4, 5];
-  const top20 = Array.from({ length: 20 }, (_, i) => i + 1);
-  const score = scorePairModel(top20, draw);
+  const score = scorePairWeights(Array(40).fill(1), draw);
   assert.equal(score.observedPairs, 10);
   assert.ok(Math.abs(score.pairMass - 10) < 1e-10);
   assert.ok(Math.abs(score.brierGain) < 1e-12);
