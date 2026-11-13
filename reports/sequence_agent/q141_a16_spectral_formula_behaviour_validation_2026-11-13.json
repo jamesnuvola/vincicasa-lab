@@ -1,0 +1,114 @@
+{
+  "experiment_id": "Q141-A16",
+  "status": "COMPUTATION_CHECKS_PASSED_PENDING_CI",
+  "checks": [
+    {
+      "name": "archive_blob_sha",
+      "passed": true
+    },
+    {
+      "name": "four_panel_blob_shas",
+      "passed": true
+    },
+    {
+      "name": "archive_draw_count",
+      "passed": true
+    },
+    {
+      "name": "panel_target_count",
+      "passed": true
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "passed": true
+    },
+    {
+      "name": "actual_quintets",
+      "passed": true
+    },
+    {
+      "name": "formula_mask_order",
+      "passed": true
+    },
+    {
+      "name": "rank_bounds",
+      "passed": true
+    },
+    {
+      "name": "chronological_splits",
+      "passed": true
+    },
+    {
+      "name": "discovery_nonconstant",
+      "passed": true
+    },
+    {
+      "name": "validation_nonconstant",
+      "passed": true
+    },
+    {
+      "name": "blind_nonconstant",
+      "passed": true
+    },
+    {
+      "name": "eigensolver_residuals",
+      "passed": true
+    },
+    {
+      "name": "random_null_replicates",
+      "passed": true
+    }
+  ],
+  "check_count": 14,
+  "passed_count": 14,
+  "source_rows": 3386,
+  "source_blocks": [
+    {
+      "path": "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/block_0001_0899.csv",
+      "git_blob_sha": "997fdddf97dfc22ba207ca76a26c8454aaf0968f",
+      "rows": 899
+    },
+    {
+      "path": "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/block_0900_1799.csv",
+      "git_blob_sha": "868cf0622273f22e1aeda00afaf2fcff636fb970",
+      "rows": 900
+    },
+    {
+      "path": "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/block_1800_2699.csv",
+      "git_blob_sha": "ad3f6b319c5a933c253793aef1768d8859478fdb",
+      "rows": 900
+    },
+    {
+      "path": "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/block_2700_3386.csv",
+      "git_blob_sha": "4f74b9a4eaa1fce08442c648de6321ccfac59f73",
+      "rows": 687
+    }
+  ],
+  "split_sizes": {
+    "discovery": 2031,
+    "validation": 677,
+    "blind_oos": 678
+  },
+  "eigensolver": {
+    "discovery": {
+      "sweeps": 11,
+      "max_off_diagonal": 9.983701968188795e-13,
+      "orthogonality_max": 3.7969627442180354e-14,
+      "reconstruction_max": 8.927858452523196e-13
+    },
+    "validation": {
+      "sweeps": 10,
+      "max_off_diagonal": 9.994379112235049e-13,
+      "orthogonality_max": 3.8191672047105385e-14,
+      "reconstruction_max": 7.719380690218713e-13
+    },
+    "blind_oos": {
+      "sweeps": 9,
+      "max_off_diagonal": 9.997988457611154e-13,
+      "orthogonality_max": 4.063416270128073e-14,
+      "reconstruction_max": 7.567280135845067e-13
+    }
+  },
+  "random_subspace_replicates": 20000,
+  "no_forecast_or_engine_mutation": true
+}
