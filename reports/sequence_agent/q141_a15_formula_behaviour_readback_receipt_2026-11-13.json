@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q141-A15",
+  "status": "REMOTE_GIT_READBACK_VERIFIED",
+  "verified_at_utc": "2026-11-13T21:59:16Z",
+  "branch": "research/q141-a15-formula-behaviour-redundancy-20261113",
+  "verified_head_before_receipt": "f42b0cb6e2d1a194ded7319af4431deef2ae557d",
+  "ci": {
+    "workflow_run_id": 43515413371,
+    "workflow_name": "Q141-A15 Formula Behaviour Redundancy",
+    "event": "push",
+    "conclusion": "success",
+    "tests_passed": 13,
+    "deterministic_report_ledger_replay": "success",
+    "canonical_outputs_persisted_by_workflow": true
+  },
+  "evidence": {
+    "source_archive_git_blob_sha": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "source_archive_draws": 3387,
+    "source_parts_git_tree_matches": 34,
+    "source_parts_all_match": true,
+    "source_panel_chunks_present": 34,
+    "aggregated_panel_blocks_readback": 4,
+    "key_artifacts_readback": 9,
+    "all_key_artifact_git_blob_shas_match": true,
+    "all_aggregate_git_blob_shas_match": true,
+    "target_cutoff_actual_reconciliations": 3386,
+    "formula_sample": 128,
+    "discovery": 2031,
+    "validation": 677,
+    "blind_oos": 678
+  },
+  "result": {
+    "cluster_count": 106,
+    "compression_ratio": 0.171875,
+    "effective_formula_dimension": 7.57837581687822,
+    "blind_equal_mean_rank_percentile": 0.5081069432407188,
+    "blind_cluster_balanced_mean_rank_percentile": 0.5077515293797296,
+    "primary_improvement": 0.00035541386098889195,
+    "primary_ci95": [
+      -0.00005956821299881425,
+      0.0007601078856419468
+    ],
+    "primary_p_holm": 0.0807959602019899,
+    "secondary_improvement": -0.007751529379729795,
+    "secondary_p_holm": 0.8027098645067746,
+    "decision": "NO_CLUSTER_BALANCED_RANK_LIFT_DEMONSTRATED"
+  },
+  "limitations": [
+    "The source Q7 archive ends 2026-10-24 and is not current main.",
+    "The 128-mask sample is not the full 1,023-formula catalog.",
+    "Historical Blind OOS is not virgin prospective confirmation.",
+    "The protocol note is retrospective, not a tamper-evident preregistration.",
+    "This is a formula rank-behaviour redundancy audit, not a promoted predictor."
+  ],
+  "next_action": "Continue Q141 semantic AST equivalence and complementary-formula mapping; maintain Q60 and prospective freezes without retuning."
+}

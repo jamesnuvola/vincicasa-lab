@@ -1,0 +1,48 @@
+name: Q141-A15 Formula Behaviour Redundancy
+on:
+  push:
+    branches:
+      - research/q141-a15-formula-behaviour-redundancy-20261113
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/q141-a15-formula-behaviour-redundancy.yml"
+      - "scripts/sonar_q141_a15_formula_behaviour_redundancy.mjs"
+      - "tests/test_sonar_q141_a15_formula_behaviour_redundancy.mjs"
+      - "reports/sequence_agent/q141_a15_formula_behaviour*"
+      - "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/**"
+      - "reports/sequence_agent/q141_a15_source/**"
+permissions:
+  contents: write
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Unit and leakage tests
+        run: node --test tests/test_sonar_q141_a15_formula_behaviour_redundancy.mjs
+      - name: Generate canonical report and ledger
+        run: node scripts/sonar_q141_a15_formula_behaviour_redundancy.mjs
+      - name: Deterministic report and ledger replay
+        run: node scripts/sonar_q141_a15_formula_behaviour_redundancy.mjs --verify
+      - name: Persist canonical generated outputs
+        env:
+          TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a15_formula_behaviour_report_2026-11-13.json
+          git add reports/sequence_agent/q141_a15_formula_behaviour_target_ledger_2026-11-13.csv
+          git add reports/sequence_agent/q141_a15_formula_behaviour_checkpoint_2026-11-13.json
+          if git diff --cached --quiet; then
+            echo "Canonical outputs already current."
+          else
+            git commit -m "Q141-A15: persist canonical Node replay outputs"
+            git push origin "HEAD:${TARGET_BRANCH}"
+          fi
