@@ -371,7 +371,7 @@ export function buildArtifacts() {
     r.models.app ? round(r.models.app.pairMass) : ""
   ].join(","))].join("\n") + "\n";
   const reportJson = JSON.stringify(report, null, 2) + "\n";
-  const reportMd = renderMarkdown(report);
+  const reportMd = renderMarkdown(JSON.parse(reportJson));
   const checkpoint = {
     schema_version: "1.0",
     experiment_id: "Q146",
