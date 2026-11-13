@@ -30,3 +30,6 @@ Training spectrum: participation ratio 6.8794; entropy effective rank 9.2332; k8
 ## Limits
 
 This tests whether the realized formula-rank profile lies in a subspace learned before each evaluated target. It does not predict the actual numbers or a ticket. The historical Blind OOS is exposed to previous SONAR research, and the circular-shift null is only one temporal dependence control.
+
+
+Full deterministic replay: byte-identical (verified by the dedicated workflow).
