@@ -51,7 +51,7 @@
     "split_rule": "Chronological 60% Discovery / 20% Validation / 20% Blind OOS after 200-draw scoring warmup and 400-target calibration window.",
     "inference": "20,000 circular moving-block bootstrap replicates (block 20) for percentile 95% CIs; 20,000 block sign-flip replicates (block 20); Holm correction across four endpoints.",
     "multiple_testing_scope": "Holm controls the four Q143 endpoints only; no global correction across all prior SONAR experiments.",
-    "reproducibility": "Exact current full-history Top20 compared with committed active_engine_walkforward freeze; deterministic seeds and byte-for-byte report/ledger replay in CI."
+    "reproducibility": "Exact current full-history Top20 compared with committed active-engine freeze; deterministic seeds and byte-for-byte report/ledger replay in CI."
   },
   "baseline": {
     "uniform_top20_mean_hits": 2.5,
@@ -74,9 +74,9 @@
         "mean_prediction": 2.5316844919786057
       },
       "uniform_2_5": {
-        "mse": null,
-        "mae": null,
-        "mean_prediction": null
+        "mse": 1.1341354723707664,
+        "mae": 0.8879976232917409,
+        "mean_prediction": 2.5
       },
       "diagnostics": {
         "observed_mean_hits": 2.532382650029709,
@@ -104,9 +104,9 @@
         "mean_prediction": 2.4437655971479537
       },
       "uniform_2_5": {
-        "mse": null,
-        "mae": null,
-        "mean_prediction": null
+        "mse": 1.0984848484848484,
+        "mae": 0.8707664884135472,
+        "mean_prediction": 2.5
       },
       "diagnostics": {
         "observed_mean_hits": 2.4581105169340463,
@@ -134,9 +134,9 @@
         "mean_prediction": 2.514532918149466
       },
       "uniform_2_5": {
-        "mse": null,
-        "mae": null,
-        "mean_prediction": null
+        "mse": 1.1396797153024911,
+        "mae": 0.8896797153024911,
+        "mean_prediction": 2.5
       },
       "diagnostics": {
         "observed_mean_hits": 2.494661921708185,
