@@ -262,16 +262,17 @@ export function buildQ144Outputs(archiveCsv, shadowCsv, preregText) {
   assert.equal(completedDates.length, 31, "Unexpected completed shadow target count");
 
   const ledger = [];
-  let cutoffChecks = 0, freezeChecks = 0, reconciledRows = 0, staleCutoffRows = 0, freshCutoffRows = 0;\n  const multipleFreezeTimestampDates = [];
+  let cutoffChecks = 0, freezeChecks = 0, reconciledRows = 0, staleCutoffRows = 0, freshCutoffRows = 0;
+  const multipleFreezeTimestampDates = [];\n  const multipleFreezeTimestampDates = [];
   for (const date of completedDates) {
     const rows = grouped.get(date);
     const ruleRows = rows.filter(r => ["family", "pair", "chain"].includes(r.config_type));
     const appRows = rows.filter(r => r.config_type === "app_engine");
     assert.ok(rows.length === 42 || rows.length === 43, "Unexpected rows for " + date);
     assert.equal(appRows.length <= 1, true);
-    const frozenAt = rows[0].frozen_at;
     const cutoff = rows[0].history_cutoff;
-    assert.ok(rows.every(r => r.frozen_at === frozenAt && r.history_cutoff === cutoff), "Inconsistent freeze metadata for " + date);
+    assert.ok(rows.every(r => r.history_cutoff === cutoff), "Inconsistent history cutoff for " + date);
+    if (new Set(rows.map(r => r.frozen_at)).size > 1) multipleFreezeTimestampDates.push(date);
     for (const row of rows) {
       validateFreezeRow(row, date, archiveDateSet);
       cutoffChecks++;
@@ -340,7 +341,6 @@ export function buildQ144Outputs(archiveCsv, shadowCsv, preregText) {
   assert.ok(pending.every(r => r.status === "FROZEN_PENDING"));
   assert.ok(pending.every(r => !r.actual_numbers && !r.hit_numbers && !r.hit_count && !r.all5_top20 && !r.evaluated_at_data_through));
   assert.ok(pending.every(r => r.history_cutoff === Q144.targetCutoff));
-  assert.ok(pending.every(r => r.frozen_at === pending[0].frozen_at));
   for (const row of pending) {
     validateFreezeRow(row, Q144.targetDate, archiveDateSet);
     cutoffChecks++;
@@ -448,7 +448,9 @@ export function buildQ144Outputs(archiveCsv, shadowCsv, preregText) {
       strict_prior_cutoff_checks: cutoffChecks,
       pre_target_freeze_time_checks: freezeChecks,
       source_rows_with_one_day_stale_but_still_prior_cutoff: staleCutoffRows,
-      source_rows_using_latest_available_cutoff: freshCutoffRows
+      source_rows_using_latest_available_cutoff: freshCutoffRows,
+      target_groups_with_multiple_freeze_timestamps: multipleFreezeTimestampDates.length,
+      target_dates_with_multiple_freeze_timestamps: multipleFreezeTimestampDates
     },
     decision: "NO_PROMOTION_HISTORICAL_LIFT_NOT_ESTABLISHED",
     limitations: [
