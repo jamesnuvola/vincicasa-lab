@@ -90,9 +90,9 @@ class TestQ141D4(unittest.TestCase):
         self.assertTrue(np.array_equal(before["consensus_top5"], after["consensus_top5"]))
         self.assertEqual(np.median(prior_before), np.median(prior_after))
 
-    def test_11_family_mapping_rejects_missing_feature(self):
+    def test_11_family_mapping_rejects_unknown_feature(self):
         bad = dict(self.mapping)
-        bad.pop(next(iter(bad)))
+        bad["not_a_feature"] = "residual_surprise"
         with self.assertRaises(ValueError):
             build_family_groups(self.names, bad)
 
