@@ -1,0 +1,25 @@
+name: Q143 Top20 Score-Mass Calibration
+on:
+  push:
+    branches: ["research/q143-top20-score-mass-calibration-20261113"]
+  pull_request:
+    paths:
+      - "scripts/sonar_q143_top20_mass_calibration.mjs"
+      - "tests/test_sonar_q143_top20_mass_calibration.mjs"
+      - "reports/sequence_agent/q143_top20_mass_calibration_*"
+      - ".github/workflows/q143-top20-mass-calibration.yml"
+permissions:
+  contents: read
+jobs:
+  q143:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Deterministic report and ledger replay
+        run: node scripts/sonar_q143_top20_mass_calibration.mjs --check
+      - name: Unit and leakage tests
+        run: node --test tests/test_sonar_q143_top20_mass_calibration.mjs
