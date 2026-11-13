@@ -49,5 +49,9 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Test Q144 shadow rank ensemble
+        run: |
+          node tests/test_sonar_q144_shadow_rank_ensemble.mjs
+          node scripts/sonar_q144_shadow_rank_ensemble.mjs --verify
       - name: Build web application
         run: npm install && npm run build
