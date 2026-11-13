@@ -13,7 +13,7 @@ permissions:
   actions: read
 concurrency:
   group: sonar-q141-a17-full-universe-spectral
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   full-universe-prequential-spectral:
     runs-on: ubuntu-latest
@@ -185,10 +185,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p /tmp/a17-generated
+          cp -a reports/sequence_agent/q141_a17_full_universe_spectral_* /tmp/a17-generated/
+          git fetch origin "$SONAR_A17_BRANCH:refs/remotes/origin/$SONAR_A17_BRANCH"
+          git reset --hard "origin/$SONAR_A17_BRANCH"
+          cp -a /tmp/a17-generated/. reports/sequence_agent/
           git add reports/sequence_agent/q141_a17_full_universe_spectral_*
           if ! git diff --cached --quiet; then git commit -m "Persist Q141-A17 full-universe prequential spectral results"; else echo "A17 artifacts already match remote; skipping no-op commit"; fi
-          git fetch origin "$SONAR_A17_BRANCH:refs/remotes/origin/$SONAR_A17_BRANCH"
-          git rebase "origin/$SONAR_A17_BRANCH"
           git push origin "HEAD:$SONAR_A17_BRANCH"
       - name: Verify remote Git readback and finalize checkpoint
         run: |
