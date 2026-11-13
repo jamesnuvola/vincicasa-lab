@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 # Cancel superseded research-branch runs so several expensive historical searches
 # do not compete after each incremental commit.
@@ -49,5 +49,18 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Recompute Q143 report and ledger, then test
+        run: |
+          node scripts/sonar_q143_top20_mass_calibration.mjs
+          node --test tests/test_sonar_q143_top20_mass_calibration.mjs
+      - name: Persist Q143 report and ledger if changed
+        run: |
+          git config user.name "sonar-q143-agent"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/sequence_agent/q143_top20_mass_calibration_report_2026-11-13.json reports/sequence_agent/q143_top20_mass_calibration_ledger_2026-11-13.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Q143: persist deterministic score-mass replay"
+            git push origin HEAD:${GITHUB_REF_NAME}
+          fi
       - name: Build web application
         run: npm install && npm run build
