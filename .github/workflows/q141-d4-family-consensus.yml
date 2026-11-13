@@ -1,8 +1,12 @@
 name: Q141-D4 Family Consensus State
 # Receipt/checkpoint readback consistency fix: 2026-11-13
+# Push-triggered exact-head validation run: 2026-11-13 14:54 UTC
 # Exact-head replay trigger: 2026-11-13 14:50 UTC
 
 on:
+  push:
+    branches:
+      - research/q141-d4-family-consensus-state-20261113
   pull_request:
     paths:
       - scripts/sonar_q141_d4_family_consensus_state.py
