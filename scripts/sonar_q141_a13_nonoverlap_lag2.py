@@ -541,6 +541,27 @@ def run_experiment(input_path: Path, output_dir: Path,
         },
     }
 
+    confirmatory_criteria = {
+        "logloss": {
+            "practical_threshold_met": observed_pool[0] >= PRACTICAL_LOGLOSS_GAIN,
+            "bootstrap_ci95_lower_positive": bootstrap_logloss["ci95"][0] > 0.0,
+            "holm_p_below_0_05": primary_holm[0] < 0.05,
+        },
+        "brier": {
+            "practical_threshold_met": observed_pool[1] >= PRACTICAL_BRIER_GAIN,
+            "bootstrap_ci95_lower_positive": bootstrap_brier["ci95"][0] > 0.0,
+            "holm_p_below_0_05": primary_holm[1] < 0.05,
+        },
+    }
+    historical_candidate = all(
+        all(criteria.values()) for criteria in confirmatory_criteria.values()
+    )
+    decision = (
+        "HISTORICAL_CANDIDATE_REQUIRES_PROSPECTIVE_CONFIRMATION"
+        if historical_candidate
+        else "NO_NONOVERLAP_LAG2_TRANSITION_LIFT_DEMONSTRATED"
+    )
+
     geometry_ok = all(
         int(r["phase_mod4"]) == int(r["target_index"]) % PHASE_STRIDE
         and int(r["sum_transition_max_training_sample_index"]) <= int(r["target_index"]) - 4
@@ -559,7 +580,7 @@ def run_experiment(input_path: Path, output_dir: Path,
         "schema_version": "1.0",
         "task_id": "Q141-A13-NONOVERLAP-LAG2",
         "status": "COMPLETED_HISTORICAL_EXPLORATORY_WALK_FORWARD",
-        "decision": "NO_NONOVERLAP_LAG2_TRANSITION_LIFT_DEMONSTRATED",
+        "decision": decision,
         "source": {
             "a7_artifact_run_id": 43348144964,
             "a7_artifact_id": 14003350043,
@@ -618,6 +639,7 @@ def run_experiment(input_path: Path, output_dir: Path,
             }
             for name, metrics in split_metrics.items()
         },
+        "confirmatory_decision_rule": confirmatory_criteria,
         "blind_oos_inference": {
             "pooled_logloss_gain": bootstrap_logloss,
             "pooled_brier_gain": bootstrap_brier,
