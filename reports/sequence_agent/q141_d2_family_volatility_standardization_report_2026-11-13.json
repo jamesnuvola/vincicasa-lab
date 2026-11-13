@@ -1,0 +1,256 @@
+{
+  "blind_oos_inference": [
+    {
+      "block_count": 34,
+      "block_length": 20,
+      "bootstrap_replicates": 20000,
+      "ci95": [
+        -0.004477611940298508,
+        0.04029850746268657
+      ],
+      "ci95_lower_positive": false,
+      "holm_p_below_0_05": false,
+      "id": "D2_minus_D1",
+      "mean": 0.016417910447761194,
+      "n": 670,
+      "p_holm": 0.3701814909254537,
+      "p_one_sided": 0.12704364781760913,
+      "practical_threshold_met": false,
+      "signflip_replicates": 20000
+    },
+    {
+      "block_count": 34,
+      "block_length": 20,
+      "bootstrap_replicates": 20000,
+      "ci95": [
+        -0.0029850746268656717,
+        0.022388059701492536
+      ],
+      "ci95_lower_positive": false,
+      "holm_p_below_0_05": false,
+      "id": "D2_minus_C0",
+      "mean": 0.008955223880597015,
+      "n": 670,
+      "p_holm": 0.3701814909254537,
+      "p_one_sided": 0.13944302784860757,
+      "practical_threshold_met": false,
+      "signflip_replicates": 20000
+    },
+    {
+      "block_count": 34,
+      "block_length": 20,
+      "bootstrap_replicates": 20000,
+      "ci95": [
+        -0.026865671641791045,
+        0.09701492537313433
+      ],
+      "ci95_lower_positive": false,
+      "holm_p_below_0_05": false,
+      "id": "D2_minus_equal",
+      "mean": 0.03582089552238806,
+      "n": 670,
+      "p_holm": 0.3701814909254537,
+      "p_one_sided": 0.12339383030848458,
+      "practical_threshold_met": true,
+      "signflip_replicates": 20000
+    }
+  ],
+  "decision": "NO_FAMILY_VOLATILITY_STANDARDIZATION_LIFT_DEMONSTRATED",
+  "design": {
+    "block_length": 20,
+    "bootstrap_replicates": 20000,
+    "co_primary_endpoints": [
+      "D2_minus_D1",
+      "D2_minus_C0",
+      "D2_minus_equal"
+    ],
+    "families": [
+      "frequency_change",
+      "frequency_level",
+      "lag_memory",
+      "neighbour_field",
+      "position_dependence",
+      "recency_gap"
+    ],
+    "formula": "U_f,t = mean_{s=t-100..t-1}(h_f,s - mean_g h_g,s) / sqrt(var_{s=t-100..t-1}(h_f,s - mean_g h_g,s) + 0.25^2)",
+    "holm_family_size": 3,
+    "lambda": 0.25,
+    "practical_threshold_mean_top5_hits": 0.025,
+    "signflip_replicates": 20000,
+    "split_counts": {
+      "blind_oos": 670,
+      "discovery": 2013,
+      "validation": 671
+    },
+    "strict_prior": true,
+    "uniform_expected_mean_top5_hits": 0.625,
+    "warmup": "first 100 scored targets use equal-family ranking",
+    "window": 100
+  },
+  "integrity": {
+    "all_cutoffs_strictly_prior": true,
+    "archive_blob_verified_in_parent_ci": true,
+    "archive_check_local": "NOT_RECHECKED_LOCAL_PARENT_AND_CI_ATTESTED",
+    "d1_replay_matches_pinned_report": true,
+    "d1_report_blob_verified": true,
+    "dates_strictly_chronological": true,
+    "deterministic_replay": true,
+    "family_hit_counts_valid": true,
+    "future_suffix_invariance": [
+      {
+        "selection_unchanged": true,
+        "target_offset": 100
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 101
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 500
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 2013
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 2684
+      },
+      {
+        "selection_unchanged": true,
+        "target_offset": 3353
+      }
+    ],
+    "parent_ci_run_id": 43412187676,
+    "parent_report_blob_verified": true,
+    "source_ledger_blob_verified": true,
+    "split_counts_verified": true,
+    "target_count_verified": true
+  },
+  "limitations": [
+    "Historical Blind OOS has already been exposed to prior SONAR research and is not virgin prospective confirmation.",
+    "Six Q80-derived families are coarse and do not exhaust the typed Q141 formula universe.",
+    "Endpoint is family-specific Top-5 coverage, not exact-quintet probability.",
+    "Holm covers the three D2 endpoints only, not the full Q00-Q141 research family.",
+    "This experiment remains pinned to the 3,404-draw source through 2026-11-10; later official draws are deliberately excluded from this historical replay.",
+    "Local replay did not re-read the canonical archive bytes; archive lineage is pinned to the C0 report and verified by parent CI run 43412187676."
+  ],
+  "metrics_by_split": {
+    "blind_oos": {
+      "M0_equal_family": {
+        "top5_mean_hits": 0.6
+      },
+      "M1_C0_raw_rolling100": {
+        "top5_mean_hits": 0.6268656716417911
+      },
+      "M2_D1_target_standardized": {
+        "top5_mean_hits": 0.6194029850746269
+      },
+      "M3_D2_family_volatility": {
+        "mean_actual_rank": 20.103283582089528,
+        "top10_mean_hits": 1.2791044776119402,
+        "top20_mean_hits": 2.6059701492537313,
+        "top5_mean_hits": 0.6358208955223881
+      },
+      "targets": 670,
+      "uniform_expected_top5_mean_hits": 0.625
+    },
+    "discovery": {
+      "M0_equal_family": {
+        "top5_mean_hits": 0.6348733233979136
+      },
+      "M1_C0_raw_rolling100": {
+        "top5_mean_hits": 0.6497764530551415
+      },
+      "M2_D1_target_standardized": {
+        "top5_mean_hits": 0.6274217585692996
+      },
+      "M3_D2_family_volatility": {
+        "mean_actual_rank": 20.425633383010386,
+        "top10_mean_hits": 1.278688524590164,
+        "top20_mean_hits": 2.49826130153999,
+        "top5_mean_hits": 0.6517635370094387
+      },
+      "targets": 2013,
+      "uniform_expected_top5_mean_hits": 0.625
+    },
+    "validation": {
+      "M0_equal_family": {
+        "top5_mean_hits": 0.5797317436661699
+      },
+      "M1_C0_raw_rolling100": {
+        "top5_mean_hits": 0.6125186289120715
+      },
+      "M2_D1_target_standardized": {
+        "top5_mean_hits": 0.6140089418777943
+      },
+      "M3_D2_family_volatility": {
+        "mean_actual_rank": 20.80715350223549,
+        "top10_mean_hits": 1.2205663189269746,
+        "top20_mean_hits": 2.442622950819672,
+        "top5_mean_hits": 0.6214605067064084
+      },
+      "targets": 671,
+      "uniform_expected_top5_mean_hits": 0.625
+    }
+  },
+  "next_action": "Keep D2 as historical exploratory only; complete typed Q90/Q7 AST lineage and common-source behaviour atlas; preserve Q60 and B11 freezes append-only.",
+  "schema_version": "1.0",
+  "selection_diagnostics": {
+    "blind_oos": {
+      "distinct": 5,
+      "selected_counts": {
+        "frequency_change": 78,
+        "frequency_level": 214,
+        "neighbour_field": 122,
+        "position_dependence": 87,
+        "recency_gap": 169
+      },
+      "switch_rate": 0.05829596412556054,
+      "switches": 39
+    },
+    "discovery": {
+      "distinct": 7,
+      "selected_counts": {
+        "WARMUP_EQUAL_FAMILY": 100,
+        "frequency_change": 226,
+        "frequency_level": 118,
+        "lag_memory": 417,
+        "neighbour_field": 426,
+        "position_dependence": 444,
+        "recency_gap": 282
+      },
+      "switch_rate": 0.07157057654075547,
+      "switches": 144
+    },
+    "validation": {
+      "distinct": 6,
+      "selected_counts": {
+        "frequency_change": 6,
+        "frequency_level": 163,
+        "lag_memory": 128,
+        "neighbour_field": 164,
+        "position_dependence": 51,
+        "recency_gap": 159
+      },
+      "switch_rate": 0.07611940298507462,
+      "switches": 51
+    }
+  },
+  "source": {
+    "archive_check": "NOT_RECHECKED_LOCAL_PARENT_AND_CI_ATTESTED",
+    "archive_cutoff": "2026-11-10",
+    "archive_git_blob_sha1_expected": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_path": "data/storico_daily.csv",
+    "d1_report_git_blob_sha1": "069a4ef826201bdc3e6af58414e7913c44778fa0",
+    "eligible_draws": 3404,
+    "ledger_git_blob_sha1": "4620ac88199256d90bf8e11a852206bfeb817812",
+    "ledger_path": "reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv",
+    "parent_ci_run_id": 43412187676,
+    "parent_report_git_blob_sha1": "d559f939fc721119590cf84a72afc99fb6c36e0d",
+    "target_count": 3354
+  },
+  "status": "COMPLETED_HISTORICAL_EXPLORATORY",
+  "task_id": "Q141-D2-FAMILY-VOLATILITY-STANDARDIZATION"
+}
