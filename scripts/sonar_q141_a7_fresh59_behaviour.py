@@ -144,8 +144,12 @@ def compute_feature_matrix(draws):
                 x[v,7]=(age-med)/max(med,1)
                 x[v,8]=(age-med)/max(1,1.4826*mad)
                 x[v,9]=float(np.std(gaps)/max(np.mean(gaps),1)) if len(gaps)>1 else 0.0
-                gg=gaps[-8:];tt=np.arange(len(gg),dtype=float);den=float(np.sum((tt-tt.mean())**2))
-                x[v,10]=float(np.sum((tt-tt.mean())*(gg-gg.mean()))/den) if len(gg)>=3 and den>0 else 0.0
+                gg=gaps[-8:]
+                if len(gg)>=3:
+                    tt=np.arange(len(gg),dtype=float);den=float(np.sum((tt-tt.mean())**2))
+                    x[v,10]=float(np.sum((tt-tt.mean())*(gg-gg.mean()))/den) if den>0 else 0.0
+                else:
+                    x[v,10]=0.0
                 x[v,11]=(sum(gaps==age)+2/(med+1))/(max(1,sum(gaps>=age))+2) if len(gaps) else 1/(age+1)
                 x[v,12]=x[v,11]-1/(med+1)
             last=np.asarray(draws[i-1])-1
@@ -403,7 +407,7 @@ def main():
     report_path=out/"q141_a7_stability_weighted_report_2026-11-13.json"
     report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     files=[matrix_path,ledger_path,report_path]
-    manifest={"schema_version":"1.0","task_id":"Q141-A7-B11","status":"COMPLETED_LOCAL_OUTPUTS",
+    manifest={"schema_version":"1.0","task_id":"Q141-A7-B11","status":"COMPLETED_WALK_FORWARD_OUTPUTS",
       "source_archive_blob_sha1":archive_blob,"source_draw_count":len(draws),"source_last_date":dates[-1],
       "q90_prefix_matrix_exact_bit_match":True,"feature_matrix_shape":list(matrix.shape),
       "feature_names_sha256":hashlib.sha256("\n".join(FEATURE_NAMES).encode()).hexdigest(),
@@ -414,7 +418,7 @@ def main():
       "decision":decision,"source_commit":report["source"]["source_commit"],"archive_blob_sha1":archive_blob,
       "workflow_run_id":int(os.environ.get("GITHUB_RUN_ID","0")),"report_path":str(report_path),
       "ledger_path":str(ledger_path),"matrix_artifact_path":str(matrix_path),
-      "next_action":"Review the exact-head dedicated workflow and artifact readback; then reserve new post-2026-11-12 draws for genuinely prospective evaluation.",
+      "next_action":"Keep M1 frozen. On the next officially verified draw after 2026-11-12, append a prospective target row and score M1 versus M0 without retuning. Accumulate a preregistered prospective sample before any promotion decision.",
       "governance":{"pr89":"untouched","pr6":"untouched","pr7":"untouched","pr8":"untouched",
         "engine_promotion":False,"canonical_archive_mutation":False,"shadow_insertion":False,"merge":False}}
     checkpoint_path=out/"q141_a7_checkpoint_2026-11-13.json"
