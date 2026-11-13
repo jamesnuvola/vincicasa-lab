@@ -26,12 +26,14 @@ The 0.75 practical threshold is deliberately below A16's approximately 0.83–0.
 - Walk-forward manifest Git blob: aae2c7768c9d37bf633a13939f2b686bcce83a27
 - Formula catalog manifest Git blob: 5cdf9c24431ea23b2176aa6a19133b7f4435980c
 - Canonical source archive Git blob: 7dab05ba49ace909fe8783eef729605049c65e50
-- 3,387 source draws, 3,386 scored target rows, 1,023 formula masks, 658,008 candidate quintets.
+- 3,387 source draws, 3,387 ledger rows (the first is INSUFFICIENT_HISTORY), 3,386 scored target rows, 1,023 formula masks, 658,008 candidate quintets.
 - Source archive ends on 2026-10-24. It is intentionally pinned to the Q7 panel and is not silently extended with later draws.
 
 ## Strict-prior alignment
 
-For target row j (zero-based within the 3,386-row ledger):
+The Q7 ledger begins with one unscored row for 2017-07-17: status INSUFFICIENT_HISTORY, prior_draws=0, blank cutoff and blank rank columns. It must reconcile to the first archive draw and is excluded from the 3,386 scored rows.
+
+For scored target row j (zero-based within the 3,386-row panel):
 
 - prior_draws must equal j+1;
 - cutoff_date must equal archive date j;
