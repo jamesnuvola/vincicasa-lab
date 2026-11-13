@@ -1,0 +1,80 @@
+{
+  "experiment_id": "Q134",
+  "title": "Contest 315 provenance quarantine and prospective eligibility audit",
+  "generated_at_utc": "2026-11-12T03:12:24Z",
+  "status": "PROVENANCE_QUARANTINE_REQUIRED",
+  "source_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+  "quantitative_hypothesis": {
+    "statement": "A prospective target whose outcome is not exposed as five exact numbers by a primary source contributes zero eligible paired targets to Q60; a subsequent forecast whose history cutoff includes that unresolved outcome is not source-clean.",
+    "eligibility_formula": "N_eligible = N_reported - I(unresolved_primary_provenance_date is included in paired_target_dates)",
+    "observed_calculation": "24 - 1(2026-11-11) = 23",
+    "next_target_rule": "A 2026-11-12 freeze with history_cutoff=2026-11-11 is ineligible for clean primary-source evaluation until contest 315's five numbers are confirmed by a primary source."
+  },
+  "provenance": {
+    "date": "2026-11-11",
+    "contest": 315,
+    "numbers_in_canonical_main": [1, 21, 22, 27, 29],
+    "status": "SECONDARY_SOURCE_CORROBORATED_PRIMARY_NUMBER_PROVENANCE_UNRESOLVED",
+    "official_vincicasa_archive": {
+      "url": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+      "observation": "Contest 315 still shown as In programmazione / In attesa",
+      "checked_at_utc": "2026-11-12T03:12:24Z"
+    },
+    "official_sisal_detail": {
+      "url": "https://www.sisal.it/estrazioni/vincicasa/concorso-315/11-novembre-2026",
+      "observation": "Confirms contest 315, date and prize counts, but the retrieved official page text does not expose the five numbers",
+      "checked_at_utc": "2026-11-12T03:12:24Z"
+    },
+    "secondary_corroboration": [
+      "https://www.estrazionedellotto.it/vinci-casa/risultati-vinci-casa",
+      "https://vincicasa.online/archivio/estrazione-11-novembre-2026"
+    ],
+    "secondary_numbers_agree": true,
+    "canonical_row_added_by": "legacy proximity parser",
+    "raw_html_snapshot_available": false
+  },
+  "observed_state": {
+    "canonical_archive": {"rows": 3405, "last_date": "2026-11-11", "provisional_315": "1 21 22 27 29"},
+    "latest_metrics": {"total_draws": 3405, "last_date": "2026-11-11", "targets": 3205},
+    "active_engine": {"targets": 3205, "oos_targets": 641, "oos_last_target": "2026-11-11"},
+    "forecast_rows": {"global_315_evaluated": 43, "positional_315_evaluated": 1, "global_316_pending": 43, "positional_316_pending": 1},
+    "promotion_gate": {"reported_pairs": 24, "eligible_after_quarantine": 23, "excluded_date": "2026-11-11"},
+    "next_target_history": {"target_date": "2026-11-12", "cutoff": "2026-11-11", "source_verified": false, "eligible_for_clean_primary_evaluation": false}
+  },
+  "quantitative_impact": {
+    "q60_reported_pairs": 24,
+    "q60_provenance_eligible_pairs": 23,
+    "q60_remaining_to_200": 177,
+    "pairs_excluded_pending_primary_confirmation": 1,
+    "active_engine_oos_targets_reported": 641,
+    "active_engine_oos_targets_clean_upper_bound": 640,
+    "active_engine_oos_summary_recomputed": false,
+    "next_target_freezes_using_unverified_history": 44
+  },
+  "historical_walk_forward_reference": {
+    "experiment": "Q133",
+    "targets": 3204,
+    "source_last_target": "2026-11-10",
+    "discovery_validation_blind": [1922, 641, 641],
+    "status": "HISTORICAL_PREFIX_EXCLUDES_DISPUTED_2026-11-11_OUTCOME",
+    "predictive_results_reused": true
+  },
+  "new_predictive_walk_forward": {
+    "status": "NOT_RUN",
+    "reason": "The latest main snapshot includes an unresolved outcome in both the evaluated OOS summary and the next-target history. Running another predictive experiment on this state would violate the source-trust boundary. Q133 remains the last clean historical-prefix walk-forward."
+  },
+  "decision": "PROVENANCE_QUARANTINE_REQUIRED",
+  "no_mutation": {
+    "canonical_archive_changed": false,
+    "forecast_freezes_changed": false,
+    "promotion_gate_changed": false,
+    "production_engine_changed": false
+  },
+  "next_action": [
+    "Obtain a primary source that exposes all five contest-315 numbers or an official bulletin for 11/11/2026.",
+    "Keep the 2026-11-11 paired outcome excluded from Q60 until primary number provenance is resolved.",
+    "Treat all 44 pending 2026-11-12 freezes as history-provenance-contaminated; do not score them as clean primary OOS.",
+    "Recompute sequence-agent metrics from the verified prefix only after provenance resolution or explicit human quarantine.",
+    "Preserve all existing freeze identities and timestamps; no reconstruction or retuning."
+  ]
+}
