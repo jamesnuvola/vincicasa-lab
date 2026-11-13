@@ -5,13 +5,14 @@ on:
     branches: ["**"]
     paths-ignore:
       - 'reports/sequence_agent/q141_a12_structural_markov_*'
+      - 'reports/sequence_agent/q141_a12_execution_recovery_note_2026-11-13.md'
       - 'reports/sequence_agent/q141_cycle_report_2026-11-13_run22.md'
   pull_request:
   workflow_dispatch:
 
 permissions:
   actions: read
-  contents: write
+  contents: read
 
 # Cancel superseded research-branch runs so several expensive historical searches
 # do not compete after each incremental commit.
@@ -78,14 +79,3 @@ jobs:
             reports/sequence_agent/q141_a12_structural_markov_target_ledger_2026-11-13.csv
             reports/sequence_agent/q141_a12_structural_markov_manifest_2026-11-13.json
             reports/sequence_agent/q141_a12_structural_markov_checkpoint_2026-11-13.json
-      - name: Persist Q141-A12 outputs to research branch
-        if: github.event_name == 'push'
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add reports/sequence_agent/q141_a12_structural_markov_report_2026-11-13.json reports/sequence_agent/q141_a12_structural_markov_target_ledger_2026-11-13.csv reports/sequence_agent/q141_a12_structural_markov_preregistration_2026-11-13.md reports/sequence_agent/q141_a12_structural_markov_manifest_2026-11-13.json reports/sequence_agent/q141_a12_structural_markov_checkpoint_2026-11-13.json reports/sequence_agent/q141_cycle_report_2026-11-13_run22.md
-          if ! git diff --cached --quiet; then
-            git commit -m 'Persist Q141-A12 structural Markov audit outputs'
-            git push origin "HEAD:${GITHUB_REF_NAME}"
-          fi
