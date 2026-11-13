@@ -1,0 +1,54 @@
+name: Q139 weekday-conditioned subset replay
+
+on:
+  push:
+    branches:
+      - research/q139-weekday-conditioned-subset-20261112
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "data/storico_daily.csv"
+      - "reports/sequence_agent/q139_weekday_conditioned_subset_*"
+      - "scripts/sonar_q139_weekday_conditioned_subset.mjs"
+      - ".github/workflows/q139-weekday-conditioned-subset.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Replay weekday-conditioned fixed-size subset model
+        run: node scripts/sonar_q139_weekday_conditioned_subset.mjs
+      - name: Persist generated outputs on branch push
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "sonar-sequence-agent"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/sequence_agent/q139_weekday_conditioned_subset_report_2026-11-12.json
+          git add reports/sequence_agent/q139_weekday_conditioned_subset_target_ledger_2026-11-12.csv
+          git add reports/sequence_agent/q139_weekday_conditioned_subset_validation_2026-11-12.json
+          git add reports/sequence_agent/q139_weekday_conditioned_subset_checkpoint_2026-11-12.md
+          git add reports/sequence_agent/q139_weekday_conditioned_subset_persistence_manifest_2026-11-12.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Persist Q139 weekday-conditioned subset replay"
+            git push origin HEAD:refs/heads/research/q139-weekday-conditioned-subset-20261112
+          fi
+      - name: Require byte-identical persisted outputs on pull request
+        if: github.event_name == 'pull_request'
+        run: |
+          git diff --exit-code -- reports/sequence_agent/q139_weekday_conditioned_subset_report_2026-11-12.json
+          git diff --exit-code -- reports/sequence_agent/q139_weekday_conditioned_subset_target_ledger_2026-11-12.csv
+          git diff --exit-code -- reports/sequence_agent/q139_weekday_conditioned_subset_validation_2026-11-12.json
+          git diff --exit-code -- reports/sequence_agent/q139_weekday_conditioned_subset_checkpoint_2026-11-12.md
+          git diff --exit-code -- reports/sequence_agent/q139_weekday_conditioned_subset_persistence_manifest_2026-11-12.json
