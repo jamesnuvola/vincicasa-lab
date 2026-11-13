@@ -1,0 +1,183 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A11-TRIPLE-RESIDUAL",
+  "status": "COMPLETED_HISTORICAL_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_THIRD_ORDER_TRIPLE_RESIDUAL_LIFT_DEMONSTRATED",
+  "source": {
+    "a7_workflow_run_id": 43348144964,
+    "a7_artifact_id": 14003350043,
+    "a7_artifact_zip_sha256": "9c54699a507e876b7b5b1c0c9e3120ad04c2bcc741dcd5043dc410f81bf6b03a",
+    "feature_matrix_sha256": "81479d7cff00ddcbc6046bcb390efb2ef1b08de6a6f1f2cdb2f89a77c76c6047",
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "archive_draw_count": 3406,
+    "archive_last_date": "2026-11-12",
+    "feature_matrix_shape": [
+      3356,
+      40,
+      59
+    ],
+    "feature_count": 59
+  },
+  "design": {
+    "window_recent": 200,
+    "window_stale": 200,
+    "warmup_matrix_rows": 400,
+    "target_index_start_inclusive": 400,
+    "target_index_end_inclusive": 3355,
+    "targets": 2956,
+    "split_counts": {
+      "discovery": 1774,
+      "validation": 591,
+      "blind_oos": 591
+    },
+    "baseline": "uniform unordered 5-of-40; conditional null mean 0 and variance 1 for each standardized score",
+    "primary_endpoint": "Blind OOS mean Z3_recent after removing additive single and pair effects",
+    "secondary_endpoint": "Blind OOS mean exact-variance-standardized recent-minus-stale triple residual contrast",
+    "practical_thresholds": {
+      "primary_mean_z3": 0.1,
+      "normalized_contrast_mean_z3": 0.05
+    },
+    "inference": "martingale score test under independent uniform 5-of-40 draws; predictable variance n; one-sided normal martingale approximation",
+    "multiple_testing": "Holm across the two registered Blind OOS endpoints only; not the full Q00-Q141 family",
+    "parameter_tuning": "none; fixed 200-draw recent and stale windows",
+    "diagnostics": "Newey-West HAC and ACF sensitivities at lags 20, 50, 100; no block sign-symmetry assumption"
+  },
+  "formula": {
+    "triple_counts": "Y_ijk = number of prior-window draws containing triple {i,j,k}",
+    "mu": "mean(Y_ijk) over all choose(40,3) triples",
+    "single_effect": "a_i=(S_i-choose(n-1,2)*mu)/choose(n-2,2)",
+    "pair_effect": "b_ij=(Q_ij-(n-2)*mu-(n-3)*(a_i+a_j))/(n-4)",
+    "triple_residual": "R_ijk=Y_ijk-mu-a_i-a_j-a_k-b_ij-b_ik-b_jk; sum_{k!=i,j}R_ijk=0",
+    "target_score": "T3=sum_{triples subset target quintet}R_ijk",
+    "null_variance": "(p3-3*p4+3*p5-p6)*sum R_ijk^2; pq=(5)_q/(40)_q; p6=0 for k=5",
+    "standardized_score": "Z3=T3/sqrt(Var0(T3))",
+    "contrast_tensor": "U=R_recent/sqrt(V_recent)-R_stale/sqrt(V_stale); Z3_contrast=sum U(target triples)/sqrt(Var0(U))"
+  },
+  "split_metrics": {
+    "discovery": {
+      "targets": 1774,
+      "mean_z3_recent": 0.013142582197117286,
+      "sd_z3_recent": 1.0059501536385165,
+      "positive_share_z3_recent": 0.471815107102593,
+      "mean_z3_stale": 0.011809123043166243,
+      "sd_z3_stale": 0.989424299590694,
+      "mean_z3_recent_vs_stale": 0.000815683458357229,
+      "sd_z3_recent_vs_stale": 0.9894302461612335,
+      "positive_share_z3_recent_vs_stale": 0.4983089064261556,
+      "max_pair_marginal_residual": 7.66053886991358e-15
+    },
+    "validation": {
+      "targets": 591,
+      "mean_z3_recent": -0.0034594900830622675,
+      "sd_z3_recent": 1.0033690971934182,
+      "positive_share_z3_recent": 0.45685279187817257,
+      "mean_z3_stale": 0.044708107285570994,
+      "sd_z3_stale": 1.0559362657524964,
+      "mean_z3_recent_vs_stale": -0.03423963005316163,
+      "sd_z3_recent_vs_stale": 1.0095816882990218,
+      "positive_share_z3_recent_vs_stale": 0.5143824027072758,
+      "max_pair_marginal_residual": 6.5503158452884236e-15
+    },
+    "blind_oos": {
+      "targets": 591,
+      "mean_z3_recent": -0.02249506635504818,
+      "sd_z3_recent": 0.9501625390789411,
+      "positive_share_z3_recent": 0.467005076142132,
+      "mean_z3_stale": 0.051737385226963646,
+      "sd_z3_stale": 0.9874869352174428,
+      "mean_z3_recent_vs_stale": -0.052594582782654276,
+      "sd_z3_recent_vs_stale": 0.9655824701140656,
+      "positive_share_z3_recent_vs_stale": 0.4754653130287648,
+      "max_pair_marginal_residual": 6.5503158452884236e-15
+    }
+  },
+  "blind_oos_inference": {
+    "recent_triple_residual_vs_uniform_zero": {
+      "targets": 591,
+      "mean": -0.02249506635504818,
+      "sample_sd": 0.9501625390789411,
+      "null_predictable_se": 0.04113450348948636,
+      "martingale_normal_z": -0.5468661208174722,
+      "p_one_sided_martingale_normal": 0.7077646435997954,
+      "ci95_iid_sensitivity": [
+        -0.09910061634251914,
+        0.05411048363242278
+      ],
+      "hac_se_sensitivity": {
+        "20": 0.03691753563646805,
+        "50": 0.038321998017019986,
+        "100": 0.039289389676700995
+      },
+      "acf_sensitivity": {
+        "1": 0.0010809405660588086,
+        "5": 0.002458386755990877,
+        "20": 0.041847768156530116,
+        "50": 0.02825125941783268,
+        "100": -0.011232531504616677
+      },
+      "max_abs_increment": 4.118551214167257,
+      "max_abs_over_sqrt_n": 0.1694145592907913,
+      "conditional_null_variance_per_target": 1.0,
+      "conditional_null_mean_per_target": 0.0,
+      "p_holm": 1.0
+    },
+    "normalized_recent_vs_stale_triple_contrast": {
+      "targets": 591,
+      "mean": -0.052594582782654276,
+      "sample_sd": 0.9655824701140656,
+      "null_predictable_se": 0.04113450348948636,
+      "martingale_normal_z": -1.2786001609596922,
+      "p_one_sided_martingale_normal": 0.8994810533639175,
+      "ci95_iid_sensitivity": [
+        -0.1304433435357903,
+        0.02525417797048174
+      ],
+      "hac_se_sensitivity": {
+        "20": 0.037453570717983754,
+        "50": 0.03380901953265515,
+        "100": 0.028077899243728128
+      },
+      "acf_sensitivity": {
+        "1": 0.004969152127064906,
+        "5": 0.005957521026259192,
+        "20": 0.06128402862138752,
+        "50": -0.05046186252485681,
+        "100": -0.015075323942027121
+      },
+      "max_abs_increment": 3.457344435557295,
+      "max_abs_over_sqrt_n": 0.1422161467487878,
+      "conditional_null_variance_per_target": 1.0,
+      "conditional_null_mean_per_target": 0.0,
+      "p_holm": 1.0
+    }
+  },
+  "integrity": {
+    "source_archive_blob_pinned": true,
+    "matrix_sha256_verified": true,
+    "matrix_finite": true,
+    "target_dates_unique_chronological": true,
+    "all_cutoffs_precede_targets": true,
+    "recent_and_stale_windows_strictly_prior_disjoint": true,
+    "triple_residual_pair_margins_zero": true,
+    "future_suffix_invariance": true,
+    "deterministic_full_replay": true,
+    "analytic_variance_exhaustive_small_problem_test": true
+  },
+  "limitations": [
+    "Historical Blind OOS has been exposed to prior SONAR research and is exploratory, not virgin confirmation.",
+    "Holm covers only the two A11 endpoints, not the full Q00-Q141 research family.",
+    "The martingale null assumes independent uniform 5-of-40 draws; it is a statistical reference, not a physical mechanism model.",
+    "The normal martingale approximation is asymptotic; Lindeberg proxy, HAC and ACF sensitivities are reported.",
+    "A positive third-order score would not itself establish calibrated exact-ticket probabilities or a deployable engine.",
+    "No B11 prospective outcome is read; the 2026-11-13 target remains pending."
+  ],
+  "governance": {
+    "b11_freeze_unchanged": true,
+    "canonical_archive_mutated": false,
+    "engine_promoted": false,
+    "shadow_inserted": false,
+    "merge": false,
+    "rebase": false,
+    "protected_prs_6_7_8_untouched": true
+  }
+}
