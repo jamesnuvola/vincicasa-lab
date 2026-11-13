@@ -1,0 +1,133 @@
+{
+  "experiment_id": "Q117",
+  "passed": true,
+  "checks_passed": 14,
+  "checks_total": 14,
+  "checks": [
+    {
+      "name": "archive_rows_3404",
+      "passed": true
+    },
+    {
+      "name": "dates_unique_chronological",
+      "passed": true
+    },
+    {
+      "name": "valid_five_of_forty",
+      "passed": true
+    },
+    {
+      "name": "target_rows_3204",
+      "passed": true
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "passed": true
+    },
+    {
+      "name": "chronological_splits",
+      "passed": true
+    },
+    {
+      "name": "finite_validation_scores",
+      "passed": true
+    },
+    {
+      "name": "alpha_selected_on_validation",
+      "passed": true
+    },
+    {
+      "name": "marginal_sums_equal_five",
+      "passed": true
+    },
+    {
+      "name": "positive_partition_functions",
+      "passed": true
+    },
+    {
+      "name": "future_suffix_mutation_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "deterministic_ledger_replay",
+      "passed": true
+    },
+    {
+      "name": "four_blind_endpoints",
+      "passed": true
+    },
+    {
+      "name": "holm_monotone",
+      "passed": true
+    }
+  ],
+  "source": {
+    "archive_rows": 3404,
+    "archive_first_date": "2017-07-17",
+    "archive_last_date": "2026-11-10",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0"
+  },
+  "targets": 3204,
+  "splits": {
+    "discovery": 1922,
+    "validation": 641,
+    "blind_oos": 641
+  },
+  "selected_alpha": 1600,
+  "future_suffix_mutation": [
+    {
+      "target_index": 200,
+      "passed": true,
+      "max_abs_difference": 0
+    },
+    {
+      "target_index": 400,
+      "passed": true,
+      "max_abs_difference": 0
+    },
+    {
+      "target_index": 800,
+      "passed": true,
+      "max_abs_difference": 0
+    },
+    {
+      "target_index": 1200,
+      "passed": true,
+      "max_abs_difference": 0
+    },
+    {
+      "target_index": 1600,
+      "passed": true,
+      "max_abs_difference": 0
+    },
+    {
+      "target_index": 2000,
+      "passed": true,
+      "max_abs_difference": 0
+    },
+    {
+      "target_index": 2400,
+      "passed": true,
+      "max_abs_difference": 0
+    },
+    {
+      "target_index": 2800,
+      "passed": true,
+      "max_abs_difference": 0
+    },
+    {
+      "target_index": 3203,
+      "passed": true,
+      "max_abs_difference": 0
+    }
+  ],
+  "max_marginal_sum_error": 0,
+  "deterministic_ledger_replay": true,
+  "limitations": [
+    "Historical Blind OOS is exposed to earlier SONAR research and is not a virgin holdout.",
+    "This is a prior-only reconstruction from the archive, not a contemporaneous historical forecast log.",
+    "Weekday effects may be unstable because each weekday has fewer observations; alpha selection uses Validation only.",
+    "The joint weighted-subset model is a research probability model, not the production SONAR scorer.",
+    "Q60 remains separate and is not advanced by this experiment."
+  ]
+}

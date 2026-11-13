@@ -1,0 +1,94 @@
+{
+  "experiment_id": "Q117",
+  "title": "Weekday-conditioned number inclusion model",
+  "status": "PREREGISTERED_BEFORE_COMPUTATION",
+  "registered_at_utc": "2026-11-11T11:05:38Z",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "archive_rows": 3404,
+    "archive_last_date": "2026-11-10"
+  },
+  "hypothesis": {
+    "question": "Does weekday-conditioned number frequency improve the ex-ante probability of a 5-number set beyond global-frequency and uniform baselines?",
+    "null": "Conditional on the five-of-forty design, weekday does not add stable information beyond global number frequency.",
+    "alternative": "A fixed hierarchical weekday effect improves proper joint log score and marginal inclusion Brier score on future targets.",
+    "global_probability": "pG_n(t)=(C_n(t)+beta/40)/(5*t+beta), beta=200.",
+    "weekday_probability": "pWD_n(t,d,alpha)=(C_{d,n}(t)+alpha*pG_n(t))/(5*N_d(t)+alpha).",
+    "subset_probability": "P(S|t,d)=product_{n in S}(40*pWD_n)/e5(40*pWD), for |S|=5.",
+    "marginal_inclusion": "pi_n=(40*pWD_n)*e4((40*pWD) without n)/e5(40*pWD).",
+    "baselines": [
+      "M0 exact uniform 5-of-40",
+      "M1 global-frequency weighted fixed-size subset model, beta=200"
+    ],
+    "candidate_model": "M7 weekday-conditioned weighted fixed-size subset model."
+  },
+  "fixed_design": {
+    "minimum_history_draws": 200,
+    "target_count": 3204,
+    "chronological_splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "alpha_grid": [
+      25,
+      50,
+      100,
+      200,
+      400,
+      800,
+      1600
+    ],
+    "alpha_selection": "Choose alpha minimizing Validation mean joint log-loss; exact ties choose the larger alpha. No Blind OOS access during selection.",
+    "training_rule": "For each target, all counts use only draws strictly earlier than that target. Validation outcomes may enter later validation prefixes; Blind OOS outcomes may enter later Blind OOS prefixes, but alpha remains frozen.",
+    "weekday_rule": "UTC weekday derived from ISO target date; no future calendar or outcome fields used.",
+    "metrics": [
+      "joint negative log probability of observed five-number subset",
+      "mean Brier score across 40 marginal inclusion probabilities"
+    ],
+    "inference": {
+      "endpoints": [
+        "M7_vs_M0_joint_logloss_gain",
+        "M7_vs_M0_marginal_brier_gain",
+        "M7_vs_M1_joint_logloss_gain",
+        "M7_vs_M1_marginal_brier_gain"
+      ],
+      "block_sign_flip_replicates": 50000,
+      "bootstrap_replicates": 10000,
+      "block_length": 20,
+      "correction": "Holm step-down across the four Blind OOS endpoints."
+    },
+    "integrity_tests": [
+      "strict-prior cutoff",
+      "date uniqueness and chronology",
+      "valid 5-of-40 draws",
+      "PMF normalization",
+      "sum of marginal inclusion probabilities equals 5",
+      "9 future-suffix mutation tests",
+      "deterministic replay",
+      "byte-identical persisted ledger replay"
+    ]
+  },
+  "prospective_freeze": {
+    "target_date": "2026-11-11",
+    "cutoff_date": "2026-11-10",
+    "freeze_timestamp_utc": "2026-11-11T11:05:38Z",
+    "contents": [
+      "selected alpha",
+      "40 marginal inclusion probabilities",
+      "ranked Top20",
+      "model identifier",
+      "source archive blob SHA"
+    ],
+    "rule": "Research-only add-on; do not modify existing global/positional freezes or Q60."
+  },
+  "guardrails": [
+    "Historical Blind OOS is not a virgin holdout because the archive has been examined in earlier SONAR research.",
+    "No production engine change, promotion, or automatic merge.",
+    "No edits to PR #6, #7, or #8.",
+    "Q60 exact-number provenance for contest 314 remains unresolved until an official exact-number source is available; do not advance the gate from this experiment."
+  ]
+}

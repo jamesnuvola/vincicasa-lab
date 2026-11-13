@@ -1,0 +1,275 @@
+{
+  "experiment_id": "Q117",
+  "title": "Weekday-conditioned number inclusion model",
+  "generated_at_utc": "2026-11-11T11:05:38Z",
+  "status": "COMPLETED_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_WEEKDAY_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "Weekday-conditioned historical number rates may add predictive information beyond global frequency and the exact uniform 5-of-40 baseline.",
+  "model": {
+    "global_beta": 200,
+    "weekday_alpha_grid": [
+      25,
+      50,
+      100,
+      200,
+      400,
+      800,
+      1600
+    ],
+    "selected_alpha": 1600,
+    "selection_rule": "minimum Validation mean joint log-loss; ties choose larger alpha",
+    "p_global": "(C_n + beta/40)/(5*t + beta)",
+    "p_weekday": "(C_weekday,n + alpha*p_global)/(5*N_weekday + alpha)",
+    "subset_probability": "product(40*p_weekday_n)/e5(40*p_weekday)",
+    "marginal_inclusion": "w_n*e4(w without n)/e5(w)",
+    "baselines": [
+      "M0 uniform 5-of-40",
+      "M1 global-frequency weighted fixed-size subset, beta=200"
+    ]
+  },
+  "walk_forward": {
+    "targets": 3204,
+    "minimum_history": 200,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior_cutoffs": true,
+    "weekday": "UTC weekday from target date"
+  },
+  "validation_alpha_table": [
+    {
+      "alpha": 1600,
+      "validation": {
+        "n": 641,
+        "mean_joint_logloss": 13.403399787208,
+        "mean_marginal_brier": 0.109409444592,
+        "mean_sum_marginal_error": 0
+      },
+      "gain_vs_global_logloss": 0.00034686923
+    },
+    {
+      "alpha": 800,
+      "validation": {
+        "n": 641,
+        "mean_joint_logloss": 13.40857047307,
+        "mean_marginal_brier": 0.109437232345,
+        "mean_sum_marginal_error": 0
+      },
+      "gain_vs_global_logloss": -0.004823816632
+    },
+    {
+      "alpha": 400,
+      "validation": {
+        "n": 641,
+        "mean_joint_logloss": 13.414421958294,
+        "mean_marginal_brier": 0.109468710977,
+        "mean_sum_marginal_error": 0
+      },
+      "gain_vs_global_logloss": -0.010675301856
+    },
+    {
+      "alpha": 200,
+      "validation": {
+        "n": 641,
+        "mean_joint_logloss": 13.419144016994,
+        "mean_marginal_brier": 0.109494030354,
+        "mean_sum_marginal_error": 0
+      },
+      "gain_vs_global_logloss": -0.015397360556
+    },
+    {
+      "alpha": 100,
+      "validation": {
+        "n": 641,
+        "mean_joint_logloss": 13.422223915656,
+        "mean_marginal_brier": 0.109510488966,
+        "mean_sum_marginal_error": 0
+      },
+      "gain_vs_global_logloss": -0.018477259218
+    },
+    {
+      "alpha": 50,
+      "validation": {
+        "n": 641,
+        "mean_joint_logloss": 13.423997606009,
+        "mean_marginal_brier": 0.109519945263,
+        "mean_sum_marginal_error": 0
+      },
+      "gain_vs_global_logloss": -0.020250949571
+    },
+    {
+      "alpha": 25,
+      "validation": {
+        "n": 641,
+        "mean_joint_logloss": 13.424951672284,
+        "mean_marginal_brier": 0.109525024823,
+        "mean_sum_marginal_error": 0
+      },
+      "gain_vs_global_logloss": -0.021205015846
+    }
+  ],
+  "results": {
+    "discovery": {
+      "m0": {
+        "n": 1922,
+        "mean_joint_logloss": 13.396972368288,
+        "mean_marginal_brier": 0.109375,
+        "mean_sum_marginal_error": 0
+      },
+      "m1": {
+        "n": 1922,
+        "mean_joint_logloss": 13.412398068713,
+        "mean_marginal_brier": 0.109461124433,
+        "mean_sum_marginal_error": 0
+      },
+      "m7": {
+        "n": 1922,
+        "mean_joint_logloss": 13.418564690273,
+        "mean_marginal_brier": 0.10949500253,
+        "mean_sum_marginal_error": 0
+      }
+    },
+    "validation": {
+      "m0": {
+        "n": 641,
+        "mean_joint_logloss": 13.396972368288,
+        "mean_marginal_brier": 0.109375,
+        "mean_sum_marginal_error": 0
+      },
+      "m1": {
+        "n": 641,
+        "mean_joint_logloss": 13.403746656438,
+        "mean_marginal_brier": 0.109413517422,
+        "mean_sum_marginal_error": 0
+      },
+      "m7": {
+        "n": 641,
+        "mean_joint_logloss": 13.403399787208,
+        "mean_marginal_brier": 0.109409444592,
+        "mean_sum_marginal_error": 0
+      }
+    },
+    "blind_oos": {
+      "m0": {
+        "n": 641,
+        "mean_joint_logloss": 13.396972368288,
+        "mean_marginal_brier": 0.109375,
+        "mean_sum_marginal_error": 0
+      },
+      "m1": {
+        "n": 641,
+        "mean_joint_logloss": 13.399505153146,
+        "mean_marginal_brier": 0.109389960287,
+        "mean_sum_marginal_error": 0
+      },
+      "m7": {
+        "n": 641,
+        "mean_joint_logloss": 13.403209387781,
+        "mean_marginal_brier": 0.109413204801,
+        "mean_sum_marginal_error": 0
+      }
+    }
+  },
+  "blind_inference": {
+    "method": "one-sided paired block sign-flip",
+    "replicates": 50000,
+    "block_length": 20,
+    "bootstrap_replicates": 10000,
+    "correction": "Holm across four Blind OOS endpoints",
+    "tests": [
+      {
+        "endpoint": "M7_vs_M0_joint_logloss_gain",
+        "mean_gain": -0.006237019493,
+        "p_one_sided_improvement": 0.7870242595148097,
+        "bootstrap_ci95": [
+          -0.021168888157,
+          0.008426324334
+        ],
+        "p_holm": 1
+      },
+      {
+        "endpoint": "M7_vs_M0_marginal_brier_gain",
+        "mean_gain": -0.000038204801,
+        "p_one_sided_improvement": 0.8110637787244255,
+        "bootstrap_ci95": [
+          -0.000122023504,
+          0.000041845137
+        ],
+        "p_holm": 1
+      },
+      {
+        "endpoint": "M7_vs_M1_joint_logloss_gain",
+        "mean_gain": -0.003704234635,
+        "p_one_sided_improvement": 0.7032859342813144,
+        "bootstrap_ci95": [
+          -0.017613352194,
+          0.010096870466
+        ],
+        "p_holm": 1
+      },
+      {
+        "endpoint": "M7_vs_M1_marginal_brier_gain",
+        "mean_gain": -0.000023244514,
+        "p_one_sided_improvement": 0.7224455510889782,
+        "bootstrap_ci95": [
+          -0.000100202822,
+          0.000054351896
+        ],
+        "p_holm": 1
+      }
+    ]
+  },
+  "prospective_freeze_summary": {
+    "target_date": "2026-11-11",
+    "cutoff_date": "2026-11-10",
+    "selected_alpha": 1600,
+    "same_weekday_prior_draws": 486,
+    "top20": [
+      37,
+      23,
+      2,
+      21,
+      5,
+      6,
+      13,
+      26,
+      40,
+      29,
+      8,
+      9,
+      32,
+      38,
+      11,
+      18,
+      16,
+      17,
+      34,
+      28
+    ]
+  },
+  "integrity": {
+    "checks_passed": 14,
+    "checks_total": 14,
+    "future_suffix_mutation": "9/9",
+    "deterministic_replay": true,
+    "max_marginal_sum_error": 0
+  },
+  "limitations": [
+    "Historical Blind OOS is exposed to earlier SONAR research and is not a virgin holdout.",
+    "This is a prior-only reconstruction from the archive, not a contemporaneous historical forecast log.",
+    "Weekday effects may be unstable because each weekday has fewer observations; alpha selection uses Validation only.",
+    "The joint weighted-subset model is a research probability model, not the production SONAR scorer.",
+    "Q60 remains separate and is not advanced by this experiment."
+  ],
+  "next_action": "Keep the Q117 2026-11-11 probability freeze immutable; after the official draw, score the 40 marginal probabilities and joint set log score. Do not update Q60 or promote the model."
+}
