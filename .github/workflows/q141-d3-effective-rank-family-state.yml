@@ -9,6 +9,14 @@ on:
       - tests/test_sonar_q141_d3_effective_rank_family_state.py
       - reports/sequence_agent/q141_d3_effective_rank_family_state_preregistration_2026-11-13.md
       - .github/workflows/q141-d3-effective-rank-family-state.yml
+  pull_request:
+    branches:
+      - research/q141-formula-universe-behaviour-mapping-20261112
+    paths:
+      - scripts/sonar_q141_d3_effective_rank_family_state.py
+      - tests/test_sonar_q141_d3_effective_rank_family_state.py
+      - reports/sequence_agent/q141_d3_effective_rank_family_state_preregistration_2026-11-13.md
+      - .github/workflows/q141-d3-effective-rank-family-state.yml
   workflow_dispatch:
 
 permissions:
@@ -83,6 +91,7 @@ jobs:
           done
 
       - name: Persist deterministic D3 outputs
+        if: github.event_name == 'push'
         env:
           BRANCH_NAME: ${{ github.ref_name }}
         run: |
@@ -100,6 +109,7 @@ jobs:
           fi
 
       - name: Verify remote outputs, update checkpoint and create receipt
+        if: github.event_name == 'push'
         env:
           BRANCH_NAME: ${{ github.ref_name }}
           RUN_ID: ${{ github.run_id }}
