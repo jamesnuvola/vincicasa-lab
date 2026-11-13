@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q124",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "protocol committed before calculation",
+      "pass": true
+    },
+    {
+      "name": "canonical archive SHA/count/date/order",
+      "pass": true
+    },
+    {
+      "name": "APP data reconciles row-by-row",
+      "pass": true
+    },
+    {
+      "name": "active-engine source pins reconcile",
+      "pass": true
+    },
+    {
+      "name": "3,204 strict-prior target rows",
+      "pass": true
+    },
+    {
+      "name": "40 unique finite scores per target",
+      "pass": true
+    },
+    {
+      "name": "exact tie groups partition all ranks",
+      "pass": true
+    },
+    {
+      "name": "midrank sum equals 820 for every forecast",
+      "pass": true
+    },
+    {
+      "name": "fractional TopK credits sum to K",
+      "pass": true
+    },
+    {
+      "name": "chronological 1922/641/641 splits",
+      "pass": true
+    },
+    {
+      "name": "Q123 freeze exact 40/40 reconciliation",
+      "pass": true
+    },
+    {
+      "name": "future-suffix mutation invariance 9/9",
+      "pass": true
+    },
+    {
+      "name": "five endpoint Holm correction",
+      "pass": true
+    },
+    {
+      "name": "independent deterministic replay matches first run",
+      "pass": true
+    },
+    {
+      "name": "unique chronological target dates",
+      "pass": true
+    },
+    {
+      "name": "freeze cutoff precedes target",
+      "pass": true
+    },
+    {
+      "name": "freeze timestamp before draw",
+      "pass": true
+    }
+  ],
+  "passed": 17,
+  "total": 17,
+  "source_pins": {
+    "base_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "source_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "app_blob_sha": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "active_blob_sha": "822f955801c329585f7dd03df7fc61b0b6a2419c",
+    "draws": 3404,
+    "last_date": "2026-11-10"
+  },
+  "protocol_commit": "1aefa4e21eb28c95619f0e9c58b449d8b723f822",
+  "ledger_rows": 3204,
+  "blind_oos_targets": 641,
+  "q123_freeze_exact_match": true,
+  "independent_replay_matches_first_run": true
+}

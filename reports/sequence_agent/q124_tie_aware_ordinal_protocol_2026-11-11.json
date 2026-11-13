@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q124",
+  "title": "APP ordinal ranking tie-aware sensitivity and deterministic tie-break audit",
+  "status": "PREREGISTERED_BEFORE_CALCULATION",
+  "registered_at_utc": "2026-11-11T16:43:55.442Z",
+  "base_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+  "source_pins": {
+    "archive": {
+      "path": "data/storico_daily.csv",
+      "git_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+      "rows": 3404,
+      "first_date": "2017-07-17",
+      "last_date": "2026-11-10"
+    },
+    "app_source": {
+      "path": "src/VinciCasaLab.jsx",
+      "git_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304"
+    },
+    "app_data": {
+      "path": "src/data.json",
+      "git_blob_sha": "25c0b2316662664deff9e2157e60ec56cfa3a640"
+    },
+    "active_engine": {
+      "path": "reports/sequence_agent/active_engine_walkforward.json",
+      "git_blob_sha": "822f955801c329585f7dd03df7fc61b0b6a2419c"
+    },
+    "parent_experiment": "Q123",
+    "parent_pr": 71,
+    "parent_head": "93b494b089abf485b6616f71b90baec79e39c796"
+  },
+  "hypothesis": "The small favorable historical Blind OOS mean-rank estimate in Q123 may be sensitive to exact-score ties resolved deterministically by smaller-number tie-break. A tie-neutral midrank analysis will show whether ordinal rank skill remains after removing arbitrary within-tie ordering; the paired deterministic-minus-midrank difference quantifies tie-break contribution.",
+  "definitions": {
+    "exact_tie": "Two APP scores are tied iff their IEEE-754 numeric values are exactly equal; no rounding or tolerance is applied.",
+    "deterministic_rank": "Exact APP order: score descending, then smaller number first.",
+    "midrank": "For a tied group occupying one-based rank slots r..r+m-1, every member receives r+(m-1)/2.",
+    "fractional_top_k": "For a tied group intersecting the first K rank slots in c slots, each member receives c/m credit; a target draw's fractional hits are the sum of its five members' credits.",
+    "tie_break_gain": "Mean(midrank - deterministic rank) for drawn numbers; positive values mean the smaller-number deterministic tie-break makes observed ranks look better than tie-neutral midranks."
+  },
+  "method": {
+    "scorer": "Exact committed APP scorer extracted from overlapCount, sonarTransitionProfile and sonarAnalogCore in pinned src/VinciCasaLab.jsx; no source edits.",
+    "warmup": 200,
+    "target_count": 3204,
+    "split_rule": "Chronological 60/20/remainder using rounded first two split sizes.",
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior": "For target index t, scorer receives only archive rows [0,t); target and all later rows are excluded.",
+    "no_tuning": true,
+    "baseline": {
+      "mean_rank": 20.5,
+      "mean_rank_sum": 102.5,
+      "top5_hits": 0.625,
+      "top10_hits": 1.25,
+      "top20_hits": 2.5
+    },
+    "endpoints": [
+      {
+        "id": "midrank_skill",
+        "direction": "higher_gain",
+        "gain": "20.5 - mean_tie_neutral_midrank",
+        "primary": true
+      },
+      {
+        "id": "fractional_top5",
+        "direction": "higher",
+        "gain": "mean_fractional_top5_hits - 0.625"
+      },
+      {
+        "id": "fractional_top10",
+        "direction": "higher",
+        "gain": "mean_fractional_top10_hits - 1.25"
+      },
+      {
+        "id": "fractional_top20",
+        "direction": "higher",
+        "gain": "mean_fractional_top20_hits - 2.5"
+      },
+      {
+        "id": "deterministic_tiebreak_advantage",
+        "direction": "higher",
+        "gain": "mean_tie_neutral_midrank - mean_deterministic_rank"
+      }
+    ],
+    "inference": {
+      "block_sign_flip_replicates": 50000,
+      "circular_block_bootstrap_replicates": 10000,
+      "block_length": 20,
+      "seed": "0x12420261111",
+      "p_value": "One-sided upper tail for the preregistered gain; plus-one correction.",
+      "confidence_interval": "Percentile 95% circular moving-block bootstrap.",
+      "multiplicity": "Holm across the five endpoints above; no claim that this corrects the full Q00–Q124 research family."
+    }
+  },
+  "leakage_controls": [
+    "Pin canonical archive, exact APP scorer source, APP data and active-engine report blob SHAs.",
+    "Reconcile APP modelDraws row-by-row with canonical archive.",
+    "For every target, execute scorer on the strict prior prefix only; score actual draw after ranking is frozen.",
+    "Verify all 40 numbers appear exactly once and all scores are finite.",
+    "Verify exact tie groups partition all 40 scores and midrank sum is exactly 820.",
+    "Verify fractional TopK credits sum to K for K=5,10,20.",
+    "Mutate target and future suffix at nine fixed target indices and verify current ranking/tie partition is unchanged.",
+    "Replay report, ledger, validation, freeze and checkpoint deterministically; verify Git blob SHA and byte sizes from repository readback."
+  ],
+  "guardrails": [
+    "Research-only sensitivity audit; no scorer, production ranking, Q60 record or prior freeze is modified.",
+    "The 2026-11-11 freeze is separate from Q60 and remains pending until official contest 315 publication.",
+    "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+    "No automatic merge, engine promotion or modification of PR #6, #7 or #8."
+  ],
+  "decision_rule": "Do not infer ordinal skill from deterministic ranks if tie-neutral midrank gain fails Holm-adjusted p<0.05. If deterministic tie-break advantage is positive, report it as a ranking-policy sensitivity, not predictive skill. No production promotion.",
+  "next_action": "After official publication of contest 315, evaluate the pre-existing Q123/Q124 freezes without retuning and continue append-only Q60 paired collection."
+}
