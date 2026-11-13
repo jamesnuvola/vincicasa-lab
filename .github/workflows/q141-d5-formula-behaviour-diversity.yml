@@ -71,10 +71,6 @@ jobs:
               if observed["targets"]!=int(expected["targets"]): raise RuntimeError("C5 report replay target count mismatch")'''
           if oldc not in code: raise SystemExit('expected C5 replay insertion point not found')
           code=code.replace(oldc,newc)
-          oldi='"c5_baseline_is_strict_prior_and_frozen":True}'
-          newi='"c5_baseline_is_strict_prior_and_frozen":True,"c5_baseline_report_replay_max_abs_error":c5_metric_replay_max}'
-          if oldi not in code: raise SystemExit('expected C5 integrity field not found')
-          code=code.replace(oldi,newi)
           target.write_text(code)
           PY
           cat > tests/test_sonar_q141_d5_formula_behaviour_diversity.py <<'PY'
