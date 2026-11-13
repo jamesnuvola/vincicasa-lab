@@ -1,0 +1,43 @@
+{
+  "experiment": "Q132_archive_parser_row_integrity_audit",
+  "status": "PASS",
+  "tested_head_commit": "2ef496a7db09e4d34c0b4690c22f08ae3bc0e745",
+  "workflow": {
+    "name": "Archive parser regression",
+    "run_id": 43136956177,
+    "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43136956177",
+    "event": "pull_request",
+    "conclusion": "success"
+  },
+  "checks": {
+    "parser_unit_tests": {
+      "passed": 8,
+      "failed": 0,
+      "conclusion": "success"
+    },
+    "canonical_csv_and_generated_json_audit": {
+      "command": "python scripts/audit_dataset.py --check-json",
+      "conclusion": "success"
+    }
+  },
+  "test_cases": [
+    "valid result row accepted",
+    "pending row cannot consume nearby unrelated numbers; legacy 260-character look-ahead does so in the adversarial fixture",
+    "numbers in script content outside the row ignored",
+    "result cell with six tokens rejected",
+    "duplicate, unsorted and out-of-range numbers rejected",
+    "stale archive page does not short-circuit fallback source",
+    "conflicting source results fail closed",
+    "conflicting duplicate date fails closed"
+  ],
+  "full_repository_ci": {
+    "run_id": 43136956211,
+    "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43136956211",
+    "status": "in_progress_at_validation_record_time",
+    "conclusion": null
+  },
+  "predictive_walk_forward": "NOT_RUN",
+  "reason": "Contest 315 exact numbers remain secondary-source corroborated but are not exposed in the retrieved official text; the archive source conflict blocks new prospective scoring.",
+  "promotion_allowed": false,
+  "merge_performed": false
+}

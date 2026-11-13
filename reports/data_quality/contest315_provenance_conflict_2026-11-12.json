@@ -1,0 +1,85 @@
+{
+  "experiment": "Q132_archive_parser_row_integrity_audit",
+  "generated_at_utc": "2026-11-12T01:42:05Z",
+  "status": "OFFICIAL_CONTEST_CONFIRMED_BUT_EXACT_NUMBERS_SECONDARY_ONLY",
+  "source_main_commit": "50078e442509564bbc1d150ac6aea82421e22979",
+  "canonical_archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "rows": 3405,
+    "last_date": "2026-11-11",
+    "appended_row": "2026-11-11,1,21,22,27,29",
+    "append_commit": "50078e442509564bbc1d150ac6aea82421e22979",
+    "append_commit_time_utc": "2026-11-12T01:39:53Z"
+  },
+  "official_archive_observation": {
+    "url": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+    "checked_at_local": "2026-11-12T02:42:05+01:00",
+    "visible_contest_315": "In programmazione / In attesa",
+    "visible_contest_316": "In programmazione / In attesa",
+    "evidence_lines": "183-184 in the retrieved official archive page",
+    "status": "OFFICIAL_VINCICASA_ARCHIVE_TABLE_STILL_PENDING"
+  },
+  "updater_diagnostic": {
+    "path": "scripts/aggiorna_estrazioni.py",
+    "old_parser": "Strip HTML tags, find a date, scan the next 260 characters, then take the first five strictly increasing tokens in 1..40.",
+    "row_bound": false,
+    "raw_response_snapshot_persisted": false,
+    "exact_token_origin_reconstructed": false,
+    "root_cause": "Systemic parser weakness: date and numbers were associated by proximity in flattened page text rather than by the result cell in the same contest row. The exact fragment that produced the 2026-11-11 row cannot be reconstructed because the scheduled updater did not persist the raw response. This is a demonstrated design defect, not proof that this specific row is false.",
+    "additional_issue": "The old URL loop stopped after any non-empty parsed page, even if that page contained only older draws; it could therefore skip a later fallback source containing a new draw."
+  },
+  "observed_freezes_for_2026_11_11": {
+    "cutoff": "2026-11-10",
+    "global_freq_100_top20_hits_if_provisional_numbers": "2/5 (1,29)",
+    "positional_top20_hits_if_provisional_numbers": "2/5 (1,29)",
+    "app_top20_hits_if_provisional_numbers": "3/5 (1,21,27)",
+    "best_of_42_top20_if_provisional_numbers": "5/5",
+    "status": "PROVISIONAL_ONLY_NOT_CANONICAL_SCORING"
+  },
+  "q60": {
+    "current_complete_pairs": 23,
+    "required_pairs": 200,
+    "remaining": 177,
+    "increment_for_2026_11_11": 0,
+    "reason": "The official archive page does not yet publish the 315 combination; the existing paired freezes remain pending."
+  },
+  "quantitative_hypothesis": {
+    "statement": "A parser that binds a date and exactly five valid sorted numbers to cells in the same table row will reject incomplete contest rows and unrelated numbers elsewhere in the page.",
+    "acceptance_rule": "The first cell must contain one supported Italian date; the second cell must contain exactly five distinct ascending integers in 1..40; no look-ahead outside the row is permitted.",
+    "test_plan": "Eight deterministic unit tests: valid row; pending row with nearby unrelated numbers; script numbers outside the row; six-token result cell; invalid ordering/range/duplicates; stale first source does not short-circuit fallback; conflicting sources fail closed; conflicting duplicate date fails closed.",
+    "predictive_walk_forward": "NOT_RUN",
+    "reason": "The newly appended 315 row has unresolved official-source provenance. Running a new predictive walk-forward or scoring the next target on this archive would risk training on an unverified outcome."
+  },
+  "limits": [
+    "The raw HTML response fetched by the scheduled updater was not persisted, so the exact source fragment that produced the 2026-11-11 row cannot be reconstructed.",
+    "The official Sisal latest-draw page confirms contest 315 and its prize profile, but the five numbers are not exposed in the retrieved text.",
+    "The official VinciCasa November archive still shows contest 315 as in programmazione; two secondary sources agree on the five numbers, but this is not sufficient for canonical Q60 scoring.",
+    "This audit is a data-pipeline test, not a predictive validation and has no Discovery/Validation/Blind OOS split.",
+    "The existing main archive and generated app JSON are not rewritten by this research PR; the row remains flagged for human review."
+  ],
+  "next_action": "Review the row-bound parser and its eight regression tests. Obtain the exact five numbers from an official Sisal/VinciCasa archive detail or official bulletin. Until then retain the main row as provenance-pending, do not score the 11 November pair into Q60, and do not freeze a new target using the unverified row as prior history.",
+  "official_sisal_observation": {
+    "url": "https://www.sisal.it/vincicasa/ultima-estrazione",
+    "checked_at_local": "2026-11-12T02:42:05+01:00",
+    "official_page_confirms": "Contest 315 dated 11 November 2026; prize pool EUR 28,090.40; prize counts 0 (5 points), 2 (4 points), 178 (3 points), 1,947 (2 points).",
+    "exact_five_numbers_in_retrieved_text": false,
+    "evidence_lines": "223-246 in the retrieved official Sisal page",
+    "status": "OFFICIAL_CONTEST_AND_PRIZE_PROFILE_CONFIRMED_NUMBERS_NOT_TEXT_EXPOSED"
+  },
+  "secondary_number_corroboration": {
+    "numbers": [
+      1,
+      21,
+      22,
+      27,
+      29
+    ],
+    "sources": [
+      "https://www.estrazionedellotto.it/vinci-casa/risultati-vinci-casa",
+      "https://www.estrazionidioggi.com/vincicasa/estrazioni/vincicasa-estrazione-del-mercoledi-11-novembre-2026.html"
+    ],
+    "agreement": "Two secondary sources agree on all five numbers.",
+    "status": "SECONDARY_CORROBORATION_ONLY"
+  }
+}
