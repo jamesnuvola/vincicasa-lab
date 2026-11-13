@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q138",
+  "title": "Number-identity-specific lag-1 persistence beyond pooled overlap",
+  "protocol_status": "PREREGISTERED_BEFORE_Q138_COMPUTATION",
+  "epistemic_status": "EXPLORATORY_RESEARCH_WITHIN_EXPANDING_Q00_Q138_FAMILY; NOT_INDEPENDENT_CONFIRMATION",
+  "created_at_utc": "2026-11-12T06:46:33Z",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_draw_rows": 3405,
+    "eligible_prefix_draws": 3404,
+    "eligible_prefix_last_date": "2026-11-10",
+    "disputed_draw_date": "2026-11-11",
+    "disputed_draw_excluded": true,
+    "source_kind": "canonical main archive prefix through 2026-11-10; historical strict-prior reconstruction, not contemporaneous freezes"
+  },
+  "hypothesis": "The identity of each number in the immediately preceding draw may carry heterogeneous recurrence/avoidance information beyond a single pooled overlap effect. A per-number lag-1 conditional fixed-size subset distribution may improve joint subset log-loss and marginal inclusion Brier over both the uniform 5-of-40 null and a pooled lag-1 model.",
+  "definitions": {
+    "draw": "D_t is a five-element subset of {1,...,40}.",
+    "transition": "For each target t, use only transitions (D_{j-1},D_j) with j<t.",
+    "pooled_counts": "N_plus=number of prior transitions whose previous draw contains a number (5 per transition); C_plus=sum of lag-1 overlaps. N_minus=35 per transition; C_minus=sum of current-draw numbers absent from the previous draw.",
+    "per_number_counts": "For number i, n_i_plus and c_i_plus count prior transitions with i in the previous draw and in the current draw respectively; n_i_minus and c_i_minus count transitions with i absent from the previous draw and present in the current draw respectively.",
+    "logit": "logit(p)=ln(p/(1-p)).",
+    "subset_distribution": "For positive weights w_i, P(S|D_{t-1})=product_{i in S}(w_i)/e_5(w_1,...,w_40), for every five-number subset S."
+  },
+  "models": {
+    "M0": "Uniform 5-of-40 distribution; each five-subset has probability 1/658008 and each number has inclusion probability 0.125.",
+    "M1": "Pooled lag-1 model. With fixed alpha=200 and p0=0.125: p_plus=(alpha*p0+C_plus)/(alpha+N_plus); p_minus=(alpha*p0+C_minus)/(alpha+N_minus); theta_pool=logit(p_plus)-logit(p_minus); w_i=exp(theta_pool*I(i in D_{t-1})).",
+    "M2": "Identity-specific model. For each i: p_i_plus=(alpha*p_plus+c_i_plus)/(alpha+n_i_plus); p_i_minus=(alpha*p_minus+c_i_minus)/(alpha+n_i_minus); theta_i=logit(p_i_plus)-logit(p_i_minus); w_i=exp(theta_i*I(i in D_{t-1})). The per-number estimates shrink toward the pooled conditional rates.",
+    "alpha": 200,
+    "tuning": "No parameter grid, no tuning, no subgroup search. Alpha is fixed before computation."
+  },
+  "design": {
+    "warmup_draws": 200,
+    "target_count": 3204,
+    "first_target_date": "2018-02-02",
+    "last_target_date": "2026-11-10",
+    "discovery": 1922,
+    "validation": 641,
+    "historical_blind_oos": 641,
+    "update_order": "Score each target using counts from strictly prior transitions, then update counts with the just-observed transition.",
+    "primary_metric": "Joint five-subset log-loss under the normalized fixed-size subset distribution; lower is better.",
+    "secondary_metric": "Mean marginal Bernoulli Brier score across 40 numbers; lower is better."
+  },
+  "inference": {
+    "comparisons": [
+      "M1_vs_M0",
+      "M2_vs_M1",
+      "M2_vs_M0"
+    ],
+    "metrics": [
+      "joint_subset_log_loss_gain",
+      "marginal_inclusion_brier_gain"
+    ],
+    "endpoint_count": 6,
+    "gain_direction": "Baseline loss minus model loss; positive favors the model.",
+    "paired_block_sign_flip": {
+      "replicates": 50000,
+      "block_length": 20,
+      "one_sided": "upper"
+    },
+    "circular_block_bootstrap": {
+      "replicates": 10000,
+      "block_length": 20,
+      "ci": 0.95
+    },
+    "multiple_testing": "Holm across the six preregistered Blind OOS endpoints only."
+  },
+  "integrity": {
+    "source_blob_must_match": true,
+    "eligible_draw_count_must_equal": 3404,
+    "disputed_draw_must_be_excluded": true,
+    "target_cutoff": "Each target uses only draws strictly before it; all model scores are computed before updating with the target.",
+    "future_suffix_invariance_tests": 9,
+    "deterministic_replay": true,
+    "exact_subset_normalization": true,
+    "marginal_probability_sum_must_equal": 5
+  },
+  "guardrails": {
+    "research_only": true,
+    "production_engine_mutation": false,
+    "canonical_archive_mutation": false,
+    "prospective_freeze_mutation": false,
+    "q60_mutation": false,
+    "auto_promotion": false,
+    "auto_merge": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "limitations": [
+    "Q138 is part of a large exploratory research family. Holm correction covers only the six Q138 Blind OOS endpoints, not all prior Q00-Q137 experiments.",
+    "The historical Blind OOS has been exposed to earlier SONAR research and is not a virgin prospective holdout.",
+    "This is a historical strict-prior reconstruction, not a contemporaneous record of forecasts frozen before each target.",
+    "The 2026-11-11 draw is excluded because its primary number provenance remains unresolved in the canonical archive workflow.",
+    "The model tests number-identity-specific lag-1 recurrence in a fixed-size subset distribution; it does not establish that lottery draws are predictable or produce a guaranteed quintet."
+  ],
+  "next_action": "Run the fixed protocol on the pinned 3,404-draw source prefix. If M2 does not improve over M1 on the historical Blind OOS after Holm correction, retain M0 and M1 as research controls only; do not promote."
+}
