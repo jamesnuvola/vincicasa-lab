@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 import numpy as np
 
-SCRIPT=Path(__file__).resolve().with_name('sonar_q141_a6_full59_covering.py')
+SCRIPT=Path(__file__).resolve().parents[1] / 'scripts' / 'sonar_q141_a6_full59_covering.py'
 SPEC=importlib.util.spec_from_file_location('q141_a6',SCRIPT)
 Q=importlib.util.module_from_spec(SPEC); SPEC.loader.exec_module(Q)
 
