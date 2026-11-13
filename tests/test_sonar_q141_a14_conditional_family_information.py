@@ -1,7 +1,11 @@
 import unittest, sys
 from pathlib import Path
 import numpy as np
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
+repo_scripts = Path(__file__).resolve().parent.parent / "scripts"
+if repo_scripts.exists():
+    sys.path.insert(0, str(repo_scripts))
+else:
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
 import sonar_q141_a14_conditional_family_information as A14
 
 
