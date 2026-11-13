@@ -1,0 +1,150 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A10-PAIRWISE-RESIDUAL",
+  "status": "COMPLETED_HISTORICAL_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_RECENT_PAIR_RESIDUAL_LIFT_DEMONSTRATED",
+  "source": {
+    "a7_workflow_run_id": 43348144964,
+    "a7_artifact_id": 14003350043,
+    "a7_artifact_zip_sha256": "9c54699a507e876b7b5b1c0c9e3120ad04c2bcc741dcd5043dc410f81bf6b03a",
+    "feature_matrix_sha256": "81479d7cff00ddcbc6046bcb390efb2ef1b08de6a6f1f2cdb2f89a77c76c6047",
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "archive_draw_count": 3406,
+    "archive_last_date": "2026-11-12",
+    "feature_matrix_shape": [
+      3356,
+      40,
+      59
+    ],
+    "feature_count": 59
+  },
+  "design": {
+    "window_recent": 200,
+    "window_stale": 200,
+    "warmup_matrix_rows": 400,
+    "target_index_start_inclusive": 400,
+    "target_index_end_inclusive": 3355,
+    "targets": 2956,
+    "split_counts": {
+      "discovery": 1774,
+      "validation": 591,
+      "blind_oos": 591
+    },
+    "baseline": "uniform unordered 5-of-40; exact null mean Z=0 and per-target null variance=1",
+    "pair_residual_model": "C_ij = mu + alpha_i + alpha_j + R_ij; least-squares additive effects removed",
+    "primary_endpoint": "Blind OOS mean standardized recent-window pair residual score Z_recent",
+    "secondary_endpoint": "Blind OOS mean (Z_recent - Z_stale)",
+    "practical_thresholds": {
+      "primary_mean_z": 0.1,
+      "recent_minus_stale_mean_z": 0.05
+    },
+    "block_length": 20,
+    "bootstrap_replicates": 20000,
+    "signflip_replicates": 20000,
+    "holm_family_size": 2,
+    "parameter_tuning": "none; fixed 200-draw recent and stale windows"
+  },
+  "formula": {
+    "pair_residual": "R_ij=C_ij-mu-alpha_i-alpha_j",
+    "mu": "sum_{i<j} C_ij / choose(40,2)",
+    "alpha_i": "(row_sum_i-39*mu)/38",
+    "target_score": "T=sum_{i<j in target quintet} R_ij",
+    "null_variance": "(p2-2*p3+p4)*sum_{i<j} R_ij^2; pk=(5)_k/(40)_k",
+    "standardized_score": "Z=T/sqrt(Var0(T))"
+  },
+  "split_metrics": {
+    "discovery": {
+      "targets": 1774,
+      "mean_z_recent": -8.846485393057499e-05,
+      "sd_z_recent": 1.0058122332246238,
+      "median_z_recent": -0.045949574132127156,
+      "positive_share_recent": 0.48252536640360766,
+      "mean_z_stale": 0.009458237095494952,
+      "sd_z_stale": 0.9987430486191973,
+      "mean_recent_minus_stale": -0.009546701949425538,
+      "positive_share_recent_minus_stale": 0.4915445321307779,
+      "mean_recent_pair_score": -0.002207626428827862,
+      "mean_recent_null_variance": 17.52903178717934,
+      "max_residual_row_sum": 2.842170943040401e-14
+    },
+    "validation": {
+      "targets": 591,
+      "mean_z_recent": -0.054246317677943044,
+      "sd_z_recent": 0.9961977956429716,
+      "median_z_recent": -0.07662964193949487,
+      "positive_share_recent": 0.46362098138747887,
+      "mean_z_stale": 0.013080424137638446,
+      "sd_z_stale": 0.9641418940037929,
+      "mean_recent_minus_stale": -0.06732674181558147,
+      "positive_share_recent_minus_stale": 0.48392554991539766,
+      "mean_recent_pair_score": -0.224871041328423,
+      "mean_recent_null_variance": 16.991628412466877,
+      "max_residual_row_sum": 2.930988785010413e-14
+    },
+    "blind_oos": {
+      "targets": 591,
+      "mean_z_recent": -0.05315027368565573,
+      "sd_z_recent": 0.9810872928617417,
+      "median_z_recent": -0.09096883431437322,
+      "positive_share_recent": 0.45854483925549916,
+      "mean_z_stale": 0.009453369391044963,
+      "sd_z_stale": 0.984851548085922,
+      "mean_recent_minus_stale": -0.06260364307670067,
+      "positive_share_recent_minus_stale": 0.494077834179357,
+      "mean_recent_pair_score": -0.22104167094815758,
+      "mean_recent_null_variance": 17.05033109403048,
+      "max_residual_row_sum": 2.930988785010413e-14
+    }
+  },
+  "blind_oos_inference": {
+    "recent_z_vs_uniform_zero": {
+      "mean": -0.05315027368565573,
+      "ci95_circular_block_bootstrap": [
+        -0.12119401186292172,
+        0.017448598150324564
+      ],
+      "p_one_sided_block_signflip": 0.8978551072446378,
+      "p_holm": 1.0,
+      "block_count": 30
+    },
+    "recent_minus_stale_z": {
+      "mean": -0.06260364307670067,
+      "ci95_circular_block_bootstrap": [
+        -0.15681064501151779,
+        0.030839487765783623
+      ],
+      "p_one_sided_block_signflip": 0.8702064896755162,
+      "p_holm": 1.0,
+      "block_count": 30
+    }
+  },
+  "integrity": {
+    "source_archive_blob_pinned": true,
+    "matrix_sha256_verified": true,
+    "matrix_finite": true,
+    "target_dates_unique_chronological": true,
+    "all_cutoffs_precede_targets": true,
+    "recent_and_stale_windows_strictly_prior_disjoint": true,
+    "pair_residual_row_sums_zero": true,
+    "future_suffix_invariance": true,
+    "deterministic_full_replay": true,
+    "analytic_variance_exhaustive_small_problem_test": true
+  },
+  "limitations": [
+    "Pairwise score-test diagnostic, not a calibrated probability for exact tickets.",
+    "Historical Blind OOS is exposed to prior SONAR research and is exploratory, not virgin confirmation.",
+    "Holm covers only two A10 endpoints, not the entire Q00-Q141 research family.",
+    "Uniform 5-of-40 is the exact combinatorial reference, not a physical model.",
+    "Overlapping windows induce dependence; block inference is used, but stationarity/sign-symmetry remain assumptions.",
+    "No B11 prospective outcome is read; the 2026-11-13 target remains pending."
+  ],
+  "governance": {
+    "b11_freeze_unchanged": true,
+    "canonical_archive_mutated": false,
+    "engine_promoted": false,
+    "shadow_inserted": false,
+    "merge": false,
+    "rebase": false,
+    "protected_prs_6_7_8_untouched": true
+  }
+}
