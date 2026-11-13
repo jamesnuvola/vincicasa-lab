@@ -1,0 +1,166 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q141-A16",
+  "status": "ANALYSIS_COMPUTED_EXPLORATORY",
+  "source": {
+    "parent_a15_branch": "research/q141-a15-formula-behaviour-redundancy-20261113",
+    "parent_a15_head": "0dd2015ac7f89c542e018f44bd5c91d647afd015",
+    "q7_branch": "research/exhaustive-formula-catalog-20261025",
+    "q7_head": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "archive_git_blob_sha": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "archive_draws": 3387,
+    "archive_first_date": "2017-07-17",
+    "archive_last_date": "2026-10-24",
+    "panel_rows": 3386,
+    "formula_count": 128,
+    "aggregated_blocks": [
+      {
+        "path": "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/block_0001_0899.csv",
+        "git_blob_sha": "997fdddf97dfc22ba207ca76a26c8454aaf0968f",
+        "rows": 899
+      },
+      {
+        "path": "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/block_0900_1799.csv",
+        "git_blob_sha": "868cf0622273f22e1aeda00afaf2fcff636fb970",
+        "rows": 900
+      },
+      {
+        "path": "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/block_1800_2699.csv",
+        "git_blob_sha": "ad3f6b319c5a933c253793aef1768d8859478fdb",
+        "rows": 900
+      },
+      {
+        "path": "reports/sequence_agent/q141_a15_formula_behaviour_panel_aggregated/block_2700_3386.csv",
+        "git_blob_sha": "4f74b9a4eaa1fce08442c648de6321ccfac59f73",
+        "rows": 687
+      }
+    ]
+  },
+  "design": {
+    "preprocessing": "Within each split: normalize (rank-1)/658007; subtract each target median across 128 formulas; average-rank each formula trajectory; correlate ranked residuals.",
+    "splits": {
+      "discovery": 2031,
+      "validation": 677,
+      "blind_oos": 678
+    },
+    "discovery_k80": 6,
+    "variance_threshold": 0.8,
+    "stability_statistic": "||U_discovery,k^T U_split,k||_F^2 / k",
+    "practical_overlap_threshold": 0.75,
+    "random_subspace_null": "20,000 seeded Haar-random k-dimensional subspaces in R^128 via Gaussian draws and two-pass modified Gram-Schmidt",
+    "seeds": {
+      "validation": 1416001,
+      "blind_oos": 1416002
+    },
+    "multiple_testing": "Holm across two holdout stability p-values"
+  },
+  "split_spectra": {
+    "discovery": {
+      "n": 2031,
+      "trace": 127.99999999999999,
+      "participationRatio": 7.578375816878203,
+      "entropyEffectiveRank": 10.917817486939692,
+      "k80": 6,
+      "k90": 8,
+      "top5": 0.741804092341429,
+      "top6": 0.8108969714415819,
+      "top10": 0.9419016734350433,
+      "top20": 0.9629950359512734,
+      "leadingShare": 0.227861641900519,
+      "eigengapAtK80": 1.2648359803350728,
+      "numerics": {
+        "sweeps": 11,
+        "max_off_diagonal": 9.983701968188795e-13,
+        "orthogonality_max": 3.7969627442180354e-14,
+        "reconstruction_max": 8.927858452523196e-13
+      }
+    },
+    "validation": {
+      "n": 677,
+      "trace": 127.99999999999994,
+      "participationRatio": 7.295370526530251,
+      "entropyEffectiveRank": 10.491799141398946,
+      "k80": 6,
+      "k90": 8,
+      "top5": 0.7662025072054454,
+      "top6": 0.8197034879760282,
+      "top10": 0.9457229869353698,
+      "top20": 0.9667335791820071,
+      "leadingShare": 0.2250621564724759,
+      "eigengapAtK80": 1.2095684056261156,
+      "numerics": {
+        "sweeps": 10,
+        "max_off_diagonal": 9.994379112235049e-13,
+        "orthogonality_max": 3.8191672047105385e-14,
+        "reconstruction_max": 7.719380690218713e-13
+      }
+    },
+    "blind_oos": {
+      "n": 678,
+      "trace": 128,
+      "participationRatio": 7.158610457829517,
+      "entropyEffectiveRank": 10.424429092017515,
+      "k80": 6,
+      "k90": 8,
+      "top5": 0.7594085799668512,
+      "top6": 0.8179403970727215,
+      "top10": 0.9453788317709843,
+      "top20": 0.9662859769652644,
+      "leadingShare": 0.23036734746686613,
+      "eigengapAtK80": 1.288605774659194,
+      "numerics": {
+        "sweeps": 9,
+        "max_off_diagonal": 9.997988457611154e-13,
+        "orthogonality_max": 4.063416270128073e-14,
+        "reconstruction_max": 7.567280135845067e-13
+      }
+    }
+  },
+  "primary_stability": {
+    "k_discovery": 6,
+    "overlap_threshold": 0.75,
+    "validation": {
+      "observed": 0.8558893565741693,
+      "random_subspace_null": {
+        "replicates": 20000,
+        "seed": 1416001,
+        "mean": 0.0468950826610618,
+        "q95": 0.06525978538532339,
+        "q99": 0.07479302215980436,
+        "max": 0.0951780830045854,
+        "exceedances": 0,
+        "p": 0.00004999750012499375,
+        "expectedOverlap": 0.046875
+      },
+      "holm_p": 0.0000999950002499875
+    },
+    "blind_oos": {
+      "observed": 0.8310525254283633,
+      "random_subspace_null": {
+        "replicates": 20000,
+        "seed": 1416002,
+        "mean": 0.04696624021023188,
+        "q95": 0.0654783496104878,
+        "q99": 0.07451684667818306,
+        "max": 0.10224729847600321,
+        "exceedances": 0,
+        "p": 0.00004999750012499375,
+        "expectedOverlap": 0.046875
+      },
+      "holm_p": 0.0000999950002499875
+    },
+    "correction": "Holm across two registered holdout stability tests"
+  },
+  "decision": "STABLE_LOW_DIMENSIONAL_RANK_BEHAVIOUR_STRUCTURE_DETECTED_EXPLORATORY",
+  "interpretation": "The leading six-dimensional formula rank-behaviour subspace learned in Discovery remains strongly aligned in both historical holdouts and exceeds a geometric random-subspace null. This is structural stability only, not evidence of future draw prediction.",
+  "limitations": [
+    "The analysis covers a deterministic stratified sample of 128 from 1,023 Q7 finite-grammar masks, not the complete formula universe.",
+    "Q7 represents ten registered feature families and is not an enumeration of all mathematical formulas.",
+    "The source archive ends on 2026-10-24 and is separate from current main through 2026-11-12.",
+    "Historical Blind OOS overlaps previous SONAR research and is not virgin prospective confirmation.",
+    "Each formula rank uses its immediate-prior cutoff; holdout outcomes are used only for retrospective structural stability evaluation, not a forecast.",
+    "The random-subspace null is geometric and does not model temporal sampling dependence.",
+    "Principal components are mixed combinations of rank trajectories, not semantic AST equivalence classes or causal laws.",
+    "No next-draw predictive endpoint was tested and no engine promotion is authorized."
+  ]
+}
