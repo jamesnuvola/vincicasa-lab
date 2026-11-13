@@ -169,7 +169,7 @@ jobs:
           receipt_path = prefix + "q141_d3_effective_rank_family_state_remote_readback_2026-11-13.json"
           with open(receipt_path, "w", encoding="utf-8") as f:
               json.dump(receipt, f, sort_keys=True, indent=2)
-              f.write("\\n")
+              f.write(chr(10))
           PY
           git add reports/sequence_agent/q141_d3_effective_rank_family_state_remote_readback_2026-11-13.json
           git commit -m "Q141-D3: persist remote readback receipt"
