@@ -202,8 +202,12 @@ def validate_inputs(q90_zip: Path, a6_zip: Path, preregistration: Path):
     }:
         raise ValueError("unexpected original split counts")
     expected_counts = {"linear_mean": 650, "pairwise_interaction": 2100, "conditional_gate": 2800}
-    if catalog.groupby("formula_type").size().to_dict() != expected_counts:
-        raise ValueError("A6 formula-type counts mismatch")
+    scoped_counts = {
+        scope: counts.to_dict()
+        for scope, counts in catalog.groupby("scope")["formula_type"].value_counts().groupby(level=0)
+    }
+    if set(scoped_counts) != {"full59", "selected20"} or any(scoped_counts[s] != expected_counts for s in scoped_counts):
+        raise ValueError("A6 per-scope formula-type counts mismatch")
     if manifest["formula_sample"]["catalog_rows"] != 11100:
         raise ValueError("A6 manifest formula count mismatch")
     return matrix, dates, cutoffs, actual, ledger, catalog, names
@@ -345,7 +349,7 @@ def analyse(q90_zip: Path, a6_zip: Path, preregistration: Path, output_dir: Path
             "matrix_shape": list(matrix.shape), "matrix_dtype": "float32",
             "feature_count": int(len(feature_names)), "feature_names": feature_names.tolist(),
             "target_count": n,
-            "a6_formula_counts": catalog.groupby("formula_type").size().to_dict(),
+            "a6_formula_counts_by_scope": {scope: counts.to_dict() for scope, counts in catalog.groupby("scope")["formula_type"].value_counts().groupby(level=0)},
         },
         "walkforward": {
             "original_split_counts": {"discovery": 2011, "validation": 670, "blind_oos": 670},
