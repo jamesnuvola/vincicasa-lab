@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Q141-A13 workflow trigger marker; experiment semantics unchanged.
 """Q141-A13: non-overlapping lag-2 transitions for structural first differences.
 
 The model asks whether a category of a sum/range first difference predicts
