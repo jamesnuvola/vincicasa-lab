@@ -1,0 +1,185 @@
+name: Q141-D5 Formula Behaviour Diversity
+
+on:
+  push:
+    branches:
+      - research/q141-d5-formula-behaviour-diversity-20261113
+    paths:
+      - reports/sequence_agent/q141_d5_source_bundle_2026-11-13.b64
+      - .github/workflows/q141-d5-formula-behaviour-diversity.yml
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: q141-d5-formula-behaviour-diversity-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  walkforward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      BRANCH: ${{ github.ref_name }}
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Expand pinned D5 source
+        run: |
+          mkdir -p scripts tests reports/sequence_agent
+          python - <<'PY'
+          import base64, hashlib, lzma, pathlib
+          p=pathlib.Path('reports/sequence_agent/q141_d5_source_bundle_2026-11-13.b64')
+          compressed=base64.b64decode(p.read_text().strip())
+          assert hashlib.sha256(compressed).hexdigest()=='3e7601618d074c9bfd21d596a9121c228ce85c625fbb53aa1081b4c94b409023'
+          source=lzma.decompress(compressed)
+          pathlib.Path('scripts/sonar_q141_d5_formula_behaviour_diversity.py').write_bytes(source)
+          PY
+          cat > tests/test_sonar_q141_d5_formula_behaviour_diversity.py <<'PY'
+          import unittest, numpy as np
+          from scripts.sonar_q141_d5_formula_behaviour_diversity import plan_formulas, formula_top5_and_features, ridge_fit, ridge_predict, quintet
+
+          class D5Tests(unittest.TestCase):
+              def make_plan(self):
+                  names=[f"f{i}" for i in range(59)]; rows=[]
+                  for fam,typ,size in [("L4","linear_mean",4),("L5","linear_mean",5),("L6","linear_mean",6),("L7","linear_mean",7),("L8","linear_mean",8),("I4","pairwise_interaction",4),("G4","conditional_gate",4)]:
+                      idx=list(range(size)); base={"formula_id":fam,"formula_type":typ,"formula_size":str(size),"feature_indices":";".join(map(str,idx)),"features":"+".join(names[i] for i in idx),"interaction_pair":"","gate_feature":"","gate_threshold":"","weight":""}
+                      if typ=="pairwise_interaction": base.update(interaction_pair="f0*f1",weight="0.25")
+                      if typ=="conditional_gate": base.update(gate_feature="f0",gate_threshold="0.5",weight="0.25")
+                      rows.extend([dict(base,formula_id=f"{fam}-{i}") for i in range(100)])
+                  return plan_formulas(rows,names)
+              def test_quintet_validation(self): self.assertEqual(quintet("5 1 3 2 4"),(1,2,3,4,5))
+              def test_formula_features_bounded_and_votes_conserved(self):
+                  p=self.make_plan(); top,f,v=formula_top5_and_features(np.random.default_rng(1).normal(size=(40,59)),p)
+                  self.assertEqual(top.shape,(700,5)); self.assertEqual(v.sum(),3500); self.assertTrue(np.isfinite(f).all()); self.assertTrue(np.all((f[:3]>=0)&(f[:3]<=1)))
+              def test_tie_break_is_lower_number(self):
+                  p=self.make_plan(); top,_,_=formula_top5_and_features(np.zeros((40,59)),p); np.testing.assert_array_equal(top[0],[1,2,3,4,5])
+              def test_identical_sets_have_full_pairwise_overlap(self):
+                  p=self.make_plan(); _,f,_=formula_top5_and_features(np.zeros((40,59)),p)
+                  self.assertAlmostEqual(f[2],1.0); self.assertAlmostEqual(f[3],1.0); self.assertAlmostEqual(f[1],1/700)
+              def test_future_suffix_cannot_change_current_row_features(self):
+                  p=self.make_plan(); m=np.random.default_rng(2).normal(size=(12,40,59)); before=formula_top5_and_features(m[5],p)[1]
+                  m[6:]=np.random.default_rng(3).normal(size=m[6:].shape); after=formula_top5_and_features(m[5],p)[1]; np.testing.assert_array_equal(before,after)
+              def test_ridge_prediction_is_finite_and_clipped(self):
+                  rng=np.random.default_rng(4); x=rng.normal(size=(100,4)); y=np.clip(.5+.03*x[:,0],0,1); model=ridge_fit(x[:70],y[:70]); pred=ridge_predict(model,x[70:])
+                  self.assertTrue(np.isfinite(pred).all()); self.assertTrue(np.all((pred>=0)&(pred<=1)))
+              def test_prior_only_training_slice_excludes_current(self):
+                  t=15; train=np.arange(10,t); self.assertEqual(train[-1],14); self.assertNotIn(t,train)
+
+          if __name__=="__main__": unittest.main()
+          PY
+          cat > reports/sequence_agent/q141_d5_formula_behaviour_diversity_preregistration_2026-11-13.md <<'MD'
+          # Q141-D5 — Formula-level Behavioural Diversity
+
+          **Registration:** 2026-11-13, before full D5 execution. Research-only; no engine promotion, freeze mutation, archive mutation or merge. PRs #6, #7 and #8 remain protected.
+
+          ## Hypothesis
+          A fixed, outcome-independent sample of 700 Q90 formulas (100 each from L4, L5, L6, L7, L8, I4 and G4) produces four current-target, prior-only behavioural features: normalized entropy of 3,500 Top-5 votes over 40 numbers; unique Top-5 signature share; mean pairwise Top-5 intersection divided by five, computed as sum_i C(v_i,2)/(C(700,2)*5); and fifth-versus-sixth vote margin divided by 700.
+
+          These features are hypothesized to reduce next-target Q7 meta-quality MAE by at least +0.005 beyond the frozen Q141-C5 Q7+Q80+Q90 M2 baseline. The target is mean percentile across 1,023 quintet-scoring formulas, not a winning-number forecast.
+
+          ## Frozen sample and scoring
+          Q90 artifact 13627507532, ZIP SHA-256 12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077; matrix 3,351×40×59, SHA-256 681152ddfaa0217889f0a1623f0ce1dc969ffabdd4901869cb736b58185ec49; catalogue 330,429 formulas, SHA-256 a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586. Sample is the lowest SHA-256 of Q141-B7| + formula ID within each family; expected ordered ID digest 3ee52f0f270eafb6a8c54c7a7166fe55f2c7730a59ae700ea50b92be6a5412ae. Linear score is selected-feature mean; I4 adds 0.25 times candidate-wise z-score of the selected feature-pair product; G4 adds 0.25 times the registered gate indicator. Round to 12 decimals; ties by lower number. Q90's 20 selected features are inherited from its Discovery selection over 59 available features.
+
+          ## Sources and alignment
+          Q7 ledger: 3,286 targets, archive through 2026-10-24. Q90 family ledger: 3,351 targets, archive through 2026-11-07. C5 ledger: 3,186 persisted M2 predictions. Join on prior_draws, target date, cutoff, actual quintet and split. Recompute all seven Q90 family Top-5 shares for all 3,286 common targets and require max error ≤1e-12. Verify every C5 baseline row against Q7 outcomes and source report; recompute C5 M2 split MAE/RMSE/mean error to 1e-12.
+
+          ## Walk-forward
+          D5 residual learner uses ridge alpha 1 on Q7 mean percentile minus C5 M2 prediction, with the four D5 features. Offsets 100–149 are residual warm-up. Score offsets 150–1971 (Discovery 1,822), 1972–2628 (Validation 657), 2629–3285 (Blind OOS 657). Discovery fits expand using offsets 100..t−1 only; coefficients freeze after Discovery using offsets 100–1971 (1,872 rows). Standardization uses training rows only. Current target is scored before its outcome can enter a later fit.
+
+          ## Primary inference
+          Blind OOS mean abs_error(C5 M2) minus abs_error(D5 M3), positive favours D5. Practical threshold +0.005. 95% circular moving-block bootstrap, block 20, 20,000 replicates, seed 14120261114; one-sided chronological block sign-flip, block 20, 20,000 replicates, seed 14120261115. Support requires point estimate ≥0.005, lower CI >0 and p<0.05. One confirmatory endpoint; no within-experiment multiplicity correction required. Global Q00–Q141 multiplicity is not covered.
+
+          ## Controls and limits
+          Verify source Git blob SHA, Q90 ZIP/matrix/catalogue SHA, sample digest, strict-prior date/cutoff/actual alignment, Q90 family share replay, C5 baseline report replay, future-suffix invariance and two byte-identical full runs. Historical Blind OOS has prior SONAR exposure and is not virgin prospective evidence. 700 formulas are a fixed sample, not all 330,429; Q7 meta-quality is not winning-number prediction.
+
+          **Decision:** if D5 fails, archive and stop adding formula-diversity meta-features. If it passes, require a new prospective replication without historical retuning; no automatic promotion.
+          MD
+
+      - name: Install NumPy and run seven tests
+        run: |
+          python -m pip install --disable-pip-version-check numpy
+          python -m unittest discover -s tests -p 'test_sonar_q141_d5_formula_behaviour_diversity.py' -v
+
+      - name: Download and verify pinned Q90 artifact
+        run: |
+          curl --fail --silent --show-error --location \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/jamesnuvola/vincicasa-lab/actions/artifacts/13627507532/zip \
+            -o /tmp/q90-source.zip
+          echo '12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077  /tmp/q90-source.zip' | sha256sum --check
+
+      - name: Execute D5 twice and compare byte-for-byte
+        run: |
+          ARGS="--q90-zip /tmp/q90-source.zip \
+            --q7-ledger reports/sequence_agent/q7_formula_complexity_walkforward_target_ledger_2026-11-12.csv \
+            --q90-family-ledger reports/sequence_agent/q141_q90_family_persistence_target_ledger_2026-11-12.csv \
+            --c5-ledger reports/sequence_agent/q141_q90_to_q7_transfer_target_ledger_2026-11-12.csv \
+            --q7-report reports/sequence_agent/q7_formula_complexity_walkforward_report_2026-11-12.json \
+            --q90-family-report reports/sequence_agent/q141_q90_family_persistence_report_2026-11-12.json \
+            --c5-report reports/sequence_agent/q141_q90_to_q7_transfer_report_2026-11-12.json \
+            --preregistration reports/sequence_agent/q141_d5_formula_behaviour_diversity_preregistration_2026-11-13.md"
+          python scripts/sonar_q141_d5_formula_behaviour_diversity.py $ARGS --output-dir /tmp/d5-run-1
+          python scripts/sonar_q141_d5_formula_behaviour_diversity.py $ARGS --output-dir /tmp/d5-run-2
+          for n in q141_d5_formula_behaviour_diversity_report_2026-11-13.json q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json; do cmp "/tmp/d5-run-1/$n" "/tmp/d5-run-2/$n"; done
+
+      - name: Persist outputs and validation
+        run: |
+          DEST=reports/sequence_agent
+          cp /tmp/d5-run-1/q141_d5_formula_behaviour_diversity_report_2026-11-13.json "$DEST/"
+          cp /tmp/d5-run-1/q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv "$DEST/"
+          cp /tmp/d5-run-1/q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json "$DEST/"
+          cp /tmp/d5-run-1/q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json "$DEST/"
+          python - <<'PY'
+          import hashlib,json,pathlib,os
+          root=pathlib.Path('reports/sequence_agent')
+          names=['q141_d5_formula_behaviour_diversity_report_2026-11-13.json','q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv','q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json','q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json']
+          validation={'task_id':'Q141-D5','status':'UNIT_TESTS_AND_TWO_FULL_REPLAYS_PASSED','unit_test_count':7,'unit_tests_passed':True,'full_replay_count':2,'full_replay_byte_identical':True,'q90_zip_sha256':'12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077','workflow_run_id':int(os.environ['GITHUB_RUN_ID']),'outputs':{n:{'sha256':hashlib.sha256((root/n).read_bytes()).hexdigest(),'bytes':(root/n).stat().st_size} for n in names}}
+          (root/'q141_d5_formula_behaviour_diversity_validation_2026-11-13.json').write_text(json.dumps(validation,sort_keys=True,indent=2)+'\n')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/sonar_q141_d5_formula_behaviour_diversity.py tests/test_sonar_q141_d5_formula_behaviour_diversity.py reports/sequence_agent/q141_d5_formula_behaviour_diversity_preregistration_2026-11-13.md reports/sequence_agent/q141_d5_formula_behaviour_diversity_report_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv reports/sequence_agent/q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_validation_2026-11-13.json
+          git commit -m 'Persist Q141-D5 formula behaviour diversity results'
+          git push origin "HEAD:$BRANCH"
+
+      - name: Verify remote readback and persist receipt
+        run: |
+          git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+          python - <<'PY'
+          import hashlib,json,pathlib,subprocess,os
+          names=['scripts/sonar_q141_d5_formula_behaviour_diversity.py','tests/test_sonar_q141_d5_formula_behaviour_diversity.py','reports/sequence_agent/q141_d5_formula_behaviour_diversity_preregistration_2026-11-13.md','reports/sequence_agent/q141_d5_formula_behaviour_diversity_report_2026-11-13.json','reports/sequence_agent/q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv','reports/sequence_agent/q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json','reports/sequence_agent/q141_d5_formula_behaviour_diversity_validation_2026-11-13.json']
+          def ghblob(b): return hashlib.sha1(b'blob '+str(len(b)).encode()+b'\0'+b).hexdigest()
+          files={}
+          for name in names:
+              local=pathlib.Path(name).read_bytes()
+              remote=subprocess.check_output(['git','show',f"origin/{os.environ['BRANCH']}:{name}"])
+              if local!=remote: raise SystemExit('remote readback mismatch: '+name)
+              files[name]={'bytes':len(remote),'sha256':hashlib.sha256(remote).hexdigest(),'git_blob_sha1':ghblob(remote)}
+          receipt={'task_id':'Q141-D5','status':'REMOTE_GIT_READBACK_VERIFIED','branch':os.environ['BRANCH'],'workflow_run_id':int(os.environ['GITHUB_RUN_ID']),'verified_files':files}
+          rp=pathlib.Path('reports/sequence_agent/q141_d5_formula_behaviour_diversity_readback_receipt_2026-11-13.json')
+          rp.write_text(json.dumps(receipt,sort_keys=True,indent=2)+'\n')
+          cp=pathlib.Path('reports/sequence_agent/q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json')
+          c=json.loads(cp.read_text()); raw=rp.read_bytes(); c['status']='REMOTE_GIT_READBACK_VERIFIED'; c['readback_receipt_sha256']=hashlib.sha256(raw).hexdigest(); c['readback_receipt_git_blob_sha1']=ghblob(raw)
+          cp.write_text(json.dumps(c,sort_keys=True,indent=2)+'\n')
+          PY
+          git add reports/sequence_agent/q141_d5_formula_behaviour_diversity_readback_receipt_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json
+          git commit -m 'Verify Q141-D5 remote persistence'
+          git push origin "HEAD:$BRANCH"
+          git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+          for name in scripts/sonar_q141_d5_formula_behaviour_diversity.py tests/test_sonar_q141_d5_formula_behaviour_diversity.py reports/sequence_agent/q141_d5_formula_behaviour_diversity_preregistration_2026-11-13.md reports/sequence_agent/q141_d5_formula_behaviour_diversity_report_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_target_ledger_2026-11-13.csv reports/sequence_agent/q141_d5_formula_behaviour_diversity_manifest_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_checkpoint_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_validation_2026-11-13.json reports/sequence_agent/q141_d5_formula_behaviour_diversity_readback_receipt_2026-11-13.json; do
+            git show "origin/$BRANCH:$name" > "/tmp/$(basename "$name").remote"
+            cmp "$name" "/tmp/$(basename "$name").remote"
+          done
