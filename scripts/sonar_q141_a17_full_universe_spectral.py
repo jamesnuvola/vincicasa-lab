@@ -80,6 +80,20 @@ def validate_alignment(row_index, target_date, cutoff_date, prior_draws, actual_
         and cutoff_date < target_date
     )
 
+def validate_initial_unscored_row(target_date, cutoff_date, prior_draws, actual_quintet, status, rank_values, dates, draws):
+    try:
+        actual = tuple(sorted(int(x) for x in actual_quintet.split()))
+    except Exception:
+        return False
+    return (
+        status == "INSUFFICIENT_HISTORY"
+        and str(prior_draws) == "0"
+        and (cutoff_date is None or str(cutoff_date).strip() == "")
+        and target_date == dates[0]
+        and actual == draws[0]
+        and all(str(value).strip() == "" for value in rank_values)
+    )
+
 def load_sources(source_dir: Path):
     archive_path = source_dir / "data/storico_daily.csv"
     walk_path = source_dir / "reports/sequence_agent/exhaustive_formula_walkforward_manifest.json"
@@ -114,7 +128,8 @@ def load_sources(source_dir: Path):
     matrix = np.empty((TARGETS, FORMULAS), dtype=np.int32)
     target_dates, cutoff_dates, actuals = [], [], []
     part_lineage = []
-    row_index = 0
+    raw_row_index = 0
+    scored_index = 0
     for part in walk["parts"]:
         p = source_dir / part["path"]
         if not p.is_file():
@@ -129,32 +144,45 @@ def load_sources(source_dir: Path):
                 raise ValueError(f"A17_BLOCKED: rank column order/header mismatch in {part['path']}")
             part_rows = 0
             for row in reader:
-                if row_index >= TARGETS:
-                    raise ValueError("A17_BLOCKED: excess Q7 ledger rows")
-                if not validate_alignment(
-                    row_index, row["target_date"], row["cutoff_date"], row["prior_draws"],
-                    row["actual_quintet"], dates, draws
-                ):
-                    raise ValueError(f"A17_BLOCKED: strict-prior/date/outcome reconciliation failed at row {row_index}")
-                values = np.fromiter((int(row[name]) for name in rank_names), dtype=np.int32, count=FORMULAS)
-                if values.shape != (FORMULAS,) or np.any(values < 1) or np.any(values > CANDIDATES):
-                    raise ValueError(f"A17_BLOCKED: invalid formula rank at target row {row_index}")
-                matrix[row_index] = values
-                target_dates.append(row["target_date"])
-                cutoff_dates.append(row["cutoff_date"])
-                actuals.append(row["actual_quintet"])
-                row_index += 1
+                if raw_row_index != int(part["start_index"]) + part_rows:
+                    raise ValueError(f"A17_BLOCKED: ledger part index discontinuity in {part['path']}")
+                if raw_row_index == 0:
+                    if not validate_initial_unscored_row(
+                        row["target_date"], row["cutoff_date"], row["prior_draws"],
+                        row["actual_quintet"], row["status"],
+                        [row[name] for name in rank_names], dates, draws
+                    ):
+                        raise ValueError("A17_BLOCKED: initial INSUFFICIENT_HISTORY row does not reconcile")
+                else:
+                    if scored_index >= TARGETS:
+                        raise ValueError("A17_BLOCKED: excess scored Q7 ledger rows")
+                    if not validate_alignment(
+                        scored_index, row["target_date"], row["cutoff_date"], row["prior_draws"],
+                        row["actual_quintet"], dates, draws
+                    ):
+                        raise ValueError(f"A17_BLOCKED: strict-prior/date/outcome reconciliation failed at scored row {scored_index}")
+                    values = np.fromiter((int(row[name]) for name in rank_names), dtype=np.int32, count=FORMULAS)
+                    if values.shape != (FORMULAS,) or np.any(values < 1) or np.any(values > CANDIDATES):
+                        raise ValueError(f"A17_BLOCKED: invalid formula rank at target row {scored_index}")
+                    matrix[scored_index] = values
+                    target_dates.append(row["target_date"])
+                    cutoff_dates.append(row["cutoff_date"])
+                    actuals.append(row["actual_quintet"])
+                    scored_index += 1
+                raw_row_index += 1
                 part_rows += 1
             if part_rows != part["data_rows"]:
                 raise ValueError(f"A17_BLOCKED: row count mismatch in {part['path']}")
+            if int(part["end_index_exclusive"]) != int(part["start_index"]) + part_rows:
+                raise ValueError(f"A17_BLOCKED: part range mismatch in {part['path']}")
         part_lineage.append({
             "path": part["path"],
             "data_rows": part_rows,
             "sha256": sha256_bytes(raw),
             "git_blob_sha1": git_blob_sha1(raw),
         })
-    if row_index != TARGETS:
-        raise ValueError(f"A17_BLOCKED: expected {TARGETS} target rows, got {row_index}")
+    if raw_row_index != DRAWS or scored_index != TARGETS:
+        raise ValueError(f"A17_BLOCKED: expected {DRAWS} raw rows and {TARGETS} scored rows, got {raw_row_index}/{scored_index}")
 
     formulas_by_mask = {}
     catalog_lineage = []
@@ -211,7 +239,9 @@ def load_sources(source_dir: Path):
         },
         "ledger_parts": part_lineage,
         "formula_catalog_chunks": catalog_lineage,
-        "target_rows": row_index,
+        "raw_ledger_rows": raw_row_index,
+        "initial_insufficient_history_rows": 1,
+        "target_rows": scored_index,
         "formula_count": len(formulas),
         "candidate_universe_size": CANDIDATES,
     }
