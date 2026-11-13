@@ -1,8 +1,8 @@
 name: SONAR Q141-A9 Distributional Subset Score
 on:
-  push:
-    branches:
-      - research/q141-a7-fresh59-behaviour-20261113
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
     paths:
       - "scripts/sonar_q141_a9_distributional_subset_score.py"
       - "tests/test_sonar_q141_a9_distributional_subset_score.py"
