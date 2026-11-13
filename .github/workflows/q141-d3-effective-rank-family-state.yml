@@ -24,7 +24,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: q141-d3-effective-rank-family-state
+  group: q141-d3-effective-rank-family-state-${{ github.event_name }}
   cancel-in-progress: false
 
 jobs:
