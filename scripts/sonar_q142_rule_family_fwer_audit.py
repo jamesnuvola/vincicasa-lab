@@ -85,13 +85,14 @@ def run(root):
             d=r["data"]; q=tuple(int(r[f"n{i}"]) for i in range(1,6))
             if tuple(sorted(q))!=q or len(set(q))!=5: raise ValueError("bad archive draw")
             archive_dates.append(d); draws[d]=q
-    if len(archive_dates)!=EXPECTED_DRAWS: raise ValueError("archive row count mismatch")
+    if len(archive_dates)!=EXPECTED_DRAWS or archive_dates!=sorted(archive_dates) or len(set(archive_dates))!=len(archive_dates): raise ValueError("archive row count/order mismatch")
+    archive_index={d:i for i,d in enumerate(archive_dates)}
     bydate=defaultdict(list); configs=set()
     with lp.open(newline="",encoding="utf-8") as f:
         for r in csv.DictReader(f):
             d=r["target_date"]
             if d not in draws: raise ValueError("target missing from archive")
-            pos=archive_dates.index(d)
+            pos=archive_index[d]
             if pos<WARMUP: raise ValueError("insufficient prior history")
             r["_hits"]=str(validate_row(r,archive_dates[pos-1],draws[d]))
             bydate[d].append(r); configs.add(r["config_id"])
