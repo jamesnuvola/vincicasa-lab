@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "cycle": 26,
   "date": "2026-11-13",
-  "status": "REMOTE_GIT_READBACK_VERIFIED_MANUAL_FINAL_CI_RECHECK_PENDING",
+  "status": "REMOTE_GIT_READBACK_VERIFIED_MANUAL_CI_RECHECK_PENDING",
   "branch": "research/q141-d3-effective-rank-family-state-20261113",
   "pull_request": 92,
   "experiment": {
@@ -10,12 +10,19 @@
     "decision": "NO_EFFECTIVE_RANK_CONDITIONAL_LIFT_DEMONSTRATED",
     "targets": 3351,
     "evaluated_targets": 3251,
-    "split_counts": {"discovery":1911,"validation":670,"blind_oos":670},
+    "split_counts": {
+      "discovery": 1911,
+      "validation": 670,
+      "blind_oos": 670
+    },
     "warmup": 100,
     "primary_effect_high_minus_low": -0.0002941494503927665,
-    "primary_ci95": [-0.0018326772033397285,0.0012386836150861964],
+    "primary_ci95": [
+      -0.0018326772033397285,
+      0.0012386836150861964
+    ],
     "primary_circular_shift_p": 0.6795160241987901,
-    "primary_holm_p": 1.0,
+    "primary_holm_p": 1,
     "acceptance_threshold": 0.005,
     "test_count": 12,
     "double_replay_byte_identical": true,
@@ -25,7 +32,10 @@
     "prereplay_success": 43428724833,
     "persisted_outputs_and_checkpoint": 43429685137,
     "corrected_full_hash_readback_recheck": 43429915802,
-    "corrected_recheck_status_at_checkpoint": "IN_PROGRESS"
+    "corrected_recheck_status_at_checkpoint": "IN_PROGRESS",
+    "corrected_full_hash_readback_recheck_status": "COMPLETED_WITH_FINAL_STEP_FAILURE_MISSING_HASHLIB_IMPORT",
+    "latest_corrected_workflow": 43430133247,
+    "latest_corrected_workflow_status": "IN_PROGRESS_AT_CHECKOUT"
   },
   "remote_files": {
     "report": "reports/sequence_agent/q141_d3_effective_rank_family_state_report_2026-11-13.json",
@@ -35,7 +45,8 @@
     "readback_receipt": "reports/sequence_agent/q141_d3_effective_rank_family_state_remote_readback_2026-11-13.json",
     "manifest_files_verified": 3,
     "receipt_files_verified": 5,
-    "manual_git_blob_and_byte_checks": "5/5 verified"
+    "manual_git_blob_and_byte_checks": "5/5 verified",
+    "checkpoint_status": "REMOTE_GIT_READBACK_VERIFIED"
   },
   "formula_atlas": {
     "q90_ast_count": 330429,
