@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q112",
+  "title": "Lag-2 identity rebound conditional on lag-1 recurrence",
+  "generated_at_local": "2026-11-11T06:38:58+01:00",
+  "registration_status": "EXPLORATORY_PROTOCOL_AFTER_INITIAL_ANALYSIS",
+  "source": {
+    "pinned_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10",
+    "canonical_outcome_314": [
+      1,
+      7,
+      11,
+      22,
+      25
+    ]
+  },
+  "hypothesis": "A number drawn two contests ago but absent from the immediately previous draw may have a different probability of appearing in the target draw, conditional on the immediately previous draw state.",
+  "definition": {
+    "A_t": "D_(t-1)",
+    "B_t": "D_(t-2)",
+    "x1": "|D_t intersect A_t|",
+    "x2": "|D_t intersect (B_t minus A_t)|",
+    "m": "|A_t intersect B_t|",
+    "categories": {
+      "both": "m",
+      "last_only": "5-m",
+      "lag2_only": "5-m",
+      "neither": "30+m"
+    },
+    "model": "P(D_t|A_t,B_t) proportional to exp(beta1*x1 + beta2*x2), normalized over all 658008 5-subsets",
+    "normalizer": "Z_m=sum C(m,i)C(5-m,j)C(5-m,k)C(30+m,5-i-j-k)exp(beta1*(i+j)+beta2*k)",
+    "per_subset_log_gain": "beta1*x1 + beta2*x2 - log(Z_m/658008)",
+    "secondary_score": "Multiclass Brier gain for the joint 6x6 PMF of (x1,x2), baseline minus candidate; positive favors candidate."
+  },
+  "models": {
+    "beta1_grid": [
+      -0.5,
+      0,
+      0.5
+    ],
+    "beta2_grid": [
+      -0.5,
+      -0.25,
+      0,
+      0.25,
+      0.5
+    ],
+    "candidate_count": 15,
+    "selection": "Maximize mean exact-subset log gain on Validation only; ties prefer smaller L1 norm, then beta1 and beta2 ascending."
+  },
+  "walk_forward": {
+    "min_history_before_target": 300,
+    "first_target_index_zero_based": 301,
+    "expected_targets": 3103,
+    "chronological_splits": {
+      "discovery": 1861,
+      "validation": 620,
+      "historical_blind_oos": 622
+    },
+    "cutoff_rule": "Target t uses only D_(t-1) and D_(t-2); both cutoffs are strictly earlier than target."
+  },
+  "inference": {
+    "primary": "Exact-subset log-likelihood gain versus uniform",
+    "secondary": "Joint-overlap-category multiclass Brier gain",
+    "block_sign_flip": {
+      "block_length": 20,
+      "replicates": 50000,
+      "seeds": {
+        "selected_log": 20261111,
+        "selected_brier": 20261113,
+        "grid_start": 20261121
+      },
+      "alternative": "positive mean gain"
+    },
+    "bootstrap": {
+      "method": "Circular moving-block bootstrap",
+      "block_length": 20,
+      "replicates": 10000,
+      "seeds": {
+        "selected_log": 20261112,
+        "selected_brier": 20261114
+      },
+      "interval": "percentile 95%"
+    },
+    "multiple_testing": "Holm across 14 non-null candidates for primary Blind OOS log-score tests; Holm across the two selected-model endpoints."
+  },
+  "guardrails": [
+    "Protocol is exploratory because initial computation preceded persistence; no confirmatory claim.",
+    "No target or later draw enters its forecast state.",
+    "Validation alone selects the model; Blind OOS is not used for tuning.",
+    "Normalizer exactly sums all 658008 five-number subsets through category counts.",
+    "No subgroup search or post-hoc grid expansion.",
+    "Historical Blind OOS is not a virgin holdout.",
+    "No production scorer, Q60, H101/H102, freeze or model promotion changes."
+  ]
+}
