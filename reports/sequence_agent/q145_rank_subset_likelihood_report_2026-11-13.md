@@ -35,13 +35,13 @@ All historical inference is exploratory, not virgin confirmation: this PMF trans
 - Borda modal quintet: **1 · 7 · 25 · 16 · 21**
 - Equal-type inclusion modal quintet: **1 · 25 · 21 · 16 · 9**
 - Cutoff 2026-11-12; frozen 2026-11-13 at 19:18:07 Europe/Rome; outcome null.
-- The 2026-11-12 repository row has an unresolved discrepancy between official archive pages; the cutoff is preserved but not independently source-confirmed.
+- The 2026-11-12 repository row has an unresolved discrepancy between official archive pages; the cutoff is preserved but not treated as independently source-confirmed.
 
 ## Integrity and limits
 - 31 historical target rows reconciled against the pinned canonical archive.
 - 1,364 shadow rows checked for strict-prior cutoffs and pre-draw timestamps; 43 pending rows remain outcome-free.
 - 42 component forecasts per completed target (24 family / 12 pair / 6 chain); APP is an external comparator.
-- The PMF is normalized over all 658,008 quintets; this does not establish calibration or predictive power.
+- The PMF is normalized mathematically over all 658,008 quintets; this does not establish calibration or predictive power.
 - Seven historical Blind OOS dates are insufficient for confirmation. No model promotion.
 
 ## Next action
