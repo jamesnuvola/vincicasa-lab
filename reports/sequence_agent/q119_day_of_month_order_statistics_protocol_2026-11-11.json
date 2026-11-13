@@ -1,0 +1,105 @@
+{
+  "experiment_id": "Q119",
+  "title": "Day-of-month conditioned order-statistic marginal calibration",
+  "status": "PREREGISTERED_BEFORE_COMPUTATION",
+  "preregistered_at_utc": "2026-11-11T12:16:54Z",
+  "base_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "The calendar day-of-month may contain incremental information about the five ordered order-statistic marginals beyond the exact uniform 5-of-40 order-statistic null and a global empirical order-statistic baseline.",
+  "estimand": "For each sorted position j=1..5, predict P(P_j=x | prior draws, target day-of-month) and score the five marginal distributions. This is not a joint five-number probability and does not generate a cinquina.",
+  "models": {
+    "M0": {
+      "name": "Exact uniform order-statistic marginal",
+      "formula": "q_j(x)=C(x-1,j-1)*C(40-x,5-j)/C(40,5), x=j..35+j"
+    },
+    "M1": {
+      "name": "Global empirical order-statistic marginal with fixed shrinkage",
+      "beta": 200,
+      "formula": "pG_j(x)=(C_global[j,x]+beta*q_j(x))/(t+beta)"
+    },
+    "M31": {
+      "name": "Day-of-month hierarchical order-statistic marginal",
+      "alpha_grid": [
+        25,
+        50,
+        100,
+        200,
+        400,
+        800,
+        1600,
+        3200
+      ],
+      "formula": "pDOM_j(x)=(C_dom[j,x]+alpha*pG_j(x))/(N_dom+alpha)",
+      "group": "UTC day-of-month 1..31"
+    }
+  },
+  "walk_forward": {
+    "minimum_history": 200,
+    "targets": 3204,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior_cutoffs": true,
+    "update_rule": "Score target using only earlier draws; update global and day-of-month counts only after all five target positions are scored."
+  },
+  "selection": {
+    "criterion": "minimum Validation mean marginal position log-loss averaged across five order-statistic positions",
+    "tie_break": "larger alpha",
+    "blind_oos_used_for_selection": false
+  },
+  "metrics": [
+    "mean marginal position log-loss across five positions",
+    "mean marginal Brier across 5 positions x 40 values"
+  ],
+  "inference": {
+    "primary_family": [
+      "M31_vs_M0_position_logloss",
+      "M31_vs_M0_position_brier",
+      "M31_vs_M1_position_logloss",
+      "M31_vs_M1_position_brier"
+    ],
+    "method": "one-sided paired block sign-flip for improvement",
+    "replicates": 50000,
+    "block_length": 20,
+    "bootstrap": "circular moving-block bootstrap",
+    "bootstrap_replicates": 10000,
+    "holm_family_size": 4,
+    "extended_calendar_family": "Recompute Holm across 12 endpoints: four each from Q117 weekday-conditioned inclusion, Q118 month-of-year inclusion, and Q119 day-of-month order-statistic marginals."
+  },
+  "integrity_checks": [
+    "source archive blob SHA pinned",
+    "chronological unique dates",
+    "five distinct integers in 1..40",
+    "exact order-statistic null normalization for each position",
+    "strict prior cutoffs",
+    "score before update",
+    "selected alpha from Validation only",
+    "finite positive probabilities on support",
+    "9 future-suffix mutation invariance checks",
+    "deterministic replay",
+    "ledger byte-identical replay"
+  ],
+  "limitations": [
+    "The five marginal position distributions do not specify a valid joint distribution over the ordered five-number draw.",
+    "Historical Blind OOS is not a virgin holdout after prior SONAR research.",
+    "The calendar family is exploratory; Holm across Q117-Q119 covers 12 selected endpoints only, not the full Q00-Q119 research family.",
+    "Day-of-month groups have limited effective sample size; hierarchical shrinkage may dominate.",
+    "This is a research diagnostic, not the production SONAR scorer or a Q60 forecast."
+  ],
+  "guardrails": [
+    "No production scorer changes.",
+    "No Q60 record or existing freeze changes.",
+    "No merge or engine promotion.",
+    "Do not modify PR #6, #7, or #8.",
+    "Do not reconstruct missing historical freezes."
+  ],
+  "protocol_timestamp_source": "GitHub commit 16bea54a23ae95a33650660e7ac81475f41137b; timestamp reflects the first persisted protocol commit before computation."
+}
