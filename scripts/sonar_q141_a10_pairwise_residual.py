@@ -50,7 +50,7 @@ def pair_residuals(draws):
 
 def pair_score(r,draw):
     x=np.asarray(draw,dtype=np.int64)-1
-    if len(x)!=5 or len(set(x.tolist()))!=5 or np.any(x<0) or np.any(x>=r.shape[0]):
+    if len(x)<2 or len(set(x.tolist()))!=len(x) or np.any(x<0) or np.any(x>=r.shape[0]):
         raise ValueError("invalid target quintet")
     return float(sum(r[i,j] for i,j in itertools.combinations(x.tolist(),2)))
 
