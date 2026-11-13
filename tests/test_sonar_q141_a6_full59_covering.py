@@ -66,4 +66,29 @@ class Q141A6Tests(unittest.TestCase):
         np.testing.assert_array_equal(order_before,order_after)
         self.assertNotEqual(m1['top5'],m2['top5'])
 
+    def test_full59_sample_formula_counts_and_deterministic_replay(self):
+        indices=list(range(59))
+        q,pc,fc,stats=Q.pair_cover_quartets(indices,self.families,350,Q.SEED)
+        linear,final_counts,fam_counts=Q.balanced_linear_sets(indices,self.families,75,Q.SEED+3,fc)
+        formulas=Q.build_formulas('full59',q,linear,self.names)
+        self.assertEqual(len(linear),300)
+        self.assertEqual(len(formulas),5550)
+        self.assertEqual(len({x['formula_id'] for x in formulas}),5550)
+        self.assertEqual(len({x['ast_id'] for x in formulas}),5550)
+        self.assertEqual(
+            {k:sum(x['formula_type']==k for x in formulas) for k in ('linear_mean','pairwise_interaction','conditional_gate')},
+            {'linear_mean':650,'pairwise_interaction':2100,'conditional_gate':2800}
+        )
+        self.assertEqual(stats['pairs_covered'],1711)
+        self.assertEqual(stats['pairs_total'],1711)
+        self.assertEqual((stats['pair_count_min'],stats['pair_count_max']),(1,3))
+        self.assertEqual((stats['feature_use_min'],stats['feature_use_max']),(23,24))
+        q2,pc2,fc2,stats2=Q.pair_cover_quartets(indices,self.families,350,Q.SEED)
+        linear2,final_counts2,fam_counts2=Q.balanced_linear_sets(indices,self.families,75,Q.SEED+3,fc2)
+        formulas2=Q.build_formulas('full59',q2,linear2,self.names)
+        self.assertEqual(q,q2)
+        self.assertEqual(linear,linear2)
+        self.assertEqual([x['formula_id'] for x in formulas],[x['formula_id'] for x in formulas2])
+        self.assertEqual([x['ast_id'] for x in formulas],[x['ast_id'] for x in formulas2])
+
 if __name__=='__main__': unittest.main(verbosity=2)
