@@ -1,0 +1,15 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {parseCsv,buildScorer,buildRaw,fit,boot,flip,holm} from '../scripts/sonar_q143_top20_mass_calibration.mjs';
+const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+test('CSV parser accepts valid archive rows',()=>{assert.equal(parseCsv('data,n1,n2,n3,n4,n5\n2026-01-01,1,2,3,4,5\n2026-01-02,2,3,4,5,6\n').length,2);});
+test('CSV parser rejects duplicate dates and invalid numbers',()=>{assert.throws(()=>parseCsv('data,n1,n2,n3,n4,n5\n2026-01-01,1,2,3,4,5\n2026-01-01,2,3,4,5,6\n'));assert.throws(()=>parseCsv('data,n1,n2,n3,n4,n5\n2026-01-01,1,2,3,4,41\n'));});
+test('exact scorer reproduces current frozen Top20',()=>{const d=parseCsv(fs.readFileSync(path.join(ROOT,'data/storico_daily.csv'),'utf8')),s=buildScorer(fs.readFileSync(path.join(ROOT,'src/VinciCasaLab.jsx'),'utf8')),a=JSON.parse(fs.readFileSync(path.join(ROOT,'reports/sequence_agent/active_engine_walkforward.json'),'utf8'));assert.deepEqual(s(d).scores.slice(0,20).map(x=>x.n),a.current_frozen_forecast.top20_ranked);});
+test('each target uses a strictly earlier cutoff',()=>{const d=[];for(let i=0;i<205;i++){const n=[1,2,3,4,5].map(x=>((i*7+x*5-1)%40)+1).sort((a,b)=>a-b);d.push({d:'2026-'+String(Math.floor(i/28)+1).padStart(2,'0')+'-'+String(i%28+1).padStart(2,'0'),n});}const s=buildScorer(fs.readFileSync(path.join(ROOT,'src/VinciCasaLab.jsx'),'utf8')),r=buildRaw(d,s);assert.equal(r.length,5);for(const x of r)assert.ok(x.cutoff<x.date);});
+test('rolling regression is invariant to appended future records',()=>{const r=Array.from({length:6},(_,i)=>({x:.6+i*.01,y:[2,3,1,4,2,5][i]}));assert.deepEqual(fit(r,4,4),fit(r.concat([{x:.99,y:0}]),4,4));});
+test('bootstrap and sign-flip are deterministic',()=>{const d=[1,-1,.5,-.5,.2,-.2,.1,-.1,.3,-.3];assert.deepEqual(boot(d,123),boot(d,123));assert.equal(flip(d,456),flip(d,456));});
+test('Holm adjustment is bounded and monotone',()=>{const a=holm([.04,.001,.03,.2]);assert.deepEqual(a,[.09,.004,.09,.2]);assert.ok(a.every(x=>x>=0&&x<=1));});
+test('uniform Top20 expected hits equals 2.5',()=>{assert.equal(20*(5/40),2.5);});

@@ -49,5 +49,9 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Verify deterministic Q143 report, ledger and tests
+        run: |
+          node scripts/sonar_q143_top20_mass_calibration.mjs --check
+          node --test tests/test_sonar_q143_top20_mass_calibration.mjs
       - name: Build web application
         run: npm install && npm run build
