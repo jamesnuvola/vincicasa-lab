@@ -1,0 +1,263 @@
+{
+  "blind_oos_inference": {
+    "acceptance_rule": "primary effect >= +0.025 hits/target AND 95% CI lower > 0 AND Holm p < 0.05",
+    "accepted": false,
+    "endpoints": [
+      {
+        "ci95_circular_block_bootstrap": [
+          -0.017770757766037718,
+          0.14029103839229856
+        ],
+        "effect": 0.06002086286677187,
+        "endpoint": "high_disagreement_minus_low_disagreement_paired_hit_delta",
+        "id": "D4_T1",
+        "p_holm": 0.43212839358032096,
+        "p_raw": 0.14404279786010699,
+        "practical_threshold_hits_per_target": 0.025
+      },
+      {
+        "ci95_circular_block_bootstrap": [
+          -0.03134328358208955,
+          0.041791044776119404
+        ],
+        "effect": 0.005970149253731343,
+        "endpoint": "unconditional_consensus_minus_equal_family_mean_hits",
+        "id": "D4_T2",
+        "p_holm": 0.8165091745412729,
+        "p_raw": 0.8165091745412729,
+        "practical_threshold_hits_per_target": 0.025
+      },
+      {
+        "ci95_circular_block_bootstrap": [
+          -0.026492537313432835,
+          0.07350746268656716
+        ],
+        "effect": 0.02425373134328357,
+        "endpoint": "consensus_mean_hits_minus_exact_uniform_expectation",
+        "exact_null": "sum of 670 Hypergeometric(40,5,5) outcomes",
+        "id": "D4_T3",
+        "p_holm": 0.43212839358032096,
+        "p_raw": 0.19217206889097185,
+        "uniform_expected_hits": 0.625
+      }
+    ],
+    "holm_family_size": 3,
+    "method": "20,000 circular moving-block bootstrap (block=20); 20,000 circular state shifts; 20,000 non-overlapping block sign-flips; exact hypergeometric convolution; Holm across 3 registered endpoints"
+  },
+  "decision": "NO_FAMILY_CONSENSUS_CONDITIONAL_LIFT_DEMONSTRATED",
+  "family_top5_hit_means": {
+    "baseline_legacy": {
+      "blind_oos": 0.608955223880597,
+      "discovery": 0.6462585034013606,
+      "validation": 0.5805970149253732
+    },
+    "cooccurrence_novelty": {
+      "blind_oos": 0.6388059701492538,
+      "discovery": 0.6268969126111983,
+      "validation": 0.6194029850746269
+    },
+    "ewma_hit_dynamics": {
+      "blind_oos": 0.6179104477611941,
+      "discovery": 0.6462585034013606,
+      "validation": 0.5537313432835821
+    },
+    "gap_dynamics": {
+      "blind_oos": 0.6343283582089553,
+      "discovery": 0.6132914704343275,
+      "validation": 0.6208955223880597
+    },
+    "rank_trajectory": {
+      "blind_oos": 0.6179104477611941,
+      "discovery": 0.6075353218210361,
+      "validation": 0.6238805970149254
+    },
+    "regime_transition_affinity": {
+      "blind_oos": 0.6358208955223881,
+      "discovery": 0.63003663003663,
+      "validation": 0.6522388059701493
+    },
+    "residual_surprise": {
+      "blind_oos": 0.6253731343283582,
+      "discovery": 0.6473050758765044,
+      "validation": 0.5746268656716418
+    }
+  },
+  "hypothesis": {
+    "family_count": 7,
+    "primary_minimum_effect": 0.025,
+    "primary_outcome": "consensus Top-5 hits minus equal-family-mean Top-5 hits",
+    "signal": "mean pairwise Jaccard of seven family-specific Top-5 sets",
+    "state": "high disagreement when current agreement < median of previous 100 target agreements",
+    "tie_rule": "scores rounded to 12 decimals; ascending number; consensus vote count then mean family score then number",
+    "top_k": 5,
+    "window": 100
+  },
+  "integrity": {
+    "all_cutoffs_strictly_before_targets": true,
+    "all_feature_values_finite": true,
+    "family_counts": {
+      "baseline_legacy": 27,
+      "cooccurrence_novelty": 6,
+      "ewma_hit_dynamics": 7,
+      "gap_dynamics": 6,
+      "rank_trajectory": 5,
+      "regime_transition_affinity": 6,
+      "residual_surprise": 2
+    },
+    "family_groups_partition_59_features": true,
+    "future_suffix_mutation_checks": [
+      {
+        "agreement_unchanged": true,
+        "consensus_top5_unchanged": true,
+        "equal_family_top5_unchanged": true,
+        "target_index": 100,
+        "threshold_unchanged": true
+      },
+      {
+        "agreement_unchanged": true,
+        "consensus_top5_unchanged": true,
+        "equal_family_top5_unchanged": true,
+        "target_index": 250,
+        "threshold_unchanged": true
+      },
+      {
+        "agreement_unchanged": true,
+        "consensus_top5_unchanged": true,
+        "equal_family_top5_unchanged": true,
+        "target_index": 1000,
+        "threshold_unchanged": true
+      },
+      {
+        "agreement_unchanged": true,
+        "consensus_top5_unchanged": true,
+        "equal_family_top5_unchanged": true,
+        "target_index": 2000,
+        "threshold_unchanged": true
+      },
+      {
+        "agreement_unchanged": true,
+        "consensus_top5_unchanged": true,
+        "equal_family_top5_unchanged": true,
+        "target_index": 3000,
+        "threshold_unchanged": true
+      },
+      {
+        "agreement_unchanged": true,
+        "consensus_top5_unchanged": true,
+        "equal_family_top5_unchanged": true,
+        "target_index": 3350,
+        "threshold_unchanged": true
+      }
+    ],
+    "inference_target_level": true,
+    "matrix_ledger_dates_cutoffs_actuals_exactly_aligned": true,
+    "prior_draws_equal_target_index_plus_50": true
+  },
+  "limitations": [
+    "Historical Blind OOS has been exposed to prior SONAR research and is not virgin prospective evidence.",
+    "Q89 features are per-target cross-sectional z-scores; known rank duplicates remain within the baseline legacy family.",
+    "Equal-family averaging reduces family-size weighting but does not remove within-family feature redundancy.",
+    "The endpoint is per-number Top-5 hit count, not exact five-number ticket probability.",
+    "Q90 matrix ends 2026-11-07; five later main-archive rows are excluded.",
+    "Holm correction covers the three D4 endpoints only, not the full Q00-Q141 research family."
+  ],
+  "next_action": "Keep D4 research-only. Continue common-source AST semantic reconciliation and obtain prospective frozen evidence; do not retune the disagreement state on this historical Blind OOS.",
+  "schema_version": "1.0",
+  "source": {
+    "a6_ledger_sha256": "3db21ad7a0d94f3d07f437865282ed306d0a022d9f313095fa4bedbb66d5b32b",
+    "a6_zip_sha256": "e139ed4587f04ae584c12bff76bcb49d7cd397d41d7fde5a159cc487570ea3fc",
+    "family_counts": {
+      "baseline_legacy": 27,
+      "cooccurrence_novelty": 6,
+      "ewma_hit_dynamics": 7,
+      "gap_dynamics": 6,
+      "rank_trajectory": 5,
+      "regime_transition_affinity": 6,
+      "residual_surprise": 2
+    },
+    "feature_catalog_sha256": "0761324a35faade7e5dc9a053d19146f21d349ba9e8237b334691c6b1e5517a5",
+    "feature_count": 59,
+    "main_archive_suffix_excluded": 5,
+    "matrix_dtype": "float32",
+    "matrix_sha256": "681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49",
+    "matrix_shape": [
+      3351,
+      40,
+      59
+    ],
+    "q90_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_archive_cutoff": "2026-11-07",
+    "q90_archive_draws": 3401,
+    "q90_zip_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077"
+  },
+  "split_results": {
+    "blind_oos": {
+      "consensus_mean_hits": 0.6492537313432836,
+      "consensus_minus_equal59_mean_hits": 0.0014925373134328358,
+      "consensus_minus_equal_family_mean_hits": 0.005970149253731343,
+      "consensus_vs_uniform_mean_hits": 0.02425373134328357,
+      "equal59_mean_hits": 0.6477611940298508,
+      "equal_family_mean_hits": 0.6432835820895523,
+      "high_disagreement_targets": 327,
+      "high_minus_low_paired_delta": 0.06002086286677187,
+      "low_disagreement_targets": 343,
+      "mean_family_jaccard": 0.15314273304678425,
+      "paired_delta_high_mean": 0.03669724770642202,
+      "paired_delta_low_mean": -0.023323615160349854,
+      "targets": 670,
+      "uniform_expected_hits": 0.625
+    },
+    "discovery": {
+      "consensus_mean_hits": 0.6331763474620618,
+      "consensus_minus_equal59_mean_hits": 0.0005232862375719519,
+      "consensus_minus_equal_family_mean_hits": 0.00837257980115123,
+      "consensus_vs_uniform_mean_hits": 0.00817634746206175,
+      "equal59_mean_hits": 0.6326530612244898,
+      "equal_family_mean_hits": 0.6248037676609105,
+      "high_disagreement_targets": 958,
+      "high_minus_low_paired_delta": -4.381285775936772e-05,
+      "low_disagreement_targets": 953,
+      "mean_family_jaccard": 0.14932336676748728,
+      "paired_delta_high_mean": 0.008350730688935281,
+      "paired_delta_low_mean": 0.008394543546694649,
+      "targets": 1911,
+      "uniform_expected_hits": 0.625
+    },
+    "validation": {
+      "consensus_mean_hits": 0.5597014925373134,
+      "consensus_minus_equal59_mean_hits": -0.041791044776119404,
+      "consensus_minus_equal_family_mean_hits": -0.041791044776119404,
+      "consensus_vs_uniform_mean_hits": -0.06529850746268662,
+      "equal59_mean_hits": 0.6014925373134329,
+      "equal_family_mean_hits": 0.6014925373134329,
+      "high_disagreement_targets": 342,
+      "high_minus_low_paired_delta": -0.02214377406931964,
+      "low_disagreement_targets": 328,
+      "mean_family_jaccard": 0.14523217247097842,
+      "paired_delta_high_mean": -0.05263157894736842,
+      "paired_delta_low_mean": -0.03048780487804878,
+      "targets": 670,
+      "uniform_expected_hits": 0.625
+    }
+  },
+  "status": "COMPLETED_HISTORICAL_WALK_FORWARD",
+  "task_id": "Q141-D4",
+  "walkforward": {
+    "evaluated_split_counts": {
+      "blind_oos": 670,
+      "discovery": 1911,
+      "validation": 670
+    },
+    "first_target": "2017-09-05",
+    "historical_blind_oos_not_virgin": true,
+    "last_target": "2026-11-07",
+    "original_split_counts": {
+      "blind_oos": 670,
+      "discovery": 2011,
+      "validation": 670
+    },
+    "strict_prior_alignment": true,
+    "target_rows": 3351,
+    "warmup_targets": 100
+  }
+}
