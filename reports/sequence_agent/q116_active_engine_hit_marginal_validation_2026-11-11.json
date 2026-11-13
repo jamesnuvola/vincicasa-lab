@@ -1,0 +1,79 @@
+{
+  "experiment_id": "Q116",
+  "passed": true,
+  "checks_passed": 14,
+  "checks_total": 14,
+  "checks": [
+    {
+      "name": "compact_source_sha_matches",
+      "passed": true
+    },
+    {
+      "name": "row_count_3203",
+      "passed": true
+    },
+    {
+      "name": "unique_target_dates",
+      "passed": true
+    },
+    {
+      "name": "chronological_dates",
+      "passed": true
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "passed": true
+    },
+    {
+      "name": "lag1_hit_chain",
+      "passed": true
+    },
+    {
+      "name": "hit_count_support_0_to_5",
+      "passed": true
+    },
+    {
+      "name": "split_sizes_1921_641_641",
+      "passed": true
+    },
+    {
+      "name": "chronological_split_order",
+      "passed": true
+    },
+    {
+      "name": "exact_hypergeometric_mass",
+      "passed": true
+    },
+    {
+      "name": "expected_cell_counts_at_least_5",
+      "passed": true
+    },
+    {
+      "name": "future_suffix_mutation_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "deterministic_replay",
+      "passed": true
+    },
+    {
+      "name": "computed_results_replay",
+      "passed": true
+    }
+  ],
+  "source": {
+    "q113_ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "compact_source_blob_sha": "b4ea460d0080f7abbec0b4d563a6089a3146fff5",
+    "compact_source_bytes": 116020,
+    "rows": 3203
+  },
+  "splits": {
+    "discovery": 1921,
+    "validation": 641,
+    "blind_oos": 641
+  },
+  "notes": [
+    "Historical reconstruction only; not an actual contemporaneous forecast log.",
+    "Future-suffix mutation checks validate prefix isolation for this diagnostic, not the original engine implementation."
+  ]
+}
