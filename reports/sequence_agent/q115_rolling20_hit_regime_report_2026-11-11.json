@@ -1,0 +1,336 @@
+{
+  "experiment_id": "Q115",
+  "title": "Rolling-20 active-engine Top20 hit-count regime",
+  "generated_at_utc": "2026-11-11T08:42:55Z",
+  "decision": "NO_ROLLING20_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "source_rows": 3203,
+    "first_target": "2018-02-03",
+    "last_target": "2026-11-10"
+  },
+  "hypothesis": "A rolling 20-target mean of the active engine's prior Top20 hit counts may contain more stable regime information than a single lagged hit count and may improve the next-target hit-count distribution.",
+  "model": {
+    "alpha": 200,
+    "rolling_window": 20,
+    "thresholds": [
+      {
+        "state": "LOW",
+        "rule": "S_t <= 45"
+      },
+      {
+        "state": "MID",
+        "rule": "46 <= S_t <= 54"
+      },
+      {
+        "state": "HIGH",
+        "rule": "S_t >= 55"
+      }
+    ],
+    "baseline": "exact Hypergeometric(40,20,5)",
+    "lag1": "Q113 first-order transition recomputed prior-only",
+    "rolling20": "conditional PMF by trailing-20 hit-sum state"
+  },
+  "walk_forward": {
+    "targets": 3183,
+    "split_sizes": {
+      "discovery": 1901,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "metrics": {
+      "discovery": {
+        "targets": 1901,
+        "mean_actual_hits": 2.5228826933193056,
+        "mean_predicted_hits": {
+          "m0": 2.4999999999999996,
+          "m1": 2.5081634221951905,
+          "m20": 2.512024693620586
+        },
+        "brier": {
+          "m0": 0.7387446355059613,
+          "m1": 0.7390964223447273,
+          "m20": 0.7387101389143176
+        },
+        "log_loss": {
+          "m0": 1.4833075698654257,
+          "m1": 1.4855737421928652,
+          "m20": 1.4847261785160943
+        },
+        "gains": {
+          "m20_vs_m0": {
+            "brier": 0.00003449659162414032,
+            "log_loss": -0.001418608650673893
+          },
+          "m20_vs_m1": {
+            "brier": 0.00038628343040838955,
+            "log_loss": 0.0008475636767688532
+          },
+          "m1_vs_m0": {
+            "brier": -0.0003517868387842505,
+            "log_loss": -0.002266172327442741
+          }
+        }
+      },
+      "validation": {
+        "targets": 641,
+        "mean_actual_hits": 2.436817472698908,
+        "mean_predicted_hits": {
+          "m0": 2.4999999999999996,
+          "m1": 2.5052666126563725,
+          "m20": 2.516473923170377
+        },
+        "brier": {
+          "m0": 0.7294857900963149,
+          "m1": 0.7305063685766338,
+          "m20": 0.7308959496092253
+        },
+        "log_loss": {
+          "m0": 1.4593431212001775,
+          "m1": 1.4616855476062562,
+          "m20": 1.461048434686643
+        },
+        "gains": {
+          "m20_vs_m0": {
+            "brier": -0.0014101595129036959,
+            "log_loss": -0.0017053134864517363
+          },
+          "m20_vs_m1": {
+            "brier": -0.0003895810325920683,
+            "log_loss": 0.000637112919613933
+          },
+          "m1_vs_m0": {
+            "brier": -0.0010205784803116276,
+            "log_loss": -0.002342426406065667
+          }
+        }
+      },
+      "blind_oos": {
+        "targets": 641,
+        "mean_actual_hits": 2.5257410296411855,
+        "mean_predicted_hits": {
+          "m0": 2.4999999999999996,
+          "m1": 2.5040716773328566,
+          "m20": 2.5042839061481224
+        },
+        "brier": {
+          "m0": 0.7387715669327938,
+          "m1": 0.7402859587565638,
+          "m20": 0.7403192930278126
+        },
+        "log_loss": {
+          "m0": 1.4838840808921423,
+          "m1": 1.4882388621574612,
+          "m20": 1.4875382453667378
+        },
+        "gains": {
+          "m20_vs_m0": {
+            "brier": -0.0015477260950106293,
+            "log_loss": -0.003654164474581621
+          },
+          "m20_vs_m1": {
+            "brier": -0.00003333427124906625,
+            "log_loss": 0.0007006167907241364
+          },
+          "m1_vs_m0": {
+            "brier": -0.0015143918237615632,
+            "log_loss": -0.004354781265305758
+          }
+        }
+      }
+    }
+  },
+  "blind_inference": [
+    {
+      "key": "m20_vs_m0_brier",
+      "label": "M20 vs M0 Brier",
+      "gain": -0.0015477260950106293,
+      "p_value": 0.9266814663706726,
+      "simulations": 50000,
+      "block_length": 20,
+      "block_count": 33,
+      "bootstrap_replicates": 10000,
+      "ci95": [
+        -0.0035552807554269116,
+        0.00044653360735245743
+      ],
+      "holm_adjusted": 1
+    },
+    {
+      "key": "m20_vs_m0_log_loss",
+      "label": "M20 vs M0 log-loss",
+      "gain": -0.003654164474581621,
+      "p_value": 0.9053218935621288,
+      "simulations": 50000,
+      "block_length": 20,
+      "block_count": 33,
+      "bootstrap_replicates": 10000,
+      "ci95": [
+        -0.008279145250065071,
+        0.0011679826528184644
+      ],
+      "holm_adjusted": 1
+    },
+    {
+      "key": "m20_vs_m1_brier",
+      "label": "M20 vs M1 Brier",
+      "gain": -0.00003333427124906625,
+      "p_value": 0.5134497310053799,
+      "simulations": 50000,
+      "block_length": 20,
+      "block_count": 33,
+      "bootstrap_replicates": 10000,
+      "ci95": [
+        -0.0021051344879673677,
+        0.0019885924609001357
+      ],
+      "holm_adjusted": 1
+    },
+    {
+      "key": "m20_vs_m1_log_loss",
+      "label": "M20 vs M1 log-loss",
+      "gain": 0.0007006167907241364,
+      "p_value": 0.372152556948861,
+      "simulations": 50000,
+      "block_length": 20,
+      "block_count": 33,
+      "bootstrap_replicates": 10000,
+      "ci95": [
+        -0.004372042283273578,
+        0.005874328376841353
+      ],
+      "holm_adjusted": 1
+    }
+  ],
+  "descriptive": {
+    "overall_mean_actual_hits": 2.5061262959472197,
+    "null_expected_hits": 2.5,
+    "blind_state_support": {
+      "min": 349,
+      "median": 1846,
+      "max": 2166,
+      "state_counts": {
+        "LOW": 110,
+        "MID": 387,
+        "HIGH": 144
+      }
+    },
+    "max_pmf_normalization_error": 2.220446049250313e-16
+  },
+  "prospective": {
+    "experiment_id": "Q115",
+    "status": "FROZEN_PENDING",
+    "target_date": "2026-11-11",
+    "frozen_at_local": "2026-11-11T09:42:55+01:00",
+    "frozen_at_utc": "2026-11-11T08:42:55Z",
+    "history_cutoff": "2026-11-10",
+    "source_main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "source_q113_ledger_blob_sha": "79ad1092d71c4c93aa7365bcd4e8ee48d42df569",
+    "source_q113_freeze_blob_sha": "ea9387df6ad3c1afd31d19e225892bb624d79f13",
+    "rolling_window_targets": 20,
+    "state_thresholds": {
+      "LOW": "sum<=45",
+      "MID": "46<=sum<=54",
+      "HIGH": "sum>=55"
+    },
+    "trailing_20_hit_sum": 55,
+    "rolling_state": "HIGH",
+    "rolling_state_code": 2,
+    "rolling_state_support": 493,
+    "alpha": 200,
+    "baseline_pmf": [
+      0.02356202356202356,
+      0.14726264726264726,
+      0.32917532917532916,
+      0.32917532917532916,
+      0.14726264726264726,
+      0.02356202356202356
+    ],
+    "lag1_pmf": [
+      0.03212977727540834,
+      0.13952470020431187,
+      0.31620960019018274,
+      0.35342642866914714,
+      0.13709751573829246,
+      0.021611977922657535
+    ],
+    "rolling20_pmf": [
+      0.025559025559025558,
+      0.1521681521681522,
+      0.3287663287663288,
+      0.3244373244373245,
+      0.14206714206714208,
+      0.027002027002027
+    ],
+    "expected_hits": {
+      "baseline": 2.4999999999999996,
+      "lag1": 2.4886731391585766,
+      "rolling20": 2.4862914862914867
+    },
+    "lag1_max_abs_diff_vs_q113_freeze": 0,
+    "active_engine_top20": [
+      25,
+      16,
+      38,
+      17,
+      36,
+      1,
+      28,
+      26,
+      27,
+      9,
+      34,
+      12,
+      8,
+      10,
+      21,
+      20,
+      15,
+      39,
+      30,
+      37
+    ],
+    "active_engine_top10": [
+      25,
+      16,
+      38,
+      17,
+      36,
+      1,
+      28,
+      26,
+      27,
+      9
+    ],
+    "active_engine_top5": [
+      25,
+      16,
+      38,
+      17,
+      36
+    ],
+    "outcome": null,
+    "evaluation": "After official 2026-11-11 result, append the observed intersection with immutable active_engine_top20; score descriptively and do not retune."
+  },
+  "limitations": [
+    "The protocol was committed before computation, but the broader SONAR archive has been explored extensively; results remain exploratory.",
+    "Historical Blind OOS is not a virgin holdout.",
+    "The model predicts Top20 hit-count calibration only, not winning-number identities.",
+    "Window 20, thresholds 45/55 and alpha 200 were fixed before computation and not tuned.",
+    "Holm covers four Q115 endpoints only, not the full Q00-Q115 research family.",
+    "The 2026-11-11 freeze is one descriptive observation until the official result is published."
+  ],
+  "next_action": "Await official 2026-11-11 result; score Q112-Q115 freezes without retuning; continue Q60 from 23/200.",
+  "reproducibility": {
+    "analysis_runtime_replay": "PASS",
+    "node20_runner": {
+      "workflow": "Q115 rolling-20 hit-regime replay",
+      "run_id": 42991167922,
+      "conclusion": "success",
+      "node_version": "20.20.2"
+    },
+    "initial_replay_failure_recovered": true,
+    "recovery": "A one-unit floating-point serialization difference at the 12th decimal was found in a log-loss CSV cell; the ledger was canonicalized to 10 decimal places. No model formula, target, score definition or result was changed."
+  }
+}

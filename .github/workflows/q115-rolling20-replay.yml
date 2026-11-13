@@ -1,0 +1,21 @@
+name: Q115 rolling-20 hit-regime replay
+on:
+  push:
+    branches:
+      - research/q115-rolling20-hit-regime-20261111
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Check Q115 runner syntax
+        run: node --check scripts/sonar_q115_rolling20_hit_regime.mjs
+      - name: Recompute and verify Q115 ledger, inference and manifest
+        run: node scripts/sonar_q115_rolling20_hit_regime.mjs --check
