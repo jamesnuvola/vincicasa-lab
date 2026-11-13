@@ -11,6 +11,7 @@ on:
     paths:
       - "scripts/sonar_sequence_agent.py"
       - "scripts/sonar_research_queue.py"
+      - "scripts/sonar_structural_recurrence.py"
       - "scripts/sonar_fast_improvements.py"
       - "scripts/sonar_evolutionary_lab.py"
       - "scripts/sonar_position_regime_residual_lab.py"
@@ -48,6 +49,7 @@ jobs:
           python -m py_compile scripts/sonar_evolutionary_lab.py
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python -m py_compile scripts/sonar_research_queue.py
+          python -m py_compile scripts/sonar_structural_recurrence.py
           node --check scripts/sonar_active_engine_walkforward.mjs
 
       - name: Reconstruct fixed rules walk-forward and update shadow forecasts
@@ -64,6 +66,9 @@ jobs:
 
       - name: Run positional, regime, residual and structural hazard lab
         run: python scripts/sonar_position_regime_residual_lab.py
+
+      - name: Rebuild structural recurrence with legacy-prefix parity audit
+        run: python scripts/sonar_structural_recurrence.py
 
       - name: Validate and sequence the registered research backlog
         run: python scripts/sonar_research_queue.py
