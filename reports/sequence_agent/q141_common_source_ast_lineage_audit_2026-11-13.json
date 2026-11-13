@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141_COMMON_SOURCE_AST_LINEAGE_AUDIT",
+  "status": "REMOTE_GIT_TREE_AND_SOURCE_PREFIXES_VERIFIED",
+  "audit_date": "2026-11-13",
+  "repository": "jamesnuvola/vincicasa-lab",
+  "source_branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+  "source_branch_commit": "6bc727a46c65fecceff3410a7a635e42c62b4af5",
+  "source_tree_sha": "75ff2f7d316b8b974d40a9b6fddbb0b89b3c420a",
+  "remote_git_tree_verification": {
+    "method": "GitHub Git tree API; compare every manifest Git blob SHA-1 and byte size with the remote tree entry",
+    "files_verified": 13,
+    "q90_files_verified": 8,
+    "q7_files_verified": 5,
+    "all_match": true,
+    "files": [
+      {"namespace":"Q90","path":"reports/sequence_agent/q90_typed_ast_catalog_part_00.jsonl.gz","git_blob_sha1":"2c6a51df5d029015fa7b95e80606037ee9e50fc4","bytes":2992420},
+      {"namespace":"Q90","path":"reports/sequence_agent/q90_typed_ast_catalog_part_01.jsonl.gz","git_blob_sha1":"224130ce087664117a8c521a92a1f1d0112a304b","bytes":2979527},
+      {"namespace":"Q90","path":"reports/sequence_agent/q90_typed_ast_catalog_part_02.jsonl.gz","git_blob_sha1":"51f940b4b3a37177a2df91b407897a886bd174cf","bytes":3015800},
+      {"namespace":"Q90","path":"reports/sequence_agent/q90_typed_ast_catalog_part_03.jsonl.gz","git_blob_sha1":"ab763fbeee490b3fae073125f25a372696508a49","bytes":3080997},
+      {"namespace":"Q90","path":"reports/sequence_agent/q90_typed_ast_catalog_part_04.jsonl.gz","git_blob_sha1":"2561c7e8bf0b8b4a4b73c2bb684ae6fbc8742764","bytes":3082498},
+      {"namespace":"Q90","path":"reports/sequence_agent/q90_typed_ast_catalog_part_05.jsonl.gz","git_blob_sha1":"2f4a07db443122d169a14896311e5f5ade6859ba","bytes":2911552},
+      {"namespace":"Q90","path":"reports/sequence_agent/q90_typed_ast_catalog_part_06.jsonl.gz","git_blob_sha1":"74a324274f0f0065989b951b1eda5d8be1168db1","bytes":1681144},
+      {"namespace":"Q90","path":"reports/sequence_agent/q90_typed_ast_import_report_2026-11-12.json","git_blob_sha1":"5c33823615852eac3a7821dca2851e54347599e5","bytes":8987},
+      {"namespace":"Q7","path":"reports/sequence_agent/q7_formula_complexity_walkforward_report_2026-11-12.json","git_blob_sha1":"56c0ce3420e5ac04b6ba279adf665c587d23fee4","bytes":19132},
+      {"namespace":"Q7","path":"reports/sequence_agent/q7_formula_complexity_walkforward_target_ledger_2026-11-12.csv","git_blob_sha1":"025fcfa99dc54913fc9b6660aef172bc7cc3ef96","bytes":685854},
+      {"namespace":"Q7","path":"reports/sequence_agent/q7_typed_ast_catalog_part_00.jsonl.gz","git_blob_sha1":"a9418c193f410db31fdbbf23cf0e4d178799c264","bytes":69097},
+      {"namespace":"Q7","path":"reports/sequence_agent/q7_typed_ast_import_report_2026-11-12.json","git_blob_sha1":"5dbb328ad58f46a7a993f1416f90dff3fb98e917","bytes":2038},
+      {"namespace":"Q7","path":"reports/sequence_agent/q7_typed_ast_snapshot_2026-10-25.jsonl.gz","git_blob_sha1":"d316c62c051dc8f00f309e09e23f6802f398d155","bytes":178611}
+    ]
+  },
+  "source_archives": {
+    "q7": {
+      "source_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+      "archive_git_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+      "draws": 3387,
+      "last_draw_date": "2026-10-24",
+      "formula_count": 1023,
+      "unique_canonical_ast_ids": 1023,
+      "output_type": "quintet_score",
+      "feature_family_count": 10
+    },
+    "q90": {
+      "source_commit": "f552d70eebf060244190889d7156ad739dede613",
+      "archive_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "draws": 3401,
+      "last_draw_date": "2026-11-07",
+      "formula_count": 330429,
+      "unique_canonical_ast_ids": 330429,
+      "output_type": "per_number_score",
+      "feature_namespace": "Q89",
+      "selected_features": 20,
+      "available_features": 59,
+      "formula_type_counts": {
+        "linear_mean": 262599,
+        "pairwise_interaction": 29070,
+        "conditional_gate": 38760
+      }
+    },
+    "q141_current_main": {
+      "archive_git_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+      "draws": 3406,
+      "last_draw_date": "2026-11-12"
+    }
+  },
+  "prefix_reconciliation": {
+    "q7_records_equal_first_3387_q90_records": true,
+    "q90_records_equal_first_3401_main_records": true,
+    "q7_to_q90_additional_draws": 14,
+    "q90_to_main_additional_draws": 5,
+    "method": "Compare ordered CSV data rows after excluding only trailing empty lines; source blob SHA-1 values independently match the pinned source commits.",
+    "note": "The source files have different trailing newline lengths, so the comparison is record-prefix equality, not whole-file byte-prefix equality."
+  },
+  "semantic_compatibility": {
+    "direct_score_comparison_allowed": false,
+    "reason": "Q90 ASTs output per-number scores over 40 candidates; Q7 ASTs output quintet scores over 658,008 combinations. Their feature spaces, prediction units and ranking metrics differ.",
+    "related_but_not_equivalent": [
+      {"q90_concepts":["frequency and lag features"],"q7_families":["number_frequency","sorted_position_frequency"]},
+      {"q90_concepts":["co-occurrence and neighbour interaction features"],"q7_families":["pair_interaction","triple_interaction","quadruple_interaction","exact_quintet_recurrence"]},
+      {"q90_concepts":["gap hazard and gap slope"],"q7_families":["gap_pattern"]},
+      {"q90_concepts":["regime_sum_affinity"],"q7_families":["sum_distribution","odd_count","decade_profile"]}
+    ],
+    "q90_only_concepts":["rank_velocity","rank_consensus","feature_disagreement","EWMA and per-number residual dynamics"],
+    "q7_only_concepts":["exact_quintet_recurrence","sorted-position joint scoring","full gap-vector likelihood"]
+  },
+  "checkpoint_discrepancies": [
+    {
+      "task_id":"Q141-A3",
+      "stored_checkpoint_status":"LOCAL_AST_IMPORT_VERIFIED_PENDING_REMOTE_GIT_READBACK",
+      "new_audit_finding":"All 8 manifest-listed Q90 output blobs match the remote Git tree SHA-1 and byte size."
+    },
+    {
+      "task_id":"Q141-A4_B8",
+      "stored_checkpoint_status":"REMOTE_GIT_READBACK_VERIFIED",
+      "receipt_checkpoint_status":"LOCAL_OUTPUTS_READY_REMOTE_READBACK_PENDING",
+      "new_audit_finding":"All 5 manifest-listed Q7 output blobs match the remote Git tree SHA-1 and byte size; the discrepancy is stale receipt metadata, not missing files."
+    }
+  ],
+  "decision": "Q90 and Q7 AST catalogs are both present and remote-tree verified; source archives are nested exact prefixes. They must remain separate output types until a common-cutoff replay with type-specific metrics is implemented.",
+  "next_action": "Build a common-source AST evaluator with shared target cutoffs, strict-prior feature recomputation, and separate per-number and quintet scoring endpoints. Do not combine raw ranks or promote either AST namespace."
+}
