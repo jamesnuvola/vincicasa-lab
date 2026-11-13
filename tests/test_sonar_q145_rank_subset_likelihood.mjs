@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import {
   parseCsv, gitBlobSha1, choose, elementarySymmetric, rankWeights,
   marginalInclusionProbabilities, scoreRankModel, exactSignFlipGreater,
-  exactSignFlipTwoSided, eProcessVille, holmAdjust
+  exactSignFlipTwoSided, eProcessVille, holmAdjust, validateShadowTemporalRow
 } from "../scripts/sonar_q145_rank_subset_likelihood.mjs";
 
 const csv = 'a,b,c\n1,"two, with comma",3\n4,"say ""hi""",6\n';
@@ -48,4 +48,8 @@ assert.equal(adjusted.a, 0.03);
 assert.equal(adjusted.c, 0.06);
 assert.equal(adjusted.b, 0.06);
 
-console.log("Q145_TESTS_OK 23/23");
+assert.equal(validateShadowTemporalRow({ target_date: "2026-11-13", history_cutoff: "2026-11-12", frozen_at: "2026-11-13T19:00:00+01:00" }), true);
+assert.equal(validateShadowTemporalRow({ target_date: "2026-11-14", history_cutoff: "2026-11-13", frozen_at: "2026-11-13T19:00:00+01:00" }), false);
+assert.equal(validateShadowTemporalRow({ target_date: "2026-11-14", history_cutoff: "2026-11-13", frozen_at: "2026-11-13T20:05:00+01:00" }), true);
+
+console.log("Q145_TESTS_OK 26/26");
