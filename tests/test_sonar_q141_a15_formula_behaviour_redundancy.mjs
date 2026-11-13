@@ -1,0 +1,16 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import {selectMasks,averageRanks,spearman,completeLinkage,splitRows,readInputs,buildClusters,clusterWeights,rankPercentile,bootstrapCI,holmAdjust,analyze} from "../scripts/sonar_q141_a15_formula_behaviour_redundancy.mjs";
+test("deterministic stratified sample has 128 unique masks and registered quotas",()=>{const x=selectMasks();assert.equal(x.masks.length,128);assert.equal(new Set(x.masks).size,128);assert.deepEqual(x.quotas,[5,10,16,23,22,22,17,10,2,1]);});
+test("average ranks use mid-ranks for ties",()=>{assert.deepEqual(Array.from(averageRanks([1,1,3,4,4])),[1.5,1.5,3,4.5,4.5]);});
+test("Spearman detects perfect positive and negative monotonicity",()=>{assert.ok(Math.abs(spearman([1,2,3,4],[2,4,6,8])-1)<1e-12);assert.ok(Math.abs(spearman([1,2,3,4],[8,6,4,2])+1)<1e-12);});
+test("complete linkage prevents single-link chaining",()=>{const c=[[1,.95,.80],[.95,1,.95],[.80,.95,1]],x=completeLinkage(c,[1,2,3],.90);assert.equal(x.length,2);assert.deepEqual(x.map(a=>a.length).sort(),[1,2]);});
+test("rank percentile has exact uniform endpoints",()=>{assert.equal(rankPercentile(1),0);assert.equal(rankPercentile(658008),1);});
+test("chronological split boundaries are exact",()=>{const rows=Array.from({length:3386},(_,i)=>({index:i+1})),s=splitRows(rows);assert.equal(s.discovery.length,2031);assert.equal(s.validation.length,677);assert.equal(s.blind.length,678);assert.equal(s.discovery.at(-1).index,2031);assert.equal(s.validation[0].index,2032);assert.equal(s.blind[0].index,2709);});
+test("pinned panel and archive reconcile all 3386 strict-prior targets",()=>{const x=readInputs();assert.equal(x.rows.length,3386);assert.equal(x.rows[0].index,1);assert.equal(x.rows.at(-1).index,3386);assert.equal(x.rows[0].cutoff,x.manifest.source.archive_first_date);});
+test("cluster weights sum to one and clusters receive equal total weight",()=>{const w=clusterWeights([[0,1],[2],[3,4,5]],6);assert.ok(Math.abs(w.reduce((a,b)=>a+b,0)-1)<1e-12);assert.ok(Math.abs(w[0]+w[1]-1/3)<1e-12);assert.ok(Math.abs(w[2]-1/3)<1e-12);});
+test("bootstrap is deterministic for a fixed seed",()=>{const v=Array.from({length:80},(_,i)=>Math.sin(i/7));assert.deepEqual(bootstrapCI(v,1234),bootstrapCI(v,1234));});
+test("Holm adjustment is monotone and bounded",()=>{assert.deepEqual(holmAdjust([.04,.01,.03]),[.06,.03,.06]);});
+test("future suffix mutation cannot change discovery clusters",()=>{const x=readInputs(),s=splitRows(x.rows),a=buildClusters(s.discovery,x.masks).clusters,mutated=x.rows.map(r=>r.index>2031?{...r,ranks:r.ranks.map(v=>658009-v)}:r),b=buildClusters(splitRows(mutated).discovery,x.masks).clusters;assert.deepEqual(b,a);});
+test("cluster builder is deterministic",()=>{const x=readInputs(),s=splitRows(x.rows),a=buildClusters(s.discovery,x.masks),b=buildClusters(s.discovery,x.masks);assert.deepEqual(a.clusters,b.clusters);assert.deepEqual(a.medoids,b.medoids);});
+test("A15 decision remains research-only and does not claim lift",()=>{const x=readInputs(),r=analyze(x.rows,x.masks,x.manifest);assert.equal(r.report.decision,"NO_CLUSTER_BALANCED_RANK_LIFT_DEMONSTRATED");assert.ok(r.report.cluster_summary.cluster_count>90);assert.ok(r.report.blind_primary_inference.cluster_balanced_vs_equal_formula.holm_p>=.05);});
