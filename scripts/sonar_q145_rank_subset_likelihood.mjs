@@ -412,33 +412,6 @@ function buildArtifacts() {
   };
   return { report, reportJson, reportMd, ledgerText, freezeJson, checkpointJson, manifestJson: JSON.stringify(manifest, null, 2) + "\n" };
 }
-function renderMarkdown(r) {
-  const f = x => Number(x).toFixed(6);
-  const lines = ["# Q145 — Rank-to-subset likelihood calibration", "",
-    "**Decision:** no historical predictive lift demonstrated; prospective freeze pending.", "",
-    "## Method", "- Fixed utility: u(r)=(21-r)/20 for ranks 1..20; zero outside Top20; temperature T=1.",
-    "- Exact unordered 5-of-40 PMF: P(S)=product(w_i)/e5(w), w_i=exp(u_i).",
-    "- Primary endpoint: complete-quintet log-likelihood gain versus uniform. Secondary: marginal-inclusion Brier gain versus 0.125.", "",
-    "## Walk-forward results", "| Split | Model | n | Mean log-gain | Mean Brier gain |", "|---|---|---:|---:|---:|"];
-  for (const split of ["discovery", "validation", "blind_oos"]) for (const model of ["borda", "inclusion", "app"]) {
-    const s = r.splits[split][model];
-    if (s) lines.push("| " + split + " | " + model + " | " + s.n + " | " + f(s.mean_log_gain) + " | " + f(s.mean_brier_gain) + " |");
-  }
-  lines.push("", "## Historical Blind OOS diagnostics (7 dates)", "| Diagnostic | Raw p | Holm p |", "|---|---:|---:|");
-  for (const [key, p] of Object.entries(r.blind_inference.raw_p_values)) lines.push("| " + key + " | " + f(p) + " | " + f(r.blind_inference.holm_adjusted_p_values[key]) + " |");
-  lines.push("", "All historical inference is exploratory, not virgin confirmation: this PMF transformation was specified after Q144 historical outcomes had been inspected. Sign-flip tests assume symmetry/exchangeability. Holm covers only the five registered Q145 diagnostics, not all SONAR research.", "",
-    "## Prospective 2026-11-13 freeze", "- Borda modal quintet: **" + r.prospective_freeze.borda_modal_top5.join(" · ") + "**",
-    "- Equal-type inclusion modal quintet: **" + r.prospective_freeze.inclusion_modal_top5.join(" · ") + "**",
-    "- Cutoff 2026-11-12; frozen 2026-11-13 at 19:10:07 Europe/Rome; outcome null.",
-    "- The 2026-11-12 repository row has an unresolved discrepancy between official archive pages; the cutoff is preserved but not independently source-confirmed.", "",
-    "## Integrity and limits", "- 31 historical target rows reconciled against the pinned canonical archive.",
-    "- 1,364 shadow rows checked for strict-prior cutoffs and pre-draw timestamps; 43 pending rows remain outcome-free.",
-    "- 42 component forecasts per completed target (24 family / 12 pair / 6 chain); APP is an external comparator.",
-    "- The PMF is normalized over all 658,008 quintets; this does not establish calibration or predictive power.",
-    "- Seven historical Blind OOS dates are insufficient for confirmation. No model promotion.", "",
-    "## Next action", "Keep both probability forecasts frozen and append-only. Reconcile only after official publication. Accumulate at least 100 consecutive prospective targets without retuning.");
-  return lines.join("\n") + "\n";
-}
 export function verifyArtifacts() {
   const b = buildArtifacts();
   const expected = {
