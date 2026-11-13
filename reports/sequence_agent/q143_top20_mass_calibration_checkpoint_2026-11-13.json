@@ -1,17 +1,25 @@
 {
   "schema_version": "1.1",
   "experiment_id": "Q143",
-  "status": "REMOTE_GIT_READBACK_VERIFIED_CI_SUCCESS",
+  "status": "REMOTE_GIT_READBACK_VERIFIED_Q143_CI_SUCCESS_FULL_PIPELINE_PENDING",
   "base_main_commit": "4a55fb7da216bd3850b79f862bf10b2cbcafa968",
   "branch": "research/q143-top20-score-mass-calibration-20261113",
-  "branch_head_verified": "76147badad4bf1a13720914b2a2af4b0cd233df3",
+  "branch_head_verified": "b64d4c5c05adaf0e15b69ef42762a4c6ce329fb3",
   "ci": {
-    "run_id": 43468134375,
-    "conclusion": "success",
-    "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43468134375",
+    "main_full_pipeline_success_on_code_commit": 43468134375,
+    "q143_pr_check": {
+      "run_id": 43468970816,
+      "status": "success",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43468970816"
+    },
+    "full_pipeline_latest": {
+      "push_run_id": 43468958363,
+      "pull_request_run_id": 43468970745,
+      "status": "in_progress"
+    },
+    "q143_unit_tests": "8/8 passed",
     "q143_replay": "WRITE_OK 2806 targets",
-    "unit_tests": "8/8 passed",
-    "application_build": "success"
+    "application_build": "success on code commit 8da7499; latest read-only CI rerun pending"
   },
   "source_shas": {
     "archive": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
@@ -25,7 +33,7 @@
     "scripts/sonar_q143_top20_mass_calibration.mjs": "43e8fd0e55e52f52d434ea6aac8dfb9b81b49aa6",
     "tests/test_sonar_q143_top20_mass_calibration.mjs": "9402e80fdb353f07e0931620cfc84dee4feb222d",
     ".github/workflows/q143-top20-mass-calibration.yml": "3b57c9e74f5d4904a841ff19c4430612c027cc4c",
-    ".github/workflows/ci.yml": "94b2382705c877f0365a848530a56d1d93b56e1f",
+    ".github/workflows/ci.yml": "6dcd4a57b6a0daa6daccbec85e150766feab6b2a",
     "reports/sequence_agent/q143_top20_mass_calibration_protocol_2026-11-13.md": "77e8028113315433b3f7451c877b0dd59f05f793",
     "reports/sequence_agent/q143_top20_mass_calibration_report_2026-11-13.md": "88f371a18f43427120e772a3c636dda9f0ec5c5c",
     "reports/sequence_agent/q143_top20_mass_calibration_report_2026-11-13.json": "a7b76725dc0d3d41041390b0ad0b5806a6e90fd3",
