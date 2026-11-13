@@ -1,0 +1,27 @@
+name: Q130 family-wise Top-k depth replay
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'reports/sequence_agent/q130_*'
+      - 'scripts/sonar_q130_familywise_topk_depth.mjs'
+      - '.github/workflows/q130-familywise-topk-depth.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Recompute Q130 and verify persisted artifacts
+        run: node scripts/sonar_q130_familywise_topk_depth.mjs --check

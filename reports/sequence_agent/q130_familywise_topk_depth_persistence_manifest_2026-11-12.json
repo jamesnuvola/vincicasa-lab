@@ -1,0 +1,53 @@
+{
+  "experiment": "Q130",
+  "status": "PERSISTED_ARTIFACTS",
+  "source": {
+    "path": "reports/sequence_agent/historical_rule_ledger.csv",
+    "git_blob_sha": "553e08a3c7a0aabd092d3977b75bf959e90b8b3b",
+    "rows": 134568,
+    "targets": 3204
+  },
+  "entries": [
+    {
+      "path": "reports/sequence_agent/q130_familywise_topk_depth_protocol_2026-11-12.json",
+      "git_blob_sha": "99520c283327d8e8f069d0040f1c32be53b6ac0e",
+      "bytes_utf8": 4312
+    },
+    {
+      "path": "reports/sequence_agent/q130_familywise_topk_depth_report_2026-11-12.json",
+      "git_blob_sha": "490c560199bd234c27c83341041b6a5b6714fd7e",
+      "bytes_utf8": 9488
+    },
+    {
+      "path": "reports/sequence_agent/q130_familywise_topk_depth_target_ledger_2026-11-12.csv",
+      "git_blob_sha": "95f840692c6706a5e5df424b582ce4d72ddf1c50",
+      "bytes_utf8": 349794
+    },
+    {
+      "path": "reports/sequence_agent/q130_familywise_topk_depth_validation_2026-11-12.json",
+      "git_blob_sha": "0bada2cb48342e0d93310de58e1952b404b71459",
+      "bytes_utf8": 2272
+    },
+    {
+      "path": "reports/sequence_agent/q130_familywise_topk_depth_checkpoint_2026-11-12.md",
+      "git_blob_sha": "2d6acf6454a23d3536f249a6c61e228a4e7f9397",
+      "bytes_utf8": 2135
+    },
+    {
+      "path": "reports/sequence_agent/q130_contest_315_provisional_observation_2026-11-11.json",
+      "git_blob_sha": "02011d56d326a9a67cb8a22ff3db55f46e13c826",
+      "bytes_utf8": 3595
+    },
+    {
+      "path": "scripts/sonar_q130_familywise_topk_depth.mjs",
+      "git_blob_sha": "1cecb5e8b1da00e6ab38d46c54f6e3679c9345bb",
+      "bytes_utf8": 11545
+    },
+    {
+      "path": ".github/workflows/q130-familywise-topk-depth.yml",
+      "git_blob_sha": "066aa858d80a756fbdd68dd24c12dd9655d905c3",
+      "bytes_utf8": 661
+    }
+  ],
+  "verification_rule": "Node 20 recomputes the strict-prior Top5/Top10/Top20 family-wise maximum walk-forward using the pinned historical_rule_ledger.csv, 1,000 unbiased conditional 5-of-40 randomizations per target with shared draws across K, 10,000 paired circular block-bootstrap replicates (block 20), and Holm correction across three Blind OOS endpoints. It compares the full target ledger and numeric report fields, checks the provisional contest 315 exact family-wise tails separately without canonicalizing that result, and verifies each entry's Git blob SHA plus UTF-8 byte count."
+}
