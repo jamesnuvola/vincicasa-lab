@@ -54,7 +54,28 @@ jobs:
           old="def ridge_predict(model,x):\n    mean,scale,coef=model; z=(np.asarray(x,float)-mean)/scale\n    return np.clip(np.column_stack([np.ones(len(z)),z])@coef,0,1)"
           new="def ridge_predict(model,x):\n    mean,scale,coef=model; z=(np.asarray(x,float)-mean)/scale\n    return np.column_stack([np.ones(len(z)),z])@coef"
           if old not in code: raise SystemExit('expected residual-clipping source block not found')
-          target.write_text(code.replace(old,new))
+          code=code.replace(old,new)
+          oldq='if q90r.get("task_id")!="Q141-B7" or q90r.get("formula_universe",{}).get("sample_count")!=700 or q90r.get("formula_universe",{}).get("sample_formula_ids_sha256")!=SAMPLE_HASH: raise RuntimeError("Q90 family source report mismatch")'
+          newq='if q90r.get("task_id")!="Q141-B7" or q90r.get("formula_universe",{}).get("sample_count")!=700 or q90r.get("formula_universe",{}).get("sample_formula_ids_sha256")!=SAMPLE_HASH or q90r.get("walkforward",{}).get("strict_prior") is not True or q90r.get("source",{}).get("feature_matrix_sha256")!=Q90_MATRIX: raise RuntimeError("Q90 family source report/strict-prior lineage mismatch")'
+          if oldq not in code: raise SystemExit('expected Q90 source validation block not found')
+          code=code.replace(oldq,newq)
+          oldc='    if not np.isfinite(d).all() or not np.isfinite(base[100:]).all(): raise RuntimeError("missing D5 features or C5 predictions")'
+          newc='''    if not np.isfinite(d).all() or not np.isfinite(base[100:]).all(): raise RuntimeError("missing D5 features or C5 predictions")
+          c5_metric_replay_max=0.0
+          for split in ("discovery","validation","blind_oos"):
+              ix=np.asarray([i for i in range(100,len(q7)) if q7[i]["split"]==split],dtype=int)
+              observed=summary(y[ix],base[ix]); expected=c5r["metrics_by_split"][split]["m2_q7_q80_q90_ridge"]
+              for field,ef in (("mae","mae"),("rmse","rmse"),("mean_error","mean_prediction_error")):
+                  err=abs(observed[field]-float(expected[ef])); c5_metric_replay_max=max(c5_metric_replay_max,err)
+                  if err>1e-12: raise RuntimeError(f"C5 report replay mismatch {split}/{field}: {err}")
+              if observed["targets"]!=int(expected["targets"]): raise RuntimeError("C5 report replay target count mismatch")'''
+          if oldc not in code: raise SystemExit('expected C5 replay insertion point not found')
+          code=code.replace(oldc,newc)
+          oldi='"c5_baseline_is_strict_prior_and_frozen":True}'
+          newi='"c5_baseline_is_strict_prior_and_frozen":True,"c5_baseline_report_replay_max_abs_error":c5_metric_replay_max}'
+          if oldi not in code: raise SystemExit('expected C5 integrity field not found')
+          code=code.replace(oldi,newi)
+          target.write_text(code)
           PY
           cat > tests/test_sonar_q141_d5_formula_behaviour_diversity.py <<'PY'
           import unittest, numpy as np
