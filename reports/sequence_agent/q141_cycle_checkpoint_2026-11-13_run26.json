@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "cycle": 26,
+  "date": "2026-11-13",
+  "status": "REMOTE_GIT_READBACK_VERIFIED_MANUAL_FINAL_CI_RECHECK_PENDING",
+  "branch": "research/q141-d3-effective-rank-family-state-20261113",
+  "pull_request": 92,
+  "experiment": {
+    "id": "Q141-D3",
+    "decision": "NO_EFFECTIVE_RANK_CONDITIONAL_LIFT_DEMONSTRATED",
+    "targets": 3351,
+    "evaluated_targets": 3251,
+    "split_counts": {"discovery":1911,"validation":670,"blind_oos":670},
+    "warmup": 100,
+    "primary_effect_high_minus_low": -0.0002941494503927665,
+    "primary_ci95": [-0.0018326772033397285,0.0012386836150861964],
+    "primary_circular_shift_p": 0.6795160241987901,
+    "primary_holm_p": 1.0,
+    "acceptance_threshold": 0.005,
+    "test_count": 12,
+    "double_replay_byte_identical": true,
+    "historical_blind_oos_is_virgin": false
+  },
+  "workflow_runs": {
+    "prereplay_success": 43428724833,
+    "persisted_outputs_and_checkpoint": 43429685137,
+    "corrected_full_hash_readback_recheck": 43429915802,
+    "corrected_recheck_status_at_checkpoint": "IN_PROGRESS"
+  },
+  "remote_files": {
+    "report": "reports/sequence_agent/q141_d3_effective_rank_family_state_report_2026-11-13.json",
+    "ledger": "reports/sequence_agent/q141_d3_effective_rank_family_state_target_ledger_2026-11-13.csv",
+    "manifest": "reports/sequence_agent/q141_d3_effective_rank_family_state_manifest_2026-11-13.json",
+    "checkpoint": "reports/sequence_agent/q141_d3_effective_rank_family_state_checkpoint_2026-11-13.json",
+    "readback_receipt": "reports/sequence_agent/q141_d3_effective_rank_family_state_remote_readback_2026-11-13.json",
+    "manifest_files_verified": 3,
+    "receipt_files_verified": 5,
+    "manual_git_blob_and_byte_checks": "5/5 verified"
+  },
+  "formula_atlas": {
+    "q90_ast_count": 330429,
+    "q90_output_type": "per_number_score",
+    "q90_source_draws": 3401,
+    "q7_ast_count": 1023,
+    "q7_output_type": "quintet_score",
+    "q7_source_draws": 3387,
+    "main_source_draws": 3406,
+    "remote_ast_git_tree_files_verified": 13,
+    "source_prefix_chain_verified": true,
+    "direct_raw_score_pooling_allowed": false
+  },
+  "prospective": {
+    "b11_frozen_predictions": 1,
+    "b11_reconciled_outcomes": 0,
+    "b11_hash": "009f56ae414852c223a81a7d209e17bc4f94076b72556c87d15273001470a1f3",
+    "q60_valid_complete_targets": 25,
+    "q60_required": 200,
+    "q60_promotion_allowed": false
+  },
+  "governance": {
+    "protected_prs_6_7_8_untouched": true,
+    "prs_89_90_91_untouched": true,
+    "pr_92_draft": true,
+    "automatic_merge": false,
+    "engine_promoted": false,
+    "canonical_archive_data_changed": false,
+    "temporary_main_report_add_delete": true,
+    "main_archive_blob_unchanged": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb"
+  },
+  "next_action": "Implement a common-source typed-AST evaluator using identical strict-prior target cutoffs, with separate per-number and quintet endpoints and baselines; then map semantic redundancy, complementarity and pre-target family regime changes. Continue B11/Q60 append-only without interim peeking."
+}
