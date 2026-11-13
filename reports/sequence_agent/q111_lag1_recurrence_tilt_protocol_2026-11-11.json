@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q111",
+  "title": "Lag-1 exact subset recurrence tilt",
+  "preregistered_at_local": "2026-11-11T05:42:00+01:00",
+  "status": "PREREGISTERED_RESEARCH_ONLY",
+  "source": {
+    "pinned_main_commit": "161273b72804c2b6e815e41f20b90dabfea4fdfa",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10",
+    "canonical_outcome_314": [
+      1,
+      7,
+      11,
+      22,
+      25
+    ]
+  },
+  "hypothesis": "The immediately previous draw may alter the probability of the next 5-number subset through a common recurrence/avoidance tilt, beyond the exact uniform 5/40 null. A positive beta favors repeats; a negative beta favors avoidance.",
+  "definition": {
+    "lag_overlap": "K_t = |D_t intersect D_(t-1)|",
+    "exact_null": "q0(k)=C(5,k) C(35,5-k) / C(40,5), k=0..5",
+    "alternative": "P_beta(D_t | D_(t-1)) proportional to exp(beta * K_t) over all 658008 5-subsets",
+    "normalizer": "Z(beta)=sum_{k=0..5} C(5,k) C(35,5-k) exp(beta*k)",
+    "per_subset_log_gain": "beta*K_t - log(Z(beta)/C(40,5))",
+    "overlap_pmf": "q_beta(k)=q0(k)*exp(beta*k) / sum_j q0(j)*exp(beta*j)"
+  },
+  "models": {
+    "M0": "Uniform over all 5-subsets; exact null beta=0.",
+    "M1": "One-parameter lag-1 recurrence exponential tilt.",
+    "beta_grid": [
+      -1,
+      -0.5,
+      -0.25,
+      -0.1,
+      0,
+      0.1,
+      0.25,
+      0.5,
+      1
+    ],
+    "selection": "Select beta maximizing mean exact subset log-likelihood gain on Validation only; ties prefer beta nearest zero. No selection on Blind OOS.",
+    "no_other_parameters": true
+  },
+  "walk_forward": {
+    "min_history_before_target": 300,
+    "first_target_index_zero_based": 301,
+    "expected_targets": 3103,
+    "chronological_splits": {
+      "discovery": 1861,
+      "validation": 620,
+      "historical_blind_oos": 622
+    },
+    "cutoff_rule": "For target index t, use only D_(t-1) as the state. The target D_t is scored after its forecast distribution is fixed. No target or later draw enters the forecast.",
+    "interpretation": "Historical Blind OOS is not a virgin holdout because prior SONAR research has repeatedly inspected this archive."
+  },
+  "endpoints": {
+    "primary": "Exact subset log-likelihood gain versus uniform, positive favors M1.",
+    "secondary": "Multiclass Brier gain for the six-category overlap PMF q_beta versus q0, positive favors M1.",
+    "inference": {
+      "method": "Non-overlapping chronological blocks of 20 consecutive Blind OOS target gains; retain the final shorter block. Independently multiply each block sum by a Rademacher sign.",
+      "block_length": 20,
+      "replicates": 50000,
+      "seed": 20261111,
+      "alternative": "positive mean gain"
+    },
+    "bootstrap": {
+      "method": "Circular moving-block bootstrap",
+      "block_length": 20,
+      "replicates": 10000,
+      "seed": 20261112,
+      "interval": "percentile 95%"
+    },
+    "multiple_testing": "Holm across the two selected-model Blind OOS endpoints; separately report Holm across the eight nonzero beta-grid primary log-score tests on Blind OOS."
+  },
+  "guardrails": [
+    "Protocol committed before outcome scoring.",
+    "No future target or future draw is used to construct any forecast.",
+    "Validation alone selects beta; Blind OOS is not used for tuning.",
+    "All 658008 five-number subsets are represented by the exact overlap normalizer.",
+    "No subgroup search or post-hoc beta-grid expansion.",
+    "Historical Blind OOS is exploratory, not an independent prospective holdout.",
+    "No production engine change, no promotion, no automatic merge."
+  ],
+  "decision_rule": "Demonstrate incremental lift only if the selected beta is nonzero, its Blind OOS primary gain is positive, the one-sided block test remains significant after Holm correction across the two preregistered endpoints, and independent prospective evidence is subsequently accumulated."
+}

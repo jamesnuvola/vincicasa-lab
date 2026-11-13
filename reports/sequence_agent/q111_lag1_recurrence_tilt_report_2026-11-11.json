@@ -1,0 +1,464 @@
+{
+  "experiment_id": "Q111",
+  "title": "Lag-1 exact subset recurrence tilt",
+  "generated_at_local": "2026-11-11T05:42:00+01:00",
+  "decision": "NO_LAG1_RECURRENCE_TILT_SELECTED_ON_VALIDATION",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "definition": {
+    "lag_overlap": "K_t = |D_t intersect D_(t-1)|",
+    "exact_null": "q0(k)=C(5,k) C(35,5-k) / C(40,5), k=0..5",
+    "alternative": "P_beta(D_t | D_(t-1)) proportional to exp(beta * K_t) over all 658008 5-subsets",
+    "normalizer": "Z(beta)=sum_{k=0..5} C(5,k) C(35,5-k) exp(beta*k)",
+    "per_subset_log_gain": "beta*K_t - log(Z(beta)/C(40,5))",
+    "overlap_pmf": "q_beta(k)=q0(k)*exp(beta*k) / sum_j q0(j)*exp(beta*j)"
+  },
+  "model": {
+    "null": "Uniform over all 5-subsets",
+    "alternative": "P_beta(D|previous) proportional to exp(beta * |D intersect previous|)",
+    "beta_grid": [
+      -1,
+      -0.5,
+      -0.25,
+      -0.1,
+      0,
+      0.1,
+      0.25,
+      0.5,
+      1
+    ],
+    "selected_beta_on_validation": 0,
+    "validation_selection": [
+      {
+        "beta": 0,
+        "mean_log_gain": 0
+      },
+      {
+        "beta": 0.1,
+        "mean_log_gain": -0.000325086349
+      },
+      {
+        "beta": -0.1,
+        "mean_log_gain": -0.004583089413
+      },
+      {
+        "beta": 0.25,
+        "mean_log_gain": -0.010655059827
+      },
+      {
+        "beta": -0.25,
+        "mean_log_gain": -0.02003154479
+      },
+      {
+        "beta": 0.5,
+        "mean_log_gain": -0.056566272812
+      },
+      {
+        "beta": -0.5,
+        "mean_log_gain": -0.06632490906
+      },
+      {
+        "beta": -1,
+        "mean_log_gain": -0.221574790598
+      },
+      {
+        "beta": 1,
+        "mean_log_gain": -0.271996068934
+      }
+    ]
+  },
+  "walk_forward": {
+    "targets": 3103,
+    "first_target_index_zero_based": 301,
+    "split_sizes": {
+      "discovery": 1861,
+      "validation": 620,
+      "historical_blind_oos": 622
+    },
+    "cutoff": "previous draw only; strict prior"
+  },
+  "segment_metrics": {
+    "discovery": {
+      "selected_beta": 0,
+      "targets": 1861,
+      "mean_overlap": 0.62815690489,
+      "mean_exact_subset_log_gain": 0,
+      "mean_overlap_pmf_brier_gain": 0
+    },
+    "validation": {
+      "selected_beta": 0,
+      "targets": 620,
+      "mean_overlap": 0.646774193548,
+      "mean_exact_subset_log_gain": 0,
+      "mean_overlap_pmf_brier_gain": 0
+    },
+    "blind_oos": {
+      "selected_beta": 0,
+      "targets": 622,
+      "mean_overlap": 0.606109324759,
+      "mean_exact_subset_log_gain": 0,
+      "mean_overlap_pmf_brier_gain": 0
+    }
+  },
+  "beta_grid_segment_metrics": {
+    "discovery": [
+      {
+        "beta": -1,
+        "mean_log_gain": -0.202957501939,
+        "mean_brier_gain": -0.10152827237
+      },
+      {
+        "beta": -0.5,
+        "mean_log_gain": -0.057016264731,
+        "mean_brier_gain": -0.029476769889
+      },
+      {
+        "beta": -0.25,
+        "mean_log_gain": -0.015377222625,
+        "mean_brier_gain": -0.007513635901
+      },
+      {
+        "beta": -0.1,
+        "mean_log_gain": -0.002721360547,
+        "mean_brier_gain": -0.00108991309
+      },
+      {
+        "beta": 0,
+        "mean_log_gain": 0,
+        "mean_brier_gain": 0
+      },
+      {
+        "beta": 0.1,
+        "mean_log_gain": -0.002186815215,
+        "mean_brier_gain": -0.001595341554
+      },
+      {
+        "beta": 0.25,
+        "mean_log_gain": -0.015309381992,
+        "mean_brier_gain": -0.009124859481
+      },
+      {
+        "beta": 0.5,
+        "mean_log_gain": -0.065874917142,
+        "mean_brier_gain": -0.035110908842
+      },
+      {
+        "beta": 1,
+        "mean_log_gain": -0.290613357592,
+        "mean_brier_gain": -0.130237069398
+      }
+    ],
+    "validation": [
+      {
+        "beta": -1,
+        "mean_log_gain": -0.221574790598,
+        "mean_brier_gain": -0.12789427418
+      },
+      {
+        "beta": -0.5,
+        "mean_log_gain": -0.06632490906,
+        "mean_brier_gain": -0.043077266515
+      },
+      {
+        "beta": -0.25,
+        "mean_log_gain": -0.02003154479,
+        "mean_brier_gain": -0.014228502511
+      },
+      {
+        "beta": -0.1,
+        "mean_log_gain": -0.004583089413,
+        "mean_brier_gain": -0.003724201123
+      },
+      {
+        "beta": 0,
+        "mean_log_gain": 0,
+        "mean_brier_gain": 0
+      },
+      {
+        "beta": 0.1,
+        "mean_log_gain": -0.000325086349,
+        "mean_brier_gain": 0.000930018783
+      },
+      {
+        "beta": 0.25,
+        "mean_log_gain": -0.010655059827,
+        "mean_brier_gain": -0.003093157941
+      },
+      {
+        "beta": 0.5,
+        "mean_log_gain": -0.056566272812,
+        "mean_brier_gain": -0.024271268069
+      },
+      {
+        "beta": 1,
+        "mean_log_gain": -0.271996068934,
+        "mean_brier_gain": -0.115067916014
+      }
+    ],
+    "blind_oos": [
+      {
+        "beta": -1,
+        "mean_log_gain": -0.180909921808,
+        "mean_brier_gain": -0.10100825289
+      },
+      {
+        "beta": -0.5,
+        "mean_log_gain": -0.045992474666,
+        "mean_brier_gain": -0.028971521126
+      },
+      {
+        "beta": -0.25,
+        "mean_log_gain": -0.009865327592,
+        "mean_brier_gain": -0.007173209005
+      },
+      {
+        "beta": -0.1,
+        "mean_log_gain": -0.000516602534,
+        "mean_brier_gain": -0.000928830215
+      },
+      {
+        "beta": 0,
+        "mean_log_gain": 0,
+        "mean_brier_gain": 0
+      },
+      {
+        "beta": 0.1,
+        "mean_log_gain": -0.004391573228,
+        "mean_brier_gain": -0.001794185177
+      },
+      {
+        "beta": 0.25,
+        "mean_log_gain": -0.020821277025,
+        "mean_brier_gain": -0.009700907488
+      },
+      {
+        "beta": 0.5,
+        "mean_log_gain": -0.076898707207,
+        "mean_brier_gain": -0.036552554196
+      },
+      {
+        "beta": 1,
+        "mean_log_gain": -0.312660937723,
+        "mean_brier_gain": -0.134373129146
+      }
+    ]
+  },
+  "blind_oos_inference": {
+    "selected_beta": 0,
+    "exact_subset_log_gain": {
+      "observed_mean": 0,
+      "blocks": 32,
+      "p_value": 1,
+      "replicates": 50000,
+      "seed": 20261111,
+      "bootstrap_95_ci": {
+        "lower": 0,
+        "upper": 0,
+        "replicates": 10000,
+        "seed": 20261112,
+        "block_length": 20
+      }
+    },
+    "overlap_pmf_brier_gain": {
+      "observed_mean": 0,
+      "blocks": 32,
+      "p_value": 1,
+      "replicates": 50000,
+      "seed": 20261113,
+      "bootstrap_95_ci": {
+        "lower": 0,
+        "upper": 0,
+        "replicates": 10000,
+        "seed": 20261114,
+        "block_length": 20
+      }
+    },
+    "selected_model_holm_adjusted_p": [
+      1,
+      1
+    ],
+    "beta_grid_log_gain_tests": [
+      {
+        "beta": -1,
+        "observed_mean": -0.180909921808,
+        "blocks": 32,
+        "p_value": 1,
+        "replicates": 50000,
+        "seed": 20261111,
+        "p_holm": 1
+      },
+      {
+        "beta": -0.5,
+        "observed_mean": -0.045992474666,
+        "blocks": 32,
+        "p_value": 0.997720045599,
+        "replicates": 50000,
+        "seed": 20261161,
+        "p_holm": 1
+      },
+      {
+        "beta": -0.25,
+        "observed_mean": -0.009865327592,
+        "blocks": 32,
+        "p_value": 0.903541929161,
+        "replicates": 50000,
+        "seed": 20261186,
+        "p_holm": 1
+      },
+      {
+        "beta": -0.1,
+        "observed_mean": -0.000516602534,
+        "blocks": 32,
+        "p_value": 0.564128717426,
+        "replicates": 50000,
+        "seed": 20261201,
+        "p_holm": 1
+      },
+      {
+        "beta": 0.1,
+        "observed_mean": -0.004391573228,
+        "blocks": 32,
+        "p_value": 0.932581348373,
+        "replicates": 50000,
+        "seed": 20261221,
+        "p_holm": 1
+      },
+      {
+        "beta": 0.25,
+        "observed_mean": -0.020821277025,
+        "blocks": 32,
+        "p_value": 0.996400071999,
+        "replicates": 50000,
+        "seed": 20261236,
+        "p_holm": 1
+      },
+      {
+        "beta": 0.5,
+        "observed_mean": -0.076898707207,
+        "blocks": 32,
+        "p_value": 0.9999800004,
+        "replicates": 50000,
+        "seed": 20261261,
+        "p_holm": 1
+      },
+      {
+        "beta": 1,
+        "observed_mean": -0.312660937723,
+        "blocks": 32,
+        "p_value": 1,
+        "replicates": 50000,
+        "seed": 20261311,
+        "p_holm": 1
+      }
+    ],
+    "beta_grid_holm_family_size": 8
+  },
+  "observed_overlap_by_segment": {
+    "discovery": {
+      "targets": 1861,
+      "mean_overlap": 0.62815690489,
+      "counts": [
+        923,
+        724,
+        198,
+        15,
+        1,
+        0
+      ]
+    },
+    "validation": {
+      "targets": 620,
+      "mean_overlap": 0.646774193548,
+      "counts": [
+        290,
+        265,
+        59,
+        6,
+        0,
+        0
+      ]
+    },
+    "blind_oos": {
+      "targets": 622,
+      "mean_overlap": 0.606109324759,
+      "counts": [
+        311,
+        246,
+        64,
+        1,
+        0,
+        0
+      ]
+    }
+  },
+  "exact_null_overlap_pmf": [
+    {
+      "k": 0,
+      "count": 324632,
+      "probability": 0.493355703882
+    },
+    {
+      "k": 1,
+      "count": 261800,
+      "probability": 0.397867503131
+    },
+    {
+      "k": 2,
+      "count": 65450,
+      "probability": 0.099466875783
+    },
+    {
+      "k": 3,
+      "count": 5950,
+      "probability": 0.009042443253
+    },
+    {
+      "k": 4,
+      "count": 175,
+      "probability": 0.000265954213
+    },
+    {
+      "k": 5,
+      "count": 1,
+      "probability": 0.000001519738
+    }
+  ],
+  "selected_tilt_overlap_pmf": [
+    {
+      "k": 0,
+      "probability": 0.493355703882
+    },
+    {
+      "k": 1,
+      "probability": 0.397867503131
+    },
+    {
+      "k": 2,
+      "probability": 0.099466875783
+    },
+    {
+      "k": 3,
+      "probability": 0.009042443253
+    },
+    {
+      "k": 4,
+      "probability": 0.000265954213
+    },
+    {
+      "k": 5,
+      "probability": 0.000001519738
+    }
+  ],
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout; the same archive has been repeatedly examined in earlier SONAR experiments.",
+    "The beta grid is exploratory and the Validation-selected beta is not independent of Validation outcomes.",
+    "Holm correction covers the eight nonzero beta candidates for the Q111 log-score grid and the two selected-model endpoints; it does not correct for every prior SONAR experiment.",
+    "This test addresses only a common one-step recurrence/avoidance tilt based on overlap with the immediately previous draw."
+  ],
+  "next_action": "Do not tune further on this archive. Continue append-only prospective freezes and evaluate only after official draw publication."
+}

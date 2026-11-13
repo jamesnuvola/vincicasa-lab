@@ -1,0 +1,29 @@
+name: Q111 lag-1 recurrence tilt deterministic replay
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/sonar_q111_lag1_recurrence.mjs"
+      - "reports/sequence_agent/q111_lag1_recurrence_tilt_*.json"
+      - "reports/sequence_agent/q111_lag1_recurrence_tilt_*.csv"
+      - "reports/sequence_agent/q111_lag1_recurrence_tilt_*.md"
+      - "data/storico_daily.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  q111-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check runner syntax
+        run: node --check scripts/sonar_q111_lag1_recurrence.mjs
+      - name: Recompute and compare persisted artifacts
+        run: node scripts/sonar_q111_lag1_recurrence.mjs
