@@ -1,0 +1,334 @@
+{
+  "blind_oos_inference": {
+    "acceptance_rule": "primary effect >= 0.005 AND 95% CI lower > 0 AND Holm p < 0.05",
+    "accepted": false,
+    "endpoints": [
+      {
+        "ci95_circular_block_bootstrap": [
+          -0.0018326772033397285,
+          0.0012386836150861964
+        ],
+        "effect_high_minus_low": -0.0002941494503927665,
+        "endpoint": "nonlinear_minus_linear",
+        "hac_trend_sensitivity": {
+          "hac_se": 0.0007279563993496412,
+          "max_lag": 20,
+          "p_two_sided_normal_approx": 0.6313388137721383,
+          "state_coefficient": -0.0003493050084387799,
+          "trend_coefficient": 0.002869126409755884,
+          "z_normal_approx": -0.47984331032854466
+        },
+        "holm_adjusted_p": 1.0,
+        "p_circular_shift_two_sided": 0.6795160241987901,
+        "practical_threshold": 0.005
+      },
+      {
+        "ci95_circular_block_bootstrap": [
+          -0.0021923542799954067,
+          0.001621071849491185
+        ],
+        "effect_high_minus_low": -0.00023824578501273466,
+        "endpoint": "interaction_minus_linear",
+        "hac_trend_sensitivity": {
+          "hac_se": 0.0009126299211473434,
+          "max_lag": 20,
+          "p_two_sided_normal_approx": 0.7371623464031692,
+          "state_coefficient": -0.00030629091719789107,
+          "trend_coefficient": 0.0035396266980908357,
+          "z_normal_approx": -0.3356134946932565
+        },
+        "holm_adjusted_p": 1.0,
+        "p_circular_shift_two_sided": 0.783660816959152,
+        "practical_threshold": 0.005
+      },
+      {
+        "ci95_circular_block_bootstrap": [
+          -0.0015466530196306836,
+          0.0008335124973365998
+        ],
+        "effect_high_minus_low": -0.0003500531157727984,
+        "endpoint": "gate_minus_linear",
+        "hac_trend_sensitivity": {
+          "hac_se": 0.0005760143698455131,
+          "max_lag": 20,
+          "p_two_sided_normal_approx": 0.4958129267468519,
+          "state_coefficient": -0.0003923190996796663,
+          "trend_coefficient": 0.0021986261214209176,
+          "z_normal_approx": -0.6810925563973104
+        },
+        "holm_adjusted_p": 1.0,
+        "p_circular_shift_two_sided": 0.5582220888955552,
+        "practical_threshold": 0.005
+      }
+    ],
+    "holm_family_size": 3,
+    "method": "20,000 circular moving-block bootstrap CI (block=20); 20,000 circular shifts of state relative to outcomes; Holm across three registered endpoints"
+  },
+  "decision": "NO_EFFECTIVE_RANK_CONDITIONAL_LIFT_DEMONSTRATED",
+  "hypothesis": {
+    "direction": "high effective rank favours nonlinear families",
+    "outcome": "mean(pairwise_interaction_top5, conditional_gate_top5) - linear_mean_top5",
+    "primary_minimum_effect": 0.005,
+    "signal": "current effective rank of centered 40x59 feature covariance, normalized by 39",
+    "state": "current normalized effective rank > median of previous 100 target effective ranks",
+    "window": 100
+  },
+  "integrity": {
+    "all_cutoffs_strictly_before_targets": true,
+    "all_feature_values_finite": true,
+    "formula_type_counts_verified": true,
+    "future_suffix_mutation_checks": [
+      {
+        "rank_unchanged": true,
+        "state_unchanged": true,
+        "target_index": 100,
+        "threshold_unchanged": true
+      },
+      {
+        "rank_unchanged": true,
+        "state_unchanged": true,
+        "target_index": 250,
+        "threshold_unchanged": true
+      },
+      {
+        "rank_unchanged": true,
+        "state_unchanged": true,
+        "target_index": 1000,
+        "threshold_unchanged": true
+      },
+      {
+        "rank_unchanged": true,
+        "state_unchanged": true,
+        "target_index": 2000,
+        "threshold_unchanged": true
+      },
+      {
+        "rank_unchanged": true,
+        "state_unchanged": true,
+        "target_index": 3000,
+        "threshold_unchanged": true
+      },
+      {
+        "rank_unchanged": true,
+        "state_unchanged": true,
+        "target_index": 3350,
+        "threshold_unchanged": true
+      }
+    ],
+    "matrix_ledger_dates_cutoffs_actuals_exactly_aligned": true,
+    "prior_draws_equal_target_index_plus_50": true,
+    "target_level_inference_only": true
+  },
+  "limitations": [
+    "Historical Blind OOS has been exposed to prior SONAR research and is not virgin prospective evidence.",
+    "Effective rank is a descriptive state statistic over 40 candidate numbers, not a causal or probability calibration.",
+    "A6 formula-type aggregates are means over dependent deterministic formula samples (650 linear, 2100 interaction, 2800 gate formulas).",
+    "The endpoint is per-number Top-5 hit share, not exact five-number ticket likelihood.",
+    "Holm correction covers the three D3 endpoints only, not the full Q00-Q141 research family."
+  ],
+  "next_action": "Keep D3 research-only. If the association is not confirmed, do not reverse the state definition; proceed with source-harmonized typed AST semantics and a prospective preregistration on new targets.",
+  "schema_version": "1.0",
+  "source": {
+    "a6_formula_counts_by_scope": {
+      "full59": {
+        "conditional_gate": 2800,
+        "linear_mean": 650,
+        "pairwise_interaction": 2100
+      },
+      "selected20": {
+        "conditional_gate": 2800,
+        "linear_mean": 650,
+        "pairwise_interaction": 2100
+      }
+    },
+    "a6_zip_sha256": "e139ed4587f04ae584c12bff76bcb49d7cd397d41d7fde5a159cc487570ea3fc",
+    "feature_count": 59,
+    "feature_names": [
+      "freq_5",
+      "freq_10",
+      "freq_20",
+      "freq_50",
+      "freq_100",
+      "freq_250",
+      "freq_500",
+      "freq_all",
+      "trend_5_vs_50",
+      "trend_10_vs_100",
+      "trend_20_vs_250",
+      "age_since_hit",
+      "gap_mean",
+      "gap_sd",
+      "overdue_ratio",
+      "position_log_frequency",
+      "pair_count_with_last_draw",
+      "neighbor_pm1_history",
+      "neighbor_pm2_history",
+      "lag_1",
+      "lag_2",
+      "lag_3",
+      "lag_5",
+      "lag_10",
+      "recent_3",
+      "recent_5",
+      "recent_10",
+      "ewma_hit_hl_3",
+      "ewma_hit_hl_7",
+      "ewma_hit_hl_14",
+      "ewma_hit_hl_30",
+      "ewma_hit_hl_60",
+      "ewma_acceleration_3_14",
+      "ewma_acceleration_7_30",
+      "last_gap_vs_median",
+      "last_gap_robust_z",
+      "gap_cv",
+      "gap_slope_recent",
+      "gap_hazard_empirical",
+      "gap_hazard_residual",
+      "pair_lift_recent_last_draw",
+      "pair_pmi_recent_last_draw",
+      "cooccurrence_strength_recent",
+      "cooccurrence_surprise_recent",
+      "neighbor_balance_pm1_recent",
+      "neighbor_balance_pm2_recent",
+      "rank_velocity_5_20",
+      "rank_acceleration_5_20_50",
+      "rank_volatility_20",
+      "feature_disagreement_27",
+      "rank_consensus_27",
+      "novelty_residual_20",
+      "novelty_residual_50",
+      "regime_sum_affinity",
+      "regime_span_affinity",
+      "regime_parity_affinity",
+      "regime_entropy_affinity",
+      "transition_profile_affinity",
+      "conditional_frequency_prev_draw_regime"
+    ],
+    "matrix_dtype": "float32",
+    "matrix_shape": [
+      3351,
+      40,
+      59
+    ],
+    "q90_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_zip_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "target_count": 3351
+  },
+  "split_results": {
+    "blind_oos": {
+      "effective_rank_mean": 0.17486329576553147,
+      "effective_rank_median": 0.17466280591871336,
+      "family_top5_means": {
+        "gate": 0.12453038379530917,
+        "interaction": 0.12477640369580666,
+        "linear": 0.12466222732491389,
+        "nonlinear_equal_family": 0.12465339374555794,
+        "uniform_per_number_reference": 0.125
+      },
+      "gate_minus_linear": {
+        "high_mean": -0.00030530268548019905,
+        "high_minus_low": -0.0003500531157727984,
+        "low_mean": 4.475043029259931e-05,
+        "unconditional_mean": -0.0001318435296047229
+      },
+      "high_state_targets": 338,
+      "interaction_minus_linear": {
+        "high_mean": -3.879749441877007e-06,
+        "high_minus_low": -0.00023824578501273466,
+        "low_mean": 0.00023436603557085766,
+        "unconditional_mean": 0.0001141763708927916
+      },
+      "low_state_targets": 332,
+      "nonlinear_minus_linear": {
+        "high_mean": -0.00015459121746103853,
+        "high_minus_low": -0.0002941494503927665,
+        "low_mean": 0.00013955823293172796,
+        "unconditional_mean": -8.83357935596607e-06
+      },
+      "targets": 670
+    },
+    "discovery": {
+      "effective_rank_mean": 0.173893276408385,
+      "effective_rank_median": 0.17352931100731003,
+      "family_top5_means": {
+        "gate": 0.12686712267324513,
+        "interaction": 0.12678497919314247,
+        "linear": 0.12715887775228435,
+        "nonlinear_equal_family": 0.1268260509331938,
+        "uniform_per_number_reference": 0.125
+      },
+      "gate_minus_linear": {
+        "high_mean": -0.00043816803595983267,
+        "high_minus_low": -0.00029145329237008995,
+        "low_mean": -0.00014671474358974272,
+        "unconditional_mean": -0.0002917550790392223
+      },
+      "high_state_targets": 951,
+      "interaction_minus_linear": {
+        "high_mean": -0.00039598186601340823,
+        "high_minus_low": -4.395958274112867e-05,
+        "low_mean": -0.00035202228327227956,
+        "unconditional_mean": -0.0003738985591418836
+      },
+      "low_state_targets": 960,
+      "nonlinear_minus_linear": {
+        "high_mean": -0.0004170749509866205,
+        "high_minus_low": -0.0001677064375556097,
+        "low_mean": -0.0002493685134310108,
+        "unconditional_mean": -0.00033282681909055275
+      },
+      "targets": 1911
+    },
+    "validation": {
+      "effective_rank_mean": 0.17454008840400703,
+      "effective_rank_median": 0.17442962318393251,
+      "family_top5_means": {
+        "gate": 0.12198965884861408,
+        "interaction": 0.12204804548685146,
+        "linear": 0.12156096440872562,
+        "nonlinear_equal_family": 0.12201885216773277,
+        "uniform_per_number_reference": 0.125
+      },
+      "gate_minus_linear": {
+        "high_mean": 0.0003377056469542023,
+        "high_minus_low": -0.00018815583724061615,
+        "low_mean": 0.0005258614841948184,
+        "unconditional_mean": 0.00042869443988847035
+      },
+      "high_state_targets": 346,
+      "interaction_minus_linear": {
+        "high_mean": 0.00022526413855893936,
+        "high_minus_low": -0.0005414115725612195,
+        "low_mean": 0.0007666757111201588,
+        "unconditional_mean": 0.00048708107812585734
+      },
+      "low_state_targets": 324,
+      "nonlinear_minus_linear": {
+        "high_mean": 0.00028148489275657047,
+        "high_minus_low": -0.0003647837049009178,
+        "low_mean": 0.0006462685976574883,
+        "unconditional_mean": 0.0004578877590071635
+      },
+      "targets": 670
+    }
+  },
+  "status": "COMPLETED_HISTORICAL_WALK_FORWARD",
+  "task_id": "Q141-D3",
+  "walkforward": {
+    "evaluated_split_counts": {
+      "blind_oos": 670,
+      "discovery": 1911,
+      "validation": 670
+    },
+    "first_target": "2017-09-05",
+    "historical_blind_oos_not_virgin": true,
+    "last_target": "2026-11-07",
+    "original_split_counts": {
+      "blind_oos": 670,
+      "discovery": 2011,
+      "validation": 670
+    },
+    "strict_prior_alignment": true,
+    "warmup_targets": 100
+  }
+}
