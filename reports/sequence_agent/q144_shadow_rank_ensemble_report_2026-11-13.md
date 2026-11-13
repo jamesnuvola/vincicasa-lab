@@ -28,7 +28,7 @@ No endpoint is significant after Holm. Blind OOS contains only seven target date
 - 1,364 strict-prior cutoff and pre-target timestamp checks.
 - 42 component forecasts per target (24/12/6); APP is excluded from the ensemble input.
 - 43 pending component rows for 2026-11-13 remain outcome-free.
-- 42 component rows have a one-day-stale but still prior cutoff; no leakage was detected.
+- 42 component rows have a one-day-stale but still prior cutoff; no leakage was detected.\n- Five target groups contain multiple component/APP freeze timestamps; each row was checked independently and all timestamps precede the target draw, while the history cutoff remains consistent within each target.
 
 ## Interpretation and next action
 This is a retrospective aggregation of forecasts that were individually frozen before their targets. The aggregation rule itself was registered after those historical outcomes existed, so the seven-date Blind OOS is not virgin confirmation. The rule is not a validated engine and does not estimate exact-ticket probability.
