@@ -159,15 +159,19 @@ function validateTop20(top20, label) {
       top20.some(n => !Number.isInteger(n) || n < 1 || n > 40)) throw new Error(label + " invalid Top20");
 }
 function drawTimestamp(date, offset) { return Date.parse(date + "T20:00:00" + offset); }
+export function validateShadowTemporalRow(row) {
+  const freezeMs = Date.parse(row.frozen_at), offset = row.frozen_at.slice(-6), freezeDate = row.frozen_at.slice(0, 10);
+  if (!Number.isFinite(freezeMs) || !(row.history_cutoff < row.target_date) ||
+      !(row.history_cutoff <= freezeDate) || !(freezeMs < drawTimestamp(row.target_date, offset))) return false;
+  if (row.history_cutoff === freezeDate && !(freezeMs > drawTimestamp(row.history_cutoff, offset))) return false;
+  return true;
+}
 function validateShadowRows(shadowRows, archiveMap) {
   if (shadowRows.length !== 1364) throw new Error("Expected 1,364 shadow rows");
   let strictPrior = 0, pending = 0;
   const byDate = new Map();
   for (const row of shadowRows) {
-    const freezeMs = Date.parse(row.frozen_at), offset = row.frozen_at.slice(-6);
-    if (!Number.isFinite(freezeMs) || !(row.history_cutoff < row.target_date) ||
-        !(row.history_cutoff <= row.frozen_at.slice(0, 10)) ||
-        !(freezeMs < drawTimestamp(row.target_date, offset))) throw new Error("Shadow temporal guard failed: " + row.target_date);
+    if (!validateShadowTemporalRow(row)) throw new Error("Shadow temporal guard failed: " + row.target_date);
     strictPrior++;
     if (!byDate.has(row.target_date)) byDate.set(row.target_date, []);
     byDate.get(row.target_date).push(row);
