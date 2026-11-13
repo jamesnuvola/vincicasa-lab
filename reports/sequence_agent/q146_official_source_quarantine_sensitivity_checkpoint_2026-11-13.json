@@ -1,0 +1,49 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q146_SOURCE_PROVENANCE_SENSITIVITY",
+  "created_at_local": "2026-11-13T20:50:00+01:00",
+  "status": "SOURCE_QUARANTINE_SENSITIVITY_PERSISTED",
+  "source_archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+  "q146_ledger_blob_sha1": "f2200d709bc036570f2fcd47ea73acaedd655b04",
+  "q145_freeze_blob_sha1": "e79dee09cbfaa18941d8cb6c57dab949cb1b91bb",
+  "original_q146_blind_targets": 7,
+  "source_clean_targets": 5,
+  "excluded_unresolved_targets": [
+    "2026-11-11",
+    "2026-11-12"
+  ],
+  "bootstrap": {
+    "replicates": 20000,
+    "block_length": 2,
+    "prng": "Mulberry32",
+    "seeds": [
+      14605,
+      14606,
+      14607,
+      14608,
+      14609
+    ]
+  },
+  "sign_flip": {
+    "assignments": 32,
+    "two_sided": true
+  },
+  "holm_family_size": 5,
+  "decision": "NO_PAIRWISE_CALIBRATION_ADVANTAGE_DEMONSTRATED; KEEP_Q145_FROZEN; QUARANTINE_2026_11_11_AND_2026_11_12_FROM_SOURCE_CLEAN_PROSPECTIVE_EVALUATION",
+  "no_archive_mutation": true,
+  "no_freeze_mutation": true,
+  "no_q60_gate_mutation": true,
+  "no_engine_promotion": true,
+  "no_merge": true,
+  "protected_prs": [
+    6,
+    7,
+    8
+  ],
+  "official_sources": [
+    "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+    "https://www.sisal.it/estrazioni/vincicasa/concorso-315/11-novembre-2026",
+    "https://www.sisal.it/estrazioni/vincicasa/concorso-316/12-novembre-2026",
+    "https://www.sisal.it/estrazioni/vincicasa/2026/novembre"
+  ]
+}
