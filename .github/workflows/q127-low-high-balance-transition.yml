@@ -1,0 +1,29 @@
+name: Q127 prior-only low-high balance transition replay
+
+on:
+  push:
+    branches: ["research/q127-low-high-balance-transition-20261111"]
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: q127-${{ github.workflow }}-${{ github.event_name }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  replay:
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'research/q127-low-high-balance-transition-20261111' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Replay exact low-high transition walk-forward and verify persisted bytes
+        run: node scripts/sonar_q127_low_high_balance_transition.mjs --check

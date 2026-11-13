@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q127",
+  "status": "PASS",
+  "checks": [
+    {
+      "name": "archive_sha_pinned",
+      "passed": true
+    },
+    {
+      "name": "protocol_blob_pinned",
+      "passed": true
+    },
+    {
+      "name": "protocol_commit_recorded",
+      "passed": true
+    },
+    {
+      "name": "draw_count_3404",
+      "passed": true
+    },
+    {
+      "name": "dates_strictly_increasing",
+      "passed": true
+    },
+    {
+      "name": "five_distinct_numbers_1_to_40",
+      "passed": true
+    },
+    {
+      "name": "low_count_support_zero_to_five",
+      "passed": true
+    },
+    {
+      "name": "exact_5_of_40_denominator",
+      "passed": true
+    },
+    {
+      "name": "exact_null_probability_mass",
+      "passed": true
+    },
+    {
+      "name": "exact_null_mean_two_point_five",
+      "passed": true
+    },
+    {
+      "name": "warmup_and_target_count",
+      "passed": true
+    },
+    {
+      "name": "strict_prior_cutoffs",
+      "passed": true
+    },
+    {
+      "name": "prior_transition_counts",
+      "passed": true
+    },
+    {
+      "name": "prequential_global_prior_counts",
+      "passed": true
+    },
+    {
+      "name": "conditional_state_counts_nonnegative",
+      "passed": true
+    },
+    {
+      "name": "probability_masses",
+      "passed": true
+    },
+    {
+      "name": "finite_proper_scores",
+      "passed": true
+    },
+    {
+      "name": "chronological_split_1922_641_641",
+      "passed": true
+    },
+    {
+      "name": "future_suffix_mutation_invariance_9_of_9",
+      "passed": true
+    },
+    {
+      "name": "holm_family_has_six_endpoints",
+      "passed": true
+    }
+  ],
+  "exact_null": {
+    "denominator": 658008,
+    "probabilities": [
+      0.023562,
+      0.147263,
+      0.329175,
+      0.329175,
+      0.147263,
+      0.023562
+    ],
+    "mass": 1,
+    "mean": 2.5,
+    "variance": 1.121795
+  },
+  "target_ledger": {
+    "rows": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "split_sizes": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    }
+  },
+  "future_suffix_mutation_checks": {
+    "passed": 9,
+    "total": 9
+  },
+  "probability_masses_within_1e_12": true,
+  "inference": {
+    "endpoints": 6,
+    "sign_flip_replicates": 50000,
+    "bootstrap_replicates": 10000,
+    "block_length": 20,
+    "all_p_values_finite": true,
+    "all_holm_finite": true
+  }
+}

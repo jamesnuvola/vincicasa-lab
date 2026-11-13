@@ -1,0 +1,292 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q127",
+  "title": "Prior-only low/high balance transition",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_LOW_HIGH_BALANCE_TRANSITION_LIFT_DEMONSTRATED",
+  "preregistration": {
+    "protocol_blob_sha": "36dd14b940d4eeccead81ff3e82048eadd72598c",
+    "protocol_commit_sha": "944dce696aaa2446d9c71f075590e1d8966c7f88",
+    "registered_before_calculation": true,
+    "protocol_status": "PREREGISTERED_BEFORE_CALCULATION"
+  },
+  "source": {
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "statistic": {
+    "definition": "L_t = number of drawn values in 1..20; S_t=L_(t-1).",
+    "support": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "exact_null_denominator": 658008,
+    "exact_null_probabilities": [
+      0.023562,
+      0.147263,
+      0.329175,
+      0.329175,
+      0.147263,
+      0.023562
+    ],
+    "null_mean": 2.5,
+    "null_variance": 1.121795
+  },
+  "method": {
+    "warmup": 200,
+    "alpha": 200,
+    "targets": 3204,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "models": {
+      "M0": "Exact Hypergeometric(40,20,5) marginal.",
+      "M1": "Prior-only unconditional prequential marginal with alpha=200 shrinkage toward M0.",
+      "M2": "Prior-only one-step previous-state conditional marginal with alpha=200 shrinkage toward M1."
+    },
+    "metrics": [
+      "multiclass Brier over support 0..5",
+      "negative log probability of observed L_t"
+    ],
+    "scoring_order": "Score before update; target t uses only draws strictly before t.",
+    "inference": {
+      "blind_oos_only": true,
+      "paired_block_sign_flip_replicates": 50000,
+      "circular_moving_block_bootstrap_replicates": 10000,
+      "block_length": 20,
+      "alternative": "one-sided improvement",
+      "multiplicity": "Holm across six preregistered Blind OOS endpoints."
+    }
+  },
+  "splits": {
+    "discovery": {
+      "targets": 1922,
+      "first_target": "2018-02-02",
+      "last_target": "2023-05-08",
+      "observed_low_count_mean": 2.5359,
+      "observed_low_count_distribution": [
+        44,
+        294,
+        585,
+        637,
+        311,
+        51
+      ],
+      "previous_state_distribution": [
+        44,
+        294,
+        584,
+        637,
+        312,
+        51
+      ],
+      "models": {
+        "m0": {
+          "mean_brier": 0.74758,
+          "mean_logloss": 1.494701
+        },
+        "m1": {
+          "mean_brier": 0.747487,
+          "mean_logloss": 1.49545
+        },
+        "m2": {
+          "mean_brier": 0.748338,
+          "mean_logloss": 1.498253
+        }
+      }
+    },
+    "validation": {
+      "targets": 641,
+      "first_target": "2023-05-09",
+      "last_target": "2025-02-07",
+      "observed_low_count_mean": 2.477379,
+      "observed_low_count_distribution": [
+        9,
+        95,
+        228,
+        212,
+        84,
+        13
+      ],
+      "previous_state_distribution": [
+        9,
+        95,
+        229,
+        211,
+        84,
+        13
+      ],
+      "models": {
+        "m0": {
+          "mean_brier": 0.725422,
+          "mean_logloss": 1.426291
+        },
+        "m1": {
+          "mean_brier": 0.727287,
+          "mean_logloss": 1.43027
+        },
+        "m2": {
+          "mean_brier": 0.728582,
+          "mean_logloss": 1.434216
+        }
+      }
+    },
+    "blind_oos": {
+      "targets": 641,
+      "first_target": "2025-02-08",
+      "last_target": "2026-11-10",
+      "observed_low_count_mean": 2.50702,
+      "observed_low_count_distribution": [
+        19,
+        95,
+        212,
+        191,
+        105,
+        19
+      ],
+      "previous_state_distribution": [
+        19,
+        95,
+        212,
+        191,
+        105,
+        19
+      ],
+      "models": {
+        "m0": {
+          "mean_brier": 0.752598,
+          "mean_logloss": 1.518464
+        },
+        "m1": {
+          "mean_brier": 0.752679,
+          "mean_logloss": 1.518747
+        },
+        "m2": {
+          "mean_brier": 0.753743,
+          "mean_logloss": 1.521153
+        }
+      }
+    }
+  },
+  "blind_oos_inference": [
+    {
+      "id": "M1_vs_M0_brier",
+      "comparison": "M1_vs_M0",
+      "metric": "brier",
+      "observed_gain": -0.000081,
+      "p_value": 0.545289,
+      "sign_flip_replicates": 50000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.001339,
+        0.001125
+      ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M1_vs_M0_logloss",
+      "comparison": "M1_vs_M0",
+      "metric": "logloss",
+      "observed_gain": -0.000283,
+      "p_value": 0.565389,
+      "sign_flip_replicates": 50000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.003168,
+        0.002589
+      ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M2_vs_M1_brier",
+      "comparison": "M2_vs_M1",
+      "metric": "brier",
+      "observed_gain": -0.001065,
+      "p_value": 0.933261,
+      "sign_flip_replicates": 50000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.002424,
+        0.000304
+      ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M2_vs_M1_logloss",
+      "comparison": "M2_vs_M1",
+      "metric": "logloss",
+      "observed_gain": -0.002406,
+      "p_value": 0.875202,
+      "sign_flip_replicates": 50000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.006369,
+        0.001578
+      ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M2_vs_M0_brier",
+      "comparison": "M2_vs_M0",
+      "metric": "brier",
+      "observed_gain": -0.001145,
+      "p_value": 0.873203,
+      "sign_flip_replicates": 50000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.003084,
+        0.000907
+      ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
+      "holm_adjusted_p": 1
+    },
+    {
+      "id": "M2_vs_M0_logloss",
+      "comparison": "M2_vs_M0",
+      "metric": "logloss",
+      "observed_gain": -0.002689,
+      "p_value": 0.840103,
+      "sign_flip_replicates": 50000,
+      "block_length": 20,
+      "blocks": 33,
+      "ci95": [
+        -0.007842,
+        0.002633
+      ],
+      "bootstrap_replicates": 10000,
+      "bootstrap_block_length": 20,
+      "holm_adjusted_p": 1
+    }
+  ],
+  "decision_reason": "M2 is evaluated against both the exact combinatorial marginal and the prior-only unconditional model. Promotion is not permitted unless a positive incremental gain is stable and survives the preregistered block inference and Holm correction; historical Blind OOS is not a virgin holdout.",
+  "limitations": [
+    "The lower/upper partition at 20/21 is one fixed coarse partition and cannot represent all draw geometry.",
+    "This transition diagnostic is adjacent to prior parity, median, range and gap-state studies; incremental evidence must be interpreted in the context of the broader Q00-Q127 search family.",
+    "Historical Blind OOS has prior exposure to SONAR research and is not independent prospective confirmation.",
+    "Holm correction covers only six local Q127 endpoints, not the full Q00-Q127 research family.",
+    "This is a structural distribution diagnostic, not a full five-number predictor."
+  ],
+  "next_action": "After official publication of contest 315, score immutable 11-Nov freezes without retuning and continue append-only Q60 paired collection."
+}
