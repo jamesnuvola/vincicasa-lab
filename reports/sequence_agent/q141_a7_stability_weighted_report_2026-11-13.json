@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A7-B11",
+  "status": "COMPLETED_HISTORICAL_WALK_FORWARD",
+  "decision": "NO_STABILITY_WEIGHTING_LIFT_DEMONSTRATED",
+  "source": {
+    "source_commit": "7d9263bc9d42a5e75d4fa9f35d35f8e5bb0c1df8",
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "draw_count": 3406,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-12",
+    "q90_source_run_id": 42504717670,
+    "q90_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_prefix_targets": 3351,
+    "q90_prefix_matrix_exact_bit_match": true,
+    "q90_prefix_max_abs_difference": 0.0,
+    "q90_matrix_sha256": "681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49"
+  },
+  "design": {
+    "feature_count": 59,
+    "feature_families": {
+      "baseline": 27,
+      "ewma_hit_dynamics": 7,
+      "gap_dynamics": 6,
+      "cooccurrence_novelty": 6,
+      "rank_trajectory": 5,
+      "residual_surprise": 2,
+      "regime_transition_affinity": 6
+    },
+    "min_prior_draws": 50,
+    "targets": 3356,
+    "split_counts": {
+      "discovery": 2014,
+      "validation": 671,
+      "blind_oos": 671
+    },
+    "family_score": "mean of the per-target z-scored features within each family",
+    "equal_family_baseline": "unweighted mean of seven family scores",
+    "adaptive_rule": "weights proportional to 1/(0.10 + mean normalized absolute rank turnover over the previous five target rows); weights use only earlier feature rows",
+    "turnover_window_target_rows": 5,
+    "turnover_smoothing": 0.1,
+    "fallback_first_five_targets": "equal family weights",
+    "tie_policy": "scores rounded to 12 decimals; ties by number ascending",
+    "primary_endpoint": "Blind OOS Top-5 number hit share, stability-weighted minus equal-family",
+    "secondary_endpoint": "Blind OOS Top-10 number hit share, stability-weighted minus equal-family",
+    "practical_threshold": 0.005,
+    "block_length": 20,
+    "replicates": 20000,
+    "holm_family_size": 2
+  },
+  "split_metrics": {
+    "discovery": {
+      "targets": 2014,
+      "equal_family_top5": 0.12323733862959285,
+      "stability_weighted_top5": 0.12303872889771598,
+      "equal_feature_top5": 0.12462760675273088,
+      "equal_family_top10": 0.25104270109235355,
+      "stability_weighted_top10": 0.24885799404170805,
+      "equal_feature_top10": 0.24875868917576963,
+      "uniform_top5_reference": 0.125,
+      "uniform_top10_reference": 0.25,
+      "mean_family_turnover": 0.15361685145781712
+    },
+    "validation": {
+      "targets": 671,
+      "equal_family_top5": 0.12071535022354694,
+      "stability_weighted_top5": 0.11445603576751118,
+      "equal_feature_top5": 0.1210134128166915,
+      "equal_family_top10": 0.242026825633383,
+      "stability_weighted_top10": 0.24172876304023844,
+      "equal_feature_top10": 0.23695976154992549,
+      "uniform_top5_reference": 0.125,
+      "uniform_top10_reference": 0.25,
+      "mean_family_turnover": 0.15530691985610018
+    },
+    "blind_oos": {
+      "targets": 671,
+      "equal_family_top5": 0.12906110283159464,
+      "stability_weighted_top5": 0.1299552906110283,
+      "equal_feature_top5": 0.12965722801788376,
+      "equal_family_top10": 0.25603576751117735,
+      "stability_weighted_top10": 0.2515648286140089,
+      "equal_feature_top10": 0.25573770491803277,
+      "uniform_top5_reference": 0.125,
+      "uniform_top10_reference": 0.25,
+      "mean_family_turnover": 0.15437097055949514
+    }
+  },
+  "blind_oos_inference": {
+    "targets": 671,
+    "primary_top5_delta": 0.0008941877794336809,
+    "primary_top5_ci95": [
+      -0.005067064083457527,
+      0.0071535022354694494
+    ],
+    "primary_top5_block_signflip_p": 0.8405579721013949,
+    "primary_top5_holm_p": 0.8405579721013949,
+    "secondary_top10_delta": -0.004470938897168406,
+    "secondary_top10_ci95": [
+      -0.011624441132637855,
+      0.0026825633383010437
+    ],
+    "secondary_top10_block_signflip_p": 0.22673866306684665,
+    "secondary_top10_holm_p": 0.4534773261336933,
+    "block_count_top5": 34,
+    "block_count_top10": 34,
+    "mean_family_weights": {
+      "baseline": 0.14651059405635525,
+      "ewma_hit_dynamics": 0.1716930039867383,
+      "gap_dynamics": 0.10171707704171655,
+      "cooccurrence_novelty": 0.08280133867624831,
+      "rank_trajectory": 0.19804157687806798,
+      "residual_surprise": 0.21067970918266435,
+      "regime_transition_affinity": 0.08855670017820932
+    },
+    "mean_prior_family_turnover": 0.15437097055949514
+  },
+  "tests": {
+    "archive_blob_pinned": true,
+    "all_59_features_rebuilt": true,
+    "q90_prefix_bit_identical": true,
+    "strict_prior_cutoffs": true,
+    "score_before_state_update": true,
+    "all_matrix_values_finite": true,
+    "zscore_centering_max_abs": 2.682209014892578e-07,
+    "deterministic_replay": "verified by unit tests"
+  },
+  "limitations": [
+    "The historical Blind OOS has been exposed to prior SONAR research; it is not virgin prospective evidence.",
+    "This evaluates per-number ranking hit share, not the probability of an exact five-number ticket.",
+    "The stability-weighted rule is fixed and untrained; no hyperparameter search was performed.",
+    "Feature families share source information and are not statistically independent.",
+    "The Q90 prefix was reused only after bit-identical full recomputation; five new rows extend the matrix through 2026-11-12.",
+    "No result from this historical analysis authorizes production promotion."
+  ]
+}
