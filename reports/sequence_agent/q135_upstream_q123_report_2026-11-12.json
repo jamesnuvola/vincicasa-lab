@@ -1,0 +1,479 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q123",
+  "title": "APP SONAR full-ranking ordinal skill",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_APP_ORDINAL_RANK_SKILL_DEMONSTRATED",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "base_commit": "ea46a70c4c90db5dad44d5374a97f89a84e50ad9",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "scorer_blob_sha": "7ccb9a2abfe452ec535913b70225bc109f692304",
+    "app_data_blob_sha": "25c0b2316662664deff9e2157e60ec56cfa3a640",
+    "active_walkforward_blob_sha": "822f955801c329585f7dd03df7fc61b0b6a2419c",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "preregistration": {
+    "path": "reports/sequence_agent/q123_app_ordinal_rank_skill_protocol_2026-11-11.json",
+    "commit": "f5c8e99a050b830683b454604ff5c3a52e741c02",
+    "committed_before_calculation": true
+  },
+  "hypothesis": "The complete ordinal order of the 40 numbers emitted by the exact APP SONAR scorer contains useful information about the next draw beyond the Top20 set: drawn numbers should occupy smaller ranks more often than a uniformly random 5-of-40 subset.",
+  "method": {
+    "rank_sum": "Sum of one-based APP ranks of the five target numbers; lower is better.",
+    "null": "Uniform 5-subset of ranks 1..40 conditional on each prior-only ranking.",
+    "baseline": {
+      "mean_rank": 20.5,
+      "rank_sum_per_target": 102.5,
+      "top5_hits": 0.625,
+      "top10_hits": 1.25,
+      "top20_hits": 2.5
+    },
+    "rank_sum_null": {
+      "enumerated_subsets": 658008,
+      "mean_per_target": 102.5,
+      "variance_per_target": 597.916666666667
+    },
+    "topk_null": "Exact Hypergeometric(40,K,5) convolved across Blind OOS targets.",
+    "update_order": "No fitted state; score each target from its strict prior prefix.",
+    "tie_break": "Exact APP scorer: score descending, then smaller number."
+  },
+  "walk_forward": {
+    "warmup": 200,
+    "targets": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "strict_prior": true,
+    "splits": {
+      "discovery": {
+        "targets": 1922,
+        "first_target": "2018-02-02",
+        "last_target": "2023-05-08",
+        "mean_rank_sum": 102.201352757544,
+        "mean_rank": 20.440270551509,
+        "rank_gain_vs_uniform": 0.059729448491,
+        "mean_top5_hits": 0.64151925078,
+        "mean_top10_hits": 1.248699271592,
+        "mean_top20_hits": 2.522372528616,
+        "gains_vs_uniform": {
+          "top5": 0.01651925078,
+          "top10": -0.001300728408,
+          "top20": 0.022372528616
+        },
+        "top20_5of5": 51,
+        "rank_band_hits": [
+          {
+            "ranks": [
+              1,
+              5
+            ],
+            "observed": 1233,
+            "expected": 1201.25
+          },
+          {
+            "ranks": [
+              6,
+              10
+            ],
+            "observed": 1167,
+            "expected": 1201.25
+          },
+          {
+            "ranks": [
+              11,
+              15
+            ],
+            "observed": 1216,
+            "expected": 1201.25
+          },
+          {
+            "ranks": [
+              16,
+              20
+            ],
+            "observed": 1232,
+            "expected": 1201.25
+          },
+          {
+            "ranks": [
+              21,
+              25
+            ],
+            "observed": 1135,
+            "expected": 1201.25
+          },
+          {
+            "ranks": [
+              26,
+              30
+            ],
+            "observed": 1249,
+            "expected": 1201.25
+          },
+          {
+            "ranks": [
+              31,
+              35
+            ],
+            "observed": 1203,
+            "expected": 1201.25
+          },
+          {
+            "ranks": [
+              36,
+              40
+            ],
+            "observed": 1175,
+            "expected": 1201.25
+          }
+        ]
+      },
+      "validation": {
+        "targets": 641,
+        "first_target": "2023-05-09",
+        "last_target": "2025-02-07",
+        "mean_rank_sum": 103.700468018721,
+        "mean_rank": 20.740093603744,
+        "rank_gain_vs_uniform": -0.240093603744,
+        "mean_top5_hits": 0.636505460218,
+        "mean_top10_hits": 1.248049921997,
+        "mean_top20_hits": 2.436817472699,
+        "gains_vs_uniform": {
+          "top5": 0.011505460218,
+          "top10": -0.001950078003,
+          "top20": -0.063182527301
+        },
+        "top20_5of5": 10,
+        "rank_band_hits": [
+          {
+            "ranks": [
+              1,
+              5
+            ],
+            "observed": 408,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              6,
+              10
+            ],
+            "observed": 392,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              11,
+              15
+            ],
+            "observed": 371,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              16,
+              20
+            ],
+            "observed": 391,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              21,
+              25
+            ],
+            "observed": 427,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              26,
+              30
+            ],
+            "observed": 393,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              31,
+              35
+            ],
+            "observed": 380,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              36,
+              40
+            ],
+            "observed": 443,
+            "expected": 400.625
+          }
+        ]
+      },
+      "blind_oos": {
+        "targets": 641,
+        "first_target": "2025-02-08",
+        "last_target": "2026-11-10",
+        "mean_rank_sum": 101.683307332293,
+        "mean_rank": 20.336661466459,
+        "rank_gain_vs_uniform": 0.163338533541,
+        "mean_top5_hits": 0.622464898596,
+        "mean_top10_hits": 1.316692667707,
+        "mean_top20_hits": 2.525741029641,
+        "gains_vs_uniform": {
+          "top5": -0.002535101404,
+          "top10": 0.066692667707,
+          "top20": 0.025741029641
+        },
+        "top20_5of5": 20,
+        "rank_band_hits": [
+          {
+            "ranks": [
+              1,
+              5
+            ],
+            "observed": 399,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              6,
+              10
+            ],
+            "observed": 445,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              11,
+              15
+            ],
+            "observed": 394,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              16,
+              20
+            ],
+            "observed": 381,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              21,
+              25
+            ],
+            "observed": 393,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              26,
+              30
+            ],
+            "observed": 388,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              31,
+              35
+            ],
+            "observed": 418,
+            "expected": 400.625
+          },
+          {
+            "ranks": [
+              36,
+              40
+            ],
+            "observed": 387,
+            "expected": 400.625
+          }
+        ]
+      }
+    },
+    "split_rule": "Chronological 60/20/remainder; first two sizes rounded."
+  },
+  "blind_inference": {
+    "family_size": 4,
+    "adjustment": "Holm",
+    "primary_endpoint": "mean_rank_lower",
+    "randomization": {
+      "method": "Conditional Monte Carlo over exact 5-of-40 rank subsets; aggregate rank-sum lower tail.",
+      "replicates": 50000,
+      "seed": "0x123123",
+      "p_one_sided_improvement": 0.20077598448,
+      "extreme": 10038,
+      "observed_rank_sum": 65179,
+      "expected_rank_sum": 65702.5,
+      "null_sd_of_total": 619.083664243641
+    },
+    "tests": [
+      {
+        "endpoint": "mean_rank_lower",
+        "metric": "mean_rank",
+        "baseline": 20.5,
+        "observed": 20.336661466459,
+        "direction": "lower",
+        "p_one_sided_improvement": 0.20077598448,
+        "replicates": 50000,
+        "extreme": 10038,
+        "expected_rank_sum": 65702.5,
+        "null_sd_of_total": 619.083664243641,
+        "bootstrap_ci95": [
+          19.948205928237,
+          20.729797191888
+        ],
+        "p_holm": 0.60232795344
+      },
+      {
+        "endpoint": "top5_hits_upper",
+        "metric": "mean_top5_hits",
+        "baseline": 0.625,
+        "observed": 0.622464898596,
+        "observed_total": 399,
+        "expected_total": 400.625,
+        "direction": "higher",
+        "p_one_sided_upper": 0.545506226789,
+        "mass_error": 1.088e-14,
+        "bootstrap_ci95": [
+          0.569422776911,
+          0.675507020281
+        ],
+        "p_holm": 0.60232795344
+      },
+      {
+        "endpoint": "top10_hits_upper",
+        "metric": "mean_top10_hits",
+        "baseline": 1.25,
+        "observed": 1.316692667707,
+        "observed_total": 844,
+        "expected_total": 801.25,
+        "direction": "higher",
+        "p_one_sided_upper": 0.034914786474,
+        "mass_error": 7.994e-15,
+        "bootstrap_ci95": [
+          1.251170046802,
+          1.386895475819
+        ],
+        "p_holm": 0.139659145896
+      },
+      {
+        "endpoint": "top20_hits_upper",
+        "metric": "mean_top20_hits",
+        "baseline": 2.5,
+        "observed": 2.525741029641,
+        "observed_total": 1619,
+        "expected_total": 1602.5,
+        "direction": "higher",
+        "p_one_sided_upper": 0.275363247604,
+        "mass_error": 2.6867e-14,
+        "bootstrap_ci95": [
+          2.436817472699,
+          2.611544461778
+        ],
+        "p_holm": 0.60232795344
+      }
+    ]
+  },
+  "prospective_freeze": {
+    "target_date": "2026-11-11",
+    "history_cutoff": "2026-11-10",
+    "frozen_at_utc": "2026-11-11T15:50:24.856Z",
+    "top20_ranked": [
+      25,
+      16,
+      38,
+      17,
+      36,
+      1,
+      28,
+      26,
+      27,
+      9,
+      34,
+      12,
+      8,
+      10,
+      21,
+      20,
+      15,
+      39,
+      30,
+      37
+    ],
+    "top5_ranked": [
+      25,
+      16,
+      38,
+      17,
+      36
+    ],
+    "status": "FROZEN_PENDING"
+  },
+  "leakage_checks": {
+    "strict_prior": true,
+    "future_suffix_mutations": [
+      {
+        "target_index": 200,
+        "target_date": "2018-02-02",
+        "pass": true
+      },
+      {
+        "target_index": 400,
+        "target_date": "2018-08-21",
+        "pass": true
+      },
+      {
+        "target_index": 777,
+        "target_date": "2019-09-02",
+        "pass": true
+      },
+      {
+        "target_index": 1200,
+        "target_date": "2020-10-29",
+        "pass": true
+      },
+      {
+        "target_index": 1600,
+        "target_date": "2021-12-03",
+        "pass": true
+      },
+      {
+        "target_index": 2000,
+        "target_date": "2023-01-07",
+        "pass": true
+      },
+      {
+        "target_index": 2400,
+        "target_date": "2024-02-11",
+        "pass": true
+      },
+      {
+        "target_index": 2800,
+        "target_date": "2025-03-17",
+        "pass": true
+      },
+      {
+        "target_index": 3200,
+        "target_date": "2026-04-21",
+        "pass": true
+      }
+    ],
+    "app_archive_row_reconciliation": true,
+    "active_top20_reconciled": true
+  },
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout after prior SONAR exploration.",
+    "The experiment tests ordinal rank information, not direct probability calibration or exact-quintet prediction.",
+    "The conditional randomization null assumes each official draw is an independent uniform 5-of-40 draw.",
+    "Holm correction covers the four Q123 endpoints only, not the full Q00-Q123 research family.",
+    "No prospective outcome for 2026-11-11 is available at freeze time."
+  ],
+  "next_action": "After official publication of contest 315, score the immutable Q123 full-ranking freeze; continue append-only Q60 paired collection."
+}

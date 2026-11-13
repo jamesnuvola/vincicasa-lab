@@ -1,0 +1,310 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q135",
+  "title": "APP rank-weighted fixed-size subset likelihood",
+  "status": "COMPLETED_EXPLORATORY_NO_PROMOTION",
+  "decision": "NO_RANK_SUBSET_LIKELIHOOD_LIFT_DEMONSTRATED",
+  "generated_at_utc": "2026-11-12T03:47:07Z",
+  "epistemic_status": "EXPLORATORY_POST_HOC_EXTENSION_OF_Q123",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_base_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "upstream_experiment": "Q123",
+    "upstream_head_commit": "93b494b089abf485b6616f71b90baec79e39c796",
+    "source_rank_ledger_blob_sha": "36d7af1fb3cceda5976eb99a78931f58d1a3d28a",
+    "source_rank_ledger_path": "reports/sequence_agent/q135_source_q123_rank_ledger_2026-11-12.csv",
+    "targets": 3204,
+    "first_target": "2018-02-02",
+    "last_target": "2026-11-10",
+    "disputed_2026_11_11_excluded": true
+  },
+  "hypothesis": "The exact APP ordinal ranking can be converted into a calibrated probability distribution over 5-number subsets using a fixed-size exponential tilt. If smaller APP ranks contain useful inclusion information, a positive rank-decay parameter selected only on Discovery should improve proper subset log score and marginal-inclusion Brier score on later Validation and Blind OOS targets versus the uniform 5-of-40 baseline.",
+  "model": {
+    "subset_probability": "P_beta(S|ranks)=exp(-beta*sum_{r in S} r)/Z(beta), for |S|=5 and ranks 1..40.",
+    "partition_function": "Z(beta)=sum_{A subset {1..40}, |A|=5} exp(-beta*sum_{r in A} r), computed by exact elementary-symmetric-polynomial dynamic programming.",
+    "marginal_inclusion_probability": "p_r(beta)=exp(-beta*r)*e_4(weights excluding r)/Z(beta); sum_r p_r=5.",
+    "uniform_baseline": "beta=0; P(S)=1/C(40,5); marginal p_r=1/8.",
+    "log_likelihood_gain_per_target": "-beta*rank_sum-log(Z(beta))+log(C(40,5)); positive is better.",
+    "brier_delta_per_target": "sum_r (p_r-y_r)^2 - 4.375; negative is better."
+  },
+  "selection": {
+    "grid_size": 21,
+    "selected_beta": 0.0005,
+    "selection_split": "discovery",
+    "grid_results": [
+      {
+        "beta": 0.0005,
+        "partition_z": 625181.3881443241,
+        "discovery_mean_log_likelihood_gain": 0.000074584266
+      },
+      {
+        "beta": 0.00025,
+        "partition_z": 641372.7326956434,
+        "discovery_mean_log_likelihood_gain": 0.000055976929
+      },
+      {
+        "beta": 0.00075,
+        "partition_z": 609421.5644040852,
+        "discovery_mean_log_likelihood_gain": 0.000055822524
+      },
+      {
+        "beta": 0,
+        "partition_z": 658008,
+        "discovery_mean_log_likelihood_gain": 0
+      },
+      {
+        "beta": 0.001,
+        "partition_z": 594081.2199807626,
+        "discovery_mean_log_likelihood_gain": -3.07441e-7
+      },
+      {
+        "beta": 0.00125,
+        "partition_z": 579148.6629835665,
+        "discovery_mean_log_likelihood_gain": -0.000093804432
+      },
+      {
+        "beta": 0.0015,
+        "partition_z": 564612.540617045,
+        "discovery_mean_log_likelihood_gain": -0.00022466691
+      },
+      {
+        "beta": 0.00175,
+        "partition_z": 550461.8289987054,
+        "discovery_mean_log_likelihood_gain": -0.000392892993
+      },
+      {
+        "beta": 0.002,
+        "partition_z": 536685.8232919266,
+        "discovery_mean_log_likelihood_gain": -0.000598480457
+      },
+      {
+        "beta": 0.0022500000000000003,
+        "partition_z": 523274.1281441239,
+        "discovery_mean_log_likelihood_gain": -0.000841426738
+      },
+      {
+        "beta": 0.0025,
+        "partition_z": 510216.6484204619,
+        "discovery_mean_log_likelihood_gain": -0.001121728928
+      },
+      {
+        "beta": 0.00275,
+        "partition_z": 497503.58022372855,
+        "discovery_mean_log_likelihood_gain": -0.001439383779
+      },
+      {
+        "beta": 0.003,
+        "partition_z": 485125.40219128184,
+        "discovery_mean_log_likelihood_gain": -0.001794387702
+      },
+      {
+        "beta": 0.0032500000000000003,
+        "partition_z": 473072.8670602851,
+        "discovery_mean_log_likelihood_gain": -0.002186736764
+      },
+      {
+        "beta": 0.0035,
+        "partition_z": 461336.9934927243,
+        "discovery_mean_log_likelihood_gain": -0.002616426695
+      },
+      {
+        "beta": 0.00375,
+        "partition_z": 449909.0581519838,
+        "discovery_mean_log_likelihood_gain": -0.00308345288
+      },
+      {
+        "beta": 0.004,
+        "partition_z": 438780.58802302013,
+        "discovery_mean_log_likelihood_gain": -0.003587810366
+      },
+      {
+        "beta": 0.00425,
+        "partition_z": 427943.3529684331,
+        "discovery_mean_log_likelihood_gain": -0.004129493858
+      },
+      {
+        "beta": 0.0045000000000000005,
+        "partition_z": 417389.35851298156,
+        "discovery_mean_log_likelihood_gain": -0.004708497723
+      },
+      {
+        "beta": 0.00475,
+        "partition_z": 407110.8388493363,
+        "discovery_mean_log_likelihood_gain": -0.005324815985
+      },
+      {
+        "beta": 0.005,
+        "partition_z": 397100.25005808834,
+        "discovery_mean_log_likelihood_gain": -0.005978442329
+      }
+    ]
+  },
+  "split_results": {
+    "discovery": {
+      "targets": 1922,
+      "first_target": "2018-02-02",
+      "last_target": "2023-05-08",
+      "selected_model_mean_log_likelihood_gain": 0.000074584266,
+      "selected_model_mean_rank_sum": 102.201352757544
+    },
+    "validation": {
+      "targets": 641,
+      "first_target": "2023-05-09",
+      "last_target": "2025-02-07",
+      "mean_rank_sum": 103.700468018721,
+      "mean_rank": 20.740093603744,
+      "mean_log_likelihood_gain": -0.000674973365,
+      "mean_brier_delta": 0.000151183361,
+      "baseline_log_likelihood_gain": 0,
+      "baseline_brier_delta": 0,
+      "log_likelihood_bootstrap_ci95": [
+        -0.001432383661,
+        0.000109738024
+      ],
+      "brier_bootstrap_ci95": [
+        -0.000019570319,
+        0.00032022537
+      ],
+      "observed_mean_selected_probability": 0.6249327925,
+      "marginal_probability_sum": 5
+    },
+    "blind_oos": {
+      "targets": 641,
+      "first_target": "2025-02-08",
+      "last_target": "2026-11-10",
+      "mean_rank_sum": 101.683307332293,
+      "mean_rank": 20.336661466459,
+      "mean_log_likelihood_gain": 0.000333606979,
+      "mean_brier_delta": -0.000075080049,
+      "baseline_log_likelihood_gain": 0,
+      "baseline_brier_delta": 0,
+      "log_likelihood_bootstrap_ci95": [
+        -0.000659372741,
+        0.001260284046
+      ],
+      "brier_bootstrap_ci95": [
+        -0.000296323815,
+        0.000147043311
+      ],
+      "observed_mean_selected_probability": 0.625045924205,
+      "marginal_probability_sum": 5
+    }
+  },
+  "inference": {
+    "null": "Uniform independent 5-subsets of ranks 1..40 per target",
+    "partition_function_z": 625181.3881443241,
+    "log_partition": 13.34579710764348,
+    "uniform_partition": 658008,
+    "marginal_probabilities": [
+      0.12609648036319,
+      0.12603996946584,
+      0.12598348081767,
+      0.12592701441282,
+      0.12587057024543,
+      0.12581414830964,
+      0.12575774859957,
+      0.12570137110936,
+      0.12564501583315,
+      0.12558868276507,
+      0.12553237189924,
+      0.12547608322979,
+      0.12541981675085,
+      0.12536357245655,
+      0.12530735034101,
+      0.12525115039835,
+      0.1251949726227,
+      0.12513881700818,
+      0.1250826835489,
+      0.12502657223899,
+      0.12497048307256,
+      0.12491441604373,
+      0.1248583711466,
+      0.12480234837531,
+      0.12474634772395,
+      0.12469036918663,
+      0.12463441275748,
+      0.12457847843059,
+      0.12452256620007,
+      0.12446667606003,
+      0.12441080800458,
+      0.12435496202781,
+      0.12429913812383,
+      0.12424333628674,
+      0.12418755651064,
+      0.12413179878962,
+      0.1240760631178,
+      0.12402034948925,
+      0.12396465789808,
+      0.12390898833839
+    ],
+    "marginal_probability_sum": 5,
+    "marginal_probability_sum_squares": 0.62501676836105,
+    "validation_randomization": {
+      "observed_mean_log_likelihood_gain": -0.000674973365,
+      "observed_mean_brier_delta": 0.000151183361,
+      "log_likelihood": {
+        "replicates": 10000,
+        "extreme": 8925,
+        "p_one_sided_upper": 0.892510748925
+      },
+      "brier": {
+        "replicates": 10000,
+        "extreme": 8918,
+        "p_one_sided_lower": 0.891810818918
+      }
+    },
+    "blind_oos_randomization": {
+      "observed_mean_log_likelihood_gain": 0.000333606979,
+      "observed_mean_brier_delta": -0.000075080049,
+      "log_likelihood": {
+        "replicates": 10000,
+        "extreme": 2052,
+        "p_one_sided_upper": 0.205279472053
+      },
+      "brier": {
+        "replicates": 10000,
+        "extreme": 2041,
+        "p_one_sided_lower": 0.204179582042
+      }
+    },
+    "tests": [
+      {
+        "split": "validation",
+        "endpoint": "log_likelihood_gain",
+        "direction": "upper",
+        "p": 0.892510748925,
+        "p_holm": 1
+      },
+      {
+        "split": "validation",
+        "endpoint": "brier_delta",
+        "direction": "lower",
+        "p": 0.891810818918,
+        "p_holm": 1
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "log_likelihood_gain",
+        "direction": "upper",
+        "p": 0.205279472053,
+        "p_holm": 0.816718328168
+      },
+      {
+        "split": "blind_oos",
+        "endpoint": "brier_delta",
+        "direction": "lower",
+        "p": 0.204179582042,
+        "p_holm": 0.816718328168
+      }
+    ],
+    "holm_family_size": 4
+  },
+  "limitations": [
+    "Q135 is an exploratory post-hoc extension of Q123, not independent confirmation.",
+    "The historical Blind OOS is not a virgin holdout after prior SONAR research.",
+    "The conditional null assumes independent uniform 5-of-40 draws.",
+    "The rank ledger was generated by the exact APP scorer in Q123; Q135 does not rerun or alter the scorer.",
+    "No new prospective forecast, Q60 update, archive change or engine promotion."
+  ],
+  "next_action": "Keep the fitted beta frozen as a research diagnostic; do not promote. Continue Q60 only from source-clean prospective pairs. Treat Q135 as exploratory because it reuses Q123 ordinal ranks."
+}
