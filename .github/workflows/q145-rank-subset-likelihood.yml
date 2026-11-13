@@ -1,0 +1,31 @@
+name: Q145 Rank-to-Subset Likelihood
+
+on:
+  push:
+    branches:
+      - research/q145-rank-subset-likelihood-20261113
+  pull_request:
+    branches:
+      - research/q144-shadow-rank-ensemble-20261113
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: q145-rank-subset-likelihood-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Test exact subset normalizer, marginals and inference
+        run: node tests/test_sonar_q145_rank_subset_likelihood.mjs
+      - name: Verify pinned sources, strict-prior ledger and deterministic artifacts
+        run: node scripts/sonar_q145_rank_subset_likelihood.mjs
