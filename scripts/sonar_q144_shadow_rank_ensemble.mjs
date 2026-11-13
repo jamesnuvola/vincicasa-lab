@@ -262,7 +262,7 @@ export function buildQ144Outputs(archiveCsv, shadowCsv, preregText) {
   assert.equal(completedDates.length, 31, "Unexpected completed shadow target count");
 
   const ledger = [];
-  let cutoffChecks = 0, freezeChecks = 0, reconciledRows = 0, staleCutoffRows = 0, freshCutoffRows = 0;
+  let cutoffChecks = 0, freezeChecks = 0, reconciledRows = 0, staleCutoffRows = 0, freshCutoffRows = 0;\n  const multipleFreezeTimestampDates = [];
   for (const date of completedDates) {
     const rows = grouped.get(date);
     const ruleRows = rows.filter(r => ["family", "pair", "chain"].includes(r.config_type));
@@ -495,7 +495,7 @@ function outputPaths() {
   };
 }
 
-if (process.argv[1] && process.argv[1].endsWith("sonar_q144_shadow_rank_ensemble.mjs")) {
+if (process.argv[1] && path.basename(process.argv[1]) === "sonar_q144_shadow_rank_ensemble.mjs") {
   const paths = outputPaths();
   const archiveCsv = fs.readFileSync(paths.archive, "utf8");
   const shadowCsv = fs.readFileSync(paths.shadow, "utf8");
