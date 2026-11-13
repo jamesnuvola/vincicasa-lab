@@ -288,6 +288,14 @@ def block_bootstrap_ci(values, seed, replicates=BOOTSTRAP_REPLICATES, block=BLOC
         samples[start:start + batch] = x[flat].mean(axis=1)
     return [float(v) for v in np.quantile(samples, [0.025, 0.975])]
 
+def apply_independent_circular_shifts(matrix, shifts):
+    x = np.asarray(matrix, dtype=np.float64)
+    shifts = np.asarray(shifts, dtype=np.int64)
+    if x.ndim != 2 or shifts.shape != (x.shape[1],):
+        raise ValueError("circular shifts require one offset per matrix column")
+    indices = (np.arange(x.shape[0], dtype=np.int64)[:, None] - shifts[None, :]) % x.shape[0]
+    return np.take_along_axis(x, indices, axis=0)
+
 def circular_shift_surrogates(centered, split_ranges, replicates=NULL_REPLICATES, seed=SEED_NULL):
     x = np.asarray(centered, dtype=np.float64)
     n, p = x.shape
@@ -295,8 +303,7 @@ def circular_shift_surrogates(centered, split_ranges, replicates=NULL_REPLICATES
     null = {name: np.empty(replicates, dtype=np.float64) for name in split_ranges}
     for b in range(replicates):
         shifts = rng.integers(1, n, size=p, dtype=np.int64)
-        indices = (np.arange(n, dtype=np.int64)[:, None] - shifts[None, :]) % n
-        shifted = np.take_along_axis(x, indices, axis=0)
+        shifted = apply_independent_circular_shifts(x, shifts)
         shifted = shifted - np.median(shifted, axis=1, keepdims=True)
         train = shifted[:WARMUP]
         means = train.mean(axis=0)
@@ -350,7 +357,7 @@ def main():
         raise SystemExit("A17_BLOCKED: future suffix changed the fitted training basis")
 
     n_eval = TARGETS - WARMUP
-    ranges = split_slices(TARGETS)
+    ranges = split_slices(n_eval)
     counts = {name: sl.stop - sl.start for name, sl in ranges.items()}
     if counts != {"discovery": 1792, "validation": 597, "blind_oos": 597}:
         raise SystemExit(f"A17_BLOCKED: unexpected split counts {counts}")
