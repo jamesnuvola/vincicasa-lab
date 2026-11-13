@@ -1,0 +1,549 @@
+{
+  "experiment_id": "Q120",
+  "title": "Rolling-window frequency drift",
+  "status": "COMPLETED_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_ROLLING_FREQUENCY_INCREMENTAL_LIFT_DEMONSTRATED",
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-10"
+  },
+  "hypothesis": "Short rolling windows may adapt to temporal nonstationarity and improve the next 5-of-40 set probability over exact uniform and cumulative frequency baselines.",
+  "model": {
+    "alpha": 200,
+    "alpha_per_number": 5,
+    "windows": [
+      100,
+      250,
+      500,
+      1000,
+      2000
+    ],
+    "selection_rule": "minimum Validation joint set log-loss; ties choose larger window",
+    "set_probability": "prod_{n in S}(c_n+alpha/40)/e5(w)",
+    "marginal_inclusion": "w_n*e4(w excluding n)/e5(w)",
+    "M0": "uniform exact 5-of-40",
+    "M1": "cumulative counts plus alpha/40"
+  },
+  "walk_forward": {
+    "minimum_history": 200,
+    "targets": 3204,
+    "splits": {
+      "discovery": 1922,
+      "validation": 641,
+      "blind_oos": 641
+    },
+    "strict_prior_cutoffs": true,
+    "score_before_update": true
+  },
+  "validation_selection": [
+    {
+      "window": 2000,
+      "mean_joint_logloss": 13.403935936779769,
+      "mean_marginal_brier": 0.10941458463999164
+    },
+    {
+      "window": 1000,
+      "mean_joint_logloss": 13.417044785506224,
+      "mean_marginal_brier": 0.10948801242660416
+    },
+    {
+      "window": 500,
+      "mean_joint_logloss": 13.43481045391815,
+      "mean_marginal_brier": 0.10958577891213636
+    },
+    {
+      "window": 250,
+      "mean_joint_logloss": 13.447720371585248,
+      "mean_marginal_brier": 0.10965200686444523
+    },
+    {
+      "window": 100,
+      "mean_joint_logloss": 13.492436846867117,
+      "mean_marginal_brier": 0.10989060576657467
+    }
+  ],
+  "results": {
+    "discovery": {
+      "M0": {
+        "n": 1922,
+        "mean_joint_logloss": 13.396972368288504,
+        "mean_marginal_brier": 0.109375,
+        "mean_top20_hits": 2.5359001040582725,
+        "top20_5of5_count": 51
+      },
+      "M1": {
+        "n": 1922,
+        "mean_joint_logloss": 13.412398068713493,
+        "mean_marginal_brier": 0.10946112443334856,
+        "mean_top20_hits": 2.5145681581685744,
+        "top20_5of5_count": 39
+      },
+      "rolling_candidates": {
+        "100": {
+          "n": 1922,
+          "mean_joint_logloss": 13.4754760703058,
+          "mean_marginal_brier": 0.10980226810043954,
+          "mean_top20_hits": 2.522372528616025,
+          "top20_5of5_count": 52
+        },
+        "250": {
+          "n": 1922,
+          "mean_joint_logloss": 13.441235477342447,
+          "mean_marginal_brier": 0.10961804043494257,
+          "mean_top20_hits": 2.508324661810614,
+          "top20_5of5_count": 39
+        },
+        "500": {
+          "n": 1922,
+          "mean_joint_logloss": 13.422763566133725,
+          "mean_marginal_brier": 0.10952035496192883,
+          "mean_top20_hits": 2.54474505723205,
+          "top20_5of5_count": 44
+        },
+        "1000": {
+          "n": 1922,
+          "mean_joint_logloss": 13.41830708263435,
+          "mean_marginal_brier": 0.10949425370618737,
+          "mean_top20_hits": 2.4994797086368368,
+          "top20_5of5_count": 37
+        },
+        "2000": {
+          "n": 1922,
+          "mean_joint_logloss": 13.412324672680036,
+          "mean_marginal_brier": 0.10946070231126243,
+          "mean_top20_hits": 2.5135275754422475,
+          "top20_5of5_count": 38
+        }
+      },
+      "selected": {
+        "window": 2000,
+        "n": 1922,
+        "mean_joint_logloss": 13.412324672680036,
+        "mean_marginal_brier": 0.10946070231126243,
+        "mean_top20_hits": 2.5135275754422475,
+        "top20_5of5_count": 38
+      }
+    },
+    "validation": {
+      "M0": {
+        "n": 641,
+        "mean_joint_logloss": 13.39697236828831,
+        "mean_marginal_brier": 0.109375,
+        "mean_top20_hits": 2.4773790951638066,
+        "top20_5of5_count": 13
+      },
+      "M1": {
+        "n": 641,
+        "mean_joint_logloss": 13.403746656438075,
+        "mean_marginal_brier": 0.10941351742152515,
+        "mean_top20_hits": 2.499219968798752,
+        "top20_5of5_count": 21
+      },
+      "rolling_candidates": {
+        "100": {
+          "n": 641,
+          "mean_joint_logloss": 13.492436846867117,
+          "mean_marginal_brier": 0.10989060576657467,
+          "mean_top20_hits": 2.4492979719188765,
+          "top20_5of5_count": 7
+        },
+        "250": {
+          "n": 641,
+          "mean_joint_logloss": 13.447720371585248,
+          "mean_marginal_brier": 0.10965200686444523,
+          "mean_top20_hits": 2.4711388455538223,
+          "top20_5of5_count": 17
+        },
+        "500": {
+          "n": 641,
+          "mean_joint_logloss": 13.43481045391815,
+          "mean_marginal_brier": 0.10958577891213636,
+          "mean_top20_hits": 2.4586583463338534,
+          "top20_5of5_count": 15
+        },
+        "1000": {
+          "n": 641,
+          "mean_joint_logloss": 13.417044785506224,
+          "mean_marginal_brier": 0.10948801242660416,
+          "mean_top20_hits": 2.4555382215288613,
+          "top20_5of5_count": 9
+        },
+        "2000": {
+          "n": 641,
+          "mean_joint_logloss": 13.403935936779769,
+          "mean_marginal_brier": 0.10941458463999164,
+          "mean_top20_hits": 2.4648985959438376,
+          "top20_5of5_count": 11
+        }
+      },
+      "selected": {
+        "window": 2000,
+        "n": 641,
+        "mean_joint_logloss": 13.403935936779769,
+        "mean_marginal_brier": 0.10941458463999164,
+        "mean_top20_hits": 2.4648985959438376,
+        "top20_5of5_count": 11
+      }
+    },
+    "blind_oos": {
+      "M0": {
+        "n": 641,
+        "mean_joint_logloss": 13.39697236828831,
+        "mean_marginal_brier": 0.109375,
+        "mean_top20_hits": 2.5070202808112323,
+        "top20_5of5_count": 19
+      },
+      "M1": {
+        "n": 641,
+        "mean_joint_logloss": 13.399505153146023,
+        "mean_marginal_brier": 0.10938996028730802,
+        "mean_top20_hits": 2.514820592823713,
+        "top20_5of5_count": 18
+      },
+      "rolling_candidates": {
+        "100": {
+          "n": 641,
+          "mean_joint_logloss": 13.47969970752704,
+          "mean_marginal_brier": 0.1098225790631434,
+          "mean_top20_hits": 2.5085803432137284,
+          "top20_5of5_count": 16
+        },
+        "250": {
+          "n": 641,
+          "mean_joint_logloss": 13.432223041099105,
+          "mean_marginal_brier": 0.10956392422301592,
+          "mean_top20_hits": 2.5070202808112323,
+          "top20_5of5_count": 10
+        },
+        "500": {
+          "n": 641,
+          "mean_joint_logloss": 13.414514156699825,
+          "mean_marginal_brier": 0.10947391140115659,
+          "mean_top20_hits": 2.5522620904836195,
+          "top20_5of5_count": 14
+        },
+        "1000": {
+          "n": 641,
+          "mean_joint_logloss": 13.402782168448862,
+          "mean_marginal_brier": 0.10940754967462579,
+          "mean_top20_hits": 2.5054602184087362,
+          "top20_5of5_count": 12
+        },
+        "2000": {
+          "n": 641,
+          "mean_joint_logloss": 13.401345024028176,
+          "mean_marginal_brier": 0.10939946190229863,
+          "mean_top20_hits": 2.482059282371295,
+          "top20_5of5_count": 17
+        }
+      },
+      "selected": {
+        "window": 2000,
+        "n": 641,
+        "mean_joint_logloss": 13.401345024028176,
+        "mean_marginal_brier": 0.10939946190229863,
+        "mean_top20_hits": 2.482059282371295,
+        "top20_5of5_count": 17
+      }
+    }
+  },
+  "blind_inference": {
+    "method": "one-sided paired block sign-flip",
+    "block_length": 20,
+    "replicates": 50000,
+    "bootstrap": "circular moving-block bootstrap",
+    "bootstrap_replicates": 10000,
+    "holm_family_size": 12,
+    "holm_scope": "five rolling windows vs M0 (joint log-loss and marginal Brier each) plus selected window vs M1 (two metrics)",
+    "tests": [
+      {
+        "endpoint": "W100_vs_M0_ll",
+        "window": 100,
+        "baseline": "M0",
+        "metric": "ll",
+        "mean_gain": -0.08272733923879864,
+        "p_one_sided_improvement": 0.999980000399992,
+        "bootstrap_ci95": [
+          -0.11365533285756238,
+          -0.05102289776639997
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W100_vs_M0_brier",
+        "window": 100,
+        "baseline": "M0",
+        "metric": "brier",
+        "mean_gain": -0.00044757906314353774,
+        "p_one_sided_improvement": 0.999980000399992,
+        "bootstrap_ci95": [
+          -0.0006206896784178578,
+          -0.00026800080101312254
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W250_vs_M0_ll",
+        "window": 250,
+        "baseline": "M0",
+        "metric": "ll",
+        "mean_gain": -0.03525067281083921,
+        "p_one_sided_improvement": 0.996560068798624,
+        "bootstrap_ci95": [
+          -0.05812945948758678,
+          -0.011403130611648915
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W250_vs_M0_brier",
+        "window": 250,
+        "baseline": "M0",
+        "metric": "brier",
+        "mean_gain": -0.00018892422301581313,
+        "p_one_sided_improvement": 0.9946801063978721,
+        "bootstrap_ci95": [
+          -0.00032249374734465765,
+          -0.000054546233167219435
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W500_vs_M0_ll",
+        "window": 500,
+        "baseline": "M0",
+        "metric": "ll",
+        "mean_gain": -0.017541788411559216,
+        "p_one_sided_improvement": 0.9549809003819923,
+        "bootstrap_ci95": [
+          -0.0363367432607691,
+          0.0016710660968460233
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W500_vs_M0_brier",
+        "window": 500,
+        "baseline": "M0",
+        "metric": "brier",
+        "mean_gain": -0.00009891140115652228,
+        "p_one_sided_improvement": 0.9550008999820003,
+        "bootstrap_ci95": [
+          -0.00020749458116751937,
+          0.000008799342336740217
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W1000_vs_M0_ll",
+        "window": 1000,
+        "baseline": "M0",
+        "metric": "ll",
+        "mean_gain": -0.005809800160592962,
+        "p_one_sided_improvement": 0.7878642427151457,
+        "bootstrap_ci95": [
+          -0.019825886649563453,
+          0.007753052523674914
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W1000_vs_M0_brier",
+        "window": 1000,
+        "baseline": "M0",
+        "metric": "brier",
+        "mean_gain": -0.000032549674625679724,
+        "p_one_sided_improvement": 0.7847443051138977,
+        "bootstrap_ci95": [
+          -0.00011114561363956504,
+          0.000044865164141965724
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W2000_vs_M0_ll",
+        "window": 2000,
+        "baseline": "M0",
+        "metric": "ll",
+        "mean_gain": -0.004372655739928022,
+        "p_one_sided_improvement": 0.7698646027079459,
+        "bootstrap_ci95": [
+          -0.014718796081227956,
+          0.006040654676122142
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W2000_vs_M0_brier",
+        "window": 2000,
+        "baseline": "M0",
+        "metric": "brier",
+        "mean_gain": -0.00002446190229858095,
+        "p_one_sided_improvement": 0.7727445451090978,
+        "bootstrap_ci95": [
+          -0.00008227413277890551,
+          0.00003426072648485614
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W2000_vs_M1_ll",
+        "window": 2000,
+        "baseline": "M1",
+        "metric": "ll",
+        "mean_gain": -0.0018398708821709593,
+        "p_one_sided_improvement": 0.7330253394932101,
+        "bootstrap_ci95": [
+          -0.007838752591037695,
+          0.0037743588389502996
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      },
+      {
+        "endpoint": "W2000_vs_M1_brier",
+        "window": 2000,
+        "baseline": "M1",
+        "metric": "brier",
+        "mean_gain": -0.000009501614990597546,
+        "p_one_sided_improvement": 0.7157056858862823,
+        "bootstrap_ci95": [
+          -0.0000423922617678334,
+          0.00002345443314531611
+        ],
+        "replicates": 50000,
+        "bootstrap_replicates": 10000,
+        "block_length": 20,
+        "block_count": 33,
+        "p_holm": 1
+      }
+    ]
+  },
+  "integrity": {
+    "source_sha_pinned": true,
+    "chronological_unique_dates": true,
+    "valid_sorted_five_of_forty": true,
+    "strict_prior_cutoffs": true,
+    "score_before_update": true,
+    "window_counts_prior_only": true,
+    "exact_subset_enumeration": {
+      "sum": 1.0000000000000557,
+      "count": 658008
+    },
+    "max_subset_mass_error": 5.573319583618286e-14,
+    "future_suffix_mutation": [
+      {
+        "target_index": 2763,
+        "target_date": "2025-02-08",
+        "passed": true,
+        "max_abs_difference": 0
+      },
+      {
+        "target_index": 2800,
+        "target_date": "2025-03-17",
+        "passed": true,
+        "max_abs_difference": 0
+      },
+      {
+        "target_index": 2900,
+        "target_date": "2025-06-25",
+        "passed": true,
+        "max_abs_difference": 0
+      },
+      {
+        "target_index": 3000,
+        "target_date": "2025-10-03",
+        "passed": true,
+        "max_abs_difference": 0
+      },
+      {
+        "target_index": 3100,
+        "target_date": "2026-01-11",
+        "passed": true,
+        "max_abs_difference": 0
+      },
+      {
+        "target_index": 3200,
+        "target_date": "2026-04-21",
+        "passed": true,
+        "max_abs_difference": 0
+      },
+      {
+        "target_index": 3300,
+        "target_date": "2026-07-30",
+        "passed": true,
+        "max_abs_difference": 0
+      },
+      {
+        "target_index": 3400,
+        "target_date": "2026-11-07",
+        "passed": true,
+        "max_abs_difference": 0
+      },
+      {
+        "target_index": 3403,
+        "target_date": "2026-11-10",
+        "passed": true,
+        "max_abs_difference": 0
+      }
+    ],
+    "deterministic_seeded_inference": true,
+    "deterministic_replay": true,
+    "ledger_precision_decimal_places": 8
+  },
+  "limitations": [
+    "Historical Blind OOS is not a virgin holdout after prior SONAR research.",
+    "Rolling windows and alpha are exploratory relative to the wider Q00-Q120 research family; Holm covers the 12 registered Q120 endpoints only.",
+    "The weighted-without-replacement distribution is a research probability model, not a validated production scorer.",
+    "No Q60 paired freeze is created by this experiment."
+  ],
+  "next_action": "Evaluate the 2026-11-11 Q120 research freeze only after the official contest 315 result is published; do not retune."
+}

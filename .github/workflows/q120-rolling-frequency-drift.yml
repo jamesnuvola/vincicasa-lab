@@ -1,0 +1,27 @@
+name: Q120 rolling frequency drift replay
+
+on:
+  push:
+    branches: ["research/q120-rolling-frequency-drift-20261111"]
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/sonar_q120_rolling_frequency_drift.mjs"
+      - "reports/sequence_agent/q120_rolling_frequency_drift_*.json"
+      - "reports/sequence_agent/q120_rolling_frequency_drift_target_ledger_2026-11-11.csv"
+      - ".github/workflows/q120-rolling-frequency-drift.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Recompute Q120 and verify persisted artifacts
+        run: node scripts/sonar_q120_rolling_frequency_drift.mjs --verify

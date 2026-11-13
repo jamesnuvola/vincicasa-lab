@@ -1,0 +1,72 @@
+{
+  "experiment_id": "Q120",
+  "branch": "research/q120-rolling-frequency-drift-20261111",
+  "commit_before_manifest": "6647443aef84ab12e8a25e33192ac448661be053",
+  "source": {
+    "main_commit": "04fed58ab8a4226da3cd2bc2a495a12095941355",
+    "archive_blob_sha": "40f317e2d0067e061c46ab799d66f777a0e087c0",
+    "draws": 3404,
+    "last_date": "2026-11-10"
+  },
+  "artifacts": [
+    {
+      "path": "reports/sequence_agent/q120_rolling_frequency_drift_protocol_2026-11-11.json",
+      "blob_sha": "03b86b65801108ebf951d89cfd5ab9e9e7a340d9",
+      "bytes": 3496
+    },
+    {
+      "path": "reports/sequence_agent/q120_rolling_frequency_drift_report_2026-11-11.json",
+      "blob_sha": "2847c9dc70616ee0e6081b8c685087d8e79db3df",
+      "bytes": 16351
+    },
+    {
+      "path": "reports/sequence_agent/q120_rolling_frequency_drift_target_ledger_2026-11-11.csv",
+      "blob_sha": "29e59d46f370332c763645aa8d3e64c9210505a6",
+      "bytes": 919343
+    },
+    {
+      "path": "reports/sequence_agent/q120_rolling_frequency_drift_prospective_freeze_2026-11-11.json",
+      "blob_sha": "540d429152480aa960bafa3ac35d780515615247",
+      "bytes": 4973
+    },
+    {
+      "path": "reports/sequence_agent/q120_rolling_frequency_drift_validation_2026-11-11.json",
+      "blob_sha": "f88e3144cb6b40644d09a51dde3888e33a93f8c8",
+      "bytes": 4820
+    },
+    {
+      "path": "reports/sequence_agent/q120_rolling_frequency_drift_checkpoint_2026-11-11.md",
+      "blob_sha": "e6f543b8d4354d83eae6c02bfa7a44d6a973c7fd",
+      "bytes": 1690
+    },
+    {
+      "path": "scripts/sonar_q120_rolling_frequency_drift.mjs",
+      "blob_sha": "69c1d9830c50c6dda4591176f2cf029233f3b274",
+      "bytes": 10138
+    },
+    {
+      "path": ".github/workflows/q120-rolling-frequency-drift.yml",
+      "blob_sha": "e84bf1d0f825f93408f8a40d2435bf39804a66e7",
+      "bytes": 803
+    }
+  ],
+  "replay_evidence": {
+    "node20_push_run": 43024486362,
+    "node20_pull_request_run": 43024494177,
+    "conclusion": "success",
+    "recovery": "Initial replay failed because mean helper returned sum; fixed and both replays passed."
+  },
+  "general_ci_evidence": {
+    "push_run": 43024486259,
+    "pull_request_run": 43024494224,
+    "status": "in_progress_at_checkpoint"
+  },
+  "verification": "All eight artifact blobs were read back from the branch; the 919,343-byte target ledger was fully readable. Node 20 replay recomputes target scores, all 12 block tests, Holm correction, exact subset mass, future-suffix checks, freeze, and verifies persisted artifacts.",
+  "guardrails": [
+    "Research-only",
+    "No production changes",
+    "No Q60 modifications",
+    "No merge or engine promotion",
+    "PR #6, #7, and #8 untouched"
+  ]
+}
