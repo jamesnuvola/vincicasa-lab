@@ -1,0 +1,400 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A12-STRUCTURAL-MARKOV-AUDIT",
+  "status": "COMPLETE_HISTORICAL_EXPLORATORY",
+  "decision": "NO_MARKOV_LIFT_IN_NINE_NON_DIFFERENCED_STRUCTURAL_FEATURES; DIFFERENCED_FEATURE_GAIN_IS_COMPATIBLE_WITH_IID_MECHANICS",
+  "source": {
+    "artifact_run_id": 43348144964,
+    "artifact_id": 14003350043,
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "matrix_sha256": "81479d7cff00ddcbc6046bcb390efb2ef1b08de6a6f1f2cdb2f89a77c76c6047",
+    "matrix_shape": [
+      3356,
+      40,
+      59
+    ],
+    "feature_count": 59,
+    "draws_in_matrix": 3356,
+    "first_target_date": "2017-09-05",
+    "last_target_date": "2026-11-12"
+  },
+  "design": {
+    "features": [
+      "sum_bin",
+      "range_bin",
+      "odd_cat",
+      "low_cat",
+      "overlap_cat",
+      "gap1_bin",
+      "gap2_bin",
+      "gap3_bin",
+      "gap4_bin",
+      "sum_transition",
+      "range_transition"
+    ],
+    "feature_category_count": 51,
+    "model": "one-step categorical Markov transition forecast with prior-only transition counts",
+    "baseline": "expanding marginal category frequency with symmetric Dirichlet alpha=0.5 per category",
+    "markov_smoothing": "transition row shrunk toward the same prior-only marginal baseline with fixed alpha=20",
+    "warmup_rows": 400,
+    "targets": 2956,
+    "split_counts": {
+      "discovery": 1774,
+      "validation": 591,
+      "blind_oos": 591
+    },
+    "primary_diagnostic": "mean log-loss gain of core nine non-differenced structural features; baseline minus Markov",
+    "secondary_diagnostic": "mean multiclass Brier gain of the same core nine features",
+    "mechanical_features": [
+      "sum_transition",
+      "range_transition"
+    ],
+    "mechanical_null": "2,000 independent uniform unordered 5-of-40 sequences; identical prior-only Markov scorer; empirical upper-tail p and Holm across four differenced-feature metrics",
+    "inference": "circular moving-block bootstrap length 20, 20,000 replicates; HAC lag 20 and Holm across nine core-feature tests",
+    "tuning": "no parameter search; smoothing constants fixed at 0.5 and 20"
+  },
+  "split_metrics": {
+    "discovery": {
+      "targets": 1774,
+      "first_target": "2018-10-10",
+      "last_target": "2023-08-18",
+      "full11_mean_logloss_gain": 0.014353931590492615,
+      "full11_mean_brier_gain": 0.009145599404000908,
+      "core9_mean_logloss_gain": -0.004841824378326201,
+      "core9_mean_brier_gain": -0.0016823271247470165,
+      "difference2_mean_logloss_gain": 0.10073483345017728,
+      "difference2_mean_brier_gain": 0.05787126878336657
+    },
+    "validation": {
+      "targets": 591,
+      "first_target": "2023-08-19",
+      "last_target": "2025-03-31",
+      "full11_mean_logloss_gain": 0.013169438546607877,
+      "full11_mean_brier_gain": 0.008827061342693118,
+      "core9_mean_logloss_gain": -0.004024560823199918,
+      "core9_mean_brier_gain": -0.0017153523133112396,
+      "difference2_mean_logloss_gain": 0.09054243571074294,
+      "difference2_mean_brier_gain": 0.056267922794712724
+    },
+    "blind_oos": {
+      "targets": 591,
+      "first_target": "2025-04-01",
+      "last_target": "2026-11-12",
+      "full11_mean_logloss_gain": 0.01534343159481531,
+      "full11_mean_brier_gain": 0.008919612144376051,
+      "core9_mean_logloss_gain": -0.002646271366080973,
+      "core9_mean_brier_gain": -0.00098680782671824,
+      "difference2_mean_logloss_gain": 0.0962970949188486,
+      "difference2_mean_brier_gain": 0.05349850201430035
+    }
+  },
+  "blind_oos_inference": {
+    "full11_logloss": {
+      "mean": 0.01534343159481531,
+      "ci95": [
+        0.011564240987033797,
+        0.019264074508317484
+      ],
+      "bootstrap_se": 0.001957184939579446,
+      "p_one_sided_gain_gt_zero": 4.999750012499375e-05,
+      "replicates": 20000,
+      "block_length": 20
+    },
+    "full11_brier": {
+      "mean": 0.008919612144376051,
+      "ci95": [
+        0.006525155443451719,
+        0.01142395309486002
+      ],
+      "bootstrap_se": 0.0012604136406839535,
+      "p_one_sided_gain_gt_zero": 4.999750012499375e-05,
+      "replicates": 20000,
+      "block_length": 20
+    },
+    "core9_logloss": {
+      "mean": -0.002646271366080973,
+      "ci95": [
+        -0.004522852907461271,
+        -0.000712500452387162
+      ],
+      "bootstrap_se": 0.0009709807530479982,
+      "p_one_sided_gain_gt_zero": 0.9970001499925004,
+      "replicates": 20000,
+      "block_length": 20
+    },
+    "core9_brier": {
+      "mean": -0.00098680782671824,
+      "ci95": [
+        -0.0018492115173598539,
+        -0.00011628611057832418
+      ],
+      "bootstrap_se": 0.00044016874142692165,
+      "p_one_sided_gain_gt_zero": 0.9889005549722514,
+      "replicates": 20000,
+      "block_length": 20
+    },
+    "difference2_logloss": {
+      "mean": 0.0962970949188486,
+      "ci95": [
+        0.07332075407593584,
+        0.11950504644567553
+      ],
+      "bootstrap_se": 0.011770288168226941,
+      "p_one_sided_gain_gt_zero": 4.999750012499375e-05,
+      "replicates": 20000,
+      "block_length": 20
+    },
+    "difference2_brier": {
+      "mean": 0.05349850201430035,
+      "ci95": [
+        0.03937473146586223,
+        0.06778508057750111
+      ],
+      "bootstrap_se": 0.007287334387283903,
+      "p_one_sided_gain_gt_zero": 4.999750012499375e-05,
+      "replicates": 20000,
+      "block_length": 20
+    }
+  },
+  "blind_core9_feature_tests": [
+    {
+      "feature": "sum_bin",
+      "mean_logloss_gain": -0.0050457988064390325,
+      "hac_se_lag20": 0.0031585811479037666,
+      "z_one_sided_gain": -1.597489052889378,
+      "p_one_sided_gain_gt_zero": 0.9449216320228062,
+      "p_holm_across_9_core_features": 1.0
+    },
+    {
+      "feature": "range_bin",
+      "mean_logloss_gain": -0.00449119845786086,
+      "hac_se_lag20": 0.0020079071297370815,
+      "z_one_sided_gain": -2.2367560687176526,
+      "p_one_sided_gain_gt_zero": 0.9873488563780801,
+      "p_holm_across_9_core_features": 1.0
+    },
+    {
+      "feature": "odd_cat",
+      "mean_logloss_gain": -0.006080605754379232,
+      "hac_se_lag20": 0.0034574753068089305,
+      "z_one_sided_gain": -1.7586837836280353,
+      "p_one_sided_gain_gt_zero": 0.9606843833657395,
+      "p_holm_across_9_core_features": 1.0
+    },
+    {
+      "feature": "low_cat",
+      "mean_logloss_gain": -0.006555036470089589,
+      "hac_se_lag20": 0.003771561702132563,
+      "z_one_sided_gain": -1.7380165002691481,
+      "p_one_sided_gain_gt_zero": 0.958896046797447,
+      "p_holm_across_9_core_features": 1.0
+    },
+    {
+      "feature": "overlap_cat",
+      "mean_logloss_gain": -0.001028451287290482,
+      "hac_se_lag20": 0.0013955027672406172,
+      "z_one_sided_gain": -0.7369754553221557,
+      "p_one_sided_gain_gt_zero": 0.769431362141177,
+      "p_holm_across_9_core_features": 1.0
+    },
+    {
+      "feature": "gap1_bin",
+      "mean_logloss_gain": -0.0015740650011132696,
+      "hac_se_lag20": 0.0011644527293659013,
+      "z_one_sided_gain": -1.3517637611364621,
+      "p_one_sided_gain_gt_zero": 0.9117745497859528,
+      "p_holm_across_9_core_features": 1.0
+    },
+    {
+      "feature": "gap2_bin",
+      "mean_logloss_gain": 0.0010349843936909467,
+      "hac_se_lag20": 0.0026509370230462953,
+      "z_one_sided_gain": 0.3904220978066109,
+      "p_one_sided_gain_gt_zero": 0.3481122250686959,
+      "p_holm_across_9_core_features": 1.0
+    },
+    {
+      "feature": "gap3_bin",
+      "mean_logloss_gain": -0.0003751226163117323,
+      "hac_se_lag20": 0.002646939805485582,
+      "z_one_sided_gain": -0.14171936042305122,
+      "p_one_sided_gain_gt_zero": 0.5563491590564704,
+      "p_holm_across_9_core_features": 1.0
+    },
+    {
+      "feature": "gap4_bin",
+      "mean_logloss_gain": 0.0002988517050644962,
+      "hac_se_lag20": 0.0023813849583280027,
+      "z_one_sided_gain": 0.12549491589731185,
+      "p_one_sided_gain_gt_zero": 0.45006587487355865,
+      "p_holm_across_9_core_features": 1.0
+    }
+  ],
+  "blind_feature_metrics": {
+    "sum_bin": {
+      "mean_logloss_gain": -0.0050457988064390325,
+      "mean_brier_gain": -0.0017488684962405749
+    },
+    "range_bin": {
+      "mean_logloss_gain": -0.00449119845786086,
+      "mean_brier_gain": -0.0018756526871503251
+    },
+    "odd_cat": {
+      "mean_logloss_gain": -0.006080605754379232,
+      "mean_brier_gain": -0.0018520409411692622
+    },
+    "low_cat": {
+      "mean_logloss_gain": -0.006555036470089589,
+      "mean_brier_gain": -0.002210772606065881
+    },
+    "overlap_cat": {
+      "mean_logloss_gain": -0.001028451287290482,
+      "mean_brier_gain": -0.00022581260579728268
+    },
+    "gap1_bin": {
+      "mean_logloss_gain": -0.0015740650011132696,
+      "mean_brier_gain": -0.0007946036855723143
+    },
+    "gap2_bin": {
+      "mean_logloss_gain": 0.0010349843936909467,
+      "mean_brier_gain": 0.0008518919053627027
+    },
+    "gap3_bin": {
+      "mean_logloss_gain": -0.0003751226163117323,
+      "mean_brier_gain": -0.0010201852471798103
+    },
+    "gap4_bin": {
+      "mean_logloss_gain": 0.0002988517050644962,
+      "mean_brier_gain": -5.226076651412917e-06
+    },
+    "sum_transition": {
+      "mean_logloss_gain": 0.0749904822418563,
+      "mean_brier_gain": 0.047597956760933584
+    },
+    "range_transition": {
+      "mean_logloss_gain": 0.11760370759584089,
+      "mean_brier_gain": 0.05939904726766713
+    }
+  },
+  "iid_mechanical_null": {
+    "replicates": 2000,
+    "seed": 14111324,
+    "null_mean": [
+      [
+        0.0892841383813392,
+        0.05641663118039785
+      ],
+      [
+        0.10386573959903408,
+        0.05549745581787225
+      ]
+    ],
+    "null_sd": [
+      [
+        0.006875379347936741,
+        0.0043102936700965995
+      ],
+      [
+        0.007296018880807266,
+        0.0040264422675018036
+      ]
+    ],
+    "null_q025_q50_q975": [
+      [
+        0.07653081896659847,
+        0.08932874246332234,
+        0.10234969422268914
+      ],
+      [
+        0.04831381715560115,
+        0.05636520163605066,
+        0.06502258868119729
+      ],
+      [
+        0.08967200873987405,
+        0.10384679595116217,
+        0.11774652697675789
+      ],
+      [
+        0.04778479702604998,
+        0.05555809324315132,
+        0.0633876222927265
+      ]
+    ],
+    "feature_order": [
+      "sum_transition",
+      "range_transition"
+    ],
+    "metric_order": [
+      "logloss_gain",
+      "brier_gain"
+    ],
+    "observed_blind_mean_gain": [
+      [
+        0.0749904822418563,
+        0.047597956760933584
+      ],
+      [
+        0.11760370759584089,
+        0.05939904726766713
+      ]
+    ],
+    "p_observed_exceeds_iid_null": [
+      0.9835082458770614,
+      0.9825087456271864,
+      0.026486756621689155,
+      0.16441779110444776
+    ],
+    "p_holm_across_four_mechanical_tests": [
+      1.0,
+      1.0,
+      0.10594702648675662,
+      0.4932533733133433
+    ],
+    "monte_carlo_se_p": [
+      0.0028477865236782684,
+      0.0029313231136535558,
+      0.0035906272672997235,
+      0.008288081233698846
+    ]
+  },
+  "contribution_decomposition": {
+    "full11_logloss_gain": 0.01534343159481531,
+    "transition_pair_weighted_contribution_to_full11": 0.017508562712517925,
+    "core9_weighted_contribution_to_full11": -0.0021651311177026144,
+    "identity_check": 0.015343431594815311,
+    "interpretation": "The full11 aggregate is dominated by two first-difference features; their adjacent values share the middle draw and can be dependent even when draws are IID. The core9 features do not show positive skill."
+  },
+  "integrity": {
+    "matrix_sha256_verified": true,
+    "archive_blob_sha1_pinned": true,
+    "matrix_finite": true,
+    "draws_valid_sorted_unique": true,
+    "dates_unique_chronological": true,
+    "all_cutoffs_precede_targets": true,
+    "fixed_category_vocabulary_51": true,
+    "first_undefined_transition_excluded": true,
+    "training_uses_only_y_1_through_t_minus_1": true,
+    "future_suffix_invariance": true,
+    "deterministic_full_replay": true
+  },
+  "limitations": [
+    "Historical Blind OOS has been exposed to prior SONAR research and is exploratory, not virgin confirmation.",
+    "This experiment predicts 11 structural categories, not individual numbers or exact five-number tickets.",
+    "The two difference features have mechanical lag dependence because adjacent differences share the middle draw; their apparent skill is not evidence that lottery draws are predictable.",
+    "The IID simulation uses independent uniform unordered 5-of-40 draws and is a statistical reference, not a physical mechanism model.",
+    "Smoothing constants were fixed for this diagnostic but the experiment was designed after earlier historical exploration; p-values are exploratory.",
+    "The nine-feature Markov model is a one-lag categorical model; it does not exhaust higher-order or formula-family dynamics.",
+    "No prospective outcome is read or appended; the 2026-11-13 freezes remain unchanged."
+  ],
+  "governance": {
+    "b11_freeze_unchanged": true,
+    "main_archive_mutated": false,
+    "active_engine_mutated": false,
+    "shadow_forecasts_mutated": false,
+    "engine_promoted": false,
+    "merge": false,
+    "rebase": false,
+    "protected_prs_6_7_8_untouched": true
+  }
+}
