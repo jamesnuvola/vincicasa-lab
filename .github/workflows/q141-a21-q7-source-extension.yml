@@ -109,7 +109,7 @@ jobs:
       - name: Recompute exact Q7 ranks for the 20 appended targets
         run: |
           python scripts/sonar_exhaustive_walkforward.py --start-index 3387 --count 20
-          test -s reports/sequence_agent/exhaustive_formula_walkforward/parts/part_3387_3407.csv
+          test -s reports/sequence_agent/exhaustive_formula_walkforward/part_3387_3407.csv
 
       - name: Build append-only residual extension and freeze 14 November monitor
         env:
@@ -117,7 +117,7 @@ jobs:
         run: |
           python scripts/sonar_q141_a21_q7_source_extension.py \
             --source-dir q7-source \
-            --extension-ledger reports/sequence_agent/exhaustive_formula_walkforward/parts/part_3387_3407.csv \
+            --extension-ledger reports/sequence_agent/exhaustive_formula_walkforward/part_3387_3407.csv \
             --a19-ledger reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14_target_ledger.csv \
             --a20-report reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_report.json \
             --current-archive data/storico_daily.csv \
@@ -130,7 +130,7 @@ jobs:
         run: |
           python scripts/sonar_q141_a21_q7_source_extension.py \
             --source-dir q7-source \
-            --extension-ledger reports/sequence_agent/exhaustive_formula_walkforward/parts/part_3387_3407.csv \
+            --extension-ledger reports/sequence_agent/exhaustive_formula_walkforward/part_3387_3407.csv \
             --a19-ledger reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14_target_ledger.csv \
             --a20-report reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_report.json \
             --current-archive data/storico_daily.csv \
@@ -224,7 +224,7 @@ jobs:
           git checkout HEAD -- data/storico_daily.csv
           rm -rf q7-source
           rm -f scripts/sonar_exhaustive_formula_lab.py scripts/sonar_exhaustive_walkforward.py
-          rm -f reports/sequence_agent/exhaustive_formula_walkforward/parts/part_3387_3407.csv
+          rm -f reports/sequence_agent/exhaustive_formula_walkforward/part_3387_3407.csv
           git config user.name "sonar-research-agent"
           git config user.email "actions@users.noreply.github.com"
           git add reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_*
