@@ -1,0 +1,61 @@
+{
+  "acceptance": {
+    "analysis_code_repository_persistence": "PENDING",
+    "deterministic_local_replay": "PASS",
+    "exact_head_ci": "PENDING",
+    "human_review": "PENDING",
+    "report_and_protocol_git_readback": "PASS",
+    "source_artifact_readback": "PASS",
+    "strict_prior_cutoff_reconciliation": "PASS"
+  },
+  "audit_date": "2026-11-14",
+  "guardrails": {
+    "no_archive_mutation": true,
+    "no_engine_promotion": true,
+    "no_freeze_mutation": true,
+    "no_merge": true,
+    "no_shadow_insertion": true,
+    "protected_prs_untouched": [
+      6,
+      7,
+      8
+    ]
+  },
+  "local_replay": {
+    "analysis_code_repository_persistence": "PENDING",
+    "engine_sha256": "8f2c107c3c358f7c8af2521332e1e1c59a8cdfaaef25bdbb6584a47cd460705f",
+    "focused_tests": "6 passed",
+    "independent_full_replays": 2,
+    "large_augmented_target_ledger": "NOT_PERSISTED; pinned source Q90 target ledger remains in 90-day artifact",
+    "output_files_byte_identical": true
+  },
+  "persisted_files": [
+    {
+      "git_blob_sha1": "d4daac5fd42b3e840bc940969175509c291778dc",
+      "path": "reports/sequence_agent/q141_a27_full_q90_formula_lifecycle_report_2026-11-14.md"
+    },
+    {
+      "git_blob_sha1": "e033b85e337b44a4aea9e70e74a2f8f78e9619cc",
+      "path": "reports/sequence_agent/q141_a27_full_q90_formula_lifecycle_validation_2026-11-14.json"
+    },
+    {
+      "git_blob_sha1": "324d2223258b5b36ef7f3a2bebb44818098e80f1",
+      "path": "reports/sequence_agent/q141_a27_full_q90_formula_lifecycle_protocol_2026-11-14.json"
+    },
+    {
+      "git_blob_sha1": "f99b2c8d7e9c4ffa07fcf2480fd341ed3f648bcf",
+      "path": "reports/sequence_agent/q141_a27_full_q90_formula_lifecycle_protocol_2026-11-14.md"
+    }
+  ],
+  "schema_version": "1.0",
+  "source": {
+    "archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "artifact_id": 13627507532,
+    "artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "formula_count": 330429,
+    "target_rows": 3351,
+    "workflow_run_id": 42504717670
+  },
+  "status": "ANALYSIS_REPLAY_VERIFIED_PENDING_EXACT_HEAD_CI_HUMAN_REVIEW",
+  "task_id": "Q141-A27"
+}
