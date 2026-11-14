@@ -24,6 +24,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -36,6 +38,7 @@ jobs:
       - name: Persist generated A24 report and ledger
         env:
           GH_TOKEN: ${{ github.token }}
+          A24_HEAD_REF: ${{ github.event.pull_request.head.ref || github.ref_name }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -44,5 +47,5 @@ jobs:
             echo "A24 outputs already match; no commit required."
           else
             git commit -m "Persist Q141-A24 prequential residual-vector results"
-            git push
+            git push origin "HEAD:${A24_HEAD_REF}"
           fi
