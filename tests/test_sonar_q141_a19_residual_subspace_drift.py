@@ -3,7 +3,7 @@ import numpy as np
 
 from sonar_q141_a19_residual_subspace_drift import (
     build_projection, compute_drift_capture, drift_at, predict_one,
-    rolling_predictions, block_signflip_p, split_ranges,
+    rolling_predictions, block_signflip_p, split_ranges, verify_future_invariance,
 )
 
 class Q141A19Tests(unittest.TestCase):
@@ -93,6 +93,15 @@ class Q141A19Tests(unittest.TestCase):
         mutated[t:] = rng.normal(loc=100.0, scale=3.0, size=mutated[t:].shape)
         after = drift_at(mutated, t, window=20, k=4)[0]
         self.assertAlmostEqual(before, after, places=14)
+
+    def test_future_invariance_helper_checks_drift_and_prediction(self):
+        rng = np.random.default_rng(1910)
+        projected = rng.normal(size=(90, 20))
+        drift, capture = compute_drift_capture(projected, window=20, k=6)
+        ok, checks = verify_future_invariance(projected, drift, capture, [60, 75, 89], window=20)
+        self.assertTrue(ok)
+        self.assertEqual(len(checks), 3)
+        self.assertTrue(all(x["drift_unchanged"] and x["prediction_unchanged"] for x in checks))
 
     def test_training_window_is_strictly_prior(self):
         rng = np.random.default_rng(1909)
