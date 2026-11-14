@@ -15,6 +15,7 @@ This is a forecast of a structural score, not a forecast of any candidate number
 
 - Q7 source: 1,023 formula masks and 3,386 scored target profiles.
 - Mask residualization: A18 design, intercept + 10 main effects + 45 pair interactions.
+- Residual coordinates: complete QR of the 1023×56 mask basis; retain the orthonormal 1023×967 complement and express each residual profile in 967 coordinates before sketching.
 - Standardization: A17 scaler fitted on the first 400 target profiles only.
 - Sketch: one fixed Gaussian 967×64 matrix, QR-orthonormalized; seed 1419001.
 - Principal dimension: k=6.
