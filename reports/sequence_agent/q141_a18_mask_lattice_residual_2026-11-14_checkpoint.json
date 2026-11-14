@@ -4,9 +4,23 @@
   "evaluated_targets": 2986,
   "experiment_id": "Q141-A18",
   "formula_count": 1023,
-  "next_action": "Verify dedicated CI, full replay and remote Git readback; then request human review without merge or promotion.",
+  "next_action": "Human review of the A18 research PR; no merge or promotion without explicit approval.",
   "null_replicates": 199,
   "q7_head": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+  "remote_readback": {
+    "branch": "research/q141-a18-mask-lattice-residual-20261114",
+    "files": {
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_component_loadings.json": "5ce6552ce60bad3b8eafc9588f272457264c0c30",
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_conditional_shift_null.csv": "11fbba5e8ae5b1b46b0e35f463f952c52cd39177",
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_manifest.json": "41eb5e9944e503b6c1c8420b4a47f97cdd9ba46a",
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_report.json": "cbd17c45cfd567ba629967ccc9e22975358dae43",
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_report.md": "26193bf3304630d408a24d00fe41eacfcd5be158",
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_source_lineage.json": "2c80fd25dc1b4e9b5d162e9c824abbb6f26f8bee",
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_target_ledger.csv": "9d41037a614f1bcb25f3a0b88fbe07a6e8e004c2",
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_training_eigenvalues.csv": "437f337cf2b281228a75f05b16dbc89d9b62fb4f",
+      "reports/sequence_agent/q141_a18_mask_lattice_residual_2026-11-14_validation.json": "0a8b33d7380f8de385fb1d1ed779da07e63d8e91"
+    }
+  },
   "replay_verified": true,
   "residual_dimensions": 967,
   "schema_version": "1.0",
@@ -15,7 +29,7 @@
     "discovery": 1792,
     "validation": 597
   },
-  "status": "COMPLETED_LOCAL_PENDING_REMOTE_READBACK",
+  "status": "REMOTE_GIT_READBACK_VERIFIED",
   "target_rows": 3386,
   "validation_file": "q141_a18_mask_lattice_residual_2026-11-14_validation.json"
 }
