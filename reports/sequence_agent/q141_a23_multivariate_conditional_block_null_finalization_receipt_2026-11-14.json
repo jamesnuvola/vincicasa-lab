@@ -1,0 +1,76 @@
+{
+  "experiment_id": "Q141-A23",
+  "status": "REMOTE_GIT_READBACK_VERIFIED",
+  "verified_at": "2026-11-14T06:18:44Z",
+  "branch": "research/q141-a23-multivariate-conditional-block-null-20261114",
+  "head_before_finalization": "7a0884e0ed67b02acd3cf39d3bcaf829f319820c",
+  "source": {
+    "q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "reference_rows": 118,
+    "extension_rows": 20,
+    "calibration_rows": 400,
+    "formula_count": 1023,
+    "mask_design_rank": 56,
+    "residual_dimension": 967,
+    "source_manifest_checks": "6/6 Git blob SHAs matched"
+  },
+  "replay": {
+    "status": "BYTE_IDENTICAL",
+    "focused_tests": "8/8 checks passed",
+    "observed": {
+      "energy_distance": 0.668664052176,
+      "mean_shift_rms": 0.065304253998
+    },
+    "bootstrap_replicates_per_block": 20000,
+    "block_lengths": [
+      5,
+      10,
+      20
+    ],
+    "holm_family_size": 6,
+    "decision": "MULTIVARIATE_SHIFT_NOT_CONFIRMED",
+    "promotion_allowed": false
+  },
+  "ci": [
+    {
+      "run_id": 43565527363,
+      "event": "push",
+      "conclusion": "success",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43565527363"
+    },
+    {
+      "run_id": 43565532477,
+      "event": "pull_request",
+      "conclusion": "success",
+      "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43565532477"
+    }
+  ],
+  "readback_artifacts": {
+    "q141_a23_multivariate_conditional_block_null_report_2026-11-14.json": "3582d5df38d885056eedbe93f36c79606bd2ddd0",
+    "q141_a23_multivariate_conditional_block_null_report_2026-11-14.md": "833f30b468b7e50bae310532c42d750d1df77ab4",
+    "q141_a23_multivariate_conditional_block_null_summary_2026-11-14.csv": "27475e069fbb42b85a34c2ca2262a80696321a63",
+    "sonar_q141_a23_multivariate_conditional_block_null.mjs": "92f054acaff64ff712625e4bad3c110c75fb1e48",
+    "test_sonar_q141_a23_multivariate_conditional_block_null.mjs": "abaf8c7be56a8bb951af0e709966a452e9b70ccb",
+    "q141_a23_multivariate_conditional_block_null_protocol_2026-11-14.md": "cce2ccf1b6f4e9f8e31623c826b857796c5896ba",
+    "q141_a23_input_manifest_2026-11-14.json": "6822b91f0081d3af45f29334688dd3fea3075b9d",
+    "q141_a23_source_lineage_2026-11-14.json": "693105e882079b24a6db4c6c46fa2ff1d1c8e45f",
+    "q141_a23_calibration_first400.json": "aa5eb27424284ae7973214102a61c89e63a4b3bd",
+    "q141_a23_source_snapshot_reference_000_059.csv": "d58b0e9c18b2cacece2fac94ccb3a2c08b8dad76",
+    "q141_a23_source_snapshot_reference_059_118.csv": "5f3eef14ba5b5649415ac1fc0337a83a06b14c36",
+    "q141_a23_source_snapshot_extension_020.csv": "714ffb43933b3c666e1d4fca240c562d5dd8a8ca",
+    "q141_a23_multivariate_target_ledger_2026-11-14.csv": "2ac240b82868d75a0ddb3a7e7d8144e33b7ae8f4"
+  },
+  "guardrails": {
+    "a21_2026_11_14_freeze": "unchanged and pending",
+    "canonical_archive": "unchanged",
+    "production_engine": "unchanged",
+    "q60_gate": "unchanged",
+    "protected_prs": [
+      6,
+      7,
+      8
+    ],
+    "merges": 0,
+    "promotions": 0
+  }
+}
