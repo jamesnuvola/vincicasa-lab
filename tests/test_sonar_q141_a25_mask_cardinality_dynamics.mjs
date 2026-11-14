@@ -63,6 +63,7 @@ test("group MSE is normalized by the stratum coordinate count", () => {
 test("weighted stratum reconstruction uses the fixed residual rank", () => {
   const groups = { low: Array(175).fill(0), central: Array(792).fill(0), high: Array(56).fill(0) };
   const value = reconstructOverallMse({ low: 1, central: 2, high: 3 }, groups);
+  assert.ok(Number.isFinite(value));
   assert.ok(Math.abs(value - (175 + 2 * 792 + 3 * 56) / 967) < 1e-15);
 });
 
