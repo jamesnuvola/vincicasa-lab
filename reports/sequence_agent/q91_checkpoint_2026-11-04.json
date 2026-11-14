@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "Q91",
-  "status": "VALIDATED_PENDING_HUMAN_REVIEW_INTEGRATION",
+  "status": "ARTIFACT_READBACK_VERIFIED_PENDING_EXACT_HEAD_CI_HUMAN_REVIEW",
   "checkpoint_date": "2026-11-04",
   "archive_blob_sha": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
   "draw_count": 3398,
@@ -13,11 +13,11 @@
   "target_ledger_sha256": "594024ad541760b4644a67e1b184c869fe9e5ea3dbb3e5c2ea6638287ce5856d",
   "score_manifest_sha256": "8cafe20107a48089b6ad99763516f06c8c393216af2572881d2d2f3abe6113ee",
   "score_parts_manifest_sha256": "0941f8cea662bf3cbecadc53cfd54e2b35f4b300a0418ebfa10478590f184725",
-  "report_sha256": "1337c8a2b24a71b4962c3109d9e52aa0000d620e8e54e694143c033f911c8593",
+  "report_sha256": "aee347ccd4914fef48dd957d1f27df437c1c6d33f7822d59f57e3a172c179687",
   "pending": [
-    "acceptance validator and exact output persistence/readback",
-    "current-head CI and human review/integration",
-    "interpret selected policy validation/blind results; do not promote if null"
+    "current-head CI on the post-readback report/checkpoint commit",
+    "human review and integration",
+    "selected EXPANDING_TOP5 validation/blind results are below the uniform Top5 reference; do not promote"
   ],
   "acceptance": {
     "validator": "Q91_FORMULA_ACCEPTANCE_PASS",
@@ -25,10 +25,18 @@
     "source_merge_or_dispatch_sha": "1de9d15c3584be8fd10a01bf3ad7e7ffde5b3794",
     "exact_research_branch_head_sha": "d7cec9c167ce813a300d88d09710eaeb831fc7e2",
     "artifact_retention_days": 90,
-    "artifact_readback": "PENDING_EXACT_GIT_OBJECT_READBACK",
+    "artifact_readback": "PASS_FOR_39_COMPUTATION_PAYLOAD_GIT_OBJECTS",
     "current_head_ci": "PENDING",
     "human_review": "PENDING_HUMAN_REVIEW_INTEGRATION",
     "persisted_parent_head_sha": "d7cec9c167ce813a300d88d09710eaeb831fc7e2",
-    "persist_workflow_run_id": 42256671154
-  }
+    "persist_workflow_run_id": 42256671154,
+    "artifact_readback_receipt": "reports/sequence_agent/q91_external_artifact_readback_2026-11-14.json",
+    "artifact_readback_receipt_blob_sha1": "8fa8f12969d0de77c177408b931ccb903b9ade4c",
+    "artifact_readback_artifact_id": 13522588075,
+    "artifact_readback_artifact_sha256": "19ae830a1e50215ead93353ee0b71c692d65a4b647631aa9172fd8bf278df581",
+    "artifact_readback_exact_score_parts": 34,
+    "artifact_readback_exact_core_outputs": 5,
+    "readback_verified_against_head_sha": "3934bb67b607515df616e2b280b9488cd2a5a99a"
+  },
+  "last_verified_at": "2026-11-14"
 }
