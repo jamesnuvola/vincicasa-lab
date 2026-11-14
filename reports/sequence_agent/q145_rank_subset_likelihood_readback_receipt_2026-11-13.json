@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q145",
+  "status": "REMOTE_GIT_READBACK_VERIFIED",
+  "branch": "research/q145-rank-subset-likelihood-20261113",
+  "parent_branch": "research/q144-shadow-rank-ensemble-20261113",
+  "head_commit_tested": "66e7fb4bc61c99c650a22611c9538301094fa27a",
+  "dedicated_ci": {
+    "run_id": 43482436833,
+    "conclusion": "success",
+    "url": "https://github.com/jamesnuvola/vincicasa-lab/actions/runs/43482436833",
+    "checks": [
+      "26/26 unit assertions",
+      "pinned source blob SHAs",
+      "1,364 strict-prior temporal guards",
+      "31 archive/ledger reconciliations",
+      "deterministic report, ledger, freeze, checkpoint and manifest replay"
+    ]
+  },
+  "source_blob_shas": {
+    "archive": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "shadow": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "q144_ledger": "c14e13b0c8e7f7a8c20ae40c9af56101f5209762",
+    "q144_freeze": "df20af45433ae8693b90e06124d31df0ad345dfe",
+    "preregistration": "6bb8725ccb57ffad5f803352252ba94c42b29b70"
+  },
+  "artifact_blob_shas": {
+    "reports/sequence_agent/q145_rank_subset_likelihood_preregistration_2026-11-13.md": "6bb8725ccb57ffad5f803352252ba94c42b29b70",
+    "scripts/sonar_q145_rank_subset_likelihood.mjs": "b0515ae21faa403991994d9535fc82b707a8b9ff",
+    "tests/test_sonar_q145_rank_subset_likelihood.mjs": "bd8d7a3676672b472802f730ec4557531e9e71e2",
+    "reports/sequence_agent/q145_rank_subset_likelihood_report_2026-11-13.json": "8ab96c407df9ed2bf256cb01c5a2e9282e6c3412",
+    "reports/sequence_agent/q145_rank_subset_likelihood_report_2026-11-13.md": "f83e1517ba69e995f0a689edd1944885e015f207",
+    "reports/sequence_agent/q145_rank_subset_likelihood_ledger_2026-11-13.csv": "b8693720f87cb6e9e449f2adfcd8091a5ef214a2",
+    "reports/sequence_agent/q145_rank_subset_likelihood_freeze_2026-11-13.json": "e79dee09cbfaa18941d8cb6c57dab949cb1b91bb",
+    "reports/sequence_agent/q145_rank_subset_likelihood_checkpoint_2026-11-13.json": "e961e75bda0f7c28342f0f9cd19f8fc8e68afdba"
+  },
+  "manifest_blob_sha": "efaed86aecc6f9583e5ca3bc23f11055186b55e1",
+  "workflow_blob_sha": "347ef7ab281ad1e61de2653c630d0bc5aef29a09",
+  "all_manifest_artifact_hashes_match": true,
+  "sample": {
+    "historical_targets": 31,
+    "discovery": 18,
+    "validation": 6,
+    "historical_blind_oos": 7,
+    "shadow_rows_temporal_checked": 1364,
+    "pending_2026_11_13_rows": 43
+  },
+  "decision": "NO_HISTORICAL_PREDICTIVE_LIFT_CLAIM; PROSPECTIVE_FROZEN_TEST_PENDING",
+  "prospective_freeze": {
+    "target_date": "2026-11-13",
+    "history_cutoff": "2026-11-12",
+    "frozen_at_local": "2026-11-13T19:18:07+01:00",
+    "outcome": null
+  },
+  "governance": {
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "protected_prs_6_7_8_unchanged": true,
+    "canonical_archive_unchanged": true
+  },
+  "next_action": "Reconcile contest 317 only after its official result is published and independently confirmed; keep Q145 probability forecasts append-only; accumulate 100 consecutive prospective targets without retuning.",
+  "source_reconciliation": {
+    "path": "reports/sequence_agent/q145_source_reconciliation_2026-11-13.md",
+    "blob_sha": "8c89f806e4b760bd03a1d1482945a6b0f5fa1600",
+    "status": "CONTEST_316_CONFIRMED_BY_OFFICIAL_DETAIL_AND_GENERAL_ARCHIVE; MONTHLY_PAGE_STALE",
+    "official_detail_url": "https://www.vincicasa.it/archivio-estrazioni/concorso-316/12-novembre-2026",
+    "official_general_archive_url": "https://www.vincicasa.it/archivio-estrazioni",
+    "monthly_archive_url": "https://www.vincicasa.it/archivio-estrazioni/2026/novembre",
+    "result": "2 4 7 23 33"
+  }
+}

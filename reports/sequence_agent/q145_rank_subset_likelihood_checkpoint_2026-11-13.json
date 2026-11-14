@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q145",
+  "status": "Q145_ARTIFACTS_REPLAYABLE_DEDICATED_CI_PASSED",
+  "branch": "research/q145-rank-subset-likelihood-20261113",
+  "parent_branch": "research/q144-shadow-rank-ensemble-20261113",
+  "source_blob_shas": {
+    "archive": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "shadow": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "q144_ledger": "c14e13b0c8e7f7a8c20ae40c9af56101f5209762",
+    "q144_freeze": "df20af45433ae8693b90e06124d31df0ad345dfe",
+    "preregistration": "6bb8725ccb57ffad5f803352252ba94c42b29b70"
+  },
+  "sample": {
+    "targets": 31,
+    "discovery": 18,
+    "validation": 6,
+    "historical_blind_oos": 7,
+    "app_targets": 19,
+    "app_discovery": 6,
+    "app_validation": 6,
+    "app_blind_oos": 7
+  },
+  "split_summary": {
+    "discovery": {
+      "n": 18,
+      "borda": {
+        "n": 18,
+        "mean_log_gain": -0.249364968039,
+        "total_log_gain": -4.4885694247,
+        "mean_brier_gain": -0.001625772972,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "inclusion": {
+        "n": 18,
+        "mean_log_gain": -0.118809412483,
+        "total_log_gain": -2.1385694247,
+        "mean_brier_gain": -0.000785337336,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "app": {
+        "n": 6,
+        "mean_log_gain": 0.372857254183,
+        "total_log_gain": 2.2371435251,
+        "mean_brier_gain": 0.002223501016,
+        "mean_mode_probability": 0.0000282585324
+      }
+    },
+    "validation": {
+      "n": 6,
+      "borda": {
+        "n": 6,
+        "mean_log_gain": -0.452142745817,
+        "total_log_gain": -2.7128564749,
+        "mean_brier_gain": -0.002903869327,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "inclusion": {
+        "n": 6,
+        "mean_log_gain": -0.33547607915,
+        "total_log_gain": -2.0128564749,
+        "mean_brier_gain": -0.002269107814,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "app": {
+        "n": 6,
+        "mean_log_gain": -0.268809412483,
+        "total_log_gain": -1.6128564749,
+        "mean_brier_gain": -0.001795828611,
+        "mean_mode_probability": 0.0000282585324
+      }
+    },
+    "blind_oos": {
+      "n": 7,
+      "borda": {
+        "n": 7,
+        "mean_log_gain": -0.105714174388,
+        "total_log_gain": -0.739999220717,
+        "mean_brier_gain": -0.000743575649,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "inclusion": {
+        "n": 7,
+        "mean_log_gain": 0.030000111326,
+        "total_log_gain": 0.210000779283,
+        "mean_brier_gain": -0.000101626183,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "app": {
+        "n": 7,
+        "mean_log_gain": -0.277142745817,
+        "total_log_gain": -1.939999220717,
+        "mean_brier_gain": -0.001676367889,
+        "mean_mode_probability": 0.0000282585324
+      }
+    }
+  },
+  "decision": "NO_HISTORICAL_PREDICTIVE_LIFT_CLAIM; PROSPECTIVE_FROZEN_TEST_PENDING",
+  "prospective_freeze": {
+    "target_date": "2026-11-13",
+    "cutoff": "2026-11-12",
+    "status": "FROZEN_PENDING",
+    "outcome": null
+  },
+  "next_action": "Reconcile the 2026-11-13 result only after official publication; append outcomes without changing the frozen forecasts; accumulate 100 prospective targets without retuning."
+}

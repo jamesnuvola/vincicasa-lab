@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q145",
+  "title": "Rank-to-subset likelihood calibration of Q144 shadow ensembles",
+  "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY_WITH_PROSPECTIVE_FREEZE",
+  "temperature": 1,
+  "utility": "u(r)=(21-r)/20 for ranks 1..20; zero outside Top20",
+  "pmf": "P(S)=product(w_i for i in S)/e5(w), w_i=exp(u_i), |S|=5",
+  "uniform_ticket_probability": 0.000001519738362,
+  "source_blob_shas": {
+    "archive": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "shadow": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "q144_ledger": "c14e13b0c8e7f7a8c20ae40c9af56101f5209762",
+    "q144_freeze": "df20af45433ae8693b90e06124d31df0ad345dfe",
+    "preregistration": "6bb8725ccb57ffad5f803352252ba94c42b29b70"
+  },
+  "integrity": {
+    "archive_draws": 3406,
+    "q144_targets": 31,
+    "shadow_rows": 1364,
+    "strict_prior_freeze_checks": 1364,
+    "pending_2026_11_13_rows": 43,
+    "pending_outcomes_empty": true,
+    "historical_targets_reconciled": 31,
+    "q144_rule_count_per_target": 42,
+    "family_pair_chain_counts": "24/12/6",
+    "q144_hit_counts_recomputed": true,
+    "future_target_freeze_pre_draw": true
+  },
+  "sample": {
+    "targets": 31,
+    "discovery": 18,
+    "validation": 6,
+    "historical_blind_oos": 7,
+    "app_targets": 19,
+    "app_discovery": 6,
+    "app_validation": 6,
+    "app_blind_oos": 7
+  },
+  "splits": {
+    "discovery": {
+      "n": 18,
+      "borda": {
+        "n": 18,
+        "mean_log_gain": -0.249364968039,
+        "total_log_gain": -4.4885694247,
+        "mean_brier_gain": -0.001625772972,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "inclusion": {
+        "n": 18,
+        "mean_log_gain": -0.118809412483,
+        "total_log_gain": -2.1385694247,
+        "mean_brier_gain": -0.000785337336,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "app": {
+        "n": 6,
+        "mean_log_gain": 0.372857254183,
+        "total_log_gain": 2.2371435251,
+        "mean_brier_gain": 0.002223501016,
+        "mean_mode_probability": 0.0000282585324
+      }
+    },
+    "validation": {
+      "n": 6,
+      "borda": {
+        "n": 6,
+        "mean_log_gain": -0.452142745817,
+        "total_log_gain": -2.7128564749,
+        "mean_brier_gain": -0.002903869327,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "inclusion": {
+        "n": 6,
+        "mean_log_gain": -0.33547607915,
+        "total_log_gain": -2.0128564749,
+        "mean_brier_gain": -0.002269107814,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "app": {
+        "n": 6,
+        "mean_log_gain": -0.268809412483,
+        "total_log_gain": -1.6128564749,
+        "mean_brier_gain": -0.001795828611,
+        "mean_mode_probability": 0.0000282585324
+      }
+    },
+    "blind_oos": {
+      "n": 7,
+      "borda": {
+        "n": 7,
+        "mean_log_gain": -0.105714174388,
+        "total_log_gain": -0.739999220717,
+        "mean_brier_gain": -0.000743575649,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "inclusion": {
+        "n": 7,
+        "mean_log_gain": 0.030000111326,
+        "total_log_gain": 0.210000779283,
+        "mean_brier_gain": -0.000101626183,
+        "mean_mode_probability": 0.0000282585324
+      },
+      "app": {
+        "n": 7,
+        "mean_log_gain": -0.277142745817,
+        "total_log_gain": -1.939999220717,
+        "mean_brier_gain": -0.001676367889,
+        "mean_mode_probability": 0.0000282585324
+      }
+    }
+  },
+  "blind_inference": {
+    "raw_p_values": {
+      "borda_vs_uniform_eprocess": 0.807117297739,
+      "inclusion_vs_uniform_eprocess": 0.354465759758,
+      "app_vs_uniform_eprocess": 1,
+      "borda_vs_inclusion_signflip": 0.890625,
+      "borda_vs_app_signflip": 0.203125
+    },
+    "holm_adjusted_p_values": {
+      "borda_vs_app_signflip": 1,
+      "inclusion_vs_uniform_eprocess": 1,
+      "borda_vs_uniform_eprocess": 1,
+      "borda_vs_inclusion_signflip": 1,
+      "app_vs_uniform_eprocess": 1
+    },
+    "two_sided_signflip_p_values": {
+      "borda_vs_inclusion": 0.28125,
+      "borda_vs_app": 0.40625
+    },
+    "bootstrap_ci_95": {
+      "borda_vs_uniform": [
+        -0.505714174388,
+        0.230000111326
+      ],
+      "borda_vs_inclusion": [
+        -0.292857142857,
+        -0.042857142857
+      ],
+      "borda_vs_app": [
+        -0.014285714286,
+        0.364285714286
+      ]
+    },
+    "bootstrap_replicates": 20000,
+    "circular_block_length": 2,
+    "signflip_assignments": 128,
+    "caveat": "Historical Q145 inference is exploratory: the rank-to-PMF transformation was specified after Q144 historical outcomes were inspected. No historical p-value is confirmatory."
+  },
+  "prospective_freeze": {
+    "target_date": "2026-11-13",
+    "history_cutoff": "2026-11-12",
+    "frozen_at_local": "2026-11-13T19:18:07+01:00",
+    "borda_modal_top5": [
+      1,
+      7,
+      25,
+      16,
+      21
+    ],
+    "inclusion_modal_top5": [
+      1,
+      25,
+      21,
+      16,
+      9
+    ],
+    "outcome": null
+  },
+  "decision": "NO_HISTORICAL_PREDICTIVE_LIFT_CLAIM; PROSPECTIVE_FROZEN_TEST_PENDING"
+}
