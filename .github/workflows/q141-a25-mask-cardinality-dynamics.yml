@@ -43,7 +43,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add reports/sequence_agent/q141_a25_mask_cardinality_dynamics_2026-11-14_*
+          git add reports/sequence_agent/q141_a25_mask_cardinality_dynamics_*_2026-11-14.*
           if git diff --cached --quiet; then
             echo "A25 outputs already match; no commit required."
           else
