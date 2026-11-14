@@ -459,7 +459,21 @@ export function runAnalysis(root = process.cwd()) {
     ].join(",")),
   ].join("\n") + "\n";
 
-  return { report, nullCsv, qError };
+  const observedAggregate = aggregate(observedSample, pairwise.distances, vectors.length, REF_COUNT);
+  const firstResidualNorm = Math.sqrt(vectors[0].reduce((sum, value) => sum + value * value, 0));
+  const lastResidualNorm = Math.sqrt(vectors[vectors.length - 1].reduce((sum, value) => sum + value * value, 0));
+  const debug = {
+    qError,
+    firstResidualNorm,
+    lastResidualNorm,
+    cross: observedAggregate.cross,
+    withinSample: observedAggregate.withinSample,
+    withinReference: observedAggregate.withinReference,
+    energyFromSums: 2 * observedAggregate.cross / (EXT_COUNT * REF_COUNT)
+      - observedAggregate.withinSample / (EXT_COUNT * EXT_COUNT)
+      - observedAggregate.withinReference / (REF_COUNT * REF_COUNT),
+  };
+  return { report, nullCsv, qError, debug };
 }
 
 function assertClose(actual, expected, label, tolerance = 1e-10) {
@@ -470,6 +484,7 @@ function assertClose(actual, expected, label, tolerance = 1e-10) {
 
 export function verifyPersisted(root = process.cwd()) {
   const result = runAnalysis(root);
+  process.stdout.write("Q141_A23_DEBUG " + JSON.stringify(result.debug) + "\n");
   const base = path.join(root, "reports/sequence_agent");
   const expected = JSON.parse(readFileSync(path.join(base, "q141_a23_multivariate_conditional_block_null_report_2026-11-14.json"), "utf8"));
   const expectedCsv = readFileSync(path.join(base, "q141_a23_multivariate_conditional_block_null_summary_2026-11-14.csv"), "utf8");
