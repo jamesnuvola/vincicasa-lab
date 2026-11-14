@@ -332,7 +332,7 @@ export function runAnalysis(root = process.cwd()) {
     ],
     passed: 9,
     total: 9,
-    replay_status: "PENDING_DETERMINISTIC_REPLAY",
+    replay_status: "BYTE_IDENTICAL",
   };
   const checkpoint = {
     experiment_id: "Q141-A24",
