@@ -16,10 +16,11 @@ permissions:
 
 concurrency:
   group: sonar-q141-a21-q7-source-extension
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   extend-and-freeze:
+    if: ${{ github.event_name == 'workflow_dispatch' || !contains(github.event.head_commit.message, 'A21_FINALIZE_ONLY') }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -35,6 +36,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Fast-forward latest research branch before computation
+        run: |
+          git fetch origin "$RESEARCH_BRANCH:refs/remotes/origin/$RESEARCH_BRANCH"
+          git merge --ff-only "origin/$RESEARCH_BRANCH"
+
 
       - name: Set up Python 3.12 and pinned NumPy
         uses: actions/setup-python@v5
@@ -230,8 +237,6 @@ jobs:
           rm -rf q7-source
           rm -f scripts/sonar_exhaustive_formula_lab.py scripts/sonar_exhaustive_walkforward.py
           rm -f reports/sequence_agent/exhaustive_formula_walkforward/part_3387_3407.csv
-          git fetch origin "$RESEARCH_BRANCH:refs/remotes/origin/$RESEARCH_BRANCH"
-          git merge --ff-only "origin/$RESEARCH_BRANCH"
           git config user.name "sonar-research-agent"
           git config user.email "actions@users.noreply.github.com"
           git add reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_*
@@ -334,6 +339,251 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: q141-a21-q7-source-extension
+          path: |
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_report.json
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_report.md
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_extension_target_ledger.csv
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_q7_rank_extension.csv
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_next_target_freeze.json
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_validation.json
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_checkpoint.json
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_manifest.json
+            reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_readback_receipt.json
+          if-no-files-found: error
+          retention-days: 90
+
+  finalize-existing:
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.message, 'A21_FINALIZE_ONLY') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      RESEARCH_BRANCH: research/q141-a21-q7-source-extension-20261114
+    steps:
+      - name: Checkout latest A21 branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Fast-forward to branch head containing computed artifacts
+        run: |
+          git fetch origin "$RESEARCH_BRANCH:refs/remotes/origin/$RESEARCH_BRANCH"
+          git merge --ff-only "origin/$RESEARCH_BRANCH"
+
+      - name: Validate existing results and reconcile all artifact hashes
+        run: |
+          python - <<'PY'
+          import csv
+          import hashlib
+          import json
+          import subprocess
+          from pathlib import Path
+
+          out = Path("reports/sequence_agent")
+          prefix = "q141_a21_q7_source_extension_2026-11-14"
+          report_path = out / f"{prefix}_report.json"
+          md_path = out / f"{prefix}_report.md"
+          ledger_path = out / f"{prefix}_extension_target_ledger.csv"
+          ranks_path = out / f"{prefix}_q7_rank_extension.csv"
+          freeze_path = out / f"{prefix}_next_target_freeze.json"
+          lineage_path = out / f"{prefix}_source_lineage.json"
+          checkpoint_path = out / f"{prefix}_checkpoint.json"
+          validation_path = out / f"{prefix}_validation.json"
+          protocol_path = out / f"{prefix}_protocol.md"
+          recovery_path = out / f"{prefix}_recovery_note.md"
+          addendum_path = out / f"{prefix}_finalization_addendum.md"
+          script_path = Path("scripts/sonar_q141_a21_q7_source_extension.py")
+          test_path = Path("tests/test_sonar_q141_a21_q7_source_extension.py")
+          workflow_path = Path(".github/workflows/q141-a21-q7-source-extension.yml")
+          manifest_path = out / f"{prefix}_manifest.json"
+
+          required = [report_path, md_path, ledger_path, ranks_path, freeze_path, lineage_path, checkpoint_path, validation_path, protocol_path, recovery_path, script_path, test_path, workflow_path, manifest_path]
+          missing = [str(p) for p in required if not p.is_file()]
+          if missing:
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: missing artifacts " + ", ".join(missing))
+
+          report = json.loads(report_path.read_text(encoding="utf-8"))
+          freeze = json.loads(freeze_path.read_text(encoding="utf-8"))
+          validation = json.loads(validation_path.read_text(encoding="utf-8"))
+          if report.get("experiment_id") != "Q141-A21" or report.get("decision") != "Q75_EXTENSION_GAIN_THRESHOLD_NOT_MET":
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: unexpected report identity/decision")
+          if report["integrity"].get("full_replay_byte_identity") is not True or report["integrity"].get("dedicated_ci_unit_tests") != "PASS":
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: replay or unit-test evidence missing")
+          if report["design"]["appended_targets"] != 20 or report["design"]["formula_masks"] != 1023:
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: extension dimensions mismatch")
+          if abs(report["extension_metrics"]["mse_gain_q75_vs_mean400"] - (-0.0043290803180799555)) > 1e-12:
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: extension metric changed unexpectedly")
+
+          with ranks_path.open(newline="", encoding="utf-8") as handle:
+              rank_rows = list(csv.DictReader(handle))
+          if len(rank_rows) != 20:
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: expected 20 full-universe rank rows")
+          rank_names = [f"rank_mask_{i:04d}" for i in range(1, 1024)]
+          for j, row in enumerate(rank_rows):
+              idx = 3387 + j
+              if int(row["prior_draws"]) != idx or row["cutoff_date"] >= row["target_date"] or row["status"] != "SCORED":
+                  raise SystemExit(f"A21_FINALIZE_ONLY_BLOCKED: rank row {j} is not strict-prior")
+              if any(not (1 <= int(row[name]) <= 658008) for name in rank_names):
+                  raise SystemExit(f"A21_FINALIZE_ONLY_BLOCKED: invalid rank in row {j}")
+
+          with ledger_path.open(newline="", encoding="utf-8") as handle:
+              extension_rows = list(csv.DictReader(handle))
+          if len(extension_rows) != 20 or [int(r["target_index"]) for r in extension_rows] != list(range(3387, 3407)):
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: derived extension ledger alignment mismatch")
+          if any(r["strict_prior"] != "true" or r["forecast_response_placeholder_mutation_invariant"] != "true" for r in extension_rows):
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: leakage guard failed")
+
+          if (freeze.get("target_date"), freeze.get("cutoff_date"), freeze.get("prior_draws")) != ("2026-11-14", "2026-11-13", 3407):
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: prospective freeze date/cutoff mismatch")
+          if freeze.get("actual_numbers") is not None or freeze.get("target_response_included") is not False:
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: target response leaked into freeze")
+          if validation.get("replay") != "BYTE_IDENTICAL" or validation.get("unit_tests") != "PASS":
+              raise SystemExit("A21_FINALIZE_ONLY_BLOCKED: validation receipt mismatch")
+
+          report["integrity"]["replay_byte_identity"] = "BYTE_IDENTICAL"
+          report["integrity"]["manifest_reconciled_after_branch_sync"] = True
+          report_path.write_text(json.dumps(report, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+
+          validation["final_manifest_reconciliation"] = "PASS"
+          validation["final_readback"] = "PENDING_REMOTE_READBACK"
+          validation_path.write_text(json.dumps(validation, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+
+          addendum = """# Q141-A21 finalization addendum
+
+The Q7 rank batch and A21 residual extension completed successfully. The first workflow attempt exposed an incorrect output-directory assertion; the corrected run completed the 20-target batch, A21 calculation, deterministic replay, and initial remote readback.
+
+The workflow branch was fast-forwarded to include a protocol correction after the A21 manifest had first been generated. That merge changed the protocol and checkpoint blobs, leaving their entries in the first manifest stale. This finalization recomputes the manifest from the actual branch files and performs a second remote readback. No numerical result, extension row, or 2026-11-14 freeze value is changed by this addendum.
+
+The 20-row extension remains descriptive and non-confirmatory. The q75-state MSE gain versus the prior-400 mean is negative; no model promotion is authorized.
+"""
+          addendum_path.write_text(addendum, encoding="utf-8")
+          md_path.write_text(md_path.read_text(encoding="utf-8") + chr(10) + "Finalization addendum: the manifest was recomputed after branch synchronization; no numerical result or freeze value changed." + chr(10), encoding="utf-8")
+
+          checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+          checkpoint["status"] = "LOCAL_VALIDATION_COMPLETE_PENDING_REMOTE_READBACK"
+          checkpoint["replay_verified"] = True
+          checkpoint["manifest_reconciled"] = True
+          checkpoint_path.write_text(json.dumps(checkpoint, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+
+          paths = [report_path, md_path, ledger_path, ranks_path, freeze_path, lineage_path, checkpoint_path, validation_path, protocol_path, recovery_path, addendum_path, script_path, test_path, workflow_path]
+          outputs = {}
+          for path in paths:
+              raw = path.read_bytes()
+              outputs[path.name] = {
+                  "path": path.as_posix(),
+                  "bytes": len(raw),
+                  "sha256": hashlib.sha256(raw).hexdigest(),
+                  "git_blob_sha1": subprocess.check_output(["git", "hash-object", str(path)], text=True).strip()
+              }
+          manifest = {
+              "experiment_id": "Q141-A21",
+              "status": "LOCAL_VALIDATION_COMPLETE_PENDING_REMOTE_READBACK",
+              "outputs": outputs
+          }
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+          print("A21_FINALIZE_ONLY_LOCAL_PASS", len(outputs))
+          PY
+
+      - name: Persist reconciled manifest and final readback receipt
+        run: |
+          git config user.name "sonar-research-agent"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_*
+          git commit -m "Q141-A21: reconcile final manifest and source readback"
+          git push origin "HEAD:$RESEARCH_BRANCH"
+
+      - name: Verify final remote readback
+        run: |
+          git fetch origin "$RESEARCH_BRANCH:refs/remotes/origin/$RESEARCH_BRANCH"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          out = Path("reports/sequence_agent")
+          prefix = "q141_a21_q7_source_extension_2026-11-14"
+          manifest_path = out / f"{prefix}_manifest.json"
+          checkpoint_path = out / f"{prefix}_checkpoint.json"
+          receipt_path = out / f"{prefix}_readback_receipt.json"
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+
+          checked = {}
+          for info in manifest["outputs"].values():
+              path = info["path"]
+              local = subprocess.check_output(["git", "hash-object", path], text=True).strip()
+              remote = subprocess.check_output(["git", "rev-parse", f"origin/{os.environ['RESEARCH_BRANCH']}:{path}"], text=True).strip()
+              if local != remote or local != info["git_blob_sha1"]:
+                  raise SystemExit(f"A21_FINALIZE_ONLY_BLOCKED: remote hash mismatch {path}")
+              checked[path] = remote
+
+          checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+          checkpoint["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          checkpoint["remote_readback"] = {"branch": os.environ["RESEARCH_BRANCH"], "files": checked}
+          checkpoint_path.write_text(json.dumps(checkpoint, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+
+          manifest["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          manifest["remote_readback"] = {"branch": os.environ["RESEARCH_BRANCH"], "files": checked}
+          checkpoint_raw = checkpoint_path.read_bytes()
+          manifest["outputs"][checkpoint_path.name] = {
+              "path": checkpoint_path.as_posix(),
+              "bytes": len(checkpoint_raw),
+              "sha256": hashlib.sha256(checkpoint_raw).hexdigest(),
+              "git_blob_sha1": subprocess.check_output(["git", "hash-object", str(checkpoint_path)], text=True).strip()
+          }
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+
+          verified = dict(checked)
+          verified[checkpoint_path.as_posix()] = subprocess.check_output(["git", "hash-object", str(checkpoint_path)], text=True).strip()
+          verified[manifest_path.as_posix()] = subprocess.check_output(["git", "hash-object", str(manifest_path)], text=True).strip()
+          receipt = {
+              "schema_version": "1.0",
+              "experiment_id": "Q141-A21",
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "branch": os.environ["RESEARCH_BRANCH"],
+              "verified_files": verified,
+              "unit_tests": "PASS",
+              "deterministic_replay": "BYTE_IDENTICAL",
+              "manifest_reconciliation": "PASS"
+          }
+          receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+          PY
+          git add reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_checkpoint.json reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_manifest.json reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_readback_receipt.json
+          git commit -m "Q141-A21: verify final manifest and remote readback"
+          git push origin "HEAD:$RESEARCH_BRANCH"
+
+      - name: Verify receipt and all remote blobs
+        run: |
+          git fetch origin "$RESEARCH_BRANCH:refs/remotes/origin/$RESEARCH_BRANCH"
+          python - <<'PY'
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          prefix = "q141_a21_q7_source_extension_2026-11-14"
+          receipt_path = Path("reports/sequence_agent") / f"{prefix}_readback_receipt.json"
+          receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+          for path, expected in receipt["verified_files"].items():
+              local = subprocess.check_output(["git", "hash-object", path], text=True).strip()
+              remote = subprocess.check_output(["git", "rev-parse", f"origin/{os.environ['RESEARCH_BRANCH']}:{path}"], text=True).strip()
+              assert local == expected == remote, (path, local, remote, expected)
+          receipt_repo_path = receipt_path.as_posix()
+          local_receipt = subprocess.check_output(["git", "hash-object", str(receipt_path)], text=True).strip()
+          remote_receipt = subprocess.check_output(["git", "rev-parse", f"origin/{os.environ['RESEARCH_BRANCH']}:{receipt_repo_path}"], text=True).strip()
+          assert local_receipt == remote_receipt
+          print("A21_FINALIZE_ONLY_REMOTE_READBACK_PASS", len(receipt["verified_files"]) + 1)
+          PY
+
+      - name: Upload finalized A21 artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-a21-finalized-artifacts
           path: |
             reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_report.json
             reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_report.md
