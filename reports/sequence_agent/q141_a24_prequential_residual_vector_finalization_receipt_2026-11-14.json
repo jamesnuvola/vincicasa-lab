@@ -1,0 +1,151 @@
+{
+  "experiment_id": "Q141-A24",
+  "status": "REMOTE_GIT_READBACK_VERIFIED",
+  "repository": "jamesnuvola/vincicasa-lab",
+  "branch": "research/q141-a24-prequential-residual-vector-20261114",
+  "pull_request": {
+    "number": 107,
+    "url": "https://github.com/jamesnuvola/vincicasa-lab/pull/107",
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "base": "research/q141-a23-multivariate-conditional-block-null-20261114",
+    "human_reviews": 0
+  },
+  "source": {
+    "parent": "Q141-A23",
+    "period": [
+      "2026-06-29",
+      "2026-11-13"
+    ],
+    "rows": 138,
+    "q75_state": "all 138 rows high",
+    "formulas": 1023,
+    "mask_design_rank": 56,
+    "residual_rank": 967,
+    "calibration_rows": 400,
+    "input_git_blob_sha1": {
+      "q141_a23_source_snapshot_reference_000_059.csv": "d58b0e9c18b2cacece2fac94ccb3a2c08b8dad76",
+      "q141_a23_source_snapshot_reference_059_118.csv": "5f3eef14ba5b5649415ac1fc0337a83a06b14c36",
+      "q141_a23_source_snapshot_extension_020.csv": "714ffb43933b3c666e1d4fca240c562d5dd8a8ca",
+      "q141_a23_calibration_first400.json": "aa5eb27424284ae7973214102a61c89e63a4b3bd",
+      "q141_a23_multivariate_target_ledger_2026-11-14.csv": "2ac240b82868d75a0ddb3a7e7d8144e33b7ae8f4"
+    }
+  },
+  "design": {
+    "warmup_rows": 40,
+    "scored_targets": 98,
+    "splits": {
+      "discovery": 58,
+      "validation": 20,
+      "blind_oos_exposed": 20
+    },
+    "models": [
+      "persistence-1",
+      "prior-20 mean",
+      "prior-40 mean"
+    ],
+    "block_lengths": [
+      5,
+      10,
+      20
+    ],
+    "replicates_per_inference_method_and_endpoint": 20000,
+    "holm_family_size": 6,
+    "primary_practical_gain_required": 0.01,
+    "decision": "PERSISTENCE_VECTOR_LIFT_NOT_CONFIRMED",
+    "production_promotion": false
+  },
+  "measured": {
+    "discovery": {
+      "mse_persistence1": 0.107124388304,
+      "mse_mean20": 0.054631879571,
+      "mse_mean40": 0.053756973933,
+      "relative_gain_vs_mean20": -0.960840248327
+    },
+    "validation": {
+      "mse_persistence1": 0.090547875093,
+      "mse_mean20": 0.047921339319,
+      "mse_mean40": 0.048069166206,
+      "relative_gain_vs_mean20": -0.889510526616
+    },
+    "blind_oos_exposed": {
+      "mse_persistence1": 0.099234148373,
+      "mse_mean20": 0.051189880639,
+      "mse_mean40": 0.05100002161,
+      "relative_gain_vs_mean20": -0.938550102737
+    },
+    "six_holm_adjusted_signflip_p_values": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "primary_bootstrap_ci_95": {
+      "block5": [
+        -0.060001953749,
+        -0.0313870203
+      ],
+      "block10": [
+        -0.054901890745,
+        -0.034722648774
+      ],
+      "block20": [
+        -0.053371229098,
+        -0.037299574409
+      ]
+    }
+  },
+  "validation": {
+    "dedicated_workflow_run": {
+      "id": 43568161669,
+      "conclusion": "success",
+      "tests": "13/13 assertions passed",
+      "replay": "BYTE_IDENTICAL",
+      "generated_outputs_persisted": true
+    },
+    "previous_recovery_run": {
+      "id": 43568127424,
+      "conclusion": "failure",
+      "failed_step": "persist generated outputs",
+      "root_cause": "PR merge-ref checkout left HEAD detached; bare git push had no target branch",
+      "correction": "checkout PR head ref explicitly and push HEAD to A24_HEAD_REF"
+    },
+    "general_repository_ci_at_readback": {
+      "id": 43568161657,
+      "status": "in_progress",
+      "last_observed_step": "Test evolutionary lab syntax and run",
+      "conclusion": null
+    },
+    "high_level_checks": "9/9 passed",
+    "deterministic_replay": "BYTE_IDENTICAL"
+  },
+  "remote_readback": {
+    "count": 10,
+    "algorithm": "Git blob SHA-1 over UTF-8 bytes",
+    "artifacts": {
+      ".github/workflows/q141-a24-prequential-residual-vector.yml": "d343ef59907daa03729aa84b4c2cc5685c2cf762",
+      "scripts/sonar_q141_a24_prequential_residual_vector.mjs": "fcb2433a15576f0630e085dee1b15b03f50643e5",
+      "tests/test_sonar_q141_a24_prequential_residual_vector.mjs": "e9d0594859e50d92311b8e22ef131b80048a3d52",
+      "reports/sequence_agent/q141_a24_prequential_residual_vector_protocol_2026-11-14.md": "d857fa5f8152089efb4a1bf40b05070dd38b00d8",
+      "reports/sequence_agent/q141_a24_prequential_residual_vector_report_2026-11-14.json": "1d3fee61bd0af6036bfb8e050d144bd417e79f98",
+      "reports/sequence_agent/q141_a24_prequential_residual_vector_report_2026-11-14.md": "f1fad9063028ec60716262b0c589754229abecde",
+      "reports/sequence_agent/q141_a24_prequential_residual_vector_target_ledger_2026-11-14.csv": "615e67424bb52beae5fbafbea7e936a9d1ecb685",
+      "reports/sequence_agent/q141_a24_prequential_residual_vector_validation_2026-11-14.json": "9faeb5ed7e44328836344aa6a7950ea246e59895",
+      "reports/sequence_agent/q141_a24_prequential_residual_vector_checkpoint_2026-11-14.json": "91da155f32262b5389198707030b16335f24edad",
+      "reports/sequence_agent/q141_a24_prequential_residual_vector_manifest_2026-11-14.json": "79abf4ed3c70905d3c08ef1926c45e4eb9678850"
+    },
+    "manifest_outputs_match": true
+  },
+  "governance": {
+    "protected_prs_6_7_8": "not modified",
+    "canonical_archive": "not modified by A24",
+    "q60_gate": "not modified",
+    "existing_forecast_freezes": "not modified",
+    "merges": 0,
+    "promotions": 0
+  },
+  "next_action": "Wait for the official 2026-11-14 draw result. Append it only after source verification; then register a genuinely prospective multivariate experiment before observing the next target."
+}

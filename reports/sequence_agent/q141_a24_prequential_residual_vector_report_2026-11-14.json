@@ -1,0 +1,189 @@
+{
+  "experiment_id": "Q141-A24",
+  "status": "COMPUTED_EXPLORATORY_PREQUENTIAL_VECTOR_FORECAST",
+  "source": {
+    "parent_experiment": "Q141-A23",
+    "formula_count": 1023,
+    "candidate_universe_size": 658008,
+    "mask_design_rank": 56,
+    "residual_dimension": 967,
+    "calibration_rows": 400,
+    "source_rows": 138,
+    "input_blob_sha1": {
+      "q141_a23_source_snapshot_reference_000_059.csv": "d58b0e9c18b2cacece2fac94ccb3a2c08b8dad76",
+      "q141_a23_source_snapshot_reference_059_118.csv": "5f3eef14ba5b5649415ac1fc0337a83a06b14c36",
+      "q141_a23_source_snapshot_extension_020.csv": "714ffb43933b3c666e1d4fca240c562d5dd8a8ca",
+      "q141_a23_calibration_first400.json": "aa5eb27424284ae7973214102a61c89e63a4b3bd",
+      "q141_a23_multivariate_target_ledger_2026-11-14.csv": "2ac240b82868d75a0ddb3a7e7d8144e33b7ae8f4"
+    },
+    "source_period": {
+      "start": "2026-06-29",
+      "end": "2026-11-13"
+    }
+  },
+  "design": {
+    "forecast": "one-step-ahead residual vector prediction from strictly prior residual vectors",
+    "models": {
+      "persistence1": "copy the immediately preceding 1,023-formula residual vector",
+      "mean20": "arithmetic mean of the preceding 20 complete residual vectors",
+      "mean40": "arithmetic mean of the preceding 40 complete residual vectors"
+    },
+    "loss": "sum of squared residual-coordinate errors divided by fixed residual dimension 967",
+    "warmup_rows": 40,
+    "scored_targets": 98,
+    "splits": {
+      "discovery": {
+        "targets": 58,
+        "mse_persistence1": 0.107124388304,
+        "mse_mean20": 0.054631879571,
+        "mse_mean40": 0.053756973933,
+        "gain_vs_mean20": -0.052492508733,
+        "gain_vs_mean40": -0.053367414371,
+        "relative_gain_vs_mean20": -0.960840248327,
+        "relative_gain_vs_mean40": -0.992753320497
+      },
+      "validation": {
+        "targets": 20,
+        "mse_persistence1": 0.090547875093,
+        "mse_mean20": 0.047921339319,
+        "mse_mean40": 0.048069166206,
+        "gain_vs_mean20": -0.042626535774,
+        "gain_vs_mean40": -0.042478708887,
+        "relative_gain_vs_mean20": -0.889510526616,
+        "relative_gain_vs_mean40": -0.883699723548
+      },
+      "blind_oos_exposed": {
+        "targets": 20,
+        "mse_persistence1": 0.099234148373,
+        "mse_mean20": 0.051189880639,
+        "mse_mean40": 0.05100002161,
+        "gain_vs_mean20": -0.048044267733,
+        "gain_vs_mean40": -0.048234126763,
+        "relative_gain_vs_mean20": -0.938550102737,
+        "relative_gain_vs_mean40": -0.945766790677
+      }
+    },
+    "holdout_inference_rows": 40,
+    "block_lengths": [
+      5,
+      10,
+      20
+    ],
+    "bootstrap_replicates": 20000,
+    "signflip_replicates": 20000,
+    "holm_family_size": 6,
+    "practical_relative_gain_required": 0.01,
+    "primary_rule": "persistence1 must improve mean20 MSE by at least 1% in both Validation and historical Blind OOS, and all three block-length Holm p-values for the pooled 40-row holdout must be below 0.05",
+    "secondary": "persistence1 versus mean40, Holm-adjusted jointly with primary tests"
+  },
+  "tests": [
+    {
+      "key": "persistence1_vs_mean20_L5",
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 8,
+      "observed_mean_gain": -0.045335401754,
+      "p_holm": 1
+    },
+    {
+      "key": "persistence1_vs_mean20_L10",
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 4,
+      "observed_mean_gain": -0.045335401754,
+      "p_holm": 1
+    },
+    {
+      "key": "persistence1_vs_mean20_L20",
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 2,
+      "observed_mean_gain": -0.045335401754,
+      "p_holm": 1
+    },
+    {
+      "key": "persistence1_vs_mean40_L5",
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 8,
+      "observed_mean_gain": -0.045356417825,
+      "p_holm": 1
+    },
+    {
+      "key": "persistence1_vs_mean40_L10",
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 4,
+      "observed_mean_gain": -0.045356417825,
+      "p_holm": 1
+    },
+    {
+      "key": "persistence1_vs_mean40_L20",
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 2,
+      "observed_mean_gain": -0.045356417825,
+      "p_holm": 1
+    }
+  ],
+  "bootstrap_intervals": [
+    {
+      "key": "persistence1_vs_mean20_L5",
+      "block_length": 5,
+      "lower95": -0.060001953749,
+      "median": -0.045232989146,
+      "upper95": -0.0313870203
+    },
+    {
+      "key": "persistence1_vs_mean20_L10",
+      "block_length": 10,
+      "lower95": -0.054901890745,
+      "median": -0.04555647185,
+      "upper95": -0.034722648774
+    },
+    {
+      "key": "persistence1_vs_mean20_L20",
+      "block_length": 20,
+      "lower95": -0.053371229098,
+      "median": -0.045335401754,
+      "upper95": -0.037299574409
+    },
+    {
+      "key": "persistence1_vs_mean40_L5",
+      "block_length": 5,
+      "lower95": -0.059685494557,
+      "median": -0.045205095083,
+      "upper95": -0.031646129763
+    },
+    {
+      "key": "persistence1_vs_mean40_L10",
+      "block_length": 10,
+      "lower95": -0.054707956754,
+      "median": -0.045559225025,
+      "upper95": -0.035140285571
+    },
+    {
+      "key": "persistence1_vs_mean40_L20",
+      "block_length": 20,
+      "lower95": -0.053261877531,
+      "median": -0.045356417825,
+      "upper95": -0.037585447354
+    }
+  ],
+  "decision": {
+    "result": "PERSISTENCE_VECTOR_LIFT_NOT_CONFIRMED",
+    "primary_inferential_pass": false,
+    "practical_pass": false,
+    "production_promotion": false
+  },
+  "limitations": [
+    "All 138 multivariate source rows are Q75-high-state rows; conclusions are conditional on this selected regime.",
+    "The 20-row historical Blind OOS segment was already visible in A21-A23 and is exposed exploratory evidence, not a virgin holdout.",
+    "The 40-row pooled Validation plus Blind OOS inference is dependent on the chosen chronological segmentation; only the last 20 rows are labelled Blind OOS exposed.",
+    "Block sign-flip assumes approximate symmetry and exchangeability of block-level paired loss sums.",
+    "The forecast target is the next formula-rank residual vector, not the next winning quintet, exact-ticket probability, or monetary return.",
+    "Residual coordinates are 1,023 ambient coordinates with a fixed 56-dimensional mask subspace removed; loss is normalized by residual rank 967.",
+    "This test does not establish causal or physical dynamics and does not validate Q75 as a predictor."
+  ],
+  "next_action": "Keep all existing freezes immutable. Wait for official contest 318 (2026-11-14) publication, append only after source verification, and register a genuinely prospective multivariate test before observing the next target."
+}

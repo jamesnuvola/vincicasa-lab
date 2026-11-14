@@ -1,0 +1,51 @@
+name: Q141-A24 Prequential Residual-Vector Audit
+
+on:
+  push:
+    branches:
+      - research/q141-a24-prequential-residual-vector-20261114
+  pull_request:
+    paths:
+      - "scripts/sonar_q141_a24_prequential_residual_vector.mjs"
+      - "tests/test_sonar_q141_a24_prequential_residual_vector.mjs"
+      - "reports/sequence_agent/q141_a24_prequential_residual_vector_*"
+      - ".github/workflows/q141-a24-prequential-residual-vector.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q141-a24-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Generate deterministic A24 outputs
+        run: node scripts/sonar_q141_a24_prequential_residual_vector.mjs --write
+      - name: Run A24 leakage and reproducibility tests
+        run: node tests/test_sonar_q141_a24_prequential_residual_vector.mjs
+      - name: Verify deterministic A24 replay
+        run: node scripts/sonar_q141_a24_prequential_residual_vector.mjs --verify
+      - name: Persist generated A24 report and ledger
+        env:
+          GH_TOKEN: ${{ github.token }}
+          A24_HEAD_REF: ${{ github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a24_prequential_residual_vector_*
+          if git diff --cached --quiet; then
+            echo "A24 outputs already match; no commit required."
+          else
+            git commit -m "Persist Q141-A24 prequential residual-vector results"
+            git push origin "HEAD:${A24_HEAD_REF}"
+          fi
