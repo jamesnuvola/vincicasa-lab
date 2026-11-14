@@ -98,6 +98,8 @@ jobs:
           assert report["design"]["target_rows"] == 3386
           assert report["design"]["formula_count"] == 1023
           assert report["design"]["mask_residual_dimensions"] == 967
+          assert report["design"]["mask_residual_embedding_dimensions"] == 1023
+          assert report["design"]["projection_input_dimensions"] == 967
           assert report["design"]["projection_dimension"] == 64
           assert report["design"]["evaluated_targets"] == 2186
           assert report["design"]["split_counts"] == {"discovery": 1311, "validation": 437, "blind_oos": 438}
@@ -107,6 +109,9 @@ jobs:
           assert report["integrity"]["model_training_pairs_end_before_target"] is True
           assert report["integrity"]["current_target_capture_used_only_as_response"] is True
           assert report["integrity"]["mask_residual_orthogonality_max_error"] < 1e-9
+          assert report["integrity"]["mask_complement_cross_orthogonality_max_error"] < 1e-10
+          assert report["integrity"]["mask_complement_orthogonality_max_error"] < 1e-10
+          assert report["integrity"]["residual_complement_reconstruction_max_error"] < 1e-9
           assert report["integrity"]["sketch_projection_orthogonality_max_error"] < 1e-10
           ledger_path = p / f"{prefix}_target_ledger.csv"
           with ledger_path.open(newline="") as f:
