@@ -532,6 +532,12 @@ jobs:
           validation_path.write_text(json.dumps(validation, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
           checked[validation_path.as_posix()] = subprocess.check_output(["git", "hash-object", str(validation_path)], text=True).strip()
 
+          validation_path = out / f"{prefix}_validation.json"
+          validation = json.loads(validation_path.read_text(encoding="utf-8"))
+          validation["final_readback"] = "REMOTE_GIT_READBACK_VERIFIED"
+          validation_path.write_text(json.dumps(validation, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+          checked[validation_path.as_posix()] = subprocess.check_output(["git", "hash-object", str(validation_path)], text=True).strip()
+
           checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
           checkpoint["status"] = "REMOTE_GIT_READBACK_VERIFIED"
           checkpoint["remote_readback"] = {"branch": os.environ["RESEARCH_BRANCH"], "files": checked}
@@ -539,6 +545,13 @@ jobs:
 
           manifest["status"] = "REMOTE_GIT_READBACK_VERIFIED"
           manifest["remote_readback"] = {"branch": os.environ["RESEARCH_BRANCH"], "files": checked}
+          validation_raw = validation_path.read_bytes()
+          manifest["outputs"][validation_path.name] = {
+              "path": validation_path.as_posix(),
+              "bytes": len(validation_raw),
+              "sha256": hashlib.sha256(validation_raw).hexdigest(),
+              "git_blob_sha1": subprocess.check_output(["git", "hash-object", str(validation_path)], text=True).strip()
+          }
           validation_raw = validation_path.read_bytes()
           manifest["outputs"][validation_path.name] = {
               "path": validation_path.as_posix(),
