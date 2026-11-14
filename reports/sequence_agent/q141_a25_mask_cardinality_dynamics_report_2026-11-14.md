@@ -45,7 +45,7 @@
 
 ## Parent A24 parity
 
-Maximum absolute per-target MSE difference after weighted reconstruction: **NaN** (required < 1e-9).
+Maximum absolute per-target MSE difference after weighted reconstruction: **4.988e-13** (required < 1e-9).
 
 ## Interpretation and limits
 
