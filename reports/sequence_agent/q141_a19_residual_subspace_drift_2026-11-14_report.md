@@ -9,7 +9,7 @@ Pre-target drift in a fixed 64-dimensional sketch must improve one-step-ahead ca
 ## Design
 
 - Source: Q7 commit 7a37cab601c5f9386131a00246963f8e4aeabf74; 1,023 masks and 3,386 target rows.
-- Mask-lattice residual dimension: 1023; deterministic sketch dimension: 64; k=6.
+- Mask-lattice residual coordinates: 967D (embedded in 1023D); deterministic sketch dimension: 64; k=6.
 - Drift: overlap change between adjacent 400-target windows, both ending before the target.
 - Prediction: rolling one-feature OLS on the prior 400 drift/capture pairs.
 - Scored targets: 2,186; splits {'discovery': 1311, 'validation': 437, 'blind_oos': 438}.
