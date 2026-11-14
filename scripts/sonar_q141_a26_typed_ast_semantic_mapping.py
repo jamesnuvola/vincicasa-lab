@@ -123,15 +123,17 @@ def audit_asts(root,qm,q7m):
   with gzip.open(p,"rt",encoding="utf-8") as f:
    for line in f:
     if not line.strip():continue
-    rec=json.loads(line);ast=rec["canonical_ast"]
-    if rec.get("output_type")!="per_number_score":raise RuntimeError("Q90 output type mismatch")
+    rec=json.loads(line);ast=rec["ast"]
+    if rec.get("output_type")!="per_number_score" or ast.get("op")!="per_number_score":raise RuntimeError("Q90 output type mismatch")
     raw=sha(canon(ast))
     if rec.get("ast_id")!="Q90AST1-"+raw:raise RuntimeError("Q90 AST hash mismatch")
     if rec["ast_id"] in q90ids or rec["source_formula_id"] in q90fids:raise RuntimeError("duplicate Q90 AST/formula")
     q90ids.add(rec["ast_id"]);q90fids.add(rec["source_formula_id"]);q90raw.add(raw)
     names=refs(ast)
     if not names or not names.issubset(Q90_MAP):raise RuntimeError("unmapped Q90 feature ref")
-    q90ops[op_type(ast)]+=1;q90masks[mask(names,Q90_MAP)]+=1;q90features.update(names)
+    op=op_type(ast)
+    if rec.get("formula_type")!=op:raise RuntimeError("Q90 formula_type/AST operator mismatch")
+    q90ops[op]+=1;q90masks[mask(names,Q90_MAP)]+=1;q90features.update(names)
     if any(Q90_MAP[x] in SHARED for x in names):q90shared+=1
     n+=1
   if n!=shard["rows"]:raise RuntimeError("Q90 shard row count mismatch")
