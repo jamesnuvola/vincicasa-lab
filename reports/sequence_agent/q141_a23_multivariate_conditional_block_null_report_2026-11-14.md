@@ -5,15 +5,15 @@
 
 ## Result
 
-- Observed energy distance: **0.669682**
-- Observed mean-shift RMS: **0.065404**
+- Observed energy distance: **0.668664**
+- Observed mean-shift RMS: **0.065304**
 - Full-vector moving-block null: 20,000 replicates at each block length 5, 10 and 20; six tests corrected together by Holm.
 
 | Block | Energy null median | Energy null q95 | Energy p raw | Energy p Holm | Mean-shift p raw | Mean-shift p Holm |
 |---:|---:|---:|---:|---:|---:|---:|
-| 5 | 0.389887 | 0.692570 | 0.058947 | 0.172191 | 0.082046 | 0.172191 |
-| 10 | 0.350642 | 0.645790 | 0.042398 | 0.169592 | 0.057397 | 0.172191 |
-| 20 | 0.347880 | 0.467689 | 0.000050 | 0.000300 | 0.008500 | 0.042498 |
+| 5 | 0.389294 | 0.691517 | 0.058947 | 0.172191 | 0.082046 | 0.172191 |
+| 10 | 0.350109 | 0.644808 | 0.042398 | 0.169592 | 0.057397 | 0.172191 |
+| 20 | 0.347351 | 0.466978 | 0.000050 | 0.000300 | 0.008500 | 0.042498 |
 
 The energy-distance result is significant only at block length 20 after Holm; block lengths 5 and 10 are not significant. The mean-shift endpoint is significant only at block length 20. The pre-registered robustness rule requires energy significance at all three block lengths and mean-shift significance at two or more. It therefore **fails**.
 
@@ -30,3 +30,8 @@ These split metrics are inherited from A20/A21/A22 and are not evidence that A23
 ## Limits and next step
 
 The null preserves complete contemporaneous formula vectors and local temporal blocks, but assumes the preceding 118-target high-state run is a valid stationary continuation reference. The test concerns formula-profile distribution shift only—not exact-ticket accuracy or win probability. Keep the 14 November A21 freeze unchanged; wait for the official result and continue prospective monitoring without retuning.
+
+
+## Replay reconciliation (2026-11-14)
+
+The first CI replay exposed a uniform scale discrepancy between the in-memory report and the canonical Node implementation. The canonical implementation recomputed the observed energy distance as **0.668664052176** and mean-shift RMS as **0.065304253998**. All three null distributions were regenerated from the registered seeds; exceedance counts and p-values were unchanged, and the six-test Holm family still fails the preregistered robustness rule. The persisted JSON and CSV were aligned to these deterministic outputs. The earlier in-memory values are superseded, not averaged or retained as final estimates.
