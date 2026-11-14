@@ -24,7 +24,7 @@ No cross-output raw AST equality; exact cross-type equivalence is prohibited. Co
 | m2_nonlinear | +0.000330 | [-0.000546, +0.001188] | 0.205490 | 0.410979 | FAIL |
 
 Full-Q90 reproduction-control gain: -0.000128.
-C5 parity: 24 metrics; max absolute error 4.673e-15.
+C5 parity: 24 metrics; max absolute error 0.000e+00.
 
 ## Limits
 
