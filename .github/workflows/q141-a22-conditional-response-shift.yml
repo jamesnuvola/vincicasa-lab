@@ -92,6 +92,8 @@ jobs:
           PY
           git config user.name "sonar-research-agent"
           git config user.email "actions@users.noreply.github.com"
+          git fetch origin "$BRANCH:refs/remotes/origin/$BRANCH"
+          git merge --ff-only "origin/$BRANCH"
           git add reports/sequence_agent/q141_a22_conditional_response_shift_2026-11-14_*
           git commit -m "Q141-A22: persist conditional response shift audit"
           git push origin "HEAD:$BRANCH"
