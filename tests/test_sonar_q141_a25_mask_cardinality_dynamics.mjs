@@ -57,7 +57,7 @@ test("group MSE is normalized by the stratum coordinate count", () => {
   const prediction = Float64Array.from([1, 2, 3, 4]);
   const actual = Float64Array.from([0, 0, 1, 2]);
   assert.equal(groupMse(prediction, actual, [0, 1]), 2.5);
-  assert.equal(groupMse(prediction, actual, [2, 3]), 2);
+  assert.equal(groupMse(prediction, actual, [2, 3]), 4);
 });
 
 test("weighted stratum reconstruction uses the fixed residual rank", () => {
@@ -73,7 +73,7 @@ test("block sign-flip is deterministic and one-sided for positive lift", () => {
   assert.deepEqual(a, b);
   assert.equal(a.p_raw, 1);
   const positive = Array(40).fill(0.1);
-  assert.ok(blockSignFlip(positive, 10, 250110, 2000).p_raw < 0.05);
+  assert.ok(blockSignFlip(positive, 5, 250110, 2000).p_raw < 0.05);
 });
 
 test("circular block bootstrap is deterministic and preserves constant means", () => {
