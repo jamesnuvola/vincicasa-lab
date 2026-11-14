@@ -1,6 +1,7 @@
 import unittest
 import numpy as np
 
+from sonar_q141_a17_full_universe_spectral import fit_basis
 from sonar_q141_a18_mask_lattice_residual import (
     build_mask_design,
     conditional_shift_surrogates,
@@ -96,11 +97,11 @@ class Q141A18Tests(unittest.TestCase):
         x = rng.normal(size=(430, 32))
         q, _ = np.linalg.qr(rng.normal(size=(32, 8)))
         residual1 = x[:400] - (x[:400] @ q) @ q.T
-        basis1, _ = np.linalg.svd(residual1, full_matrices=False)
+        basis1, _ = fit_basis(residual1, 6)
         suffix = x.copy()
         suffix[400:] = rng.normal(loc=100.0, size=suffix[400:].shape)
         residual2 = suffix[:400] - (suffix[:400] @ q) @ q.T
-        basis2, _ = np.linalg.svd(residual2, full_matrices=False)
+        basis2, _ = fit_basis(residual2, 6)
         np.testing.assert_array_equal(basis1, basis2)
 
     def test_circular_shift_preserves_column_circular_autocorrelation(self):
