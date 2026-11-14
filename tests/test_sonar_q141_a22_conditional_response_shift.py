@@ -21,7 +21,7 @@ class Q141A22Tests(unittest.TestCase):
         tests = [{"p_raw": p} for p in (0.04, 0.001, 0.02, 0.5)]
         holm_adjust(tests)
         pairs = sorted((t["p_raw"], t["p_holm_12"]) for t in tests)
-        self.assertEqual([round(x[1], 6) for x in pairs], [0.004, 0.06, 0.06, 0.5])
+        self.assertEqual([round(x[1], 6) for x in pairs], [0.004, 0.06, 0.08, 0.5])
 
     def test_holm_never_reduces_raw_p(self):
         tests = [{"p_raw": p} for p in (0.01, 0.2, 0.03)]
