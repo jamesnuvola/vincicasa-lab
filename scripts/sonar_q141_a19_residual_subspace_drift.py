@@ -179,7 +179,7 @@ def verify_future_invariance(projected, drift, capture, probe_indices, window=WI
     for t in probe_indices:
         original_drift, _ = drift_at(x, int(t), window, K)
         mutated = x.copy()
-        rng = np.random.default_rng(SEED_SKETCH + int(t))
+        rng = np.random.default_rng(SKETCH_SEED + int(t))
         mutated[int(t):] = rng.normal(loc=50.0, scale=7.0, size=mutated[int(t):].shape)
         changed_drift, _ = drift_at(mutated, int(t), window, K)
         if not np.isclose(original_drift, changed_drift, rtol=0.0, atol=1e-13):
