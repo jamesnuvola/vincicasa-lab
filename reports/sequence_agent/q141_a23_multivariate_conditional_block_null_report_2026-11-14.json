@@ -1,0 +1,195 @@
+{
+  "experiment_id": "Q141-A23",
+  "schema_version": "1.0",
+  "status": "COMPUTED_EXPLORATORY_MULTIVARIATE_CONDITIONAL_BLOCK_NULL",
+  "source": {
+    "q7_branch": "research/exhaustive-formula-catalog-20261025",
+    "q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "upstream_blobs": {
+      "p0000": "c9f909515e677b1c21ed93b2dc73882b18464864",
+      "p0100": "5aeb2c6f0989e26bc4487d1d63b30820932dfb3b",
+      "p0200": "8576424af40f2fd855174e0579e2809f43b8b34b",
+      "p0300": "e97e7e5ef72d88c86db09c0ab8e8212ec27a39d9",
+      "p0400": "139ff337fd54df467ca72b2718e38debc875adc7",
+      "p3200": "76c933fb9724ec94d9b8770757a93a2d803d33bb",
+      "p3300": "38529f24405e4d9c5eefcd51005feaa2a950de1b",
+      "extension_rank_blob": "95ba0f108c602707568bdc448cd7394b7dfd6e18",
+      "a20_ledger": "f457869528407031af6cbfe37473c9694df3da27",
+      "a21_ledger": "76bf40bd1f0b8677e315afc1221630297ce00556"
+    },
+    "snapshot_inputs": {
+      "q141_a23_source_snapshot_reference_000_059.csv": {
+        "git_blob_sha1": "d58b0e9c18b2cacece2fac94ccb3a2c08b8dad76",
+        "bytes_ascii": 430844
+      },
+      "q141_a23_source_snapshot_reference_059_118.csv": {
+        "git_blob_sha1": "5f3eef14ba5b5649415ac1fc0337a83a06b14c36",
+        "bytes_ascii": 429828
+      },
+      "q141_a23_source_snapshot_extension_020.csv": {
+        "git_blob_sha1": "714ffb43933b3c666e1d4fca240c562d5dd8a8ca",
+        "bytes_ascii": 156124
+      },
+      "q141_a23_calibration_first400.json": {
+        "git_blob_sha1": "aa5eb27424284ae7973214102a61c89e63a4b3bd",
+        "bytes_ascii": 52776
+      },
+      "q141_a23_multivariate_target_ledger_2026-11-14.csv": {
+        "git_blob_sha1": "2ac240b82868d75a0ddb3a7e7d8144e33b7ae8f4",
+        "bytes_ascii": 10560
+      },
+      "q141_a23_source_lineage_2026-11-14.json": {
+        "git_blob_sha1": "693105e882079b24a6db4c6c46fa2ff1d1c8e45f",
+        "bytes_ascii": 1299
+      }
+    }
+  },
+  "design": {
+    "formula_count": 1023,
+    "candidate_universe_size": 658008,
+    "mask_design_rank": 56,
+    "residual_dimension": 967,
+    "calibration_rows": 400,
+    "reference_rows": 118,
+    "extension_rows": 20,
+    "reference_start": "2026-06-29",
+    "reference_end": "2026-10-24",
+    "extension_start": "2026-10-25",
+    "extension_end": "2026-11-13",
+    "strict_prior_all_rows": true,
+    "bootstrap_replicates_per_block": 20000,
+    "block_lengths": [
+      5,
+      10,
+      20
+    ],
+    "holm_family_size": 6,
+    "holm_alpha": 0.05,
+    "primary": "V-statistic energy distance on full mask-lattice residual vectors",
+    "secondary": "RMS norm of difference between multivariate mean vectors",
+    "null": "circular moving-block bootstrap of complete reference formula-rank vectors"
+  },
+  "observed": {
+    "energy_distance": 0.669681794836,
+    "mean_shift_rms": 0.063588328606
+  },
+  "null_summaries": [
+    {
+      "block_length": 5,
+      "replicates": 20000,
+      "energy_null_mean": 0.425721149041,
+      "energy_null_median": 0.389886697543,
+      "energy_null_q95": 0.692569889819,
+      "energy_exceedances": 1178,
+      "energy_p_raw": 0.058947052647,
+      "energy_ratio_to_null_median": 1.717631812156,
+      "mean_shift_null_mean": 0.046459304485,
+      "mean_shift_null_median": 0.044379604354,
+      "mean_shift_null_q95": 0.068953621126,
+      "mean_shift_exceedances": 1640,
+      "mean_shift_p_raw": 0.082045897705
+    },
+    {
+      "block_length": 10,
+      "replicates": 20000,
+      "energy_null_mean": 0.385590346446,
+      "energy_null_median": 0.350641876724,
+      "energy_null_q95": 0.645789685802,
+      "energy_exceedances": 847,
+      "energy_p_raw": 0.042397880106,
+      "energy_ratio_to_null_median": 1.909873974817,
+      "mean_shift_null_mean": 0.043525992152,
+      "mean_shift_null_median": 0.041571686122,
+      "mean_shift_null_q95": 0.064723851858,
+      "mean_shift_exceedances": 1147,
+      "mean_shift_p_raw": 0.057397130143
+    },
+    {
+      "block_length": 20,
+      "replicates": 20000,
+      "energy_null_mean": 0.35086043814,
+      "energy_null_median": 0.347879572281,
+      "energy_null_q95": 0.467688617031,
+      "energy_exceedances": 0,
+      "energy_p_raw": 0.0000499975,
+      "energy_ratio_to_null_median": 1.925039146293,
+      "mean_shift_null_mean": 0.042773063865,
+      "mean_shift_null_median": 0.041926195851,
+      "mean_shift_null_q95": 0.05643227168,
+      "mean_shift_exceedances": 169,
+      "mean_shift_p_raw": 0.008499575021
+    }
+  ],
+  "tests": [
+    {
+      "key": "energy_L5",
+      "p_raw": 0.058947052647,
+      "p_holm": 0.17219139043
+    },
+    {
+      "key": "mean_shift_L5",
+      "p_raw": 0.082045897705,
+      "p_holm": 0.17219139043
+    },
+    {
+      "key": "energy_L10",
+      "p_raw": 0.042397880106,
+      "p_holm": 0.169591520424
+    },
+    {
+      "key": "mean_shift_L10",
+      "p_raw": 0.057397130143,
+      "p_holm": 0.17219139043
+    },
+    {
+      "key": "energy_L20",
+      "p_raw": 0.0000499975,
+      "p_holm": 0.000299985001
+    },
+    {
+      "key": "mean_shift_L20",
+      "p_raw": 0.008499575021,
+      "p_holm": 0.042497875106
+    }
+  ],
+  "decision": {
+    "multivariate_shift_confirmed": false,
+    "energy_all_blocks_holm_below_005": false,
+    "mean_shift_significant_blocks": 1,
+    "energy_ratio_all_blocks_at_least_1_25": true,
+    "production_promotion": false
+  },
+  "historical_context": {
+    "discovery": {
+      "targets": 911,
+      "mse_gain_vs_mean400": -0.00008058980750823272,
+      "mse_gain_vs_a19_ols": 0.00024050039218834378
+    },
+    "validation": {
+      "targets": 437,
+      "mse_gain_vs_mean400": -0.0003358782200389016,
+      "mse_gain_vs_a19_ols": -0.00021627865868817462
+    },
+    "blind_oos": {
+      "targets": 438,
+      "mse_gain_vs_mean400": -0.0000344725491780822,
+      "mse_gain_vs_a19_ols": 0.0002565627442157836,
+      "p_holm_vs_a19_ols": 0.06899655017249137
+    },
+    "note": "Inherited unchanged from A20/A21/A22; not recomputed by A23."
+  },
+  "scalar_context": {
+    "terminal_high_run_mean_capture": 0.6571117376550338,
+    "extension_mean_capture": 0.56666457578635,
+    "extension_minus_terminal_run_capture": -0.09044716186868385,
+    "q75_mse_gain_vs_mean400": -0.00432908031805
+  },
+  "limitations": [
+    "A21 outcomes were visible before A23 protocol; retrospective exploratory audit, not virgin prospective evidence.",
+    "Only 20 extension targets; inference conditional on the 118-row preceding high-state reference.",
+    "Moving-block null preserves complete formula vectors and local temporal dependence, but assumes the preceding high-state run is a reasonable stationary continuation null.",
+    "Mask residualization and first-400 scaler are inherited fixed transformations; no predictive accuracy or winning probability is tested.",
+    "Historical Discovery/Validation/Blind OOS scores are inherited, not re-estimated on the full multivariate rank matrix."
+  ],
+  "next_action": "Keep the 2026-11-14 A21 freeze immutable. Do not retune Q75. Extend the prospective source after the official 2026-11-14 result is verified; then repeat the pre-registered monitor on a new target without changing the A23 null or endpoints."
+}
