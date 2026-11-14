@@ -1,0 +1,165 @@
+name: SONAR Q141-A22 Conditional Response Shift Audit
+
+on:
+  push:
+    branches:
+      - research/q141-a22-conditional-response-shift-20261114
+    paths:
+      - "scripts/sonar_q141_a22_conditional_response_shift.py"
+      - "tests/test_sonar_q141_a22_conditional_response_shift.py"
+      - "reports/sequence_agent/q141_a22_conditional_response_shift_2026-11-14_protocol.md"
+      - ".github/workflows/q141-a22-conditional-response-shift.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sonar-q141-a22-conditional-response-shift
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile and run focused tests
+        run: |
+          python -m py_compile scripts/sonar_q141_a22_conditional_response_shift.py tests/test_sonar_q141_a22_conditional_response_shift.py
+          PYTHONPATH=scripts python -m unittest discover -s tests -p "test_sonar_q141_a22_conditional_response_shift.py" -v
+
+      - name: Run A22 analysis
+        run: |
+          python scripts/sonar_q141_a22_conditional_response_shift.py \
+            --a20-ledger reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_target_ledger.csv \
+            --a21-ledger reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_extension_target_ledger.csv \
+            --out-dir reports/sequence_agent
+
+      - name: Independent deterministic replay
+        run: |
+          python scripts/sonar_q141_a22_conditional_response_shift.py \
+            --a20-ledger reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_target_ledger.csv \
+            --a21-ledger reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_extension_target_ledger.csv \
+            --out-dir /tmp/q141-a22-replay
+          prefix="q141_a22_conditional_response_shift_2026-11-14"
+          for suffix in report.json report.md target_ledger.csv bootstrap_summary.csv checkpoint.json; do
+            cmp "reports/sequence_agent/$prefix"_"$suffix" "/tmp/q141-a22-replay/$prefix"_"$suffix"
+          done
+          echo "Q141-A22 deterministic replay is byte-identical."
+
+      - name: Build manifest and persist generated evidence
+        env:
+          BRANCH: research/q141-a22-conditional-response-shift-20261114
+        run: |
+          python - <<'PY'
+          import hashlib, json
+          from pathlib import Path
+          prefix = "q141_a22_conditional_response_shift_2026-11-14"
+          paths = [
+              "scripts/sonar_q141_a22_conditional_response_shift.py",
+              "tests/test_sonar_q141_a22_conditional_response_shift.py",
+              ".github/workflows/q141-a22-conditional-response-shift.yml",
+              f"reports/sequence_agent/{prefix}_protocol.md",
+              f"reports/sequence_agent/{prefix}_report.json",
+              f"reports/sequence_agent/{prefix}_report.md",
+              f"reports/sequence_agent/{prefix}_target_ledger.csv",
+              f"reports/sequence_agent/{prefix}_bootstrap_summary.csv",
+              f"reports/sequence_agent/{prefix}_checkpoint.json",
+          ]
+          def hashes(path):
+              raw = Path(path).read_bytes()
+              return {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest(),
+                      "git_blob_sha1": hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()}
+          manifest = {
+              "schema_version": "1.0", "experiment_id": "Q141-A22",
+              "status": "COMPUTED_PENDING_REMOTE_READBACK",
+              "sources": {
+                  "a20": "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_target_ledger.csv",
+                  "a21": "reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_extension_target_ledger.csv"
+              },
+              "outputs": {path: hashes(path) for path in paths}
+          }
+          Path("reports/sequence_agent/" + prefix + "_manifest.json").write_text(
+              json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+          PY
+          git config user.name "sonar-research-agent"
+          git config user.email "actions@users.noreply.github.com"
+          git fetch origin "$BRANCH:refs/remotes/origin/$BRANCH"
+          git merge --ff-only "origin/$BRANCH"
+          git add reports/sequence_agent/q141_a22_conditional_response_shift_2026-11-14_*
+          git commit -m "Q141-A22: persist conditional response shift audit"
+          git push origin "HEAD:$BRANCH"
+
+      - name: Verify remote readback and persist receipt
+        env:
+          BRANCH: research/q141-a22-conditional-response-shift-20261114
+        run: |
+          git fetch origin "$BRANCH:refs/remotes/origin/$BRANCH"
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          branch = "origin/research/q141-a22-conditional-response-shift-20261114"
+          root = Path("reports/sequence_agent")
+          prefix = "q141_a22_conditional_response_shift_2026-11-14"
+          manifest_path = root / (prefix + "_manifest.json")
+          manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+          verified = {}
+          for path, expected in manifest["outputs"].items():
+              remote = subprocess.check_output(["git", "show", branch + ":" + path])
+              local = Path(path).read_bytes()
+              if remote != local:
+                  raise SystemExit("A22_READBACK_MISMATCH: " + path)
+              verified[path] = expected
+          checkpoint_path = root / (prefix + "_checkpoint.json")
+          checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
+          checkpoint["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          checkpoint["verified_manifest_files"] = len(verified)
+          checkpoint_path.write_text(json.dumps(checkpoint, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+          def hashes(path):
+              raw = Path(path).read_bytes()
+              return {"bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest(),
+                      "git_blob_sha1": hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()}
+          manifest["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          manifest["outputs"][str(checkpoint_path)] = hashes(str(checkpoint_path))
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+          PY
+          git add reports/sequence_agent/q141_a22_conditional_response_shift_2026-11-14_checkpoint.json reports/sequence_agent/q141_a22_conditional_response_shift_2026-11-14_manifest.json
+          git commit -m "Q141-A22: record verified remote readback"
+          git push origin "HEAD:$BRANCH"
+          git fetch origin "$BRANCH:refs/remotes/origin/$BRANCH"
+          python - <<'PY'
+          import hashlib, json, subprocess
+          from pathlib import Path
+          branch = "origin/research/q141-a22-conditional-response-shift-20261114"
+          prefix = "q141_a22_conditional_response_shift_2026-11-14"
+          root = Path("reports/sequence_agent")
+          manifest = json.loads((root / (prefix + "_manifest.json")).read_text(encoding="utf-8"))
+          for path in manifest["outputs"]:
+              remote = subprocess.check_output(["git", "show", branch + ":" + path])
+              if remote != Path(path).read_bytes():
+                  raise SystemExit("A22_FINAL_READBACK_MISMATCH: " + path)
+          raw = (root / (prefix + "_manifest.json")).read_bytes()
+          receipt = {
+              "schema_version": "1.0", "experiment_id": "Q141-A22",
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "verified_file_count": len(manifest["outputs"]),
+              "manifest_git_blob_sha1": hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest(),
+              "verified_files": manifest["outputs"]
+          }
+          (root / (prefix + "_readback_receipt.json")).write_text(
+              json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+          PY
+          git add reports/sequence_agent/q141_a22_conditional_response_shift_2026-11-14_readback_receipt.json
+          git commit -m "Q141-A22: persist final readback receipt"
+          git push origin "HEAD:$BRANCH"
+          git fetch origin "$BRANCH:refs/remotes/origin/$BRANCH"
+          cmp reports/sequence_agent/q141_a22_conditional_response_shift_2026-11-14_readback_receipt.json <(git show "origin/$BRANCH:reports/sequence_agent/q141_a22_conditional_response_shift_2026-11-14_readback_receipt.json")
+          echo "Q141-A22 REMOTE_GIT_READBACK_VERIFIED"
