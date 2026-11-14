@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "experiment_id": "Q145",
+  "addendum_id": "Q145-OUTCOME-20261114",
+  "status": "OUTCOME_RECONCILED_DESCRIPTIVE_ONLY",
+  "target_date": "2026-11-13",
+  "contest_number": 317,
+  "cutoff_date": "2026-11-12",
+  "actual_quintet": [
+    2,
+    16,
+    21,
+    27,
+    30
+  ],
+  "outcome_source": {
+    "canonical_repository": "jamesnuvola/vincicasa-lab",
+    "main_commit": "975b8f570102ef80dc82643c425da8831534bf75",
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "d9b4fd19654bb430c41954d2695c67ff41b8ebae",
+    "updater_script": "scripts/aggiorna_estrazioni.py",
+    "updater_urls": [
+      "https://www.vincicasa.it/archivio-estrazioni",
+      "https://www.vincicasa.it/"
+    ],
+    "workflow_run": 43534315854,
+    "workflow_log": "The official-site updater logged: Aggiunta: 2026-11-13 -> [2, 16, 21, 27, 30].",
+    "cross_check": "Independent result archive reports contest 317 on 2026-11-13 with the same five numbers."
+  },
+  "freeze": {
+    "path": "reports/sequence_agent/q145_rank_subset_likelihood_freeze_2026-11-13.json",
+    "branch": "research/q145-rank-subset-likelihood-20261113",
+    "blob_sha1": "e79dee09cbfaa18941d8cb6c57dab949cb1b91bb",
+    "source_archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "source_shadow_blob_sha1": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "frozen_at_local": "2026-11-13T19:18:07+01:00",
+    "original_freeze_modified": false
+  },
+  "q145_models": {
+    "uniform_quintet_probability": 0.000001519738361843625,
+    "borda": {
+      "top20_hits": 4,
+      "top10_hits": 4,
+      "modal_top5_hits": 2,
+      "actual_quintet_probability": 0.000006305330860037593,
+      "probability_ratio_vs_uniform": 4.148958148124705,
+      "log_likelihood_gain_vs_uniform_nats": 1.4228572540799713
+    },
+    "equal_type_inclusion": {
+      "top20_hits": 4,
+      "top10_hits": 3,
+      "modal_top5_hits": 2,
+      "actual_quintet_probability": 0.000005705299295261094,
+      "probability_ratio_vs_uniform": 3.7541325782898762,
+      "log_likelihood_gain_vs_uniform_nats": 1.3228572540803607
+    }
+  },
+  "main_sequence_agent_shadow_family": {
+    "source_path": "reports/sequence_agent/shadow_forecasts.csv",
+    "source_blob_sha1": "ffc5a4eb0c38e4dfc67032e1ef5737689be5fec1",
+    "frozen_rows": 43,
+    "rows_unique_top20_sets": 41,
+    "top20_hit_histogram": {
+      "1": 2,
+      "2": 5,
+      "3": 17,
+      "4": 17,
+      "5": 2
+    },
+    "top20_5of5_count": 2,
+    "top20_4plus_count": 19,
+    "mean_top20_hits": 3.2790697674418605,
+    "top10_5of5_count": 0,
+    "top5_5of5_count": 0,
+    "exact_joint_uniform_null": {
+      "quintets_enumerated": 658008,
+      "probability_at_least_one_top20_5of5": 0.3928158928158928,
+      "probability_at_least_two_top20_5of5": 0.20021033178927916,
+      "probability_at_least_19_configs_with_top20_4plus": 0.06976966845387898,
+      "method": "Exhaustive enumeration of all 5-of-40 quintets against the 43 frozen Top20 sets; dependence between configurations is retained."
+    },
+    "original_shadow_rows_status": "FROZEN_PENDING",
+    "ledger_status_updated": false
+  },
+  "interpretation": {
+    "conclusion": "One prospective Q145 target produced 4/5 Top20 hits for both distributions and positive one-target log-score gains, but only 2/5 modal-top5 hits. The 43-rule family had two Top20 complete hits and nineteen 4+ hits; the exact joint null shows these family-level counts are not unusually rare under a uniform quintet.",
+    "confirmatory": false,
+    "promotion_allowed": false,
+    "reason": "Single prospective target; the family-level 4+ and 5/5 summaries are descriptive post-outcome audits, not pre-registered confirmatory endpoints. Continue frozen accumulation without retuning."
+  }
+}
