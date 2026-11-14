@@ -17,7 +17,7 @@ from sonar_q141_a17_full_universe_spectral import (
 )
 
 DATE = "2026-11-14"
-OUT_PREFIX = "q141_a18_mask_lattice_residual"
+OUT_PREFIX = f"q141_a18_mask_lattice_residual_{DATE}"
 MASK_BITS = 10
 MAIN_EFFECTS = 10
 PAIR_EFFECTS = 45
@@ -311,15 +311,15 @@ def build_report(ranks, dates, cutoffs, actuals, formulas, lineage, out, seed_of
     null_rows = []
     for b in range(NULL_REPLICATES):
         null_rows.append({"replicate": b + 1, **{name: f"{float(null[name][b]):.12f}" for name in SPLIT_NAMES}})
-    eigen_path = out / f"{OUT_PREFIX}_training_eigenvalues_{DATE}.csv"
+    eigen_path = out / f"{OUT_PREFIX}_training_eigenvalues.csv"
     csv_write(eigen_path, ["split", "component", "eigenvalue", "variance_share", "cumulative_share"], eigen_rows)
-    ledger_path = out / f"{OUT_PREFIX}_target_ledger_{DATE}.csv"
+    ledger_path = out / f"{OUT_PREFIX}_target_ledger.csv"
     csv_write(ledger_path, list(ledger_rows[0].keys()), ledger_rows)
-    null_path = out / f"{OUT_PREFIX}_conditional_shift_null_{DATE}.csv"
+    null_path = out / f"{OUT_PREFIX}_conditional_shift_null.csv"
     csv_write(null_path, ["replicate", "discovery", "validation", "blind_oos"], null_rows)
-    loadings_path = out / f"{OUT_PREFIX}_component_loadings_{DATE}.json"
+    loadings_path = out / f"{OUT_PREFIX}_component_loadings.json"
     write_json(loadings_path, loading_obj)
-    source_path = out / f"{OUT_PREFIX}_source_lineage_{DATE}.json"
+    source_path = out / f"{OUT_PREFIX}_source_lineage.json"
     write_json(source_path, lineage)
 
     report = {
@@ -389,7 +389,7 @@ def build_report(ranks, dates, cutoffs, actuals, formulas, lineage, out, seed_of
             "Rank profiles describe the realized target after the fact; this is not a candidate-number probability model.",
         ],
     }
-    report_path = out / f"{OUT_PREFIX}_report_{DATE}.json"
+    report_path = out / f"{OUT_PREFIX}_report.json"
     write_json(report_path, report)
     md = [
         "# Q141-A18 — Mask-Lattice Residual Spectral Mapping",
@@ -437,7 +437,7 @@ def build_report(ranks, dates, cutoffs, actuals, formulas, lineage, out, seed_of
         "This is a structural decomposition of realized rank profiles, not a forecast. The historical Blind OOS is not virgin prospective evidence. The conditional shift null preserves each residual column's circular sequence before row-wise re-projection, so it is a defined surrogate rather than a universal null.",
         "",
     ]
-    report_md_path = out / f"{OUT_PREFIX}_report_{DATE}.md"
+    report_md_path = out / f"{OUT_PREFIX}_report.md"
     report_md_path.write_text("\n".join(md), encoding="utf-8")
 
     outputs = [report_path, report_md_path, ledger_path, null_path, eigen_path, loadings_path, source_path]
@@ -452,7 +452,7 @@ def build_report(ranks, dates, cutoffs, actuals, formulas, lineage, out, seed_of
         "q7_head": Q7_HEAD,
         "outputs": output_info,
     }
-    manifest_path = out / f"{OUT_PREFIX}_manifest_{DATE}.json"
+    manifest_path = out / f"{OUT_PREFIX}_manifest.json"
     write_json(manifest_path, manifest)
     checkpoint = {
         "schema_version": "1.0",
@@ -469,7 +469,7 @@ def build_report(ranks, dates, cutoffs, actuals, formulas, lineage, out, seed_of
         "null_replicates": NULL_REPLICATES,
         "next_action": "Verify dedicated CI, full replay and remote Git readback; then request human review without merge or promotion.",
     }
-    checkpoint_path = out / f"{OUT_PREFIX}_checkpoint_{DATE}.json"
+    checkpoint_path = out / f"{OUT_PREFIX}_checkpoint.json"
     write_json(checkpoint_path, checkpoint)
     print("A18_COMPUTE_COMPLETE", json.dumps({
         "decision": decision,
