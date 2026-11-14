@@ -1,0 +1,15 @@
+{
+ "schema_version":"1.0","task_id":"Q141-A26","registered_at":"2026-11-14T09:38:13+01:00",
+ "status":"PREREGISTERED_BEFORE_A26_EXECUTION","research_status":"POST_HOC_DECOMPOSITION_OF_EXPOSED_HISTORICAL_BLIND_OOS",
+ "hypothesis":"At least one Q90 typed-AST operator subgroup (linear_mean or nonlinear pairwise_interaction plus conditional_gate) improves Q7+Q80 prior-only meta-quality baseline by at least 0.005 MAE in historical Blind OOS, with 20-target moving-block 95% CI lower bound above zero and Holm-adjusted one-sided block-sign-flip p<0.05.",
+ "estimand":"Next-target mean normalized percentile across 1,023 Q7 quintet_score formulas; not winning-number or ticket prediction.",
+ "primary_endpoints":["Q90 linear_mean state MAE gain over Q7+Q80","Q90 nonlinear interaction/gate state MAE gain over Q7+Q80"],
+ "reproduction_control":"Q7+Q80+all-seven-Q90-family model must reproduce Q141-C5 M2 metrics on all three splits within 1e-10.",
+ "practical_threshold":0.005,"statistical_gate":{"block_length":20,"bootstrap_replicates":20000,"signflip_replicates":20000,"multiplicity":"Holm across two primary endpoints"},
+ "models":{"M0":"Q7 rolling-50 mean percentile plus Q80 rolling-50 equal-family state","M1":"M0 plus Q90 linear_mean_L4..L8 state","M2":"M0 plus Q90 pairwise_interaction_I4 and conditional_gate_G4 state","M3":"M0 plus all seven Q90 operator-family states; reproduction control"},
+ "walkforward":{"q7_rows":3286,"discovery":1972,"validation":657,"blind_oos":657,"window":50,"warmup":100,"discovery":"expanding prequential","validation_blind":"coefficients frozen after Discovery; features prior-only"},
+ "source_lineage":{"branch":"research/q141-formula-universe-behaviour-mapping-20261112","commit":"6bc727a46c65fecceff3410a7a635e42c62b4af5","q7_archive_blob":"7dab05ba49ace909fe8783eef729605049c65e50","q90_archive_blob":"5d2efd70684e918b27d8f06386d545647898336d","q141_archive_blob":"fcb453ed06c8002314f826dbac79d6935f9ac103","q90_artifact_sha256":"12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077","q7_cutoff":"2026-10-24","q90_cutoff":"2026-11-07","q90_ast_count":330429,"q90_behaviour_sample":700,"q7_ast_count":1023},
+ "semantic_policy":{"q7_output_type":"quintet_score","q90_output_type":"per_number_score","cross_output_exact_equivalence":"forbidden","shared_relation":"RELATED_NOT_EQUIVALENT","shared_concepts":["number_occurrence","cooccurrence","position_rank","gap_structure","sum_regime"]},
+ "limitations":["Historical Blind OOS already exposed; exploratory only.","Q90 behaviour ledger is a fixed 700-formula sample from 330,429 ASTs.","Q90 selected 20 of 59 features.","Only 3,286 aligned target rows; source cutoffs differ.","Holm covers two A26 tests only, not full Q00-Q141 family."],
+ "governance":{"research_only":true,"no_merge":true,"no_engine_promotion":true,"no_archive_mutation":true,"no_shadow_insertion":true,"protected_prs_untouched":[6,7,8]}
+}
