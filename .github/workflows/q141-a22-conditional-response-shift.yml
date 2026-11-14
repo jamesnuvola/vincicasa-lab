@@ -136,7 +136,7 @@ jobs:
           git push origin "HEAD:$BRANCH"
           git fetch origin "$BRANCH:refs/remotes/origin/$BRANCH"
           python - <<'PY'
-          import json, subprocess
+          import hashlib, json, subprocess
           from pathlib import Path
           branch = "origin/research/q141-a22-conditional-response-shift-20261114"
           prefix = "q141_a22_conditional_response_shift_2026-11-14"
