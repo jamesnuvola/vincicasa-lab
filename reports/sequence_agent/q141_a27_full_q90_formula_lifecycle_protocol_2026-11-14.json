@@ -1,0 +1,57 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A27",
+  "status": "POST_HOC_DESCRIPTIVE_AUDIT_SPECIFICATION",
+  "audit_date": "2026-11-14",
+  "data_access_order": "The Q90 artifact had already been computed and its summary inspected before this A27 audit was specified. This is not a preregistration or confirmatory test.",
+  "objective": "Describe full-catalog formula-rank stability across chronological splits and the retrospective oracle-best formula/family lifecycle for each target. Do not claim ex-ante predictive skill.",
+  "source": {
+    "workflow_run_id": 42504717670,
+    "artifact_id": 13627507532,
+    "artifact_name": "q90-expanded-formula-grammar-bundle",
+    "artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "archive_draws": 3401,
+    "archive_cutoff": "2026-11-07",
+    "scored_targets": 3351,
+    "formula_count": 330429
+  },
+  "analysis": {
+    "split_pairs": [
+      ["discovery", "validation"],
+      ["discovery", "blind_oos"],
+      ["validation", "blind_oos"]
+    ],
+    "rank_metrics": [
+      "mean_number_hits_top5",
+      "mean_actual_number_rank",
+      "mean_number_hits_top10",
+      "mean_number_hits_top20"
+    ],
+    "top_set_quantiles": [0.001, 0.005, 0.01, 0.05, 0.10],
+    "top_set_endpoints": ["mean_number_hits_top5", "mean_actual_number_rank"],
+    "oracle_family_tags": ["L4", "L5", "L6", "L7", "L8", "I4", "G4"],
+    "family_winner_rule": "For each target, select the family-specific retrospective best formula by highest number_hits_top5, then lowest rank_sum, then lexical family tag.",
+    "family_sequence_null": "20,000 random permutations preserving observed family-winner counts; descriptive exchangeability reference only.",
+    "random_seed": 141114
+  },
+  "guardrails": {
+    "strict_prior_target_cutoffs_rechecked": true,
+    "oracle_best_is_retrospective_only": true,
+    "family_best_is_retrospective_only": true,
+    "formula_split_correlations_are_descriptive_due_dependent_formula_ids": true,
+    "no_global_predictive_claim": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "no_freeze_mutation": true,
+    "protected_prs_untouched": [6, 7, 8]
+  },
+  "limitations": [
+    "The Q90 universe is finite and conditional on 20 Discovery-selected features from a 59-feature matrix; it is not all 59-feature combinations or all mathematical formulas.",
+    "The Q90 source archive ends 2026-11-07 and is older than the canonical archive through 2026-11-13.",
+    "The historical Blind OOS has already been exposed to prior SONAR research.",
+    "The target ledger stores the per-target oracle-best formula and seven family-specific oracle bests, not the full 330,429-by-target rank tensor.",
+    "Formula IDs are strongly dependent because their feature sets overlap; cross-formula rank correlations and top-set overlap are descriptive, not independent-sample inferential tests.",
+    "The oracle formula/family labels use the target outcome and cannot be used to forecast that same target."
+  ]
+}
