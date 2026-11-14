@@ -217,8 +217,7 @@ jobs:
               f"{prefix}_target_ledger.csv",
               f"{prefix}_circular_shift_null.csv",
               f"{prefix}_source_lineage.json",
-              f"{prefix}_validation.json",
-              f"{prefix}_manifest.json"
+              f"{prefix}_validation.json"
           ]
           checked = {}
           for name in names:
@@ -227,6 +226,16 @@ jobs:
               remote = subprocess.check_output(["git", "rev-parse", f"{branch}:{path}"], text=True).strip()
               assert local == remote, (path, local, remote)
               checked[path] = remote
+          manifest_path = p / f"{prefix}_manifest.json"
+          manifest = json.loads(manifest_path.read_text())
+          manifest["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          manifest["remote_readback"] = {
+              "branch": "research/q141-a19-residual-subspace-drift-20261114",
+              "verified_files_before_manifest_finalization": checked
+          }
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, sort_keys=True, indent=2) + "\n")
+          manifest_repo_path = "reports/sequence_agent/" + manifest_path.name
+          checked[manifest_repo_path] = subprocess.check_output(["git", "hash-object", str(manifest_path)], text=True).strip()
           cp_path = p / f"{prefix}_checkpoint.json"
           cp = json.loads(cp_path.read_text())
           cp["status"] = "REMOTE_GIT_READBACK_VERIFIED"
@@ -244,20 +253,27 @@ jobs:
           receipt_path = p / f"{prefix}_readback_receipt.json"
           receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n")
           PY
-          git add reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14_checkpoint.json reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14_readback_receipt.json
+          git add reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14_manifest.json reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14_checkpoint.json reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14_readback_receipt.json
           if ! git diff --cached --quiet; then git commit -m "Finalize Q141-A19 remote Git readback"; else echo "A19 readback receipt already matches remote; skipping no-op commit"; fi
           git push origin "HEAD:$SONAR_A19_BRANCH"
           git fetch origin "$SONAR_A19_BRANCH:refs/remotes/origin/$SONAR_A19_BRANCH"
           python - <<'PY'
-          import subprocess
+          import json, subprocess
           branch = "origin/research/q141-a19-residual-subspace-drift-20261114"
           prefix = "reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14"
+          receipt = json.loads(open(prefix + "_readback_receipt.json", encoding="utf-8").read())
+          for path, expected in receipt["verified_files"].items():
+              local = subprocess.check_output(["git", "hash-object", path], text=True).strip()
+              remote = subprocess.check_output(["git", "rev-parse", f"{branch}:{path}"], text=True).strip()
+              assert local == expected == remote, (path, local, remote, expected)
           for suffix in ("_checkpoint.json", "_readback_receipt.json"):
               path = prefix + suffix
               local = subprocess.check_output(["git", "hash-object", path], text=True).strip()
               remote = subprocess.check_output(["git", "rev-parse", f"{branch}:{path}"], text=True).strip()
               assert local == remote, (path, local, remote)
-          print("A19_REMOTE_READBACK_PASS", 9)
+          manifest = json.loads(open(prefix + "_manifest.json", encoding="utf-8").read())
+          assert manifest["status"] == "REMOTE_GIT_READBACK_VERIFIED"
+          print("A19_REMOTE_READBACK_PASS", len(receipt["verified_files"]) + 2)
           PY
       - uses: actions/upload-artifact@v4
         with:
