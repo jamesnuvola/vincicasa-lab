@@ -462,7 +462,10 @@ jobs:
               "The 20-row extension remains descriptive and non-confirmatory. The q75-state MSE gain versus the prior-400 mean is negative; no model promotion is authorized."
           ]) + "\n"
           addendum_path.write_text(addendum, encoding="utf-8")
-          md_path.write_text(md_path.read_text(encoding="utf-8") + chr(10) + "Finalization addendum: the manifest was recomputed after branch synchronization; no numerical result or freeze value changed." + chr(10), encoding="utf-8")
+          md_text = md_path.read_text(encoding="utf-8")
+          finalization_note = "Finalization addendum: the manifest was recomputed after branch synchronization; no numerical result or freeze value changed."
+          if finalization_note not in md_text:
+              md_path.write_text(md_text + chr(10) + finalization_note + chr(10), encoding="utf-8")
 
           checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
           checkpoint["status"] = "LOCAL_VALIDATION_COMPLETE_PENDING_REMOTE_READBACK"
@@ -523,6 +526,12 @@ jobs:
                   raise SystemExit(f"A21_FINALIZE_ONLY_BLOCKED: remote hash mismatch {path}")
               checked[path] = remote
 
+          validation_path = out / f"{prefix}_validation.json"
+          validation = json.loads(validation_path.read_text(encoding="utf-8"))
+          validation["final_readback"] = "REMOTE_GIT_READBACK_VERIFIED"
+          validation_path.write_text(json.dumps(validation, ensure_ascii=False, sort_keys=True, indent=2) + chr(10), encoding="utf-8")
+          checked[validation_path.as_posix()] = subprocess.check_output(["git", "hash-object", str(validation_path)], text=True).strip()
+
           checkpoint = json.loads(checkpoint_path.read_text(encoding="utf-8"))
           checkpoint["status"] = "REMOTE_GIT_READBACK_VERIFIED"
           checkpoint["remote_readback"] = {"branch": os.environ["RESEARCH_BRANCH"], "files": checked}
@@ -530,6 +539,13 @@ jobs:
 
           manifest["status"] = "REMOTE_GIT_READBACK_VERIFIED"
           manifest["remote_readback"] = {"branch": os.environ["RESEARCH_BRANCH"], "files": checked}
+          validation_raw = validation_path.read_bytes()
+          manifest["outputs"][validation_path.name] = {
+              "path": validation_path.as_posix(),
+              "bytes": len(validation_raw),
+              "sha256": hashlib.sha256(validation_raw).hexdigest(),
+              "git_blob_sha1": subprocess.check_output(["git", "hash-object", str(validation_path)], text=True).strip()
+          }
           checkpoint_raw = checkpoint_path.read_bytes()
           manifest["outputs"][checkpoint_path.name] = {
               "path": checkpoint_path.as_posix(),
