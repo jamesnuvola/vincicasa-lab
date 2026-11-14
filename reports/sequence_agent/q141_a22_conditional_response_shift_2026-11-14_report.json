@@ -1,0 +1,334 @@
+{
+  "analysis_date": "2026-11-14",
+  "bootstrap_tests": [
+    {
+      "block_length": 20,
+      "endpoint": "state_persistence",
+      "exceedances": 1087,
+      "null_ci95": [
+        0.0,
+        20.0
+      ],
+      "null_mean": 4.06075,
+      "observed_statistic": 20,
+      "p_holm_12": 0.4351782410879456,
+      "p_raw": 0.0543972801359932,
+      "replicates": 20000,
+      "source": "full_a20_history",
+      "test_key": "state_observed_high_count::full_a20_history::L20"
+    },
+    {
+      "block_length": 50,
+      "endpoint": "state_persistence",
+      "exceedances": 1663,
+      "null_ci95": [
+        0.0,
+        20.0
+      ],
+      "null_mean": 4.04705,
+      "observed_statistic": 20,
+      "p_holm_12": 0.5823708814559272,
+      "p_raw": 0.0831958402079896,
+      "replicates": 20000,
+      "source": "full_a20_history",
+      "test_key": "state_observed_high_count::full_a20_history::L50"
+    },
+    {
+      "block_length": 100,
+      "endpoint": "state_persistence",
+      "exceedances": 1998,
+      "null_ci95": [
+        0.0,
+        20.0
+      ],
+      "null_mean": 4.067,
+      "observed_statistic": 20,
+      "p_holm_12": 0.5996700164991751,
+      "p_raw": 0.09994500274986251,
+      "replicates": 20000,
+      "source": "full_a20_history",
+      "test_key": "state_observed_high_count::full_a20_history::L100"
+    },
+    {
+      "block_length": 200,
+      "endpoint": "state_persistence",
+      "exceedances": 2072,
+      "null_ci95": [
+        0.0,
+        20.0
+      ],
+      "null_mean": 3.9924,
+      "observed_statistic": 20,
+      "p_holm_12": 0.5996700164991751,
+      "p_raw": 0.10364481775911205,
+      "replicates": 20000,
+      "source": "full_a20_history",
+      "test_key": "state_observed_high_count::full_a20_history::L200"
+    },
+    {
+      "block_length": 20,
+      "endpoint": "state_persistence",
+      "exceedances": 2284,
+      "null_ci95": [
+        0.0,
+        20.0
+      ],
+      "null_mean": 5.43235,
+      "observed_statistic": 20,
+      "p_holm_12": 0.5996700164991751,
+      "p_raw": 0.11424428778561072,
+      "replicates": 20000,
+      "source": "blind_oos_a20",
+      "test_key": "state_observed_high_count::blind_oos_a20::L20"
+    },
+    {
+      "block_length": 50,
+      "endpoint": "state_persistence",
+      "exceedances": 3515,
+      "null_ci95": [
+        0.0,
+        20.0
+      ],
+      "null_mean": 5.4701,
+      "observed_statistic": 20,
+      "p_holm_12": 0.5996700164991751,
+      "p_raw": 0.175791210439478,
+      "replicates": 20000,
+      "source": "blind_oos_a20",
+      "test_key": "state_observed_high_count::blind_oos_a20::L50"
+    },
+    {
+      "block_length": 100,
+      "endpoint": "state_persistence",
+      "exceedances": 3830,
+      "null_ci95": [
+        0.0,
+        20.0
+      ],
+      "null_mean": 5.28775,
+      "observed_statistic": 20,
+      "p_holm_12": 0.5996700164991751,
+      "p_raw": 0.19154042297885104,
+      "replicates": 20000,
+      "source": "blind_oos_a20",
+      "test_key": "state_observed_high_count::blind_oos_a20::L100"
+    },
+    {
+      "block_length": 200,
+      "endpoint": "state_persistence",
+      "exceedances": 4279,
+      "null_ci95": [
+        0.0,
+        20.0
+      ],
+      "null_mean": 5.4637,
+      "observed_statistic": 20,
+      "p_holm_12": 0.5996700164991751,
+      "p_raw": 0.21398930053497325,
+      "replicates": 20000,
+      "source": "blind_oos_a20",
+      "test_key": "state_observed_high_count::blind_oos_a20::L200"
+    },
+    {
+      "block_length": 5,
+      "endpoint": "conditional_capture_response",
+      "exceedances": 295,
+      "null_ci95": [
+        0.5748971973417225,
+        0.7354366532879312
+      ],
+      "null_mean": 0.6568953415599161,
+      "observed_statistic": 0.56666457578635,
+      "p_holm_12": 0.1344932753362332,
+      "p_raw": 0.014799260036998151,
+      "replicates": 20000,
+      "source": "A20 terminal high-state run",
+      "test_key": "capture_mean_lower_tail::terminal_high_run::L5"
+    },
+    {
+      "block_length": 10,
+      "endpoint": "conditional_capture_response",
+      "exceedances": 268,
+      "null_ci95": [
+        0.5764534661945725,
+        0.736660427201
+      ],
+      "null_mean": 0.6567842464954249,
+      "observed_statistic": 0.56666457578635,
+      "p_holm_12": 0.1344932753362332,
+      "p_raw": 0.01344932753362332,
+      "replicates": 20000,
+      "source": "A20 terminal high-state run",
+      "test_key": "capture_mean_lower_tail::terminal_high_run::L10"
+    },
+    {
+      "block_length": 20,
+      "endpoint": "conditional_capture_response",
+      "exceedances": 237,
+      "null_ci95": [
+        0.5773972718190501,
+        0.73722868175905
+      ],
+      "null_mean": 0.6565681187720386,
+      "observed_statistic": 0.56666457578635,
+      "p_holm_12": 0.13089345532723365,
+      "p_raw": 0.011899405029748513,
+      "replicates": 20000,
+      "source": "A20 terminal high-state run",
+      "test_key": "capture_mean_lower_tail::terminal_high_run::L20"
+    },
+    {
+      "block_length": 40,
+      "endpoint": "conditional_capture_response",
+      "exceedances": 189,
+      "null_ci95": [
+        0.57772886087185,
+        0.73722868175905
+      ],
+      "null_mean": 0.6573479394665735,
+      "observed_statistic": 0.56666457578635,
+      "p_holm_12": 0.11399430028498575,
+      "p_raw": 0.009499525023748812,
+      "replicates": 20000,
+      "source": "A20 terminal high-state run",
+      "test_key": "capture_mean_lower_tail::terminal_high_run::L40"
+    }
+  ],
+  "conditional_capture_response": {
+    "extension_mean_capture": 0.56666457578635,
+    "extension_minus_previous20_capture": -0.038798911123000046,
+    "extension_minus_terminal_run_capture": -0.09044716186868385,
+    "interpretation": "The extension mean is descriptively low relative to the preceding high-state run, but the joint 12-test Holm family does not confirm a response shift.",
+    "stationary_bootstrap_min_holm_12": 0.11399430028498575,
+    "terminal_high_run_mean_capture": 0.6571117376550338
+  },
+  "decision": {
+    "conditional_capture_response_drop": "SUGGESTIVE_BUT_NOT_CONFIRMED_AFTER_HOLM",
+    "production_promotion": false,
+    "q75_predictive_skill": "NOT_CONFIRMED",
+    "state_persistence_shift": "NOT_CONFIRMED_UNDER_DEPENDENCE_PRESERVING_NULL"
+  },
+  "design": {
+    "a20_rows": 1786,
+    "a21_extension_rows": 20,
+    "capture_block_lengths": [
+      5,
+      10,
+      20,
+      40
+    ],
+    "extension_period": [
+      "2026-10-25",
+      "2026-11-13"
+    ],
+    "holm_scope": "All 12 A22 state-persistence and conditional-capture block-length diagnostics together; does not correct the entire prior SONAR research history.",
+    "hypothesis_status": "Exploratory post-extension audit; A21 outcomes were visible before A22 was formulated.",
+    "registered_diagnostic_test_family_size": 12,
+    "state_block_lengths": [
+      20,
+      50,
+      100,
+      200
+    ],
+    "stationary_bootstrap_replicates_per_test": 20000,
+    "target_window": 20
+  },
+  "experiment_id": "Q141-A22",
+  "extension_forecast_errors": {
+    "mean_q75_mse_gain_vs_mean400": -0.00432908031805,
+    "mse": {
+      "a19_ols": 0.046493060512283316,
+      "prior_mean20": 0.04396606142639216,
+      "prior_mean400": 0.044314389361211334,
+      "q75_state": 0.048643469679291285
+    },
+    "positive_per_target_gain_count": 10,
+    "q75_mse_gain_circular_moving_block5_ci95": [
+      -0.00769998367485,
+      -0.001333325824527506
+    ],
+    "targets": 20
+  },
+  "historical_split_metrics": {
+    "blind_oos": {
+      "high_minus_low_capture": 0.034530256793655734,
+      "high_rate": 0.2694063926940639,
+      "high_targets": 118,
+      "longest_high_run": 118,
+      "mean_capture_high": 0.6571117376550338,
+      "mean_capture_low": 0.6225814808613781,
+      "mean_q75_mse_gain_vs_mean400": -3.44725491780822e-05,
+      "targets": 438
+    },
+    "discovery": {
+      "high_minus_low_capture": 0.029761705286651452,
+      "high_rate": 0.06695938529088913,
+      "high_targets": 61,
+      "longest_high_run": 16,
+      "mean_capture_high": 0.6364448459563115,
+      "mean_capture_low": 0.60668314066966,
+      "mean_q75_mse_gain_vs_mean400": -8.058980750823272e-05,
+      "targets": 911
+    },
+    "validation": {
+      "high_minus_low_capture": -0.013557401492914956,
+      "high_rate": 0.4096109839816934,
+      "high_targets": 179,
+      "longest_high_run": 125,
+      "mean_capture_high": 0.6267680095011006,
+      "mean_capture_low": 0.6403254109940155,
+      "mean_q75_mse_gain_vs_mean400": -0.0003358782200389016,
+      "targets": 437
+    }
+  },
+  "limitations": [
+    "A22 is an exploratory audit formulated after the A21 extension responses were visible; its p-values are not confirmatory.",
+    "Only 20 appended targets are available.",
+    "The state process is highly autocorrelated and nonstationary across Discovery, Validation and Blind OOS.",
+    "Stationary bootstrap preserves local temporal dependence of scalar state/capture summaries, not the full 1,023-dimensional formula-rank vector.",
+    "The Holm family contains the 12 A22 diagnostics only and does not correct for all prior SONAR hypothesis selection.",
+    "Structural capture is a formula-profile fit statistic, not exact-ticket accuracy or a probability of winning."
+  ],
+  "next_action": "Keep the 2026-11-14 A21 freeze immutable. After the official result is ingested, append-only evaluate it; continue prospective monitoring without retuning q75 or the 400-target window.",
+  "schema_version": "1.0",
+  "source_lineage": {
+    "a20_first_target": "2021-12-04",
+    "a20_last_target": "2026-10-24",
+    "a20_path": "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_target_ledger.csv",
+    "a20_rows": 1786,
+    "a21_first_target": "2026-10-25",
+    "a21_last_target": "2026-11-13",
+    "a21_path": "reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_extension_target_ledger.csv",
+    "a21_rows": 20,
+    "strict_prior_all_rows": true
+  },
+  "state_diagnostics": {
+    "blind_oos_high_rate": 0.2694063926940639,
+    "blind_oos_longest_high_run": 118,
+    "combined_terminal_high_run_length": 138,
+    "extension_continues_prior_high_run": true,
+    "extension_high_count": 20,
+    "extension_high_rate": 1.0,
+    "extension_targets": 20,
+    "historical_high_rate": 0.20044792833146696,
+    "historical_longest_high_run": 125,
+    "historical_state_acf": {
+      "1": 0.9027397767742855,
+      "10": 0.6688230529407332,
+      "100": 0.062438313079459254,
+      "2": 0.8543896203685951,
+      "20": 0.5556405662354402,
+      "200": -0.047971283954847656,
+      "5": 0.7519623456807323,
+      "50": 0.3488646504915003
+    },
+    "state_bootstrap_min_holm_12": 0.4351782410879456,
+    "terminal_high_run": {
+      "end_date": "2026-10-24",
+      "last_20_mean_capture": 0.60546348690935,
+      "length": 118,
+      "mean_capture": 0.6571117376550338,
+      "start_date": "2026-06-29"
+    }
+  }
+}
