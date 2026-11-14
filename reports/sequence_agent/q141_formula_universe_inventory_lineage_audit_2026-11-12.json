@@ -1,0 +1,396 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A",
+  "status": "PARTIAL_AUDIT_PERSISTED_WITH_Q141_C2",
+  "audit_date": "2026-11-12",
+  "repository": {
+    "name": "jamesnuvola/vincicasa-lab",
+    "base_main_commit": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "research_branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+    "pull_request": 89
+  },
+  "eligible_source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "raw_archive_rows": 3405,
+    "eligible_draws": 3404,
+    "eligible_cutoff": "2026-11-10",
+    "excluded_contest": {
+      "date": "2026-11-11",
+      "contest": 315,
+      "reason": "Primary-source provenance unresolved; keep quarantined."
+    }
+  },
+  "formula_universe_inventory": [
+    {
+      "task": "Q80",
+      "formula_count": 3303,
+      "description": "Finite formula catalog reused by Q91.",
+      "source_archive_blob_sha1": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+      "status": "Catalog lineage represented through Q91; not yet imported into a canonical registry."
+    },
+    {
+      "task": "Q83",
+      "formula_count": 80730,
+      "metrics_rows": 242190,
+      "parts": 9,
+      "source_archive_sha256": "4c79ac53c482a84a36f60b9823f2ad7c6dad69c75c7472fa760caf4f8c654b44",
+      "status": "Manifest present on PR #8 branch; older source archive."
+    },
+    {
+      "task": "Q86",
+      "formula_count": 296010,
+      "metrics_rows": 888030,
+      "parts": 30,
+      "source_archive_sha256": "4c79ac53c482a84a36f60b9823f2ad7c6dad69c75c7472fa760caf4f8c654b44",
+      "status": "Manifest present on PR #8 branch; same older source archive as Q83."
+    },
+    {
+      "task": "Q87",
+      "formula_count": 888030,
+      "metrics_rows": 2664090,
+      "parts": 89,
+      "source_archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+      "status": "Manifest present on PR #8 branch; source archive differs from Q83/Q86."
+    },
+    {
+      "task": "Q88",
+      "formula_count": 2220075,
+      "metrics_rows": 6660225,
+      "parts": 223,
+      "manifest_archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+      "checkpoint_archive_sha256": "e8d09197b2ee22f8355f84c22893bb72eeae4c14caf55342a1ed5fe681123011",
+      "checkpoint_archive_blob_sha1": "1c9c3824d8caa3fe7d0e888c1875402cc2156a2a",
+      "status": "Archive lineage mismatch; checkpoint says archive refresh required and current-head CI archive mismatch."
+    },
+    {
+      "task": "Q89",
+      "feature_count": 59,
+      "description": "Feature matrix used as Q90 input; Q90 discovery selected 20 of 59 features.",
+      "status": "Feature-level lineage needs canonical import."
+    },
+    {
+      "task": "Q90",
+      "formula_count": 330429,
+      "scored_targets": 3351,
+      "draw_count": 3401,
+      "source_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "feature_pool": 59,
+      "selected_features": 20,
+      "formula_types": {
+        "linear_mean": 262599,
+        "pairwise_interaction": 29070,
+        "conditional_gate": 38760
+      },
+      "artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+      "artifact_bytes": 69356707,
+      "status": "Formula acceptance passed and artifact SHA independently verified; raw output bundle not persisted as repository Git objects; nested anticipation/main CI/human review remain pending. Discovery had one Holm-significant Top-5 formula; Validation and Blind OOS had zero; all Blind OOS formula Holm p-values were 1.0."
+    },
+    {
+      "task": "Q91",
+      "formula_count": 3303,
+      "draw_count": 3398,
+      "scored_targets": 3348,
+      "source_archive_blob_sha1": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+      "policy_count": 6,
+      "selected_policy": "EXPANDING_TOP5",
+      "artifact_sha256": "19ae830a1e50215ead93353ee0b71c692d65a4b647631aa9172fd8bf278df581",
+      "artifact_bytes": 16157390,
+      "status": "Workflow artifact and exact Git object readback verified, including 34/34 score shards. The persisted Holm column is blank; Holm was independently recomputed across 36 raw tests: minimum adjusted p=1.0, zero significant. Selected policy underperformed uniform in Validation and Blind OOS."
+    },
+    {
+      "task": "Q92",
+      "formula_count": 8436285,
+      "feature_count": 27,
+      "subset_size": 10,
+      "shards": 15,
+      "scored_targets_planned": 3352,
+      "source_archive_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "source_main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+      "status": "Combinadic enumeration/rank-unrank core and synthetic tests only; no walk-forward formula metrics or target ledger yet."
+    },
+    {
+      "task": "Q141-C0",
+      "feature_count": 25,
+      "family_count": 6,
+      "targets": 3354,
+      "source_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+      "status": "Executed exploratory; rolling family anticipation showed no lift."
+    },
+    {
+      "task": "Q141-C1",
+      "family_pairs": 15,
+      "tests": 45,
+      "target_pair_rows": 50310,
+      "source_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+      "status": "Executed exploratory; no size-adjusted pair-complementarity lift after Holm."
+    }
+  ],
+  "archive_versions": [
+    {
+      "tasks": [
+        "Q83",
+        "Q86"
+      ],
+      "archive_sha256": "4c79ac53c482a84a36f60b9823f2ad7c6dad69c75c7472fa760caf4f8c654b44",
+      "draw_count": "not present in manifest"
+    },
+    {
+      "tasks": [
+        "Q87",
+        "Q88_metrics_manifest"
+      ],
+      "archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+      "draw_count": "not present in metrics manifest"
+    },
+    {
+      "tasks": [
+        "Q88_checkpoint"
+      ],
+      "archive_sha256": "e8d09197b2ee22f8355f84c22893bb72eeae4c14caf55342a1ed5fe681123011",
+      "archive_git_blob_sha1": "1c9c3824d8caa3fe7d0e888c1875402cc2156a2a",
+      "draw_count": 3400,
+      "cutoff": "2026-11-06"
+    },
+    {
+      "tasks": [
+        "Q90"
+      ],
+      "archive_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "draw_count": 3401,
+      "targets": 3351,
+      "cutoff": "2026-11-07"
+    },
+    {
+      "tasks": [
+        "Q91"
+      ],
+      "archive_git_blob_sha1": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+      "draw_count": 3398,
+      "targets": 3348,
+      "cutoff": "2026-11-04"
+    },
+    {
+      "tasks": [
+        "Q92"
+      ],
+      "archive_git_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "draw_count": 3402,
+      "cutoff": "2026-11-08"
+    },
+    {
+      "tasks": [
+        "Q141-C0",
+        "Q141-C1"
+      ],
+      "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+      "draw_count": 3404,
+      "cutoff": "2026-11-10"
+    }
+  ],
+  "q90_independent_artifact_check": {
+    "artifact_id": 13627507532,
+    "bytes": 69356707,
+    "sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "matches_checkpoint": true,
+    "formula_count": 330429,
+    "split_rows": 991287,
+    "discovery_holm_top5_significant": 1,
+    "validation_holm_top5_significant": 0,
+    "blind_holm_top5_significant": 0,
+    "blind_holm_rank_significant": 0,
+    "blind_max_top5_share": 0.1408955223880597,
+    "blind_max_top5_holm_p": 1,
+    "feature_screen_holm_significant_by_split": {
+      "discovery": 0,
+      "validation": 0,
+      "blind_oos": 0
+    }
+  },
+  "q91_independent_artifact_check": {
+    "artifact_id": 13522588075,
+    "bytes": 16157390,
+    "sha256": "19ae830a1e50215ead93353ee0b71c692d65a4b647631aa9172fd8bf278df581",
+    "score_shards": 34,
+    "score_shards_sha256_match": 34,
+    "score_shards_git_blob_match": 34,
+    "target_ledger_git_blob_match": true,
+    "policy_metrics_git_blob_match": true,
+    "formula_catalog_git_blob_match": true,
+    "holm_raw_tests_recomputed": 36,
+    "holm_min_adjusted_p": 1,
+    "holm_significant_count": 0,
+    "selected_policy": "EXPANDING_TOP5",
+    "validation_top5_share": 0.115820895522388,
+    "blind_top5_share": 0.1180866965620328,
+    "uniform_top5_share": 0.125,
+    "holm_column_blank": true
+  },
+  "q141_c0": {
+    "run_id": 43196930220,
+    "code_commit": "738d02fedfc41d36921559c8855c3090d1292515",
+    "output_commit": "c9c7f555b28073783965912896e287432256a024",
+    "targets": 3354,
+    "splits": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "decision": "NO_ROLLING_FAMILY_ANTICIPATION_LIFT_DEMONSTRATED",
+    "blind_top5_delta_vs_equal_family": 0.0053731343283582094,
+    "ci95": [
+      -0.007462686567164181,
+      0.017910447761194034
+    ],
+    "paired_raw_p": 0.40142992850357484,
+    "paired_holm24_p": 1,
+    "lag1_autocorrelation_range": [
+      -0.018703807855324574,
+      0.02589155393045371
+    ]
+  },
+  "q141_c1": {
+    "run_id": 43199107862,
+    "code_commit": "59712cab0aa9e2b4977a41dd2fe973f2b94944c3",
+    "output_commit": "831f2221aa31169e402f2bdfad66c50df3830949",
+    "targets": 3354,
+    "splits": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "family_pairs": 15,
+    "tests": 45,
+    "ledger_rows": 50310,
+    "decision": "NO_SIZE_ADJUSTED_PAIR_COMPLEMENTARITY_LIFT_DEMONSTRATED",
+    "blind_positive_pairs": 4,
+    "blind_significant_pairs_after_holm": 0,
+    "blind_min_raw_p": 0.03605305193086476,
+    "blind_min_holm_p": 1,
+    "best_positive_excess": {
+      "pair": [
+        "frequency_level",
+        "neighbour_field"
+      ],
+      "observed_hits": 799,
+      "expected_hits": 783.375,
+      "excess_per_target": 0.02332089552238806,
+      "raw_p": 0.05031607994959893,
+      "holm_p": 1
+    },
+    "report_sha256": "088d20274eed7250b42fd9f143ae0a890f6d7710d349ac438a92a9f8fe5b951e",
+    "ledger_sha256": "0ac87d79698a8b140e6c35a4027a02ea2514e5dc1176bd38456e1d57e1835122",
+    "ledger_git_blob_sha1": "ca018a193136cab544d02471059fe3fd1abaef4d"
+  },
+  "q60_gate": {
+    "status": "INSUFFICIENT_PROSPECTIVE_CASES",
+    "complete_pairs": 24,
+    "source_clean_pairs": 23,
+    "minimum_required": 200,
+    "promotion_allowed": false
+  },
+  "root_causes": [
+    "Multiple incompatible source archive versions across formula tasks.",
+    "No canonical typed formula registry or stable semantic formula IDs; declared counts overlap and are not additive.",
+    "Discovery-selected formula winners do not replicate in Validation/Blind OOS after multiple-testing correction.",
+    "Rolling-100 family hit success has near-zero lag-1 persistence in Q141-C0.",
+    "Pair-union coverage is candidate-budget-confounded; size-conditioned C1 found no significant excess.",
+    "Q88 manifest/checkpoint archive mismatch; Q90 output bundle not persisted as Git objects; Q91 Holm output column blank although raw p-values permit independent recomputation.",
+    "Q141-C2 current-state standardized margin did not anticipate family usefulness: blind primary gain was below the practical threshold, its interval crossed zero, paired Holm p=1, and no margin calibration survived Holm."
+  ],
+  "next_actions": [
+    "Import exact Q80/Q89 feature definitions and Q80-Q92 formula definitions with source hashes and lineage.",
+    "Implement Q141-B typed AST, deterministic formula IDs, alias graph and proof-based semantic deduplication.",
+    "Reconcile all candidate features against one canonical pinned archive before comparable full-universe walk-forward replay.",
+    "Only then expand behaviour mapping to more than the six coarse Q80 families; do not tune C0/C1/C2 from the historical Blind OOS."
+  ],
+  "governance": {
+    "no_merge": true,
+    "no_auto_promotion": true,
+    "no_shadow_insertion": true,
+    "no_canonical_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "q141_c2": {
+    "run_id": 43212004991,
+    "code_commit": "60d6b2bebc5d371e8e4c01d52b90e3a083df7ea6",
+    "output_branch_head": "a66beeb318ce3ecc3bab1ea6f19bdd67481caeba",
+    "targets": 3354,
+    "splits": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "decision": "NO_CURRENT_STATE_MARGIN_LIFT_DEMONSTRATED",
+    "selected_family_switches": 2458,
+    "blind_primary": {
+      "comparison": "margin_selected_vs_equal_family",
+      "endpoint": "top5_hit_share",
+      "delta": 0.002985074626865673,
+      "ci95": [
+        -0.011343283582089551,
+        0.017014925373134333
+      ],
+      "p_raw": 0.7007149642517874,
+      "p_holm_24": 1,
+      "practical_threshold": 0.005
+    },
+    "blind_uniform": {
+      "top5_observed": 412,
+      "top5_expected": 418.75,
+      "top5_p_raw": 0.6536611603031586,
+      "top5_p_holm_6": 1,
+      "top20_observed": 1740,
+      "top20_expected": 1675,
+      "top20_p_raw": 0.009312722146690672,
+      "top20_p_holm_6": 0.055876332880144035
+    },
+    "margin_calibration": {
+      "tests": 18,
+      "holm_family_size": 18,
+      "significant_after_holm": 0
+    },
+    "code_sha256": "539bc37dde3d387bf1c7c3bf37c4ef8a048979cf924e486dfd34df2fd4c33127",
+    "preregistration_sha256": "e192bd8fc51dbb153165cd2e6fd0848370f02db5a1852c8778d2c1836200a2f5",
+    "report_path": "reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json",
+    "report_sha256": "fa9b98cce389b9eabfd500b079bbce0c08ce14bb9c2fb1bcc9cc4f81f3ffac10",
+    "report_git_blob_sha1": "f8c5f353a097998206c83fafdc352795e1a33f40",
+    "manifest_path": "reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json",
+    "manifest_git_blob_sha1": "7900d0f2e2940ebb9ac3103e2882a93b0331c036",
+    "target_ledger_rows": 3354,
+    "target_ledger_sha256": "24f88e7aea0a761f2cf6f8cfbc3fb6d702223fb67f48aa9c73698a5948bbe660",
+    "target_ledger_git_blob_sha1": "a7410fd35fca270b8c2eea9bd32a72be23f8060b",
+    "strict_prior_and_acceptance": {
+      "archive_blob_verified": true,
+      "eligible_draws": 3404,
+      "contest_315_excluded": true,
+      "target_count_verified": true,
+      "split_counts_verified": true,
+      "strict_prior_cutoffs_verified": true,
+      "fixed_family_selected_on_discovery_only": true,
+      "future_suffix_and_target_outcome_invariance_tests": true,
+      "paired_holm_tests": 24,
+      "uniform_holm_tests": 6,
+      "calibration_holm_tests": 18
+    },
+    "ci": {
+      "run_id": 43212004991,
+      "head_sha": "a925ab62e18442b285ca82232fac2ee7bef08aca",
+      "conclusion": "success",
+      "q141_c0_c1_c2_and_project_checks_passed_on_run_head": true
+    },
+    "limitations": [
+      "Only six coarse Q80-derived families and 25 unique features; not the full formula universe.",
+      "Historical archive is exposed and not virgin prospective evidence.",
+      "Primary blind Top-5 gain +0.002985 is below the preregistered +0.005 practical threshold; CI crosses zero; paired Holm p=1.",
+      "Blind Top-20 uniform-null raw p=0.00931 becomes Holm p=0.05588 across six tests, so it does not cross 0.05.",
+      "All 18 margin calibration tests are non-significant after Holm.",
+      "Holm controls the registered Q141-C2 family, not the entire Q00-Q141 research history."
+    ],
+    "next_action": "Do not tune the margin rule. Complete Q141-A/Q141-B by importing exact Q80/Q89 definitions, building a typed canonical formula registry with deterministic IDs and proof-based deduplication, and reconciling source archives before broader behaviour mapping."
+  }
+}

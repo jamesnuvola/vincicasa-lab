@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B7-D1",
+  "status": "DESCRIPTIVE_DIAGNOSTIC_NOT_PREREGISTERED",
+  "source_report": "q141_q90_family_persistence_report_2026-11-12.json",
+  "source_ledger": "q141_q90_family_persistence_target_ledger_2026-11-12.csv",
+  "method": {
+    "metric": "Pearson lag-1 autocorrelation of each family’s target-level mean Top-5 hit share, computed within each chronological split.",
+    "selector_stability": "Adjacent-target family selection agreement after the 100-target warm-up.",
+    "inferential_status": "Descriptive only; no p-values or confirmatory claims; not included in the preregistered six-test family."
+  },
+  "lag1_autocorrelation": {
+    "discovery": {
+      "linear_mean_L4": -0.012950686544753603,
+      "linear_mean_L5": -0.008294708154148655,
+      "linear_mean_L6": -0.006126600720248167,
+      "linear_mean_L7": -0.012071122443195794,
+      "linear_mean_L8": -0.008801731971853912,
+      "pairwise_interaction_I4": -0.01595343100934286,
+      "conditional_gate_G4": -0.016837518795967326,
+      "mean_across_families": -0.01157654280564433
+    },
+    "validation": {
+      "linear_mean_L4": 0.015469806540668074,
+      "linear_mean_L5": 0.012960487793981177,
+      "linear_mean_L6": 0.010771305504721829,
+      "linear_mean_L7": 0.024072557716431926,
+      "linear_mean_L8": 0.010474626065540532,
+      "pairwise_interaction_I4": 0.0067568710588037685,
+      "conditional_gate_G4": 0.011006589976149762,
+      "mean_across_families": 0.013073177808042439
+    },
+    "blind_oos": {
+      "linear_mean_L4": -0.020470697334224467,
+      "linear_mean_L5": -0.03375540861335853,
+      "linear_mean_L6": -0.0283244662486238,
+      "linear_mean_L7": -0.027961058739728716,
+      "linear_mean_L8": -0.03081098698880448,
+      "pairwise_interaction_I4": -0.008809982785583865,
+      "conditional_gate_G4": -0.02831881551039151,
+      "mean_across_families": -0.025493059460102194
+    },
+    "all_targets": {
+      "linear_mean_L4": -0.007047326371094729,
+      "linear_mean_L5": -0.007189641836363705,
+      "linear_mean_L6": -0.005325107607395828,
+      "linear_mean_L7": -0.006340669582610118,
+      "linear_mean_L8": -0.007517223095210331,
+      "pairwise_interaction_I4": -0.008672134364240002,
+      "conditional_gate_G4": -0.011601203934909696,
+      "mean_across_families": -0.007670472398832058
+    }
+  },
+  "selected_family_stability": {
+    "discovery": {
+      "targets_with_selector": 1911,
+      "switches": 269,
+      "adjacent_same_family_rate": 0.8591623036649214
+    },
+    "validation": {
+      "targets_with_selector": 670,
+      "switches": 73,
+      "adjacent_same_family_rate": 0.890881913303438
+    },
+    "blind_oos": {
+      "targets_with_selector": 670,
+      "switches": 89,
+      "adjacent_same_family_rate": 0.866965620328849
+    }
+  },
+  "interpretation": [
+    "Family target-level Top-5 outcomes show near-zero lag-1 persistence in Discovery and Validation, and negative mean lag-1 correlation in Blind OOS.",
+    "This is consistent with the rolling-100 selector failing to anticipate family usefulness; it is not proof of a causal mechanism.",
+    "The selector is relatively stable in its chosen family labels, but label stability does not translate into positive next-target family-performance lift.",
+    "Q90 equal-family mean Top-5 share is above the uniform 0.125 reference in Discovery (0.128466), below it in Validation (0.121131) and slightly below it in Blind OOS (0.124715). This pattern is consistent with Discovery feature-selection optimism, but does not isolate it from regime change or sampling variation."
+  ],
+  "limitations": [
+    "Post-hoc descriptive analysis; no multiplicity-adjusted inferential test.",
+    "Only 700 deterministically sampled formulas from 330,429 Q90 formulas contribute to family outcomes.",
+    "Family outcomes are averages over sampled formulas and do not represent a deployable single formula."
+  ],
+  "next_action": "Do not tune the rolling window from this diagnostic. Prioritize durable Q90 artifact import and typed AST reconciliation."
+}

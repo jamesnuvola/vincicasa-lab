@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B2",
+  "status": "POST_HOC_DIAGNOSTIC_REGISTERED",
+  "registration_date": "2026-11-12",
+  "source_task": "Q141-B1",
+  "source_archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+  "source_ledger_path": "reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv",
+  "source_manifest_path": "reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json",
+  "question": "Do floating-point rank differences between legacy NumPy mean and stable math.fsum materially alter sampled Top-5, Top-10 or Top-20 hit coverage?",
+  "formula_sample": {
+    "count": 120,
+    "per_subset_size": 12,
+    "subset_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "selection": "deterministic fixed sample from Q141-B1"
+  },
+  "methods": {
+    "legacy": "NumPy column mean; score descending then number index ascending",
+    "stable": "math.fsum raw mean; same deterministic rank order",
+    "canonical": "multiplicity-preserving weighted-mean AST with math.fsum"
+  },
+  "endpoints": [
+    "Top-5 actual-number hit share",
+    "Top-10 actual-number hit share",
+    "Top-20 actual-number hit share"
+  ],
+  "chronological_splits": {
+    "discovery": 2013,
+    "validation": 671,
+    "blind_oos": 670
+  },
+  "strict_prior": true,
+  "controls": [
+    "source ledger SHA256 and Git blob SHA1",
+    "source archive Git blob SHA1",
+    "target index equals prior draw count",
+    "cutoff date strictly before target date",
+    "120 formula instances per target",
+    "zero alias mismatches",
+    "zero stable raw-vs-canonical score/rank mismatches",
+    "integer hit-delta reconstruction"
+  ],
+  "inference": "Deterministic implementation audit; no p-values and no predictive significance claim.",
+  "governance": {
+    "no_model_selection": true,
+    "no_parameter_tuning": true,
+    "no_production_ranker_change": true,
+    "no_engine_promotion": true,
+    "no_archive_edit": true,
+    "no_shadow_insertion": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "next_action": "Import Q90 interaction/gate ASTs and Q7 candidate-quintet AST as separate typed output families with explicit lineage and source-archive reconciliation."
+}

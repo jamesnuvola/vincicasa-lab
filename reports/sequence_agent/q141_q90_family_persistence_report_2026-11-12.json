@@ -1,0 +1,296 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B7",
+  "status": "COMPUTED",
+  "decision": "NO_FAMILY_PERSISTENCE_LIFT_DEMONSTRATED",
+  "hypothesis": "Q90 operator/size family success over the prior 100 targets predicts next-target family-average Top-5 hit share.",
+  "source": {
+    "artifact_id": 13627507532,
+    "artifact_run_id": 42504717670,
+    "artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "draw_count": 3401,
+    "cutoff": "2026-11-07",
+    "feature_matrix_shape": [
+      3351,
+      40,
+      59
+    ],
+    "feature_matrix_sha256": "681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49",
+    "q141_archive_eligible_draws": 3404,
+    "q141_archive_cutoff": "2026-11-10",
+    "contest_315_excluded": true
+  },
+  "formula_universe": {
+    "full_catalog_count": 330429,
+    "family_counts": {
+      "linear_mean_L4": 4845,
+      "linear_mean_L5": 15504,
+      "linear_mean_L6": 38760,
+      "linear_mean_L7": 77520,
+      "linear_mean_L8": 125970,
+      "pairwise_interaction_I4": 29070,
+      "conditional_gate_G4": 38760
+    },
+    "sample_per_family": 100,
+    "sample_count": 700,
+    "sample_method": "lowest SHA-256('Q141-B7|'+formula_id) within each family",
+    "families": [
+      "linear_mean_L4",
+      "linear_mean_L5",
+      "linear_mean_L6",
+      "linear_mean_L7",
+      "linear_mean_L8",
+      "pairwise_interaction_I4",
+      "conditional_gate_G4"
+    ],
+    "sample_formula_ids_sha256": "3ee52f0f270eafb6a8c54c7a7166fe55f2c7730a59ae700ea50b92be6a5412ae"
+  },
+  "walkforward": {
+    "targets": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "strict_prior": true,
+    "window": 100,
+    "update_order": "score target before updating family history",
+    "warmup_targets": 100,
+    "static_family_selected_on_discovery": "linear_mean_L7",
+    "static_family_discovery_means": {
+      "linear_mean_L4": 0.1283878667329689,
+      "linear_mean_L5": 0.1282207856787671,
+      "linear_mean_L6": 0.12866335156638523,
+      "linear_mean_L7": 0.1290193933366486,
+      "linear_mean_L8": 0.12867926404773775,
+      "pairwise_interaction_I4": 0.12796121332670335,
+      "conditional_gate_G4": 0.12833117851815037
+    },
+    "split_summary": {
+      "discovery": {
+        "targets": 2011,
+        "rolling_top5_share": 0.12814576969524757,
+        "equal_family_top5_share": 0.12846615045819418,
+        "static_family_top5_share": 0.1290193933366484,
+        "uniform_reference": 0.125,
+        "selected_family_counts": {
+          "linear_mean_L4": 329,
+          "linear_mean_L5": 95,
+          "linear_mean_L6": 207,
+          "linear_mean_L7": 362,
+          "linear_mean_L8": 447,
+          "pairwise_interaction_I4": 230,
+          "conditional_gate_G4": 241
+        },
+        "mean_family_top5_share": {
+          "linear_mean_L4": 0.12838786673296868,
+          "linear_mean_L5": 0.12822078567876677,
+          "linear_mean_L6": 0.12866335156638486,
+          "linear_mean_L7": 0.1290193933366484,
+          "linear_mean_L8": 0.12867926404773744,
+          "pairwise_interaction_I4": 0.12796121332670313,
+          "conditional_gate_G4": 0.12833117851815015
+        }
+      },
+      "validation": {
+        "targets": 670,
+        "rolling_top5_share": 0.1204955223880597,
+        "equal_family_top5_share": 0.12113134328358208,
+        "static_family_top5_share": 0.12054925373134329,
+        "uniform_reference": 0.125,
+        "selected_family_counts": {
+          "linear_mean_L4": 217,
+          "linear_mean_L5": 4,
+          "linear_mean_L6": 63,
+          "linear_mean_L7": 69,
+          "linear_mean_L8": 120,
+          "pairwise_interaction_I4": 184,
+          "conditional_gate_G4": 13
+        },
+        "mean_family_top5_share": {
+          "linear_mean_L4": 0.12183283582089552,
+          "linear_mean_L5": 0.12098208955223881,
+          "linear_mean_L6": 0.12093134328358207,
+          "linear_mean_L7": 0.12054925373134329,
+          "linear_mean_L8": 0.12071044776119404,
+          "pairwise_interaction_I4": 0.12193134328358207,
+          "conditional_gate_G4": 0.1209820895522388
+        }
+      },
+      "blind_oos": {
+        "targets": 670,
+        "rolling_top5_share": 0.12473134328358208,
+        "equal_family_top5_share": 0.12471513859275053,
+        "static_family_top5_share": 0.1249044776119403,
+        "uniform_reference": 0.125,
+        "selected_family_counts": {
+          "linear_mean_L4": 119,
+          "linear_mean_L5": 35,
+          "linear_mean_L6": 56,
+          "linear_mean_L7": 54,
+          "linear_mean_L8": 117,
+          "pairwise_interaction_I4": 228,
+          "conditional_gate_G4": 61
+        },
+        "mean_family_top5_share": {
+          "linear_mean_L4": 0.12479701492537314,
+          "linear_mean_L5": 0.12445671641791044,
+          "linear_mean_L6": 0.1243910447761194,
+          "linear_mean_L7": 0.1249044776119403,
+          "linear_mean_L8": 0.12449552238805969,
+          "pairwise_interaction_I4": 0.12538507462686566,
+          "conditional_gate_G4": 0.12457611940298506
+        }
+      }
+    }
+  },
+  "statistical_inference": {
+    "block_length": 20,
+    "sign_flip_replicates": 20000,
+    "circular_mbb_replicates": 20000,
+    "seed": 14120261112,
+    "registered_tests": 6,
+    "multiplicity": "Holm-Bonferroni across six registered split/comparator tests",
+    "tests": [
+      {
+        "id": "discovery_rolling_vs_equal",
+        "split": "discovery",
+        "comparison": "rolling_vs_equal",
+        "targets": 2011,
+        "mean_effect": -0.0003203807629466494,
+        "ci95_circular_mbb": [
+          -0.0010161291468352622,
+          0.00037039852241244775
+        ],
+        "p_raw_one_sided": 0.7882605869706515,
+        "blocks": 101,
+        "block_length": 20,
+        "p_holm_all_6": 1.0
+      },
+      {
+        "id": "discovery_discovery_static_vs_equal",
+        "split": "discovery",
+        "comparison": "discovery_static_vs_equal",
+        "targets": 2011,
+        "mean_effect": 0.0005532428784542193,
+        "ci95_circular_mbb": [
+          -0.00011125950131419887,
+          0.0012207252965830816
+        ],
+        "p_raw_one_sided": 0.06689665516724164,
+        "blocks": 101,
+        "block_length": 20,
+        "p_holm_all_6": 0.4013799310034498
+      },
+      {
+        "id": "validation_rolling_vs_equal",
+        "split": "validation",
+        "comparison": "rolling_vs_equal",
+        "targets": 670,
+        "mean_effect": -0.0006358208955223861,
+        "ci95_circular_mbb": [
+          -0.001924104477611939,
+          0.0006848720682302787
+        ],
+        "p_raw_one_sided": 0.832208389580521,
+        "blocks": 34,
+        "block_length": 20,
+        "p_holm_all_6": 1.0
+      },
+      {
+        "id": "validation_discovery_static_vs_equal",
+        "split": "validation",
+        "comparison": "discovery_static_vs_equal",
+        "targets": 670,
+        "mean_effect": -0.0005820895522388028,
+        "ci95_circular_mbb": [
+          -0.0015867910447761174,
+          0.00048615138592750825
+        ],
+        "p_raw_one_sided": 0.8351582420878956,
+        "blocks": 34,
+        "block_length": 20,
+        "p_holm_all_6": 1.0
+      },
+      {
+        "id": "blind_oos_rolling_vs_equal",
+        "split": "blind_oos",
+        "comparison": "rolling_vs_equal",
+        "targets": 670,
+        "mean_effect": 1.620469083155673e-05,
+        "ci95_circular_mbb": [
+          -0.0010951066098081022,
+          0.001179125799573556
+        ],
+        "p_raw_one_sided": 0.4919254037298135,
+        "blocks": 34,
+        "block_length": 20,
+        "p_holm_all_6": 1.0
+      },
+      {
+        "id": "blind_oos_discovery_static_vs_equal",
+        "split": "blind_oos",
+        "comparison": "discovery_static_vs_equal",
+        "targets": 670,
+        "mean_effect": 0.00018933901918976898,
+        "ci95_circular_mbb": [
+          -0.0007923347547974388,
+          0.0011714392324093837
+        ],
+        "p_raw_one_sided": 0.3721813909304535,
+        "blocks": 34,
+        "block_length": 20,
+        "p_holm_all_6": 1.0
+      }
+    ],
+    "primary_blind_test": {
+      "id": "blind_oos_rolling_vs_equal",
+      "split": "blind_oos",
+      "comparison": "rolling_vs_equal",
+      "targets": 670,
+      "mean_effect": 1.620469083155673e-05,
+      "ci95_circular_mbb": [
+        -0.0010951066098081022,
+        0.001179125799573556
+      ],
+      "p_raw_one_sided": 0.4919254037298135,
+      "blocks": 34,
+      "block_length": 20,
+      "p_holm_all_6": 1.0
+    },
+    "minimum_practical_effect": 0.005
+  },
+  "acceptance": {
+    "artifact_zip_and_17_member_hashes_verified": true,
+    "matrix_shape_dtype_finite_and_archive_hash_verified": true,
+    "feature_selection_order_verified": true,
+    "catalog_formula_count_and_family_counts_verified": true,
+    "sample_formula_ids_unique_and_deterministic": true,
+    "target_dates_cutoffs_actuals_reconciled_to_ledger": true,
+    "cutoff_strictly_before_target": true,
+    "selector_current_future_outcome_invariance_test": true,
+    "selector_updates_after_target_scoring": true,
+    "all_six_registered_tests_holm_adjusted": true
+  },
+  "limitations": [
+    "700 of 330429 Q90 formulas are sampled; the full catalog is not evaluated target-by-target.",
+    "Q90 selected 20 features on Discovery; Discovery results are descriptive/in-sample.",
+    "Historical Blind OOS is exposed SONAR research history, not virgin prospective evidence.",
+    "Family-average Top-5 hit share is a meta-research diagnostic, not a deployable number ranking or quintet forecast.",
+    "Holm controls six Q141-B7 comparisons, not the full Q00-Q141 research history."
+  ],
+  "next_action": "Import Q90 artifact into durable hash-pinned repository storage and extend typed AST registry; do not tune this selector from Blind OOS.",
+  "governance": {
+    "research_only": true,
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "no_canonical_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B7",
+  "status": "PREREGISTERED_NOT_YET_EXECUTED",
+  "registration_date": "2026-11-12",
+  "title": "Q90 operator-size family persistence and strict-prior anticipation",
+  "hypothesis": "The recent 100-target mean Top-5 hit share of a Q90 formula family predicts its next-target family-average Top-5 hit share, allowing a rolling family selector to exceed an equal-family ensemble by at least 0.005 on the chronological Blind OOS.",
+  "source": {
+    "artifact_id": 13627507532,
+    "artifact_run_id": 42504717670,
+    "artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "q90_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_archive_draws": 3401,
+    "q90_cutoff": "2026-11-07",
+    "q90_archive_is_prefix_of_q141_archive": true,
+    "q141_eligible_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q141_eligible_draws": 3404,
+    "q141_eligible_cutoff": "2026-11-10",
+    "contest_315_excluded": true,
+    "q90_matrix_shape": [
+      3351,
+      40,
+      59
+    ],
+    "q90_matrix_dtype": "float32",
+    "q90_matrix_prior_only": true,
+    "q90_feature_selection": "20 features selected on Q90 Discovery only; frozen for Validation and Blind OOS"
+  },
+  "formula_universe": {
+    "full_q90_formula_count": 330429,
+    "sampled_formula_count": 700,
+    "sample_per_family": 100,
+    "families": [
+      "linear_mean_L4",
+      "linear_mean_L5",
+      "linear_mean_L6",
+      "linear_mean_L7",
+      "linear_mean_L8",
+      "pairwise_interaction_I4",
+      "conditional_gate_G4"
+    ],
+    "sampling": "Within each family, select the 100 formula IDs with the lexicographically smallest SHA-256 of 'Q141-B7|' concatenated with formula_id. Sampling is independent of target outcomes and formula performance.",
+    "formula_types": {
+      "linear_mean": "mean of the formula's 4–8 feature columns, computed in float64 and rounded to 12 decimals",
+      "pairwise_interaction": "four-feature mean plus 0.25 times z-score of one pairwise feature product across 40 candidates; score rounded to 12 decimals",
+      "conditional_gate": "four-feature mean plus 0.25 times indicator(gate feature >= registered threshold); score rounded to 12 decimals"
+    },
+    "ranking": "Higher score ranks first; ties resolve to lower number ID first, matching Q90 rank_actuals."
+  },
+  "walkforward": {
+    "target_count": 3351,
+    "split_counts": {
+      "discovery": 2011,
+      "validation": 670,
+      "blind_oos": 670
+    },
+    "minimum_prior_history": 50,
+    "selector_window": 100,
+    "selector": "For target t, select the family with the highest mean family Top-5 hit share over targets [t-100,t); update history only after scoring target t. Tie-break lexicographically by family ID.",
+    "warmup": "For the first 100 targets, use equal-family mean; warmup outcomes may enter later prior windows only after they are scored.",
+    "family_target_outcome": "For each target and family, average the Top-5 hit share over that family's 100 preselected formulas.",
+    "equal_family_baseline": "Unweighted mean of the seven family target outcomes.",
+    "static_baseline": "Select the family with the highest mean family target outcome over Discovery only; freeze for Validation and Blind OOS; tie-break lexicographically.",
+    "current_target_outcome_use": "Scoring and state update only after family choice and all formula rankings are frozen for that target.",
+    "discovery_interpretation": "Descriptive/in-sample because the 20-feature Q90 subset was selected on Discovery.",
+    "validation_blind_interpretation": "Chronological holdouts relative to Q90 feature selection; historical Blind OOS is exposed SONAR research history, not virgin prospective evidence."
+  },
+  "primary_endpoint": {
+    "split": "blind_oos",
+    "metric": "rolling_selector_mean_top5_hit_share minus equal_family_mean_top5_hit_share",
+    "minimum_practical_effect": 0.005,
+    "decision": "No lift unless point estimate >= 0.005, two-sided 95% block-bootstrap CI excludes zero in the positive direction, and Holm-adjusted one-sided p < 0.05."
+  },
+  "statistical_plan": {
+    "paired_unit": "target",
+    "block_length": 20,
+    "sign_flip": "20,000 Monte Carlo non-overlapping chronological block sign-flips, one-sided positive alternative",
+    "bootstrap": "20,000 circular moving-block bootstrap replicates, percentile 95% CI",
+    "seed": 14120261112,
+    "registered_tests": 6,
+    "multiplicity": "Holm-Bonferroni across rolling-vs-equal-family and Discovery-static-vs-equal-family contrasts in each of Discovery, Validation and Blind OOS.",
+    "descriptive_uniform_reference": 0.125
+  },
+  "controls": [
+    "Verify artifact ZIP SHA-256 and all 17 internal member SHA-256 values against the independently read-back manifest.",
+    "Verify Q90 feature matrix archive blob, dimensions, dtype, finite values, target dates and cutoff dates.",
+    "Verify actual quintets and target order against the Q90 target ledger.",
+    "Verify 700 sampled formula IDs are unique, deterministic and exactly 100 per family.",
+    "Reproduce Q90 scoring semantics including 12-decimal rounding, pair-product z-score over 40 candidates and tie order.",
+    "Verify current target is not used in selector state and state updates only after target scoring.",
+    "Run future-suffix and target-outcome invariance tests.",
+    "No formula or family selection may use Validation or Blind OOS outcomes.",
+    "Report all six registered comparisons and Holm-adjusted p-values."
+  ],
+  "limitations": [
+    "The sample covers 700 of 330,429 Q90 formulas, not the complete formula universe.",
+    "Q90's 20-feature subset was selected on Discovery from 59 features; Discovery is therefore descriptive/in-sample.",
+    "The feature matrix archive ends 2026-11-07 and does not use the later Q141 eligible archive rows.",
+    "Historical Blind OOS is exposed research history, not virgin prospective evidence.",
+    "Family mean Top-5 hit share is a meta-research diagnostic, not a deployable single-number ranking or five-number forecast.",
+    "This Holm family covers six registered Q141-B7 tests, not all historical SONAR experiments."
+  ],
+  "governance": {
+    "research_only": true,
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "no_canonical_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "next_action": "Execute the deterministic 700-formula family sample and strict-prior rolling selector; persist complete target ledger, report, manifest and checkpoint with exact hashes."
+}

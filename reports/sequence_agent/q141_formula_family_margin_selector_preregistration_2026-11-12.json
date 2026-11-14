@@ -1,0 +1,110 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-C2",
+  "parent_task": "Q141",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "registered_at": "2026-11-12",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draw_count": 3404,
+    "cutoff": "2026-11-10",
+    "excluded_contest": {
+      "date": "2026-11-11",
+      "contest": 315
+    }
+  },
+  "hypothesis": "The formula family with the largest standardized current-target Top-5/Top-6 score margin is more useful on that target than an equal-family ensemble; current-state confidence may anticipate family usefulness even when rolling past hit rates have negligible persistence.",
+  "motivation": {
+    "q141_c0_lag1_autocorrelation_range": [
+      -0.018703807855324665,
+      0.025891553930453733
+    ],
+    "q141_c0_rolling100_decision": "NO_ROLLING_FAMILY_ANTICIPATION_LIFT_DEMONSTRATED",
+    "q141_c1_decision": "NO_SIZE_ADJUSTED_PAIR_COMPLEMENTARITY_LIFT_DEMONSTRATED"
+  },
+  "formula_policy": {
+    "families": "Reuse exactly the six Q141-C0 families and 25 unique Q80 features without retuning.",
+    "family_score": "Arithmetic mean of the family's per-target standardized feature columns; same as Q141-C0.",
+    "standardized_margin": "(fifth-largest family score minus sixth-largest family score) divided by the population standard deviation of that 40-number family score vector; if standard deviation < 1e-12, margin=0.",
+    "selection": "Choose the family with the largest standardized margin for the current target; exact ties broken by ascending family ID.",
+    "warmup": "No outcome-based warmup; policy is available from the first eligible target with 50 prior draws.",
+    "no_tuning": true,
+    "no_tuning_policy": "No threshold, lookback, family definition or margin parameter tuning is permitted."
+  },
+  "expected_targets": 3354,
+  "expected_splits": {
+    "discovery": 2013,
+    "validation": 671,
+    "blind_oos": 670
+  },
+  "comparisons": [
+    "equal_family_ensemble",
+    "equal_feature_ensemble",
+    "fixed_family_selected_on_discovery_only"
+  ],
+  "endpoints": [
+    "top5_hit_share",
+    "top10_hit_share",
+    "top20_hit_share",
+    "mean_actual_number_rank"
+  ],
+  "inference": {
+    "method": "paired non-overlapping 20-target block sign-flip plus circular moving-block bootstrap",
+    "replicates": 20000,
+    "block_length": 20,
+    "holm_family_size": 24,
+    "holm_scope": "Validation and Blind OOS x 3 comparators x 4 endpoints",
+    "primary": "Blind OOS Top-5 hit-share delta vs equal-family ensemble",
+    "practical_threshold": 0.005,
+    "acceptance": "Positive delta >= 0.005, Holm-adjusted p < 0.05, and 95% block-bootstrap lower bound > 0."
+  },
+  "uniform_null": {
+    "method": "Exact convolution of Hypergeometric(40,k,5) per-target hits",
+    "splits": [
+      "validation",
+      "blind_oos"
+    ],
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "holm_family_size": 6,
+    "assumption": "Independent uniform 5-of-40 draws."
+  },
+  "secondary_diagnostic": {
+    "name": "Spearman association between pre-target standardized margin and selected-family Top-5 hits",
+    "family_count": 6,
+    "split_count": 3,
+    "holm_family_size": 18,
+    "interpretation": "Exploratory calibration diagnostic only; cannot change the frozen policy."
+  },
+  "leakage_controls": [
+    "strict prefix only for feature construction",
+    "score and freeze all six family rankings before reading target outcome",
+    "update prefix state only after target scoring",
+    "future-suffix invariance tests",
+    "deterministic tie-breaking and replay",
+    "blind OOS not used to select or tune the policy"
+  ],
+  "status_rules": "A null result is a valid completed experiment. No family or engine is promoted from this historical exploratory study.",
+  "limitations": [
+    "Six coarse Q80-derived families only; not the full formula universe.",
+    "Historical archive is heavily exposed to prior SONAR experiments and is not virgin prospective evidence.",
+    "A large score margin is not necessarily calibrated confidence; C2 tests this hypothesis rather than assuming it.",
+    "Uniform null assumes independent uniform 5-of-40 draws.",
+    "Holm covers the registered C2 family only, not the entire Q00-Q141 project-wide search history."
+  ],
+  "governance": {
+    "no_auto_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "no_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}

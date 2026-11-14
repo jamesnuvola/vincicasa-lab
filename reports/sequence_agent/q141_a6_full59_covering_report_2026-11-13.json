@@ -1,0 +1,188 @@
+{
+  "blind_oos_inference": {
+    "full59_minus_selected20_top5": {
+      "block_signflip_p_two_sided": 0.9708514574271286,
+      "blocks": 34,
+      "ci95": [
+        -0.0027591461610864585,
+        0.0028189928734704867
+      ],
+      "holm_p": 1.0,
+      "mean": 5.5775178163238916e-05,
+      "practical_threshold": 0.005
+    },
+    "full59_minus_uniform_top5": {
+      "block_signflip_p_two_sided": 0.8948052597370132,
+      "blocks": 34,
+      "ci95": [
+        -0.00513721796423289,
+        0.004557212585720032
+      ],
+      "holm_p": 1.0,
+      "mean": -0.00036108645959392346,
+      "practical_threshold": 0.005
+    },
+    "holm_family_size": 2,
+    "method": "non-overlapping 20-target block sign-flip; circular moving-block bootstrap 20,000 replicates; two-sided p-values; Holm across two registered Blind OOS endpoints"
+  },
+  "decision": "FULL59_COVERING_SAMPLE_LIFT_NOT_DEMONSTRATED",
+  "design": {
+    "formula_count_per_scope": 5550,
+    "formula_count_total": 11100,
+    "formula_types_per_scope": {
+      "conditional_gate": 2800,
+      "linear_mean": 650,
+      "pairwise_interaction": 2100
+    },
+    "full59_family_counts_in_added_linears": {
+      "baseline": 896,
+      "cooccurrence_novelty": 198,
+      "ewma_hit_dynamics": 229,
+      "gap_dynamics": 198,
+      "rank_trajectory": 165,
+      "regime_transition_affinity": 198,
+      "residual_surprise": 66
+    },
+    "full59_linear_feature_use_min_max": [
+      56,
+      58
+    ],
+    "full59_pair_coverage": {
+      "family_diversity_counts": {
+        "1": 33,
+        "2": 78,
+        "3": 103,
+        "4": 136
+      },
+      "feature_use_max": 24,
+      "feature_use_min": 23,
+      "pair_count_max": 3,
+      "pair_count_min": 1,
+      "pairs_covered": 1711,
+      "pairs_total": 1711,
+      "quartets": 350
+    },
+    "linear_subsets_per_size": 75,
+    "quartets_per_scope": 350,
+    "scope_feature_counts": {
+      "full59": 59,
+      "selected20": 20
+    },
+    "seed": 14120261113,
+    "selected20_family_counts_in_added_linears": {
+      "baseline": 292,
+      "cooccurrence_novelty": 292,
+      "ewma_hit_dynamics": 292,
+      "gap_dynamics": 293,
+      "rank_trajectory": 292,
+      "regime_transition_affinity": 293,
+      "residual_surprise": 196
+    },
+    "selected20_linear_feature_use_min_max": [
+      167,
+      168
+    ],
+    "selected20_pair_coverage": {
+      "family_diversity_counts": {
+        "2": 25,
+        "3": 140,
+        "4": 185
+      },
+      "feature_use_max": 70,
+      "feature_use_min": 70,
+      "pair_count_max": 13,
+      "pair_count_min": 10,
+      "pairs_covered": 190,
+      "pairs_total": 190,
+      "quartets": 350
+    }
+  },
+  "limitations": [
+    "Q90 feature matrix is pinned to the 3,401-draw archive through 2026-11-07; four later Q141 rows are excluded.",
+    "The full59 and selected20 formula universes are deterministic samples, not exhaustive catalogs.",
+    "The selected20 control was selected using Q90 Discovery outcomes; it is a historical selected baseline, not a neutral random control.",
+    "The historical Blind OOS has been exposed to prior SONAR research and is not prospective virgin evidence.",
+    "This experiment measures per-number Top-5 ranking hit share averaged across formulas; it does not directly predict a five-number ticket or prove draw predictability.",
+    "The covering sample uses 350 quartets plus 75 linear subsets at each size 5–8; formulas are dependent through shared features and base sets."
+  ],
+  "q90_scoring_replay": {
+    "formula_split_comparisons": 168,
+    "formulas": 56,
+    "max_abs_difference": 2.7755575615628914e-17,
+    "status": "PASS",
+    "tolerance": 1e-12
+  },
+  "schema_version": "1.0",
+  "source": {
+    "artifact_zip_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "feature_catalog_sha256": "0761324a35faade7e5dc9a053d19146f21d349ba9e8237b334691c6b1e5517a5",
+    "feature_selection_sha256": "0e752f901f1d5f8f7c4b7d8436f38e3939ee2ab7018dc4229a0e1fddd3c08ed9",
+    "formula_catalog_sha256": "a61f77ede7136d4eb88a57932488590741fd0b84ace8307d5dd90c192d520586",
+    "matrix_dtype": "float32",
+    "matrix_sha256": "681152ddfaa0217889f0a1623f0ce1dc9691ffabdd4901869cb736b58185ec49",
+    "matrix_shape": [
+      3351,
+      40,
+      59
+    ],
+    "q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q141_draws": 3405,
+    "q90_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_cutoff": "2026-11-07",
+    "q90_draws": 3401,
+    "q90_exact_prefix_of_q141": true,
+    "q90_suffix_rows_excluded": 4,
+    "split_metrics_sha256": "3192a5ab2a64e8526321b6b5c322320dfc5636e337eadde573b5e27b0461ec2a",
+    "target_ledger_sha256": "553ea2519f109cf0913f86a43210481f7e9ac346128f18698d425036d4e1c120",
+    "verified_zip_members": 17
+  },
+  "status": "COMPLETED_HISTORICAL_WALK_FORWARD",
+  "task_id": "Q141-A6",
+  "walkforward": {
+    "blind_oos_label": "historical exposed; not virgin prospective evidence",
+    "first_target": "2017-09-05",
+    "last_target": "2026-11-07",
+    "split_counts": {
+      "blind_oos": 670,
+      "discovery": 2011,
+      "validation": 670
+    },
+    "split_summary": {
+      "blind_oos": {
+        "delta_top5": 5.5775178163238916e-05,
+        "full59_minus_uniform_top5": -0.00036108645959392893,
+        "full59_top10_mean": 0.12505650127739681,
+        "full59_top20_mean": 0.1254363184079602,
+        "full59_top5_mean": 0.12463891354040607,
+        "selected20_top10_mean": 0.12483385773833534,
+        "selected20_top20_mean": 0.1253340863251311,
+        "selected20_top5_mean": 0.12458313836224286,
+        "targets": 670
+      },
+      "discovery": {
+        "delta_top5": -0.0021833788039655765,
+        "full59_minus_uniform_top5": 0.0011175247848544678,
+        "full59_top10_mean": 0.1256806214469069,
+        "full59_top20_mean": 0.1252616778887291,
+        "full59_top5_mean": 0.12611752478485447,
+        "selected20_top10_mean": 0.12706352000931814,
+        "selected20_top20_mean": 0.1260071050662796,
+        "selected20_top5_mean": 0.12830090358882001,
+        "targets": 2011
+      },
+      "validation": {
+        "delta_top5": 0.0006217560844426517,
+        "full59_minus_uniform_top5": -0.0030384563668145875,
+        "full59_top10_mean": 0.12292445878714535,
+        "full59_top20_mean": 0.12421090493478552,
+        "full59_top5_mean": 0.12196154363318541,
+        "selected20_top10_mean": 0.12233545784590563,
+        "selected20_top20_mean": 0.123557832459325,
+        "selected20_top5_mean": 0.12133978754874276,
+        "targets": 670
+      }
+    },
+    "strict_prior_cutoff_check": "all matrix cutoff_date values precede target_date; feature lineage is draws[:i] and state updates after scoring",
+    "targets": 3351
+  }
+}

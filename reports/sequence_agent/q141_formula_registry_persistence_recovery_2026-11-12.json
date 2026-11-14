@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-PERSISTENCE-RECOVERY",
+  "date": "2026-11-12",
+  "failed_run_id": 43223714658,
+  "failed_run_head": "a80698ae050c29bbaafd5360b2f3f29dcb08421c",
+  "prior_successful_persistence_run_id": 43223302175,
+  "prior_run_head": "9f56acd87b5eaa2edd15f9d1bf6b253d0b7181e8",
+  "failure_stage": "append_only_git_persistence",
+  "root_cause": "Concurrent workflow runs persisted overlapping generated Q141 files. The older run advanced the remote branch; the newer run's push was rejected and rebase encountered add/add conflicts on the generated B1 bundle.",
+  "experiment_steps": [
+    "Q141-B1 unit tests: success",
+    "Q141-B1 strict-prior walk-forward: success",
+    "Q141-C0 tests and walk-forward: success",
+    "Q141-C1 tests and walk-forward: success",
+    "Q141-C2 tests and walk-forward: success",
+    "Q141 artifact uploads: success",
+    "Git persistence: failure"
+  ],
+  "recovery_artifact": {
+    "id": 13947257039,
+    "name": "q141-b1-formula-registry-a80698ae050c29bbaafd5360b2f3f29dcb08421c",
+    "zip_bytes": 114031,
+    "uncompressed_bytes": 828143,
+    "files": [
+      "q141_formula_registry.json",
+      "q141_formula_alias_walkforward_target_ledger_2026-11-12.csv",
+      "q141_formula_alias_walkforward_report_2026-11-12.json",
+      "q141_formula_registry_manifest_2026-11-12.json",
+      "q141_formula_registry_checkpoint_2026-11-12.json"
+    ]
+  },
+  "corrective_action": {
+    "workflow_file": ".github/workflows/ci.yml",
+    "concurrency_group": "github.head_ref || github.ref_name",
+    "rebase_policy": "resolve only allowlisted generated Q141 output conflicts in favor of current run; fail closed on all other conflicts"
+  },
+  "next_action": "Rerun from latest branch head after prior runs finish; verify output commit and exact Git blob readback.",
+  "governance": {
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "no_archive_mutation": true,
+    "no_shadow_insertion": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}

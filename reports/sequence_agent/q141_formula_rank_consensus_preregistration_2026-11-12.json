@@ -1,0 +1,130 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-C3",
+  "title": "Canonical Formula Rank Consensus",
+  "registered_at": "2026-11-12",
+  "status": "PREREGISTERED_NOT_YET_EXECUTED",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draws": 3404,
+    "cutoff": "2026-11-10",
+    "excluded_contest": 315
+  },
+  "formula_sample": {
+    "parent_task": "Q141-B1",
+    "raw_formula_count": 120,
+    "unique_canonical_formula_count": 113,
+    "subsets_per_size": 12,
+    "subset_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "seed": 14120261112,
+    "selection": "fixed deterministic sample; no outcome-based selection",
+    "weighting": "one vote per unique canonical formula ID; alias multiplicity does not increase weight",
+    "universe_scope": "sample only; not exhaustive over 9,808,263 canonical formulas"
+  },
+  "hypothesis": "Rank consensus across algebraically distinct formula samples improves number ranking versus equal-family and equal-feature controls.",
+  "policies": [
+    {
+      "id": "borda_mean_rank",
+      "definition": "ascending rank of mean formula rank across 113 unique canonical formulas"
+    },
+    {
+      "id": "median_rank",
+      "definition": "ascending rank of median formula rank across 113 unique canonical formulas"
+    },
+    {
+      "id": "top5_vote",
+      "definition": "descending count of formula Top-5 votes; ties by mean rank then ascending number"
+    }
+  ],
+  "controls": [
+    "equal_family",
+    "equal_feature"
+  ],
+  "endpoints": [
+    "top5_hit_share",
+    "top10_hit_share",
+    "top20_hit_share",
+    "mean_actual_number_rank"
+  ],
+  "walkforward": {
+    "minimum_prior_history": 50,
+    "targets": 3354,
+    "splits": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "strict_prior": true,
+    "score_before_update": true
+  },
+  "paired_inference": {
+    "tests": 48,
+    "comparisons": "3 consensus policies × 2 controls × 2 splits × 4 endpoints",
+    "method": "20-target non-overlapping block sign-flip",
+    "replicates": 20000,
+    "bootstrap": "circular moving-block bootstrap",
+    "confidence": 0.95,
+    "holm_family_size": 48,
+    "block_length": 20
+  },
+  "uniform_null": {
+    "tests": 18,
+    "tests_per_policy_split_endpoint": "3 policies × 2 splits × 3 hit endpoints",
+    "method": "exact convolution of Hypergeometric(40,k,5)",
+    "holm_family_size": 18,
+    "expected_shares": {
+      "top5": 0.125,
+      "top10": 0.25,
+      "top20": 0.5
+    },
+    "expected_mean_rank": 20.5
+  },
+  "primary_gate": {
+    "policy": "borda_mean_rank",
+    "control": "equal_family",
+    "split": "blind_oos",
+    "endpoint": "top5_hit_share",
+    "minimum_delta": 0.005,
+    "ci_lower_gt": 0,
+    "holm_adjusted_p_lt": 0.05
+  },
+  "leakage_controls": [
+    "target_outcome_invariance",
+    "future_suffix_invariance",
+    "strict_prior_cutoff",
+    "score_before_history_update",
+    "deterministic_formula_sample",
+    "stable_fsum_scoring",
+    "deterministic_tie_break"
+  ],
+  "governance": {
+    "no_archive_mutation": true,
+    "no_shadow_insertion": true,
+    "no_engine_promotion": true,
+    "no_auto_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "limitations": [
+    "113-formula deterministic sample, not exhaustive formula universe",
+    "formula ranks are dependent due shared features",
+    "historical Blind OOS is exposed, not virgin prospective evidence",
+    "Holm correction applies only to this preregistered family, not Q00-Q141"
+  ],
+  "next_action": "If no robust consensus lift is found, do not tune on Blind OOS; prioritize durable Q90 AST import and Q7 typed-output integration."
+}

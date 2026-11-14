@@ -1,0 +1,1310 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B1",
+  "status": "CANONICAL_BASE_GRAMMAR_REGISTERED_ALIAS_SCOPE_ONLY",
+  "generated_by": "scripts/sonar_q141_formula_registry.py",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draws": 3404,
+    "cutoff": "2026-11-10",
+    "minimum_prior_history": 50
+  },
+  "feature_universes": {
+    "q80_raw": {
+      "feature_count": 27,
+      "features": [
+        {
+          "raw_index": 0,
+          "raw_feature_id": "Q80:00:freq_5",
+          "name": "freq_5",
+          "family": "frequency_level",
+          "description": "Count of appearances in the preceding 5 draws.",
+          "canonical_feature_id": "Q80:00:freq_5",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 1,
+          "raw_feature_id": "Q80:01:freq_10",
+          "name": "freq_10",
+          "family": "frequency_level",
+          "description": "Count of appearances in the preceding 10 draws.",
+          "canonical_feature_id": "Q80:01:freq_10",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 2,
+          "raw_feature_id": "Q80:02:freq_20",
+          "name": "freq_20",
+          "family": "frequency_level",
+          "description": "Count of appearances in the preceding 20 draws.",
+          "canonical_feature_id": "Q80:02:freq_20",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 3,
+          "raw_feature_id": "Q80:03:freq_50",
+          "name": "freq_50",
+          "family": "frequency_level",
+          "description": "Count of appearances in the preceding 50 draws.",
+          "canonical_feature_id": "Q80:03:freq_50",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 4,
+          "raw_feature_id": "Q80:04:freq_100",
+          "name": "freq_100",
+          "family": "frequency_level",
+          "description": "Count of appearances in the preceding 100 draws.",
+          "canonical_feature_id": "Q80:04:freq_100",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 5,
+          "raw_feature_id": "Q80:05:freq_250",
+          "name": "freq_250",
+          "family": "frequency_level",
+          "description": "Count of appearances in the preceding 250 draws.",
+          "canonical_feature_id": "Q80:05:freq_250",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 6,
+          "raw_feature_id": "Q80:06:freq_500",
+          "name": "freq_500",
+          "family": "frequency_level",
+          "description": "Count of appearances in the preceding 500 draws.",
+          "canonical_feature_id": "Q80:06:freq_500",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 7,
+          "raw_feature_id": "Q80:07:freq_all",
+          "name": "freq_all",
+          "family": "frequency_level",
+          "description": "Cumulative appearances in the strict historical prefix.",
+          "canonical_feature_id": "Q80:07:freq_all",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 8,
+          "raw_feature_id": "Q80:08:trend_5_vs_50",
+          "name": "trend_5_vs_50",
+          "family": "frequency_change",
+          "description": "Rate in the preceding 5 draws minus rate in the preceding 50 draws.",
+          "canonical_feature_id": "Q80:08:trend_5_vs_50",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 9,
+          "raw_feature_id": "Q80:09:trend_10_vs_100",
+          "name": "trend_10_vs_100",
+          "family": "frequency_change",
+          "description": "Rate in the preceding 10 draws minus rate in the preceding 100 draws.",
+          "canonical_feature_id": "Q80:09:trend_10_vs_100",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 10,
+          "raw_feature_id": "Q80:10:trend_20_vs_250",
+          "name": "trend_20_vs_250",
+          "family": "frequency_change",
+          "description": "Rate in the preceding 20 draws minus rate in the preceding 250 draws.",
+          "canonical_feature_id": "Q80:10:trend_20_vs_250",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 11,
+          "raw_feature_id": "Q80:11:age_since_hit",
+          "name": "age_since_hit",
+          "family": "recency_gap",
+          "description": "Number of prior draws since the number last appeared.",
+          "canonical_feature_id": "Q80:11:age_since_hit",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 12,
+          "raw_feature_id": "Q80:12:gap_mean",
+          "name": "gap_mean",
+          "family": "recency_gap",
+          "description": "Mean inter-arrival interval in the strict historical prefix.",
+          "canonical_feature_id": "Q80:12:gap_mean",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 13,
+          "raw_feature_id": "Q80:13:gap_sd",
+          "name": "gap_sd",
+          "family": "recency_gap",
+          "description": "Population standard deviation of inter-arrival intervals in the strict historical prefix.",
+          "canonical_feature_id": "Q80:13:gap_sd",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 14,
+          "raw_feature_id": "Q80:14:overdue_ratio",
+          "name": "overdue_ratio",
+          "family": "recency_gap",
+          "description": "Current age divided by mean inter-arrival interval.",
+          "canonical_feature_id": "Q80:14:overdue_ratio",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 15,
+          "raw_feature_id": "Q80:15:position_log_frequency",
+          "name": "position_log_frequency",
+          "family": "position_dependence",
+          "description": "Mean smoothed log-frequency across the five sorted draw positions.",
+          "canonical_feature_id": "Q80:15:position_log_frequency",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 16,
+          "raw_feature_id": "Q80:16:pair_count_with_last_draw",
+          "name": "pair_count_with_last_draw",
+          "family": "position_dependence",
+          "description": "Mean historical pair count with the five numbers in the immediately preceding draw.",
+          "canonical_feature_id": "Q80:16:pair_count_with_last_draw",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 17,
+          "raw_feature_id": "Q80:17:neighbor_pm1_history",
+          "name": "neighbor_pm1_history",
+          "family": "neighbour_field",
+          "description": "Historical frequency of adjacent numbers at distance one, excluding self.",
+          "canonical_feature_id": "Q80:17:neighbor_pm1_history",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 18,
+          "raw_feature_id": "Q80:18:neighbor_pm2_history",
+          "name": "neighbor_pm2_history",
+          "family": "neighbour_field",
+          "description": "Historical frequency of numbers within distance two, excluding self.",
+          "canonical_feature_id": "Q80:18:neighbor_pm2_history",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 19,
+          "raw_feature_id": "Q80:19:lag_1",
+          "name": "lag_1",
+          "family": "lag_memory",
+          "description": "Indicator that the number appeared in the immediately preceding draw.",
+          "canonical_feature_id": "Q80:19:lag_1",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 20,
+          "raw_feature_id": "Q80:20:lag_2",
+          "name": "lag_2",
+          "family": "lag_memory",
+          "description": "Indicator that the number appeared two draws before the target.",
+          "canonical_feature_id": "Q80:20:lag_2",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 21,
+          "raw_feature_id": "Q80:21:lag_3",
+          "name": "lag_3",
+          "family": "lag_memory",
+          "description": "Indicator that the number appeared three draws before the target.",
+          "canonical_feature_id": "Q80:21:lag_3",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 22,
+          "raw_feature_id": "Q80:22:lag_5",
+          "name": "lag_5",
+          "family": "lag_memory",
+          "description": "Indicator that the number appeared five draws before the target.",
+          "canonical_feature_id": "Q80:22:lag_5",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 23,
+          "raw_feature_id": "Q80:23:lag_10",
+          "name": "lag_10",
+          "family": "lag_memory",
+          "description": "Indicator that the number appeared ten draws before the target.",
+          "canonical_feature_id": "Q80:23:lag_10",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 24,
+          "raw_feature_id": "Q80:24:recent_3",
+          "name": "recent_3",
+          "family": "frequency_level",
+          "description": "Count of appearances in the preceding 3 draws.",
+          "canonical_feature_id": "Q80:24:recent_3",
+          "exact_alias_of": null,
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 25,
+          "raw_feature_id": "Q80:25:recent_5",
+          "name": "recent_5",
+          "family": "frequency_level",
+          "description": "Exact alias of freq_5.",
+          "canonical_feature_id": "Q80:00:freq_5",
+          "exact_alias_of": "freq_5",
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        },
+        {
+          "raw_index": 26,
+          "raw_feature_id": "Q80:26:recent_10",
+          "name": "recent_10",
+          "family": "frequency_level",
+          "description": "Exact alias of freq_10.",
+          "canonical_feature_id": "Q80:01:freq_10",
+          "exact_alias_of": "freq_10",
+          "source": {
+            "branch": "research/q91-nested-formula-walkforward-20261105",
+            "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+            "path": "scripts/sonar_per_number_condition_grammar.py",
+            "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+          }
+        }
+      ],
+      "source": {
+        "branch": "research/q91-nested-formula-walkforward-20261105",
+        "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+        "path": "scripts/sonar_per_number_condition_grammar.py",
+        "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+      }
+    },
+    "q80_canonical": {
+      "feature_count": 25,
+      "feature_names": [
+        "freq_5",
+        "freq_10",
+        "freq_20",
+        "freq_50",
+        "freq_100",
+        "freq_250",
+        "freq_500",
+        "freq_all",
+        "trend_5_vs_50",
+        "trend_10_vs_100",
+        "trend_20_vs_250",
+        "age_since_hit",
+        "gap_mean",
+        "gap_sd",
+        "overdue_ratio",
+        "position_log_frequency",
+        "pair_count_with_last_draw",
+        "neighbor_pm1_history",
+        "neighbor_pm2_history",
+        "lag_1",
+        "lag_2",
+        "lag_3",
+        "lag_5",
+        "lag_10",
+        "recent_3"
+      ],
+      "exact_aliases": {
+        "recent_5": "freq_5",
+        "recent_10": "freq_10"
+      },
+      "canonicalization": "Exact source-code equality; raw multiplicity retained as integer weights then reduced by GCD."
+    },
+    "q89_extension": {
+      "feature_count": 32,
+      "combined_feature_count": 59,
+      "features": [
+        {
+          "feature_id": "Q89:00:ewma_hit_hl_3",
+          "name": "ewma_hit_hl_3",
+          "family": "ewma_hit_dynamics",
+          "description": "Exponentially weighted prior hit indicator with half-life 3.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:01:ewma_hit_hl_7",
+          "name": "ewma_hit_hl_7",
+          "family": "ewma_hit_dynamics",
+          "description": "Exponentially weighted prior hit indicator with half-life 7.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:02:ewma_hit_hl_14",
+          "name": "ewma_hit_hl_14",
+          "family": "ewma_hit_dynamics",
+          "description": "Exponentially weighted prior hit indicator with half-life 14.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:03:ewma_hit_hl_30",
+          "name": "ewma_hit_hl_30",
+          "family": "ewma_hit_dynamics",
+          "description": "Exponentially weighted prior hit indicator with half-life 30.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:04:ewma_hit_hl_60",
+          "name": "ewma_hit_hl_60",
+          "family": "ewma_hit_dynamics",
+          "description": "Exponentially weighted prior hit indicator with half-life 60.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:05:ewma_acceleration_3_14",
+          "name": "ewma_acceleration_3_14",
+          "family": "ewma_hit_dynamics",
+          "description": "Difference between EWMA hit states with half-lives 3 and 14.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:06:ewma_acceleration_7_30",
+          "name": "ewma_acceleration_7_30",
+          "family": "ewma_hit_dynamics",
+          "description": "Difference between EWMA hit states with half-lives 7 and 30.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:07:last_gap_vs_median",
+          "name": "last_gap_vs_median",
+          "family": "gap_dynamics",
+          "description": "Current age relative to the median historical inter-arrival gap.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:08:last_gap_robust_z",
+          "name": "last_gap_robust_z",
+          "family": "gap_dynamics",
+          "description": "Current age minus median gap, scaled by 1.4826 times the median absolute deviation.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:09:gap_cv",
+          "name": "gap_cv",
+          "family": "gap_dynamics",
+          "description": "Standard deviation of inter-arrival gaps divided by their mean.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:10:gap_slope_recent",
+          "name": "gap_slope_recent",
+          "family": "gap_dynamics",
+          "description": "Linear slope of the most recent eight inter-arrival gaps.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:11:gap_hazard_empirical",
+          "name": "gap_hazard_empirical",
+          "family": "gap_dynamics",
+          "description": "Smoothed empirical probability of a hit at the current age conditional on survival to that age.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:12:gap_hazard_residual",
+          "name": "gap_hazard_residual",
+          "family": "gap_dynamics",
+          "description": "Empirical gap hazard minus a median-gap reference hazard.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:13:pair_lift_recent_last_draw",
+          "name": "pair_lift_recent_last_draw",
+          "family": "cooccurrence_novelty",
+          "description": "Mean recent pair lift between a candidate and numbers in the immediately preceding draw.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:14:pair_pmi_recent_last_draw",
+          "name": "pair_pmi_recent_last_draw",
+          "family": "cooccurrence_novelty",
+          "description": "Mean recent pointwise mutual information for pairs with the immediately preceding draw.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:15:cooccurrence_strength_recent",
+          "name": "cooccurrence_strength_recent",
+          "family": "cooccurrence_novelty",
+          "description": "Recent co-occurrence rate with numbers in the immediately preceding draw.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:16:cooccurrence_surprise_recent",
+          "name": "cooccurrence_surprise_recent",
+          "family": "cooccurrence_novelty",
+          "description": "Recent pair log-rate relative to its longer-run pair log-rate.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:17:neighbor_balance_pm1_recent",
+          "name": "neighbor_balance_pm1_recent",
+          "family": "cooccurrence_novelty",
+          "description": "Recent frequency in the candidate's immediate numeric neighbourhood.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:18:neighbor_balance_pm2_recent",
+          "name": "neighbor_balance_pm2_recent",
+          "family": "cooccurrence_novelty",
+          "description": "Recent frequency within distance two of the candidate.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:19:rank_velocity_5_20",
+          "name": "rank_velocity_5_20",
+          "family": "rank_trajectory",
+          "description": "Change in mean historical rank over the 5-draw versus 20-draw windows.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:20:rank_acceleration_5_20_50",
+          "name": "rank_acceleration_5_20_50",
+          "family": "rank_trajectory",
+          "description": "Difference between 5-vs-20 and 20-vs-50 rank movement.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:21:rank_volatility_20",
+          "name": "rank_volatility_20",
+          "family": "rank_trajectory",
+          "description": "Standard deviation of prior ranks over the recent 20-target history.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:22:feature_disagreement_27",
+          "name": "feature_disagreement_27",
+          "family": "rank_trajectory",
+          "description": "Cross-feature dispersion of the 27 Q80 feature ranks for the candidate.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:23:rank_consensus_27",
+          "name": "rank_consensus_27",
+          "family": "rank_trajectory",
+          "description": "Median rank across the 27 Q80 features.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:24:novelty_residual_20",
+          "name": "novelty_residual_20",
+          "family": "residual_surprise",
+          "description": "Recent 20-draw hit count residual relative to its prior-frequency expectation.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:25:novelty_residual_50",
+          "name": "novelty_residual_50",
+          "family": "residual_surprise",
+          "description": "Recent 50-draw hit count residual relative to its prior-frequency expectation.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:26:regime_sum_affinity",
+          "name": "regime_sum_affinity",
+          "family": "regime_transition_affinity",
+          "description": "Prior frequency conditional on matching the previous draw's sum regime.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:27:regime_span_affinity",
+          "name": "regime_span_affinity",
+          "family": "regime_transition_affinity",
+          "description": "Prior frequency conditional on matching the previous draw's span regime.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:28:regime_parity_affinity",
+          "name": "regime_parity_affinity",
+          "family": "regime_transition_affinity",
+          "description": "Prior frequency conditional on the previous draw's odd-count regime.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:29:regime_entropy_affinity",
+          "name": "regime_entropy_affinity",
+          "family": "regime_transition_affinity",
+          "description": "Prior frequency conditional on the previous draw's parity-entropy category.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:30:transition_profile_affinity",
+          "name": "transition_profile_affinity",
+          "family": "regime_transition_affinity",
+          "description": "Prior frequency conditional on the previous regime-transition pair.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        },
+        {
+          "feature_id": "Q89:31:conditional_frequency_prev_draw_regime",
+          "name": "conditional_frequency_prev_draw_regime",
+          "family": "regime_transition_affinity",
+          "description": "Prior frequency conditional on the previous draw's composite regime.",
+          "source": {
+            "branch": "research/q90-expanded-formula-grammar-20261103",
+            "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+            "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+            "blob": "c332aa7198f01004480e411956e1a64599236884"
+          },
+          "exact_semantic_alias_proven": false
+        }
+      ],
+      "source": {
+        "branch": "research/q90-expanded-formula-grammar-20261103",
+        "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+        "path": "scripts/sonar_adaptive_novelty_rule_anticipation.py",
+        "blob": "c332aa7198f01004480e411956e1a64599236884"
+      },
+      "deduplication_status": "No exact semantic aliases asserted; rank correlation or rank duplication is not proof of function equivalence."
+    }
+  },
+  "canonical_ast": {
+    "type": "weighted_mean",
+    "version": 1,
+    "serialization": "EWMEAN1|feature_name=primitive_integer_weight;...",
+    "stable_evaluation": "math.fsum over the primitive weighted terms; raw and canonical expressions use the same order-stable summation semantics.",
+    "legacy_evaluation_note": "Historical NumPy mean may differ by sub-tolerance floating-point amounts and alter exact ranks for near-ties; retain as a separate compatibility diagnostic until a tie policy is reviewed.",
+    "equivalence": "Two raw equal-weight subset formulas are equivalent iff their canonical feature multiplicity vectors are proportional; divide by GCD to obtain the unique primitive integer vector.",
+    "multiplicity_is_semantic": true,
+    "correlation_based_deduplication": false,
+    "example_equivalences": [
+      {
+        "raw": [
+          [
+            0
+          ],
+          [
+            0,
+            25
+          ]
+        ],
+        "canonical_id": "EWMEAN1|freq_5=1"
+      },
+      {
+        "raw": [
+          [
+            1
+          ],
+          [
+            1,
+            26
+          ]
+        ],
+        "canonical_id": "EWMEAN1|freq_10=1"
+      },
+      {
+        "raw": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            25,
+            26
+          ]
+        ],
+        "canonical_id": "EWMEAN1|freq_5=1;freq_10=1"
+      }
+    ],
+    "example_non_equivalence": {
+      "raw": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          1,
+          25
+        ]
+      ],
+      "reason": "The latter has primitive weights freq_5:2 and freq_10:1; naive alias deletion would incorrectly change the weighting."
+    }
+  },
+  "formula_grammars": [
+    {
+      "task_id": "Q80",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 1,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 27,
+      "unique_canonical_formula_count_within_size": 25,
+      "raw_alias_redundancy_within_size": 2,
+      "source": {
+        "branch": "research/q91-nested-formula-walkforward-20261105",
+        "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+        "path": "scripts/sonar_per_number_condition_grammar.py",
+        "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+      },
+      "combinadic_common_source": null,
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q80",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 2,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 351,
+      "unique_canonical_formula_count_within_size": 302,
+      "raw_alias_redundancy_within_size": 49,
+      "source": {
+        "branch": "research/q91-nested-formula-walkforward-20261105",
+        "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+        "path": "scripts/sonar_per_number_condition_grammar.py",
+        "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+      },
+      "combinadic_common_source": null,
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q80",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 3,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 2925,
+      "unique_canonical_formula_count_within_size": 2348,
+      "raw_alias_redundancy_within_size": 577,
+      "source": {
+        "branch": "research/q91-nested-formula-walkforward-20261105",
+        "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+        "path": "scripts/sonar_per_number_condition_grammar.py",
+        "blob": "e5d008f974af0ac21cc15d71037e976dfb061399"
+      },
+      "combinadic_common_source": null,
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q81",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 4,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 17550,
+      "unique_canonical_formula_count_within_size": 13203,
+      "raw_alias_redundancy_within_size": 4347,
+      "source": {
+        "branch": "research/per-number-condition-grammar-q81-20261027",
+        "commit": "5ae18cf8e46081f76402212ac0aaddc00d7d82dc",
+        "path": "scripts/sonar_per_number_condition_four_feature.py",
+        "blob": "d83e7dbc1f8723f4a4ece326ce269b5e14118579"
+      },
+      "combinadic_common_source": null,
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q83",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 5,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 80730,
+      "unique_canonical_formula_count_within_size": 57201,
+      "raw_alias_redundancy_within_size": 23529,
+      "source": {
+        "branch": "research/per-number-condition-grammar-20261026",
+        "commit": "11dd29053a38f595da2812e23ba604fd07451da9",
+        "path": "scripts/sonar_per_number_condition_5plus_grammar.py",
+        "blob": "bf04e9e23bfabe35006406274acdc9e2e6778fd1"
+      },
+      "combinadic_common_source": null,
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q86",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 6,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 296010,
+      "unique_canonical_formula_count_within_size": 198605,
+      "raw_alias_redundancy_within_size": 97405,
+      "source": {
+        "branch": "research/per-number-condition-grammar-20261026",
+        "commit": "11dd29053a38f595da2812e23ba604fd07451da9",
+        "path": "scripts/sonar_per_number_condition_6plus_grammar.py",
+        "blob": "4045f7823b22ce827185522c597026bff1bc4103"
+      },
+      "combinadic_common_source": null,
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q87",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 7,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 888030,
+      "unique_canonical_formula_count_within_size": 567479,
+      "raw_alias_redundancy_within_size": 320551,
+      "source": {
+        "branch": "research/per-number-condition-grammar-20261026",
+        "commit": "11dd29053a38f595da2812e23ba604fd07451da9",
+        "path": "scripts/sonar_per_number_condition_7plus_shard.py",
+        "blob": "a65b436b9eb9a1f2a922eadfe5cf6eb2f4d21e1b"
+      },
+      "combinadic_common_source": null,
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q88",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 8,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 2220075,
+      "unique_canonical_formula_count_within_size": 1359622,
+      "raw_alias_redundancy_within_size": 860453,
+      "source": {
+        "branch": "research/per-number-condition-grammar-20261026",
+        "commit": "11dd29053a38f595da2812e23ba604fd07451da9",
+        "path": "scripts/sonar_per_number_condition_8plus_shard.py",
+        "blob": "a524dbdeee0d57ea839cd7aec43198e24a465f53"
+      },
+      "combinadic_common_source": null,
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q89",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 9,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 4686825,
+      "unique_canonical_formula_count_within_size": 2768832,
+      "raw_alias_redundancy_within_size": 1917993,
+      "source": {
+        "branch": "research/sonar-q89-nine-feature-20261108",
+        "commit": "5e7301fe2f3bdeb3c85cfd9a4ee810cfdc9c9f77",
+        "path": "scripts/sonar_per_number_condition_9plus_shard.py",
+        "blob": "d109ec1ea1dc8429f787c01867a57abb9d8b6c5a"
+      },
+      "combinadic_common_source": {
+        "branch": "research/sonar-q89-nine-feature-20261108",
+        "commit": "5e7301fe2f3bdeb3c85cfd9a4ee810cfdc9c9f77",
+        "path": "scripts/sonar_q89_common.py",
+        "blob": "f3b6f253c6c34d1ea9bd99985437835a1dd06317"
+      },
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    },
+    {
+      "task_id": "Q92",
+      "feature_universe": "Q80:27 raw columns",
+      "feature_count": 27,
+      "formula_size": 10,
+      "grammar": "all unordered k-feature subsets; equal arithmetic mean of per-target standardized feature columns",
+      "nominal_formula_count": 8436285,
+      "unique_canonical_formula_count_within_size": 4840649,
+      "raw_alias_redundancy_within_size": 3595636,
+      "source": {
+        "branch": "research/sonar-q92-exact-null-calibration-20261109",
+        "commit": "9a04379ed3abdb96c835b5251a91fd972f0c06eb",
+        "path": "scripts/sonar_per_number_condition_10plus_shard.py",
+        "blob": "d9cf7bbe1a8d3db7cddaac6628ef3cde989a7a56"
+      },
+      "combinadic_common_source": {
+        "branch": "research/sonar-q92-exact-null-calibration-20261109",
+        "commit": "9a04379ed3abdb96c835b5251a91fd972f0c06eb",
+        "path": "scripts/sonar_q92_common.py",
+        "blob": "647025282b57938ca66549757ef512e2bfd3dfb5"
+      },
+      "performance_lineage": "Historical metrics use branch-specific archive versions; do not pool or compare until source hashes are reconciled."
+    }
+  ],
+  "cross_size_formula_universe": {
+    "formula_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "nominal_raw_formula_count": 16628808,
+    "sum_of_unique_counts_within_each_size": 9808266,
+    "cross_size_equivalences": 3,
+    "unique_canonical_weighted_mean_count": 9808263,
+    "redundant_raw_formula_ids": 6820545,
+    "reduction_fraction": 0.4101643966302335,
+    "reduction_percent": 41.01643966302335,
+    "exact_count_method": "Combinatorial count over 23 singleton features and two alias classes with multiplicities 0,1,2; no 16.6-million-row materialization."
+  },
+  "other_formula_and_selector_families": [
+    {
+      "task_id": "Q7",
+      "formula_count": 1023,
+      "grammar": "all non-empty subsets of 10 declared feature families",
+      "output_type": "candidate_quintet_ranking",
+      "source": {
+        "branch": "research/exhaustive-formula-catalog-20261025",
+        "commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+        "path": "scripts/sonar_exhaustive_formula_lab.py",
+        "blob": "c2a3664ed5148ae526442d1f189ae40a130e1c5a"
+      },
+      "not_comparable_to": "per-number ranking formula counts"
+    },
+    {
+      "task_id": "Q90",
+      "formula_count": 330429,
+      "feature_universe": "Q89 59-feature matrix; discovery-selected subset of 20",
+      "formula_types": {
+        "equal_weight_linear_mean_sizes_4_to_8": 262599,
+        "four_feature_pairwise_interactions": 29070,
+        "four_feature_conditional_gates": 38760
+      },
+      "source": {
+        "branch": "research/q90-expanded-formula-grammar-20261103",
+        "commit": "c41eb3b5127aee5b473da69d78bc5aa1fdd3eccc",
+        "path": "scripts/sonar_q90_expanded_formula_grammar.py",
+        "blob": "cbb553839e4c35ec494c35cbc94496a255a6a90a"
+      },
+      "checkpoint": {
+        "archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+        "draw_count": 3401,
+        "scored_targets": 3351
+      },
+      "canonical_ast_status": "Interaction/gate ASTs not yet imported or semantically deduplicated."
+    },
+    {
+      "task_id": "Q91",
+      "formula_count": 3303,
+      "meta_policy_count": 6,
+      "grammar": "Q80 formula catalog plus six nested strict-prior formula-selection policies",
+      "source": {
+        "branch": "research/q91-nested-formula-walkforward-20261105",
+        "commit": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+        "path": "scripts/sonar_q91_nested_walkforward.py",
+        "blob": "ada7f02b260453ac4b15e27f8651ec37f7a72451"
+      },
+      "is_new_formula_universe": false
+    },
+    {
+      "task_id": "Q141-C0/C1/C2",
+      "family_count": 6,
+      "feature_count_raw": 27,
+      "feature_count_exact_unique": 25,
+      "grammar": "Coarse Q80-derived family aggregation, pair unions and current-state margin selector",
+      "is_new_formula_universe": false
+    }
+  ],
+  "archive_lineage": [
+    {
+      "tasks": [
+        "Q83",
+        "Q86"
+      ],
+      "archive_sha256": "4c79ac53c482a84a36f60b9823f2ad7c6dad69c75c7472fa760caf4f8c654b44",
+      "status": "older source"
+    },
+    {
+      "tasks": [
+        "Q87",
+        "Q88_metrics"
+      ],
+      "archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+      "status": "older source"
+    },
+    {
+      "tasks": [
+        "Q88_checkpoint"
+      ],
+      "archive_sha256": "e8d09197b2ee22f8355f84c22893bb72eeae4c14caf55342a1ed5fe681123011",
+      "archive_blob_sha1": "1c9c3824d8caa3fe7d0e888c1875402cc2156a2a",
+      "status": "manifest/checkpoint mismatch; do not pool"
+    },
+    {
+      "tasks": [
+        "Q90"
+      ],
+      "archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "status": "older source"
+    },
+    {
+      "tasks": [
+        "Q91"
+      ],
+      "archive_blob_sha1": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+      "status": "older source"
+    },
+    {
+      "tasks": [
+        "Q92"
+      ],
+      "archive_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "status": "older source; combinadic core only"
+    },
+    {
+      "tasks": [
+        "Q141-B1"
+      ],
+      "archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+      "status": "current eligible source prefix"
+    }
+  ],
+  "deduplication_scope": {
+    "proven_exact_aliases": {
+      "recent_5": "freq_5",
+      "recent_10": "freq_10"
+    },
+    "q80_q92_equal_weight_mean_grammars": "canonicalized exactly",
+    "q89_extension": "no additional exact aliases asserted",
+    "q90_interactions_and_gates": "pending typed AST import",
+    "q7_candidate_quintet_grammar": "separate output type; pending AST import",
+    "graph_field_and_other_operator_families": "not yet imported"
+  },
+  "governance": {
+    "historical_blind_oos_is_not_virgin": true,
+    "no_predictive_lift_claim": true,
+    "no_auto_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "no_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
