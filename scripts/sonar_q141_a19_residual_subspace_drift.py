@@ -53,6 +53,23 @@ def build_projection(input_dim: int, sketch_dim: int = SKETCH_DIM, seed: int = S
     return q, error
 
 
+def build_residual_complement(mask_q: np.ndarray):
+    q = np.asarray(mask_q, dtype=np.float64)
+    if q.ndim != 2 or q.shape[0] <= q.shape[1]:
+        raise ValueError("A19_BLOCKED: mask basis must be a tall 2D matrix")
+    full_q, _ = np.linalg.qr(q, mode="complete")
+    complement = full_q[:, q.shape[1]:].copy()
+    for j in range(complement.shape[1]):
+        pivot = int(np.argmax(np.abs(complement[:, j])))
+        if complement[pivot, j] < 0:
+            complement[:, j] *= -1.0
+    cross_error = float(np.max(np.abs(q.T @ complement)))
+    orth_error = float(np.max(np.abs(complement.T @ complement - np.eye(complement.shape[1]))))
+    if max(cross_error, orth_error) > 1e-10:
+        raise ValueError("A19_BLOCKED: residual complement orthogonality failed")
+    return complement, cross_error, orth_error
+
+
 def drift_at(projected: np.ndarray, target_index: int, window: int = WINDOW, k: int = K):
     x = np.asarray(projected, dtype=np.float64)
     t = int(target_index)
@@ -207,9 +224,17 @@ def build_report(source_dir: Path, out: Path):
     residual_orthogonality = float(np.max(np.abs(residual @ mask_q)))
     if residual_orthogonality > 1e-9:
         raise SystemExit(f"A19_BLOCKED: mask residual orthogonality error {residual_orthogonality}")
+    complement, complement_cross_error, complement_orth_error = build_residual_complement(mask_q)
+    residual_coordinates = residual @ complement
+    reconstructed_residual = residual_coordinates @ complement.T
+    residual_reconstruction_error = float(np.max(np.abs(reconstructed_residual - residual)))
+    if residual_coordinates.shape != (TARGETS, FORMULAS - int(mask_meta["design_rank"])):
+        raise SystemExit("A19_BLOCKED: residual complement coordinate shape mismatch")
+    if residual_reconstruction_error > 1e-9:
+        raise SystemExit(f"A19_BLOCKED: residual complement reconstruction error {residual_reconstruction_error}")
 
-    projection, projection_error = build_projection(residual.shape[1], SKETCH_DIM, SKETCH_SEED)
-    projected = residual @ projection
+    projection, projection_error = build_projection(residual_coordinates.shape[1], SKETCH_DIM, SKETCH_SEED)
+    projected = residual_coordinates @ projection
     if projected.shape != (TARGETS, SKETCH_DIM):
         raise SystemExit("A19_BLOCKED: projected residual shape mismatch")
 
@@ -376,7 +401,9 @@ def build_report(source_dir: Path, out: Path):
             "target_rows": TARGETS,
             "formula_count": FORMULAS,
             "mask_design_rank": int(mask_meta["design_rank"]),
-            "mask_residual_dimensions": int(residual.shape[1]),
+            "mask_residual_dimensions": int(residual_coordinates.shape[1]),
+            "mask_residual_embedding_dimensions": int(residual.shape[1]),
+            "projection_input_dimensions": int(residual_coordinates.shape[1]),
             "warmup_scaler_rows": WARMUP,
             "subspace_window": WINDOW,
             "model_training_window": WINDOW,
@@ -396,7 +423,7 @@ def build_report(source_dir: Path, out: Path):
         },
         "preprocessing": {
             "rank_normalization_and_scaling": "Q7 A17 row_center_and_scale; per-target median centering; column means and sample SDs fit on first 400 targets only",
-            "mask_residualization": "Q7 A18 intercept + 10 family main effects + 45 pairwise interactions; fixed known mask design",
+            "mask_residualization": "Q7 A18 intercept + 10 family main effects + 45 pairwise interactions; fixed known mask design; coordinates expressed in the 967-dimensional orthonormal complement",
             "sketch": "fixed seeded Gaussian matrix orthonormalized by QR; 64-dimensional projection of the 967-dimensional residual profile",
             "drift": "1 - six-dimensional principal-subspace overlap between the two adjacent 400-target windows ending strictly before the target",
             "capture_label": "fraction of the target residual-sketch energy captured by the recent-window six-dimensional basis; used only as the response, never as the same-target predictor",
@@ -417,6 +444,9 @@ def build_report(source_dir: Path, out: Path):
             "future_suffix_invariance": bool(future_invariance),
             "future_suffix_probe_checks": invariance_checks,
             "mask_residual_orthogonality_max_error": residual_orthogonality,
+            "mask_complement_cross_orthogonality_max_error": complement_cross_error,
+            "mask_complement_orthogonality_max_error": complement_orth_error,
+            "residual_complement_reconstruction_max_error": residual_reconstruction_error,
             "sketch_projection_orthogonality_max_error": projection_error,
             "deterministic_projection": True,
             "deterministic_null_and_signflip_seeds": True,
