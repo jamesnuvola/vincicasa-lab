@@ -485,6 +485,7 @@ function assertClose(actual, expected, label, tolerance = 1e-10) {
 export function verifyPersisted(root = process.cwd()) {
   const result = runAnalysis(root);
   process.stdout.write("Q141_A23_DEBUG " + JSON.stringify(result.debug) + "\n");
+  process.stdout.write("Q141_A23_RECOMPUTED " + JSON.stringify({observed: result.report.observed, null_summaries: result.report.null_summaries, tests: result.report.tests, decision: result.report.decision}) + "\n");
   const base = path.join(root, "reports/sequence_agent");
   const expected = JSON.parse(readFileSync(path.join(base, "q141_a23_multivariate_conditional_block_null_report_2026-11-14.json"), "utf8"));
   const expectedCsv = readFileSync(path.join(base, "q141_a23_multivariate_conditional_block_null_summary_2026-11-14.csv"), "utf8");
