@@ -1,0 +1,403 @@
+{
+  "experiment_id": "Q141-A25",
+  "schema_version": "1.0",
+  "status": "COMPUTED_EXPLORATORY_POSTHOC_MASK_CARDINALITY_DYNAMICS",
+  "classification": "EXPLORATORY_POST_HOC_NOT_CONFIRMATORY",
+  "source": {
+    "parent_experiment": "Q141-A24",
+    "formula_count": 1023,
+    "mask_design_rank": 56,
+    "residual_dimension": 967,
+    "calibration_rows": 400,
+    "source_rows": 138,
+    "scored_targets": 98,
+    "source_period": {
+      "start": "2026-06-29",
+      "end": "2026-11-13"
+    },
+    "input_git_blob_sha1": {
+      "q141_a23_source_snapshot_reference_000_059.csv": "d58b0e9c18b2cacece2fac94ccb3a2c08b8dad76",
+      "q141_a23_source_snapshot_reference_059_118.csv": "5f3eef14ba5b5649415ac1fc0337a83a06b14c36",
+      "q141_a23_source_snapshot_extension_020.csv": "714ffb43933b3c666e1d4fca240c562d5dd8a8ca",
+      "q141_a23_calibration_first400.json": "aa5eb27424284ae7973214102a61c89e63a4b3bd",
+      "q141_a23_multivariate_target_ledger_2026-11-14.csv": "2ac240b82868d75a0ddb3a7e7d8144e33b7ae8f4",
+      "q141_a23_source_lineage_2026-11-14.json": "693105e882079b24a6db4c6c46fa2ff1d1c8e45f",
+      "q141_a24_prequential_residual_vector_target_ledger_2026-11-14.csv": "615e67424bb52beae5fbafbea7e936a9d1ecb685",
+      "q141_a24_prequential_residual_vector_report_2026-11-14.json": "1d3fee61bd0af6036bfb8e050d144bd417e79f98"
+    }
+  },
+  "mask_strata": {
+    "definition": "popcount(mask) 1-3 / 4-7 / 8-10",
+    "cardinality_counts": {
+      "1": 10,
+      "2": 45,
+      "3": 120,
+      "4": 210,
+      "5": 252,
+      "6": 210,
+      "7": 120,
+      "8": 45,
+      "9": 10,
+      "10": 1
+    },
+    "groups": {
+      "low": 175,
+      "central": 792,
+      "high": 56
+    }
+  },
+  "design": {
+    "forecast": "strict-prior Persistence-1, Mean-20, Mean-40 over full residual vectors; losses summarized within fixed mask-cardinality strata",
+    "loss": "squared error summed within stratum and divided by stratum formula count",
+    "warmup_rows": 40,
+    "scored_targets": 98,
+    "splits": {
+      "discovery": 58,
+      "validation": 20,
+      "blind_oos_exposed": 20
+    },
+    "inference_rows": 40,
+    "primary_comparator": "Mean-20",
+    "secondary_comparator": "Mean-40 (descriptive only)",
+    "practical_relative_gain_required": 0.01,
+    "block_lengths": [
+      5,
+      10,
+      20
+    ],
+    "signflip_replicates": 20000,
+    "bootstrap_replicates": 20000,
+    "holm_family_size": 12,
+    "hypothesis": "high-order mask persistence gains at least 1% relative MSE in both holdouts and exceeds low-order persistence gain"
+  },
+  "split_results": {
+    "discovery": {
+      "targets": 58,
+      "groups": {
+        "low": {
+          "targets": 58,
+          "formula_count": 175,
+          "mse_persistence1": 0.1256645956,
+          "mse_mean20": 0.063930251343,
+          "mse_mean40": 0.06332184576,
+          "gain_vs_mean20": -0.061734344257,
+          "gain_vs_mean40": -0.06234274984,
+          "relative_gain_vs_mean20": -0.96565151803
+        },
+        "central": {
+          "targets": 58,
+          "formula_count": 792,
+          "mse_persistence1": 0.085042666811,
+          "mse_mean20": 0.043047174899,
+          "mse_mean40": 0.042333226196,
+          "gain_vs_mean20": -0.041995491912,
+          "gain_vs_mean40": -0.042709440615,
+          "relative_gain_vs_mean20": -0.975569059062
+        },
+        "high": {
+          "targets": 58,
+          "formula_count": 56,
+          "mse_persistence1": 0.254360484747,
+          "mse_mean20": 0.134783411424,
+          "mse_mean40": 0.13167420781,
+          "gain_vs_mean20": -0.119577073324,
+          "gain_vs_mean40": -0.122686276937,
+          "relative_gain_vs_mean20": -0.887179453767
+        }
+      }
+    },
+    "validation": {
+      "targets": 20,
+      "groups": {
+        "low": {
+          "targets": 20,
+          "formula_count": 175,
+          "mse_persistence1": 0.10299743381,
+          "mse_mean20": 0.055864320465,
+          "mse_mean40": 0.055399346437,
+          "gain_vs_mean20": -0.047133113345,
+          "gain_vs_mean40": -0.047598087374,
+          "relative_gain_vs_mean20": -0.843706912614
+        },
+        "central": {
+          "targets": 20,
+          "formula_count": 792,
+          "mse_persistence1": 0.079663095979,
+          "mse_mean20": 0.04170500027,
+          "mse_mean40": 0.041969927172,
+          "gain_vs_mean20": -0.037958095709,
+          "gain_vs_mean40": -0.037693168807,
+          "relative_gain_vs_mean20": -0.910156946727
+        },
+        "high": {
+          "targets": 20,
+          "formula_count": 56,
+          "mse_persistence1": 0.115037005049,
+          "mse_mean20": 0.063094979041,
+          "mse_mean40": 0.063353853111,
+          "gain_vs_mean20": -0.051942026008,
+          "gain_vs_mean40": -0.051683151938,
+          "relative_gain_vs_mean20": -0.823235490324
+        }
+      }
+    },
+    "blind_oos_exposed": {
+      "targets": 20,
+      "groups": {
+        "low": {
+          "targets": 20,
+          "formula_count": 175,
+          "mse_persistence1": 0.12761894653,
+          "mse_mean20": 0.06456741081,
+          "mse_mean40": 0.063274658829,
+          "gain_vs_mean20": -0.06305153572,
+          "gain_vs_mean40": -0.064344287701,
+          "relative_gain_vs_mean20": -0.976522597531
+        },
+        "central": {
+          "targets": 20,
+          "formula_count": 792,
+          "mse_persistence1": 0.071742947722,
+          "mse_mean20": 0.035716703,
+          "mse_mean40": 0.035544428862,
+          "gain_vs_mean20": -0.036026244722,
+          "gain_vs_mean40": -0.036198518861,
+          "relative_gain_vs_mean20": -1.008666581614
+        },
+        "high": {
+          "targets": 20,
+          "formula_count": 56,
+          "mse_persistence1": 0.300101629243,
+          "mse_mean20": 0.177030159113,
+          "mse_mean40": 0.180227998989,
+          "gain_vs_mean20": -0.12307147013,
+          "gain_vs_mean40": -0.119873630254,
+          "relative_gain_vs_mean20": -0.69520058473
+        }
+      }
+    }
+  },
+  "tests": [
+    {
+      "key": "low_L5",
+      "block_length": 5,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 8,
+      "observed_mean_gain": -0.055092324533,
+      "p_holm": 1
+    },
+    {
+      "key": "low_L10",
+      "block_length": 10,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 4,
+      "observed_mean_gain": -0.055092324533,
+      "p_holm": 1
+    },
+    {
+      "key": "low_L20",
+      "block_length": 20,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 2,
+      "observed_mean_gain": -0.055092324533,
+      "p_holm": 1
+    },
+    {
+      "key": "central_L5",
+      "block_length": 5,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 8,
+      "observed_mean_gain": -0.036992170215,
+      "p_holm": 1
+    },
+    {
+      "key": "central_L10",
+      "block_length": 10,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 4,
+      "observed_mean_gain": -0.036992170215,
+      "p_holm": 1
+    },
+    {
+      "key": "central_L20",
+      "block_length": 20,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 2,
+      "observed_mean_gain": -0.036992170215,
+      "p_holm": 1
+    },
+    {
+      "key": "high_L5",
+      "block_length": 5,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 8,
+      "observed_mean_gain": -0.087506748069,
+      "p_holm": 1
+    },
+    {
+      "key": "high_L10",
+      "block_length": 10,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 4,
+      "observed_mean_gain": -0.087506748069,
+      "p_holm": 1
+    },
+    {
+      "key": "high_L20",
+      "block_length": 20,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 2,
+      "observed_mean_gain": -0.087506748069,
+      "p_holm": 1
+    },
+    {
+      "key": "high_minus_low_L5",
+      "block_length": 5,
+      "p_raw": 0.780710964452,
+      "exceedances": 15614,
+      "blocks": 8,
+      "observed_mean_gain": -0.032414423536,
+      "p_holm": 1
+    },
+    {
+      "key": "high_minus_low_L10",
+      "block_length": 10,
+      "p_raw": 0.753412329384,
+      "exceedances": 15068,
+      "blocks": 4,
+      "observed_mean_gain": -0.032414423536,
+      "p_holm": 1
+    },
+    {
+      "key": "high_minus_low_L20",
+      "block_length": 20,
+      "p_raw": 1,
+      "exceedances": 20000,
+      "blocks": 2,
+      "observed_mean_gain": -0.032414423536,
+      "p_holm": 1
+    }
+  ],
+  "bootstrap_intervals": [
+    {
+      "key": "low_L5",
+      "block_length": 5,
+      "lower95": -0.072979382547,
+      "median": -0.054615742481,
+      "upper95": -0.039398467477
+    },
+    {
+      "key": "low_L10",
+      "block_length": 10,
+      "lower95": -0.072093353512,
+      "median": -0.054552698016,
+      "upper95": -0.041407202209
+    },
+    {
+      "key": "low_L20",
+      "block_length": 20,
+      "lower95": -0.067051883174,
+      "median": -0.055092324533,
+      "upper95": -0.043097445862
+    },
+    {
+      "key": "central_L5",
+      "block_length": 5,
+      "lower95": -0.052076949668,
+      "median": -0.036798356716,
+      "upper95": -0.022799282022
+    },
+    {
+      "key": "central_L10",
+      "block_length": 10,
+      "lower95": -0.044992466592,
+      "median": -0.037319010039,
+      "upper95": -0.027095715608
+    },
+    {
+      "key": "central_L20",
+      "block_length": 20,
+      "lower95": -0.044024072017,
+      "median": -0.036992170215,
+      "upper95": -0.02996129588
+    },
+    {
+      "key": "high_L5",
+      "block_length": 5,
+      "lower95": -0.158731930719,
+      "median": -0.084662020188,
+      "upper95": -0.039576967166
+    },
+    {
+      "key": "high_L10",
+      "block_length": 10,
+      "lower95": -0.156207391747,
+      "median": -0.08611416243,
+      "upper95": -0.044315101187
+    },
+    {
+      "key": "high_L20",
+      "block_length": 20,
+      "lower95": -0.127547221415,
+      "median": -0.087506748069,
+      "upper95": -0.047466274723
+    },
+    {
+      "key": "high_minus_low_L5",
+      "block_length": 5,
+      "lower95": -0.10665742801,
+      "median": -0.029700310016,
+      "upper95": 0.019643087027
+    },
+    {
+      "key": "high_minus_low_L10",
+      "block_length": 10,
+      "lower95": -0.104393400724,
+      "median": -0.030893719832,
+      "upper95": 0.014988890689
+    },
+    {
+      "key": "high_minus_low_L20",
+      "block_length": 20,
+      "lower95": -0.069561683485,
+      "median": -0.032414423536,
+      "upper95": 0.004617173184
+    }
+  ],
+  "integrity": {
+    "parent_a24_replay": {
+      "max_abs_error": 4.987937146649912e-13,
+      "tolerance": 1e-9,
+      "rows_compared": 98
+    },
+    "mask_basis_orthogonality_error": 1.965094753586527e-14,
+    "all_rows_q75_high_state": true,
+    "all_cutoffs_strict_prior": true
+  },
+  "decision": {
+    "result": "NO_MASK_CARDINALITY_PERSISTENCE_LIFT_DEMONSTRATED",
+    "accepted": false,
+    "high_order_practical_pass": false,
+    "high_order_inferential_and_contrast_pass": false,
+    "production_promotion": false
+  },
+  "limitations": [
+    "This is a post-hoc decomposition because the A24 panel and outcomes were already exposed.",
+    "All 138 source rows are Q75-high-state; no inference is made about low-state periods.",
+    "The 40-row pooled Validation plus exposed Blind OOS panel is small and temporally dependent.",
+    "Mask cardinality is a combinatorial complexity stratum, not a semantic AST family or a set of independent formula observations.",
+    "The final 20-target historical Blind OOS was visible in A21-A24 and is not virgin confirmation.",
+    "The endpoint is formula-rank residual-vector MSE, not winning-number accuracy, exact-ticket probability, or monetary return.",
+    "Holm correction covers the 12 registered A25 endpoints only, not the full Q00-Q141 research family."
+  ],
+  "next_action": "Stop adding persistence variants if no stratum passes. Continue the common-source typed-AST evaluator with identical strict-prior cutoffs and separate per-number and quintet endpoints; keep prospective freezes append-only."
+}
