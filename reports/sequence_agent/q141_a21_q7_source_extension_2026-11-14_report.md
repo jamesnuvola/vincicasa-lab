@@ -53,3 +53,5 @@ Keep A21 research-only. After the official 2026-11-14 result is added to the can
 
 
 Dedicated CI: focused tests passed; report, rank extension, target ledger and freeze replayed byte-identically.
+
+Finalization addendum: the manifest was recomputed after branch synchronization; no numerical result or freeze value changed.
