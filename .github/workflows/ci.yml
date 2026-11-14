@@ -49,5 +49,11 @@ jobs:
         run: |
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
           python scripts/sonar_position_regime_residual_lab.py
+      - name: Verify Q141-A23 multivariate conditional block-null replay
+        run: |
+          node --check scripts/sonar_q141_a23_multivariate_conditional_block_null.mjs
+          node tests/test_sonar_q141_a23_multivariate_conditional_block_null.mjs
+          node scripts/sonar_q141_a23_multivariate_conditional_block_null.mjs --verify
+
       - name: Build web application
         run: npm install && npm run build
