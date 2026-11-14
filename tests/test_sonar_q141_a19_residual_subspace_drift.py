@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 
 from sonar_q141_a19_residual_subspace_drift import (
-    build_projection, compute_drift_capture, drift_at, predict_one,
+    build_projection, build_residual_complement, compute_drift_capture, drift_at, predict_one,
     rolling_predictions, block_signflip_p, split_ranges, verify_future_invariance,
 )
 
@@ -14,6 +14,19 @@ class Q141A19Tests(unittest.TestCase):
         self.assertLess(ea, 1e-11)
         self.assertLess(eb, 1e-11)
         np.testing.assert_allclose(a.T @ a, np.eye(12), atol=1e-11)
+
+    def test_residual_complement_is_orthonormal_and_reconstructs_residuals(self):
+        rng = np.random.default_rng(1911)
+        q, _ = np.linalg.qr(rng.normal(size=(30, 5)), mode="reduced")
+        complement, cross_error, orth_error = build_residual_complement(q)
+        self.assertEqual(complement.shape, (30, 25))
+        self.assertLess(cross_error, 1e-11)
+        self.assertLess(orth_error, 1e-11)
+        x = rng.normal(size=(8, 30))
+        residual = x - (x @ q) @ q.T
+        coordinates = residual @ complement
+        reconstructed = coordinates @ complement.T
+        np.testing.assert_allclose(reconstructed, residual, atol=1e-11)
 
     def test_projection_rejects_invalid_dimensions(self):
         with self.assertRaises(ValueError):
