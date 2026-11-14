@@ -27,7 +27,6 @@ jobs:
       Q7_HEAD: 7a37cab601c5f9386131a00246963f8e4aeabf74
       MAIN_SOURCE_COMMIT: 0a376c60dc4c33761d3807d59aebf90d3026980a
       RESEARCH_BRANCH: research/q141-a21-q7-source-extension-20261114
-      FREEZE_AT: 2026-11-14T04:46:04+01:00
       OPENBLAS_NUM_THREADS: "1"
       OMP_NUM_THREADS: "1"
       MKL_NUM_THREADS: "1"
@@ -110,6 +109,12 @@ jobs:
         run: |
           python scripts/sonar_exhaustive_walkforward.py --start-index 3387 --count 20
           test -s reports/sequence_agent/exhaustive_formula_walkforward/part_3387_3407.csv
+
+      - name: Capture actual pre-target freeze timestamp
+        run: |
+          freeze_at="$(TZ=Europe/Rome date --iso-8601=seconds)"
+          echo "FREEZE_AT=$freeze_at" >> "$GITHUB_ENV"
+          echo "A21 pre-target freeze timestamp: $freeze_at"
 
       - name: Build append-only residual extension and freeze 14 November monitor
         env:
@@ -225,6 +230,8 @@ jobs:
           rm -rf q7-source
           rm -f scripts/sonar_exhaustive_formula_lab.py scripts/sonar_exhaustive_walkforward.py
           rm -f reports/sequence_agent/exhaustive_formula_walkforward/part_3387_3407.csv
+          git fetch origin "$RESEARCH_BRANCH:refs/remotes/origin/$RESEARCH_BRANCH"
+          git merge --ff-only "origin/$RESEARCH_BRANCH"
           git config user.name "sonar-research-agent"
           git config user.email "actions@users.noreply.github.com"
           git add reports/sequence_agent/q141_a21_q7_source_extension_2026-11-14_*
