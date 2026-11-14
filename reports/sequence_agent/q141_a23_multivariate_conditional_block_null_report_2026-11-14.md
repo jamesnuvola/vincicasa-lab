@@ -6,7 +6,7 @@
 ## Result
 
 - Observed energy distance: **0.669682**
-- Observed mean-shift RMS: **0.063588**
+- Observed mean-shift RMS: **0.065404**
 - Full-vector moving-block null: 20,000 replicates at each block length 5, 10 and 20; six tests corrected together by Holm.
 
 | Block | Energy null median | Energy null q95 | Energy p raw | Energy p Holm | Mean-shift p raw | Mean-shift p Holm |
