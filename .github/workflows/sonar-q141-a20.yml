@@ -1,0 +1,103 @@
+name: SONAR Q141-A20 Drift Quantile-State Audit
+
+on:
+  push:
+    branches: ["research/q141-a20-drift-quantile-state-20261114"]
+    paths:
+      - "scripts/sonar_q141_a20_drift_quantile_state.py"
+      - "tests/test_sonar_q141_a20_drift_quantile_state.py"
+      - "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_protocol.md"
+      - ".github/workflows/sonar-q141-a20.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sonar-q141-a20-drift-quantile-state
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: research/q141-a20-drift-quantile-state-20261114
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run focused unit tests
+        run: python -m unittest discover -s tests -p "test_sonar_q141_a20_drift_quantile_state.py" -v
+
+      - name: Build registered walk-forward audit
+        run: python scripts/sonar_q141_a20_drift_quantile_state.py --out-dir reports/sequence_agent
+
+      - name: Independent deterministic replay
+        run: |
+          python scripts/sonar_q141_a20_drift_quantile_state.py --out-dir /tmp/q141-a20-replay
+          for suffix in report.json report.md target_ledger.csv checkpoint.json manifest.json; do
+            cmp "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_$suffix" "/tmp/q141-a20-replay/q141_a20_drift_quantile_state_2026-11-14_$suffix"
+          done
+          echo "Q141-A20 replay is byte-identical."
+
+      - name: Persist report and checkpoint
+        env:
+          RESEARCH_BRANCH: research/q141-a20-drift-quantile-state-20261114
+        run: |
+          git config user.name "sonar-research-agent"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_*
+          git commit -m "Q141-A20: persist drift quantile-state audit"
+          git push origin "HEAD:$RESEARCH_BRANCH"
+
+      - name: Verify remote Git readback
+        env:
+          RESEARCH_BRANCH: research/q141-a20-drift-quantile-state-20261114
+        run: |
+          git fetch origin "$RESEARCH_BRANCH"
+          for path in \
+            reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_report.json \
+            reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_report.md \
+            reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_target_ledger.csv \
+            reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_checkpoint.json \
+            reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_manifest.json; do
+            local_sha="$(git rev-parse "HEAD:$path")"
+            remote_sha="$(git rev-parse "origin/$RESEARCH_BRANCH:$path")"
+            test "$local_sha" = "$remote_sha"
+            echo "READBACK_OK $path $remote_sha"
+          done
+          python - <<'PY'
+          import json, subprocess
+          paths = [
+              "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_report.json",
+              "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_report.md",
+              "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_target_ledger.csv",
+              "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_checkpoint.json",
+              "reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_manifest.json",
+          ]
+          receipt = {
+              "experiment_id": "Q141-A20",
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "replay": "BYTE_IDENTICAL",
+              "unit_tests": "PASS",
+              "remote_branch": "research/q141-a20-drift-quantile-state-20261114",
+              "files": {p: subprocess.check_output(["git", "rev-parse", "origin/research/q141-a20-drift-quantile-state-20261114:" + p], text=True).strip() for p in paths},
+          }
+          with open("reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_readback_receipt.json", "w", encoding="utf-8") as handle:
+              json.dump(receipt, handle, sort_keys=True, indent=2)
+              handle.write("\n")
+          PY
+          git add reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_readback_receipt.json
+          git commit -m "Q141-A20: record verified remote readback"
+          git push origin "HEAD:$RESEARCH_BRANCH"
+          git fetch origin "$RESEARCH_BRANCH"
+          local_receipt="$(git rev-parse HEAD:reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_readback_receipt.json)"
+          remote_receipt="$(git rev-parse origin/$RESEARCH_BRANCH:reports/sequence_agent/q141_a20_drift_quantile_state_2026-11-14_readback_receipt.json)"
+          test "$local_receipt" = "$remote_receipt"
+          echo "Q141-A20 remote readback receipt verified: $remote_receipt"
