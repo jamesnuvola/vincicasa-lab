@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "task_id": "Q91",
-  "status": "VALIDATED_PENDING_HUMAN_REVIEW",
+  "status": "ARTIFACT_READBACK_VERIFIED_PENDING_EXACT_HEAD_CI_HUMAN_REVIEW",
   "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
   "archive": {
     "path": "data/storico_daily.csv",
@@ -67,7 +67,8 @@
     "target_ledger": "reports/sequence_agent/q91_target_ledger.csv",
     "selection_report": "reports/sequence_agent/q91_formula_selection_report.json",
     "report": "reports/sequence_agent/q91_nested_formula_walkforward.json",
-    "checkpoint": "reports/sequence_agent/q91_checkpoint_2026-11-04.json"
+    "checkpoint": "reports/sequence_agent/q91_checkpoint_2026-11-04.json",
+    "external_artifact_readback_receipt": "reports/sequence_agent/q91_external_artifact_readback_2026-11-14.json"
   },
   "guardrails": [
     "Q80 features are strict-prior at every target",
@@ -79,9 +80,9 @@
     "no formula or policy is automatically promoted"
   ],
   "pending": [
-    "acceptance validator and exact output persistence/readback",
-    "current-head CI and human review/integration",
-    "interpret selected policy validation/blind results; do not promote if null"
+    "current-head CI on the post-readback report/checkpoint commit",
+    "human review and integration",
+    "selected EXPANDING_TOP5 validation/blind results are below the uniform Top5 reference; do not promote"
   ],
   "acceptance": {
     "validator": "Q91_FORMULA_ACCEPTANCE_PASS",
@@ -89,10 +90,28 @@
     "source_merge_or_dispatch_sha": "1de9d15c3584be8fd10a01bf3ad7e7ffde5b3794",
     "exact_research_branch_head_sha": "d7cec9c167ce813a300d88d09710eaeb831fc7e2",
     "artifact_retention_days": 90,
-    "artifact_readback": "PENDING_EXACT_GIT_OBJECT_READBACK",
+    "artifact_readback": "PASS_FOR_39_COMPUTATION_PAYLOAD_GIT_OBJECTS",
     "current_head_ci": "PENDING",
     "human_review": "PENDING_HUMAN_REVIEW_INTEGRATION",
-    "persisted_parent_head_sha": "d7cec9c167ce813a300d88d09710eaeb831fc7e2",
-    "persist_workflow_run_id": 42256671154
+    "persisted_parent_head_sha": "3934bb67b607515df616e2b280b9488cd2a5a99a",
+    "persist_workflow_run_id": 42256671154,
+    "artifact_readback_receipt": "reports/sequence_agent/q91_external_artifact_readback_2026-11-14.json",
+    "artifact_readback_receipt_blob_sha1": "8fa8f12969d0de77c177408b931ccb903b9ade4c",
+    "artifact_readback_artifact_id": 13522588075,
+    "artifact_readback_artifact_sha256": "19ae830a1e50215ead93353ee0b71c692d65a4b647631aa9172fd8bf278df581",
+    "artifact_readback_exact_score_parts": 34,
+    "artifact_readback_exact_core_outputs": 5,
+    "readback_verified_against_head_sha": "3934bb67b607515df616e2b280b9488cd2a5a99a"
+  },
+  "interpretation": {
+    "selected_policy": "EXPANDING_TOP5",
+    "validation_top5_share": 0.115821,
+    "validation_uniform_top5_share": 0.125,
+    "blind_oos_top5_share": 0.118087,
+    "blind_oos_uniform_top5_share": 0.125,
+    "validation_mean_actual_rank": 20.863582,
+    "blind_oos_mean_actual_rank": 20.641854,
+    "holm_max_endpoint_family_all_policies_splits": 1,
+    "promotion": "NOT_ALLOWED_NO_HOLDOUT_ADVANTAGE"
   }
 }
