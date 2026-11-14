@@ -39,6 +39,6 @@ class A26Tests(unittest.TestCase):
   self.assertEqual(before,after)
  def test_strict_prior_rejects_gap(self):
   rows=[{"ix":str(i)} for i in [0,1,3,4,5]]
-  with self.assertRaises(RuntimeError):strict_prior_window(rows,[0,1,3,4,5],6,3,"ix")
+  with self.assertRaises(RuntimeError):strict_prior_window(rows,[0,1,3,4,5],6,4,"ix")
 
 if __name__=="__main__":unittest.main()

@@ -176,6 +176,7 @@ def audit_asts(root,qm,q7m):
  "interpretation":"Coarse concept signatures are ontology-level relatedness only, not mathematical/function equivalence; per_number_score and quintet_score remain separate."}
 
 def strict_prior_window(rows,keys,target,window,key):
+ if keys!=sorted(keys) or len(set(keys))!=len(keys):raise RuntimeError("strict-prior keys not strictly increasing")
  idx=bisect.bisect_left(keys,target);prior=rows[max(0,idx-window):idx]
  if len(prior)!=window or [int(r[key]) for r in prior]!=list(range(target-window,target)):raise RuntimeError("strict-prior window gap/current/future")
  return prior
