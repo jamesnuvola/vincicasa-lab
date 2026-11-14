@@ -5,7 +5,6 @@ on:
     branches:
       - research/q141-a24-prequential-residual-vector-20261114
   pull_request:
-    branches: [main]
     paths:
       - "scripts/sonar_q141_a24_prequential_residual_vector.mjs"
       - "tests/test_sonar_q141_a24_prequential_residual_vector.mjs"
@@ -28,15 +27,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Generate deterministic A24 outputs on branch push
-        if: github.event_name == 'push'
+      - name: Generate deterministic A24 outputs
         run: node scripts/sonar_q141_a24_prequential_residual_vector.mjs --write
       - name: Run A24 leakage and reproducibility tests
         run: node tests/test_sonar_q141_a24_prequential_residual_vector.mjs
       - name: Verify deterministic A24 replay
         run: node scripts/sonar_q141_a24_prequential_residual_vector.mjs --verify
       - name: Persist generated A24 report and ledger
-        if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
