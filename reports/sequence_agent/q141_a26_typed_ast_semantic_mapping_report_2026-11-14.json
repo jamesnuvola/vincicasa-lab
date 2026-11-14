@@ -1,0 +1,491 @@
+{
+  "c5_replay_parity": {
+    "checks": 24,
+    "max_absolute_error": 4.673345044281518e-15,
+    "passed": true
+  },
+  "date": "2026-11-14",
+  "decision": "NO_SEMANTIC_OPERATOR_SUBGROUP_INCREMENTAL_LIFT_DEMONSTRATED",
+  "estimand": "Next-target mean percentile over 1,023 Q7 quintet_score formulas; not winning-number or ticket prediction.",
+  "governance": {
+    "no_archive_mutation": true,
+    "no_engine_promotion": true,
+    "no_merge": true,
+    "no_shadow_insertion": true,
+    "protected_prs_untouched": [
+      6,
+      7,
+      8
+    ],
+    "research_only": true
+  },
+  "hypothesis": "At least one Q90 AST operator subgroup improves Q7+Q80 baseline by at least 0.005 MAE in exposed historical Blind OOS, with positive block CI and Holm p<0.05.",
+  "limitations": [
+    "Historical Blind OOS was exposed; exploratory only.",
+    "Q90 behaviour ledger is a fixed 700-formula sample, not all 330,429 ASTs.",
+    "Q90 selected 20 of 59 features.",
+    "Q7/Q90 cutoffs differ; only 3,286 aligned targets are used.",
+    "per_number_score and quintet_score are different output types; semantic links are not equivalences.",
+    "Endpoint is Q7 formula-universe rank quality, not winning-number accuracy.",
+    "Holm covers two A26 endpoints only."
+  ],
+  "m3_full_q90_reproduction_control": {
+    "ci95_moving_block_descriptive": [
+      -0.0010791329637201634,
+      0.0008261753431904189
+    ],
+    "mae_gain_vs_m0": -0.00012837953957368006
+  },
+  "metrics_by_split": {
+    "blind_oos": {
+      "m0_q7_q80_baseline": {
+        "mae": 0.20523005726285215,
+        "mean_prediction_error": 0.010177316312280891,
+        "pearson_correlation": -0.026718964244946557,
+        "rmse": 0.24060754261862535,
+        "targets": 657
+      },
+      "models": {
+        "m1_linear": {
+          "mae": 0.20514133519036862,
+          "mae_gain_vs_m0": 8.872207248353248e-05,
+          "mean_prediction_error": 0.010322814386326037,
+          "pearson_correlation": -0.0416609209031363,
+          "rmse": 0.24149013744607406,
+          "rmse_gain_vs_m0": -0.0008825948274487072,
+          "targets": 657
+        },
+        "m2_nonlinear": {
+          "mae": 0.20489969626753338,
+          "mae_gain_vs_m0": 0.0003303609953187736,
+          "mean_prediction_error": 0.0115387880555212,
+          "pearson_correlation": 0.022519573643994303,
+          "rmse": 0.2402677977311839,
+          "rmse_gain_vs_m0": 0.0003397448874414566,
+          "targets": 657
+        },
+        "m3_all_q90": {
+          "mae": 0.20535843680242583,
+          "mae_gain_vs_m0": -0.00012837953957367532,
+          "mean_prediction_error": 0.011597838496691978,
+          "pearson_correlation": -0.048794675849063156,
+          "rmse": 0.24152995837379995,
+          "rmse_gain_vs_m0": -0.0009224157551745993,
+          "targets": 657
+        }
+      },
+      "targets": 657
+    },
+    "discovery": {
+      "m0_q7_q80_baseline": {
+        "mae": 0.20390802590495904,
+        "mean_prediction_error": -0.006624720339037058,
+        "pearson_correlation": -0.015835573431571687,
+        "rmse": 0.23960517369555845,
+        "targets": 1872
+      },
+      "models": {
+        "m1_linear": {
+          "mae": 0.20472981976380455,
+          "mae_gain_vs_m0": -0.0008217938588455098,
+          "mean_prediction_error": -0.004768033487820605,
+          "pearson_correlation": 0.0036419380063333505,
+          "rmse": 0.24078537118444654,
+          "rmse_gain_vs_m0": -0.0011801974888880906,
+          "targets": 1872
+        },
+        "m2_nonlinear": {
+          "mae": 0.20511433505097923,
+          "mae_gain_vs_m0": -0.0012063091460201847,
+          "mean_prediction_error": -0.004576340415069359,
+          "pearson_correlation": -0.020996559734302676,
+          "rmse": 0.24091318624096483,
+          "rmse_gain_vs_m0": -0.001308012545406384,
+          "targets": 1872
+        },
+        "m3_all_q90": {
+          "mae": 0.20476307027781804,
+          "mae_gain_vs_m0": -0.0008550443728589929,
+          "mean_prediction_error": -0.004862298244858267,
+          "pearson_correlation": 0.006658505605375824,
+          "rmse": 0.24071590231502538,
+          "rmse_gain_vs_m0": -0.0011107286194669275,
+          "targets": 1872
+        }
+      },
+      "targets": 1872
+    },
+    "validation": {
+      "m0_q7_q80_baseline": {
+        "mae": 0.20225942744631742,
+        "mean_prediction_error": 0.004633596317570855,
+        "pearson_correlation": 0.0016980068476055016,
+        "rmse": 0.23960800331362436,
+        "targets": 657
+      },
+      "models": {
+        "m1_linear": {
+          "mae": 0.20323649193275356,
+          "mae_gain_vs_m0": -0.000977064486436141,
+          "mean_prediction_error": 0.011859943358022857,
+          "pearson_correlation": -0.038552675720728846,
+          "rmse": 0.2411521553506285,
+          "rmse_gain_vs_m0": -0.0015441520370041428,
+          "targets": 657
+        },
+        "m2_nonlinear": {
+          "mae": 0.2033285307538067,
+          "mae_gain_vs_m0": -0.001069103307489272,
+          "mean_prediction_error": 0.008779137693523063,
+          "pearson_correlation": -0.07747892591073562,
+          "rmse": 0.24100984786358987,
+          "rmse_gain_vs_m0": -0.001401844549965503,
+          "targets": 657
+        },
+        "m3_all_q90": {
+          "mae": 0.20354959258055033,
+          "mae_gain_vs_m0": -0.0012901651342329123,
+          "mean_prediction_error": 0.013752708932416712,
+          "pearson_correlation": -0.05051701342742436,
+          "rmse": 0.24145025212121757,
+          "rmse_gain_vs_m0": -0.0018422488075932053,
+          "targets": 657
+        }
+      },
+      "targets": 657
+    }
+  },
+  "multiplicity": {
+    "block_length": 20,
+    "global_q00_q141_correction": "not covered",
+    "method": "Holm-Bonferroni",
+    "primary_tests": 2,
+    "replicates": 20000,
+    "seed": 14120261114
+  },
+  "primary_blind_tests": [
+    {
+      "ci95_moving_block": [
+        -0.0009449604551278034,
+        0.0010847737018362818
+      ],
+      "mae_gain": 8.872207248353746e-05,
+      "model": "m1_linear",
+      "p_holm_two_tests": 0.43932803359832007,
+      "p_raw": 0.43932803359832007,
+      "passes_full_gate": false,
+      "passes_practical": false,
+      "passes_statistical": false,
+      "targets": 657
+    },
+    {
+      "ci95_moving_block": [
+        -0.0005462771899202433,
+        0.001188184567377291
+      ],
+      "mae_gain": 0.00033036099531878825,
+      "model": "m2_nonlinear",
+      "p_holm_two_tests": 0.41097945102744865,
+      "p_raw": 0.20548972551372433,
+      "passes_full_gate": false,
+      "passes_practical": false,
+      "passes_statistical": false,
+      "targets": 657
+    }
+  ],
+  "schema_version": "1.0",
+  "semantic_audit": {
+    "cross_output_exact_equivalence_allowed": false,
+    "cross_output_raw_ast_matches": 0,
+    "interpretation": "Coarse concept signatures are ontology-level relatedness only, not mathematical/function equivalence; per_number_score and quintet_score remain separate.",
+    "q7_duplicate_ast_count": 0,
+    "q7_family_shared_coverage": 0.8,
+    "q7_feature_reference_counts": {
+      "decade_profile": 512,
+      "exact_quintet_recurrence": 512,
+      "gap_pattern": 512,
+      "number_frequency": 512,
+      "odd_count": 512,
+      "pair_interaction": 512,
+      "quadruple_interaction": 512,
+      "sorted_position_frequency": 512,
+      "sum_distribution": 512,
+      "triple_interaction": 512
+    },
+    "q7_formula_count": 1023,
+    "q7_formulas_with_shared_concept": 1020,
+    "q7_only_concepts": [
+      "decade_composition",
+      "parity"
+    ],
+    "q7_shared_concept_formula_fraction": 0.9970674486803519,
+    "q7_unique_ast_ids": 1023,
+    "q7_unique_coarse_signatures": 127,
+    "q90_best_jaccard_to_q7_signature": {
+      "mean": 0.6595373345098702,
+      "median": 0.6666666666666666,
+      "p90": 0.8
+    },
+    "q90_duplicate_ast_count": 0,
+    "q90_feature_reference_counts": {
+      "conditional_frequency_prev_draw_regime": 107559,
+      "cooccurrence_surprise_recent": 107559,
+      "ewma_acceleration_3_14": 107559,
+      "ewma_acceleration_7_30": 107559,
+      "ewma_hit_hl_3": 107559,
+      "feature_disagreement_27": 107559,
+      "gap_hazard_empirical": 107559,
+      "gap_hazard_residual": 107559,
+      "gap_slope_recent": 107559,
+      "lag_10": 107559,
+      "lag_2": 107559,
+      "neighbor_balance_pm1_recent": 107559,
+      "neighbor_balance_pm2_recent": 107559,
+      "neighbor_pm2_history": 107559,
+      "novelty_residual_20": 107559,
+      "novelty_residual_50": 107559,
+      "rank_consensus_27": 107559,
+      "rank_velocity_5_20": 107559,
+      "regime_sum_affinity": 107559,
+      "transition_profile_affinity": 107559
+    },
+    "q90_feature_shared_coverage": 0.7,
+    "q90_formula_count": 330429,
+    "q90_formulas_with_coarse_signature_match": 26455,
+    "q90_formulas_with_shared_concept": 330197,
+    "q90_only_concepts": [
+      "neighbourhood",
+      "novelty",
+      "transition"
+    ],
+    "q90_operator_counts": {
+      "conditional_gate": 38760,
+      "linear_mean": 262599,
+      "pairwise_interaction": 29070
+    },
+    "q90_shared_concept_formula_fraction": 0.999297882449785,
+    "q90_unique_ast_ids": 330429,
+    "q90_unique_coarse_signatures": 241,
+    "shared_concepts": [
+      "cooccurrence",
+      "gap_structure",
+      "number_occurrence",
+      "position_rank",
+      "sum_regime"
+    ]
+  },
+  "semantic_mapping": {
+    "q7_family_to_concept": {
+      "decade_profile": "decade_composition",
+      "exact_quintet_recurrence": "cooccurrence",
+      "gap_pattern": "gap_structure",
+      "number_frequency": "number_occurrence",
+      "odd_count": "parity",
+      "pair_interaction": "cooccurrence",
+      "quadruple_interaction": "cooccurrence",
+      "sorted_position_frequency": "position_rank",
+      "sum_distribution": "sum_regime",
+      "triple_interaction": "cooccurrence"
+    },
+    "q90_feature_to_concept": {
+      "conditional_frequency_prev_draw_regime": "number_occurrence",
+      "cooccurrence_surprise_recent": "cooccurrence",
+      "ewma_acceleration_3_14": "number_occurrence",
+      "ewma_acceleration_7_30": "number_occurrence",
+      "ewma_hit_hl_3": "number_occurrence",
+      "feature_disagreement_27": "position_rank",
+      "gap_hazard_empirical": "gap_structure",
+      "gap_hazard_residual": "gap_structure",
+      "gap_slope_recent": "gap_structure",
+      "lag_10": "number_occurrence",
+      "lag_2": "number_occurrence",
+      "neighbor_balance_pm1_recent": "neighbourhood",
+      "neighbor_balance_pm2_recent": "neighbourhood",
+      "neighbor_pm2_history": "neighbourhood",
+      "novelty_residual_20": "novelty",
+      "novelty_residual_50": "novelty",
+      "rank_consensus_27": "position_rank",
+      "rank_velocity_5_20": "position_rank",
+      "regime_sum_affinity": "sum_regime",
+      "transition_profile_affinity": "transition"
+    },
+    "relation": "RELATED_NOT_EQUIVALENT",
+    "shared_concepts": [
+      "cooccurrence",
+      "gap_structure",
+      "number_occurrence",
+      "position_rank",
+      "sum_regime"
+    ]
+  },
+  "source": {
+    "aligned_targets": 3286,
+    "branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+    "commit": "6bc727a46c65fecceff3410a7a635e42c62b4af5",
+    "files": [
+      {
+        "bytes": 5096,
+        "git_blob_sha1": "f1543a7e27d290c683386ec08a6a3adb9d2ff77a",
+        "path": "reports/sequence_agent/q90_typed_ast_import_manifest_2026-11-12.json",
+        "sha256": "fa2f6441634d878db1885d04cd2da23bc4761d14e3531f27c28c9ec8323865cd"
+      },
+      {
+        "bytes": 8987,
+        "git_blob_sha1": "5c33823615852eac3a7821dca2851e54347599e5",
+        "path": "reports/sequence_agent/q90_typed_ast_import_report_2026-11-12.json",
+        "sha256": "d570fea75535d90ec52de4abca07ec531a33d46c3be2c273b6be21946d42e0c9"
+      },
+      {
+        "bytes": 2038,
+        "git_blob_sha1": "5dbb328ad58f46a7a993f1416f90dff3fb98e917",
+        "path": "reports/sequence_agent/q7_typed_ast_import_report_2026-11-12.json",
+        "sha256": "4fd709840b5ee752f233451e3d1f584827aae33e307b91176523182f436d65ef"
+      },
+      {
+        "bytes": 2649,
+        "git_blob_sha1": "acd4bd6f42458626e422718c6f80a65a5aa76eb5",
+        "path": "reports/sequence_agent/q141_q7_ast_complexity_manifest_2026-11-12.json",
+        "sha256": "1729de7e4bf8e83db8bcb13c8d3e4668351694769bb6b6ec41d1fa2ed4365de3"
+      },
+      {
+        "bytes": 19132,
+        "git_blob_sha1": "56c0ce3420e5ac04b6ba279adf665c587d23fee4",
+        "path": "reports/sequence_agent/q7_formula_complexity_walkforward_report_2026-11-12.json",
+        "sha256": "6029ff4c7cf1fcd5a43f7bbeeeae214c3a237c32a27e60adbfc26497bc15d542"
+      },
+      {
+        "bytes": 685854,
+        "git_blob_sha1": "025fcfa99dc54913fc9b6660aef172bc7cc3ef96",
+        "path": "reports/sequence_agent/q7_formula_complexity_walkforward_target_ledger_2026-11-12.csv",
+        "sha256": "828e4fae76795264f15eb7d2c951848c643c7a446eceedf4e887a85120ca8059"
+      },
+      {
+        "bytes": 37471,
+        "git_blob_sha1": "407be84fd8573fe7a12557dbca7b92990e3d04ab",
+        "path": "reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json",
+        "sha256": "90fcb3efb91bdfbf0f75751b4cc81eccc9c169c1f3c9c030f7b9de13a69ac3ee"
+      },
+      {
+        "bytes": 1066,
+        "git_blob_sha1": "0c46d78b383e236ee3d40ce22e1e55651333c81e",
+        "path": "reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json",
+        "sha256": "fda53f5427d0e101250c5b59b11e93d4c1ee0919054f32202ddd7cc972b0dded"
+      },
+      {
+        "bytes": 766683,
+        "git_blob_sha1": "4620ac88199256d90bf8e11a852206bfeb817812",
+        "path": "reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv",
+        "sha256": "96ba8b0ab3c5eddeec67a5b1a0bde4c6864a1c7597278cba27097aa8b11efc56"
+      },
+      {
+        "bytes": 10122,
+        "git_blob_sha1": "5723a98ba70d194255667d0ad0ea5202d0c45fbf",
+        "path": "reports/sequence_agent/q141_q90_family_persistence_report_2026-11-12.json",
+        "sha256": "4c095982aea1e278c1e72aea643f72de80006256a2f3c36a892e5f79228ee1ec"
+      },
+      {
+        "bytes": 575,
+        "git_blob_sha1": "ba15f7cbde17b94cc699cd4e8a690748e0ac1884",
+        "path": "reports/sequence_agent/q141_q90_family_persistence_manifest_2026-11-12.json",
+        "sha256": "4714958a8e62af799619898d2b619cf8bc3bb3c032b6059a29950806cfbf13d7"
+      },
+      {
+        "bytes": 803659,
+        "git_blob_sha1": "10d16cc343250ef7e0c4b74864871407b93185da",
+        "path": "reports/sequence_agent/q141_q90_family_persistence_target_ledger_2026-11-12.csv",
+        "sha256": "ff72c817f74b54036176d99abbcd2e3cc58bd9df443a690158f9dbe63bb7e6e1"
+      },
+      {
+        "bytes": 19996,
+        "git_blob_sha1": "606faf9368660ff8bc680a3dc30baaf6cc2f34bd",
+        "path": "reports/sequence_agent/q141_q90_to_q7_transfer_report_2026-11-12.json",
+        "sha256": "f84e9cde36f9a2ea2339237c8fa4b8a4700c303ec05280724dcac52e758f0e6c"
+      },
+      {
+        "bytes": 36050,
+        "git_blob_sha1": "97417f1b48f456900c95dc7c490a3c179ca076a7",
+        "path": "scripts/sonar_q141_q90_to_q7_transfer.py",
+        "sha256": "8e9731a6f84148e14a5297fe2af682c616e9e9be3bfacb1b1d68a9a84e72e43f"
+      },
+      {
+        "bytes": 69097,
+        "git_blob_sha1": "a9418c193f410db31fdbbf23cf0e4d178799c264",
+        "path": "reports/sequence_agent/q7_typed_ast_catalog_part_00.jsonl.gz",
+        "sha256": "bc82a69c579a58184cd4b9e1a10d62dd4a8367a8a59c0333081a24f2bd1ddc49"
+      },
+      {
+        "bytes": 2992420,
+        "git_blob_sha1": "2c6a51df5d029015fa7b95e80606037ee9e50fc4",
+        "path": "reports/sequence_agent/q90_typed_ast_catalog_part_00.jsonl.gz",
+        "sha256": "471f8bcd11e443a331bb1de16edc22c51dbba2dee4b081ed0ca7fccf07292056"
+      },
+      {
+        "bytes": 2979527,
+        "git_blob_sha1": "224130ce087664117a8c521a92a1f1d0112a304b",
+        "path": "reports/sequence_agent/q90_typed_ast_catalog_part_01.jsonl.gz",
+        "sha256": "66ee97b8c2c93b76600caa8d29cde9e671a23156d28bb7be1037bab2fa359c95"
+      },
+      {
+        "bytes": 3015800,
+        "git_blob_sha1": "51f940b4b3a37177a2df91b407897a886bd174cf",
+        "path": "reports/sequence_agent/q90_typed_ast_catalog_part_02.jsonl.gz",
+        "sha256": "cd5effa76d12e75d75f372a7d304c56027481897d12e0c9962b2349ffd2021ca"
+      },
+      {
+        "bytes": 3080997,
+        "git_blob_sha1": "ab763fbeee490b3fae073125f25a372696508a49",
+        "path": "reports/sequence_agent/q90_typed_ast_catalog_part_03.jsonl.gz",
+        "sha256": "ec81a0d15d47b295ae48271819d4d7feded3c78830e13c8906d3377deb893706"
+      },
+      {
+        "bytes": 3082498,
+        "git_blob_sha1": "2561c7e8bf0b8b4a4b73c2bb684ae6fbc8742764",
+        "path": "reports/sequence_agent/q90_typed_ast_catalog_part_04.jsonl.gz",
+        "sha256": "2a7cb81a416be6f0911bb33b5edcfdc39b0e9be00ca81aae74c6397b5f4d6121"
+      },
+      {
+        "bytes": 2911552,
+        "git_blob_sha1": "2f4a07db443122d169a14896311e5f5ade6859ba",
+        "path": "reports/sequence_agent/q90_typed_ast_catalog_part_05.jsonl.gz",
+        "sha256": "f29fd394ae53574faa29e4f906f47a791feda909ee4fe2ffb75df1323ba70c4f"
+      },
+      {
+        "bytes": 1681144,
+        "git_blob_sha1": "74a324274f0f0065989b951b1eda5d8be1168db1",
+        "path": "reports/sequence_agent/q90_typed_ast_catalog_part_06.jsonl.gz",
+        "sha256": "8961f63b5eed4355ee9c2e63a7824dc49dcc53e39c2594bb0549961bb7d4aaf3"
+      }
+    ],
+    "q141_archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_archive_git_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_ast_count": 1023,
+    "q7_cutoff": "2026-10-24",
+    "q90_archive_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "q90_behaviour_sample_count": 700,
+    "q90_cutoff": "2026-11-07",
+    "q90_full_ast_count": 330429
+  },
+  "status": "COMPUTED_REPLAY_VERIFIED",
+  "task_id": "Q141-A26",
+  "walkforward": {
+    "discovery_expanding_prequential": true,
+    "feature_window": 50,
+    "forecast_rows": 3186,
+    "ridge_alpha": 1.0,
+    "source_rows": 3286,
+    "split_forecasts": {
+      "blind_oos": 657,
+      "discovery": 1872,
+      "validation": 657
+    },
+    "split_source_rows": {
+      "blind_oos": 657,
+      "discovery": 1972,
+      "validation": 657
+    },
+    "strict_prior": true,
+    "validation_blind_coefficients_frozen": true,
+    "warmup_rows": 100
+  }
+}
