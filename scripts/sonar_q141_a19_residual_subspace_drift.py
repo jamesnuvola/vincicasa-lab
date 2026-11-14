@@ -476,7 +476,7 @@ def build_report(source_dir: Path, out: Path):
         "## Design",
         "",
         f"- Source: Q7 commit {Q7_HEAD}; {FORMULAS:,} masks and {TARGETS:,} target rows.",
-        f"- Mask-lattice residual dimension: {residual.shape[1]}; deterministic sketch dimension: {SKETCH_DIM}; k={K}.",
+        f"- Mask-lattice residual coordinates: {residual_coordinates.shape[1]}D (embedded in {residual.shape[1]}D); deterministic sketch dimension: {SKETCH_DIM}; k={K}.",
         f"- Drift: overlap change between adjacent {WINDOW}-target windows, both ending before the target.",
         f"- Prediction: rolling one-feature OLS on the prior {WINDOW} drift/capture pairs.",
         f"- Scored targets: {TARGETS - evaluation_start:,}; splits {counts}.",
