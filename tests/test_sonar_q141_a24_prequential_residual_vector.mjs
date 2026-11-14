@@ -61,4 +61,4 @@ const bootB = circularBlockBootstrap(gains, 10, 98765, 2000);
 assert.deepEqual(bootA, bootB);
 assert.ok(bootA.lower95 <= bootA.median && bootA.median <= bootA.upper95);
 
-process.stdout.write("Q141_A24_TESTS_OK 8/8\n");
+process.stdout.write("Q141_A24_TESTS_OK 13/13 assertions\n");
