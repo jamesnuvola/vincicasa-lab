@@ -329,7 +329,7 @@ export function runAnalysis(root = process.cwd()) {
     }
     for (const key of ["persistence1", "mean20", "mean40"]) {
       const field = key === "persistence1" ? "mse_persistence1" : "mse_" + key;
-      maxReplayError = Math.max(maxReplayError, Math.abs(got[key] - Number(expected[field])));
+      maxReplayError = Math.max(maxReplayError, Math.abs(got[field] - Number(expected[field])));
     }
   }
   if (maxReplayError >= 1e-9) throw new Error("A25_BLOCKED: weighted A24 replay mismatch " + maxReplayError);
