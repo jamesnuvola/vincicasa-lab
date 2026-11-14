@@ -1,0 +1,112 @@
+name: Q141-A25 Mask-Cardinality Dynamics Audit
+
+on:
+  push:
+    branches:
+      - research/q141-a25-mask-cardinality-dynamics-20261114
+  pull_request:
+    paths:
+      - "scripts/sonar_q141_a25_mask_cardinality_dynamics.mjs"
+      - "tests/test_sonar_q141_a25_mask_cardinality_dynamics.mjs"
+      - "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_*"
+      - "reports/sequence_agent/q141_a23_*"
+      - "reports/sequence_agent/q141_a24_prequential_residual_vector_*"
+      - ".github/workflows/q141-a25-mask-cardinality-dynamics.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q141-a25-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Generate deterministic A25 outputs
+        run: node scripts/sonar_q141_a25_mask_cardinality_dynamics.mjs --write
+      - name: Run A25 leakage, partition and statistics tests
+        run: node tests/test_sonar_q141_a25_mask_cardinality_dynamics.mjs
+      - name: Verify deterministic A25 replay
+        run: node scripts/sonar_q141_a25_mask_cardinality_dynamics.mjs --verify
+      - name: Persist generated A25 report and ledger
+        env:
+          A25_HEAD_REF: ${{ github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a25_mask_cardinality_dynamics_2026-11-14_*
+          if git diff --cached --quiet; then
+            echo "A25 outputs already match; no commit required."
+          else
+            git commit -m "Persist Q141-A25 mask-cardinality results"
+            git push origin "HEAD:${A25_HEAD_REF}"
+          fi
+      - name: Verify remote Git blobs and persist readback receipt
+        env:
+          A25_HEAD_REF: ${{ github.event.pull_request.head.ref || github.ref_name }}
+        run: |
+          git fetch origin "${A25_HEAD_REF}"
+          node --input-type=module <<'NODE'
+          import { execFileSync } from "node:child_process";
+          import { writeFileSync } from "node:fs";
+          const branch = process.env.A25_HEAD_REF;
+          const files = [
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_report_2026-11-14.json",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_report_2026-11-14.md",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_target_ledger_2026-11-14.csv",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_validation_2026-11-14.json",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_checkpoint_2026-11-14.json",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_manifest_2026-11-14.json"
+          ];
+          const entries = files.map((path) => {
+            const local = execFileSync("git", ["hash-object", path], { encoding: "utf8" }).trim();
+            const remote = execFileSync("git", ["rev-parse", `origin/${branch}:${path}`], { encoding: "utf8" }).trim();
+            if (local !== remote) throw new Error("A25 remote readback mismatch: " + path);
+            return { path, git_blob_sha1: local, remote_git_blob_sha1: remote, verified: true };
+          });
+          const receipt = {
+            experiment_id: "Q141-A25",
+            status: "REMOTE_GIT_READBACK_VERIFIED",
+            branch,
+            verified_files: entries,
+            file_count: entries.length
+          };
+          writeFileSync("reports/sequence_agent/q141_a25_mask_cardinality_dynamics_readback_receipt_2026-11-14.json",
+            JSON.stringify(receipt, null, 2) + "\n");
+          NODE
+          git add reports/sequence_agent/q141_a25_mask_cardinality_dynamics_readback_receipt_2026-11-14.json
+          if git diff --cached --quiet; then
+            echo "A25 readback receipt already matches."
+          else
+            git commit -m "Record Q141-A25 remote readback receipt"
+            git push origin "HEAD:${A25_HEAD_REF}"
+          fi
+          git fetch origin "${A25_HEAD_REF}"
+          node --input-type=module <<'NODE'
+          import { execFileSync } from "node:child_process";
+          const branch = process.env.A25_HEAD_REF;
+          const files = [
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_report_2026-11-14.json",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_report_2026-11-14.md",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_target_ledger_2026-11-14.csv",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_validation_2026-11-14.json",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_checkpoint_2026-11-14.json",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_manifest_2026-11-14.json",
+            "reports/sequence_agent/q141_a25_mask_cardinality_dynamics_readback_receipt_2026-11-14.json"
+          ];
+          for (const path of files) {
+            const local = execFileSync("git", ["hash-object", path], { encoding: "utf8" }).trim();
+            const remote = execFileSync("git", ["rev-parse", `origin/${branch}:${path}`], { encoding: "utf8" }).trim();
+            if (local !== remote) throw new Error("A25 final readback mismatch: " + path);
+          }
+          process.stdout.write("A25_REMOTE_READBACK_OK 7/7\n");
+          NODE
