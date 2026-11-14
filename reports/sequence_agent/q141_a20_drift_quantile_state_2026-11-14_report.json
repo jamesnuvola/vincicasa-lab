@@ -1,0 +1,190 @@
+{
+  "decision": "DRIFT_Q75_STATE_CAPTURE_SKILL_NOT_CONFIRMED",
+  "design": {
+    "baselines": [
+      "prior-400 rolling mean",
+      "Q141-A19 prior-only linear drift OLS"
+    ],
+    "block_length": 20,
+    "bootstrap_replicates": 20000,
+    "first_400_discovery_rows_used_for_calibration_only": true,
+    "multiple_testing": "Holm across six one-sided MSE comparisons: three splits times two comparators",
+    "quantile_method": "lower order statistic floor((n-1)*0.75)",
+    "scored_rows": 1786,
+    "signflip_replicates": 20000,
+    "source_rows": 2186,
+    "split_counts_scored": {
+      "blind_oos": 438,
+      "discovery": 911,
+      "validation": 437
+    },
+    "split_counts_source": {
+      "blind_oos": 438,
+      "discovery": 1311,
+      "validation": 437
+    },
+    "state_rule": "current pre-target drift >= prior-400 drift q75 => high, else low",
+    "training": "mean capture in matching prior state; fallback to prior-400 mean only if state count <25"
+  },
+  "experiment_id": "Q141-A20",
+  "hypothesis": {
+    "minimum_state_rows": 25,
+    "practical_mse_gain_threshold": 0.001,
+    "primary": "A prior-only q75 residual-drift state and rolling 400-target conditional mean improve next-target structural-capture MSE by at least 0.001 versus prior-400 mean in Validation and historical Blind OOS, with positive block-bootstrap lower bounds and Holm-adjusted block-signflip p<0.05.",
+    "primary_pass": false,
+    "quantile": 0.75,
+    "window": 400
+  },
+  "integrity": {
+    "all_source_rows_strict_prior": true,
+    "fixed_quantile_and_window_no_tuning": true,
+    "pinned_source_git_blob_verified": true,
+    "replay_byte_identity": "PENDING_DEDICATED_CI",
+    "target_response_and_future_suffix_mutation_invariant": true
+  },
+  "interpretation": "Q141-A20 forecasts a structural capture response, not candidate numbers or an exact quintet. Historical Blind OOS is exposed exploratory evidence, not virgin prospective confirmation.",
+  "limitations": [
+    "q75 was selected as one nonlinear diagnostic after reviewing A19; historical holdouts are not virgin evidence.",
+    "A19 source panel ends 2026-10-24 and is separate from main through 2026-11-13.",
+    "The rolling windows overlap; block methods use length 20 and sign-flip assumes approximate block-level symmetry.",
+    "State frequency varies with the drift distribution; high/low is a relative rolling state, not a fixed physical regime.",
+    "Structural capture is not exact-ticket accuracy or probability of winning.",
+    "No production engine, canonical archive, forecast freeze, Q60 gate, or protected PR is modified."
+  ],
+  "next_action": "Keep research-only. Do not tune additional thresholds on this panel; freeze a prospective drift-state monitor unchanged or retire this predictor family.",
+  "registered_tests": [
+    {
+      "key": "discovery_mse_gain_vs_mean400",
+      "p_holm": 1.0,
+      "p_raw": 0.688515574221289
+    },
+    {
+      "key": "discovery_mse_gain_vs_a19_ols",
+      "p_holm": 1.0,
+      "p_raw": 0.2200389980500975
+    },
+    {
+      "key": "validation_mse_gain_vs_mean400",
+      "p_holm": 1.0,
+      "p_raw": 0.9725513724313785
+    },
+    {
+      "key": "validation_mse_gain_vs_a19_ols",
+      "p_holm": 1.0,
+      "p_raw": 0.887955602219889
+    },
+    {
+      "key": "blind_oos_mse_gain_vs_mean400",
+      "p_holm": 1.0,
+      "p_raw": 0.5960701964901755
+    },
+    {
+      "key": "blind_oos_mse_gain_vs_a19_ols",
+      "p_holm": 0.06899655017249137,
+      "p_raw": 0.011499425028748563
+    }
+  ],
+  "schema_version": "1.0",
+  "source": {
+    "experiment": "Q141-A19",
+    "first_target_date": "2020-10-30",
+    "git_blob_sha1": "5613d5176ed48dd63df186258a53039e65840555",
+    "last_target_date": "2026-10-24",
+    "path": "reports/sequence_agent/q141_a19_residual_subspace_drift_2026-11-14_target_ledger.csv",
+    "rows": 2186,
+    "sha256": "7253a5d5b011096ecc85dce4aa3704b029b5abeee0e42a64b11c0c009ea4dd0b"
+  },
+  "split_metrics": {
+    "blind_oos": {
+      "fallback_targets": 0,
+      "first_target_date": "2025-08-13",
+      "high_minus_low_capture_descriptive": 0.034530256793655734,
+      "high_state_rate": 0.2694063926940639,
+      "high_state_targets": 118,
+      "last_target_date": "2026-10-24",
+      "low_state_targets": 320,
+      "mae_gain_vs_mean400_descriptive": 0.0003983588996063493,
+      "mean_capture": 0.6318841527829566,
+      "mean_capture_high_state": 0.6571117376550338,
+      "mean_capture_low_state": 0.6225814808613781,
+      "mean_prior_q75_threshold": 0.14727681372913243,
+      "mse_a19_ols": 0.03623660270345422,
+      "mse_gain_vs_a19_ols": 0.0002565627442157836,
+      "mse_gain_vs_a19_ols_block20_ci95": [
+        4.0845848540251626e-05,
+        0.0005008347716864792
+      ],
+      "mse_gain_vs_mean400": -3.447254919533691e-05,
+      "mse_gain_vs_mean400_block20_ci95": [
+        -0.0003969070926382879,
+        0.0003075197281211013
+      ],
+      "mse_mean400": 0.0359455674100431,
+      "mse_q75_state": 0.03598003995923844,
+      "p_signflip_vs_a19_ols_raw": 0.011499425028748563,
+      "p_signflip_vs_mean400_raw": 0.5960701964901755,
+      "targets": 438
+    },
+    "discovery": {
+      "fallback_targets": 0,
+      "first_target_date": "2021-12-04",
+      "high_minus_low_capture_descriptive": 0.029761705286651452,
+      "high_state_rate": 0.06695938529088913,
+      "high_state_targets": 61,
+      "last_target_date": "2024-06-01",
+      "low_state_targets": 850,
+      "mae_gain_vs_mean400_descriptive": -0.0001550355815195867,
+      "mean_capture": 0.6086759661608627,
+      "mean_capture_high_state": 0.6364448459563115,
+      "mean_capture_low_state": 0.60668314066966,
+      "mean_prior_q75_threshold": 0.17648645745960043,
+      "mse_a19_ols": 0.04224606718446313,
+      "mse_gain_vs_a19_ols": 0.00024050039218834378,
+      "mse_gain_vs_a19_ols_block20_ci95": [
+        -0.00024992494211432324,
+        0.0008225986364014117
+      ],
+      "mse_gain_vs_mean400": -8.058980752051374e-05,
+      "mse_gain_vs_mean400_block20_ci95": [
+        -0.0003904302861582831,
+        0.0001925606666750477
+      ],
+      "mse_mean400": 0.04192497698475427,
+      "mse_q75_state": 0.04200556679227478,
+      "p_signflip_vs_a19_ols_raw": 0.2200389980500975,
+      "p_signflip_vs_mean400_raw": 0.688515574221289,
+      "targets": 911
+    },
+    "validation": {
+      "fallback_targets": 0,
+      "first_target_date": "2024-06-02",
+      "high_minus_low_capture_descriptive": -0.013557401492914956,
+      "high_state_rate": 0.4096109839816934,
+      "high_state_targets": 179,
+      "last_target_date": "2025-08-12",
+      "low_state_targets": 258,
+      "mae_gain_vs_mean400_descriptive": -0.0009682669746832911,
+      "mean_capture": 0.6347721504282677,
+      "mean_capture_high_state": 0.6267680095011006,
+      "mean_capture_low_state": 0.6403254109940155,
+      "mean_prior_q75_threshold": 0.11101097190644166,
+      "mse_a19_ols": 0.0379426525658696,
+      "mse_gain_vs_a19_ols": -0.00021627865868817462,
+      "mse_gain_vs_a19_ols_block20_ci95": [
+        -0.0006096554304982741,
+        0.00018988914760828567
+      ],
+      "mse_gain_vs_mean400": -0.000335878220043391,
+      "mse_gain_vs_mean400_block20_ci95": [
+        -0.0006889088163017553,
+        6.780711276188244e-05
+      ],
+      "mse_mean400": 0.03782305300451439,
+      "mse_q75_state": 0.038158931224557775,
+      "p_signflip_vs_a19_ols_raw": 0.887955602219889,
+      "p_signflip_vs_mean400_raw": 0.9725513724313785,
+      "targets": 437
+    }
+  },
+  "status": "COMPLETED_HISTORICAL_PREQUENTIAL_NONLINEAR_DRIFT_AUDIT"
+}
