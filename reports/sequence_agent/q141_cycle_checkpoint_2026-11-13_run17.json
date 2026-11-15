@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "cycle": 17,
+  "date": "2026-11-13",
+  "branch": "research/q141-a7-fresh59-behaviour-20261113",
+  "status": "SOURCE_PROVENANCE_RECHECKED_WAITING_FOR_TARGET_317",
+  "recovered_checkpoint": "reports/sequence_agent/q141_a7_b11_prospective_checkpoint_2026-11-13.json",
+  "b11": {
+    "target_date": "2026-11-13",
+    "scheduled_time_local": "20:00",
+    "prior_cutoff_date": "2026-11-12",
+    "prior_draws": 3406,
+    "frozen_predictions": 1,
+    "outcomes_reconciled": 0,
+    "prediction_sha256": "009f56ae414852c223a81a7d209e17bc4f94076b72556c87d15273001470a1f3",
+    "ledger_unchanged": true,
+    "prediction_unchanged": true
+  },
+  "source_provenance": {
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "archive_rows": 3406,
+    "contest_315_official_numbers_confirmed": [1, 21, 22, 27, 29],
+    "contest_316_official_numbers_confirmed": [2, 4, 7, 23, 33],
+    "official_archive_url": "https://www.vincicasa.it/archivio-estrazioni",
+    "audit_json": "reports/sequence_agent/q141_a7_b11_source_provenance_recheck_2026-11-13_0539.json",
+    "audit_markdown": "reports/sequence_agent/q141_a7_b11_source_provenance_recheck_2026-11-13_0539.md"
+  },
+  "next_hypothesis": {
+    "id": "Q141-A8",
+    "status": "DRAFT_DEFERRED",
+    "independent_sample_required": true,
+    "activation_condition": "Only after B11's 200 consecutive eligible prospective outcomes have been reconciled and its single registered analysis is complete."
+  },
+  "next_action": "Wait for official contest 317 publication; append only the verified outcome to B11 ledger, preserve prediction hash, then freeze the next target.",
+  "governance": {
+    "pr6_untouched": true,
+    "pr7_untouched": true,
+    "pr8_untouched": true,
+    "pr89_untouched": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_canonical_archive_mutation": true,
+    "no_shadow_insertion": true,
+    "no_engine_promotion": true
+  }
+}

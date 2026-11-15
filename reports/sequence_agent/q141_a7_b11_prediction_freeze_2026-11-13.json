@@ -1,0 +1,322 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A7-B11-PROSPECTIVE",
+  "status": "PREDICTION_FROZEN_AWAITING_OUTCOME",
+  "target": {
+    "date": "2026-11-13",
+    "scheduled_time_local": "2026-11-13T20:00:00+01:00"
+  },
+  "frozen_at_utc": "2026-11-13T02:48:10.854369Z",
+  "model": {
+    "version": "Q141-A7-B11",
+    "adaptive_rule": "family weights proportional to 1/(0.10 + mean normalized absolute rank turnover across the previous five target rows)",
+    "comparator": "M0 equal arithmetic mean of seven family scores",
+    "tie_policy": "scores rounded to 12 decimals; ties by number ascending",
+    "family_names": [
+      "baseline",
+      "ewma_hit_dynamics",
+      "gap_dynamics",
+      "cooccurrence_novelty",
+      "rank_trajectory",
+      "residual_surprise",
+      "regime_transition_affinity"
+    ]
+  },
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "archive_draw_count": 3406,
+    "prior_cutoff_date": "2026-11-12",
+    "prior_draws": 3406,
+    "last_verified_prior_draw": {
+      "date": "2026-11-12",
+      "contest_number": 316,
+      "numbers": [
+        2,
+        4,
+        7,
+        23,
+        33
+      ],
+      "source_type": "official_vincicasa_archive",
+      "source_url": "https://www.vincicasa.it/archivio-estrazioni",
+      "source_title": "Archivio estrazioni concorsi VinciCasa — sito ufficiale"
+    },
+    "attestation_path": "reports/sequence_agent/q141_a7_b11_official_prior_attestation_2026-11-13.json",
+    "attestation_sha256": "926549f851ab5ebc7cbe0f7f26c668d80a32742c58873fcfee5fa8de5e12da1f",
+    "code_commit_sha": "1a6f27adc158c47c300c992be3ef38bfa99505ec"
+  },
+  "prior_target_rows_for_weights": [
+    "2026-11-08",
+    "2026-11-09",
+    "2026-11-10",
+    "2026-11-11",
+    "2026-11-12"
+  ],
+  "family_turnover": {
+    "baseline": 0.10512820512820512,
+    "ewma_hit_dynamics": 0.07307692307692308,
+    "gap_dynamics": 0.22467948717948716,
+    "cooccurrence_novelty": 0.2467948717948718,
+    "rank_trajectory": 0.05320512820512821,
+    "residual_surprise": 0.041666666666666664,
+    "regime_transition_affinity": 0.2923076923076923
+  },
+  "family_weights_m1": {
+    "baseline": 0.14884893031685992,
+    "ewma_hit_dynamics": 0.17641354704220436,
+    "gap_dynamics": 0.09404078519525208,
+    "cooccurrence_novelty": 0.08804372957744025,
+    "rank_trajectory": 0.19929563891797145,
+    "residual_surprise": 0.2155278629022406,
+    "regime_transition_affinity": 0.07782950604803132
+  },
+  "m0_top5": [
+    25,
+    1,
+    7,
+    27,
+    36
+  ],
+  "m1_top5": [
+    25,
+    1,
+    27,
+    7,
+    36
+  ],
+  "m0_top10": [
+    25,
+    1,
+    7,
+    27,
+    36,
+    16,
+    29,
+    35,
+    26,
+    17
+  ],
+  "m1_top10": [
+    25,
+    1,
+    27,
+    7,
+    36,
+    16,
+    35,
+    29,
+    26,
+    38
+  ],
+  "score_vectors": [
+    {
+      "number": 1,
+      "m0": 0.631312139084505,
+      "m1": 0.7198559070345493
+    },
+    {
+      "number": 2,
+      "m0": 0.14141502615883778,
+      "m1": 0.0856246628351899
+    },
+    {
+      "number": 3,
+      "m0": 0.027600945438556117,
+      "m1": -0.13235593871724827
+    },
+    {
+      "number": 4,
+      "m0": 0.009679658832880291,
+      "m1": -0.13400434823644675
+    },
+    {
+      "number": 5,
+      "m0": -0.11344095787014694,
+      "m1": -0.305308367058045
+    },
+    {
+      "number": 6,
+      "m0": -0.4981612710165351,
+      "m1": -0.4805122911799953
+    },
+    {
+      "number": 7,
+      "m0": 0.50026233836175,
+      "m1": 0.6028416435406859
+    },
+    {
+      "number": 8,
+      "m0": -0.0720015853175996,
+      "m1": -0.11126317016675108
+    },
+    {
+      "number": 9,
+      "m0": 0.012086518808709399,
+      "m1": 0.01641636594802491
+    },
+    {
+      "number": 10,
+      "m0": -0.11272256843835815,
+      "m1": -0.13703192225744795
+    },
+    {
+      "number": 11,
+      "m0": -0.3876401969488606,
+      "m1": -0.4246268755646992
+    },
+    {
+      "number": 12,
+      "m0": -0.042788723594201446,
+      "m1": 0.02543090049377724
+    },
+    {
+      "number": 13,
+      "m0": -0.29661055973738726,
+      "m1": -0.4521829152100345
+    },
+    {
+      "number": 14,
+      "m0": -0.28874935348661096,
+      "m1": -0.3275629069018908
+    },
+    {
+      "number": 15,
+      "m0": -0.17739642208029585,
+      "m1": -0.19166391423932672
+    },
+    {
+      "number": 16,
+      "m0": 0.3118955209446143,
+      "m1": 0.3981527394927071
+    },
+    {
+      "number": 17,
+      "m0": 0.14877585647057515,
+      "m1": 0.19123133491879035
+    },
+    {
+      "number": 18,
+      "m0": -0.35737686733872215,
+      "m1": -0.44733842630175624
+    },
+    {
+      "number": 19,
+      "m0": 0.004322936348771947,
+      "m1": -0.20846221926666816
+    },
+    {
+      "number": 20,
+      "m0": -0.20006751901049866,
+      "m1": -0.2034286069380432
+    },
+    {
+      "number": 21,
+      "m0": -0.03810546255036229,
+      "m1": 0.15069868884725227
+    },
+    {
+      "number": 22,
+      "m0": -0.03149056621036655,
+      "m1": 0.10475080576963858
+    },
+    {
+      "number": 23,
+      "m0": 0.12208776764447773,
+      "m1": -0.09184693695434196
+    },
+    {
+      "number": 24,
+      "m0": -0.3717661825803447,
+      "m1": -0.32165810429014396
+    },
+    {
+      "number": 25,
+      "m0": 0.6491005403052336,
+      "m1": 0.8392746022722423
+    },
+    {
+      "number": 26,
+      "m0": 0.18802295676006664,
+      "m1": 0.24716541191873861
+    },
+    {
+      "number": 27,
+      "m0": 0.4161279850392316,
+      "m1": 0.6136849584224695
+    },
+    {
+      "number": 28,
+      "m0": 0.049134533519512406,
+      "m1": 0.06786043896903919
+    },
+    {
+      "number": 29,
+      "m0": 0.30336246065913686,
+      "m1": 0.25505113354357434
+    },
+    {
+      "number": 30,
+      "m0": -0.08336716354405753,
+      "m1": -0.08958384513592238
+    },
+    {
+      "number": 31,
+      "m0": -0.3190185192890764,
+      "m1": -0.396004112262546
+    },
+    {
+      "number": 32,
+      "m0": -0.21515492504618877,
+      "m1": -0.2554702196348992
+    },
+    {
+      "number": 33,
+      "m0": 0.0537697526327111,
+      "m1": 0.019772035104779793
+    },
+    {
+      "number": 34,
+      "m0": -0.0666075339849168,
+      "m1": 0.06408171077654728
+    },
+    {
+      "number": 35,
+      "m0": 0.28844701638804265,
+      "m1": 0.30968880233937063
+    },
+    {
+      "number": 36,
+      "m0": 0.3665211004442278,
+      "m1": 0.5546112445506955
+    },
+    {
+      "number": 37,
+      "m0": 0.05068778972185793,
+      "m1": -0.06950464708590634
+    },
+    {
+      "number": 38,
+      "m0": 0.08740951832150161,
+      "m1": 0.24487380831515262
+    },
+    {
+      "number": 39,
+      "m0": -0.21258856114373173,
+      "m1": -0.17699222628634206
+    },
+    {
+      "number": 40,
+      "m0": -0.47696739862351273,
+      "m1": -0.5542651424467984
+    }
+  ],
+  "integrity": {
+    "feature_vector_sha256": "faa8edcc75f0b4833f7ed1b72e3155221c657085eb914277bf190d259f073ad7",
+    "prior_rank_history_sha256": "55f795138b57566cbf86ca7794ca5964cd185860615dbe528bd83ed9fb7fdaad",
+    "no_actual_outcome_in_record": true,
+    "score_before_target_outcome": true,
+    "no_retuning": true
+  },
+  "prediction_sha256": "009f56ae414852c223a81a7d209e17bc4f94076b72556c87d15273001470a1f3"
+}

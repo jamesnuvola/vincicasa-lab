@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A7-B11-SOURCE-PROVENANCE-RECHECK",
+  "checked_at_local": "2026-11-13T05:39:06+01:00",
+  "status": "PRIOR_ARCHIVE_PRIMARY_SOURCE_RECONFIRMED",
+  "canonical_archive": {
+    "path": "data/storico_daily.csv",
+    "rows": 3406,
+    "last_date": "2026-11-12",
+    "blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "repository_main_and_research_branch_blob_match": true
+  },
+  "official_primary_source": {
+    "archive_url": "https://www.vincicasa.it/archivio-estrazioni",
+    "checked_at_local": "2026-11-13T05:39:06+01:00",
+    "contest_315": {
+      "date": "2026-11-11",
+      "numbers": [1, 21, 22, 27, 29],
+      "archive_row_visible": true,
+      "detail_url": "https://www.vincicasa.it/archivio-estrazioni/concorso-315/11-novembre-2026"
+    },
+    "contest_316": {
+      "date": "2026-11-12",
+      "numbers": [2, 4, 7, 23, 33],
+      "archive_row_visible": true
+    },
+    "target_contest_317": {
+      "date": "2026-11-13",
+      "status_at_check": "NOT_YET_PUBLISHED",
+      "scheduled_time_local": "20:00"
+    }
+  },
+  "repository_reconciliation": {
+    "contest_315_matches_official_archive": true,
+    "contest_316_matches_official_archive": true,
+    "no_canonical_archive_mutation": true,
+    "no_prospective_outcome_appended": true
+  },
+  "b11_freeze": {
+    "target_date": "2026-11-13",
+    "prediction_sha256": "009f56ae414852c223a81a7d209e17bc4f94076b72556c87d15273001470a1f3",
+    "prior_cutoff_date": "2026-11-12",
+    "prior_draws": 3406,
+    "frozen_predictions": 1,
+    "outcomes_reconciled": 0,
+    "status": "UNCHANGED_PENDING_TARGET_OUTCOME"
+  },
+  "code_provenance": {
+    "commit": "1a6f27adc158c47c300c992be3ef38bfa99505ec",
+    "path": "scripts/sonar_q141_a7_fresh59_behaviour.py",
+    "blob_sha1": "b278f9e61483e9ea8ba0b8efc2c70844ecdd859b",
+    "readback_verified": true
+  },
+  "notes": [
+    "The official VinciCasa archive root now exposes both contest 315 and contest 316 with their five numbers. This closes the previously recorded primary-source exposure gap for contest 315 as of this check.",
+    "The official archive detail page for contest 315 confirms the contest/date; its extracted text does not expose the five numbers. The archive root table is the direct primary-source evidence for the number combination.",
+    "A separate official bulletin PDF link was visible, but the PDF could not be retrieved by the browser reader because the response exceeded its content-size limit; this is not used as the basis for the attestation.",
+    "No target outcome for contest 317 was available at the 05:39 local check, before the scheduled 20:00 draw.",
+    "No B11 prediction, model, score vector, ledger row or canonical archive row was changed."
+  ],
+  "governance": {
+    "pr6_untouched": true,
+    "pr7_untouched": true,
+    "pr8_untouched": true,
+    "pr89_untouched": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true
+  }
+}

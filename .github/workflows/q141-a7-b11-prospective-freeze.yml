@@ -1,0 +1,119 @@
+name: SONAR Q141-A7 B11 Prospective Freeze
+on:
+  push:
+    branches:
+      - research/q141-a7-fresh59-behaviour-20261113
+    paths:
+      - "scripts/sonar_q141_a7_b11_prospective_freeze.py"
+      - "reports/sequence_agent/q141_a7_b11_official_prior_attestation_2026-11-13.json"
+      - ".github/workflows/q141-a7-b11-prospective-freeze.yml"
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: sonar-q141-a7-b11-prospective-freeze
+  cancel-in-progress: false
+jobs:
+  freeze-before-outcome:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q141-a7-fresh59-behaviour-20261113
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: pip install numpy
+      - name: Compile and create strict-prior freeze
+        run: |
+          python -m py_compile scripts/sonar_q141_a7_fresh59_behaviour.py scripts/sonar_q141_a7_b11_prospective_freeze.py
+          python scripts/sonar_q141_a7_b11_prospective_freeze.py
+      - name: Fail-closed freeze validation
+        run: |
+          python - <<'PY'
+          import copy, csv, hashlib, json
+          from pathlib import Path
+          p=Path("reports/sequence_agent")
+          snap=json.loads((p/"q141_a7_b11_prediction_freeze_2026-11-13.json").read_text())
+          pred_hash=snap.pop("prediction_sha256")
+          canonical=json.dumps(snap,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode()
+          assert hashlib.sha256(canonical).hexdigest()==pred_hash
+          assert snap["status"]=="PREDICTION_FROZEN_AWAITING_OUTCOME"
+          assert snap["target"]["date"]=="2026-11-13"
+          assert snap["source"]["prior_cutoff_date"]=="2026-11-12"
+          assert snap["source"]["prior_draws"]==3406
+          assert len(snap["score_vectors"])==40
+          assert len(snap["m0_top5"])==5 and len(set(snap["m0_top5"]))==5
+          assert len(snap["m1_top5"])==5 and len(set(snap["m1_top5"]))==5
+          assert abs(sum(snap["family_weights_m1"].values())-1.0)<1e-12
+          assert snap["integrity"]["no_actual_outcome_in_record"] is True
+          assert snap["integrity"]["score_before_target_outcome"] is True
+          assert not any(k in snap for k in ("actual_quintet","actual_numbers","hits","outcome"))
+          with (p/"q141_a7_b11_prospective_ledger_2026-11-13.csv").open(newline="") as f:
+              rows=list(csv.DictReader(f))
+          assert len(rows)==1 and rows[0]["outcome_status"]=="PENDING_OFFICIAL_PUBLICATION"
+          manifest=json.loads((p/"q141_a7_b11_prospective_manifest_2026-11-13.json").read_text())
+          for name,info in manifest["outputs"].items():
+              b=(p/name).read_bytes()
+              assert len(b)==info["bytes"]
+              assert hashlib.sha256(b).hexdigest()==info["sha256"]
+          cp=json.loads((p/"q141_a7_b11_prospective_checkpoint_2026-11-13.json").read_text())
+          assert cp["prospective_predictions_frozen"]==1 and cp["prospective_outcomes_reconciled"]==0
+          print("Q141_B11_FREEZE_VALIDATION_PASS",pred_hash)
+          PY
+      - name: Persist append-only prediction freeze
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a7_b11_prediction_freeze_2026-11-13.json \
+                  reports/sequence_agent/q141_a7_b11_prospective_ledger_2026-11-13.csv \
+                  reports/sequence_agent/q141_a7_b11_freeze_report_2026-11-13.md \
+                  reports/sequence_agent/q141_a7_b11_prospective_manifest_2026-11-13.json \
+                  reports/sequence_agent/q141_a7_b11_prospective_checkpoint_2026-11-13.json
+          git commit -m "Freeze first Q141-A7 B11 prospective prediction"
+          git push origin HEAD:research/q141-a7-fresh59-behaviour-20261113
+      - name: Verify remote Git readback and finalize checkpoint
+        run: |
+          git fetch origin research/q141-a7-fresh59-behaviour-20261113
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          branch="origin/research/q141-a7-fresh59-behaviour-20261113"
+          p=Path("reports/sequence_agent")
+          paths=[
+            "reports/sequence_agent/q141_a7_b11_prediction_freeze_2026-11-13.json",
+            "reports/sequence_agent/q141_a7_b11_prospective_ledger_2026-11-13.csv",
+            "reports/sequence_agent/q141_a7_b11_freeze_report_2026-11-13.md",
+            "reports/sequence_agent/q141_a7_b11_prospective_manifest_2026-11-13.json"
+          ]
+          checked={}
+          for path in paths:
+              local=subprocess.check_output(["git","hash-object",path],text=True).strip()
+              remote=subprocess.check_output(["git","rev-parse",f"{branch}:{path}"],text=True).strip()
+              assert local==remote,(path,local,remote)
+              checked[path]=remote
+          cp_path=p/"q141_a7_b11_prospective_checkpoint_2026-11-13.json"
+          cp=json.loads(cp_path.read_text())
+          cp["status"]="PREDICTION_FROZEN_REMOTE_VERIFIED"
+          cp["remote_readback"]={"branch":"research/q141-a7-fresh59-behaviour-20261113","files":checked}
+          cp_path.write_text(json.dumps(cp,ensure_ascii=False,indent=2)+"\n")
+          PY
+          git add reports/sequence_agent/q141_a7_b11_prospective_checkpoint_2026-11-13.json
+          git commit -m "Verify remote readback of Q141-A7 B11 freeze"
+          git push origin HEAD:research/q141-a7-fresh59-behaviour-20261113
+          git fetch origin research/q141-a7-fresh59-behaviour-20261113
+          test "$(git hash-object reports/sequence_agent/q141_a7_b11_prospective_checkpoint_2026-11-13.json)" = "$(git rev-parse origin/research/q141-a7-fresh59-behaviour-20261113:reports/sequence_agent/q141_a7_b11_prospective_checkpoint_2026-11-13.json)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: q141-a7-b11-prospective-freeze-2026-11-13
+          path: |
+            reports/sequence_agent/q141_a7_b11_prediction_freeze_2026-11-13.json
+            reports/sequence_agent/q141_a7_b11_prospective_ledger_2026-11-13.csv
+            reports/sequence_agent/q141_a7_b11_freeze_report_2026-11-13.md
+            reports/sequence_agent/q141_a7_b11_prospective_manifest_2026-11-13.json
+            reports/sequence_agent/q141_a7_b11_prospective_checkpoint_2026-11-13.json
+          if-no-files-found: error
+          retention-days: 90

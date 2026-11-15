@@ -1,0 +1,91 @@
+{
+  "schema_version": "1.0",
+  "cycle": 18,
+  "date": "2026-11-13",
+  "status": "REMOTE_GIT_READBACK_VERIFIED",
+  "branch": "research/q141-a7-fresh59-behaviour-20261113",
+  "parent_commit": "2b1d0dff77ead8a65b5a2c9f8d3ecb5f56469b06",
+  "main_head": "05f84e57fd0d2028c3f641742e39db4f1629db8c",
+  "b11": {
+    "status": "PREDICTION_FROZEN_REMOTE_VERIFIED",
+    "target_date": "2026-11-13",
+    "scheduled_time_local": "2026-11-13T20:00:00+01:00",
+    "prior_cutoff_date": "2026-11-12",
+    "prior_draws": 3406,
+    "frozen_predictions": 1,
+    "outcomes_reconciled": 0,
+    "prediction_sha256": "009f56ae414852c223a81a7d209e17bc4f94076b72556c87d15273001470a1f3",
+    "m0_top5": [
+      25,
+      1,
+      7,
+      27,
+      36
+    ],
+    "m1_top5": [
+      25,
+      1,
+      27,
+      7,
+      36
+    ],
+    "top5_intersection": 5,
+    "divergence": 0,
+    "ledger_status": "PENDING_OFFICIAL_PUBLICATION"
+  },
+  "a8_power_audit": {
+    "status": "COMPLETED_DESIGN_SIMULATION_NOT_PREDICTIVE_TEST",
+    "script": "scripts/sonar_q141_a8_power_audit.py",
+    "tests": "tests/test_sonar_q141_a8_power_audit.py",
+    "tests_passed": 6,
+    "scenarios": 10,
+    "replicates_per_scenario": 20000,
+    "deterministic_replay": true,
+    "power_range_50_active": [
+      0.03025,
+      0.0629
+    ],
+    "power_range_200_active": [
+      0.1107,
+      0.5127
+    ],
+    "null_type1_max": 0.01775,
+    "decision": "A8 draft underpowered as currently specified; do not activate without endpoint/block-statistic and sample-size redesign"
+  },
+  "ci": {
+    "latest_a7_run": 43367439499,
+    "latest_a7_conclusion": "action_required",
+    "latest_a7_jobs": 0,
+    "latest_general_ci_run": 43367439469,
+    "latest_general_ci_conclusion": "action_required",
+    "latest_general_ci_jobs": 0,
+    "previous_success_commit": "351b9751bc6ea037cfed32254ba35370c4335608",
+    "current_head_ci_verified": false
+  },
+  "governance": {
+    "pr6_untouched": true,
+    "pr7_untouched": true,
+    "pr8_untouched": true,
+    "pr89_untouched": true,
+    "no_merge": true,
+    "no_rebase": true,
+    "no_canonical_archive_mutation": true,
+    "no_forecast_mutation": true,
+    "no_engine_promotion": true
+  },
+  "next_action": "Wait for official contest 317 publication; append only the verified outcome to B11 without changing the frozen prediction. Keep A8 draft-only and redesign its confirmatory power and endpoint before any independent sample.",
+  "manifest_path": "reports/sequence_agent/q141_a8_power_audit_manifest_2026-11-13.json",
+  "remote_readback": {
+    "branch": "research/q141-a7-fresh59-behaviour-20261113",
+    "files": {
+      "scripts/sonar_q141_a8_power_audit.py": "964f2fff50fc404e9bf03a8436f83c6694572ab2",
+      "tests/test_sonar_q141_a8_power_audit.py": "765de572fa64b3112adab12dc196346caa3698f7",
+      "reports/sequence_agent/q141_a8_power_audit_2026-11-13.json": "bcd5185e473f8b979fa8d91b3035f2f7d7c5f8e2",
+      "reports/sequence_agent/q141_a8_power_audit_2026-11-13.md": "845a6a32bf5809251c2f514ff379a2b9ccd6ae55",
+      "reports/sequence_agent/q141_cycle_report_2026-11-13_run18.md": "3a09f439185b24657d0158c540fdab0ef5680a08",
+      "reports/sequence_agent/q141_a8_power_audit_manifest_2026-11-13.json": "67a6dacd3c4738251609ab54bdf7fe69229a568e"
+    },
+    "checkpoint_self_hash_excluded": true,
+    "note": "All six non-checkpoint artifacts and the manifest were read back by Git blob SHA. The checkpoint is verified by a subsequent direct read; its own SHA is intentionally not self-referenced."
+  }
+}

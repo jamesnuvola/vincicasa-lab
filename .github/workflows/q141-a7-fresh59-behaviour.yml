@@ -1,0 +1,134 @@
+name: SONAR Q141-A7 Fresh59 Behaviour
+on:
+  push:
+    branches:
+      - research/q141-a7-fresh59-behaviour-20261113
+    paths:
+      - "scripts/sonar_q141_a7_fresh59_behaviour.py"
+      - "tests/test_sonar_q141_a7_fresh59_behaviour.py"
+      - "reports/sequence_agent/q141_a7_b11_preregistration_2026-11-13.md"
+      - ".github/workflows/q141-a7-fresh59-behaviour.yml"
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+    paths:
+      - "scripts/sonar_q141_a7_fresh59_behaviour.py"
+      - "tests/test_sonar_q141_a7_fresh59_behaviour.py"
+      - "reports/sequence_agent/q141_a7_b11_preregistration_2026-11-13.md"
+      - ".github/workflows/q141-a7-fresh59-behaviour.yml"
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: sonar-q141-a7-fresh59-behaviour
+  cancel-in-progress: false
+jobs:
+  fresh59-walkforward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research/q141-a7-fresh59-behaviour-20261113
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: pip install numpy
+      - name: Compile and run deterministic/leakage tests
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python -m py_compile scripts/sonar_q141_a7_fresh59_behaviour.py tests/test_sonar_q141_a7_fresh59_behaviour.py
+          python -m unittest discover -s tests -p "test_sonar_q141_a7_fresh59_behaviour.py" -v
+      - name: Download pinned Q90 prefix artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: q90-expanded-formula-grammar-bundle
+          path: q90-source
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 42504717670
+      - name: Rebuild all 59 features and run preregistered walk-forward
+        run: |
+          python scripts/sonar_q141_a7_fresh59_behaviour.py --q90-matrix q90-source/adaptive_novelty_feature_matrix.npz
+      - name: Fail-closed output validation
+        run: |
+          python - <<'PY'
+          import csv, hashlib, json
+          from pathlib import Path
+          p=Path("reports/sequence_agent")
+          report=json.loads((p/"q141_a7_stability_weighted_report_2026-11-13.json").read_text())
+          manifest=json.loads((p/"q141_a7_fresh59_manifest_2026-11-13.json").read_text())
+          checkpoint=json.loads((p/"q141_a7_checkpoint_2026-11-13.json").read_text())
+          assert report["status"]=="COMPLETED_HISTORICAL_WALK_FORWARD"
+          assert report["source"]["archive_blob_sha1"]=="6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb"
+          assert report["source"]["q90_prefix_matrix_exact_bit_match"] is True
+          assert report["design"]["targets"]==3356
+          assert report["design"]["split_counts"]=={"discovery":2014,"validation":671,"blind_oos":671}
+          with (p/"q141_a7_stability_weighted_target_ledger_2026-11-13.csv").open(newline="") as f:
+              rows=list(csv.DictReader(f))
+          assert len(rows)==3356
+          assert all(r["cutoff_date"] < r["target_date"] for r in rows)
+          assert all(int(r["prior_draws"])==int(r["target_index"])+50 for r in rows)
+          for name,info in manifest["outputs"].items():
+              path=p/name
+              assert path.stat().st_size==info["bytes"]
+              assert hashlib.sha256(path.read_bytes()).hexdigest()==info["sha256"]
+          assert checkpoint["status"]=="COMPLETED_LOCAL_PENDING_REMOTE_READBACK"
+          print("A7_OUTPUT_VALIDATION_PASS",len(rows),len(manifest["outputs"]))
+          PY
+      - name: Persist report, ledger, manifest and checkpoint
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a7_stability_weighted_report_2026-11-13.json \
+                  reports/sequence_agent/q141_a7_stability_weighted_target_ledger_2026-11-13.csv \
+                  reports/sequence_agent/q141_a7_fresh59_manifest_2026-11-13.json \
+                  reports/sequence_agent/q141_a7_checkpoint_2026-11-13.json
+          git commit -m "Persist Q141-A7 fresh59 walk-forward outputs"
+          git push origin HEAD:research/q141-a7-fresh59-behaviour-20261113
+      - name: Verify remote Git readback and finalize checkpoint
+        run: |
+          git fetch origin research/q141-a7-fresh59-behaviour-20261113
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          branch="origin/research/q141-a7-fresh59-behaviour-20261113"
+          p=Path("reports/sequence_agent")
+          paths=[
+            "reports/sequence_agent/q141_a7_stability_weighted_report_2026-11-13.json",
+            "reports/sequence_agent/q141_a7_stability_weighted_target_ledger_2026-11-13.csv",
+            "reports/sequence_agent/q141_a7_fresh59_manifest_2026-11-13.json"
+          ]
+          checked={}
+          for path in paths:
+              local=subprocess.check_output(["git","hash-object",path],text=True).strip()
+              remote=subprocess.check_output(["git","rev-parse",f"{branch}:{path}"],text=True).strip()
+              assert local==remote,(path,local,remote)
+              checked[path]=remote
+          cp_path=p/"q141_a7_checkpoint_2026-11-13.json"
+          cp=json.loads(cp_path.read_text())
+          cp["status"]="REMOTE_GIT_READBACK_VERIFIED"
+          cp["remote_readback"]={"branch":"research/q141-a7-fresh59-behaviour-20261113","files":checked}
+          cp_path.write_text(json.dumps(cp,ensure_ascii=False,indent=2)+"\n")
+          print("A7_REMOTE_READBACK_PASS",json.dumps(checked,sort_keys=True))
+          PY
+          git add reports/sequence_agent/q141_a7_checkpoint_2026-11-13.json
+          git commit -m "Record Q141-A7 remote readback verification"
+          git push origin HEAD:research/q141-a7-fresh59-behaviour-20261113
+          git fetch origin research/q141-a7-fresh59-behaviour-20261113
+          test "$(git hash-object reports/sequence_agent/q141_a7_checkpoint_2026-11-13.json)" = "$(git rev-parse origin/research/q141-a7-fresh59-behaviour-20261113:reports/sequence_agent/q141_a7_checkpoint_2026-11-13.json)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: q141-a7-fresh59-behaviour
+          path: |
+            reports/sequence_agent/q141_a7_fresh59_feature_matrix_2026-11-13.npz
+            reports/sequence_agent/q141_a7_stability_weighted_target_ledger_2026-11-13.csv
+            reports/sequence_agent/q141_a7_stability_weighted_report_2026-11-13.json
+            reports/sequence_agent/q141_a7_fresh59_manifest_2026-11-13.json
+            reports/sequence_agent/q141_a7_checkpoint_2026-11-13.json
+          if-no-files-found: error
+          retention-days: 90

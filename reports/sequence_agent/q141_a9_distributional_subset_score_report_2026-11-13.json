@@ -1,0 +1,313 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A9-DISTRIBUTIONAL-SUBSET-SCORE",
+  "status": "COMPLETED_HISTORICAL_EXPLORATORY_WALK_FORWARD",
+  "decision": "NO_INCREMENTAL_JOINT_SUBSET_SCORE_DEMONSTRATED",
+  "source": {
+    "archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "draw_count": 3406,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-12",
+    "feature_matrix_shape": [
+      3356,
+      40,
+      59
+    ],
+    "feature_count": 59,
+    "source_scorer": "Q141-A7 exact family definitions and strict-prior feature builder"
+  },
+  "design": {
+    "targets": 3356,
+    "split_counts": {
+      "discovery": 2014,
+      "validation": 671,
+      "blind_oos": 671
+    },
+    "models": [
+      "M0 equal-family",
+      "M1 five-prior-target stability-weighted",
+      "U exact uniform 5-of-40"
+    ],
+    "subset_distribution": "P(S|s,T) proportional to exp(sum(s_i/T for i in S)); normalized by the fifth elementary symmetric polynomial",
+    "temperature_grid": [
+      0.05,
+      0.1,
+      0.2,
+      0.35,
+      0.5,
+      0.75,
+      1.0,
+      1.5,
+      2.0,
+      3.0,
+      5.0,
+      8.0,
+      13.0,
+      21.0,
+      34.0
+    ],
+    "temperature_fit_split": "Discovery only; frozen before Validation and Blind OOS",
+    "primary_endpoint": "Blind OOS joint NLL gain M1 versus M0; positive favours M1",
+    "practical_threshold_primary_nats_per_draw": 0.005,
+    "secondary_endpoints": [
+      "m1_vs_uniform_joint_nll_gain",
+      "m0_vs_uniform_joint_nll_gain",
+      "m1_vs_m0_marginal_brier_gain",
+      "m1_vs_uniform_marginal_brier_gain",
+      "m0_vs_uniform_marginal_brier_gain"
+    ],
+    "block_length": 20,
+    "bootstrap_replicates": 20000,
+    "signflip_replicates": 20000,
+    "holm_family_size": 6
+  },
+  "calibration": {
+    "m0_selected_temperature": 34.0,
+    "m1_selected_temperature": 34.0,
+    "m0_discovery_grid": [
+      {
+        "temperature": 0.05,
+        "mean_joint_nll": 61.440504832202535
+      },
+      {
+        "temperature": 0.1,
+        "mean_joint_nll": 32.3767634273245
+      },
+      {
+        "temperature": 0.2,
+        "mean_joint_nll": 19.54060848442785
+      },
+      {
+        "temperature": 0.35,
+        "mean_joint_nll": 15.514186448532646
+      },
+      {
+        "temperature": 0.5,
+        "mean_joint_nll": 14.42360498089746
+      },
+      {
+        "temperature": 0.75,
+        "mean_joint_nll": 13.839872968046578
+      },
+      {
+        "temperature": 1.0,
+        "mean_joint_nll": 13.639598111938477
+      },
+      {
+        "temperature": 1.5,
+        "mean_joint_nll": 13.500204304047541
+      },
+      {
+        "temperature": 2.0,
+        "mean_joint_nll": 13.452892058190153
+      },
+      {
+        "temperature": 3.0,
+        "mean_joint_nll": 13.420143323554727
+      },
+      {
+        "temperature": 5.0,
+        "mean_joint_nll": 13.404208751125957
+      },
+      {
+        "temperature": 8.0,
+        "mean_joint_nll": 13.399178725013456
+      },
+      {
+        "temperature": 13.0,
+        "mean_joint_nll": 13.397422885372466
+      },
+      {
+        "temperature": 21.0,
+        "mean_joint_nll": 13.396910505340578
+      },
+      {
+        "temperature": 34.0,
+        "mean_joint_nll": 13.39680376432779
+      }
+    ],
+    "m1_discovery_grid": [
+      {
+        "temperature": 0.05,
+        "mean_joint_nll": 66.71238890243585
+      },
+      {
+        "temperature": 0.1,
+        "mean_joint_nll": 34.89028608588622
+      },
+      {
+        "temperature": 0.2,
+        "mean_joint_nll": 20.58431960227258
+      },
+      {
+        "temperature": 0.35,
+        "mean_joint_nll": 15.935329719070237
+      },
+      {
+        "temperature": 0.5,
+        "mean_joint_nll": 14.641156720431297
+      },
+      {
+        "temperature": 0.75,
+        "mean_joint_nll": 13.939030612792386
+      },
+      {
+        "temperature": 1.0,
+        "mean_joint_nll": 13.696194211958641
+      },
+      {
+        "temperature": 1.5,
+        "mean_joint_nll": 13.52617509996599
+      },
+      {
+        "temperature": 2.0,
+        "mean_joint_nll": 13.468039380792248
+      },
+      {
+        "temperature": 3.0,
+        "mean_joint_nll": 13.42740560857504
+      },
+      {
+        "temperature": 5.0,
+        "mean_joint_nll": 13.40723092180843
+      },
+      {
+        "temperature": 8.0,
+        "mean_joint_nll": 13.400605172214336
+      },
+      {
+        "temperature": 13.0,
+        "mean_joint_nll": 13.398120005832164
+      },
+      {
+        "temperature": 21.0,
+        "mean_joint_nll": 13.397274294220779
+      },
+      {
+        "temperature": 34.0,
+        "mean_joint_nll": 13.39700255322574
+      }
+    ]
+  },
+  "split_metrics": {
+    "discovery": {
+      "targets": 2014,
+      "m0_joint_nll": 13.39680376432779,
+      "m1_joint_nll": 13.39700255322574,
+      "uniform_joint_nll": 13.396972368288258,
+      "m0_marginal_brier": 0.10937405365357647,
+      "m1_marginal_brier": 0.10937517025923063,
+      "uniform_marginal_brier": 0.109375
+    },
+    "validation": {
+      "targets": 671,
+      "m0_joint_nll": 13.398012383341328,
+      "m1_joint_nll": 13.398240758019702,
+      "uniform_joint_nll": 13.396972368288257,
+      "m0_marginal_brier": 0.10938084557290752,
+      "m1_marginal_brier": 0.10938213647563322,
+      "uniform_marginal_brier": 0.109375
+    },
+    "blind_oos": {
+      "targets": 671,
+      "m0_joint_nll": 13.396983045840013,
+      "m1_joint_nll": 13.397159607996866,
+      "uniform_joint_nll": 13.396972368288257,
+      "m0_marginal_brier": 0.10937505046303567,
+      "m1_marginal_brier": 0.10937605072218923,
+      "uniform_marginal_brier": 0.109375
+    }
+  },
+  "blind_oos_inference": {
+    "m1_vs_m0_joint_nll_gain": {
+      "mean_gain": -0.000176562156849981,
+      "ci95_circular_block_bootstrap": [
+        -0.000581424142791915,
+        0.0002252649729052247
+      ],
+      "p_one_sided_block_signflip": 0.7707614619269036,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m1_vs_uniform_joint_nll_gain": {
+      "mean_gain": -0.00018723970860855005,
+      "ci95_circular_block_bootstrap": [
+        -0.002046807280182517,
+        0.0017154430466372924
+      ],
+      "p_one_sided_block_signflip": 0.5580220988950553,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m0_vs_uniform_joint_nll_gain": {
+      "mean_gain": -1.067755175856904e-05,
+      "ci95_circular_block_bootstrap": [
+        -0.0017108252687144546,
+        0.0017270411193337483
+      ],
+      "p_one_sided_block_signflip": 0.5021248937553122,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m1_vs_m0_marginal_brier_gain": {
+      "mean_gain": -1.0002591535884166e-06,
+      "ci95_circular_block_bootstrap": [
+        -3.2518025351597525e-06,
+        1.2873223034172087e-06
+      ],
+      "p_one_sided_block_signflip": 0.7742112894355282,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m1_vs_uniform_marginal_brier_gain": {
+      "mean_gain": -1.0507221892442378e-06,
+      "ci95_circular_block_bootstrap": [
+        -1.1493953478387163e-05,
+        9.589420477011476e-06
+      ],
+      "p_one_sided_block_signflip": 0.568471576421179,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    },
+    "m0_vs_uniform_marginal_brier_gain": {
+      "mean_gain": -5.0463035655821163e-08,
+      "ci95_circular_block_bootstrap": [
+        -9.392351525061878e-06,
+        9.547256228027568e-06
+      ],
+      "p_one_sided_block_signflip": 0.5083745812709365,
+      "block_count": 34,
+      "block_length": 20,
+      "replicates": 20000,
+      "p_holm_six_endpoint_family": 1.0
+    }
+  },
+  "integrity": {
+    "strict_prior_feature_builder": true,
+    "score_before_state_update": true,
+    "archive_blob_pinned": true,
+    "matrix_finite": true,
+    "all_cutoffs_precede_targets": true,
+    "temperature_fit_uses_discovery_only": true,
+    "future_suffix_invariance_tested_in_unit_tests": true,
+    "deterministic_seed": 14111319
+  },
+  "limitations": [
+    "Historical Blind OOS has been exposed to earlier SONAR research; this is exploratory, not virgin confirmatory evidence.",
+    "Holm correction covers the six A9 endpoints only, not the full Q00-Q141 research family.",
+    "The fixed-size exponential-family distribution is a score-to-probability representation, not a physical model of the lottery.",
+    "Temperature calibration is selected on Discovery and may be misspecified; Discovery metrics are calibration-sample diagnostics.",
+    "The marginal Brier score evaluates 40 inclusion marginals and does not replace the joint subset log score.",
+    "No B11 prospective outcome is read or used; no existing prediction freeze is changed."
+  ]
+}

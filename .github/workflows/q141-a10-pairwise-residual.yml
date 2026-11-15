@@ -1,0 +1,129 @@
+name: SONAR Q141-A10 Pairwise Residual Behaviour
+on:
+  push:
+    branches:
+      - research/q141-a7-fresh59-behaviour-20261113
+    paths:
+      - "scripts/sonar_q141_a10_pairwise_residual.py"
+      - "tests/test_sonar_q141_a10_pairwise_residual.py"
+      - "reports/sequence_agent/q141_a10_pairwise_residual_preregistration_2026-11-13.md"
+      - ".github/workflows/q141-a10-pairwise-residual.yml"
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: sonar-q141-a10-pairwise-residual
+  cancel-in-progress: false
+jobs:
+  pairwise-residual-walkforward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: pip install numpy
+      - name: Compile and run deterministic/leakage tests
+        env:
+          PYTHONPATH: scripts
+        run: |
+          python -m py_compile scripts/sonar_q141_a10_pairwise_residual.py tests/test_sonar_q141_a10_pairwise_residual.py
+          python -m unittest discover -s tests -p "test_sonar_q141_a10_pairwise_residual.py" -v
+      - name: Download pinned Q141-A7 matrix artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: q141-a7-fresh59-behaviour
+          path: a7-source
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: 43348144964
+      - name: Run strict-prior pairwise residual walk-forward
+        run: |
+          python scripts/sonar_q141_a10_pairwise_residual.py \
+            --matrix a7-source/q141_a7_fresh59_feature_matrix_2026-11-13.npz
+      - name: Fail-closed output validation
+        run: |
+          python - <<'PY'
+          import csv, hashlib, json
+          from pathlib import Path
+          p=Path("reports/sequence_agent")
+          report=json.loads((p/"q141_a10_pairwise_residual_report_2026-11-13.json").read_text())
+          manifest=json.loads((p/"q141_a10_pairwise_residual_manifest_2026-11-13.json").read_text())
+          checkpoint=json.loads((p/"q141_a10_pairwise_residual_checkpoint_2026-11-13.json").read_text())
+          assert report["status"]=="COMPLETED_HISTORICAL_EXPLORATORY_WALK_FORWARD"
+          assert report["source"]["archive_blob_sha1"]=="6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb"
+          assert report["design"]["targets"]==2956
+          assert report["design"]["split_counts"]=={"discovery":1774,"validation":591,"blind_oos":591}
+          assert report["integrity"]["future_suffix_invariance"] is True
+          assert report["integrity"]["deterministic_full_replay"] is True
+          assert report["integrity"]["analytic_variance_exhaustive_small_problem_test"] is True
+          with (p/"q141_a10_pairwise_residual_target_ledger_2026-11-13.csv").open(newline="") as f:
+              rows=list(csv.DictReader(f))
+          assert len(rows)==2956
+          assert all(r["cutoff_date"]<r["target_date"] for r in rows)
+          assert all(int(r["target_index"])>=400 for r in rows)
+          assert all(int(r["prior_archive_draws"])==int(r["target_index"])+50 for r in rows)
+          assert all(float(r["recent_residual_rowmax"])<1e-8 and float(r["stale_residual_rowmax"])<1e-8 for r in rows)
+          for name,info in manifest["outputs"].items():
+              b=(p/name).read_bytes()
+              assert len(b)==info["bytes"]
+              assert hashlib.sha256(b).hexdigest()==info["sha256"]
+          assert checkpoint["status"]=="COMPLETED_LOCAL_PENDING_REMOTE_READBACK"
+          print("A10_OUTPUT_VALIDATION_PASS",len(rows),len(manifest["outputs"]))
+          PY
+      - name: Persist report, ledger, manifest and checkpoint
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a10_pairwise_residual_report_2026-11-13.json \
+                  reports/sequence_agent/q141_a10_pairwise_residual_target_ledger_2026-11-13.csv \
+                  reports/sequence_agent/q141_a10_pairwise_residual_manifest_2026-11-13.json \
+                  reports/sequence_agent/q141_a10_pairwise_residual_checkpoint_2026-11-13.json
+          git commit -m "Persist Q141-A10 pairwise residual walk-forward"
+          git fetch origin research/q141-a7-fresh59-behaviour-20261113
+          git rebase origin/research/q141-a7-fresh59-behaviour-20261113
+          git push origin HEAD:research/q141-a7-fresh59-behaviour-20261113
+      - name: Verify remote Git readback and finalize checkpoint
+        run: |
+          git fetch origin research/q141-a7-fresh59-behaviour-20261113
+          python - <<'PY'
+          import json, subprocess
+          from pathlib import Path
+          branch="origin/research/q141-a7-fresh59-behaviour-20261113"
+          paths=[
+            "reports/sequence_agent/q141_a10_pairwise_residual_report_2026-11-13.json",
+            "reports/sequence_agent/q141_a10_pairwise_residual_target_ledger_2026-11-13.csv",
+            "reports/sequence_agent/q141_a10_pairwise_residual_manifest_2026-11-13.json"
+          ]
+          checked={}
+          for path in paths:
+              local=subprocess.check_output(["git","hash-object",path],text=True).strip()
+              remote=subprocess.check_output(["git","rev-parse",f"{branch}:{path}"],text=True).strip()
+              assert local==remote,(path,local,remote)
+              checked[path]=remote
+          cp=Path("reports/sequence_agent/q141_a10_pairwise_residual_checkpoint_2026-11-13.json")
+          obj=json.loads(cp.read_text())
+          obj["status"]="REMOTE_GIT_READBACK_VERIFIED"
+          obj["remote_readback"]={"branch":"research/q141-a7-fresh59-behaviour-20261113","files":checked}
+          cp.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+"\n")
+          PY
+          git add reports/sequence_agent/q141_a10_pairwise_residual_checkpoint_2026-11-13.json
+          git commit -m "Record Q141-A10 remote readback verification"
+          git push origin HEAD:research/q141-a7-fresh59-behaviour-20261113
+          git fetch origin research/q141-a7-fresh59-behaviour-20261113
+          test "$(git hash-object reports/sequence_agent/q141_a10_pairwise_residual_checkpoint_2026-11-13.json)" = "$(git rev-parse origin/research/q141-a7-fresh59-behaviour-20261113:reports/sequence_agent/q141_a10_pairwise_residual_checkpoint_2026-11-13.json)"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: q141-a10-pairwise-residual
+          path: |
+            reports/sequence_agent/q141_a10_pairwise_residual_report_2026-11-13.json
+            reports/sequence_agent/q141_a10_pairwise_residual_target_ledger_2026-11-13.csv
+            reports/sequence_agent/q141_a10_pairwise_residual_manifest_2026-11-13.json
+            reports/sequence_agent/q141_a10_pairwise_residual_checkpoint_2026-11-13.json
+          if-no-files-found: error
+          retention-days: 90

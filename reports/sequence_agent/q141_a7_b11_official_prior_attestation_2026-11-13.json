@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A7-B11-PROSPECTIVE",
+  "status": "OFFICIAL_PRIOR_DRAW_CONFIRMED",
+  "checked_at_utc": "2026-11-13T02:42:56Z",
+  "verified_prior_draw": {
+    "date": "2026-11-12",
+    "contest_number": 316,
+    "numbers": [
+      2,
+      4,
+      7,
+      23,
+      33
+    ],
+    "source_type": "official_vincicasa_archive",
+    "source_url": "https://www.vincicasa.it/archivio-estrazioni",
+    "source_title": "Archivio estrazioni concorsi VinciCasa — sito ufficiale"
+  },
+  "schedule": {
+    "first_prospective_target_date": "2026-11-13",
+    "scheduled_local_time": "20:00",
+    "source_url": "https://www.sisal.it/vincicasa/faq",
+    "source_statement": "VinciCasa extraction takes place every day at 20:00"
+  },
+  "source_reconciliation": {
+    "sisal_latest_results_url": "https://www.sisal.it/vincicasa/ultima-estrazione",
+    "sisal_page_as_checked": "still displayed contest 315 dated 2026-11-11",
+    "resolution": "The official VinciCasa archive independently lists contest 316 on 2026-11-12 with numbers 2, 4, 7, 23, 33. The Sisal latest-results page is treated as a lagging mirror for this draw; the official VinciCasa archive is the source of record."
+  },
+  "repository_archive": {
+    "path": "data/storico_daily.csv",
+    "blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "draw_count": 3406,
+    "last_date": "2026-11-12",
+    "last_numbers": [
+      2,
+      4,
+      7,
+      23,
+      33
+    ]
+  },
+  "guardrails": {
+    "no_prediction_outcome_read": true,
+    "no_interim_efficacy_analysis": true,
+    "no_retuning": true,
+    "append_only_prospective_ledger": true,
+    "existing_prs_6_7_8_89_untouched": true
+  }
+}

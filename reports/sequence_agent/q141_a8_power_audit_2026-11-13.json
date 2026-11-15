@@ -1,0 +1,85 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-A8-POWER-AUDIT",
+  "status": "COMPLETED_DESIGN_SIMULATION_NOT_PREDICTIVE_TEST",
+  "design": {
+    "population": "uniform 5-of-40 combinatorial null",
+    "top_k": 5,
+    "numbers": 40,
+    "targets_total": 200,
+    "active_target_scenarios": [50, 200],
+    "blocks": 10,
+    "targets_per_block": 20,
+    "sign_flip_configurations": 1024,
+    "holm_worst_case_raw_alpha": 0.025,
+    "conditional_effect_share": 0.02,
+    "implied_expected_hit_difference": 0.1,
+    "replicates_per_scenario": 20000,
+    "seed": 141113,
+    "alternative": "Exponential tilt of the exact 5-of-40 subset difference distribution by exp(lambda * (hits_M1_only - hits_M0_only)); lambda solved for +0.020 paired Top-5 hit share on active targets.",
+    "active_targets_evenly_distributed_across_blocks": true
+  },
+  "scenarios": [
+    {"replacements":1,"top5_overlap":"4/5","active_targets":50,"power":0.0629,"null_type1_rate":0.0037,"monte_carlo_se":0.0017167,"normal_approx_active_n_for_80pct":213},
+    {"replacements":1,"top5_overlap":"4/5","active_targets":200,"power":0.5127,"null_type1_rate":0.0118,"monte_carlo_se":0.0035344,"normal_approx_active_n_for_80pct":213},
+    {"replacements":2,"top5_overlap":"3/5","active_targets":50,"power":0.04795,"null_type1_rate":0.0095,"monte_carlo_se":0.0015108,"normal_approx_active_n_for_80pct":427},
+    {"replacements":2,"top5_overlap":"3/5","active_targets":200,"power":0.26975,"null_type1_rate":0.01575,"monte_carlo_se":0.0031384,"normal_approx_active_n_for_80pct":427},
+    {"replacements":3,"top5_overlap":"2/5","active_targets":50,"power":0.0374,"null_type1_rate":0.00965,"monte_carlo_se":0.0013417,"normal_approx_active_n_for_80pct":640},
+    {"replacements":3,"top5_overlap":"2/5","active_targets":200,"power":0.1791,"null_type1_rate":0.0167,"monte_carlo_se":0.0027113,"normal_approx_active_n_for_80pct":640},
+    {"replacements":4,"top5_overlap":"1/5","active_targets":50,"power":0.03475,"null_type1_rate":0.01235,"monte_carlo_se":0.0012950,"normal_approx_active_n_for_80pct":853},
+    {"replacements":4,"top5_overlap":"1/5","active_targets":200,"power":0.1399,"null_type1_rate":0.0168,"monte_carlo_se":0.0024528,"normal_approx_active_n_for_80pct":853},
+    {"replacements":5,"top5_overlap":"0/5","active_targets":50,"power":0.03025,"null_type1_rate":0.01365,"monte_carlo_se":0.0012111,"normal_approx_active_n_for_80pct":1066},
+    {"replacements":5,"top5_overlap":"0/5","active_targets":200,"power":0.1107,"null_type1_rate":0.01775,"monte_carlo_se":0.0022186,"normal_approx_active_n_for_80pct":1066}
+  ],
+  "execution_verification": {
+    "unit_tests_passed": 6,
+    "unit_tests_failed": 0,
+    "py_compile_exit_code": 0,
+    "cli_exit_code": 0,
+    "scenario_count": 10,
+    "replicates_per_scenario": 20000,
+    "deterministic_replay": true,
+    "null_rejection_rates_all_at_or_below_0_025": true,
+    "used_historical_or_prospective_draw_outcomes": false,
+    "walk_forward_run": false
+  },
+  "b11_status": {
+    "target_date": "2026-11-13",
+    "scheduled_time_local": "2026-11-13T20:00:00+01:00",
+    "prior_cutoff_date": "2026-11-12",
+    "prior_draws": 3406,
+    "frozen_predictions": 1,
+    "outcomes_reconciled": 0,
+    "prediction_sha256": "009f56ae414852c223a81a7d209e17bc4f94076b72556c87d15273001470a1f3",
+    "m0_top5": [25,1,7,27,36],
+    "m1_top5": [25,1,27,7,36],
+    "top5_intersection": 5,
+    "divergence": 0.0,
+    "ledger_status": "PENDING_OFFICIAL_PUBLICATION"
+  },
+  "repository_state": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "branch": "research/q141-a7-fresh59-behaviour-20261113",
+    "parent_commit": "e33d6b9d80003b50cb80e8122bc3da01acb1be4e",
+    "main_head": "05f84e57fd0d2028c3f641742e39db4f1629db8c",
+    "canonical_archive_blob_sha1": "6e53bd2dc02932d1cef5af4f68e17734d9d1e6cb",
+    "canonical_archive_rows": 3406,
+    "canonical_archive_last_date": "2026-11-12"
+  },
+  "ci_observation": {
+    "latest_a7_run": {"id":43367439499,"conclusion":"action_required","jobs_returned":0,"head_sha":"e33d6b9d80003b50cb80e8122bc3da01acb1be4e"},
+    "latest_general_ci_run": {"id":43367439469,"conclusion":"action_required","jobs_returned":0,"head_sha":"e33d6b9d80003b50cb80e8122bc3da01acb1be4e"},
+    "previous_successful_a7_run": {"id":43367111516,"conclusion":"success","head_sha":"351b9751bc6ea037cfed32254ba35370c4335608"},
+    "previous_successful_general_ci_run": {"id":43367111537,"conclusion":"success","head_sha":"351b9751bc6ea037cfed32254ba35370c4335608"},
+    "current_head_ci_verified": false,
+    "note": "Latest action_required runs have zero jobs. The API does not expose a more specific reason; they are neither test failures nor successful validation of the current head."
+  },
+  "limitations": [
+    "Design power audit only; not a predictive test.",
+    "Exponential-tilt alternative is a sensitivity model, not a claim about the lottery mechanism.",
+    "Power depends on the actual divergence-size distribution and serial dependence.",
+    "Only ten block-level sign units are available in the 200-target design.",
+    "No B11 outcome is read, appended, or used to tune A8."
+  ],
+  "decision": "Keep A8 draft-only. Before activation, specify block aggregation, avoid redundant confirmatory endpoints, and redesign sample size or use a separately preregistered calibrated proper scoring rule."
+}
