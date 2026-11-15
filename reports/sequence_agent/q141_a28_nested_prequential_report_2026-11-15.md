@@ -58,5 +58,7 @@
 
 - Local replay and source-artifact hash checks: PASS.
 - Per-target validation and blind ledgers: generated locally; their local evidence-bundle hashes are in the persistence manifest.
-- Repository code/output persistence, exact-head CI and human review: PENDING.
+- Report, validation, checkpoint and evidence-manifest: committed and read back on the Q141-A27 research branch.
+- Candidate panel and per-target ledgers: generated in the downloadable evidence bundle; repository persistence is PENDING.
+- Reproducible analysis code, exact-head CI and human review: PENDING.
 - No engine promotion, no shadow insertion, no freeze mutation, no merge.
