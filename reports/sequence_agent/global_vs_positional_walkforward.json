@@ -2,35 +2,35 @@
   "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
   "source": "data/storico_daily.csv",
   "first_date": "2017-07-17",
-  "last_date": "2026-11-13",
-  "draws": 3407,
+  "last_date": "2026-11-14",
+  "draws": 3408,
   "warmup_draws": 500,
-  "evaluated_targets": 2907,
+  "evaluated_targets": 2908,
   "same_targets_and_splits": true,
   "global_top20_definition": "Rank numbers by frequency in the previous 100 draws; deterministic ties resolve by smaller number.",
   "raw_positional_union_definition": "Union the top 3 smoothed values for each of P1-P5 before any completion; report raw union size before deduplication (set union) and before filling.",
   "completion_to_20_rule": "Keep the union seeds ranked by summed position-conditioned scores; fill remaining slots with the global trailing-100 frequency ranking until 20 distinct numbers are selected.",
   "raw_positional_union_size": {
-    "targets": 2907,
-    "mean_raw_union_size": 14.620915032679738,
+    "targets": 2908,
+    "mean_raw_union_size": 14.621045392022008,
     "minimum_raw_union_size": 12,
     "maximum_raw_union_size": 15,
     "size_distribution": {
       "12": 5,
       "13": 113,
       "14": 861,
-      "15": 1928
+      "15": 1929
     }
   },
   "overall": {
     "global_top20": {
-      "targets": 2907,
-      "mean_hits": 2.5084279325765393,
+      "targets": 2908,
+      "mean_hits": 2.5085969738651994,
       "hit_distribution": {
         "0": 65,
         "1": 446,
         "2": 915,
-        "3": 974,
+        "3": 975,
         "4": 441,
         "5": 66
       },
@@ -38,22 +38,22 @@
       "top20_4plus": 507
     },
     "position_seed_mix_top20": {
-      "targets": 2907,
-      "mean_hits": 2.5077399380804954,
+      "targets": 2908,
+      "mean_hits": 2.5079092159559835,
       "hit_distribution": {
         "0": 76,
         "1": 432,
         "2": 936,
-        "3": 947,
+        "3": 948,
         "4": 435,
         "5": 81
       },
       "top20_5of5": 81,
       "top20_4plus": 516
     },
-    "mean_hit_delta_mix_minus_global": -0.0006879944960438422,
+    "mean_hit_delta_mix_minus_global": -0.0006877579092159358,
     "random_top20_5of5_baseline_rate": 0.02356202356202356,
-    "random_top20_5of5_expected_count": 68.4948024948025
+    "random_top20_5of5_expected_count": 68.51836451836452
   },
   "chronological_splits": {
     "discovery": {
@@ -101,26 +101,26 @@
       "random_top20_5of5_expected_count": 41.092169092169094
     },
     "validation": {
-      "targets": 581,
+      "targets": 582,
       "raw_positional_union_size": {
-        "targets": 581,
-        "mean_raw_union_size": 14.628227194492254,
+        "targets": 582,
+        "mean_raw_union_size": 14.628865979381443,
         "minimum_raw_union_size": 13,
         "maximum_raw_union_size": 15,
         "size_distribution": {
           "13": 20,
           "14": 176,
-          "15": 385
+          "15": 386
         }
       },
       "global_top20": {
-        "targets": 581,
-        "mean_hits": 2.4182444061962136,
+        "targets": 582,
+        "mean_hits": 2.4192439862542954,
         "hit_distribution": {
           "0": 11,
           "1": 105,
           "2": 185,
-          "3": 198,
+          "3": 199,
           "4": 74,
           "5": 8
         },
@@ -128,20 +128,20 @@
         "top20_4plus": 82
       },
       "position_seed_mix_top20": {
-        "targets": 581,
-        "mean_hits": 2.4698795180722892,
+        "targets": 582,
+        "mean_hits": 2.470790378006873,
         "hit_distribution": {
           "0": 11,
           "1": 90,
           "2": 197,
-          "3": 192,
+          "3": 193,
           "4": 80,
           "5": 11
         },
         "top20_5of5": 11,
         "top20_4plus": 91
       },
-      "random_top20_5of5_expected_count": 13.68953568953569
+      "random_top20_5of5_expected_count": 13.713097713097714
     },
     "oos": {
       "targets": 582,
@@ -189,7 +189,7 @@
   },
   "per_target_paired": {
     "mix_better": 692,
-    "tie": 1488,
+    "tie": 1489,
     "global_better": 727
   },
   "guardrail": "All forecasts are pre-target. Retrospective OOS is exploratory and does not authorize promotion."
