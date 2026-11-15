@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "project": "VinciCasa SONAR",
+  "checkpoint_id": "SONAR-2026-11-15-ARCHIVE-SYNC-Q80-Q88-REFRESH",
+  "generated_at_utc": "2026-11-15T16:56:59Z",
+  "status": "ARCHIVE_SYNC_VERIFIED_RECOMPUTE_PENDING",
+  "objective": "Continue prior-only ranking of every historical winning number across an expanding, explicitly finite formula grammar; keep descriptive hindsight separate from ex-ante selection.",
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "canonical_branch": "main",
+    "canonical_git_blob_sha": "97b12220b336d5a6c3d71d0a2491e569dc7295e6",
+    "research_branch_git_blob_sha": "97b12220b336d5a6c3d71d0a2491e569dc7295e6",
+    "draw_count": 3408,
+    "first_date": "2017-07-17",
+    "last_date": "2026-11-14",
+    "latest_draw": [
+      7,
+      16,
+      24,
+      25,
+      36
+    ],
+    "previous_research_branch": {
+      "git_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+      "draw_count": 3405,
+      "last_date": "2026-11-11"
+    },
+    "append_only_reconciliation": {
+      "exact_previous_prefix_match": true,
+      "appended_draw_count": 3,
+      "appended_dates": [
+        "2026-11-12",
+        "2026-11-13",
+        "2026-11-14"
+      ],
+      "validation": [
+        "unique chronological dates",
+        "five distinct integers per draw",
+        "all numbers within 1..40"
+      ]
+    }
+  },
+  "research_branch": {
+    "name": "research/per-number-condition-grammar-20261026",
+    "archive_sync_commit": "491863a0d1b17820ea02f722ea32fe7e63f0c1ce",
+    "pull_request": 8,
+    "pull_request_status": "OPEN_DRAFT"
+  },
+  "formula_refresh_before_sync": {
+    "archive_cutoffs": {
+      "Q80": {
+        "draws": 3405,
+        "last_date": "2026-11-11",
+        "formula_count": 3303,
+        "status": "VALIDATED_FINITE_GRAMMAR_COMPLETE"
+      },
+      "Q81": {
+        "draws": 3405,
+        "last_date": "2026-11-11",
+        "formula_count": 17550,
+        "status": "VALIDATED_FINITE_GRAMMAR_COMPLETE"
+      },
+      "Q82": {
+        "draws": 3405,
+        "last_date": "2026-11-11",
+        "formula_count": 4698,
+        "status": "VALIDATED_FINITE_GRAMMAR_COMPLETE"
+      },
+      "Q83": {
+        "draws": 3405,
+        "last_date": "2026-11-11",
+        "formula_count": 80730,
+        "status": "VALIDATED_FINITE_GRAMMAR_COMPLETE"
+      },
+      "Q86": {
+        "draws": 3405,
+        "last_date": "2026-11-11",
+        "formula_count": 296010,
+        "status": "VALIDATED_FINITE_GRAMMAR_COMPLETE"
+      },
+      "Q87": {
+        "draws": 3401,
+        "last_date": "2026-11-07",
+        "formula_count": 888030,
+        "status": "VALIDATED_PENDING_HUMAN_REVIEW"
+      },
+      "Q88": {
+        "draws": 3401,
+        "last_date": "2026-11-07",
+        "formula_count": 2220075,
+        "status": "VALIDATED_PENDING_HUMAN_REVIEW"
+      }
+    },
+    "next_refresh_archive_draws": 3408,
+    "next_refresh_archive_last_date": "2026-11-14",
+    "next_refresh_status": "PENDING_EXACT_HEAD_EXECUTION_AND_ACCEPTANCE"
+  },
+  "ci_evidence": {
+    "historical_run_40372963487": {
+      "conclusion": "SUCCESS",
+      "scope": "older 3388-draw archive through 2026-10-25; not current-head validation"
+    },
+    "historical_run_40372554318": {
+      "conclusion": "CANCELLED",
+      "scope": "prior head; not current-head validation"
+    },
+    "prior_head_f422ec62623a47adfbdec4e685125dea5d00f308": {
+      "run": 43266757890,
+      "conclusion": "SUCCESS",
+      "scope": "persisted Q80/Q81/Q82/Q83/Q86 outputs on 3405-draw archive through 2026-11-11"
+    },
+    "current_archive_sync_head": "491863a0d1b17820ea02f722ea32fe7e63f0c1ce",
+    "current_head_ci": "NOT_YET_VERIFIED",
+    "current_head_combined_status": "NO_STATUS_CHECKS_VISIBLE_AT_CHECKPOINT"
+  },
+  "acceptance": {
+    "Q80_Q86_refresh": "PENDING",
+    "Q87_refresh": "PENDING",
+    "Q88_refresh": "PENDING",
+    "exact_output_persistence_and_readback": "PENDING",
+    "human_review_integration": "PENDING",
+    "prospective_promotion_gate": "INSUFFICIENT_PROSPECTIVE_CASES"
+  },
+  "guardrails": [
+    "Use only the strict historical prefix before each target.",
+    "Keep retrospective best-per-target formula choices descriptive; never count them as ex-ante forecasts.",
+    "Do not claim the finite 27-feature grammar exhausts all mathematical formulas.",
+    "Continue beyond 3, 4, 5, 6, 7 and 8 feature subsets under explicit compute budgets; do not silently truncate.",
+    "Preserve immutable target-2026-10-25 freeze and all other historical/prospective freezes append-only.",
+    "No automatic strategy promotion.",
+    "No automatic merge of PR #6, #7 or #8."
+  ],
+  "next_actions": [
+    "Run Q80-Q86 on the exact refreshed archive and validate target counts, strict prior cutoffs, formula dimensions, split metrics and Holm families.",
+    "Refresh Q87 and Q88 on the same canonical archive using deterministic sharded batches and complete formula coverage.",
+    "Persist outputs in chunks through Git Data API, re-read and verify exact bytes and all row/formula ranges.",
+    "Run CI on the final persisted exact head; retain VALIDATED_PENDING_HUMAN_REVIEW until human review/integration.",
+    "Then integrate the expanded formula candidates into the Q84 per-number field/flow selector using Discovery-only candidate selection."
+  ]
+}
