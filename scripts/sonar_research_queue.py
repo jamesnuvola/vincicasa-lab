@@ -848,6 +848,25 @@ def validate_q83():
 
 
 
+
+def validate_q84():
+    import subprocess
+    import sys
+    unpacker = ROOT / "scripts" / "unpack_q84_sources.py"
+    if not unpacker.is_file():
+        return ["Q84 source bundle unpacker missing"]
+    try:
+        result = subprocess.run(
+            [sys.executable, str(unpacker)], cwd=ROOT, capture_output=True, text=True, check=False
+        )
+        if result.returncode:
+            return ["Q84 source bundle unpack failed: " + (result.stderr or result.stdout)[-2000:]]
+        from validate_sonar_strategy_atlas import validate_q84 as validate
+        return validate()
+    except Exception as exc:
+        return ["Q84 acceptance validator could not run: " + str(exc)]
+
+
 def validate_q85():
     errors=[]
     report=load_json(Q85_REPORT)
@@ -868,6 +887,19 @@ def validate_q85():
     add_error(errors,canonical.get("last_draw")==last_draw and research.get("last_draw")==last_draw,"Q85 latest quintet mismatch")
     add_error(errors,report.get("delta",{}).get("new_draws_on_main_not_yet_in_research_branch")==0,"Q85 archive delta unresolved")
     add_error(errors,report.get("immutable_target_2026_10_25_freeze_overwritten") is False,"Q85 immutable freeze guard missing")
+    archive_sha256=hashlib.sha256(raw).hexdigest()
+    for path in (Q80_REPORT,Q81_REPORT,Q82_REPORT,Q83_REPORT,Q86_REPORT):
+        if not path.is_file():
+            errors.append("Q85 refreshed formula report missing: "+str(path.relative_to(ROOT)))
+            continue
+        current=load_json(path)
+        add_error(errors,current.get("status")=="VALIDATED_FINITE_GRAMMAR_COMPLETE",
+                  "Q85 formula report is not in validated finite-grammar state: "+path.name)
+        add_error(errors,current.get("target_count")==len(rows) and current.get("last_date")==last.get("data"),
+                  "Q85 formula report cutoff is stale: "+path.name)
+        if current.get("source_archive_sha256") is not None:
+            add_error(errors,current.get("source_archive_sha256")==archive_sha256,
+                      "Q85 formula report archive SHA mismatch: "+path.name)
     return errors
 
 
@@ -1267,7 +1299,7 @@ def main():
 
     validators = {"Q10": validate_q10, "Q20": validate_q20, "Q30": validate_q30,
                   "Q40": validate_q40, "Q50": validate_q50, "Q80": validate_q80, "Q81": validate_q81,
-                  "Q82": validate_q82, "Q83": validate_q83, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87, "Q88": validate_q88}
+                  "Q82": validate_q82, "Q83": validate_q83, "Q84": validate_q84, "Q85": validate_q85, "Q86": validate_q86, "Q87": validate_q87, "Q88": validate_q88}
     states = {}
     for task in sorted(tasks, key=lambda t: (t["priority"], t["id"])):
         missing_evidence = [p for p in task.get("evidence", []) if not (ROOT / p).is_file()]
@@ -1303,7 +1335,7 @@ def main():
             except Exception as exc:
                 validation_errors = [str(exc)]
             status = "COMPLETE" if not validation_errors else "EVIDENCE_PRESENT_REQUIRES_VALIDATION"
-            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q86", "Q87", "Q88") and not validation_errors:
+            if task["id"] in ("Q80", "Q81", "Q82", "Q83", "Q84", "Q86", "Q87", "Q88") and not validation_errors:
                 status = "VALIDATED_PENDING_HUMAN_REVIEW"
         states[task["id"]] = {
             "id": task["id"], "priority": task["priority"], "title": task["title"],
