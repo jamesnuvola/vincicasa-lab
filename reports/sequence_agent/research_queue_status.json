@@ -1,13 +1,13 @@
 {
-  "generated_at_utc": "2026-11-15T18:05:59.459570+00:00",
+  "generated_at_utc": "2026-11-16T17:44:17.429016+00:00",
   "project": "VinciCasa SONAR",
   "queue_status": "QUEUE_VALID",
   "overall_cycle_status": "INCOMPLETE",
   "task_count": 16,
   "complete_count": 2,
-  "ready_count": 1,
-  "active_next_task": "Q84",
-  "active_next_task_title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
+  "ready_count": 0,
+  "active_next_task": null,
+  "active_next_task_title": null,
   "blocking_tasks": [],
   "next_action": null,
   "tasks": [
@@ -252,22 +252,12 @@
       "id": "Q84",
       "priority": 85,
       "title": "Build the event-level strategy atlas: occasional rules, lifecycle, recurrence, complementarity and residuals",
-      "status": "READY",
+      "status": "VALIDATED_PENDING_HUMAN_REVIEW",
       "depends_on": [
         "Q00"
       ],
-      "missing_evidence": [
-        "reports/sequence_agent/strategy_atlas_catalog.jsonl",
-        "reports/sequence_agent/strategy_atlas_target_ledger.csv",
-        "reports/sequence_agent/strategy_atlas_lifecycle.json",
-        "reports/sequence_agent/strategy_atlas_report.json"
-      ],
-      "validation_errors": [
-        "missing evidence: reports/sequence_agent/strategy_atlas_catalog.jsonl",
-        "missing evidence: reports/sequence_agent/strategy_atlas_target_ledger.csv",
-        "missing evidence: reports/sequence_agent/strategy_atlas_lifecycle.json",
-        "missing evidence: reports/sequence_agent/strategy_atlas_report.json"
-      ],
+      "missing_evidence": [],
+      "validation_errors": [],
       "acceptance_criteria": [
         "catalog preserves one-target, intermittent, conditional, complementary, antagonistic, retrospective and null strategies with stable IDs and formula provenance",
         "all ex-ante target records use only prior draws and preserve the exact cutoff; retrospective strategies are flagged and never counted as ex-ante forecasts",
