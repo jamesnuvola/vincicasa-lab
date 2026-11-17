@@ -6,14 +6,6 @@ on:
     types: [completed]
     branches:
       - research/per-number-condition-grammar-20261026
-  push:
-    branches:
-      - research/per-number-condition-grammar-20261026
-    paths:
-      - "scripts/sonar_per_number_condition_7plus_shard.py"
-      - "scripts/aggregate_sonar_q87_shards.py"
-      - "tests/test_sonar_per_number_condition_7plus_grammar.py"
-      - "data/storico_daily.csv"
 permissions:
   contents: write
   actions: write
@@ -22,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   evaluate-shards:
-    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'push' && (contains(github.event.workflow_run.head_commit.message, '[q87-persist-retry]') || contains(github.event.workflow_run.head_commit.message, '[sonar-archive-refresh]'))) || (github.event_name == 'push' && !contains(github.event.head_commit.message, '[sonar-archive-refresh]') && !contains(github.event.head_commit.message, '[q87-persist-retry]') && !contains(github.event.head_commit.message, '[q88-persist-retry]')) }}
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'workflow_dispatch' && contains(github.event.workflow_run.head_commit.message, '[q80-validate-persisted]') && !contains(github.event.workflow_run.head_commit.message, '[q87-persisted]') && !contains(github.event.workflow_run.head_commit.message, '[q88-persisted]')) }}
     name: Evaluate shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 360
@@ -63,6 +55,9 @@ jobs:
     needs: evaluate-shards
     if: ${{ needs.evaluate-shards.result == 'success' }}
     runs-on: ubuntu-latest
+    concurrency:
+      group: sonar-research-branch-persistence
+      cancel-in-progress: false
     timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
@@ -80,6 +75,8 @@ jobs:
           pattern: sonar-q87-shard-*
           merge-multiple: true
           path: reports/sequence_agent/q87_shards
+      - name: Refresh SONAR base metrics for the canonical archive queue gate
+        run: python scripts/sonar_sequence_agent.py
       - name: Aggregate shards and apply global Holm correction
         run: python scripts/aggregate_sonar_q87_shards.py
       - name: Validate complete Q87 queue and evidence

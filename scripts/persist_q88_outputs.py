@@ -95,6 +95,7 @@ def main():
     paths=[str(report_path.relative_to(ROOT)),
       "reports/sequence_agent/per_number_condition_8plus_formula_metrics_manifest.json",
       "reports/sequence_agent/per_number_condition_8plus_target_ledger.csv",
+      "reports/sequence_agent/latest_metrics.json",
       "reports/sequence_agent/research_queue_status.json",
       str(checkpoint_path.relative_to(ROOT))]
     paths.extend(x["path"] for x in report.get("metrics_parts",[]))

@@ -158,6 +158,9 @@ jobs:
 
   persist-q80:
     needs: validate
+    concurrency:
+      group: sonar-research-branch-persistence
+      cancel-in-progress: false
     if: always() && github.event_name == 'push' && github.ref == 'refs/heads/research/per-number-condition-grammar-20261026' && !contains(github.event.head_commit.message, '[q80-validate-persisted]') && (contains(github.event.head_commit.message, '[q80-reuse-artifact]') || needs.validate.result == 'success')
     runs-on: ubuntu-latest
     permissions:
@@ -166,7 +169,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Verify and unpack Q84 persistence source
-        run: python scripts/unpack_q84_sources.py
+        run: |
+          python scripts/unpack_q84_sources.py
+          python -m py_compile scripts/persist_q84_outputs_gitpush.py
       - name: Download validated Q80-Q86/Q84 persistence bundle
         uses: actions/download-artifact@v4
         with:
@@ -188,11 +193,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/persist_q86_outputs.py
-      - name: Persist validated Q84 event-level strategy atlas and checkpoint via Git Data API
+      - name: Persist validated Q84 event-level strategy atlas and checkpoint via bounded Git push
         id: persist-q84
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python scripts/persist_q84_outputs.py
+        run: python scripts/persist_q84_outputs_gitpush.py
       - name: Request CI on the persisted exact head
         if: steps.persist-q86.outputs.commit_created == 'true' || steps.persist-q84.outputs.commit_created == 'true'
         env:
