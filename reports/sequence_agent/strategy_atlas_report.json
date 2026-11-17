@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q84",
+  "status": "COMPUTED_PENDING_ACCEPTANCE_VALIDATION",
+  "review_status": "PENDING_HUMAN_REVIEW_INTEGRATION",
+  "source_archive": "data/storico_daily.csv",
+  "source_archive_git_blob_sha1": "f06f142e4b399b09ba4405470b06ea2a37e2547d",
+  "source_archive_sha256": "9444856a92c5410dbf9d2fe685e684943a739b9dd2468fe893f089808b035cee",
+  "target_count": 3410,
+  "first_date": "2017-07-17",
+  "last_date": "2026-11-16",
+  "latest_quintet": [
+    12,
+    15,
+    25,
+    31,
+    34
+  ],
+  "minimum_prior_history": 200,
+  "scored_targets": 3210,
+  "strategy_count": 42,
+  "base_strategy_count": 42,
+  "pair_relationship_count": 861,
+  "retrospective_catalog_count": 1,
+  "catalog_record_count": 904,
+  "target_ledger_rows": 134820,
+  "reference_ledger_parity_rows": 134820,
+  "split_counts": {
+    "discovery": 1926,
+    "validation": 642,
+    "blind_oos": 642
+  },
+  "formula_grammar_boundary": {
+    "base_rule_count": 24,
+    "pair_ensemble_count": 12,
+    "ordered_chain_count": 6,
+    "registered_strategy_count": 42,
+    "description": "Finite registered SONAR rule grammar only; this does not exhaust mathematical formulas or the Q80-Q88 per-number formula universes."
+  },
+  "uniform_baselines": {
+    "number_hit_rate_top5": 0.125,
+    "number_hit_rate_top10": 0.25,
+    "number_hit_rate_top20": 0.5,
+    "all5_top5": 1.519738361843625e-06,
+    "all5_top10": 0.0003829740671845935,
+    "all5_top20": 0.02356202356202356,
+    "mean_rank_of_actual_numbers": 20.5
+  },
+  "multiple_testing": {
+    "strategy_performance_family_size": 756,
+    "pairwise_relationship_family_size": 1722,
+    "strategy_method": "Holm-Bonferroni",
+    "pairwise_method": "Holm-Bonferroni over exact paired sign tests"
+  },
+  "result_summary": {
+    "strategies_with_any_all5_top20_event": 42,
+    "strategies_with_no_all5_top20_event": 0,
+    "pair_relationship_counts": {
+      "COMPLEMENTARY_CANDIDATE": 858,
+      "REDUNDANT": 3
+    },
+    "blind_oos_strategies_with_holm_number_top20_below_0_05": 0,
+    "blind_oos_strategies_with_holm_all5_top20_below_0_05": 0
+  },
+  "outputs": {
+    "catalog": "reports/sequence_agent/strategy_atlas_catalog.jsonl",
+    "target_ledger": "reports/sequence_agent/strategy_atlas_target_ledger.csv",
+    "lifecycle": "reports/sequence_agent/strategy_atlas_lifecycle.json",
+    "report": "reports/sequence_agent/strategy_atlas_report.json",
+    "strategy_metrics": "reports/sequence_agent/strategy_atlas_strategy_metrics.csv",
+    "pair_metrics": "reports/sequence_agent/strategy_atlas_pair_metrics.csv",
+    "checkpoint": "reports/sequence_agent/strategy_atlas_checkpoint.json"
+  },
+  "guardrails": [
+    "Each target uses only the complete strict-prior history; the target draw is read only after all strategy rankings are constructed.",
+    "Every ex-ante strategy ranks all 40 numbers; actual ranks are reconciled to the canonical target quintet.",
+    "Pre-target state uses only earlier outcomes for the same strategy.",
+    "Retrospective best-per-target is catalogued but excluded from ex-ante scoring and target rows.",
+    "Null and failed strategies are retained; no strategy is promoted automatically.",
+    "The registered 42-strategy grammar is finite and does not exhaust all mathematical formulas.",
+    "Immutable historical and prospective freezes are never read for writing, reconstructed, or overwritten."
+  ]
+}
