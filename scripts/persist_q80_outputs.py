@@ -47,6 +47,16 @@ OUTPUTS = (
     "reports/sequence_agent/draw_signatures.csv",
     "reports/sequence_agent/wave_events.csv",
     "reports/sequence_agent/shadow_forecasts.csv",
+    "reports/sequence_agent/stage_loss_analysis.json",
+    "reports/sequence_agent/cascade_target_hit_ledger.csv",
+    "reports/sequence_agent/top20_mix_walkforward.json",
+    "reports/sequence_agent/position_regime_residual_lab.json",
+    "reports/sequence_agent/structural_hazard_oos.json",
+    "reports/sequence_agent/global_vs_positional_walkforward.json",
+    "reports/sequence_agent/residual_error_ledger.csv",
+    "reports/sequence_agent/residual_number_feature_ledger.csv",
+    "reports/sequence_agent/prospective_promotion_gate.json",
+    "reports/sequence_agent/position_mix_shadow.csv",
     "reports/sequence_agent/archive_reconciliation_2026-10-28.json",
 )
 API = "https://api.github.com"
