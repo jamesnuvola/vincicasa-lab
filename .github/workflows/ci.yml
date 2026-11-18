@@ -43,6 +43,10 @@ jobs:
       - name: Refresh SONAR retrospective metrics and append-only shadow outcomes
         if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
         run: python scripts/sonar_sequence_agent.py
+
+      - name: Refresh cascade-loss and fixed-mix diagnostics
+        if: github.event_name != 'workflow_dispatch' && !(github.event_name == 'push' && contains(github.event.head_commit.message, '[q80-validate-persisted]'))
+        run: python scripts/sonar_fast_improvements.py
       - name: Test SONAR prospective gate eligibility
         run: python tests/test_sonar_prospective_gate.py -v
       - name: Check exact-source active SONAR engine diagnostic syntax
@@ -145,6 +149,16 @@ jobs:
             reports/sequence_agent/draw_signatures.csv
             reports/sequence_agent/wave_events.csv
             reports/sequence_agent/shadow_forecasts.csv
+            reports/sequence_agent/stage_loss_analysis.json
+            reports/sequence_agent/cascade_target_hit_ledger.csv
+            reports/sequence_agent/top20_mix_walkforward.json
+            reports/sequence_agent/position_regime_residual_lab.json
+            reports/sequence_agent/structural_hazard_oos.json
+            reports/sequence_agent/global_vs_positional_walkforward.json
+            reports/sequence_agent/residual_error_ledger.csv
+            reports/sequence_agent/residual_number_feature_ledger.csv
+            reports/sequence_agent/prospective_promotion_gate.json
+            reports/sequence_agent/position_mix_shadow.csv
             reports/sequence_agent/archive_reconciliation_2026-10-28.json
             reports/sequence_agent/strategy_atlas_catalog.jsonl
             reports/sequence_agent/strategy_atlas_target_ledger.csv
