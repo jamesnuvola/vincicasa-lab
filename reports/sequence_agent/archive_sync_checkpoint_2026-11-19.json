@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q85",
+  "checkpoint_id": "SONAR-2026-11-19-ARCHIVE-SYNC-Q80-Q88-REFRESH",
+  "status": "ARCHIVE_SYNC_VERIFIED_PENDING_RECALCULATION",
+  "branch": "research/per-number-condition-grammar-20261026",
+  "source_main_head": "ca766a2faa1fc2a3bdbe2e5a27bd635ce1558f91",
+  "source_archive_path": "data/storico_daily.csv",
+  "canonical_main_archive_blob_sha1": "9390e35b9d0704909aa6c7ab92b8df1c875510ad",
+  "research_branch_previous_archive_blob_sha1": "0020508fddb662a285a3608ce57d0ea661e873da",
+  "byte_identical_previous_prefix": true,
+  "draw_count": 3413,
+  "first_date": "2017-07-17",
+  "last_date": "2026-11-19",
+  "latest_quintet": [
+    3,
+    16,
+    29,
+    38,
+    40
+  ],
+  "appended_draw_count": 1,
+  "appended_draws": [
+    {
+      "date": "2026-11-19",
+      "numbers": [
+        3,
+        16,
+        29,
+        38,
+        40
+      ]
+    }
+  ],
+  "previous_research_outputs_cutoff": "2026-11-18",
+  "previous_research_outputs_draw_count": 3412,
+  "next_action": "Recompute Q80-Q86 and Q84 on the synchronized 3,413-draw archive; then refresh Q87 and Q88 from deterministic shards on this exact archive. Validate full formula coverage, target cutoffs, split counts and Holm families; persist and read back all outputs before exact-head CI and human review.",
+  "guardrails": [
+    "Every target uses only the complete historical prefix strictly before that target.",
+    "The previous 3,412-draw archive was verified as an exact byte prefix of canonical main; exactly one draw was appended.",
+    "No immutable historical or prospective freeze was modified, reconstructed or overwritten.",
+    "The 2026-10-25 target freeze remains immutable.",
+    "No PR was merged and no model was promoted.",
+    "Archive synchronization is verified; downstream analyses remain stale until their own acceptance validators pass."
+  ]
+}
