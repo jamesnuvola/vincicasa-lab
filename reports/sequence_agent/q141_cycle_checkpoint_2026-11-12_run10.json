@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141_CYCLE_CHECKPOINT",
+  "cycle": 10,
+  "checkpoint_date": "2026-11-12",
+  "status": "Q141_B9_COMPLETE_REMOTE_GIT_READBACK_VERIFIED_NO_EFFECT_FLAGGED",
+  "repository": "jamesnuvola/vincicasa-lab",
+  "branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+  "branch_head": "ef22845fefb6cfef65fb56f985de789b94f7fc85",
+  "pr89": {
+    "number": 89,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "base_sha": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "head_sha": "ef22845fefb6cfef65fb56f985de789b94f7fc85",
+    "rebase_or_integration": "human review only; no rebase performed"
+  },
+  "experiment": {
+    "task_id": "Q141-B9",
+    "workflow_run_id": 43293021378,
+    "workflow_status": "success",
+    "source_q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_archive_draws": 3387,
+    "q7_cutoff": "2026-10-24",
+    "q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_exact_prefix_of_q141": true,
+    "contest_315_excluded": true,
+    "formula_count": 1023,
+    "candidate_quintets": 658008,
+    "feature_families": 10,
+    "main_effect_endpoints": 10,
+    "pairwise_interaction_endpoints": 45,
+    "total_endpoints": 55,
+    "eligible_targets": 3286,
+    "split_counts": {
+      "discovery": 1972,
+      "validation": 657,
+      "blind_oos": 657
+    },
+    "rank_parts_verified": 34,
+    "unit_tests_passed": 7,
+    "blind_minimum_raw_p": 0.022298885055747213,
+    "blind_minimum_raw_p_endpoint": "PAIR_02_06",
+    "blind_minimum_raw_p_holm": 1,
+    "blind_holm_significant_endpoints": 0,
+    "flagged_endpoints": [],
+    "decision": "NO_REGISTERED_MAIN_OR_PAIRWISE_EFFECT_DEMONSTRATED"
+  },
+  "recovery": {
+    "failed_run_id": 43292912400,
+    "cause": "final console summary used relative Path.relative_to with an absolute repository root",
+    "correction_commit": "be66569fdb42d7180e302b597ebb37c858801f5f",
+    "successful_run_id": 43293021378,
+    "successful_run_head": "be66569fdb42d7180e302b597ebb37c858801f5f"
+  },
+  "persistence": {
+    "report_path": "reports/sequence_agent/q141_q7_factorial_attribution_report_2026-11-12.json",
+    "report_git_blob_sha1": "e5c20a3f1f02d731e9b4a0b19cadd4eda71bae9c",
+    "ledger_path": "reports/sequence_agent/q141_q7_factorial_attribution_target_ledger_2026-11-12.csv",
+    "ledger_git_blob_sha1": "888e0382ff790a9f1508febc12685326c4244204",
+    "manifest_path": "reports/sequence_agent/q141_q7_factorial_attribution_manifest_2026-11-12.json",
+    "checkpoint_path": "reports/sequence_agent/q141_q7_factorial_attribution_checkpoint_2026-11-12.json",
+    "receipt_path": "reports/sequence_agent/q141_q7_factorial_attribution_remote_readback_2026-11-12.json",
+    "receipt_status": "REMOTE_GIT_READBACK_VERIFIED",
+    "output_files_verified": 2,
+    "lineage_files_verified": 5
+  },
+  "next_action": "Build the cross-granularity retrospective behaviour atlas while keeping Q7 quintet_score separate from Q80/Q90 per-number_score; reconcile source windows and lineage before joint statistics.",
+  "governance": {
+    "auto_merge": false,
+    "auto_promotion": false,
+    "canonical_archive_mutation": false,
+    "shadow_insertion": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}

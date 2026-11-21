@@ -9,14 +9,16 @@ on:
 permissions:
   contents: read
 
-# Cancel superseded research-branch runs so several expensive historical searches
-# do not compete after each incremental commit.
+# Keep push and pull-request concurrency groups separate: only push runs persist outputs.
+# Push runs on the same full ref remain serialized; the persistence step also recovers stale-head conflicts.
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.head_ref || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ !(startsWith(github.head_ref, 'research/q141-') || startsWith(github.ref, 'refs/heads/research/q141-')) }}
 
 jobs:
   validate:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -29,6 +31,226 @@ jobs:
           node-version: 20
       - name: Install data-generation dependency
         run: pip install numpy
+      - name: Test Q141-B1 canonical formula registry and future-suffix invariance
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_formula_registry.py -v
+      - name: Run Q141-B1 exact alias canonicalization walk-forward
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_formula_registry.py
+      - name: Upload Q141-B1 formula registry bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-b1-formula-registry-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_formula_registry.json
+            reports/sequence_agent/q141_formula_alias_walkforward_report_2026-11-12.json
+            reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json
+            reports/sequence_agent/q141_formula_registry_checkpoint_2026-11-12.json
+          retention-days: 90
+      - name: Test Q141-B2 legacy numerical tie-sensitivity audit
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_legacy_tie_sensitivity.py -v
+      - name: Run Q141-B2 legacy numerical tie-sensitivity audit
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_legacy_tie_sensitivity.py
+      - name: Upload Q141-B2 reproducibility bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-b2-legacy-tie-audit-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_legacy_tie_sensitivity_report_2026-11-12.json
+            reports/sequence_agent/q141_legacy_tie_sensitivity_manifest_2026-11-12.json
+          retention-days: 90
+      - name: Test Q141-B3 canonical formula complexity sampler and leakage invariance
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_formula_size_trend.py -v
+      - name: Run Q141-B3 strict-prior formula-complexity walk-forward
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_formula_size_trend.py
+      - name: Upload Q141-B3 formula-complexity bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-b3-formula-complexity
+          path: |
+            reports/sequence_agent/q141_formula_size_trend_report_2026-11-12.json
+            reports/sequence_agent/q141_formula_size_trend_formula_sample_2026-11-12.csv
+            reports/sequence_agent/q141_formula_size_trend_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_formula_size_trend_manifest_2026-11-12.json
+            reports/sequence_agent/q141_formula_size_trend_checkpoint_2026-11-12.json
+          retention-days: 90
+      - name: Test Q141-B4 pairwise interaction grammar and future-suffix invariance
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_pairwise_interaction.py -v
+      - name: Run Q141-B4 strict-prior pairwise interaction walk-forward
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_pairwise_interaction.py
+      - name: Upload Q141-B4 reproducibility bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-b4-pairwise-interaction
+          path: |
+            reports/sequence_agent/q141_pairwise_interaction_formula_catalog_2026-11-12.csv
+            reports/sequence_agent/q141_pairwise_interaction_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_pairwise_interaction_report_2026-11-12.json
+            reports/sequence_agent/q141_pairwise_interaction_manifest_2026-11-12.json
+            reports/sequence_agent/q141_pairwise_interaction_checkpoint_2026-11-12.json
+          retention-days: 90
+      - name: Test Q141-B5 exhaustive three-way interaction grammar and future-suffix invariance
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_triple_interaction.py -v
+      - name: Run Q141-B5 strict-prior three-way interaction walk-forward
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_triple_interaction.py
+      - name: Upload Q141-B5 reproducibility bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-b5-triple-interaction
+          path: |
+            reports/sequence_agent/q141_triple_interaction_formula_catalog_2026-11-12.csv
+            reports/sequence_agent/q141_triple_interaction_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_triple_interaction_report_2026-11-12.json
+            reports/sequence_agent/q141_triple_interaction_manifest_2026-11-12.json
+            reports/sequence_agent/q141_triple_interaction_checkpoint_2026-11-12.json
+          retention-days: 90
+      - name: Checkout pinned Q7 quintet formula source snapshot
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/checkout@v4
+        with:
+          repository: jamesnuvola/vincicasa-lab
+          ref: 7a37cab601c5f9386131a00246963f8e4aeabf74
+          path: q7-source
+          persist-credentials: false
+      - name: Test Q141-B6 strict-prior formula adaptation and leakage invariance
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_q7_formula_adaptation.py -v
+      - name: Run Q141-B6 Q7 quintet formula prequential adaptation walk-forward
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_q7_formula_adaptation.py
+      - name: Upload Q141-B6 Q7 formula adaptation reproducibility bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-b6-q7-formula-adaptation-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_q7_formula_adaptation_report_2026-11-12.json
+            reports/sequence_agent/q141_q7_formula_adaptation_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_q7_formula_adaptation_manifest_2026-11-12.json
+            reports/sequence_agent/q141_q7_formula_adaptation_checkpoint_2026-11-12.json
+            reports/sequence_agent/q141_q7_formula_adaptation_preregistration_2026-11-12.json
+            reports/sequence_agent/q141_q7_formula_adaptation_preregistration_2026-11-12.md
+          retention-days: 90
+      - name: Test Q141 formula-family leakage and determinism
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_formula_family_anticipation.py -v
+      - name: Run Q141 strict-prior formula-family walk-forward
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_formula_family_anticipation.py
+      - name: Upload Q141 reproducibility bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-formula-family-behaviour-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json
+            reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json
+          retention-days: 90
+      - name: Test Q141-C1 size-adjusted pair-union e-process
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_formula_family_pair_union.py -v
+      - name: Run Q141-C1 strict-prior pair-union walk-forward
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_formula_family_pair_union.py
+      - name: Upload Q141-C1 reproducibility bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-c1-pair-union-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_formula_family_pair_union_report_2026-11-12.json
+            reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json
+          retention-days: 90
+      - name: Test Q141-C2 current-state margin selector leakage and determinism
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python tests/test_sonar_q141_formula_family_margin_selector.py -v
+      - name: Run Q141-C2 strict-prior current-state margin selector
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        run: python scripts/sonar_q141_formula_family_margin_selector.py
+      - name: Upload Q141-C2 reproducibility bundle
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-c2-margin-selector-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json
+            reports/sequence_agent/q141_formula_family_margin_selector_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json
+          retention-days: 90
+      # PR runs validate and upload; only the push run persists to avoid concurrent add/add conflicts.
+      - name: Persist Q141 outputs append-only to the research branch
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/research/q141-')
+        env:
+          BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
+        run: |
+          git add reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json
+          git add reports/sequence_agent/q141_formula_family_pair_union_report_2026-11-12.json reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json
+          git add reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json reports/sequence_agent/q141_formula_family_margin_selector_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json
+          git add reports/sequence_agent/q141_formula_registry.json reports/sequence_agent/q141_formula_alias_walkforward_report_2026-11-12.json reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json reports/sequence_agent/q141_formula_registry_checkpoint_2026-11-12.json
+          git add reports/sequence_agent/q141_legacy_tie_sensitivity_report_2026-11-12.json reports/sequence_agent/q141_legacy_tie_sensitivity_manifest_2026-11-12.json
+          git add reports/sequence_agent/q141_formula_size_trend_report_2026-11-12.json reports/sequence_agent/q141_formula_size_trend_formula_sample_2026-11-12.csv reports/sequence_agent/q141_formula_size_trend_target_ledger_2026-11-12.csv reports/sequence_agent/q141_formula_size_trend_manifest_2026-11-12.json reports/sequence_agent/q141_formula_size_trend_checkpoint_2026-11-12.json
+          git add reports/sequence_agent/q141_pairwise_interaction_formula_catalog_2026-11-12.csv reports/sequence_agent/q141_pairwise_interaction_target_ledger_2026-11-12.csv reports/sequence_agent/q141_pairwise_interaction_report_2026-11-12.json reports/sequence_agent/q141_pairwise_interaction_manifest_2026-11-12.json reports/sequence_agent/q141_pairwise_interaction_checkpoint_2026-11-12.json
+          git add reports/sequence_agent/q141_triple_interaction_formula_catalog_2026-11-12.csv reports/sequence_agent/q141_triple_interaction_target_ledger_2026-11-12.csv reports/sequence_agent/q141_triple_interaction_report_2026-11-12.json reports/sequence_agent/q141_triple_interaction_manifest_2026-11-12.json reports/sequence_agent/q141_triple_interaction_checkpoint_2026-11-12.json
+          git add reports/sequence_agent/q141_q7_formula_adaptation_report_2026-11-12.json reports/sequence_agent/q141_q7_formula_adaptation_target_ledger_2026-11-12.csv reports/sequence_agent/q141_q7_formula_adaptation_manifest_2026-11-12.json reports/sequence_agent/q141_q7_formula_adaptation_checkpoint_2026-11-12.json
+          if git diff --cached --quiet; then
+            echo "Q141 outputs already match this exact checkout; no branch update needed."
+          else
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Persist Q141 formula-family behaviour walk-forward"
+            pushed=false
+            for attempt in 1 2 3; do
+              if git push origin "HEAD:${BRANCH_NAME}"; then
+                pushed=true
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                echo "Research branch advanced during computation; rebasing the output commit onto its latest head."
+                git fetch origin "$BRANCH_NAME"
+                if ! git rebase FETCH_HEAD; then
+                  conflicts="$(git diff --name-only --diff-filter=U)"
+                  if [ -z "$conflicts" ]; then
+                    echo "Q141 rebase failed without a resolvable conflict list."
+                    exit 1
+                  fi
+                  while IFS= read -r path; do
+                    case "$path" in
+                      reports/sequence_agent/q141_formula_family_behaviour_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_behaviour_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_behaviour_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_family_pair_union_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_family_margin_selector_report_2026-11-12.json|reports/sequence_agent/q141_formula_family_margin_selector_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_family_margin_selector_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_registry.json|reports/sequence_agent/q141_formula_alias_walkforward_report_2026-11-12.json|reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_registry_checkpoint_2026-11-12.json|reports/sequence_agent/q141_formula_size_trend_report_2026-11-12.json|reports/sequence_agent/q141_formula_size_trend_formula_sample_2026-11-12.csv|reports/sequence_agent/q141_formula_size_trend_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_formula_size_trend_manifest_2026-11-12.json|reports/sequence_agent/q141_formula_size_trend_checkpoint_2026-11-12.json|reports/sequence_agent/q141_pairwise_interaction_formula_catalog_2026-11-12.csv|reports/sequence_agent/q141_pairwise_interaction_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_pairwise_interaction_report_2026-11-12.json|reports/sequence_agent/q141_pairwise_interaction_manifest_2026-11-12.json|reports/sequence_agent/q141_pairwise_interaction_checkpoint_2026-11-12.json|reports/sequence_agent/q141_triple_interaction_formula_catalog_2026-11-12.csv|reports/sequence_agent/q141_triple_interaction_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_triple_interaction_report_2026-11-12.json|reports/sequence_agent/q141_triple_interaction_manifest_2026-11-12.json|reports/sequence_agent/q141_triple_interaction_checkpoint_2026-11-12.json|reports/sequence_agent/q141_q7_formula_adaptation_report_2026-11-12.json|reports/sequence_agent/q141_q7_formula_adaptation_target_ledger_2026-11-12.csv|reports/sequence_agent/q141_q7_formula_adaptation_manifest_2026-11-12.json|reports/sequence_agent/q141_q7_formula_adaptation_checkpoint_2026-11-12.json)
+                        echo "Resolving concurrent Q141 generated-output conflict in favor of this run: $path"
+                        git checkout --theirs -- "$path"
+                        git add "$path"
+                        ;;
+                      *)
+                        echo "Unexpected Q141 persistence conflict; refusing automatic resolution: $path"
+                        exit 1
+                        ;;
+                    esac
+                  done <<< "$conflicts"
+                  GIT_EDITOR=true git rebase --continue
+                fi
+              fi
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Q141 append-only persistence failed after three attempts."
+              exit 1
+            fi
+          fi
       - name: Audit canonical historical archive
         run: python scripts/audit_dataset.py
       - name: Rebuild generated app data

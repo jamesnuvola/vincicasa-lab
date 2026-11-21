@@ -1,0 +1,73 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141_CYCLE_CHECKPOINT",
+  "checkpoint_date": "2026-11-12",
+  "status": "CYCLE_9_COMPLETE_Q7_AST_AND_COMPLEXITY_READBACK_VERIFIED",
+  "repository": "jamesnuvola/vincicasa-lab",
+  "branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+  "current_main_head": "70dcf8cc128884d9739959406d5662ef76daa253",
+  "pr89": {
+    "number": 89,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "head": "dd7879125201c239ab04d4d07350e117ae8fd186",
+    "base": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "rebase_required_for_integration": true,
+    "commits": 132,
+    "changed_files": 137
+  },
+  "q7": {
+    "source_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "cutoff": "2026-10-24",
+    "draws": 3387,
+    "formulas": 1023,
+    "candidate_quintets": 658008,
+    "typed_ast_count": 1023,
+    "unique_ast_ids": 1023,
+    "eligible_targets": 3286,
+    "split_counts": {
+      "discovery": 1972,
+      "validation": 657,
+      "blind_oos": 657
+    },
+    "complexity_blind_mean_spearman": 0.005265427766432345,
+    "complexity_blind_mean_percentile": 0.4942539369897852,
+    "complexity_blind_high_low_percentile_delta": -0.004468819397989778,
+    "complexity_primary_p_holm": 1,
+    "decision": "COMPLEXITY_ASSOCIATION_NOT_DEMONSTRATED",
+    "workflow_run_id": 43283772495,
+    "remote_readback_receipt": "reports/sequence_agent/q141_q7_ast_complexity_remote_readback_2026-11-12.json",
+    "remote_readback_status": "REMOTE_GIT_READBACK_VERIFIED",
+    "remote_files_verified": 5
+  },
+  "recovery": {
+    "cause": "manifest path was relative to output directory; verifier required repository-relative paths; first producer correction also compared relative and absolute pathlib paths.",
+    "correction": "resolve both output path and repository root before relative_to; keep exact remote readback checks strict.",
+    "successful_retry_run_id": 43283772495
+  },
+  "next_action": "Execute preregistered Q141-B9 factorial main-effect and pairwise-interaction attribution across 10 Q7 feature families (55 endpoints; Holm-corrected Blind OOS).",
+  "governance": {
+    "auto_merge": false,
+    "auto_promotion": false,
+    "canonical_archive_mutation": false,
+    "shadow_insertion": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "validation_status": {
+    "q141_a4_b8_workflow_run": 43283772495,
+    "q141_a4_b8_workflow": "SUCCESS",
+    "q141_a4_b8_remote_readback": "VERIFIED_5_FILES",
+    "q141_c3_dedicated_run": 43283772543,
+    "q141_c3_dedicated_status": "SUCCESS",
+    "q90_ast_dedicated_run": 43283772483,
+    "q90_ast_dedicated_status": "SUCCESS",
+    "broad_repository_ci_latest_run": 43284430489,
+    "broad_repository_ci_status": "PENDING_NO_JOBS_AT_LAST_CHECK"
+  }
+}

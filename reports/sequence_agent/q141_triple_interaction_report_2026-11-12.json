@@ -1,0 +1,361 @@
+{
+  "acceptance": {
+    "all_2300_triples_enumerated": true,
+    "all_4600_formula_ids_unique": true,
+    "archive_blob_matches_preregistration": true,
+    "chronology_verified": true,
+    "contest_315_excluded": true,
+    "eligible_draw_count_matches": true,
+    "future_suffix_invariance": "covered by Q141-B5 unit test and exact-head CI",
+    "no_pair_or_triple_selection": true,
+    "no_parameter_tuning": true,
+    "no_sampling_or_feature_selection": true,
+    "split_counts_match": true,
+    "strict_prior_cutoffs_verified": true,
+    "target_count_matches": true
+  },
+  "decision": "NO_THREE_WAY_INTERACTION_LIFT_DEMONSTRATED",
+  "formula_universe": {
+    "additive_control_formula_count": 2300,
+    "canonical_feature_count": 25,
+    "catalog_path": "reports/sequence_agent/q141_triple_interaction_formula_catalog_2026-11-12.csv",
+    "catalog_sha256": "85af9a601be4c3e0bb0557cd51b5993e8230f18823f23d882e54510f56903702",
+    "enumeration": "exhaustive C(25,3), no sampling",
+    "formula_ids_unique": true,
+    "formula_variants": 4600,
+    "three_way_interaction_formula_count": 2300,
+    "triple_count": 2300
+  },
+  "hypothesis": "Across the complete 2,300-triple grammar formed from the 25 canonical Q80 features, adding a fixed cross-sectionally standardized pure three-way multiplicative interaction to each additive three-feature score increases mean next-target Top-5 hit share relative to its matched additive control.",
+  "limitations": [
+    "Only the 25 canonical Q80 features are included; Q89, Q90, Q7 and Q92 formula types remain separate.",
+    "The aggregate is an average over 2,300 formula rankings, not a single deployable number ranking.",
+    "No triple-specific p-values or winner selection are performed.",
+    "Historical Blind OOS has prior SONAR research exposure and is not virgin prospective evidence.",
+    "Holm correction covers the 13 registered Q141-B5 tests, not the full Q00-Q141 research history.",
+    "The three-way product grammar is exhaustive only within this declared operator family, not the full mathematical universe."
+  ],
+  "next_action": "Import Q90 interaction/gate ASTs and Q7 candidate-quintet ASTs as separate typed output families; reconcile their source archive lineage before pooled behaviour analysis.",
+  "preregistration_sha256": "0d68379f9f63be73f578fff03984ec9566278726bdeb9c54906122f9c494f8b9",
+  "schema_version": "1.0",
+  "source": {
+    "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "archive_path": "data/storico_daily.csv",
+    "contest_315_used": false,
+    "cutoff": "2026-11-10",
+    "eligible_draws": 3404,
+    "excluded_rows_after_cutoff": 1
+  },
+  "statistical_inference": {
+    "block_length": 20,
+    "confidence_intervals": "circular moving-block bootstrap",
+    "correction": "Holm-Bonferroni",
+    "method": "one-sided chronological block sign-flip",
+    "minimum_practical_top5_delta": 0.005,
+    "primary_blind_oos": {
+      "ci95": [
+        -0.0010726963011031792,
+        0.001425178455548345
+      ],
+      "endpoint": "top5_hit_share_delta",
+      "family": "three_way_interaction_increment",
+      "id": "triple_interaction_minus_additive_top5_blind_oos",
+      "mean_delta": 0.00019662556781310892,
+      "p_holm_13_tests": 1.0,
+      "p_raw": 0.3828808559572021,
+      "split": "blind_oos",
+      "targets": 670
+    },
+    "registered_test_family_size": 13,
+    "replicates": 20000,
+    "seed": 14120261115,
+    "tests": [
+      {
+        "ci95": [
+          -0.0010169571697012888,
+          0.0002872653837015923
+        ],
+        "endpoint": "top5_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top5_discovery",
+        "mean_delta": -0.00037370137583965084,
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.8807559622018899,
+        "split": "discovery",
+        "targets": 2013
+      },
+      {
+        "ci95": [
+          -0.0015895375710058524,
+          -0.00031520767187196276
+        ],
+        "endpoint": "top10_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top10_discovery",
+        "mean_delta": -0.0009512084494265533,
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.9966501674916254,
+        "split": "discovery",
+        "targets": 2013
+      },
+      {
+        "ci95": [
+          -0.0015367070563079106,
+          -0.0004922665716322184
+        ],
+        "endpoint": "top20_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top20_discovery",
+        "mean_delta": -0.0010131968293051682,
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.99990000499975,
+        "split": "discovery",
+        "targets": 2013
+      },
+      {
+        "ci95": [
+          -0.00044115531652951586,
+          0.001892182336551546
+        ],
+        "endpoint": "top5_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top5_validation",
+        "mean_delta": 0.0007061491608890043,
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.13584320783960802,
+        "split": "validation",
+        "targets": 671
+      },
+      {
+        "ci95": [
+          -0.0006368269293073279,
+          0.0014518402125315872
+        ],
+        "endpoint": "top10_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top10_validation",
+        "mean_delta": 0.0003881293332469395,
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.20123993800309983,
+        "split": "validation",
+        "targets": 671
+      },
+      {
+        "ci95": [
+          -0.0008682822523164641,
+          0.0008020508002332675
+        ],
+        "endpoint": "top20_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top20_validation",
+        "mean_delta": -4.639409058511014e-05,
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.5455727213639318,
+        "split": "validation",
+        "targets": 671
+      },
+      {
+        "ci95": [
+          -0.0010726963011031792,
+          0.001425178455548345
+        ],
+        "endpoint": "top5_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top5_blind_oos",
+        "mean_delta": 0.00019662556781310892,
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.3828808559572021,
+        "split": "blind_oos",
+        "targets": 670
+      },
+      {
+        "ci95": [
+          -0.0008419240752757946,
+          0.0013182868267358821
+        ],
+        "endpoint": "top10_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top10_blind_oos",
+        "mean_delta": 0.0002533419857235558,
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.3247337633118344,
+        "split": "blind_oos",
+        "targets": 670
+      },
+      {
+        "ci95": [
+          0.00012355288773523813,
+          0.001662819597663854
+        ],
+        "endpoint": "top20_hit_share_delta",
+        "family": "three_way_interaction_increment",
+        "id": "triple_interaction_minus_additive_top20_blind_oos",
+        "mean_delta": 0.0008876054510058432,
+        "p_holm_13_tests": 0.24438778061096947,
+        "p_raw": 0.01879906004699765,
+        "split": "blind_oos",
+        "targets": 670
+      },
+      {
+        "ci95": [
+          -0.007263999222445411,
+          0.00019018013348020497
+        ],
+        "endpoint": "top5_hit_share_excess_vs_uniform",
+        "family": "top5_uniform_control",
+        "id": "additive_top5_vs_uniform_validation",
+        "mean_delta": -0.003572409771269358,
+        "model": "additive",
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.9651017449127544,
+        "split": "validation",
+        "targets": 671
+      },
+      {
+        "ci95": [
+          -0.006133237218946417,
+          0.00043080736085011613
+        ],
+        "endpoint": "top5_hit_share_excess_vs_uniform",
+        "family": "top5_uniform_control",
+        "id": "interaction_top5_vs_uniform_validation",
+        "mean_delta": -0.0028662606103803533,
+        "model": "interaction",
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.9506024698765062,
+        "split": "validation",
+        "targets": 671
+      },
+      {
+        "ci95": [
+          -0.0065638449059052546,
+          0.0028799480856586636
+        ],
+        "endpoint": "top5_hit_share_excess_vs_uniform",
+        "family": "top5_uniform_control",
+        "id": "additive_top5_vs_uniform_blind_oos",
+        "mean_delta": -0.0018899415963659957,
+        "model": "additive",
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.768011599420029,
+        "split": "blind_oos",
+        "targets": 670
+      },
+      {
+        "ci95": [
+          -0.00580458792991564,
+          0.00247510058403633
+        ],
+        "endpoint": "top5_hit_share_excess_vs_uniform",
+        "family": "top5_uniform_control",
+        "id": "interaction_top5_vs_uniform_blind_oos",
+        "mean_delta": -0.001693316028552888,
+        "model": "interaction",
+        "p_holm_13_tests": 1.0,
+        "p_raw": 0.7650617469126544,
+        "split": "blind_oos",
+        "targets": 670
+      }
+    ]
+  },
+  "status": "COMPUTED",
+  "task_id": "Q141-B5",
+  "walkforward": {
+    "cutoff_policy": "strictly before target",
+    "minimum_prior_history": 50,
+    "split_counts": {
+      "blind_oos": 670,
+      "discovery": 2013,
+      "validation": 671
+    },
+    "state_update": "after target scoring",
+    "summaries": {
+      "blind_oos": {
+        "additive": {
+          "all5_top5_rate": 3.244646333549643e-06,
+          "mean_actual_number_rank": 20.503023880597016,
+          "top10_hit_share": 0.24873653471771578,
+          "top20_hit_share": 0.500705515898767,
+          "top5_hit_share": 0.12311005840363398
+        },
+        "delta": {
+          "mean_actual_number_rank": -0.01695691109669042,
+          "top10_hit_share": 0.0002533419857235558,
+          "top20_hit_share": 0.0008876054510058432,
+          "top5_hit_share": 0.00019662556781310892
+        },
+        "interaction": {
+          "all5_top5_rate": 1.2978585334198572e-06,
+          "mean_actual_number_rank": 20.486066969500325,
+          "top10_hit_share": 0.24898987670343933,
+          "top20_hit_share": 0.5015931213497729,
+          "top5_hit_share": 0.12330668397144712
+        },
+        "targets": 670,
+        "uniform": {
+          "top10": 0.25,
+          "top20": 0.5,
+          "top5": 0.125
+        }
+      },
+      "discovery": {
+        "additive": {
+          "all5_top5_rate": 2.807836022376293e-06,
+          "mean_actual_number_rank": 20.44576111795071,
+          "top10_hit_share": 0.2511939782716689,
+          "top20_hit_share": 0.501311950582086,
+          "top5_hit_share": 0.126
+        },
+        "delta": {
+          "mean_actual_number_rank": 0.021816842696386524,
+          "top10_hit_share": -0.0009512084494265533,
+          "top20_hit_share": -0.0010131968293051682,
+          "top5_hit_share": -0.00037370137583965084
+        },
+        "interaction": {
+          "all5_top5_rate": 2.807836022376293e-06,
+          "mean_actual_number_rank": 20.467577960647095,
+          "top10_hit_share": 0.2502427698222424,
+          "top20_hit_share": 0.5002987537527808,
+          "top5_hit_share": 0.12562629862416036
+        },
+        "targets": 2013,
+        "uniform": {
+          "top10": 0.25,
+          "top20": 0.5,
+          "top5": 0.125
+        }
+      },
+      "validation": {
+        "additive": {
+          "all5_top5_rate": 6.479621590099138e-07,
+          "mean_actual_number_rank": 20.6245077431478,
+          "top10_hit_share": 0.24547242921013412,
+          "top20_hit_share": 0.4957641417741205,
+          "top5_hit_share": 0.12142759022873065
+        },
+        "delta": {
+          "mean_actual_number_rank": -0.007339337782673484,
+          "top10_hit_share": 0.0003881293332469395,
+          "top20_hit_share": -4.639409058511014e-05,
+          "top5_hit_share": 0.0007061491608890043
+        },
+        "interaction": {
+          "all5_top5_rate": 0.0,
+          "mean_actual_number_rank": 20.617168405365124,
+          "top10_hit_share": 0.24586055854338107,
+          "top20_hit_share": 0.49571774768353527,
+          "top5_hit_share": 0.12213373938961966
+        },
+        "targets": 671,
+        "uniform": {
+          "top10": 0.25,
+          "top20": 0.5,
+          "top5": 0.125
+        }
+      }
+    },
+    "target_outcome_used_only_for_scoring": true,
+    "targets": 3354
+  }
+}

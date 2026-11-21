@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B5",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "registered_at": "2026-11-12",
+  "hypothesis": "Across the complete 2,300-triple grammar formed from the 25 canonical Q80 features, adding a fixed cross-sectionally standardized pure three-way multiplicative interaction to each additive three-feature score increases mean next-target Top-5 hit share relative to its matched additive control.",
+  "estimand": "For each strict-prior target, average Top-5 hit share across all 2,300 triple formulas for the interaction-enhanced score and subtract the corresponding average for the matched additive triple score; estimate chronological mean delta separately in Discovery, Validation and historical Blind OOS.",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draws": 3404,
+    "cutoff": "2026-11-10",
+    "minimum_prior_history": 50,
+    "excluded_contest": 315
+  },
+  "formula_universe": {
+    "input_registry": "Q141-B1 canonical Q80 feature registry",
+    "raw_feature_count": 27,
+    "exact_canonical_feature_count": 25,
+    "exact_aliases": {
+      "recent_5": "freq_5",
+      "recent_10": "freq_10"
+    },
+    "triple_count": 2300,
+    "triple_enumeration": "all unordered triples i<j<k from 25 canonical features; exhaustive within this grammar, no sampling or feature selection",
+    "formula_variants": 4600,
+    "additive_control": "A_ijk,t(n) = z_i,t(n) + z_j,t(n) + z_k,t(n)",
+    "interaction_formula": "T_ijk,t(n) = A_ijk,t(n) + Z40(z_i,t(n) * z_j,t(n) * z_k,t(n))",
+    "interaction_standardization": "Z40 uses mean and population standard deviation across the 40 candidate numbers for the current target's prior-only feature values; if standard deviation < 1e-12, interaction term is zero",
+    "ranking": "descending score, deterministic tie break by ascending number 1..40",
+    "coefficient": 1,
+    "parameter_tuning": "none; fixed operator and coefficient registered before execution"
+  },
+  "walkforward": {
+    "target_count": 3354,
+    "expected_split_counts": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "target_cutoff": "strictly before target date",
+    "feature_standardization": "cross-sectional z-score over 40 candidate numbers, using only target-t prior-only feature values",
+    "update_order": "score all 4,600 formula variants for target t before adding target t to occurrence and pair state",
+    "target_outcome_use": "only to score already-frozen rankings; never used in feature construction or formula choice"
+  },
+  "endpoints": {
+    "primary": "mean target-level Top-5 hit-share delta: three-way interaction-enhanced minus matched additive family",
+    "secondary": [
+      "mean target-level Top-10 hit-share delta in each split",
+      "mean target-level Top-20 hit-share delta in each split"
+    ],
+    "uniform_controls": [
+      "additive-family Top-5 hit share versus exact uniform expectation 0.125 in Validation and Blind OOS",
+      "interaction-family Top-5 hit share versus exact uniform expectation 0.125 in Validation and Blind OOS"
+    ],
+    "practical_threshold_top5_delta": 0.005
+  },
+  "baselines": {
+    "matched_additive": "same 2,300 feature triples without the product term",
+    "uniform_top5": 0.125,
+    "uniform_top10": 0.25,
+    "uniform_top20": 0.5
+  },
+  "inference": {
+    "registered_test_family_size": 13,
+    "tests": [
+      "interaction minus additive Top-5, Top-10 and Top-20 in each of 3 splits (9)",
+      "additive versus uniform Top-5 in Validation and Blind OOS (2)",
+      "interaction versus uniform Top-5 in Validation and Blind OOS (2)"
+    ],
+    "correction": "Holm-Bonferroni across all 13 registered tests",
+    "test": "one-sided chronological block sign-flip, positive direction",
+    "block_length": 20,
+    "replicates": 20000,
+    "confidence_intervals": "circular moving-block bootstrap, 20,000 replicates, block length 20",
+    "seed": 14120261115,
+    "formula_level_inference": "no triple-specific p-values or selection; aggregate family summaries only"
+  },
+  "exclusions": [
+    "No Q89 extension features, Q90 gate/interaction ASTs, Q7 candidate-quintet ASTs or Q92 output types.",
+    "No parameter or feature selection using Discovery, Validation or Blind OOS.",
+    "No retrospective per-target oracle or post-target formula selection.",
+    "Historical Blind OOS is exposed research history, not virgin prospective evidence.",
+    "The 2026-11-11 / contest 315 row remains excluded pending primary-source provenance resolution.",
+    "This finite three-way interaction grammar is not the full mathematical formula universe."
+  ],
+  "decision_rule": "A predictive lift is not demonstrated unless the Blind OOS primary delta is positive, exceeds +0.005 Top-5 hit share, survives Holm correction, and Validation is directionally positive. Even then this historical exposed test is exploratory and cannot authorize engine promotion.",
+  "governance": {
+    "research_only": true,
+    "auto_merge": false,
+    "auto_promotion": false,
+    "shadow_insertion": false,
+    "canonical_archive_mutation": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}

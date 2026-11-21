@@ -1,0 +1,210 @@
+{
+  "decision": "LEGACY_FLOATING_POINT_ORDER_CHANGES_SOME_TOP5_TOP10_MEMBERSHIPS_BUT_HAS_TINY_NET_AGGREGATE_HIT_EFFECT",
+  "formula_sample": {
+    "count": 120,
+    "deterministic": true,
+    "per_subset_size": 12,
+    "subset_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ]
+  },
+  "hypothesis": "Legacy NumPy mean and stable math.fsum can resolve near-tied number scores differently; quantify whether those rank differences materially change sampled Top-k coverage.",
+  "interpretation": "This is an implementation sensitivity result only. Stable raw and canonical evaluations remain identical; no predictive advantage or production-ranker replacement is implied.",
+  "limitations": [
+    "Uses the deterministic 120-formula B1 sample, not all 16,628,808 raw formulas or 9,808,263 canonical IDs.",
+    "Top-k share differences are averaged across the 120 formula instances per target; per-formula membership ledgers are not stored in B1.",
+    "Historical blind_oos is exposed research history, not virgin prospective evidence.",
+    "No engine, production ranker or historical forecast is changed."
+  ],
+  "next_action": "Keep legacy Q80 ranker unchanged for compatibility; use stable math.fsum for the canonical registry. Import Q90 interaction/gate ASTs and Q7 candidate-quintet ASTs as separate typed output families with source lineage and archive reconciliation.",
+  "schema_version": "1.0",
+  "source": {
+    "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "b1_ledger_git_blob_sha1": "f9b7c3356f379d3df764b757987b5fde6b7ed823",
+    "b1_ledger_sha256": "e3fa0efeaddf2ea88dd89496057596f47abec53bb2ea4f0f4e5737946da944e6",
+    "b1_manifest_sha256": "46cc5aa0c6043daccb51451c4271e9a0fc57fe4dd9134c2437bccf7de6c72025",
+    "b1_report_sha256": "4fe1d35ff25eea8f3787cc1391b5278b584809a96bb16464e56b171f59f24ae9",
+    "cutoff": "2026-11-10",
+    "eligible_draws": 3404
+  },
+  "statistical_inference": {
+    "multiple_testing": "not applicable: three fixed descriptive Top-k endpoints; no model selection or inferential claim",
+    "p_values": "not applicable: deterministic implementation/numerical sensitivity audit",
+    "predictive_lift_claim": false
+  },
+  "status": "COMPLETE_DIAGNOSTIC",
+  "task_id": "Q141-B2",
+  "walkforward": {
+    "all_targets": {
+      "formula_target_comparisons": 402480,
+      "legacy_rank_mismatch_rate": 0.005741900218644405,
+      "legacy_rank_mismatches": 2311,
+      "maximum_legacy_stable_score_delta": 1.3322676295501878e-15,
+      "maximum_rank_displacement": 7,
+      "targets": 3354,
+      "topk": {
+        "10": {
+          "legacy_minus_stable_hit_count": -16,
+          "legacy_minus_stable_hits_per_100k_actual_number_slots": -0.795070562512423,
+          "legacy_minus_stable_percentage_points": -0.0007950705625124231,
+          "legacy_numpy_mean_hit_share": 0.24924617372292449,
+          "stable_mean_hit_share": 0.24925412442854838,
+          "targets_with_any_hit_share_change": 153,
+          "uniform_reference_hit_share": 0.25
+        },
+        "20": {
+          "legacy_minus_stable_hit_count": 0,
+          "legacy_minus_stable_hits_per_100k_actual_number_slots": 0.0,
+          "legacy_minus_stable_percentage_points": 0.0,
+          "legacy_numpy_mean_hit_share": 0.5003259789306292,
+          "stable_mean_hit_share": 0.5003259789306292,
+          "targets_with_any_hit_share_change": 0,
+          "uniform_reference_hit_share": 0.5
+        },
+        "5": {
+          "legacy_minus_stable_hit_count": -4,
+          "legacy_minus_stable_hits_per_100k_actual_number_slots": -0.19876764062810576,
+          "legacy_minus_stable_percentage_points": -0.00019876764062810577,
+          "legacy_numpy_mean_hit_share": 0.12409113496323115,
+          "stable_mean_hit_share": 0.1240931226396389,
+          "targets_with_any_hit_share_change": 50,
+          "uniform_reference_hit_share": 0.125
+        }
+      }
+    },
+    "legacy_rank_mismatch_rate": 0.005741900218644405,
+    "legacy_rank_mismatches": 2311,
+    "maximum_legacy_stable_score_delta": 1.3322676295501878e-15,
+    "maximum_rank_displacement": 7,
+    "metrics_by_split": {
+      "blind_oos": {
+        "formula_target_comparisons": 80400,
+        "legacy_rank_mismatch_rate": 0.005161691542288557,
+        "legacy_rank_mismatches": 415,
+        "maximum_legacy_stable_score_delta": 8.881784197001252e-16,
+        "maximum_rank_displacement": 5,
+        "targets": 670,
+        "topk": {
+          "10": {
+            "legacy_minus_stable_hit_count": -7,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": -1.7412935323383085,
+            "legacy_minus_stable_percentage_points": -0.0017412935323383085,
+            "legacy_numpy_mean_hit_share": 0.24809701492538255,
+            "stable_mean_hit_share": 0.2481144278607015,
+            "targets_with_any_hit_share_change": 25,
+            "uniform_reference_hit_share": 0.25
+          },
+          "20": {
+            "legacy_minus_stable_hit_count": 0,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": 0.0,
+            "legacy_minus_stable_percentage_points": 0.0,
+            "legacy_numpy_mean_hit_share": 0.5012313432835894,
+            "stable_mean_hit_share": 0.5012313432835894,
+            "targets_with_any_hit_share_change": 0,
+            "uniform_reference_hit_share": 0.5
+          },
+          "5": {
+            "legacy_minus_stable_hit_count": -2,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": -0.4975124378109453,
+            "legacy_minus_stable_percentage_points": -0.0004975124378109452,
+            "legacy_numpy_mean_hit_share": 0.12348756218905453,
+            "stable_mean_hit_share": 0.12349253731343404,
+            "targets_with_any_hit_share_change": 6,
+            "uniform_reference_hit_share": 0.125
+          }
+        }
+      },
+      "discovery": {
+        "formula_target_comparisons": 241560,
+        "legacy_rank_mismatch_rate": 0.0059985096870342775,
+        "legacy_rank_mismatches": 1449,
+        "maximum_legacy_stable_score_delta": 1.3322676295501878e-15,
+        "maximum_rank_displacement": 6,
+        "targets": 2013,
+        "topk": {
+          "10": {
+            "legacy_minus_stable_hit_count": -10,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": -0.8279516476237788,
+            "legacy_minus_stable_percentage_points": -0.0008279516476237788,
+            "legacy_numpy_mean_hit_share": 0.25135204504057607,
+            "stable_mean_hit_share": 0.2513603245570516,
+            "targets_with_any_hit_share_change": 100,
+            "uniform_reference_hit_share": 0.25
+          },
+          "20": {
+            "legacy_minus_stable_hit_count": 0,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": 0.0,
+            "legacy_minus_stable_percentage_points": 0.0,
+            "legacy_numpy_mean_hit_share": 0.5012584865043851,
+            "stable_mean_hit_share": 0.5012584865043851,
+            "targets_with_any_hit_share_change": 0,
+            "uniform_reference_hit_share": 0.5
+          },
+          "5": {
+            "legacy_minus_stable_hit_count": -3,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": -0.24838549428713363,
+            "legacy_minus_stable_percentage_points": -0.00024838549428713363,
+            "legacy_numpy_mean_hit_share": 0.12582132803444435,
+            "stable_mean_hit_share": 0.12582381188938876,
+            "targets_with_any_hit_share_change": 35,
+            "uniform_reference_hit_share": 0.125
+          }
+        }
+      },
+      "validation": {
+        "formula_target_comparisons": 80520,
+        "legacy_rank_mismatch_rate": 0.0055514157973174365,
+        "legacy_rank_mismatches": 447,
+        "maximum_legacy_stable_score_delta": 8.881784197001252e-16,
+        "maximum_rank_displacement": 7,
+        "targets": 671,
+        "topk": {
+          "10": {
+            "legacy_minus_stable_hit_count": 1,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": 0.24838549428713363,
+            "legacy_minus_stable_percentage_points": 0.00024838549428713363,
+            "legacy_numpy_mean_hit_share": 0.24407600596125706,
+            "stable_mean_hit_share": 0.24407352210631408,
+            "targets_with_any_hit_share_change": 28,
+            "uniform_reference_hit_share": 0.25
+          },
+          "20": {
+            "legacy_minus_stable_hit_count": 0,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": 0.0,
+            "legacy_minus_stable_percentage_points": 0.0,
+            "legacy_numpy_mean_hit_share": 0.4966244411326349,
+            "stable_mean_hit_share": 0.4966244411326349,
+            "targets_with_any_hit_share_change": 0,
+            "uniform_reference_hit_share": 0.5
+          },
+          "5": {
+            "legacy_minus_stable_hit_count": 1,
+            "legacy_minus_stable_hits_per_100k_actual_number_slots": 0.24838549428713363,
+            "legacy_minus_stable_percentage_points": 0.00024838549428713363,
+            "legacy_numpy_mean_hit_share": 0.11950322901143648,
+            "stable_mean_hit_share": 0.11950074515649474,
+            "targets_with_any_hit_share_change": 9,
+            "uniform_reference_hit_share": 0.125
+          }
+        }
+      }
+    },
+    "split_counts": {
+      "blind_oos": 670,
+      "discovery": 2013,
+      "validation": 671
+    },
+    "stable_raw_vs_canonical_score_and_rank_mismatches": 0,
+    "strict_prior_cutoffs_rechecked": true,
+    "targets": 3354
+  }
+}

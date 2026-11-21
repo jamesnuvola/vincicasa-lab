@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-C1",
+  "parent_task": "Q141",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "registered_at": "2026-11-12",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draw_count": 3404,
+    "cutoff": "2026-11-10",
+    "excluded_contest": {
+      "date": "2026-11-11",
+      "contest": 315
+    }
+  },
+  "hypothesis": "At least one pair among six prior-only formula-family Top-5 sets has a union whose winning-number coverage exceeds the conditional uniform 5-of-40 expectation for the same target-specific union size.",
+  "family_grammar": {
+    "parent_experiment": "Q141-C0",
+    "unique_features": 25,
+    "families": [
+      "frequency_change",
+      "frequency_level",
+      "lag_memory",
+      "neighbour_field",
+      "position_dependence",
+      "recency_gap"
+    ],
+    "unordered_pairs": 15,
+    "top_k_per_family": 5
+  },
+  "walkforward": {
+    "minimum_prior_history": 50,
+    "expected_targets": 3354,
+    "expected_splits": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "split_rule": "offset/scored_targets <0.60 discovery; <0.80 validation; otherwise blind_oos",
+    "strict_prior": true,
+    "state_update": "only after target scoring"
+  },
+  "target_metrics": {
+    "union_size": "U_t = |S_a,t union S_b,t|",
+    "observed_hits": "H_t = |Y_t intersect union|",
+    "conditional_expected_hits": "5*U_t/40",
+    "union_size_bounds": [
+      5,
+      10
+    ],
+    "observed_hit_bounds": [
+      0,
+      5
+    ]
+  },
+  "null_model": {
+    "assumption": "independent uniform draws of five distinct numbers from 1..40",
+    "conditional_distribution": "H_t | F_(t-1) ~ Hypergeometric(N=40,K=U_t,n=5)",
+    "conditional_mean": "5*U_t/40",
+    "adaptive_union_size": true,
+    "warning": "Do not use an unconditional fixed-parameter convolution; U_t is predictable but adaptive."
+  },
+  "inference": {
+    "method": "predictable conditional hypergeometric e-process",
+    "lambda_grid": [
+      0.05,
+      0.1,
+      0.2,
+      0.4
+    ],
+    "mixture": "equal weight over four fixed lambda-specific martingales",
+    "p_value": "min(1,1/max_t E_mix,t), Ville inequality",
+    "alternative": "one-sided positive excess coverage",
+    "test_count": 45,
+    "holm_method": "Holm-Bonferroni",
+    "holm_family_size": 45,
+    "scope": "15 unordered family pairs x 3 chronological splits"
+  },
+  "primary_gate": {
+    "split": "blind_oos",
+    "criterion": "positive excess hits and Holm-adjusted p<0.05 across all 45 tests",
+    "blind_selection_prohibited": true
+  },
+  "outputs": {
+    "target_ledger_rows": 50310,
+    "ledger_path": "reports/sequence_agent/q141_formula_family_pair_union_target_ledger_2026-11-12.csv",
+    "report_path": "reports/sequence_agent/q141_formula_family_pair_union_report_2026-11-12.json",
+    "manifest_path": "reports/sequence_agent/q141_formula_family_pair_union_manifest_2026-11-12.json"
+  },
+  "guardrails": {
+    "future_suffix_invariance": true,
+    "deterministic_replay": true,
+    "no_target_leakage": true,
+    "no_blind_selection": true,
+    "no_auto_merge": true,
+    "no_promotion": true,
+    "no_shadow_insertion": true,
+    "no_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "limitations": [
+    "six coarse Q80-derived families only",
+    "historical archive exposed to prior SONAR research",
+    "null assumes independent uniform 5-of-40 draws",
+    "Holm family controls only this C1 set of 45 tests, not project-wide Q00-Q141 multiplicity"
+  ],
+  "next_action": "Run the preregistered C1 pair-union e-process; then continue Q141-A lineage audit and Q141-B canonical registry."
+}

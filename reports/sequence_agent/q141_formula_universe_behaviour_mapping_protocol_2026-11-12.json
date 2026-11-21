@@ -1,0 +1,361 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141",
+  "title": "Formula Universe & Behaviour Mapping",
+  "registration_date": "2026-11-12",
+  "status": "IN_PROGRESS",
+  "base_main_sha": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+  "source_archive_blob_sha": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+  "eligible_draw_count": 3404,
+  "eligible_cutoff": "2026-11-10",
+  "quarantined_target": {
+    "date": "2026-11-11",
+    "contest": 315,
+    "reason": "Official primary archive pending; exclude until five numbers are primary-source verified."
+  },
+  "research_question": "Can a broad formula universe describe historical five-number outcomes, and can strictly pre-target observable state anticipate formula-family usefulness?",
+  "layers": [
+    "formula_universe",
+    "behaviour_mapping",
+    "ex_ante_family_anticipation"
+  ],
+  "formula_output_types": [
+    "number_ranking",
+    "quintet_ranking_or_probability",
+    "draw_descriptor_or_condition",
+    "meta_selector"
+  ],
+  "input_families": [
+    "per_number_prior_state",
+    "position_and_rank",
+    "local_geometry_and_gaps",
+    "cooccurrence_and_residual_graph",
+    "whole_draw_descriptors",
+    "temporal_state"
+  ],
+  "operator_families": [
+    "linear_affine_contrast_ratio",
+    "products_and_interactions",
+    "conditional_piecewise_gates",
+    "polynomial_and_spline",
+    "rank_ordinal_monotone_distance",
+    "modular_residue_periodic",
+    "gap_and_order_statistic",
+    "temporal_difference_and_change",
+    "graph_network",
+    "ensembles_and_complementary_unions"
+  ],
+  "canonicalization": {
+    "typed_ast": true,
+    "deterministic_serialization": true,
+    "stable_formula_id": true,
+    "syntactic_deduplication": true,
+    "semantic_deduplication_requires_proof_or_finite_domain_equality": true,
+    "correlation_is_not_equivalence": true,
+    "retain_alias_and_rejection_lineage": true
+  },
+  "prior_work_inventory": [
+    {
+      "task": "Q80",
+      "formula_count": 3303,
+      "description": "Finite formula catalog reused by Q91.",
+      "source_archive_blob_sha1": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+      "status": "Catalog lineage represented through Q91; not yet imported into a canonical registry."
+    },
+    {
+      "task": "Q83",
+      "formula_count": 80730,
+      "metrics_rows": 242190,
+      "parts": 9,
+      "source_archive_sha256": "4c79ac53c482a84a36f60b9823f2ad7c6dad69c75c7472fa760caf4f8c654b44",
+      "status": "Manifest present on PR #8 branch; older source archive."
+    },
+    {
+      "task": "Q86",
+      "formula_count": 296010,
+      "metrics_rows": 888030,
+      "parts": 30,
+      "source_archive_sha256": "4c79ac53c482a84a36f60b9823f2ad7c6dad69c75c7472fa760caf4f8c654b44",
+      "status": "Manifest present on PR #8 branch; same older source archive as Q83."
+    },
+    {
+      "task": "Q87",
+      "formula_count": 888030,
+      "metrics_rows": 2664090,
+      "parts": 89,
+      "source_archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+      "status": "Manifest present on PR #8 branch; source archive differs from Q83/Q86."
+    },
+    {
+      "task": "Q88",
+      "formula_count": 2220075,
+      "metrics_rows": 6660225,
+      "parts": 223,
+      "manifest_archive_sha256": "3bcffb4757febbdf153ed3aa5ce278a77c241dce73294577100bf1a0de197fed",
+      "checkpoint_archive_sha256": "e8d09197b2ee22f8355f84c22893bb72eeae4c14caf55342a1ed5fe681123011",
+      "checkpoint_archive_blob_sha1": "1c9c3824d8caa3fe7d0e888c1875402cc2156a2a",
+      "status": "Archive lineage mismatch; checkpoint says archive refresh required and current-head CI archive mismatch."
+    },
+    {
+      "task": "Q89",
+      "feature_count": 59,
+      "description": "Feature matrix used as Q90 input; Q90 discovery selected 20 of 59 features.",
+      "status": "Feature-level lineage needs canonical import."
+    },
+    {
+      "task": "Q90",
+      "formula_count": 330429,
+      "scored_targets": 3351,
+      "draw_count": 3401,
+      "source_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+      "feature_pool": 59,
+      "selected_features": 20,
+      "formula_types": {
+        "linear_mean": 262599,
+        "pairwise_interaction": 29070,
+        "conditional_gate": 38760
+      },
+      "artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+      "artifact_bytes": 69356707,
+      "status": "Formula acceptance passed and artifact SHA independently verified; raw output bundle not persisted as repository Git objects; nested anticipation/main CI/human review remain pending. Discovery had one Holm-significant Top-5 formula; Validation and Blind OOS had zero; all Blind OOS formula Holm p-values were 1.0."
+    },
+    {
+      "task": "Q91",
+      "formula_count": 3303,
+      "draw_count": 3398,
+      "scored_targets": 3348,
+      "source_archive_blob_sha1": "dc555356fe6543e17c3d7c91969da10491fe8b4e",
+      "policy_count": 6,
+      "selected_policy": "EXPANDING_TOP5",
+      "artifact_sha256": "19ae830a1e50215ead93353ee0b71c692d65a4b647631aa9172fd8bf278df581",
+      "artifact_bytes": 16157390,
+      "status": "Workflow artifact and exact Git object readback verified, including 34/34 score shards. The persisted Holm column is blank; Holm was independently recomputed across 36 raw tests: minimum adjusted p=1.0, zero significant. Selected policy underperformed uniform in Validation and Blind OOS."
+    },
+    {
+      "task": "Q92",
+      "formula_count": 8436285,
+      "feature_count": 27,
+      "subset_size": 10,
+      "shards": 15,
+      "scored_targets_planned": 3352,
+      "source_archive_blob_sha1": "77ca692a6082809fcc6c471501617433ec7c36cf",
+      "source_main_commit": "6cca9022d4311a3f9aba2925fce8c653dc6b63ab",
+      "status": "Combinadic enumeration/rank-unrank core and synthetic tests only; no walk-forward formula metrics or target ledger yet."
+    },
+    {
+      "task": "Q141-C0",
+      "feature_count": 25,
+      "family_count": 6,
+      "targets": 3354,
+      "source_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+      "status": "Executed exploratory; rolling family anticipation showed no lift."
+    },
+    {
+      "task": "Q141-C1",
+      "family_pairs": 15,
+      "tests": 45,
+      "target_pair_rows": 50310,
+      "source_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+      "status": "Executed exploratory; no size-adjusted pair-complementarity lift after Holm."
+    }
+  ],
+  "chronological_protocol": {
+    "target_cutoff": "strictly_before_target",
+    "splits": [
+      "discovery",
+      "validation",
+      "historical_blind_oos",
+      "prospective_shadow"
+    ],
+    "historical_blind_oos_label": "exposed_historical_not_virgin",
+    "retrospective_oracle": "descriptive_only_never_predictive_evidence",
+    "prospective_freezes": "append_only_no_reconstruction"
+  },
+  "primary_question_for_selector": "Do signals observable before target t predict which formula family will have useful coverage on target t?",
+  "required_baselines": [
+    "uniform_5_of_40",
+    "registered_prior_only_sonar",
+    "fixed_family_allocation",
+    "uniform_family_allocation",
+    "discovery_selected_single_family",
+    "recency_only_control",
+    "complexity_matched_control"
+  ],
+  "required_controls": [
+    "full_search_family_multiplicity",
+    "paired_chronological_inference",
+    "block_aware_uncertainty",
+    "future_suffix_invariance",
+    "deterministic_replay",
+    "exact_output_hash_readback",
+    "no_target_leakage"
+  ],
+  "milestones": [
+    {
+      "id": "Q141-A",
+      "name": "Inventory and lineage audit",
+      "status": "PARTIAL_AUDIT_PERSISTED",
+      "note": "Counts, source archive versions, selected output hashes and current validation states reconciled; full formula-level import and semantic deduplication remain."
+    },
+    {
+      "id": "Q141-B",
+      "name": "Typed canonical formula registry",
+      "status": "PENDING",
+      "note": "Next priority: typed AST, deterministic IDs, aliases and proof-based semantic deduplication."
+    },
+    {
+      "id": "Q141-C",
+      "name": "Formula behaviour atlas",
+      "status": "EXPLORATORY_NULLS_RECORDED",
+      "note": "Q141-C0 family selector and Q141-C1 size-adjusted pair unions completed; no validated lift."
+    },
+    {
+      "id": "Q141-D",
+      "name": "Ex-ante formula-family anticipation",
+      "status": "PARTIAL_NULL",
+      "note": "Rolling-100 family success has near-zero lag-1 persistence and no lift; richer pre-target state signals remain untested."
+    }
+  ],
+  "governance": {
+    "research_only": true,
+    "draft_pr_required": true,
+    "auto_merge": false,
+    "auto_promotion": false,
+    "shadow_insertion": false,
+    "canonical_archive_mutation": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "compute_policy": "Deterministic shards, bounded batches, streaming aggregation; no naive formula_count × target_count run if infeasible; disclose all screening, sampling and exclusions.",
+  "completion_policy": "A valid null result completes an analytical stage; promotion requires separate independent prospective evidence and human review.",
+  "last_updated": "2026-11-12",
+  "subexperiments": [
+    {
+      "id": "Q141-C0",
+      "name": "Prior-only rolling formula-family anticipation and behaviour map",
+      "status": "EXECUTED_EXPLORATORY",
+      "decision": "NO_ROLLING_FAMILY_ANTICIPATION_LIFT_DEMONSTRATED",
+      "code_commit": "738d02fedfc41d36921559c8855c3090d1292515",
+      "successful_workflow_run": 43196930220,
+      "output_persistence_commit": "c9c7f555b28073783965912896e287432256a024",
+      "targets": 3354,
+      "splits": {
+        "discovery": 2013,
+        "validation": 671,
+        "blind_oos": 670
+      },
+      "blind_primary": {
+        "dynamic_vs_equal_family_top5_delta": 0.0053731343283582094,
+        "ci95": [
+          -0.007462686567164181,
+          0.017910447761194034
+        ],
+        "p_raw": 0.40142992850357484,
+        "p_holm_24": 1
+      },
+      "uniform_null": {
+        "blind_top5_p_raw": 0.48133947280317607,
+        "blind_top5_p_holm_6": 1,
+        "blind_top20_p_raw": 0.01642042055270863,
+        "blind_top20_p_holm_6": 0.09852252331625178
+      },
+      "family_top5_lag1_autocorrelation_range": [
+        -0.018703807855324574,
+        0.02589155393045371
+      ],
+      "limitations": [
+        "six coarse Q80-derived families only",
+        "historical blind OOS is exposed, not virgin prospective",
+        "project-wide Q00-Q141 multiplicity is not controlled by within-experiment Holm"
+      ]
+    },
+    {
+      "id": "Q141-C1",
+      "name": "Size-adjusted pair-union complementarity under predictable conditional null",
+      "status": "EXECUTED_EXPLORATORY",
+      "decision": "NO_SIZE_ADJUSTED_PAIR_COMPLEMENTARITY_LIFT_DEMONSTRATED",
+      "code_commit": "59712cab0aa9e2b4977a41dd2fe973f2b94944c3",
+      "successful_workflow_run": 43199107862,
+      "output_persistence_commit": "831f2221aa31169e402f2bdfad66c50df3830949",
+      "targets": 3354,
+      "splits": {
+        "discovery": 2013,
+        "validation": 671,
+        "blind_oos": 670
+      },
+      "family_pairs": 15,
+      "tests": 45,
+      "target_pair_rows": 50310,
+      "blind": {
+        "positive_excess_pairs": 4,
+        "significant_after_holm": 0,
+        "minimum_raw_p": 0.03605305193086476,
+        "minimum_adjusted_p": 1,
+        "best_positive_excess_pair": {
+          "families": [
+            "frequency_level",
+            "neighbour_field"
+          ],
+          "excess_hits_per_target": 0.02332089552238806,
+          "observed_hits": 799,
+          "expected_hits": 783.375,
+          "raw_anytime_p": 0.05031607994959893,
+          "holm_p": 1
+        },
+        "best_raw_p_pair": {
+          "families": [
+            "frequency_level",
+            "position_dependence"
+          ],
+          "excess_hits_per_target": 0.013059701492537313,
+          "observed_hits": 789,
+          "expected_hits": 780.25,
+          "raw_anytime_p": 0.03605305193086476,
+          "holm_p": 1
+        }
+      },
+      "inference": {
+        "null": "conditional Hypergeometric(40,U_t,5)",
+        "method": "predictable conditional e-process",
+        "lambda_grid": [
+          0.05,
+          0.1,
+          0.2,
+          0.4
+        ],
+        "holm_family_size": 45
+      },
+      "output_hashes": {
+        "code_sha256": "1d503e8941e5344667d088aadc807ac45faf90aee09df5b6e7591f879975b22c",
+        "report_sha256": "088d20274eed7250b42fd9f143ae0a890f6d7710d349ac438a92a9f8fe5b951e",
+        "target_ledger_sha256": "0ac87d79698a8b140e6c35a4027a02ea2514e5dc1176bd38456e1d57e1835122"
+      },
+      "limitations": [
+        "six coarse families only",
+        "historical exposed archive",
+        "null assumes independent uniform 5-of-40 draws",
+        "Holm covers C1's 45 tests, not project-wide Q00-Q141"
+      ]
+    }
+  ],
+  "inventory_audit_path": "reports/sequence_agent/q141_formula_universe_inventory_lineage_audit_2026-11-12.md",
+  "latest_cycle": {
+    "date": "2026-11-12",
+    "inventory_audit_status": "PARTIAL_AUDIT_PERSISTED",
+    "q141_c0_run": 43196930220,
+    "q141_c1_run": 43199107862,
+    "q141_c1_push_ci": "SUCCESS",
+    "q141_c1_pull_request_run": "FAILURE_DUE_CONCURRENT_APPEND_ONLY_PERSISTENCE",
+    "persistence_root_cause": "Both pull_request and push runs attempted to append the same generated files; the PR run encountered add/add conflicts after the push run committed them.",
+    "fix": "Persist outputs only on push events for research/q141-* branches; PR runs remain validation-only.",
+    "promotion_gate": {
+      "status": "INSUFFICIENT_PROSPECTIVE_CASES",
+      "complete_pairs": 24,
+      "source_clean_pairs": 23,
+      "minimum": 200
+    }
+  }
+}

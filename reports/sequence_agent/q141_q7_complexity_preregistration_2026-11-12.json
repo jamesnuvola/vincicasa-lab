@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B8",
+  "registered_at": "2026-11-12T19:40:00+01:00",
+  "status": "PREREGISTERED_BEFORE_EXECUTION",
+  "hypothesis": "Within the fixed Q7 quintet-scoring grammar, formula complexity (number of included feature families) is positively associated with the strict-prior ranking percentile of the realized quintet on the next target.",
+  "primary_estimand": "Mean per-target Spearman correlation between formula feature_count (1..10) and normalized percentile score across all 1,023 formulas, over the Blind OOS targets.",
+  "primary_minimum_practical_effect": 0.02,
+  "source": {
+    "repository": "jamesnuvola/vincicasa-lab",
+    "q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_catalog_manifest_blob_sha1": "5cdf9c24431ea23b2176aa6a19133b7f4435980c",
+    "q7_walkforward_manifest_blob_sha1": "aae2c7768c9d37bf633a13939f2b686bcce83a27",
+    "q7_runner_blob_sha1": "ad1c7fa721f316b3af0018f5da4a0a905bb62dcf",
+    "q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_draws": 3387,
+    "q7_cutoff": "2026-10-24",
+    "candidate_quintets": 658008,
+    "formula_count": 1023,
+    "feature_family_count": 10
+  },
+  "target_protocol": {
+    "eligible_target_indices": "101..3386 inclusive (100 scored-target burn-in retained for exact comparability with Q141-B6)",
+    "eligible_targets": 3286,
+    "split_rule": "chronological 60% / 20% / 20%, fixed before evaluation",
+    "split_counts": {
+      "discovery": 1972,
+      "validation": 657,
+      "blind_oos": 657
+    },
+    "strict_prior": "For target index t, formula scores/ranks must be computed from draws strictly before t; the target outcome is used only to evaluate the already frozen rank.",
+    "target_update_order": "score target, write rank row, then add target draw to state"
+  },
+  "metric_definitions": {
+    "normalized_percentile": "1 - (one_based_rank - 1)/(658008 - 1); higher is better",
+    "random_quintet_expected_percentile": 0.5,
+    "random_quintet_expected_one_based_rank": 329004.5,
+    "random_top20_probability": 0.0000303947672368725,
+    "random_top100_probability": 0.0001519738361843625,
+    "low_complexity": "feature_count <= 2",
+    "high_complexity": "feature_count >= 6",
+    "spearman": "Per-target Spearman correlation with average ranks for ties; average across targets within split."
+  },
+  "registered_tests": [
+    {
+      "id": "B8_T1",
+      "endpoint": "Blind OOS mean per-target Spearman rho",
+      "null": "mean rho <= 0.02",
+      "alternative": "greater",
+      "primary": true
+    },
+    {
+      "id": "B8_T2",
+      "endpoint": "Blind OOS mean percentile across all formulas",
+      "null": "mean percentile <= 0.5",
+      "alternative": "greater"
+    },
+    {
+      "id": "B8_T3",
+      "endpoint": "Blind OOS high-complexity minus low-complexity mean percentile",
+      "null": "difference <= 0.005",
+      "alternative": "greater"
+    },
+    {
+      "id": "B8_T4",
+      "endpoint": "Blind OOS high-complexity minus low-complexity Top-20 rate",
+      "null": "difference <= 0",
+      "alternative": "greater"
+    }
+  ],
+  "inference": {
+    "block_length": 20,
+    "sign_flip_replicates": 20000,
+    "moving_block_bootstrap_replicates": 20000,
+    "seed": 14120261120,
+    "p_value": "one-sided block sign-flip",
+    "confidence_interval": "95% circular moving-block bootstrap",
+    "multiplicity": "Holm-Bonferroni across the four registered Blind OOS endpoints",
+    "discovery_validation": "descriptive split comparison; no winner selection or parameter tuning"
+  },
+  "guardrails": {
+    "no_parameter_tuning": true,
+    "no_formula_selection_on_validation_or_blind": true,
+    "no_target_or_future_data_in_formula_scores": true,
+    "verify_source_hashes": true,
+    "verify_all_rank_part_hashes": true,
+    "verify_q7_archive_is_exact_q141_prefix": true,
+    "verify_target_cutoffs": true,
+    "verify_runner_scores_before_target_update": true,
+    "historical_blind_oos_is_exposed_not_virgin": true,
+    "no_canonical_archive_mutation": true,
+    "no_shadow_insertion": true,
+    "no_engine_promotion": true,
+    "no_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "interpretation": "This is a fixed-grammar retrospective walk-forward test of a structural complexity association, not a deployable selector and not proof that the draw is predictable. Holm covers only these four registered endpoints, not the entire Q00-Q141 research family.",
+  "decision_rule": "No claim of complexity usefulness unless the primary Blind OOS effect is at least 0.02, its Holm-adjusted one-sided p-value is below 0.05, and the result is not contradicted by the registered controls."
+}

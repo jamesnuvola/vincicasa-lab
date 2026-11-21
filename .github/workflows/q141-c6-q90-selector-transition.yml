@@ -1,0 +1,174 @@
+name: Q141-C6 Q80-Q90 selector transition state
+
+on:
+  push:
+    branches:
+      - research/q141-formula-universe-behaviour-mapping-20261112
+    paths:
+      - "scripts/sonar_q141_q90_selector_transition.py"
+      - "tests/test_sonar_q141_q90_selector_transition.py"
+      - "reports/sequence_agent/q141_q90_selector_transition_preregistration_2026-11-12.json"
+      - "reports/sequence_agent/q141_q90_selector_transition_preregistration_2026-11-12.md"
+      - ".github/workflows/q141-c6-q90-selector-transition.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q141-c6-q90-selector-transition
+  cancel-in-progress: false
+
+jobs:
+  q80-q90-selector-transition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Q141 research branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: python -m pip install "numpy>=1.26,<3"
+      - name: Run Q141-C6 synthetic leakage and reproducibility tests
+        run: python -m unittest discover -s tests -p "test_sonar_q141_q90_selector_transition.py" -v
+      - name: Execute preregistered Q141-C6 walk-forward
+        run: python scripts/sonar_q141_q90_selector_transition.py --output-dir reports/sequence_agent
+      - name: Deterministic full replay
+        run: |
+          set -euo pipefail
+          replay_dir="$(mktemp -d)"
+          python scripts/sonar_q141_q90_selector_transition.py --output-dir "$replay_dir"
+          for file in \
+            q141_q90_selector_transition_report_2026-11-12.json \
+            q141_q90_selector_transition_target_ledger_2026-11-12.csv \
+            q141_q90_selector_transition_manifest_2026-11-12.json \
+            q141_q90_selector_transition_checkpoint_2026-11-12.json; do
+            cmp "reports/sequence_agent/$file" "$replay_dir/$file"
+          done
+          rm -rf "$replay_dir"
+      - name: Upload Q141-C6 evidence bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-c6-selector-transition-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_q90_selector_transition_report_2026-11-12.json
+            reports/sequence_agent/q141_q90_selector_transition_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_q90_selector_transition_manifest_2026-11-12.json
+            reports/sequence_agent/q141_q90_selector_transition_checkpoint_2026-11-12.json
+          retention-days: 90
+      - name: Persist computed outputs with stale-head recovery
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          temp_dir="$(mktemp -d)"
+          files=(
+            reports/sequence_agent/q141_q90_selector_transition_report_2026-11-12.json
+            reports/sequence_agent/q141_q90_selector_transition_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_q90_selector_transition_manifest_2026-11-12.json
+            reports/sequence_agent/q141_q90_selector_transition_checkpoint_2026-11-12.json
+          )
+          for file in "${files[@]}"; do
+            mkdir -p "$temp_dir/$(dirname "$file")"
+            cp "$file" "$temp_dir/$file"
+          done
+          pushed=false
+          for attempt in 1 2 3; do
+            git fetch origin "$BRANCH_NAME"
+            git reset --hard "origin/$BRANCH_NAME"
+            for file in "${files[@]}"; do cp "$temp_dir/$file" "$file"; done
+            git add "${files[@]}"
+            if git diff --cached --quiet; then pushed=true; break; fi
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Persist Q141-C6 selector transition results"
+            if git push origin "HEAD:$BRANCH_NAME"; then pushed=true; break; fi
+            echo "Remote branch advanced; retrying idempotent Q141-C6 persistence."
+          done
+          rm -rf "$temp_dir"
+          if [ "$pushed" != "true" ]; then echo "Q141-C6 output persistence failed"; exit 1; fi
+      - name: Verify exact remote Git readback and persist receipt
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH_NAME"
+          python - <<'PY'
+          import hashlib, json, os, subprocess
+          branch = os.environ["BRANCH_NAME"]
+          prefix = "reports/sequence_agent/"
+          manifest_path = prefix + "q141_q90_selector_transition_manifest_2026-11-12.json"
+          checkpoint_path = prefix + "q141_q90_selector_transition_checkpoint_2026-11-12.json"
+          manifest_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{manifest_path}"])
+          manifest = json.loads(manifest_bytes)
+          checkpoint_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{checkpoint_path}"])
+          checkpoint = json.loads(checkpoint_bytes)
+          def blob_sha(data):
+              return hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
+          verified, lineage = [], []
+          for label, expected in manifest["files"].items():
+              remote = subprocess.check_output(["git", "show", f"origin/{branch}:{expected['path']}"])
+              if len(remote) != expected["bytes"] or hashlib.sha256(remote).hexdigest() != expected["sha256"] or blob_sha(remote) != expected["git_blob_sha1"]:
+                  raise SystemExit(f"remote output mismatch: {expected['path']}")
+              verified.append({"label": label, "path": expected["path"], "bytes": len(remote), "sha256": hashlib.sha256(remote).hexdigest(), "git_blob_sha1": blob_sha(remote)})
+          for label, expected in manifest["code_lineage"].items():
+              remote = subprocess.check_output(["git", "show", f"origin/{branch}:{expected['path']}"])
+              if len(remote) != expected["bytes"] or hashlib.sha256(remote).hexdigest() != expected["sha256"] or blob_sha(remote) != expected["git_blob_sha1"]:
+                  raise SystemExit(f"remote lineage mismatch: {expected['path']}")
+              lineage.append({"label": label, "path": expected["path"], "sha256": hashlib.sha256(remote).hexdigest(), "git_blob_sha1": blob_sha(remote)})
+          receipt = {
+              "schema_version": "1.0", "task_id": "Q141-C6_REMOTE_READBACK",
+              "status": "REMOTE_GIT_READBACK_VERIFIED", "branch": branch,
+              "files_verified": len(verified), "files": verified,
+              "code_lineage_verified": len(lineage), "code_lineage": lineage,
+              "manifest_git_blob_sha1": blob_sha(manifest_bytes),
+              "checkpoint_status_before_receipt": checkpoint.get("status"),
+          }
+          receipt_path = prefix + "q141_q90_selector_transition_remote_readback_2026-11-12.json"
+          with open(receipt_path, "w", encoding="utf-8") as f:
+              json.dump(receipt, f, sort_keys=True, indent=2); f.write("\n")
+          checkpoint["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          checkpoint["remote_readback_receipt"] = receipt_path
+          checkpoint["remote_files_verified"] = len(verified)
+          checkpoint["remote_code_lineage_verified"] = len(lineage)
+          with open(checkpoint_path, "w", encoding="utf-8") as f:
+              json.dump(checkpoint, f, sort_keys=True, indent=2); f.write("\n")
+          PY
+          git add reports/sequence_agent/q141_q90_selector_transition_remote_readback_2026-11-12.json
+          git add reports/sequence_agent/q141_q90_selector_transition_checkpoint_2026-11-12.json
+          if ! git diff --cached --quiet; then
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Verify Q141-C6 exact remote Git readback"
+            pushed=false
+            for attempt in 1 2 3; do
+              git fetch origin "$BRANCH_NAME"
+              if git rebase "origin/$BRANCH_NAME" && git push origin "HEAD:$BRANCH_NAME"; then pushed=true; break; fi
+              git rebase --abort || true
+            done
+            if [ "$pushed" != "true" ]; then echo "Q141-C6 readback receipt persistence failed"; exit 1; fi
+          fi
+      - name: Verify persisted Q141-C6 receipt and checkpoint
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH_NAME"
+          python - <<'PY'
+          import json, os, subprocess
+          branch = os.environ["BRANCH_NAME"]
+          prefix = "reports/sequence_agent/"
+          receipt = json.loads(subprocess.check_output(["git", "show", f"origin/{branch}:{prefix}q141_q90_selector_transition_remote_readback_2026-11-12.json"]))
+          checkpoint = json.loads(subprocess.check_output(["git", "show", f"origin/{branch}:{prefix}q141_q90_selector_transition_checkpoint_2026-11-12.json"]))
+          if receipt.get("status") != "REMOTE_GIT_READBACK_VERIFIED" or receipt.get("files_verified") != 2:
+              raise SystemExit("Q141-C6 output readback receipt invalid")
+          if checkpoint.get("status") != "REMOTE_GIT_READBACK_VERIFIED":
+              raise SystemExit("Q141-C6 checkpoint not verified")
+          if receipt.get("code_lineage_verified", 0) < 10:
+              raise SystemExit("Q141-C6 code lineage readback incomplete")
+          PY

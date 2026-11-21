@@ -1,0 +1,277 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B1",
+  "status": "EXACT_ALIAS_CANONICALIZATION_PASS_WITH_LEGACY_NUMERICAL_TIE_SENSITIVITY",
+  "decision": "EXACT_ALIAS_COLLAPSE_CONFIRMED; LEGACY_NUMPY_RANKING_HAS_FLOATING_TIE_SENSITIVITY",
+  "hypothesis": "Exact aliases and multiplicity-preserving weighted-mean canonicalization reduce the combined k=1..10 Q80 formula ID universe by 41.0164%; stable raw and canonical scores/ranks are invariant, while legacy NumPy mean ranks are separately audited for floating-point tie sensitivity.",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draws": 3404,
+    "cutoff": "2026-11-10",
+    "excluded_rows_after_cutoff": 1,
+    "contest_315_excluded": true,
+    "main_commit_at_registration": "70dcf8cc128884d9739959406d5662ef76daa253"
+  },
+  "formula_universe": {
+    "feature_count_raw": 27,
+    "feature_count_exact_unique": 25,
+    "exact_aliases": {
+      "recent_5": "freq_5",
+      "recent_10": "freq_10"
+    },
+    "formula_sizes": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "nominal_raw_formula_count": 16628808,
+    "unique_canonical_formula_count": 9808263,
+    "redundant_raw_formula_count": 6820545,
+    "reduction_percent": 41.01643966302335,
+    "sum_of_within_size_unique_counts": 9808266,
+    "cross_size_equivalences": 3,
+    "counts_by_size": [
+      {
+        "formula_size": 1,
+        "nominal_raw_count": 27,
+        "unique_canonical_count_within_size": 25,
+        "raw_alias_redundancy": 2
+      },
+      {
+        "formula_size": 2,
+        "nominal_raw_count": 351,
+        "unique_canonical_count_within_size": 302,
+        "raw_alias_redundancy": 49
+      },
+      {
+        "formula_size": 3,
+        "nominal_raw_count": 2925,
+        "unique_canonical_count_within_size": 2348,
+        "raw_alias_redundancy": 577
+      },
+      {
+        "formula_size": 4,
+        "nominal_raw_count": 17550,
+        "unique_canonical_count_within_size": 13203,
+        "raw_alias_redundancy": 4347
+      },
+      {
+        "formula_size": 5,
+        "nominal_raw_count": 80730,
+        "unique_canonical_count_within_size": 57201,
+        "raw_alias_redundancy": 23529
+      },
+      {
+        "formula_size": 6,
+        "nominal_raw_count": 296010,
+        "unique_canonical_count_within_size": 198605,
+        "raw_alias_redundancy": 97405
+      },
+      {
+        "formula_size": 7,
+        "nominal_raw_count": 888030,
+        "unique_canonical_count_within_size": 567479,
+        "raw_alias_redundancy": 320551
+      },
+      {
+        "formula_size": 8,
+        "nominal_raw_count": 2220075,
+        "unique_canonical_count_within_size": 1359622,
+        "raw_alias_redundancy": 860453
+      },
+      {
+        "formula_size": 9,
+        "nominal_raw_count": 4686825,
+        "unique_canonical_count_within_size": 2768832,
+        "raw_alias_redundancy": 1917993
+      },
+      {
+        "formula_size": 10,
+        "nominal_raw_count": 8436285,
+        "unique_canonical_count_within_size": 4840649,
+        "raw_alias_redundancy": 3595636
+      }
+    ],
+    "sample_formula_instances": 120,
+    "sample_unique_canonical_ids": 113
+  },
+  "walkforward": {
+    "targets": 3354,
+    "minimum_prior_history": 50,
+    "split_counts": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "strict_prior": true,
+    "update_order": "score target before appending target to occurrence/pair state",
+    "alias_pair_checks": 6708,
+    "alias_mismatches": 0,
+    "formula_score_comparisons": 402480,
+    "score_mismatches": 0,
+    "rank_comparisons": 402480,
+    "rank_mismatches": 0,
+    "score_abs_tolerance": 1e-12,
+    "max_abs_score_delta": 0.0,
+    "legacy_numpy_score_mismatches": 0,
+    "legacy_numpy_rank_mismatches": 2311,
+    "legacy_numpy_rank_mismatch_rate": 0.005741900218644405,
+    "legacy_numpy_max_abs_score_delta": 1.3322676295501878e-15,
+    "legacy_numpy_max_rank_displacement": 7,
+    "legacy_numpy_max_flipped_pair_score_gap": 4.440892098500626e-16,
+    "legacy_numpy_note": "Legacy NumPy mean is compared with stable canonical math.fsum evaluation. Small score differences can change exact lexicographic ranks for near-ties; this is an implementation sensitivity, not evidence of different mathematical functions.",
+    "metrics_by_split": {
+      "discovery": {
+        "targets": 2013,
+        "alias_pair_checks": 4026,
+        "alias_mismatches": 0,
+        "formula_score_comparisons": 241560,
+        "score_mismatches": 0,
+        "rank_comparisons": 241560,
+        "rank_mismatches": 0,
+        "max_abs_score_delta": 0.0,
+        "legacy_numpy_score_mismatches": 0,
+        "legacy_numpy_rank_mismatches": 1449,
+        "legacy_numpy_max_abs_score_delta": 1.3322676295501878e-15,
+        "legacy_numpy_max_rank_displacement": 6,
+        "legacy_numpy_max_flipped_pair_score_gap": 4.440892098500626e-16,
+        "stable_raw_mean_top5_hit_share": 0.12582381188938566,
+        "canonical_mean_top5_hit_share": 0.12582381188938566,
+        "legacy_numpy_mean_top5_hit_share": 0.1258213280344428,
+        "stable_raw_mean_top10_hit_share": 0.2513603245570459,
+        "canonical_mean_top10_hit_share": 0.2513603245570459,
+        "legacy_numpy_mean_top10_hit_share": 0.2513520450405696,
+        "stable_raw_mean_top20_hit_share": 0.5012584865043881,
+        "canonical_mean_top20_hit_share": 0.5012584865043881,
+        "legacy_numpy_mean_top20_hit_share": 0.5012584865043881,
+        "stable_raw_mean_actual_rank": 20.440173041894354,
+        "canonical_mean_actual_rank": 20.440173041894354,
+        "legacy_numpy_mean_actual_rank": 20.440162278522934,
+        "uniform_reference": {
+          "top5": 0.125,
+          "top10": 0.25,
+          "top20": 0.5,
+          "mean_actual_rank": 20.5
+        }
+      },
+      "validation": {
+        "targets": 671,
+        "alias_pair_checks": 1342,
+        "alias_mismatches": 0,
+        "formula_score_comparisons": 80520,
+        "score_mismatches": 0,
+        "rank_comparisons": 80520,
+        "rank_mismatches": 0,
+        "max_abs_score_delta": 0.0,
+        "legacy_numpy_score_mismatches": 0,
+        "legacy_numpy_rank_mismatches": 447,
+        "legacy_numpy_max_abs_score_delta": 8.881784197001252e-16,
+        "legacy_numpy_max_rank_displacement": 7,
+        "legacy_numpy_max_flipped_pair_score_gap": 4.440892098500626e-16,
+        "stable_raw_mean_top5_hit_share": 0.11950074515648286,
+        "canonical_mean_top5_hit_share": 0.11950074515648286,
+        "legacy_numpy_mean_top5_hit_share": 0.11950322901142574,
+        "stable_raw_mean_top10_hit_share": 0.244073522106309,
+        "canonical_mean_top10_hit_share": 0.244073522106309,
+        "legacy_numpy_mean_top10_hit_share": 0.24407600596125187,
+        "stable_raw_mean_top20_hit_share": 0.4966244411326379,
+        "canonical_mean_top20_hit_share": 0.4966244411326379,
+        "legacy_numpy_mean_top20_hit_share": 0.4966244411326379,
+        "stable_raw_mean_actual_rank": 20.618181818181817,
+        "canonical_mean_actual_rank": 20.618181818181817,
+        "legacy_numpy_mean_actual_rank": 20.61820914058619,
+        "uniform_reference": {
+          "top5": 0.125,
+          "top10": 0.25,
+          "top20": 0.5,
+          "mean_actual_rank": 20.5
+        }
+      },
+      "blind_oos": {
+        "targets": 670,
+        "alias_pair_checks": 1340,
+        "alias_mismatches": 0,
+        "formula_score_comparisons": 80400,
+        "score_mismatches": 0,
+        "rank_comparisons": 80400,
+        "rank_mismatches": 0,
+        "max_abs_score_delta": 0.0,
+        "legacy_numpy_score_mismatches": 0,
+        "legacy_numpy_rank_mismatches": 415,
+        "legacy_numpy_max_abs_score_delta": 8.881784197001252e-16,
+        "legacy_numpy_max_rank_displacement": 5,
+        "legacy_numpy_max_flipped_pair_score_gap": 4.440892098500626e-16,
+        "stable_raw_mean_top5_hit_share": 0.12349253731343283,
+        "canonical_mean_top5_hit_share": 0.12349253731343283,
+        "legacy_numpy_mean_top5_hit_share": 0.12348756218905473,
+        "stable_raw_mean_top10_hit_share": 0.2481144278606965,
+        "canonical_mean_top10_hit_share": 0.2481144278606965,
+        "legacy_numpy_mean_top10_hit_share": 0.24809701492537314,
+        "stable_raw_mean_top20_hit_share": 0.5012313432835821,
+        "canonical_mean_top20_hit_share": 0.5012313432835821,
+        "legacy_numpy_mean_top20_hit_share": 0.5012313432835821,
+        "stable_raw_mean_actual_rank": 20.50765671641791,
+        "canonical_mean_actual_rank": 20.50765671641791,
+        "legacy_numpy_mean_actual_rank": 20.507716417910448,
+        "uniform_reference": {
+          "top5": 0.125,
+          "top10": 0.25,
+          "top20": 0.5,
+          "mean_actual_rank": 20.5
+        }
+      }
+    }
+  },
+  "statistical_inference": {
+    "p_values": "not applicable: exact combinatorial count and deterministic algebraic/property identity",
+    "multiple_testing": "not applicable; no stochastic significance tests or candidate selection",
+    "predictive_lift_claim": false
+  },
+  "acceptance": {
+    "archive_blob_verified": true,
+    "target_and_split_counts_verified": true,
+    "exact_alias_columns_verified": true,
+    "sampled_stable_raw_vs_canonical_scores_verified": true,
+    "sampled_stable_raw_vs_canonical_ranks_verified": true,
+    "legacy_numpy_tie_sensitivity_measured": true,
+    "legacy_numpy_rank_mismatch_count": 2311,
+    "exact_formula_counts_verified": true,
+    "future_suffix_invariance": "covered by dedicated synthetic unit test",
+    "deterministic_sample_and_stable_sum_replay": "covered by exact source pin, deterministic sample seed and unit tests"
+  },
+  "limitations": [
+    "The exact reduction applies only to equal-weight subset formulas over the 27 Q80 columns and the two source-proven exact aliases.",
+    "Multiplicity is preserved; naive deletion of alias columns would change some formula weights.",
+    "No exact semantic aliases are asserted for the 32 Q89 extension features.",
+    "Q90 interactions/gates, Q7 candidate-quintet formulas and graph/field operator families require separate typed AST definitions.",
+    "Historical Blind OOS is exposed research history, not virgin prospective evidence.",
+    "Legacy NumPy mean and stable math.fsum can differ by tiny floating-point amounts; the first walk-forward attempt found 2,311 sampled target-formula rank differences despite score differences within tolerance. Stable raw and canonical summation is therefore the mathematical identity reference; no production ranker is changed by this experiment.",
+    "The sampled walk-forward validates implementation invariance; it does not exhaustively rescore all 16,628,808 raw formula IDs.",
+    "No predictive improvement or formula-selection advantage is claimed."
+  ],
+  "recovery_history": [
+    {
+      "run_id": 43222532830,
+      "head_sha": "ac1d1e5d06977dc74d68d7e666b66c31c2e6fa08",
+      "failure": "Synthetic test initially generated independent values for the two source-proven alias columns; fixture corrected to enforce alias equality.",
+      "recovery": "Updated synthetic fixture; all seven unit tests passed on the next run."
+    },
+    {
+      "run_id": 43222764935,
+      "head_sha": "d13261bfd593b08f4417af377e605c5466fa35c1",
+      "failure": "0 alias mismatches and 0 score mismatches, but 2,311 raw NumPy-versus-canonical rank mismatches.",
+      "root_cause": "Floating-point summation order changed exact ranks for near-tied scores even though absolute score differences remained within 1e-12.",
+      "recovery": "Separate stable raw and canonical math.fsum evaluations from legacy NumPy ranking; preserve and report legacy rank sensitivity rather than treating it as mathematical non-equivalence."
+    }
+  ],
+  "next_action": "Audit Q80 legacy tie policy before any canonical evaluator could replace it; then import Q90 interaction/gate ASTs and Q7 candidate-quintet AST as separate output types and reconcile source archives before a common-source behaviour atlas.",
+  "target_ledger": "reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv"
+}

@@ -1,0 +1,71 @@
+name: Q141-A5 Q90 lineage and B10
+
+on:
+  push:
+    branches:
+      - research/q141-formula-universe-behaviour-mapping-20261112
+    paths:
+      - scripts/sonar_q141_q90_lineage_borda.py.gz.b64
+      - tests/test_sonar_q141_q90_lineage_borda.py
+      - reports/sequence_agent/q141_a5_q90_lineage_borda_preregistration_2026-11-12.md
+      - .github/workflows/q141-a5-q90-lineage-borda.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  q141-a5-b10:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout research branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install analysis dependencies
+        run: python -m pip install numpy pandas scipy pytest
+
+      - name: Download pinned Q90 source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -fL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/13627507532/zip" \
+            -o "${RUNNER_TEMP}/q90-source-artifact.zip"
+          mkdir -p "${RUNNER_TEMP}/q90-source"
+          unzip -q "${RUNNER_TEMP}/q90-source-artifact.zip" -d "${RUNNER_TEMP}/q90-source"
+
+      - name: Decode pinned runner
+        run: |
+          base64 -d scripts/sonar_q141_q90_lineage_borda.py.gz.b64 > "${RUNNER_TEMP}/sonar_q141_q90_lineage_borda.py.gz"
+          gzip -dc "${RUNNER_TEMP}/sonar_q141_q90_lineage_borda.py.gz" > "${RUNNER_TEMP}/sonar_q141_q90_lineage_borda.py"
+
+      - name: Run full strict-prior walk-forward
+        env:
+          Q90_SOURCE_DIR: ${{ runner.temp }}/q90-source
+          Q90_ZIP_PATH: ${{ runner.temp }}/q90-source-artifact.zip
+          Q141_OUTPUT_DIR: ${{ runner.temp }}/q141-a5-outputs
+        run: python "${RUNNER_TEMP}/sonar_q141_q90_lineage_borda.py"
+
+      - name: Run invariance and lineage tests
+        env:
+          Q141_OUTPUT_DIR: ${{ runner.temp }}/q141-a5-outputs
+        run: pytest -q tests/test_sonar_q141_q90_lineage_borda.py
+
+      - name: Upload complete result bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-a5-b10-results-${{ github.run_id }}
+          path: ${{ runner.temp }}/q141-a5-outputs
+          if-no-files-found: error
+          retention-days: 90

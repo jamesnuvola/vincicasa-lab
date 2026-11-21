@@ -1,0 +1,218 @@
+name: Q141-B9 Q7 factorial feature-family attribution
+
+on:
+  push:
+    branches:
+      - research/q141-formula-universe-behaviour-mapping-20261112
+    paths:
+      - "scripts/sonar_q141_q7_factorial_attribution.py"
+      - "tests/test_sonar_q141_q7_factorial_attribution.py"
+      - "reports/sequence_agent/q141_q7_factorial_attribution_preregistration_2026-11-12.json"
+      - "reports/sequence_agent/q141_q7_factorial_attribution_preregistration_2026-11-12.md"
+      - ".github/workflows/q141-b9-q7-factorial-attribution.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q141-b9-q7-factorial-attribution
+  cancel-in-progress: false
+
+jobs:
+  q7-factorial-attribution:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout Q141 research branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Checkout pinned Q7 source
+        uses: actions/checkout@v4
+        with:
+          repository: jamesnuvola/vincicasa-lab
+          ref: 7a37cab601c5f9386131a00246963f8e4aeabf74
+          path: q7-source
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install numerical dependency
+        run: python -m pip install "numpy>=1.26,<3"
+
+      - name: Run Q141-B9 synthetic contrast, inference and leakage tests
+        run: python -m unittest discover -s tests -p "test_sonar_q141_q7_factorial_attribution.py" -v
+
+      - name: Execute preregistered Q141-B9 strict-prior factorial attribution
+        run: |
+          set -euo pipefail
+          python scripts/sonar_q141_q7_factorial_attribution.py \
+            --q7-root q7-source \
+            --q141-archive data/storico_daily.csv \
+            --output-dir reports/sequence_agent
+
+      - name: Upload Q141-B9 evidence bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-b9-q7-factorial-attribution-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_q7_factorial_attribution_report_2026-11-12.json
+            reports/sequence_agent/q141_q7_factorial_attribution_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_q7_factorial_attribution_manifest_2026-11-12.json
+            reports/sequence_agent/q141_q7_factorial_attribution_checkpoint_2026-11-12.json
+          retention-days: 90
+
+      - name: Persist computed outputs append-only
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          git add reports/sequence_agent/q141_q7_factorial_attribution_report_2026-11-12.json
+          git add reports/sequence_agent/q141_q7_factorial_attribution_target_ledger_2026-11-12.csv
+          git add reports/sequence_agent/q141_q7_factorial_attribution_manifest_2026-11-12.json
+          git add reports/sequence_agent/q141_q7_factorial_attribution_checkpoint_2026-11-12.json
+          if ! git diff --cached --quiet; then
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Persist Q141-B9 Q7 factorial attribution outputs"
+            pushed=false
+            for attempt in 1 2 3; do
+              git fetch origin "$BRANCH_NAME"
+              if git rebase "origin/$BRANCH_NAME" && git push origin "HEAD:$BRANCH_NAME"; then
+                pushed=true
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                git rebase --abort || true
+                echo "Remote branch advanced; retrying append-only Q141-B9 persistence."
+              fi
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Q141-B9 output persistence failed after three attempts."
+              exit 1
+            fi
+          fi
+
+      - name: Verify exact remote Git readback and persist receipt
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH_NAME"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import subprocess
+
+          branch = os.environ["BRANCH_NAME"]
+          manifest_path = "reports/sequence_agent/q141_q7_factorial_attribution_manifest_2026-11-12.json"
+          checkpoint_path = "reports/sequence_agent/q141_q7_factorial_attribution_checkpoint_2026-11-12.json"
+          manifest_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{manifest_path}"])
+          manifest = json.loads(manifest_bytes)
+          checkpoint_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{checkpoint_path}"])
+          checkpoint = json.loads(checkpoint_bytes)
+
+          def blob_sha(data):
+              return hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
+
+          verified = []
+          for label, expected in manifest["files"].items():
+              path = expected["path"]
+              remote = subprocess.check_output(["git", "show", f"origin/{branch}:{path}"])
+              sha = hashlib.sha256(remote).hexdigest()
+              blob = blob_sha(remote)
+              if len(remote) != expected["bytes"] or sha != expected["sha256"] or blob != expected["git_blob_sha1"]:
+                  raise SystemExit(f"exact remote readback mismatch for {path}")
+              verified.append({"label": label, "path": path, "bytes": len(remote), "sha256": sha, "git_blob_sha1": blob})
+
+          lineage_verified = []
+          for section in ("preregistration", "code_lineage"):
+              for label, expected in manifest[section].items():
+                  path = expected["path"]
+                  remote = subprocess.check_output(["git", "show", f"origin/{branch}:{path}"])
+                  actual = blob_sha(remote)
+                  if actual != expected["git_blob_sha1"]:
+                      raise SystemExit(f"source/code lineage mismatch for {path}")
+                  lineage_verified.append({"section": section, "label": label, "path": path, "git_blob_sha1": actual})
+
+          receipt = {
+              "schema_version": "1.0",
+              "task_id": "Q141_B9_REMOTE_READBACK",
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "branch": branch,
+              "branch_head_before_receipt": subprocess.check_output(["git", "rev-parse", f"origin/{branch}"]).decode().strip(),
+              "manifest_git_blob_sha1": blob_sha(manifest_bytes),
+              "local_checkpoint_status": checkpoint["status"],
+              "files_verified": len(verified),
+              "files": verified,
+              "preregistration_and_code_lineage_verified": len(lineage_verified),
+              "lineage": lineage_verified,
+          }
+          receipt_path = "reports/sequence_agent/q141_q7_factorial_attribution_remote_readback_2026-11-12.json"
+          with open(receipt_path, "w", encoding="utf-8") as f:
+              json.dump(receipt, f, sort_keys=True, indent=2)
+              f.write("\n")
+
+          checkpoint["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          checkpoint["remote_readback_receipt"] = receipt_path
+          checkpoint["remote_files_verified"] = len(verified)
+          checkpoint["remote_lineage_entries_verified"] = len(lineage_verified)
+          checkpoint["branch_head_before_receipt"] = receipt["branch_head_before_receipt"]
+          with open(checkpoint_path, "w", encoding="utf-8") as f:
+              json.dump(checkpoint, f, sort_keys=True, indent=2)
+              f.write("\n")
+          print(f"Exact remote Git readback verified: {len(verified)} outputs and {len(lineage_verified)} source/code lineage files.")
+          PY
+          git add reports/sequence_agent/q141_q7_factorial_attribution_remote_readback_2026-11-12.json
+          git add reports/sequence_agent/q141_q7_factorial_attribution_checkpoint_2026-11-12.json
+          if ! git diff --cached --quiet; then
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Record Q141-B9 exact remote Git readback"
+            git fetch origin "$BRANCH_NAME"
+            git rebase "origin/$BRANCH_NAME"
+            git push origin "HEAD:$BRANCH_NAME"
+          fi
+
+      - name: Verify persisted readback receipt and checkpoint
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH_NAME"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import subprocess
+
+          branch = os.environ["BRANCH_NAME"]
+          prefix = "reports/sequence_agent/"
+          receipt_path = prefix + "q141_q7_factorial_attribution_remote_readback_2026-11-12.json"
+          checkpoint_path = prefix + "q141_q7_factorial_attribution_checkpoint_2026-11-12.json"
+          receipt_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{receipt_path}"])
+          checkpoint_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{checkpoint_path}"])
+          receipt = json.loads(receipt_bytes)
+          checkpoint = json.loads(checkpoint_bytes)
+          if receipt.get("status") != "REMOTE_GIT_READBACK_VERIFIED" or receipt.get("files_verified") != 2:
+              raise SystemExit("Q141-B9 remote readback receipt failed")
+          if receipt.get("preregistration_and_code_lineage_verified") != 5:
+              raise SystemExit("Q141-B9 source/code lineage receipt failed")
+          if checkpoint.get("status") != "REMOTE_GIT_READBACK_VERIFIED":
+              raise SystemExit("Q141-B9 checkpoint status failed")
+          blob = hashlib.sha1(f"blob {len(receipt_bytes)}\0".encode("ascii") + receipt_bytes).hexdigest()
+          print(json.dumps({
+              "status": "REMOTE_GIT_READBACK_AND_RECEIPT_VERIFIED",
+              "branch": branch,
+              "receipt_git_blob_sha1": blob,
+              "files_verified": receipt["files_verified"],
+              "lineage_verified": receipt["preregistration_and_code_lineage_verified"],
+              "checkpoint_status": checkpoint["status"],
+          }, sort_keys=True))
+          PY
