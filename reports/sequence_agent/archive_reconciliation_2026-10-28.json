@@ -2,7 +2,7 @@
   "schema_version": "1.0",
   "task_id": "Q85",
   "status": "ARCHIVE_SYNCED_OUTPUTS_VALIDATED_PENDING_PERSISTED_HEAD_CI",
-  "observed_at_utc": "2026-11-22T16:49:52Z",
+  "observed_at_utc": "2026-11-22T17:38:55.674036+00:00",
   "canonical_main_archive": {
     "path": "data/storico_daily.csv",
     "git_blob_sha": "807846b437099f1452941a5abf42596907c00cf9",
@@ -35,17 +35,15 @@
     "new_draws_on_main_not_yet_in_research_branch": 0,
     "dates": [],
     "draws": [],
-    "resolution": "Research branch archive is byte-identical to canonical main. Q80-Q86 and Q84 must be recomputed against this refreshed archive before the refreshed evidence can be accepted."
+    "resolution": "Research branch archive byte-matches canonical main; Q80-Q83 were recomputed from the synchronized archive."
   },
   "affected_outputs": [
     "Q80: reports/sequence_agent/per_number_condition_grammar.json",
     "Q81: reports/sequence_agent/per_number_condition_4plus_grammar.json",
     "Q82: reports/sequence_agent/per_number_condition_conditional_grammar.json",
-    "Q83: reports/sequence_agent/per_number_condition_5plus_grammar.json",
-    "Q84: reports/sequence_agent/strategy_atlas_report.json",
-    "Q86: reports/sequence_agent/per_number_condition_6plus_grammar.json"
+    "Q83: reports/sequence_agent/per_number_condition_5plus_grammar.json"
   ],
-  "required_action": "Recompute all affected outputs using strict-prior history; persist via Git Data API/bounded Git push; reread and verify exact committed bytes; pass exact-head CI; retain human review/integration gate. Do not promote formulas.",
+  "required_action": "Persist outputs via Git Data API, verify exact committed bytes, pass exact-head CI, then complete human review/integration. Do not auto-promote formulas.",
   "freeze_policy": "Append-only; do not overwrite or reconstruct historical or prospective freezes.",
   "immutable_target_2026_10_25_freeze_overwritten": false
 }
