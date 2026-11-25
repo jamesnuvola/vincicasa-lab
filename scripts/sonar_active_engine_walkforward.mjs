@@ -455,7 +455,7 @@ function main() {
     metrics.shadow_forecasts_total = shadowCsv.rows.length;
     metrics.shadow_forecasts_pending = shadowCsv.rows.filter(r => r.status === "FROZEN_PENDING").length;
     metrics.shadow_forecasts_evaluated = shadowCsv.rows.filter(r => r.status === "EVALUATED").length;
-    fs.writeFileSync(metricsPath, JSON.stringify(metrics, null, 2) + "\\n", "utf8");
+    fs.writeFileSync(metricsPath, JSON.stringify(metrics, null, 2) + "\n", "utf8");
   }
 
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2) + "\n", "utf8");
