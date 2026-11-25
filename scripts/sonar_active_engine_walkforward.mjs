@@ -445,6 +445,19 @@ function main() {
     }
   };
 
+  // The fixed-rule agent writes latest_metrics before this exact APP engine
+  // appends its own pre-target freeze. Reconcile counters after the APP step so
+  // latest_metrics always matches the canonical append-only shadow CSV.
+  const metricsPath = path.join(ROOT, "reports", "sequence_agent", "latest_metrics.json");
+  if (fs.existsSync(metricsPath) && fs.existsSync(SHADOW_PATH)) {
+    const metrics = JSON.parse(fs.readFileSync(metricsPath, "utf8"));
+    const shadowCsv = parseSimpleCsv(fs.readFileSync(SHADOW_PATH, "utf8"));
+    metrics.shadow_forecasts_total = shadowCsv.rows.length;
+    metrics.shadow_forecasts_pending = shadowCsv.rows.filter(r => r.status === "FROZEN_PENDING").length;
+    metrics.shadow_forecasts_evaluated = shadowCsv.rows.filter(r => r.status === "EVALUATED").length;
+    fs.writeFileSync(metricsPath, JSON.stringify(metrics, null, 2) + "\\n", "utf8");
+  }
+
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2) + "\n", "utf8");
   console.log(JSON.stringify({
     status: report.status,
