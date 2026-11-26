@@ -1,0 +1,89 @@
+name: Q141-A6 full-59 covering-sample walk-forward
+
+on:
+  push:
+    branches:
+      - research/q141-formula-universe-behaviour-mapping-20261112
+    paths:
+      - scripts/sonar_q141_a6_full59_covering.py.gz
+      - tests/test_sonar_q141_a6_full59_covering.py
+      - reports/sequence_agent/q141_a6_full59_preregistration_2026-11-13.md
+      - .github/workflows/q141-a6-full59.yml
+  pull_request:
+    paths:
+      - scripts/sonar_q141_a6_full59_covering.py.gz
+      - tests/test_sonar_q141_a6_full59_covering.py
+      - reports/sequence_agent/q141_a6_full59_preregistration_2026-11-13.md
+      - .github/workflows/q141-a6-full59.yml
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: q141-a6-full59-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  full59-covering-walkforward:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install numerical dependency
+        run: pip install numpy
+      - name: Restore reviewed A6 runner source
+        run: gzip -dc scripts/sonar_q141_a6_full59_covering.py.gz > scripts/sonar_q141_a6_full59_covering.py
+      - name: Run deterministic design, tie and leakage tests
+        run: python tests/test_sonar_q141_a6_full59_covering.py -v
+      - name: Download pinned Q90 source artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl --fail --location --retry 3 \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/jamesnuvola/vincicasa-lab/actions/artifacts/13627507532/zip" \
+            --output /tmp/q90-source-artifact.zip
+      - name: Execute preregistered full-59 walk-forward
+        run: |
+          python scripts/sonar_q141_a6_full59_covering.py \
+            --zip /tmp/q90-source-artifact.zip \
+            --output-dir /tmp/q141-a6-output
+      - name: Verify reproducibility against committed outputs when present
+        run: |
+          set -e
+          for f in \
+            q141_a6_formula_catalog_2026-11-13.csv \
+            q141_a6_target_ledger_2026-11-13.csv \
+            q141_a6_full59_covering_report_2026-11-13.json \
+            q141_a6_full59_covering_manifest_2026-11-13.json \
+            q141_a6_full59_covering_checkpoint_2026-11-13.json; do
+            if [ -f "reports/sequence_agent/$f" ]; then
+              cmp "/tmp/q141-a6-output/$f" "reports/sequence_agent/$f"
+            fi
+          done
+      - name: Persist verified A6 outputs on the research branch
+        if: github.event_name == 'push'
+        run: |
+          set -e
+          cp /tmp/q141-a6-output/q141_a6_* reports/sequence_agent/
+          git config user.name "sonar-q141-a6"
+          git config user.email "actions@users.noreply.github.com"
+          git add reports/sequence_agent/q141_a6_*
+          if ! git diff --cached --quiet; then
+            git commit -m "Q141-A6: persist full-59 covering walk-forward"
+            git push origin HEAD:${GITHUB_REF_NAME}
+          fi
+      - name: Upload reproducibility bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-a6-full59-covering-${{ github.sha }}
+          path: /tmp/q141-a6-output/q141_a6_*
+          retention-days: 90

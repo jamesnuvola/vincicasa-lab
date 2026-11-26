@@ -1,0 +1,648 @@
+{
+  "blind_oos_complexity_strata": {
+    "1": {
+      "formula_count": 10,
+      "mean_percentile": 0.49984648028488426,
+      "mean_top100_rate": 0.00015220700152207003,
+      "mean_top20_rate": 0.0
+    },
+    "10": {
+      "formula_count": 1,
+      "mean_percentile": 0.49252927985695766,
+      "mean_top100_rate": 0.0,
+      "mean_top20_rate": 0.0
+    },
+    "2": {
+      "formula_count": 45,
+      "mean_percentile": 0.49723737019816977,
+      "mean_top100_rate": 0.00010147133434804668,
+      "mean_top20_rate": 0.0
+    },
+    "3": {
+      "formula_count": 120,
+      "mean_percentile": 0.4956846602975223,
+      "mean_top100_rate": 3.805175038051751e-05,
+      "mean_top20_rate": 0.0
+    },
+    "4": {
+      "formula_count": 210,
+      "mean_percentile": 0.4946984069840468,
+      "mean_top100_rate": 2.8991809813727626e-05,
+      "mean_top20_rate": 0.0
+    },
+    "5": {
+      "formula_count": 252,
+      "mean_percentile": 0.49399616538825236,
+      "mean_top100_rate": 6.039960377859921e-06,
+      "mean_top20_rate": 0.0
+    },
+    "6": {
+      "formula_count": 210,
+      "mean_percentile": 0.49346293779813044,
+      "mean_top100_rate": 0.0,
+      "mean_top20_rate": 0.0
+    },
+    "7": {
+      "formula_count": 120,
+      "mean_percentile": 0.4930761508849027,
+      "mean_top100_rate": 0.0,
+      "mean_top20_rate": 0.0
+    },
+    "8": {
+      "formula_count": 45,
+      "mean_percentile": 0.492811407825583,
+      "mean_top100_rate": 0.0,
+      "mean_top20_rate": 0.0
+    },
+    "9": {
+      "formula_count": 10,
+      "mean_percentile": 0.4926375022787725,
+      "mean_top100_rate": 0.0,
+      "mean_top20_rate": 0.0
+    }
+  },
+  "decision": "COMPLEXITY_ASSOCIATION_NOT_DEMONSTRATED",
+  "hypothesis": "Within the fixed Q7 quintet-scoring grammar, formula complexity (number of included feature families) is positively associated with the strict-prior ranking percentile of the realized quintet on the next target.",
+  "inference": {
+    "block_length": 20,
+    "correction": "Holm-Bonferroni across four preregistered Blind OOS endpoints",
+    "global_research_family_correction": "not covered; historical Q00-Q141 experimentation remains an additional multiplicity/exposure limitation",
+    "moving_block_bootstrap_replicates": 20000,
+    "seed": 14120261120,
+    "sign_flip_replicates": 20000
+  },
+  "limitations": [
+    "Q7 is a quintet_score grammar and is not directly comparable to per-number Q80/Q90 scores.",
+    "The experiment tests a structural association across a fixed grammar, not a deployable ex-ante selector.",
+    "Historical Blind OOS is exposed prior research history, not virgin prospective evidence.",
+    "Holm correction covers only the four preregistered B8 Blind OOS endpoints, not all prior Q00-Q141 experimentation.",
+    "Q7 ends on 2026-10-24; later archive rows are excluded."
+  ],
+  "primary_estimand": "Mean per-target Spearman correlation between formula feature_count (1..10) and normalized percentile score across all 1,023 formulas, over the Blind OOS targets.",
+  "registered_blind_tests": [
+    {
+      "block_count": 33,
+      "block_length": 20,
+      "ci95_moving_block": [
+        -0.005947151116671377,
+        0.016739453616775417
+      ],
+      "endpoint": "Blind OOS mean per-target Spearman rho",
+      "id": "B8_T1",
+      "mean_effect": 0.005265427766432345,
+      "method": "monte_carlo_20000_block_sign_flips",
+      "null_threshold": 0.02,
+      "p_holm_four_registered_blind_tests": 1.0,
+      "p_raw_one_sided": 0.9954502274886255,
+      "targets": 657
+    },
+    {
+      "block_count": 33,
+      "block_length": 20,
+      "ci95_moving_block": [
+        0.4747978639198988,
+        0.5140578060546451
+      ],
+      "endpoint": "Blind OOS mean percentile across all formulas",
+      "id": "B8_T2",
+      "mean_effect": 0.4942539369897852,
+      "method": "monte_carlo_20000_block_sign_flips",
+      "null_threshold": 0.5,
+      "p_holm_four_registered_blind_tests": 1.0,
+      "p_raw_one_sided": 0.7320633968301585,
+      "targets": 657
+    },
+    {
+      "block_count": 33,
+      "block_length": 20,
+      "ci95_moving_block": [
+        -0.013063796819246982,
+        0.004044790966006011
+      ],
+      "endpoint": "Blind OOS high-complexity minus low-complexity mean percentile",
+      "id": "B8_T3",
+      "mean_effect": -0.004468819397989778,
+      "method": "monte_carlo_20000_block_sign_flips",
+      "null_threshold": 0.005,
+      "p_holm_four_registered_blind_tests": 1.0,
+      "p_raw_one_sided": 0.9876506174691265,
+      "targets": 657
+    },
+    {
+      "block_count": 33,
+      "block_length": 20,
+      "ci95_moving_block": [
+        0.0,
+        0.0
+      ],
+      "endpoint": "Blind OOS high-complexity minus low-complexity Top-20 rate",
+      "id": "B8_T4",
+      "mean_effect": 0.0,
+      "method": "monte_carlo_20000_block_sign_flips",
+      "null_threshold": 0.0,
+      "p_holm_four_registered_blind_tests": 1.0,
+      "p_raw_one_sided": 1.0,
+      "targets": 657
+    }
+  ],
+  "schema_version": "1.0",
+  "source": {
+    "contest_315_used": false,
+    "q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_catalog_manifest_blob_sha1": "5cdf9c24431ea23b2176aa6a19133b7f4435980c",
+    "q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "q7_cutoff": "2026-10-24",
+    "q7_draws": 3387,
+    "q7_is_exact_q141_prefix": true,
+    "q7_runner_blob_sha1": "ad1c7fa721f316b3af0018f5da4a0a905bb62dcf",
+    "q7_walkforward_manifest_blob_sha1": "aae2c7768c9d37bf633a13939f2b686bcce83a27"
+  },
+  "status": "WALKFORWARD_COMPLETE",
+  "task_id": "Q141-B8",
+  "universe": {
+    "candidate_quintets": 658008,
+    "feature_family_count": 10,
+    "formula_count": 1023,
+    "formula_counts_by_complexity": {
+      "1": 10,
+      "10": 1,
+      "2": 45,
+      "3": 120,
+      "4": 210,
+      "5": 252,
+      "6": 210,
+      "7": 120,
+      "8": 45,
+      "9": 10
+    },
+    "high_complexity_formula_count_6_10": 386,
+    "low_complexity_formula_count_1_2": 55
+  },
+  "walkforward": {
+    "burn_in_scored_targets": 100,
+    "eligible_targets": 3286,
+    "split_counts": {
+      "blind_oos": 657,
+      "discovery": 1972,
+      "validation": 657
+    },
+    "split_metrics": {
+      "blind_oos": {
+        "complexity_strata": {
+          "1": {
+            "formula_count": 10,
+            "mean_percentile": 0.49984648028488426
+          },
+          "10": {
+            "formula_count": 1,
+            "mean_percentile": 0.49252927985695766
+          },
+          "2": {
+            "formula_count": 45,
+            "mean_percentile": 0.49723737019816977
+          },
+          "3": {
+            "formula_count": 120,
+            "mean_percentile": 0.4956846602975223
+          },
+          "4": {
+            "formula_count": 210,
+            "mean_percentile": 0.4946984069840468
+          },
+          "5": {
+            "formula_count": 252,
+            "mean_percentile": 0.49399616538825236
+          },
+          "6": {
+            "formula_count": 210,
+            "mean_percentile": 0.49346293779813044
+          },
+          "7": {
+            "formula_count": 120,
+            "mean_percentile": 0.4930761508849027
+          },
+          "8": {
+            "formula_count": 45,
+            "mean_percentile": 0.492811407825583
+          },
+          "9": {
+            "formula_count": 10,
+            "mean_percentile": 0.4926375022787725
+          }
+        },
+        "metrics": {
+          "high_low_percentile_delta": {
+            "ci95_moving_block": [
+              -0.013171043861060598,
+              0.003985937857844543
+            ],
+            "mean": -0.004468819397989778
+          },
+          "high_low_top100_delta": {
+            "ci95_moving_block": [
+              -0.00024906600249066,
+              0.0
+            ],
+            "mean": -0.00011069600110696001
+          },
+          "high_low_top20_delta": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "mean_one_based_rank_all": {
+            "ci95_moving_block": [
+              319907.216912571,
+              345505.822657567
+            ],
+            "mean": 332785.44968316244
+          },
+          "mean_percentile_all": {
+            "ci95_moving_block": [
+              0.4745112401091447,
+              0.5138027160035885
+            ],
+            "mean": 0.4942539369897852
+          },
+          "mean_percentile_high_6_10": {
+            "ci95_moving_block": [
+              0.4713908193159827,
+              0.514752901088913
+            ],
+            "mean": 0.49324293445230993
+          },
+          "mean_percentile_low_1_2": {
+            "ci95_moving_block": [
+              0.48412081129975637,
+              0.5116553537324593
+            ],
+            "mean": 0.4977117538502997
+          },
+          "spearman_rho": {
+            "ci95_moving_block": [
+              -0.00595689568413529,
+              0.01671309100815976
+            ],
+            "mean": 0.005265427766432345
+          },
+          "top100_rate_all": {
+            "ci95_moving_block": [
+              2.975698954488172e-06,
+              3.570838745385807e-05
+            ],
+            "mean": 1.7854193726929035e-05
+          },
+          "top100_rate_high_6_10": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "top100_rate_low_1_2": {
+            "ci95_moving_block": [
+              0.0,
+              0.00024906600249066
+            ],
+            "mean": 0.00011069600110696001
+          },
+          "top20_rate_all": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "top20_rate_high_6_10": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "top20_rate_low_1_2": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          }
+        },
+        "random_quintet_reference": {
+          "expected_mean_one_based_rank": 329004.5,
+          "expected_mean_percentile": 0.5,
+          "top100_probability": 0.0001519738361843625,
+          "top20_probability": 3.03947672368725e-05
+        },
+        "targets": 657
+      },
+      "discovery": {
+        "complexity_strata": {
+          "1": {
+            "formula_count": 10,
+            "mean_percentile": 0.4987933674454181
+          },
+          "10": {
+            "formula_count": 1,
+            "mean_percentile": 0.49999184950439085
+          },
+          "2": {
+            "formula_count": 45,
+            "mean_percentile": 0.5003342718586555
+          },
+          "3": {
+            "formula_count": 120,
+            "mean_percentile": 0.5005975613576877
+          },
+          "4": {
+            "formula_count": 210,
+            "mean_percentile": 0.5005000504362926
+          },
+          "5": {
+            "formula_count": 252,
+            "mean_percentile": 0.5003410439825284
+          },
+          "6": {
+            "formula_count": 210,
+            "mean_percentile": 0.5002031347797548
+          },
+          "7": {
+            "formula_count": 120,
+            "mean_percentile": 0.5001003761033971
+          },
+          "8": {
+            "formula_count": 45,
+            "mean_percentile": 0.5000310903251278
+          },
+          "9": {
+            "formula_count": 10,
+            "mean_percentile": 0.499994295809063
+          }
+        },
+        "metrics": {
+          "high_low_percentile_delta": {
+            "ci95_moving_block": [
+              -0.0049830330165900865,
+              0.0050238023641678824
+            ],
+            "mean": 9.106695416136973e-05
+          },
+          "high_low_top100_delta": {
+            "ci95_moving_block": [
+              -4.6099944680066385e-05,
+              0.0015539980833888286
+            ],
+            "mean": 0.0006429628553875788
+          },
+          "high_low_top20_delta": {
+            "ci95_moving_block": [
+              -2.765996680803983e-05,
+              0.0008075850412606446
+            ],
+            "mean": 0.00025990336687243637
+          },
+          "mean_one_based_rank_all": {
+            "ci95_moving_block": [
+              321693.2136143051,
+              335760.6438418281
+            ],
+            "mean": 328797.59490590653
+          },
+          "mean_percentile_all": {
+            "ci95_moving_block": [
+              0.48974719359356467,
+              0.5110018104205325
+            ],
+            "mean": 0.5003144420866245
+          },
+          "mean_percentile_high_6_10": {
+            "ci95_moving_block": [
+              0.488478562898877,
+              0.511879008756984
+            ],
+            "mean": 0.5001451743740465
+          },
+          "mean_percentile_low_1_2": {
+            "ci95_moving_block": [
+              0.49234982341853456,
+              0.5078484337906303
+            ],
+            "mean": 0.5000541074198851
+          },
+          "spearman_rho": {
+            "ci95_moving_block": [
+              0.0024374707154109316,
+              0.015406312304563364
+            ],
+            "mean": 0.008904639168617738
+          },
+          "top100_rate_all": {
+            "ci95_moving_block": [
+              1.1401061587543298e-05,
+              0.001745874302800297
+            ],
+            "mean": 0.0007470173831490327
+          },
+          "top100_rate_high_6_10": {
+            "ci95_moving_block": [
+              0.0,
+              0.002144235619922417
+            ],
+            "mean": 0.0009380025013400035
+          },
+          "top100_rate_low_1_2": {
+            "ci95_moving_block": [
+              4.6099944680066385e-05,
+              0.0006730591923289691
+            ],
+            "mean": 0.00029503964595242483
+          },
+          "top20_rate_all": {
+            "ci95_moving_block": [
+              0.0,
+              0.0007787420762621967
+            ],
+            "mean": 0.0002726340814412528
+          },
+          "top20_rate_high_6_10": {
+            "ci95_moving_block": [
+              0.0,
+              0.0010010614930267264
+            ],
+            "mean": 0.0003428832672965559
+          },
+          "top20_rate_low_1_2": {
+            "ci95_moving_block": [
+              0.0,
+              0.0002028397565922921
+            ],
+            "mean": 8.29799004241195e-05
+          }
+        },
+        "random_quintet_reference": {
+          "expected_mean_one_based_rank": 329004.5,
+          "expected_mean_percentile": 0.5,
+          "top100_probability": 0.0001519738361843625,
+          "top20_probability": 3.03947672368725e-05
+        },
+        "targets": 1972
+      },
+      "validation": {
+        "complexity_strata": {
+          "1": {
+            "formula_count": 10,
+            "mean_percentile": 0.49875402291489973
+          },
+          "10": {
+            "formula_count": 1,
+            "mean_percentile": 0.5033909728408024
+          },
+          "2": {
+            "formula_count": 45,
+            "mean_percentile": 0.5022245770415019
+          },
+          "3": {
+            "formula_count": 120,
+            "mean_percentile": 0.5032875203112935
+          },
+          "4": {
+            "formula_count": 210,
+            "mean_percentile": 0.5034678834167164
+          },
+          "5": {
+            "formula_count": 252,
+            "mean_percentile": 0.5034227890125219
+          },
+          "6": {
+            "formula_count": 210,
+            "mean_percentile": 0.5033653536502374
+          },
+          "7": {
+            "formula_count": 120,
+            "mean_percentile": 0.5033402674566394
+          },
+          "8": {
+            "formula_count": 45,
+            "mean_percentile": 0.5033412095455009
+          },
+          "9": {
+            "formula_count": 10,
+            "mean_percentile": 0.5033627473010441
+          }
+        },
+        "metrics": {
+          "high_low_percentile_delta": {
+            "ci95_moving_block": [
+              -0.005324347628876299,
+              0.00879529396822841
+            ],
+            "mean": 0.0017611717549973704
+          },
+          "high_low_top100_delta": {
+            "ci95_moving_block": [
+              -0.00030441400304414006,
+              0.0
+            ],
+            "mean": -0.00013837000138370003
+          },
+          "high_low_top20_delta": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "mean_one_based_rank_all": {
+            "ci95_moving_block": [
+              316936.4267725123,
+              336699.1454159729
+            ],
+            "mean": 326838.23790118005
+          },
+          "mean_percentile_all": {
+            "ci95_moving_block": [
+              0.48834802962860757,
+              0.5185132533865937
+            ],
+            "mean": 0.5032921566166013
+          },
+          "mean_percentile_high_6_10": {
+            "ci95_moving_block": [
+              0.4866727148778881,
+              0.5195870756316195
+            ],
+            "mean": 0.5033547389552988
+          },
+          "mean_percentile_low_1_2": {
+            "ci95_moving_block": [
+              0.4912685197094937,
+              0.512220424893883
+            ],
+            "mean": 0.5015935672003015
+          },
+          "spearman_rho": {
+            "ci95_moving_block": [
+              0.0008669340559358929,
+              0.02091004513839877
+            ],
+            "mean": 0.010950869473302222
+          },
+          "top100_rate_all": {
+            "ci95_moving_block": [
+              1.487849477244086e-06,
+              2.2317742158661295e-05
+            ],
+            "mean": 1.0414946340708603e-05
+          },
+          "top100_rate_high_6_10": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "top100_rate_low_1_2": {
+            "ci95_moving_block": [
+              0.0,
+              0.00030441400304414006
+            ],
+            "mean": 0.00013837000138370003
+          },
+          "top20_rate_all": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "top20_rate_high_6_10": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          },
+          "top20_rate_low_1_2": {
+            "ci95_moving_block": [
+              0.0,
+              0.0
+            ],
+            "mean": 0.0
+          }
+        },
+        "random_quintet_reference": {
+          "expected_mean_one_based_rank": 329004.5,
+          "expected_mean_percentile": 0.5,
+          "top100_probability": 0.0001519738361843625,
+          "top20_probability": 3.03947672368725e-05
+        },
+        "targets": 657
+      }
+    },
+    "strict_prior": true,
+    "target_update_order": "score and write target rank row before add_draw(state, draw), verified against pinned runner source"
+  }
+}

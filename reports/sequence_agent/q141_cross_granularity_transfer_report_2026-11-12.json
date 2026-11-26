@@ -1,0 +1,295 @@
+{
+  "decision": "NO_CROSS_GRANULARITY_TRANSFER_LIFT_DEMONSTRATED",
+  "estimand": "Forecast the target-level mean normalized percentile across the fixed 1,023 Q7 quintet-scoring formulas. This is a meta-quality outcome for the formula universe, not a direct prediction of winning numbers or an expected hit count.",
+  "governance": {
+    "no_auto_promotion": true,
+    "no_canonical_archive_mutation": true,
+    "no_merge": true,
+    "no_shadow_insertion": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "hypothesis": "Prior-only rolling behaviour of Q80 per-number families contains information about the next target's Q7 whole-quintet formula-universe rank quality beyond Q7's own rolling rank-quality baseline.",
+  "join_audit": {
+    "date_cutoff_quintet_alignment_verified": true,
+    "matched_rows": 3286,
+    "mismatches": 0,
+    "q7_rows": 3286,
+    "q7_split_counts": {
+      "blind_oos": 657,
+      "discovery": 1972,
+      "validation": 657
+    },
+    "q80_c0_rows": 3354,
+    "q80_c0_split_labels_compared": false,
+    "reason_split_labels_not_compared": "Different target-universe lengths create different 60/20/20 boundaries; Q7 split is authoritative.",
+    "target_index_identity_verified": true
+  },
+  "leakage_audit": {
+    "all_q7_targets_match_q80_prior_target_index": true,
+    "current_target_excluded_from_predictors": true,
+    "discovery_predictions_use_prior_discovery_only": true,
+    "future_suffix_excluded_from_predictors": true,
+    "q7_rolling_baseline_uses_exactly_previous_50_target_outcomes": true,
+    "q80_predictors_use_exactly_previous_50_target_rows": true,
+    "q80_split_labels_ignored_due_different_partition_boundaries": true,
+    "validation_and_blind_coefficients_frozen_after_discovery": true,
+    "validation_and_blind_outcomes_not_used_for_refitting": true
+  },
+  "limitations": [
+    "The predicted outcome is Q7 formula-universe rank quality, not the winning quintet or number-hit count.",
+    "Historical Blind OOS is exposed by prior SONAR research and is not virgin prospective evidence.",
+    "Q80 C0 contains six coarse family aggregates; this does not cover the full 59-feature Q89/Q90 grammar.",
+    "Q7 and Q141 have different source windows; exact prefix and target-level alignment were verified, but the 18-row Q141 suffix is excluded.",
+    "A null transfer result does not prove that all cross-granularity interactions are absent."
+  ],
+  "metrics_by_split": {
+    "blind_oos": {
+      "constant_random_reference_0_5": {
+        "mae": 0.20475026271323002,
+        "mean_prediction_error": 0.0057460630102148655,
+        "pearson_correlation": null,
+        "rmse": 0.23990056282083705,
+        "targets": 657
+      },
+      "cross_granularity_minus_q7_only_mae": -0.00045452423162689604,
+      "cross_granularity_ridge": {
+        "mae": 0.20523005726285215,
+        "mean_prediction_error": 0.010177316312280891,
+        "pearson_correlation": -0.026718964244946557,
+        "rmse": 0.24060754261862535,
+        "targets": 657
+      },
+      "q7_only_ridge": {
+        "mae": 0.20477553303122525,
+        "mean_prediction_error": 0.007267276487271547,
+        "pearson_correlation": 0.01238364076501852,
+        "rmse": 0.23992769156560026,
+        "targets": 657
+      },
+      "q7_roll50_mean_percentile": {
+        "mae": 0.20747692118767969,
+        "mean_prediction_error": -0.003196570751946882,
+        "pearson_correlation": 0.012383640765019731,
+        "rmse": 0.242148561243215,
+        "targets": 657
+      },
+      "targets": 657
+    },
+    "discovery": {
+      "constant_random_reference_0_5": {
+        "mae": 0.20211601371331225,
+        "mean_prediction_error": -0.0022868174662244454,
+        "pearson_correlation": null,
+        "rmse": 0.2374286742643279,
+        "targets": 1872
+      },
+      "cross_granularity_minus_q7_only_mae": -0.0013692347978775943,
+      "cross_granularity_ridge": {
+        "mae": 0.20390802590495904,
+        "mean_prediction_error": -0.006624720339037058,
+        "pearson_correlation": -0.015835573431571687,
+        "rmse": 0.23960517369555845,
+        "targets": 1872
+      },
+      "q7_only_ridge": {
+        "mae": 0.20253879110708145,
+        "mean_prediction_error": -0.0006854688439981649,
+        "pearson_correlation": -0.004608644076979694,
+        "rmse": 0.23801326715677704,
+        "targets": 1872
+      },
+      "q7_roll50_mean_percentile": {
+        "mae": 0.20336457003106442,
+        "mean_prediction_error": 0.00027956366554042847,
+        "pearson_correlation": 0.006524376377363717,
+        "rmse": 0.23967188835709538,
+        "targets": 1872
+      },
+      "targets": 1872
+    },
+    "validation": {
+      "constant_random_reference_0_5": {
+        "mae": 0.20230612906449563,
+        "mean_prediction_error": -0.003292156616601328,
+        "pearson_correlation": null,
+        "rmse": 0.2394012394715599,
+        "targets": 657
+      },
+      "cross_granularity_minus_q7_only_mae": 3.093931897130142e-05,
+      "cross_granularity_ridge": {
+        "mae": 0.20225942744631742,
+        "mean_prediction_error": 0.004633596317570855,
+        "pearson_correlation": 0.0016980068476055016,
+        "rmse": 0.23960800331362436,
+        "targets": 657
+      },
+      "q7_only_ridge": {
+        "mae": 0.20229036676528872,
+        "mean_prediction_error": -0.0012163522861583901,
+        "pearson_correlation": -0.08922077719897005,
+        "rmse": 0.23946842423486725,
+        "targets": 657
+      },
+      "q7_roll50_mean_percentile": {
+        "mae": 0.20417999306315004,
+        "mean_prediction_error": 0.0008525289148996819,
+        "pearson_correlation": -0.08922077719897151,
+        "rmse": 0.24241559102678994,
+        "targets": 657
+      },
+      "targets": 657
+    }
+  },
+  "models": {
+    "cross_granularity_ridge": {
+      "alpha": 1.0,
+      "features": [
+        "q7_roll50_mean_percentile",
+        "q80_roll50_equal_family_top5_hits",
+        "q80_roll50_family_dispersion",
+        "q80_roll50_family_entropy_normalized",
+        "q80_equal_family_recent25_minus_previous25"
+      ],
+      "role": "Q80-to-Q7 transfer model"
+    },
+    "final_discovery_fit": {
+      "cross_granularity_ridge": {
+        "alpha": 1.0,
+        "coefficients_intercept_then_features": [
+          0.5019675300412858,
+          0.00015746993306979496,
+          -0.009665774953369502,
+          0.005307138025471043,
+          0.007324738559757923,
+          -0.0055957135895355675
+        ],
+        "features": [
+          "q7_roll50_mean_percentile",
+          "q80_roll50_equal_family_top5_hits",
+          "q80_roll50_family_dispersion",
+          "q80_roll50_family_entropy_normalized",
+          "q80_equal_family_recent25_minus_previous25"
+        ],
+        "standardization_mean": [
+          0.5015896123909982,
+          0.6383558792924041,
+          0.08329080878463606,
+          0.9945171053348792,
+          -0.0016649323621227916
+        ],
+        "standardization_scale": [
+          0.0345656741938377,
+          0.08689943168479627,
+          0.02760496631787131,
+          0.0035303863648402873,
+          0.17991250072461024
+        ],
+        "training_offsets": [
+          50,
+          1971
+        ],
+        "training_rows": 1922
+      },
+      "q7_only_ridge": {
+        "alpha": 1.0,
+        "coefficients_intercept_then_features": [
+          0.5019675300412887,
+          0.0014647619056955504
+        ],
+        "features": [
+          "q7_roll50_mean_percentile"
+        ],
+        "standardization_mean": [
+          0.5015896123909978
+        ],
+        "standardization_scale": [
+          0.03456567419383775
+        ],
+        "training_offsets": [
+          50,
+          1971
+        ],
+        "training_rows": 1922
+      }
+    },
+    "no_hyperparameter_tuning": true,
+    "prediction_clip": [
+      0.0,
+      1.0
+    ],
+    "q7_only_ridge": {
+      "alpha": 1.0,
+      "features": [
+        "q7_roll50_mean_percentile"
+      ],
+      "role": "same-granularity baseline"
+    }
+  },
+  "next_action": "If the registered transfer gate is not met, retain the null result and extend the descriptive cross-granularity atlas only after feature-level lineage is reconciled; do not tune on this historical Blind OOS.",
+  "primary_inference": {
+    "block_length": 20,
+    "bootstrap_replicates": 20000,
+    "ci95_circular_moving_block": [
+      -0.0014366318846522088,
+      0.0004732986804032804
+    ],
+    "endpoint": "Blind OOS MAE(q7_only_ridge) - MAE(cross_granularity_ridge)",
+    "mean_improvement": -0.00045452423162688443,
+    "minimum_practical_effect": 0.005,
+    "multiplicity": "One preregistered confirmatory endpoint; secondary metrics descriptive only.",
+    "one_sided_block_signflip_p": 0.8035098245087745,
+    "passes_preregistered_gate": false,
+    "seed": 14120261124,
+    "signflip_replicates": 20000
+  },
+  "schema_version": "1.0",
+  "source": {
+    "c0_ledger_sha256": "96ba8b0ab3c5eddeec67a5b1a0bde4c6864a1c7597278cba27097aa8b11efc56",
+    "contest_315_used": false,
+    "q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q141_archive_cutoff": "2026-11-10",
+    "q141_suffix_rows_after_q7_prefix_excluded": 18,
+    "q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_archive_cutoff": "2026-10-24",
+    "q7_b8_manifest_git_blob_sha1": "acd4bd6f42458626e422718c6f80a65a5aa76eb5",
+    "q7_b8_report_git_blob_sha1": "56c0ce3420e5ac04b6ba279adf665c587d23fee4",
+    "q7_exact_prefix_of_q141": true,
+    "q7_ledger_sha256": "828e4fae76795264f15eb7d2c951848c643c7a446eceedf4e887a85120ca8059",
+    "q80_c0_manifest_git_blob_sha1": "0c46d78b383e236ee3d40ce22e1e55651333c81e",
+    "q80_c0_report_git_blob_sha1": "407be84fd8573fe7a12557dbca7b92990e3d04ab"
+  },
+  "status": "WALKFORWARD_COMPLETE",
+  "target_ledger": {
+    "git_blob_sha1": "acdc618ee9dd716b5859f11252f83107295ada9f",
+    "path": "reports/sequence_agent/q141_cross_granularity_transfer_target_ledger_2026-11-12.csv",
+    "rows": 3186,
+    "sha256": "84e3254dcd0d330a3c0bda3e89bafc3c51ea1e8482aa9ebcca11342516f01ec5"
+  },
+  "task_id": "Q141-C4",
+  "walkforward": {
+    "blind_used_for_model_selection": false,
+    "discovery_fit": "Expanding prequential; each Discovery target is scored before it can enter later training.",
+    "discovery_prequential_start_offset": 100,
+    "discovery_training_rows_for_frozen_models": 1922,
+    "evaluated_split_counts": {
+      "blind_oos": 657,
+      "discovery": 1872,
+      "validation": 657
+    },
+    "feature_warmup_targets": 50,
+    "original_split_counts": {
+      "blind_oos": 657,
+      "discovery": 1972,
+      "validation": 657
+    },
+    "rolling_window": 50,
+    "strict_prior": true,
+    "target_update_order": "Build prior-only features and predict target, score the frozen Q7 outcome, then allow that outcome into later rolling windows.",
+    "validation_blind_fit": "Coefficients frozen after Discovery; rolling predictors update only from strictly prior target outcomes.",
+    "validation_blind_refit": false
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141_CYCLE_12_CHECKPOINT",
+  "status": "COMPLETED_REMOTE_READBACK_VERIFIED",
+  "date": "2026-11-12",
+  "branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+  "workflow_run_id": 43319706282,
+  "workflow_head_sha": "81b747a299188311bbb5472113c02114284d9b77",
+  "persisted_pr_head_at_verification": "bfb694b5b80ab7b4cdd0685631891258861adbed",
+  "decision": "NO_Q80_Q90_TRANSITION_STATE_LIFT_DEMONSTRATED",
+  "primary_blind_oos": {
+    "comparison": "M2 Q7+Q80+Q90 versus M3 plus prior-50 Q80/Q90 selector transition state",
+    "mae_improvement": -0.0003084320450980716,
+    "ci95_circular_moving_block": [
+      -0.0012537712399152115,
+      0.000575764585950117
+    ],
+    "one_sided_block_signflip_p": 0.7351132443377831,
+    "practical_threshold": 0.005,
+    "confirmatory_endpoints": 1
+  },
+  "walkforward": {
+    "strict_prior": true,
+    "targets": 3136,
+    "discovery": 1822,
+    "validation": 657,
+    "blind_oos": 657,
+    "window": 50,
+    "training_start_offset": 100,
+    "first_scored_offset": 150,
+    "coefficients_frozen_after_discovery": true
+  },
+  "source_lineage": {
+    "q141_archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_archive_git_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q90_archive_git_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "q90_artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "q7_cutoff": "2026-10-24",
+    "q80_cutoff": "2026-11-10",
+    "q90_cutoff": "2026-11-07",
+    "contest_315_excluded": true
+  },
+  "readback": {
+    "status": "REMOTE_GIT_READBACK_VERIFIED",
+    "output_files_verified": 2,
+    "code_lineage_verified": 22,
+    "report_git_blob_sha1": "89209a8b3648e779e7857ed72c748648c569d646",
+    "ledger_git_blob_sha1": "5fcbdb89ec03d98aafc0fc585553a961210a8577",
+    "manifest_git_blob_sha1": "2cef2dd7ad86211eb348aef0b1141839397f3083",
+    "checkpoint_git_blob_sha1": "b4aee37a125e0b9144faf681573d62e80aae1e9e",
+    "receipt_git_blob_sha1": "f8744abf67fd62df9f4d0a6e1317d4219ed08fda"
+  },
+  "recovery": {
+    "initial_failures": 3,
+    "resolved": true,
+    "allowed_c5_source_drift": [
+      "q80_report",
+      "q80_manifest"
+    ],
+    "drift_resolution": "Current Q80 report/manifest and unchanged Q80 ledger/archive were revalidated; all other C5 lineage entries remained exact."
+  },
+  "governance": {
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "no_shadow_insertion": true,
+    "no_canonical_archive_mutation": true,
+    "protected_prs_untouched": [
+      6,
+      7,
+      8
+    ]
+  },
+  "next_action": "Q141-A5 full Q90 AST-to-feature lineage and redundancy audit across 330,429 formulas, 59 source features and 20 Discovery-selected features."
+}

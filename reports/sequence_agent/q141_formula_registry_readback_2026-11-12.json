@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B1-READBACK",
+  "status": "OUTPUTS_PERSISTED_AND_EXACT_READBACK_VERIFIED",
+  "verified_at": "2026-11-12",
+  "pull_request": 89,
+  "readback_branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+  "output_commit": "f0280d2ef37e54a671c026953a5fa6535ec4c693",
+  "workflow_run": {
+    "id": 43225408091,
+    "head": "c00f7015d54f97800dfc6e673ed3733c3d93c212",
+    "q141_steps": [
+      "Q141-B1 tests PASS",
+      "Q141-B1 walk-forward PASS",
+      "Q141-B1 artifact upload PASS",
+      "Q141-C0 walk-forward PASS",
+      "Q141-C1 walk-forward PASS",
+      "Q141-C2 walk-forward PASS",
+      "Q141 output persistence PASS"
+    ],
+    "full_workflow_status": "IN_PROGRESS_AT_POSITIONAL_REGIME_RESIDUAL_HAZARD_SUITE"
+  },
+  "artifact": {
+    "id": 13948396492,
+    "name": "q141-b1-formula-registry-c00f7015d54f97800dfc6e673ed3733c3d93c212",
+    "zip_bytes": 114031
+  },
+  "source_archive": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draws": 3404,
+    "cutoff": "2026-11-10"
+  },
+  "results": {
+    "targets": 3354,
+    "split_counts": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "raw_formula_count": 16628808,
+    "canonical_formula_count": 9808263,
+    "redundant_formula_count": 6820545,
+    "reduction_percent": 41.01643966302335,
+    "sample_formula_instances": 120,
+    "stable_score_mismatches": 0,
+    "stable_rank_mismatches": 0,
+    "legacy_numpy_rank_mismatches": 2311,
+    "legacy_numpy_rank_mismatch_rate": 0.005741900218644405,
+    "legacy_numpy_max_rank_displacement": 7,
+    "legacy_numpy_max_abs_score_delta": 1.3322676295501878e-15,
+    "legacy_numpy_max_flipped_pair_score_gap": 4.440892098500626e-16
+  },
+  "files": [
+    {
+      "path": "reports/sequence_agent/q141_formula_registry.json",
+      "git_blob_sha1": "8dee426851c82e50605a1a48f600bbacc601ed0c",
+      "bytes": 55426,
+      "sha256": "57361f84e9c6376e8d2e81cf3e571fcca8bdb320ec5a37f60abc114b630aca4f"
+    },
+    {
+      "path": "reports/sequence_agent/q141_formula_alias_walkforward_report_2026-11-12.json",
+      "git_blob_sha1": "8028b7dba57e0ffbede09b5946a311cc8857c1ba",
+      "bytes": 12185,
+      "sha256": "4fe1d35ff25eea8f3787cc1391b5278b584809a96bb16464e56b171f59f24ae9"
+    },
+    {
+      "path": "reports/sequence_agent/q141_formula_alias_walkforward_target_ledger_2026-11-12.csv",
+      "git_blob_sha1": "f9b7c3356f379d3df764b757987b5fde6b7ed823",
+      "bytes": 758463,
+      "rows": 3354,
+      "sha256": "e3fa0efeaddf2ea88dd89496057596f47abec53bb2ea4f0f4e5737946da944e6"
+    },
+    {
+      "path": "reports/sequence_agent/q141_formula_registry_manifest_2026-11-12.json",
+      "git_blob_sha1": "57997955e1c76ab8780876fff259ffb60dd01549",
+      "bytes": 1517,
+      "sha256": "46cc5aa0c6043daccb51451c4271e9a0fc57fe4dd9134c2437bccf7de6c72025"
+    },
+    {
+      "path": "reports/sequence_agent/q141_formula_registry_checkpoint_2026-11-12.json",
+      "git_blob_sha1": "c6e0ad6f7873b29befcf38f2cf6b3c3413523579",
+      "bytes": 552,
+      "sha256": "57e2b84633de75d01c5e37eeb109af769c2aa8e7350493b2aa4897cae42562d7"
+    }
+  ],
+  "hash_verification": {
+    "artifact_sha256sum_matches_manifest": true,
+    "checkpoint_manifest_sha256_matches": true,
+    "git_hash_object_matches_repository_blob_sha": true
+  },
+  "next_action": "Q141-B2: audit legacy tie handling; implement exact canonical combinadic rank/unrank for the Q92 10-feature subset universe (4,840,649 unique functions versus 8,436,285 raw IDs) and reconcile the adjusted multiplicity family before any full behaviour scoring.",
+  "governance": {
+    "no_merge": true,
+    "no_engine_promotion": true,
+    "no_archive_mutation": true,
+    "no_shadow_insertion": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}

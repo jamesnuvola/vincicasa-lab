@@ -1,0 +1,103 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141_CYCLE_CHECKPOINT",
+  "checkpoint_date": "2026-11-12",
+  "status": "CYCLE_8_COMPLETE_C3_NO_ROBUST_LIFT_Q90_AST_IMPORT_REMOTE_VERIFIED",
+  "repository": "jamesnuvola/vincicasa-lab",
+  "branch": "research/q141-formula-universe-behaviour-mapping-20261112",
+  "branch_head_at_checkpoint": "adb7eac82948174a9e838372001a7b313364db64",
+  "main_head": "70dcf8cc128884d9739959406d5662ef76daa253",
+  "pr89": {
+    "number": 89,
+    "state": "open",
+    "draft": true,
+    "merged": false,
+    "base_sha": "0bf1ef0d39afb671ff83e519489f16b0c24eb15a",
+    "ahead_by": 109,
+    "behind_by": 1
+  },
+  "eligible_source": {
+    "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draws": 3404,
+    "cutoff": "2026-11-10",
+    "quarantined_contest": 315,
+    "quarantined_date": "2026-11-11"
+  },
+  "q80_registry": {
+    "raw_formulas": 16628808,
+    "canonical_formula_ids": 9808263,
+    "exact_alias_reduction_fraction": 0.41016
+  },
+  "q141_c3": {
+    "status": "COMPLETED_REMOTE_READBACK_VERIFIED",
+    "workflow_run_id": 43273861767,
+    "targets": 3354,
+    "split_counts": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "raw_sample_formulas": 120,
+    "unique_canonical_formulas": 113,
+    "primary_blind_borda_top5_delta_vs_equal_family": 0.011343,
+    "primary_ci95": [
+      -0.000299,
+      0.023284
+    ],
+    "primary_p_raw": 0.09405,
+    "primary_p_holm_48": 1,
+    "paired_tests": 48,
+    "uniform_tests": 18,
+    "decision": "NO_ROBUST_FORMULA_CONSENSUS_LIFT_DEMONSTRATED",
+    "next_action": "Do not tune consensus on historical Blind OOS."
+  },
+  "q90_ast_import": {
+    "status": "REMOTE_GIT_READBACK_VERIFIED",
+    "workflow_run_id": 43275487478,
+    "output_commit": "ac376cd",
+    "source_artifact_id": 13627507532,
+    "source_artifact_sha256": "12df057170bc87e5ea36406d52b4ebf3d749e03d95a36a656e07334f1d049077",
+    "source_archive_blob_sha1": "5d2efd70684e918b27d8f06386d545647898336d",
+    "source_draws": 3401,
+    "source_cutoff": "2026-11-07",
+    "total_formulas": 330429,
+    "formula_type_counts": {
+      "linear_mean": 262599,
+      "pairwise_interaction": 29070,
+      "conditional_gate": 38760
+    },
+    "unique_source_formula_ids": 330429,
+    "unique_canonical_ast_ids": 330429,
+    "duplicate_ast_count": 0,
+    "selected_features": 20,
+    "available_features": 59,
+    "artifact_members_verified": 17,
+    "output_shards": 7,
+    "remote_output_files_verified": 8
+  },
+  "q7_pending": {
+    "formula_count": 1023,
+    "candidate_quintet_count": 658008,
+    "output_type": "quintet_score",
+    "status": "NOT_YET_IMPORTED_TO_TYPED_AST"
+  },
+  "validation_status": {
+    "dedicated_q141_c3_workflow": "SUCCESS",
+    "dedicated_q90_ast_import_workflow": "SUCCESS",
+    "broad_repository_ci": "PENDING_OR_ACTION_REQUIRED_ON_LATEST_HEAD",
+    "latest_c3_head_rerun": "IN_PROGRESS_AT_CHECKPOINT"
+  },
+  "governance": {
+    "auto_merge": false,
+    "auto_promotion": false,
+    "canonical_archive_mutation": false,
+    "shadow_insertion": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ],
+    "protected_prs_unchanged": true
+  },
+  "next_action": "Q141-A4: import Q7's 1,023 quintet-ranking formulas into a distinct typed AST/output namespace, preserve lineage, verify all 658,008 candidates, then reconcile source windows before a common-source behaviour atlas."
+}

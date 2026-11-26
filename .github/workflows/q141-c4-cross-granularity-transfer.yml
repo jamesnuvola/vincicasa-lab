@@ -1,0 +1,230 @@
+name: Q141-C4 cross-granularity transfer
+
+on:
+  push:
+    branches:
+      - research/q141-formula-universe-behaviour-mapping-20261112
+    paths:
+      - "scripts/sonar_q141_cross_granularity_transfer.py"
+      - "tests/test_sonar_q141_cross_granularity_transfer.py"
+      - "reports/sequence_agent/q141_cross_granularity_transfer_preregistration_2026-11-12.json"
+      - "reports/sequence_agent/q141_cross_granularity_transfer_preregistration_2026-11-12.md"
+      - ".github/workflows/q141-c4-cross-granularity-transfer.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: q141-c4-cross-granularity-transfer
+  cancel-in-progress: false
+
+jobs:
+  cross-granularity-transfer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout Q141 research branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install numerical dependency
+        run: python -m pip install "numpy>=1.26,<3"
+
+      - name: Run Q141-C4 synthetic leakage and reproducibility tests
+        run: python -m unittest discover -s tests -p "test_sonar_q141_cross_granularity_transfer.py" -v
+
+      - name: Execute preregistered Q141-C4 cross-granularity walk-forward
+        run: python scripts/sonar_q141_cross_granularity_transfer.py --output-dir reports/sequence_agent
+
+      - name: Upload Q141-C4 evidence bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: q141-c4-cross-granularity-transfer-${{ github.sha }}
+          path: |
+            reports/sequence_agent/q141_cross_granularity_transfer_report_2026-11-12.json
+            reports/sequence_agent/q141_cross_granularity_transfer_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_cross_granularity_transfer_manifest_2026-11-12.json
+            reports/sequence_agent/q141_cross_granularity_transfer_checkpoint_2026-11-12.json
+          retention-days: 90
+
+      - name: Persist computed outputs with stale-head recovery
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          temp_dir="$(mktemp -d)"
+          files=(
+            reports/sequence_agent/q141_cross_granularity_transfer_report_2026-11-12.json
+            reports/sequence_agent/q141_cross_granularity_transfer_target_ledger_2026-11-12.csv
+            reports/sequence_agent/q141_cross_granularity_transfer_manifest_2026-11-12.json
+            reports/sequence_agent/q141_cross_granularity_transfer_checkpoint_2026-11-12.json
+          )
+          for file in "${files[@]}"; do
+            mkdir -p "$temp_dir/$(dirname "$file")"
+            cp "$file" "$temp_dir/$file"
+          done
+          pushed=false
+          for attempt in 1 2 3; do
+            git fetch origin "$BRANCH_NAME"
+            git reset --hard "origin/$BRANCH_NAME"
+            for file in "${files[@]}"; do
+              cp "$temp_dir/$file" "$file"
+            done
+            git add "${files[@]}"
+            if git diff --cached --quiet; then
+              echo "Q141-C4 outputs already match the remote branch."
+              pushed=true
+              break
+            fi
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Persist Q141-C4 cross-granularity transfer results"
+            if git push origin "HEAD:$BRANCH_NAME"; then
+              pushed=true
+              break
+            fi
+            echo "Remote branch advanced during Q141-C4 persistence; resetting to remote and retrying."
+          done
+          rm -rf "$temp_dir"
+          if [ "$pushed" != "true" ]; then
+            echo "Q141-C4 output persistence failed after three attempts."
+            exit 1
+          fi
+
+      - name: Verify exact remote Git readback and persist receipt
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH_NAME"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import subprocess
+
+          branch = os.environ["BRANCH_NAME"]
+          prefix = "reports/sequence_agent/"
+          manifest_path = prefix + "q141_cross_granularity_transfer_manifest_2026-11-12.json"
+          checkpoint_path = prefix + "q141_cross_granularity_transfer_checkpoint_2026-11-12.json"
+          manifest_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{manifest_path}"])
+          manifest = json.loads(manifest_bytes)
+          checkpoint_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{checkpoint_path}"])
+          checkpoint = json.loads(checkpoint_bytes)
+
+          def blob_sha(data):
+              return hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
+
+          verified = []
+          for label, expected in manifest["files"].items():
+              path = expected["path"]
+              remote = subprocess.check_output(["git", "show", f"origin/{branch}:{path}"])
+              sha = hashlib.sha256(remote).hexdigest()
+              blob = blob_sha(remote)
+              if len(remote) != expected["bytes"] or sha != expected["sha256"] or blob != expected["git_blob_sha1"]:
+                  raise SystemExit(f"exact remote readback mismatch for {path}")
+              verified.append({"label": label, "path": path, "bytes": len(remote), "sha256": sha, "git_blob_sha1": blob})
+
+          lineage_verified = []
+          for label, expected in manifest["code_lineage"].items():
+              path = expected["path"]
+              remote = subprocess.check_output(["git", "show", f"origin/{branch}:{path}"])
+              sha = hashlib.sha256(remote).hexdigest()
+              blob = blob_sha(remote)
+              if len(remote) != expected["bytes"] or sha != expected["sha256"] or blob != expected["git_blob_sha1"]:
+                  raise SystemExit(f"source/code lineage mismatch for {path}")
+              lineage_verified.append({"label": label, "path": path, "sha256": sha, "git_blob_sha1": blob})
+
+          receipt = {
+              "schema_version": "1.0",
+              "task_id": "Q141-C4_REMOTE_READBACK",
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "branch": branch,
+              "branch_head_before_receipt": subprocess.check_output(["git", "rev-parse", f"origin/{branch}"], text=True).strip(),
+              "manifest_git_blob_sha1": blob_sha(manifest_bytes),
+              "checkpoint_status_before_receipt": checkpoint["status"],
+              "files_verified": len(verified),
+              "files": verified,
+              "code_lineage_verified": len(lineage_verified),
+              "code_lineage": lineage_verified,
+          }
+          receipt_path = prefix + "q141_cross_granularity_transfer_remote_readback_2026-11-12.json"
+          with open(receipt_path, "w", encoding="utf-8") as handle:
+              json.dump(receipt, handle, sort_keys=True, indent=2)
+              handle.write("\n")
+
+          checkpoint["status"] = "REMOTE_GIT_READBACK_VERIFIED"
+          checkpoint["remote_readback_receipt"] = receipt_path
+          checkpoint["remote_files_verified"] = len(verified)
+          checkpoint["remote_code_lineage_verified"] = len(lineage_verified)
+          checkpoint["branch_head_before_receipt"] = receipt["branch_head_before_receipt"]
+          with open(checkpoint_path, "w", encoding="utf-8") as handle:
+              json.dump(checkpoint, handle, sort_keys=True, indent=2)
+              handle.write("\n")
+          PY
+          git add reports/sequence_agent/q141_cross_granularity_transfer_remote_readback_2026-11-12.json
+          git add reports/sequence_agent/q141_cross_granularity_transfer_checkpoint_2026-11-12.json
+          if ! git diff --cached --quiet; then
+            git config user.name "sonar-q141-research"
+            git config user.email "actions@users.noreply.github.com"
+            git commit -m "Verify Q141-C4 exact remote Git readback"
+            pushed=false
+            for attempt in 1 2 3; do
+              git fetch origin "$BRANCH_NAME"
+              if git rebase "origin/$BRANCH_NAME" && git push origin "HEAD:$BRANCH_NAME"; then
+                pushed=true
+                break
+              fi
+              if [ "$attempt" -lt 3 ]; then
+                git rebase --abort || true
+                echo "Remote branch advanced while recording Q141-C4 receipt; retrying."
+              fi
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "Q141-C4 remote readback receipt persistence failed."
+              exit 1
+            fi
+          fi
+
+      - name: Verify persisted Q141-C4 receipt and checkpoint
+        env:
+          BRANCH_NAME: research/q141-formula-universe-behaviour-mapping-20261112
+        run: |
+          set -euo pipefail
+          git fetch origin "$BRANCH_NAME"
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          import subprocess
+
+          branch = os.environ["BRANCH_NAME"]
+          prefix = "reports/sequence_agent/"
+          receipt_path = prefix + "q141_cross_granularity_transfer_remote_readback_2026-11-12.json"
+          checkpoint_path = prefix + "q141_cross_granularity_transfer_checkpoint_2026-11-12.json"
+          receipt_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{receipt_path}"])
+          checkpoint_bytes = subprocess.check_output(["git", "show", f"origin/{branch}:{checkpoint_path}"])
+          receipt = json.loads(receipt_bytes)
+          checkpoint = json.loads(checkpoint_bytes)
+          if receipt.get("status") != "REMOTE_GIT_READBACK_VERIFIED" or receipt.get("files_verified") != 2:
+              raise SystemExit("Q141-C4 output readback receipt failed")
+          if receipt.get("code_lineage_verified") != 11:
+              raise SystemExit("Q141-C4 code/source lineage receipt failed")
+          if checkpoint.get("status") != "REMOTE_GIT_READBACK_VERIFIED":
+              raise SystemExit("Q141-C4 checkpoint status failed")
+          blob = hashlib.sha1(f"blob {len(receipt_bytes)}\0".encode("ascii") + receipt_bytes).hexdigest()
+          print(json.dumps({
+              "status": "REMOTE_GIT_READBACK_VERIFIED",
+              "receipt_git_blob_sha1": blob,
+              "files_verified": receipt["files_verified"],
+              "code_lineage_verified": receipt["code_lineage_verified"],
+              "checkpoint_status": checkpoint["status"],
+          }, sort_keys=True))
+          PY

@@ -1,0 +1,102 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B3",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "registered_at": "2026-11-12",
+  "hypothesis": "Among canonical equal-weight Q80 subset functions, higher primitive feature-weight mass has a positive association with next-target Top-5 number coverage.",
+  "estimand": "For each target, compute mean Top-5 hit share over a deterministic uniform sample of canonical formulas at each primitive weight mass k=1..10; estimate the target-level OLS slope of mean hit share on k and test whether its chronological mean is positive.",
+  "source": {
+    "archive_path": "data/storico_daily.csv",
+    "archive_git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draws": 3404,
+    "cutoff": "2026-11-10",
+    "minimum_prior_history": 50,
+    "excluded_contest": 315
+  },
+  "canonical_grammar": {
+    "raw_feature_count": 27,
+    "exact_canonical_feature_count": 25,
+    "exact_aliases": {
+      "recent_5": "freq_5",
+      "recent_10": "freq_10"
+    },
+    "formula_type": "equal-weight subset mean represented as primitive integer weighted mean after exact alias collapse",
+    "complexity": "sum of primitive integer weights; invariant to raw aliases and removes cross-raw-size duplicate functions",
+    "mass_options": "Alias feature weights a,b in {0,1,2}; choose s=k-a-b of the other 23 features with unit weight; retain only primitive signatures with gcd 1."
+  },
+  "exact_canonical_counts_by_mass": [
+    25,
+    300,
+    2348,
+    13202,
+    57201,
+    198605,
+    567479,
+    1359622,
+    2768832,
+    4840649
+  ],
+  "sample": {
+    "formulas_per_mass": 120,
+    "mass_1": "all 25 canonical formulas",
+    "masses_2_to_10": "uniform sample without replacement from canonical signatures within each primitive mass",
+    "total_sampled_formula_instances": 1105,
+    "seed": 14120261113,
+    "deterministic": true
+  },
+  "walkforward": {
+    "target_count": 3354,
+    "expected_split_counts": {
+      "discovery": 2013,
+      "validation": 671,
+      "blind_oos": 670
+    },
+    "cutoff": "strictly before target date",
+    "state_update": "score all sampled formulas for target t before appending target t to occurrence and pair state",
+    "feature_standardization": "cross-sectional z-score over 40 candidate numbers using only current-target prior-only feature values"
+  },
+  "primary_endpoint": "mean Top-5 hit share per formula and target",
+  "secondary_descriptive_endpoints": [
+    "Top-10 hit share",
+    "Top-20 hit share",
+    "mean actual-number rank"
+  ],
+  "baselines": {
+    "uniform_top5_hit_share": 0.125,
+    "uniform_top10_hit_share": 0.25,
+    "uniform_top20_hit_share": 0.5,
+    "equal_complexity_ensemble": "unweighted mean of ten complexity-stratum shares",
+    "discovery_selected_complexity": "complexity mass with highest Discovery mean Top-5 share; tie broken toward smaller mass; frozen before Validation and Blind OOS"
+  },
+  "inference": {
+    "test_family_size": 25,
+    "tests": [
+      "positive Top-5 complexity slope in each of 3 splits (3)",
+      "Top-5 excess over uniform for each of 10 masses in Validation and Blind OOS (20)",
+      "Discovery-selected complexity versus equal-complexity ensemble in Validation and Blind OOS (2)"
+    ],
+    "correction": "Holm-Bonferroni across all 25 registered tests",
+    "paired_time_series_method": "one-sided block sign-flip using contiguous chronological blocks of 20 targets",
+    "confidence_intervals": "circular moving-block bootstrap, 20,000 replicates, block length 20",
+    "seed": 14120261113
+  },
+  "exclusions": [
+    "No Q89 extension features, Q90 interactions/gates, Q7 candidate-quintet formulas, or Q92 non-equal-weight output types.",
+    "No formula or complexity stratum is selected using Validation or Blind OOS.",
+    "No post-target formula discovery or target-derived feature is permitted.",
+    "Historical Blind OOS is exposed research history, not virgin prospective evidence."
+  ],
+  "decision_rule": "A positive blind complexity trend is exploratory only; no engine promotion is permitted. Report nulls and all registered tests.",
+  "governance": {
+    "research_only": true,
+    "auto_merge": false,
+    "auto_promotion": false,
+    "shadow_insertion": false,
+    "canonical_archive_mutation": false,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}

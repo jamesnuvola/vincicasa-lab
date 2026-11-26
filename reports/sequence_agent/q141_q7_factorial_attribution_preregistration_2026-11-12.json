@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-B9",
+  "registered_at": "2026-11-12T19:40:00+01:00",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "hypothesis": "Within the fixed Q7 1,023-formula subset grammar, individual feature families and selected pairs have stable marginal or interaction effects on the strict-prior percentile rank of the realized quintet.",
+  "source": {
+    "q7_commit": "7a37cab601c5f9386131a00246963f8e4aeabf74",
+    "q7_archive_blob_sha1": "7dab05ba49ace909fe8783eef729605049c65e50",
+    "q7_walkforward_manifest_blob_sha1": "aae2c7768c9d37bf633a13939f2b686bcce83a27",
+    "q7_runner_blob_sha1": "ad1c7fa721f316b3af0018f5da4a0a905bb62dcf",
+    "q141_archive_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "q7_draws": 3387,
+    "q7_cutoff": "2026-10-24",
+    "formula_count": 1023,
+    "candidate_quintets": 658008,
+    "feature_family_count": 10
+  },
+  "target_protocol": {
+    "eligible_target_indices": "101..3386 inclusive",
+    "eligible_targets": 3286,
+    "split_rule": "chronological 60% / 20% / 20%",
+    "split_counts": {
+      "discovery": 1972,
+      "validation": 657,
+      "blind_oos": 657
+    },
+    "strict_prior": "Use only the pinned Q7 rank row generated from draws strictly before the target; target outcome only evaluates that frozen rank.",
+    "target_update_order": "score/write rank row before adding target draw to state"
+  },
+  "estimands": {
+    "normalized_percentile": "1 - (one_based_rank - 1)/(658008 - 1)",
+    "main_effect": "For each feature i and target t, average [percentile(S union {i}) - percentile(S)] over all 511 non-empty subsets S of the other nine feature families.",
+    "pairwise_interaction": "For each pair i,j and target t, average [p(S union {i,j}) - p(S union {i}) - p(S union {j}) + p(S)] over all 255 non-empty subsets S of the remaining eight feature families.",
+    "endpoints": 55,
+    "practical_effect_threshold_absolute": 0.005
+  },
+  "inference": {
+    "blind_oos_tests": 55,
+    "alternative": "two-sided difference from zero",
+    "p_value": "two-sided block sign-flip",
+    "block_length": 20,
+    "sign_flip_replicates": 20000,
+    "moving_block_bootstrap_replicates": 20000,
+    "seed": 14120261121,
+    "confidence_interval": "95% circular moving-block bootstrap",
+    "correction": "Holm-Bonferroni across all 55 registered Blind OOS main and pairwise interaction endpoints"
+  },
+  "guardrails": {
+    "no_parameter_tuning": true,
+    "no_winner_selection_on_validation_or_blind": true,
+    "strict_prior_rank_rows_only": true,
+    "verify_all_q7_source_hashes": true,
+    "verify_all_rank_part_hashes": true,
+    "verify_target_cutoffs": true,
+    "verify_q7_exact_prefix_of_q141": true,
+    "no_canonical_archive_mutation": true,
+    "no_shadow_insertion": true,
+    "no_engine_promotion": true,
+    "no_merge": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  },
+  "interpretation": "Factorial attribution over a fixed historical formula grammar. Main and pair effects are descriptive rank effects, not causal effects and not a deployable predictor. Historical Blind OOS is exposed, not virgin prospective evidence. Holm covers these 55 endpoints only, not all Q00-Q141 experimentation.",
+  "decision_rule": "Flag a feature or pair only if Holm-adjusted p<0.05 and absolute Blind OOS mean effect>=0.005. No engine promotion or forecast selection."
+}

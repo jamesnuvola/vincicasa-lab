@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0",
+  "task_id": "Q141-C0",
+  "parent_task": "Q141",
+  "status": "PREREGISTERED_EXECUTION_PENDING",
+  "registered_at": "2026-11-12",
+  "source": {
+    "path": "data/storico_daily.csv",
+    "git_blob_sha1": "fcb453ed06c8002314f826dbac79d6935f9ac103",
+    "eligible_draw_count": 3404,
+    "cutoff": "2026-11-10",
+    "excluded_contest": {
+      "date": "2026-11-11",
+      "contest": 315
+    }
+  },
+  "hypothesis": "A formula family with higher Top-5 hit count over the preceding 100 scored targets has higher next-target Top-5 coverage; a fixed rolling-100 selector may outperform static family/feature ensembles.",
+  "minimum_prior_history": 50,
+  "expected_targets": 3354,
+  "expected_splits": {
+    "discovery": 2013,
+    "validation": 671,
+    "blind_oos": 670
+  },
+  "feature_schema": {
+    "original_feature_count": 27,
+    "unique_feature_count": 25,
+    "aliases": {
+      "recent_5": "freq_5",
+      "recent_10": "freq_10"
+    },
+    "families": {
+      "frequency_level": [
+        "freq_5",
+        "freq_10",
+        "freq_20",
+        "freq_50",
+        "freq_100",
+        "freq_250",
+        "freq_500",
+        "freq_all",
+        "recent_3"
+      ],
+      "frequency_change": [
+        "trend_5_vs_50",
+        "trend_10_vs_100",
+        "trend_20_vs_250"
+      ],
+      "recency_gap": [
+        "age_since_hit",
+        "gap_mean",
+        "gap_sd",
+        "overdue_ratio"
+      ],
+      "position_dependence": [
+        "position_log_frequency",
+        "pair_count_with_last_draw"
+      ],
+      "neighbour_field": [
+        "neighbor_pm1_history",
+        "neighbor_pm2_history"
+      ],
+      "lag_memory": [
+        "lag_1",
+        "lag_2",
+        "lag_3",
+        "lag_5",
+        "lag_10"
+      ]
+    },
+    "family_score": "Equal arithmetic mean of the family's per-target standardized feature columns; z-score across 40 numbers."
+  },
+  "selector": {
+    "window": 100,
+    "metric": "mean Top-5 winning-number hits per prior target",
+    "tie_break": [
+      "lower mean actual-number rank",
+      "family_id ascending"
+    ],
+    "warmup": "first 100 scored targets use equal-family ensemble",
+    "update_order": "select and score target before appending its outcome to family histories"
+  },
+  "controls": [
+    "equal_family_ensemble",
+    "equal_feature_ensemble_25_unique",
+    "fixed_family_selected_on_discovery_only",
+    "uniform_5_of_40_exact_expectation"
+  ],
+  "splits": {
+    "rule": "offset / scored_targets <0.60 Discovery; <0.80 Validation; else Blind OOS",
+    "discovery_selects_fixed_family_only": true,
+    "blind_used_for_selection": false
+  },
+  "paired_endpoints": [
+    "top5_hit_share",
+    "top10_hit_share",
+    "top20_hit_share",
+    "mean_actual_number_rank"
+  ],
+  "paired_inference": {
+    "method": "non-overlapping block sign-flip randomization and circular moving-block bootstrap",
+    "block_length": 20,
+    "replicates": 20000,
+    "holm_family_size": 24,
+    "holm_scope": "Validation and Blind OOS × three controls × four endpoints"
+  },
+  "absolute_null": {
+    "method": "exact convolution of Hypergeometric(40,k,5)",
+    "k_values": [
+      5,
+      10,
+      20
+    ],
+    "splits": [
+      "validation",
+      "blind_oos"
+    ],
+    "holm_family_size": 6
+  },
+  "primary_gate": {
+    "comparison": "dynamic_vs_equal_family",
+    "split": "blind_oos",
+    "endpoint": "top5_hit_share",
+    "minimum_effect": 0.005,
+    "adjusted_p_below": 0.05,
+    "bootstrap_ci_lower_above": 0
+  },
+  "diagnostics": [
+    "per-family split performance",
+    "pairwise success co-occurrence",
+    "top5 candidate-set Jaccard",
+    "pairwise union coverage",
+    "unique-hit gain",
+    "lag1 autocorrelation",
+    "selector family counts and switches"
+  ],
+  "guardrails": {
+    "strict_prior": true,
+    "future_suffix_invariance": true,
+    "deterministic_replay": true,
+    "no_oracle_selection": true,
+    "historical_blind_not_virgin": true,
+    "no_auto_merge": true,
+    "no_promotion": true,
+    "no_shadow_insertion": true,
+    "no_archive_mutation": true,
+    "protected_prs": [
+      6,
+      7,
+      8
+    ]
+  }
+}
