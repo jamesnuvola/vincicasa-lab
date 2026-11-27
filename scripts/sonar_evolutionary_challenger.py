@@ -136,25 +136,77 @@ def raw_features(history):
         ranked[f + "_inverse"] = {n: 1.0-ranked[f][n] for n in NUMBERS}
     return ranked
 
+DIRECTION_PAIRS = (
+    ("freq_5","freq_5_inverse"), ("freq_20","freq_20_inverse"),
+    ("freq_100","freq_100_inverse"), ("freq_500","freq_500_inverse"),
+    ("freq_all","freq_all_inverse"), ("age_since_hit","age_since_hit_inverse"),
+    ("gap_mean","gap_mean_inverse"), ("gap_sd","gap_sd_inverse"),
+    ("overdue_ratio","overdue_ratio_inverse"), ("neighbor_pm1","neighbor_pm1_inverse"),
+    ("neighbor_pm2","neighbor_pm2_inverse"), ("pair_with_last","pair_with_last_inverse"),
+    ("regime_analog","regime_analog_inverse"),
+)
+SINGLE_FEATURES = ("lag_1", "lag_5")
+
 def adaptive_weights(performance):
-    """Bayesian-like shrinkage of feature skill, estimated only from prior targets."""
-    if not performance:
-        return {f: 1.0/len(FEATURES) for f in FEATURES}
+    """Choose one polarity per formula family using prior outcomes only."""
     window = list(performance)[-LEARNING_WINDOW:]
-    raw = {}
+    evidence = {}
     for f in FEATURES:
+        if not window:
+            evidence[f] = 0.0
+            continue
         vals = [row[f] for row in window]
-        # Each outcome is mean percentile rank of the five actual numbers; chance mean is 0.5.
         advantage = 0.5 - sum(vals)/len(vals)
-        # Shrink small apparent advantages; negative/weak features are deactivated.
         se = 0.5 / math.sqrt(max(1, len(vals)))
-        evidence = max(0.0, (advantage - 0.5*se) / (se + 0.015))
-        raw[f] = min(3.0, evidence)
-    total = sum(raw.values())
-    if total <= EPS:
-        return {f: 1.0/len(FEATURES) for f in FEATURES}
-    # Soft floor keeps exploration alive; skill controls the adaptive component.
-    return {f: 0.20/len(FEATURES) + 0.80*raw[f]/total for f in FEATURES}
+        evidence[f] = min(3.0, max(0.0, (advantage - 0.5*se) / (se + 0.015)))
+    selected = {}
+    for base, inverse in DIRECTION_PAIRS:
+        chosen = inverse if evidence[inverse] > evidence[base] else base
+        selected[chosen] = 1.0 + evidence[chosen]
+    for f in SINGLE_FEATURES:
+        selected[f] = 1.0 + evidence[f]
+    total = sum(selected.values())
+    return {f: selected.get(f, 0.0)/total for f in FEATURES}
+
+def update_transition(stay, out, previous_draw, next_draw):
+    next_set = set(next_draw)
+    for n in previous_draw:
+        if n in next_set:
+            stay[n] += 1
+        else:
+            out[n] += 1
+
+def champion_rank(history, stay, out):
+    """Exact-source SONAR Hybrid Recency Analog ranking, reproduced for paired comparison."""
+    current = set(history[-1])
+    analog_votes = {n: 0.0 for n in NUMBERS}
+    for i in range(len(history)-1):
+        overlap = len(current & set(history[i]))
+        if overlap >= 3:
+            weight = overlap ** 3
+            for n in history[i+1]:
+                analog_votes[n] += weight
+    f20 = Counter(n for d in history[-20:] for n in d)
+    f100 = Counter(n for d in history[-100:] for n in d)
+    f500 = Counter(n for d in history[-500:] for n in d)
+    fall = Counter(n for d in history for n in d)
+    recent = Counter(n for d in history[-5:] for n in d)
+    raw = []
+    for getter in (
+        lambda n: f20[n]/min(20,len(history)),
+        lambda n: f100[n]/min(100,len(history)),
+        lambda n: f500[n]/min(500,len(history)),
+        lambda n: fall[n]/len(history),
+        lambda n: analog_votes[n],
+        lambda n: stay[n]/(stay[n]+out[n]) if stay[n]+out[n] else 0.0,
+        lambda n: recent[n]/5.0,
+    ):
+        values = {n:getter(n) for n in NUMBERS}
+        lo, hi = min(values.values()), max(values.values())
+        raw.append({n:((values[n]-lo)/(hi-lo) if hi>lo else 0.0) for n in NUMBERS})
+    weights = (0.38,0.22,0.14,0.06,0.10,0.06,0.04)
+    scores = {n:sum(weights[j]*raw[j][n] for j in range(7)) for n in NUMBERS}
+    return sorted(NUMBERS,key=lambda n:(-scores[n],n))
 
 def score_target(history, performance):
     features = raw_features(history)
@@ -184,65 +236,70 @@ def run(rows):
     performance = deque(maxlen=LEARNING_WINDOW)
     ledger = []
     predictions = []
+    stay, out = [0]*41, [0]*41
+    for j in range(WARMUP-1):
+        update_transition(stay,out,rows[j][1],rows[j+1][1])
     for i in range(WARMUP, len(rows)):
         target_date, actual = rows[i]
         history = [d for _,d in rows[:i]]
-        # Forecast is built before actual is read into the learner.
         ranked, scores, weights, features = score_target(history, performance)
+        champion = champion_rank(history,stay,out)
         row = {
-            "target_date": target_date,
-            "history_cutoff": rows[i-1][0],
-            "history_draws": i,
-            "top20": ranked[:20], "top10": ranked[:10], "top5": ranked[:5],
-            "actual": list(actual),
-            "weights": weights,
+            "target_date": target_date, "history_cutoff": rows[i-1][0],
+            "history_draws": i, "top20": ranked[:20], "top10": ranked[:10],
+            "top5": ranked[:5], "champion_top20": champion[:20],
+            "champion_top10": champion[:10], "champion_top5": champion[:5],
+            "actual": list(actual), "weights": weights,
             "weight_learned_from_targets": len(performance),
         }
         predictions.append(row)
-        # Only after freezing this target do we reveal its outcome and update the learner.
-        performance.append({f: sum(features[f][n] for n in actual)/5.0 for f in FEATURES})
+        performance.append({f:sum(features[f][n] for n in actual)/5.0 for f in FEATURES})
+        update_transition(stay,out,history[-1],actual)
         ledger.append(row)
     n = len(predictions)
     d1, d2 = int(n*.60), int(n*.80)
-    splits = {
-        "discovery": evaluate(predictions[:d1]),
-        "validation": evaluate(predictions[d1:d2]),
-        "oos": evaluate(predictions[d2:]),
-        "overall": evaluate(predictions),
-    }
-    current_ranked, current_scores, current_weights, current_features = score_target(
-        [d for _,d in rows], performance
-    )
+    bounds = {"discovery":(0,d1),"validation":(d1,d2),"oos":(d2,n),"overall":(0,n)}
+    splits = {}
+    for name,(lo,hi) in bounds.items():
+        sample = predictions[lo:hi]
+        ch = evaluate([{"top20":p["top20"],"top10":p["top10"],"top5":p["top5"],"actual":p["actual"]} for p in sample])
+        cp = evaluate([{"top20":p["champion_top20"],"top10":p["champion_top10"],"top5":p["champion_top5"],"actual":p["actual"]} for p in sample])
+        splits[name] = {
+            "challenger":ch,"champion":cp,
+            "delta_mean_hits_top5":round(ch["mean_hits_top5"]-cp["mean_hits_top5"],6),
+            "delta_mean_hits_top10":round(ch["mean_hits_top10"]-cp["mean_hits_top10"],6),
+            "delta_mean_hits_top20":round(ch["mean_hits_top20"]-cp["mean_hits_top20"],6),
+            "delta_top20_5of5":ch["top20_5of5"]-cp["top20_5of5"],
+        }
+    current_ranked,current_scores,current_weights,current_features=score_target([d for _,d in rows],performance)
+    current_champion=champion_rank([d for _,d in rows],stay,out)
     return {
-        "status": "EXPLORATORY_NOT_PROMOTABLE",
-        "engine_id": "SONAR::EVOLUTIONARY_FORMULA_REGIME_ADAPTIVE",
-        "version": "evolutionary-challenger-v1",
-        "source": "data/storico_daily.csv",
-        "first_date": rows[0][0], "last_date": rows[-1][0], "draws": len(rows),
-        "warmup_draws": WARMUP, "evaluated_targets": n,
-        "learning_window_targets": LEARNING_WINDOW,
-        "features": list(FEATURES),
-        "method": {
-            "number_features": "28 prior-only directional formula hypotheses: multi-window frequency, age/recency, gap length/dispersion, overdue/underdue, lag, neighborhood, pair-with-last, regime similarity/novelty",
-            "regime_feature": "Similarity-weighted successor votes from nearest prior five-draw structural contexts; only contexts whose successor is already observed are eligible",
-            "adaptive_rule": "Feature weights use prior evaluated targets only; weak/negative skill is shrunk/deactivated, with a 20% uniform exploration floor",
-            "chronology": "Each target forecast is frozen before its actual draw is added to adaptive performance history",
-            "selection": "Rank all 40 numbers by adaptive weighted formula score; Top5 is the first five ranks",
-            "limitations": "Retrospective walk-forward is exploratory; repeated historical inspection means OOS is not pristine; no predictive advantage is claimed"
+        "status":"EXPLORATORY_NOT_PROMOTABLE","engine_id":"SONAR::EVOLUTIONARY_FORMULA_REGIME_ADAPTIVE",
+        "version":"evolutionary-challenger-v1.1","source":"data/storico_daily.csv",
+        "first_date":rows[0][0],"last_date":rows[-1][0],"draws":len(rows),
+        "warmup_draws":WARMUP,"evaluated_targets":n,"learning_window_targets":LEARNING_WINDOW,
+        "features":list(FEATURES),
+        "method":{
+            "number_features":"28 prior-only directional hypotheses grouped into 13 paired polarity families plus lag-1/lag-5",
+            "regime_feature":"Similarity-weighted successor votes from nearest prior five-draw structural contexts; only observed historical successors are eligible",
+            "adaptive_rule":"One direction per family is selected from prior outcomes; inconclusive families retain canonical polarity and unit prior weight",
+            "chronology":"At each target, Challenger and Champion forecasts are frozen before the target is revealed; only then are adaptive weights and Champion persistence updated",
+            "comparison":"Exact-source Champion scoring is reproduced on identical target dates, cutoffs and warm-up",
+            "selection":"Rank all 40 numbers by adaptive weighted formula score; Top5 is the first five ranks",
+            "limitations":"Historical walk-forward is exploratory and already inspected; no predictive advantage is claimed; prospective paired evidence is still required"
         },
-        "splits": splits,
-        "current_forecast": {
-            "target_date": "NEXT_DRAW_AFTER_ARCHIVE",
-            "history_cutoff": rows[-1][0],
-            "top20": current_ranked[:20],
-            "top10": current_ranked[:10],
-            "top5_ranked": current_ranked[:5],
-            "ticket_sorted": sorted(current_ranked[:5]),
-            "weights": current_weights,
-            "score_top20": {str(n): round(current_scores[n],8) for n in current_ranked[:20]},
-            "status": "FROZEN_BY_REPORT_GENERATION"
+        "splits":splits,
+        "current_forecast":{
+            "target_date":"NEXT_DRAW_AFTER_ARCHIVE","history_cutoff":rows[-1][0],
+            "top20":current_ranked[:20],"top10":current_ranked[:10],
+            "top5_ranked":current_ranked[:5],"ticket_sorted":sorted(current_ranked[:5]),
+            "champion_top20":current_champion[:20],"champion_top10":current_champion[:10],
+            "champion_top5_ranked":current_champion[:5],"champion_ticket_sorted":sorted(current_champion[:5]),
+            "weights":current_weights,
+            "score_top20":{str(n):round(current_scores[n],8) for n in current_ranked[:20]},
+            "status":"FROZEN_BY_REPORT_GENERATION"
         },
-        "ledger": ledger
+        "ledger":ledger
     }
 
 def persist_shadow(report, rows):
@@ -341,7 +398,7 @@ def main():
     json_path = OUT / "evolutionary_challenger_walkforward.json"
     csv_path = OUT / "evolutionary_challenger_ledger.csv"
     json_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
-    fields = ["target_date","history_cutoff","history_draws","top20","top10","top5","actual","weight_learned_from_targets"]
+    fields = ["target_date","history_cutoff","history_draws","top20","top10","top5","champion_top20","champion_top10","champion_top5","actual","weight_learned_from_targets"]
     with csv_path.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields); w.writeheader()
         for r in report["ledger"]:
