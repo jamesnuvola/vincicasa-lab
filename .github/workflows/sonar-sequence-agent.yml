@@ -45,6 +45,7 @@ jobs:
       - name: Check agent syntax
         run: |
           python -m py_compile scripts/sonar_sequence_agent.py
+          python -m py_compile scripts/sonar_evolutionary_challenger.py
           python -m py_compile scripts/sonar_fast_improvements.py
           python -m py_compile scripts/sonar_evolutionary_lab.py
           python -m py_compile scripts/sonar_position_regime_residual_lab.py
@@ -63,6 +64,11 @@ jobs:
 
       - name: Run evolutionary pairwise strategy search
         run: python scripts/sonar_evolutionary_lab.py
+
+      - name: Run SONAR evolutionary formula-regime Challenger walk-forward
+        run: |
+          python scripts/sonar_evolutionary_challenger.py --self-test
+          python scripts/sonar_evolutionary_challenger.py
 
       - name: Run positional, regime, residual and structural hazard lab
         run: python scripts/sonar_position_regime_residual_lab.py

@@ -1,0 +1,30 @@
+name: SONAR Evolutionary Challenger CI
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "scripts/sonar_evolutionary_challenger.py"
+      - "tests/test_sonar_evolutionary_challenger.py"
+      - ".github/workflows/sonar-evolutionary-challenger-ci.yml"
+      - "data/storico_daily.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  challenger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Syntax and unit tests
+        run: |
+          python -m py_compile scripts/sonar_evolutionary_challenger.py
+          python -m unittest discover -s tests -p 'test_sonar_evolutionary_challenger.py' -v
+      - name: Full prior-only walk-forward replay
+        run: python scripts/sonar_evolutionary_challenger.py
