@@ -8,8 +8,9 @@ from already evaluated targets. The canonical Champion is never modified.
 from __future__ import annotations
 import argparse, csv, json, math, statistics
 from collections import Counter, deque
-from datetime import date
+from datetime import date, datetime, timedelta, time
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "storico_daily.csv"
@@ -62,9 +63,9 @@ def mean_sd(xs):
     m = sum(xs) / len(xs)
     return m, math.sqrt(sum((x-m)**2 for x in xs) / len(xs))
 
-def structural_state(history):
+def structural_state(history, end=None):
     """Compact state vector from the preceding five draws only."""
-    recent = history[-5:]
+    recent = history[-5:] if end is None else history[end-5:end]
     sums = [sum(d) for d in recent]
     spans = [d[-1]-d[0] for d in recent]
     odds = [sum(x % 2 for x in d) for d in recent]
@@ -83,12 +84,12 @@ def regime_analog_scores(history):
     # Contexts are only admitted when their successor is already in history.
     candidates = []
     start = max(5, len(history)-700)
-    for j in range(start, len(history)-1):
-        prior_state = structural_state(history[:j])
+    for j in range(start, len(history)):
+        prior_state = structural_state(history, j)
         # Robust scale based on the prior context window; floors avoid zero scales.
         scales = (18, 8, 10, 5, 1.5, 1.2, 0.8, 0.8, 1.5, 1.2)
         dist = sum(((a-b)/s)**2 for a,b,s in zip(current, prior_state, scales)) / len(scales)
-        candidates.append((dist, history[j+1]))
+        candidates.append((dist, history[j]))
     scores = {n: 0.0 for n in NUMBERS}
     if not candidates:
         return scores
@@ -103,7 +104,10 @@ def regime_analog_scores(history):
 def raw_features(history):
     draws = history
     last = set(draws[-1])
-    counts = {n: [i for i,d in enumerate(draws) if n in d] for n in NUMBERS}
+    counts = {n: [] for n in NUMBERS}
+    for i, draw in enumerate(draws):
+        for n in draw:
+            counts[n].append(i)
     raw = {f: {} for f in FEATURES if f != "regime_analog"}
     for n in NUMBERS:
         idx = counts[n]
@@ -241,6 +245,68 @@ def run(rows):
         "ledger": ledger
     }
 
+def persist_shadow(report, rows):
+    """Append immutable prospective freezes; evaluate only previously frozen targets."""
+    path = OUT / "evolutionary_challenger_shadow.csv"
+    fields = ["target_date","frozen_at","history_cutoff","model_version","top20","top10","top5",
+              "weights_json","status","actual_numbers","hit_numbers","hit_count","evaluated_at"]
+    existing = []
+    if path.exists():
+        with path.open(newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            if reader.fieldnames != fields:
+                raise SystemExit("CHALLENGER BLOCKED: shadow ledger schema mismatch")
+            existing = list(reader)
+    actual_by_date = {d: nums for d, nums in rows}
+    now = datetime.now(ZoneInfo("Europe/Rome"))
+    changed = False
+    for row in existing:
+        if row["status"] == "FROZEN_PENDING" and row["target_date"] in actual_by_date:
+            actual = actual_by_date[row["target_date"]]
+            hits = sorted(set(map(int,row["top20"].split())) & set(actual))
+            row["status"] = "EVALUATED"
+            row["actual_numbers"] = " ".join(map(str,actual))
+            row["hit_numbers"] = " ".join(map(str,hits))
+            row["hit_count"] = str(len(hits))
+            row["evaluated_at"] = now.isoformat(timespec="seconds")
+            changed = True
+    latest = date.fromisoformat(rows[-1][0])
+    today = now.date()
+    if latest == today:
+        target = today + timedelta(days=1)
+    elif latest == today - timedelta(days=1):
+        target = today if now.time() < time(20,0) else today + timedelta(days=1)
+    elif latest < today - timedelta(days=1):
+        raise SystemExit("CHALLENGER BLOCKED: archive is stale; no prospective freeze created")
+    else:
+        target = latest + timedelta(days=1)
+    target_text = target.isoformat()
+    current = report["current_forecast"]
+    prior = next((r for r in existing if r["target_date"] == target_text), None)
+    if prior:
+        expected = (current["history_cutoff"], " ".join(map(str,current["top20"])),
+                    " ".join(map(str,current["top10"])), " ".join(map(str,current["ticket_sorted"])))
+        observed = (prior["history_cutoff"],prior["top20"],prior["top10"],prior["top5"])
+        if expected != observed:
+            raise SystemExit("CHALLENGER BLOCKED: existing target freeze conflicts; immutable forecast preserved")
+    else:
+        existing.append({
+            "target_date": target_text, "frozen_at": now.isoformat(timespec="seconds"),
+            "history_cutoff": current["history_cutoff"], "model_version": report["version"],
+            "top20": " ".join(map(str,current["top20"])), "top10": " ".join(map(str,current["top10"])),
+            "top5": " ".join(map(str,current["ticket_sorted"])),
+            "weights_json": json.dumps(current["weights"],sort_keys=True),
+            "status": "FROZEN_PENDING", "actual_numbers": "", "hit_numbers": "",
+            "hit_count": "", "evaluated_at": ""
+        })
+        changed = True
+    if changed or not path.exists():
+        with path.open("w",newline="",encoding="utf-8") as f:
+            w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(existing)
+    report["current_forecast"]["target_date"] = target_text
+    report["current_forecast"]["status"] = "FROZEN_PENDING" if not prior else prior["status"]
+    report["current_forecast"]["frozen_at"] = prior["frozen_at"] if prior else now.isoformat(timespec="seconds")
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--self-test", action="store_true")
@@ -255,6 +321,7 @@ def main():
         return
     report = run(rows)
     OUT.mkdir(parents=True, exist_ok=True)
+    persist_shadow(report, rows)
     json_path = OUT / "evolutionary_challenger_walkforward.json"
     csv_path = OUT / "evolutionary_challenger_ledger.csv"
     json_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
