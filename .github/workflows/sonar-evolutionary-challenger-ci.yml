@@ -25,6 +25,6 @@ jobs:
       - name: Syntax and unit tests
         run: |
           python -m py_compile scripts/sonar_evolutionary_challenger.py
-          python -m pytest -q tests/test_sonar_evolutionary_challenger.py
+          python -m unittest discover -s tests -p 'test_sonar_evolutionary_challenger.py' -v
       - name: Full prior-only walk-forward replay
         run: python scripts/sonar_evolutionary_challenger.py
