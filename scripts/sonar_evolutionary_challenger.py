@@ -6,7 +6,7 @@ scored using strictly earlier draws. Adaptive formula weights are learned only
 from already evaluated targets. The canonical Champion is never modified.
 """
 from __future__ import annotations
-import argparse, csv, json, math, statistics
+import argparse, csv, json, math, statistics, random
 from collections import Counter, deque
 from datetime import date, datetime, timedelta, time
 from pathlib import Path

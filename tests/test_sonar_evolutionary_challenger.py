@@ -30,6 +30,22 @@ class ChallengerTests(unittest.TestCase):
             mod.update_transition(stay,out,draws[j],draws[j+1])
         self.assertEqual(mod.champion_rank(draws,stay,out)[:5], [25,16,38,26,3])
 
+    def test_flow_residual_state_dimensions(self):
+        rows = mod.load_archive()
+        hist = [d for _, d in rows[:mod.WARMUP]]
+        self.assertEqual(len(mod.structural_state(hist)), 25)
+
+    def test_paired_bootstrap_is_deterministic(self):
+        sample = [
+            {"top5":[1],"champion_top5":[2],"actual":[1]},
+            {"top5":[1],"champion_top5":[2],"actual":[1]},
+            {"top5":[1],"champion_top5":[2],"actual":[1]},
+            {"top5":[1],"champion_top5":[2],"actual":[1]},
+        ]
+        result = mod.paired_block_bootstrap(sample,"top5","champion_top5",block_length=2,replicates=100)
+        self.assertEqual(result["mean_delta"],1.0)
+        self.assertEqual(result["ci95"],[1.0,1.0])
+
     def test_walkforward_uses_only_prior_cutoff(self):
         rows = mod.load_archive()
         result = mod.run(rows[:mod.WARMUP + 12])
