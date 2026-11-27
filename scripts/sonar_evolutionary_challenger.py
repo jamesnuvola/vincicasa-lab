@@ -42,7 +42,7 @@ def load_archive():
             nums = tuple(int(row[f"n{i}"]) for i in range(1, 6))
             if len(set(nums)) != 5 or tuple(sorted(nums)) != nums or any(n not in NUMBERS for n in nums):
                 raise SystemExit(f"CHALLENGER BLOCKED: invalid draw at line {line}")
-            if rows and d <= rows[-1][0]:
+            if rows and d.isoformat() <= rows[-1][0]:
                 raise SystemExit(f"CHALLENGER BLOCKED: non-increasing date at line {line}")
             rows.append((d.isoformat(), nums))
     if len(rows) < WARMUP + 100:
