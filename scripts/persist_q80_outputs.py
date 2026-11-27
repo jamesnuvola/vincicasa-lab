@@ -9,6 +9,7 @@ import math
 import os
 import subprocess
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -306,9 +307,23 @@ def main():
         "parents": [head],
     })
     api("PATCH", "/git/refs/heads/" + BRANCH, {"sha": commit["sha"], "force": False})
-    ref_after = api("GET", "/git/ref/heads/" + BRANCH)
-    if ref_after.get("object", {}).get("sha") != commit["sha"]:
-        raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: branch ref does not point to persisted commit")
+    # GitHub's ref read can briefly lag immediately after a successful ref update.
+    # Retry only while the old parent is still observed; any other SHA is a real race.
+    observed_sha = None
+    for attempt in range(8):
+        ref_after = api("GET", "/git/ref/heads/" + BRANCH)
+        observed_sha = ref_after.get("object", {}).get("sha")
+        if observed_sha == commit["sha"]:
+            break
+        if observed_sha != head:
+            raise SystemExit(
+                "Q80_Q81_Q82_Q83_PERSIST_BLOCKED: branch ref moved to unexpected SHA "
+                + str(observed_sha)
+            )
+        if attempt < 7:
+            time.sleep(1)
+    if observed_sha != commit["sha"]:
+        raise SystemExit("Q80_Q81_Q82_Q83_PERSIST_BLOCKED: branch ref did not converge to persisted commit")
     verify_outputs_at_ref(commit["sha"])
     if output_path:
         with open(output_path, "a", encoding="utf-8") as handle:
