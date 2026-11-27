@@ -22,6 +22,14 @@ class ChallengerTests(unittest.TestCase):
         self.assertEqual(set(a), set(mod.FEATURES))
         self.assertTrue(all(set(v) == set(mod.NUMBERS) for v in a.values()))
 
+    def test_champion_replica_matches_frozen_current_ranking(self):
+        rows = mod.load_archive()
+        stay, out = [0]*41, [0]*41
+        draws = [d for _,d in rows]
+        for j in range(len(draws)-1):
+            mod.update_transition(stay,out,draws[j],draws[j+1])
+        self.assertEqual(mod.champion_rank(draws,stay,out)[:5], [25,16,38,26,3])
+
     def test_walkforward_uses_only_prior_cutoff(self):
         rows = mod.load_archive()
         result = mod.run(rows[:mod.WARMUP + 12])

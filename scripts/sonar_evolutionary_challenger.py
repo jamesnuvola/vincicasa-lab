@@ -246,16 +246,18 @@ def run(rows):
     }
 
 def persist_shadow(report, rows):
-    """Append immutable prospective freezes; evaluate only previously frozen targets."""
+    """Append immutable paired Champion/Challenger freezes; never reconstruct missing targets."""
     path = OUT / "evolutionary_challenger_shadow.csv"
-    fields = ["target_date","frozen_at","history_cutoff","model_version","top20","top10","top5",
-              "weights_json","status","actual_numbers","hit_numbers","hit_count","evaluated_at"]
+    fields = ["target_date","frozen_at","history_cutoff","model_version",
+              "top20","top10","top5","champion_top20","champion_top10","champion_top5",
+              "weights_json","status","actual_numbers","hit_numbers","hit_count",
+              "champion_hit_numbers","champion_hit_count","evaluated_at"]
     existing = []
     if path.exists():
         with path.open(newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             if reader.fieldnames != fields:
-                raise SystemExit("CHALLENGER BLOCKED: shadow ledger schema mismatch")
+                raise SystemExit("CHALLENGER BLOCKED: paired shadow ledger schema mismatch")
             existing = list(reader)
     actual_by_date = {d: nums for d, nums in rows}
     now = datetime.now(ZoneInfo("Europe/Rome"))
@@ -263,11 +265,14 @@ def persist_shadow(report, rows):
     for row in existing:
         if row["status"] == "FROZEN_PENDING" and row["target_date"] in actual_by_date:
             actual = actual_by_date[row["target_date"]]
-            hits = sorted(set(map(int,row["top20"].split())) & set(actual))
+            ch = sorted(set(map(int,row["top20"].split())) & set(actual))
+            cp = sorted(set(map(int,row["champion_top20"].split())) & set(actual))
             row["status"] = "EVALUATED"
             row["actual_numbers"] = " ".join(map(str,actual))
-            row["hit_numbers"] = " ".join(map(str,hits))
-            row["hit_count"] = str(len(hits))
+            row["hit_numbers"] = " ".join(map(str,ch))
+            row["hit_count"] = str(len(ch))
+            row["champion_hit_numbers"] = " ".join(map(str,cp))
+            row["champion_hit_count"] = str(len(cp))
             row["evaluated_at"] = now.isoformat(timespec="seconds")
             changed = True
     latest = date.fromisoformat(rows[-1][0])
@@ -283,29 +288,40 @@ def persist_shadow(report, rows):
     target_text = target.isoformat()
     current = report["current_forecast"]
     prior = next((r for r in existing if r["target_date"] == target_text), None)
+    expected = (
+        current["history_cutoff"], " ".join(map(str,current["top20"])),
+        " ".join(map(str,current["top10"])), " ".join(map(str,current["ticket_sorted"])),
+        " ".join(map(str,current["champion_top20"])),
+        " ".join(map(str,current["champion_top10"])),
+        " ".join(map(str,current["champion_ticket_sorted"]))
+    )
     if prior:
-        expected = (current["history_cutoff"], " ".join(map(str,current["top20"])),
-                    " ".join(map(str,current["top10"])), " ".join(map(str,current["ticket_sorted"])))
-        observed = (prior["history_cutoff"],prior["top20"],prior["top10"],prior["top5"])
+        observed = (
+            prior["history_cutoff"],prior["top20"],prior["top10"],prior["top5"],
+            prior["champion_top20"],prior["champion_top10"],prior["champion_top5"]
+        )
         if expected != observed:
-            raise SystemExit("CHALLENGER BLOCKED: existing target freeze conflicts; immutable forecast preserved")
+            raise SystemExit("CHALLENGER BLOCKED: existing paired freeze conflicts; immutable forecast preserved")
     else:
         existing.append({
-            "target_date": target_text, "frozen_at": now.isoformat(timespec="seconds"),
-            "history_cutoff": current["history_cutoff"], "model_version": report["version"],
-            "top20": " ".join(map(str,current["top20"])), "top10": " ".join(map(str,current["top10"])),
-            "top5": " ".join(map(str,current["ticket_sorted"])),
-            "weights_json": json.dumps(current["weights"],sort_keys=True),
-            "status": "FROZEN_PENDING", "actual_numbers": "", "hit_numbers": "",
-            "hit_count": "", "evaluated_at": ""
+            "target_date":target_text,"frozen_at":now.isoformat(timespec="seconds"),
+            "history_cutoff":current["history_cutoff"],"model_version":report["version"],
+            "top20":" ".join(map(str,current["top20"])),"top10":" ".join(map(str,current["top10"])),
+            "top5":" ".join(map(str,current["ticket_sorted"])),
+            "champion_top20":" ".join(map(str,current["champion_top20"])),
+            "champion_top10":" ".join(map(str,current["champion_top10"])),
+            "champion_top5":" ".join(map(str,current["champion_ticket_sorted"])),
+            "weights_json":json.dumps(current["weights"],sort_keys=True),
+            "status":"FROZEN_PENDING","actual_numbers":"","hit_numbers":"","hit_count":"",
+            "champion_hit_numbers":"","champion_hit_count":"","evaluated_at":""
         })
         changed = True
     if changed or not path.exists():
         with path.open("w",newline="",encoding="utf-8") as f:
             w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(existing)
-    report["current_forecast"]["target_date"] = target_text
-    report["current_forecast"]["status"] = "FROZEN_PENDING" if not prior else prior["status"]
-    report["current_forecast"]["frozen_at"] = prior["frozen_at"] if prior else now.isoformat(timespec="seconds")
+    current["target_date"] = target_text
+    current["status"] = "FROZEN_PENDING" if not prior else prior["status"]
+    current["frozen_at"] = prior["frozen_at"] if prior else now.isoformat(timespec="seconds")
 
 def main():
     parser = argparse.ArgumentParser()
