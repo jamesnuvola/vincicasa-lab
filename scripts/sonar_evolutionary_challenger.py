@@ -63,20 +63,44 @@ def mean_sd(xs):
     m = sum(xs) / len(xs)
     return m, math.sqrt(sum((x-m)**2 for x in xs) / len(xs))
 
+def linear_slope(values):
+    if len(values) < 2:
+        return 0.0
+    center = (len(values)-1)/2.0
+    mean = sum(values)/len(values)
+    denom = sum((i-center)**2 for i in range(len(values)))
+    return sum((i-center)*(v-mean) for i,v in enumerate(values))/(denom or 1.0)
+
+def terminal_acceleration(values):
+    if len(values) < 3:
+        return 0.0
+    return (values[-1]-values[-2])-(values[-2]-values[-3])
+
 def structural_state(history, end=None):
-    """Compact state vector from the preceding five draws only."""
+    """Five-draw state: levels, dispersion, local flow, acceleration and residuals."""
     recent = history[-5:] if end is None else history[end-5:end]
     sums = [sum(d) for d in recent]
     spans = [d[-1]-d[0] for d in recent]
     odds = [sum(x % 2 for x in d) for d in recent]
     overlaps = [len(set(recent[i]) & set(recent[i-1])) for i in range(1,len(recent))]
+    gap_means = [sum(d[i+1]-d[i] for i in range(4))/4.0 for d in recent]
     gaps = [d[i+1]-d[i] for d in recent for i in range(4)]
     sm, ss = mean_sd(sums)
     rm, rs = mean_sd(spans)
     om, os = mean_sd(odds)
     xm, xs = mean_sd(overlaps)
     gm, gs = mean_sd(gaps)
-    return (sm, ss, rm, rs, om, os, xm, xs, gm, gs)
+    levels = (sm,ss,rm,rs,om,os,xm,xs,gm,gs)
+    flow = tuple(v for series in (sums,spans,odds,overlaps,gap_means)
+                 for v in (linear_slope(series),terminal_acceleration(series)))
+    residuals = (
+        sums[-1]-sum(sums[:-1])/len(sums[:-1]),
+        spans[-1]-sum(spans[:-1])/len(spans[:-1]),
+        odds[-1]-sum(odds[:-1])/len(odds[:-1]),
+        overlaps[-1]-sum(overlaps[:-1])/len(overlaps[:-1]),
+        gap_means[-1]-sum(gap_means[:-1])/len(gap_means[:-1]),
+    )
+    return levels + flow + residuals
 
 def regime_analog_scores(history):
     """Similarity-weighted successor votes from prior contexts; no target leakage."""
@@ -87,7 +111,7 @@ def regime_analog_scores(history):
     for j in range(start, len(history)):
         prior_state = structural_state(history, j)
         # Robust scale based on the prior context window; floors avoid zero scales.
-        scales = (18, 8, 10, 5, 1.5, 1.2, 0.8, 0.8, 1.5, 1.2)
+        scales = (18,8,10,5,1.5,1.2,0.8,0.8,1.5,1.2, 8,12,4,6,0.7,1.0,0.5,0.8,0.5,0.8, 18,20,1.5,1.0,1.5)
         dist = sum(((a-b)/s)**2 for a,b,s in zip(current, prior_state, scales)) / len(scales)
         candidates.append((dist, history[j]))
     scores = {n: 0.0 for n in NUMBERS}
@@ -217,19 +241,52 @@ def score_target(history, performance):
 
 def evaluate(predictions):
     if not predictions:
-        return {"targets": 0}
+        return {"targets":0}
     hits = [len(set(p["top20"]) & set(p["actual"])) for p in predictions]
     top5 = [len(set(p["top5"]) & set(p["actual"])) for p in predictions]
     return {
-        "targets": len(predictions),
-        "mean_hits_top5": round(sum(top5)/len(top5), 6),
-        "mean_hits_top10": round(sum(len(set(p["top10"]) & set(p["actual"])) for p in predictions)/len(predictions), 6),
-        "mean_hits_top20": round(sum(hits)/len(hits), 6),
-        "top20_5of5": sum(h == 5 for h in hits),
-        "top20_4plus": sum(h >= 4 for h in hits),
-        "random_baseline_mean_hits_top5": 0.625,
-        "random_baseline_mean_hits_top10": 1.25,
-        "random_baseline_mean_hits_top20": 2.5,
+        "targets":len(predictions),
+        "mean_hits_top5":round(sum(top5)/len(top5),6),
+        "mean_hits_top10":round(sum(len(set(p["top10"]) & set(p["actual"])) for p in predictions)/len(predictions),6),
+        "mean_hits_top20":round(sum(hits)/len(hits),6),
+        "top20_5of5":sum(h==5 for h in hits),
+        "top20_4plus":sum(h>=4 for h in hits),
+        "random_baseline_mean_hits_top5":0.625,
+        "random_baseline_mean_hits_top10":1.25,
+        "random_baseline_mean_hits_top20":2.5,
+    }
+
+def paired_block_bootstrap(predictions, challenger_key, champion_key, block_length=20, replicates=4000, seed=141):
+    """Paired circular moving-block bootstrap for per-target hit-count differences."""
+    deltas = [
+        len(set(p[challenger_key]) & set(p["actual"])) -
+        len(set(p[champion_key]) & set(p["actual"]))
+        for p in predictions
+    ]
+    n = len(deltas)
+    if not n:
+        return {"mean_delta":None,"ci95":[None,None],"p_two_sided":None,"targets":0}
+    observed = sum(deltas)/n
+    rng = random.Random(seed)
+    boot = []
+    blocks = math.ceil(n/block_length)
+    for _ in range(replicates):
+        sample = []
+        for _ in range(blocks):
+            start = rng.randrange(n)
+            sample.extend(deltas[(start+k)%n] for k in range(block_length))
+        boot.append(sum(sample[:n])/n)
+    boot.sort()
+    lo = boot[int(0.025*(replicates-1))]
+    hi = boot[int(0.975*(replicates-1))]
+    lower_tail = (sum(x <= 0 for x in boot)+1)/(replicates+1)
+    upper_tail = (sum(x >= 0 for x in boot)+1)/(replicates+1)
+    p_two = min(1.0,2.0*min(lower_tail,upper_tail))
+    return {
+        "mean_delta":round(observed,6),"ci95":[round(lo,6),round(hi,6)],
+        "p_two_sided":round(p_two,6),"targets":n,"block_length":block_length,
+        "replicates":replicates,"challenger_only_wins":sum(x>0 for x in deltas),
+        "champion_only_wins":sum(x<0 for x in deltas),"ties":sum(x==0 for x in deltas)
     }
 
 def run(rows):
@@ -270,18 +327,23 @@ def run(rows):
             "delta_mean_hits_top10":round(ch["mean_hits_top10"]-cp["mean_hits_top10"],6),
             "delta_mean_hits_top20":round(ch["mean_hits_top20"]-cp["mean_hits_top20"],6),
             "delta_top20_5of5":ch["top20_5of5"]-cp["top20_5of5"],
+            "paired_block_bootstrap":{
+                "top5":paired_block_bootstrap(sample,"top5","champion_top5",seed=141),
+                "top10":paired_block_bootstrap(sample,"top10","champion_top10",seed=142),
+                "top20":paired_block_bootstrap(sample,"top20","champion_top20",seed=143),
+            },
         }
     current_ranked,current_scores,current_weights,current_features=score_target([d for _,d in rows],performance)
     current_champion=champion_rank([d for _,d in rows],stay,out)
     return {
         "status":"EXPLORATORY_NOT_PROMOTABLE","engine_id":"SONAR::EVOLUTIONARY_FORMULA_REGIME_ADAPTIVE",
-        "version":"evolutionary-challenger-v1.1","source":"data/storico_daily.csv",
+        "version":"evolutionary-challenger-v1.2","source":"data/storico_daily.csv",
         "first_date":rows[0][0],"last_date":rows[-1][0],"draws":len(rows),
         "warmup_draws":WARMUP,"evaluated_targets":n,"learning_window_targets":LEARNING_WINDOW,
         "features":list(FEATURES),
         "method":{
             "number_features":"28 prior-only directional hypotheses grouped into 13 paired polarity families plus lag-1/lag-5",
-            "regime_feature":"Similarity-weighted successor votes from nearest prior five-draw structural contexts; only observed historical successors are eligible",
+            "regime_feature":"Similarity-weighted successor votes from prior five-draw contexts using structural levels, dispersion, velocity, acceleration and residual deviations; only observed successors are eligible",
             "adaptive_rule":"One direction per family is selected from prior outcomes; inconclusive families retain canonical polarity and unit prior weight",
             "chronology":"At each target, Challenger and Champion forecasts are frozen before the target is revealed; only then are adaptive weights and Champion persistence updated",
             "comparison":"Exact-source Champion scoring is reproduced on identical target dates, cutoffs and warm-up",
