@@ -108,7 +108,7 @@ def raw_features(history):
     for i, draw in enumerate(draws):
         for n in draw:
             counts[n].append(i)
-    raw = {f: {} for f in FEATURES if f != "regime_analog"}
+    raw = {f: {} for f in FEATURES if not f.endswith("_inverse") and f != "regime_analog"}
     for n in NUMBERS:
         idx = counts[n]
         ages = len(draws)-1-idx[-1] if idx else len(draws)
