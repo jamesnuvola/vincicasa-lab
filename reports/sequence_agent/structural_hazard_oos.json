@@ -2,66 +2,66 @@
   "status": "COMPLETE_RETROSPECTIVE_EXPLORATORY",
   "source": "data/storico_daily.csv",
   "first_date": "2017-07-17",
-  "last_date": "2026-11-26",
-  "draws": 3420,
+  "last_date": "2026-11-27",
+  "draws": 3421,
   "warmup_draws": 500,
-  "evaluated_draws": 2920,
-  "number_draw_opportunities": 116800,
+  "evaluated_draws": 2921,
+  "number_draw_opportunities": 116840,
   "baseline_probability": 0.125,
   "gap_buckets": {
     "0-4": {
-      "n": 56867,
-      "hits": 7064,
-      "brier_model": 6186.635738927227,
-      "brier_base": 6186.546875,
-      "p_two_sided_vs_0_125": 0.5787381416107276,
-      "p_holm_across_4_gap_buckets": 0.9764213634075133,
-      "hit_rate": 0.1242196704591415,
-      "mean_brier_model": 0.10879131550683573,
-      "mean_brier_baseline": 0.10878975284435613
+      "n": 56888,
+      "hits": 7066,
+      "brier_model": 6188.463144901012,
+      "brier_base": 6188.375,
+      "p_two_sided_vs_0_125": 0.5733915423576452,
+      "p_holm_across_4_gap_buckets": 0.9924210221098503,
+      "hit_rate": 0.12420897201518774,
+      "mean_brier_model": 0.10878327845768901,
+      "mean_brier_baseline": 0.1087817290113908
     },
     "5-9": {
-      "n": 29143,
-      "hits": 3730,
-      "brier_model": 3252.7782358347486,
-      "brier_base": 3252.859375,
-      "p_two_sided_vs_0_125": 0.12567845159124763,
-      "p_holm_across_4_gap_buckets": 0.5027138063649905,
-      "hit_rate": 0.1279895686785849,
-      "mean_brier_model": 0.11161439233554366,
-      "mean_brier_baseline": 0.11161717650893868
+      "n": 29150,
+      "hits": 3731,
+      "brier_model": 3253.636872664231,
+      "brier_base": 3253.71875,
+      "p_two_sided_vs_0_125": 0.12518118264624764,
+      "p_holm_across_4_gap_buckets": 0.5007247305849906,
+      "hit_rate": 0.12799313893653516,
+      "mean_brier_model": 0.11161704537441615,
+      "mean_brier_baseline": 0.11161985420240138
     },
     "10-19": {
-      "n": 22742,
-      "hits": 2779,
-      "brier_model": 2439.585141545144,
-      "brier_base": 2439.59375,
-      "p_two_sided_vs_0_125": 0.20417365404230758,
-      "p_holm_across_4_gap_buckets": 0.6125209621269228,
-      "hit_rate": 0.12219681646293203,
-      "mean_brier_model": 0.10727223382047067,
-      "mean_brier_baseline": 0.10727261234719901
+      "n": 22751,
+      "hits": 2781,
+      "brier_model": 2441.2306407619017,
+      "brier_base": 2441.234375,
+      "p_two_sided_vs_0_125": 0.2106265705108301,
+      "p_holm_across_4_gap_buckets": 0.6318797115324903,
+      "hit_rate": 0.12223638521383676,
+      "mean_brier_model": 0.1073021247752583,
+      "mean_brier_baseline": 0.10730228891037756
     },
     "20+": {
-      "n": 8048,
+      "n": 8051,
       "hits": 1027,
-      "brier_model": 896.467740065571,
-      "brier_base": 896.0,
-      "p_two_sided_vs_0_125": 0.48821068170375664,
-      "p_holm_across_4_gap_buckets": 0.9764213634075133,
-      "hit_rate": 0.1276093439363817,
-      "mean_brier_model": 0.11139012674771011,
-      "mean_brier_baseline": 0.11133200795228629
+      "brier_model": 896.514644382295,
+      "brier_base": 896.046875,
+      "p_two_sided_vs_0_125": 0.49621051105492514,
+      "p_holm_across_4_gap_buckets": 0.9924210221098503,
+      "hit_rate": 0.12756179356601666,
+      "mean_brier_model": 0.11135444595482487,
+      "mean_brier_baseline": 0.11129634517451248
     }
   },
   "permutation_null_test": {
     "method": "per-target conditional randomization; shuffle five hit labels among 40 numbers while holding prior-only probabilities fixed",
     "permutations": 199,
     "seed": 20261018,
-    "observed_brier_improvement": -3.997057983008134e-06,
-    "null_2_5_percentile": -2.2241857317402256e-05,
-    "null_97_5_percentile": 4.126118623940933e-06,
-    "p_one_sided_improvement": 0.195,
+    "observed_brier_improvement": -4.025185802574087e-06,
+    "null_2_5_percentile": -2.2591424399901186e-05,
+    "null_97_5_percentile": 2.71536954057162e-06,
+    "p_one_sided_improvement": 0.215,
     "interpretation": "exploratory; not a prospective validation"
   },
   "gap_bucket_tests": {
@@ -70,12 +70,12 @@
     "null_probability": 0.125
   },
   "overall": {
-    "model_brier": 0.10937899705798301,
+    "model_brier": 0.10937902518580257,
     "baseline_brier": 0.109375,
-    "brier_improvement": -3.997057983008134e-06,
-    "model_log_loss": 0.3767890806844014,
-    "baseline_log_loss": 0.376770161256621,
-    "log_loss_improvement": -1.891942778045582e-05
+    "brier_improvement": -4.025185802574087e-06,
+    "model_log_loss": 0.37678921112826824,
+    "baseline_log_loss": 0.3767701612566211,
+    "log_loss_improvement": -1.9049871647170413e-05
   },
   "chronological_splits": {
     "discovery": {
@@ -99,14 +99,14 @@
       "log_loss_improvement": -4.3140616791433415e-05
     },
     "oos": {
-      "targets": 584,
-      "opportunities": 23360,
-      "model_brier": 0.10937517512592515,
+      "targets": 585,
+      "opportunities": 23400,
+      "model_brier": 0.10937532210591287,
       "baseline_brier": 0.109375,
-      "brier_improvement": -1.7512592515384137e-07,
-      "model_log_loss": 0.37677100505783023,
+      "brier_improvement": -3.2210591287475523e-07,
+      "model_log_loss": 0.37677168728374727,
       "baseline_log_loss": 0.37677016125644086,
-      "log_loss_improvement": -8.438013893525862e-07
+      "log_loss_improvement": -1.5260273064016544e-06
     }
   },
   "guardrail": "All gap ages and hazard estimates use prior draws only. Conditional randomization preserves five hits per target; Holm corrects the four bucket tests. Historical scores remain exploratory; no prospective promotion."
